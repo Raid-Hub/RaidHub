@@ -1,0 +1,18 @@
+#__next {
+  width: 100vw;
+  height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+      background-color: rgb(7, 22, 55);
+      color: white;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+      background-color: white;
+      color: black;
+  }
+}

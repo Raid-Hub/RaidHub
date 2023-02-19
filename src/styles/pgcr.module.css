@@ -1,0 +1,201 @@
+#content {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+    flex-direction: row;
+    margin: auto;
+    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+}
+
+@media only screen and (orientation: portrait) {
+    #content {
+        flex-direction: column;
+        height: auto;
+        width: 90%;
+    }
+}
+
+.main-element {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 10px;
+}
+
+.soft-rectangle {
+    border-radius: 15px;
+    border: rgb(182, 182, 182);
+    border-style: solid;
+}
+
+#summary-card {
+    flex-grow: 4;
+    max-height: 640px;
+    padding: 10px;
+}
+
+#activity-card-header {
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+}
+
+#left-info {
+    flex-grow: 1;
+}
+
+#raid-info-top {
+    font-size: medium;
+}
+
+#raid-difficulty {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+#completion-time {
+    color:rgb(182, 182, 182);
+    font-style: oblique;
+    padding: 3px;
+}
+
+#raid-name {
+    font-weight: 900;
+    font-size: xx-large;
+    line-height: 100%
+}
+
+#cp-error p {
+    font-size: small;
+    font-style: italic;
+    max-width: 80%;
+  
+}
+
+#right-info {
+    flex-grow: 1;
+    padding-top: 10px;
+    margin-left: 5px;
+}
+
+.duration {
+    flex-grow: 1;
+    font-style: oblique;
+    font-size: x-large;
+    display: flex;
+}
+
+.duration span {
+    margin: 0.2rem
+}
+
+#tags-container {
+    padding: 10px;
+    padding-top: 2px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tag {
+    font-size: large;
+    padding: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 6px;
+    margin-right: 6px;
+    border-width: 2px;
+    background-color: rgb(73, 4, 6);
+}
+
+#members {
+    padding: 10px;
+    border-radius: 10px;
+    height: auto;
+    display: grid;
+    grid-gap: 10px;
+    overflow: auto;
+    grid-template-rows: 1fr;
+}
+
+/* This sets the column count to 1*/
+@media only screen and (orientation: portrait) {
+    #members {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(auto, 1fr);
+    }
+}
+
+.members-low {
+    grid-template-columns: 1fr;
+}
+
+.members-even {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.members-odd {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.member-card {
+    background-color: aqua;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    padding: 3px;
+    margin: 2px;
+    margin-right: 5%;
+    margin-left: 5%;
+    min-width: 250px;
+}
+
+/* This sets the top row to span 2 columns if odd count and landscape*/
+@media only screen and (orientation: landscape) {
+    .members-odd .member-card:nth-child(1) {
+        grid-column-start: 1;
+        grid-column-end: span 2;
+        margin-right: 25%;
+        margin-left: 25%;
+    }
+}
+
+.member-card > div {
+    margin: 6px;
+  }
+
+.class-logo {
+    background-color: rgb(255, 255, 255);
+    height: 60px;
+    aspect-ratio: 1/1;
+}
+
+.member-properties {
+    background-color: rgb(214, 48, 145);
+    min-width: 100px;
+    flex-grow: 4;
+}
+
+.member-name {
+    
+}
+
+.member-class {
+    
+}
+
+.flawless-diamond {
+    background-color: rgb(55, 226, 160);
+    height: 60px;
+    aspect-ratio: 1/2;
+}
+
+#summary-stats {
+    background-color: red;
+    flex-grow: 2;
+    /* temp */
+    min-height: 20px;
+    min-width: 300px;
+}
