@@ -1,5 +1,6 @@
 #content {
     width: 70%;
+    max-width: 950px;
     display: flex;
     flex-wrap: wrap;
     overflow: auto;
@@ -30,7 +31,6 @@
 
 #summary-card {
     flex-grow: 4;
-    max-height: 640px;
     padding: 10px;
 }
 
@@ -56,7 +56,7 @@
 }
 
 #completion-time {
-    color:rgb(182, 182, 182);
+    color: rgb(182, 182, 182);
     font-style: oblique;
     padding: 3px;
 }
@@ -67,11 +67,13 @@
     line-height: 100%
 }
 
-#cp-error p {
+#cp-error {
+    max-width: 400px;
+}
+
+#cp-error>p {
     font-size: small;
     font-style: italic;
-    max-width: 80%;
-  
 }
 
 #right-info {
@@ -87,7 +89,7 @@
     display: flex;
 }
 
-.duration span {
+.duration>span {
     margin: 0.2rem
 }
 
@@ -140,21 +142,44 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
-.member-card {
-    background-color: aqua;
+.entry-card {
     height: auto;
-    display: flex;
-    flex-direction: row;
-    padding: 3px;
     margin: 2px;
     margin-right: 5%;
     margin-left: 5%;
     min-width: 250px;
+    min-height: 85px;
+    max-height: 70px;
+    overflow: hidden;
+    position: relative;
+    padding: 0
+}
+
+.entry-card>img {
+    border-radius: inherit;
+    max-height: 100%;
+    position: absolute;
+    left: -200px;
+    opacity: .6;
+}
+
+.member-card-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    font-size: larger;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
 @media only screen and (orientation: landscape) {
-    .members-odd .member-card:nth-child(1) {
+    .members-odd>.entry-card:nth-child(1) {
         grid-column-start: 1;
         grid-column-end: span 2;
         margin-right: 25%;
@@ -162,40 +187,64 @@
     }
 }
 
-.member-card > div {
-    margin: 6px;
-  }
-
 .class-logo {
-    background-color: rgb(255, 255, 255);
-    height: 60px;
+    /*background-color: rgb(255, 255, 255);*/
+    min-height: 40px;
+    max-height: 60px;
     aspect-ratio: 1/1;
 }
 
 .member-properties {
-    background-color: rgb(214, 48, 145);
+    /* background-color: rgb(214, 48, 145); */
     min-width: 100px;
     flex-grow: 4;
+    padding: 10px;
+    position: relative;
 }
 
-.member-name {
-    
+.member-name {}
+
+.member-name>span {
+    font-weight: bolder;
+    font-size: large;
+    opacity: 1
 }
 
-.member-class {
-    
+.member-class {}
+
+.member-class>span {
+    font-style: italic;
+    color: rgb(219, 219, 219);
+
+    font-size: large;
+    opacity: 1
 }
 
 .flawless-diamond {
-    background-color: rgb(55, 226, 160);
-    height: 60px;
-    aspect-ratio: 1/2;
+    flex: 1;
+    min-width: 60px;
+    min-height: 60px;
+    position: relative;
+    margin-left: auto;
+}
+
+.flawless-diamond>img {
+    max-width: 60%;
+    max-height: 60%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 5px;
 }
 
 #summary-stats {
     background-color: red;
-    flex-grow: 2;
+    flex-grow: 1;
     /* temp */
     min-height: 20px;
-    min-width: 300px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
 }

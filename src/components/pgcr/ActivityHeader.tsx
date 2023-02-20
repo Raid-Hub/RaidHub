@@ -1,7 +1,7 @@
 import React from 'react';
-import { ActivityData } from '../models/pgcr/ActivityData'
-import { PGCRComponentProps } from '../pages/pgcr/[activityId]'
-import styles from '../styles/pgcr.module.css';
+import { ActivityData } from '../../models/pgcr/ActivityData'
+import { PGCRComponentProps } from '../../pages/pgcr/[activityId]'
+import styles from '../../styles/pgcr.module.css';
 
 const checkpointDisclaimer = "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen"
 const incomplete = "Incomplete"
@@ -9,8 +9,8 @@ const incomplete = "Incomplete"
 export class ActivityHeader extends React.Component<PGCRComponentProps> {
   render() {
     let data: ActivityData | null = null
-    if (this.props.data) {
-      data = new ActivityData(this.props.data)
+    if (this.props.pgcr) {
+      data = new ActivityData(this.props.pgcr)
     }
     return (
       <>
@@ -47,7 +47,8 @@ export class ActivityHeader extends React.Component<PGCRComponentProps> {
           {data?.tags.map((tag, idx) => (
             <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>{tag}</div>
           ))}
-        </div></>
+        </div>
+      </>
     );
   }
 }

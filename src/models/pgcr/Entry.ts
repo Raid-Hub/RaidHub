@@ -1,9 +1,10 @@
 import { 
     DestinyPostGameCarnageReportEntry,
     BungieMembershipType,
-    DestinyHistoricalStatsValue
+    DestinyHistoricalStatsValue,
+    DestinyPostGameCarnageReportExtendedData
   } from 'oodestiny/schemas'
-import { PGCRStats } from './Stats'
+import { PGCRStats, StatsKeys } from './Stats'
 
 abstract class PGCREntry {
     protected _membershipId: string
@@ -11,13 +12,21 @@ abstract class PGCREntry {
     protected _emblemPath: string
     protected _displayName: string
     protected _stats: PGCRStats
-    constructor(data: DestinyPostGameCarnageReportEntry, stats: Record<string, DestinyHistoricalStatsValue> | Record<string, DestinyHistoricalStatsValue>[]) {
+    constructor(data: DestinyPostGameCarnageReportEntry, stats: StatsKeys | StatsKeys[]) {
       const info = data.player.destinyUserInfo
       this._membershipId = info.membershipId,
       this._membershipType = info.membershipType,
       this._emblemPath = info.iconPath,
       this._displayName = info.bungieGlobalDisplayName ?? info.displayName
       this._stats = new PGCRStats(stats)
+    }
+
+    get membershipId() {
+      return this._membershipId;
+    }
+
+    get membershipType() {
+      return this._membershipType;
     }
   
     get displayName() {
@@ -31,17 +40,23 @@ abstract class PGCREntry {
   
 export class PGCRMember extends PGCREntry {
     private _characters: PGCRCharacter[]
+    private _flawless: boolean
     constructor(membershipId: string, characters: DestinyPostGameCarnageReportEntry[]) {
-      super(characters[0], characters.map(character => character.values));
+      super(characters[0], characters.map(character => ({values: character.values, extended: character.extended})))
+      this._flawless = characters.every(character => character.values["deaths"].basic.value === 0)
       this._characters = characters.map(character => new PGCRCharacter(character))
     }
 
     get characterClass(): string {
-      if (this._characters.length > 1) {
-        return "Multiple Characters"
-      } else {
-        return this._characters[0].className
-      }
+      return this._characters.map(char => char.className).join("/")
+    }
+
+    get flawless(): boolean {
+      return this._flawless
+    }
+
+    get characterIds() {
+      return this._characters.map(char => char.id)
     }
   }
   
@@ -49,9 +64,13 @@ export class PGCRCharacter extends PGCREntry {
     private _id: string
     private _className: string
     constructor(data: DestinyPostGameCarnageReportEntry) {
-      super(data, data.values);
+      super(data, {values: data.values, extended: data.extended});
       this._id = data.characterId
       this._className = data.player.characterClass
+    }
+
+    get id() {
+      return this._id
     }
 
     get className(): string {
