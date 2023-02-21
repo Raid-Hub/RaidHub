@@ -1,16 +1,16 @@
 import React from 'react';
 import { ActivityData } from '../../models/pgcr/ActivityData'
-import { PGCRComponentProps } from '../../pages/pgcr/[activityId]'
+import { PGCRComponent } from '../../pages/pgcr/[activityId]'
 import styles from '../../styles/pgcr.module.css';
 
 const checkpointDisclaimer = "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen"
 const incomplete = "Incomplete"
 
-export class ActivityHeader extends React.Component<PGCRComponentProps> {
+export class ActivityHeader extends React.Component<PGCRComponent> {
   render() {
     let data: ActivityData | null = null
-    if (this.props.pgcr) {
-      data = new ActivityData(this.props.pgcr)
+    if (this.props.pgcr && this.props.members) {
+      data = new ActivityData(this.props.pgcr, this.props.members)
     }
     return (
       <>

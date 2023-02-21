@@ -1,33 +1,32 @@
 import React from 'react';
 import { NextPageContext } from 'next'
-import { DestinyClient } from '../../server/client'
+import { BungieNetClient } from '../../util/client'
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { ActivityHeader } from '../../components/pgcr/ActivityHeader'
 import { PGCREntries } from '../../components/pgcr/PGCREntries'
 import { SummaryStats } from '../../components/pgcr/SummaryStats'
-import { DestinyPostGameCarnageReportData } from 'oodestiny/schemas'
+import { DestinyPostGameCarnageReportData, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
 import styles from '../../styles/pgcr.module.css';
+import { PGCRMember } from '../../models/pgcr/Entry';
 
 type PGCRProps = {
   activityId: string
 }
 
-export type PGCRComponentProps = {
-  pgcr: DestinyPostGameCarnageReportData | null
+export type PGCRComponent = {
+  pgcr?: DestinyPostGameCarnageReportData | null
+  members?: PGCRMember[] | null,
   emblems?: { [characterId: string]: string } | null
 }
 
-type PGCRState = {
-  pgcr: DestinyPostGameCarnageReportData | null,
-  emblems: { [characterId: string]: string } | null
-}
-export default class PGCR extends React.Component<PGCRProps, PGCRState> {
+export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
 
   constructor(props: PGCRProps) {
     super(props)
     this.state = {
       pgcr: null,
+      members: null,
       emblems: null
     }
   }
@@ -38,17 +37,27 @@ export default class PGCR extends React.Component<PGCRProps, PGCRState> {
   }
 
   async componentDidMount() {
-    const { activityId } = this.props;
-    const client = new DestinyClient();
-    const pgcr = await client.getPGCR(activityId)
-    this.setState({ pgcr }, async () => {
-      const uniqueProfiles = this.state.pgcr?.entries.filter(
-        (membership, index, self) =>
-          index === self.findIndex((m) => (
-            m.player.destinyUserInfo.membershipId === membership.player.destinyUserInfo.membershipId
-            && m.player.destinyUserInfo.membershipType === membership.player.destinyUserInfo.membershipType))
-      );
-      const emblems = await Promise.all(uniqueProfiles?.map(profile => (
+    const client = new BungieNetClient();
+    let pgcr: DestinyPostGameCarnageReportData
+    try {
+      pgcr = await client.getPGCR(this.props.activityId)
+      console.log(pgcr)
+    } catch (e) {
+      // TODO: handle errors here
+      return;
+    }
+    const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
+    pgcr.entries.forEach(entry => (dict[entry.player.destinyUserInfo.membershipId] ??= []).push(entry))
+    /** Sort characters by kills, but always keep the final one first*/
+    const members: PGCRMember[] = Object.entries(dict).map(([_, vals]) => new PGCRMember(vals.sort((a, b) => {
+      if (a.values.completed.basic.value) return -1;
+      else if (b.values.completed.basic.value) return 1;
+      else return b.values.kills.basic.value - a.values.kills.basic.value
+      /* Sort by kdr * kills */
+    }))).sort((a, b) => (b.stats.kdr * b.stats.kills) - (a.stats.kdr * a.stats.kills))
+    this.setState({ pgcr, members }, async () => {
+      /** Once the pgcr has been set, find the emblems and set those */
+      const emblems = await Promise.all(this.state.pgcr?.entries?.map(profile => (
         client.getCharacterEmblem(profile.characterId, profile.player.destinyUserInfo.membershipId, profile.player.destinyUserInfo.membershipType)
           .then(path => ([profile.characterId, path]))))
         ?? []).then(all => Object.fromEntries(all))
@@ -62,11 +71,11 @@ export default class PGCR extends React.Component<PGCRProps, PGCRState> {
         <Header />
         <main id={styles.content}>
           <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
-            <ActivityHeader pgcr={this.state.pgcr} />
-            <PGCREntries pgcr={this.state.pgcr} emblems={this.state.emblems} />
+            <ActivityHeader pgcr={this.state.pgcr} members={this.state.members} />
+            <PGCREntries members={this.state.members} emblems={this.state.emblems} />
           </section>
           <section id={styles["summary-stats"]} className={styles["main-element"]}>
-            <SummaryStats pgcr={this.state.pgcr} />
+            <SummaryStats pgcr={this.state.pgcr} members={this.state.members} />
           </section>
         </main>
         <Footer />

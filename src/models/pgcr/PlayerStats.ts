@@ -53,7 +53,6 @@ export class PGCRStats {
       this._weaponKills += entry.extended.weapons?.reduce((total, current) => (
         total + current.values["uniqueWeaponKills"].basic.value
       ), 0) || 0
-      console.log(entry.values)
       this._abilityKills += (entry.extended.values['weaponKillsAbility'].basic.value
         + entry.extended.values['weaponKillsGrenade'].basic.value
         + entry.extended.values['weaponKillsMelee'].basic.value

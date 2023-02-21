@@ -2,7 +2,7 @@ import { DayOneEnd, ContestEnd } from './dates'
 
 export type RaidInfo = {
     name: string,
-    difficulty: string
+    difficulty: RaidDifficulty
     isDayOne: (ended: Date) => boolean
     isContest: (started: Date) => boolean
 }
@@ -23,17 +23,20 @@ enum RaidName {
     na = "Non-raid"
 }
 
-enum RaidDifficulty {
-    normal = "Normal",
-    prestige = "Prestige",
-    legend = "Legend",
-    master = "Master",
-    contest = "Contest",
-    na = "N/A"
+export enum RaidDifficulty {
+    normal,
+    prestige,
+    legend,
+    master,
+    contest,
+    challengeKF,
+    challengeVog,
+    na
 }
 
-const IsContest = {
+const IsContest: { [raid: string]: (start: Date) => boolean } = {
     na: (start: Date) => false,
+    yes: (start: Date) => true,
     crownOfSorrow: (start: Date) => start.getTime() < ContestEnd.crownOfSorrow.getTime(),
     gardenOfSalvation: (start: Date) => start.getTime() < ContestEnd.gardenOfSalvation.getTime(),
     deepStoneCrypt: (start: Date) => start.getTime() < ContestEnd.deepStoneCrypt.getTime(),
@@ -43,7 +46,7 @@ const IsContest = {
     lightfallRaid: (start: Date) => start.getTime() < ContestEnd.lightfallRaid.getTime()
 }
 
-const IsDayOne = {
+const IsDayOne: { [raid: string]: (end: Date) => boolean } = {
     na: (end: Date) => false,
     leivathan: (end: Date) => end.getTime() <= DayOneEnd.leivathan.getTime(),
     eaterOfWorlds: (end: Date) => end.getTime() <= DayOneEnd.eaterOfWorlds.getTime(),
@@ -61,16 +64,16 @@ const IsDayOne = {
 
 export const raidFromHash = (hash: string): RaidInfo => {
     switch (hash) {
-        case "89727599": case "287649202": case "1699948563": case "1875726950": 
-        case "2693136600": case "2693136601": case "2693136602": case "2693136603": 
+        case "89727599": case "287649202": case "1699948563": case "1875726950":
+        case "2693136600": case "2693136601": case "2693136602": case "2693136603":
         case "2693136604": case "2693136605": case "3916343513": case "4039317196": return {
             name: RaidName.leviathan,
             difficulty: RaidDifficulty.normal,
             isContest: IsContest.na,
             isDayOne: IsDayOne.leivathan
         }
-        case "417231112": case "508802457": case "757116822": case "771164842": 
-        case "1685065161": case "1800508819": case "2449714930": case "3446541099": 
+        case "417231112": case "508802457": case "757116822": case "771164842":
+        case "1685065161": case "1800508819": case "2449714930": case "3446541099":
         case "4206123728": case "3912437239": case "3879860661": case "3857338478": return {
             name: RaidName.leviathan,
             difficulty: RaidDifficulty.prestige,
@@ -103,7 +106,7 @@ export const raidFromHash = (hash: string): RaidInfo => {
         }
         case "1661734046": case "2122313384": case "2214608157": return {
             name: RaidName.lastWish,
-            difficulty: "Normal",
+            difficulty: RaidDifficulty.normal,
             isContest: IsContest.na,
             isDayOne: IsDayOne.lastWish
         }
@@ -139,8 +142,8 @@ export const raidFromHash = (hash: string): RaidInfo => {
         }
         case "1485585878": return {
             name: RaidName.vaultOfGlass,
-            difficulty: RaidDifficulty.contest,
-            isContest: (start) => true,
+            difficulty: RaidDifficulty.challengeVog,
+            isContest: IsContest.yes,
             isDayOne: IsDayOne.vaultOfGlass
         }
         case "1681562271": return {
@@ -161,10 +164,16 @@ export const raidFromHash = (hash: string): RaidInfo => {
             isContest: IsContest.na,
             isDayOne: IsDayOne.na
         }
-        case "1063970578": case "1374392663": case "2897223272": return {
+        case "1374392663": case "2897223272": return {
             name: RaidName.kingsFall,
             difficulty: RaidDifficulty.normal,
             isContest: IsContest.kingsFall,
+            isDayOne: IsDayOne.kingsFall
+        }
+        case "1063970578": return {
+            name: RaidName.kingsFall,
+            difficulty: RaidDifficulty.challengeKF,
+            isContest: IsContest.yes,
             isDayOne: IsDayOne.kingsFall
         }
         case "2964135793": return {

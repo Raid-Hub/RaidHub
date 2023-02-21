@@ -9,4 +9,5 @@ export enum Tags {
     Flawless = "Flawless",
     ChallengeVog = "Tempo's Edge",
     ChallengeKF = "Regicide",
+    AbilitiesOnly = "Abilities Only",
 }

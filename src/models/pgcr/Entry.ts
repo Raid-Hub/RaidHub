@@ -1,10 +1,8 @@
 import { 
     DestinyPostGameCarnageReportEntry,
-    BungieMembershipType,
-    DestinyHistoricalStatsValue,
-    DestinyPostGameCarnageReportExtendedData
+    BungieMembershipType
   } from 'oodestiny/schemas'
-import { PGCRStats, StatsKeys } from './Stats'
+import { PGCRStats, StatsKeys } from './PlayerStats'
 
 abstract class PGCREntry {
     protected _membershipId: string
@@ -17,7 +15,7 @@ abstract class PGCREntry {
       this._membershipId = info.membershipId,
       this._membershipType = info.membershipType,
       this._emblemPath = info.iconPath,
-      this._displayName = info.bungieGlobalDisplayName ?? info.displayName
+      this._displayName = info.bungieGlobalDisplayName || info.displayName
       this._stats = new PGCRStats(stats)
     }
 
@@ -41,10 +39,10 @@ abstract class PGCREntry {
 export class PGCRMember extends PGCREntry {
     private _characters: PGCRCharacter[]
     private _flawless: boolean
-    constructor(membershipId: string, characters: DestinyPostGameCarnageReportEntry[]) {
+    constructor(characters: DestinyPostGameCarnageReportEntry[]) {
       super(characters[0], characters.map(character => ({values: character.values, extended: character.extended})))
       this._flawless = characters.every(character => character.values["deaths"].basic.value === 0)
-      this._characters = characters.map(character => new PGCRCharacter(character))
+      this._characters = characters.map(char => new PGCRCharacter(char))
     }
 
     get characterClass(): string {
@@ -58,15 +56,21 @@ export class PGCRMember extends PGCREntry {
     get characterIds() {
       return this._characters.map(char => char.id)
     }
+
+    get characters() {
+      return this._characters
+    }
   }
   
 export class PGCRCharacter extends PGCREntry {
     private _id: string
     private _className: string
+    private _completed: boolean
     constructor(data: DestinyPostGameCarnageReportEntry) {
       super(data, {values: data.values, extended: data.extended});
       this._id = data.characterId
-      this._className = data.player.characterClass
+      this._className = data.player.characterClass || "Guardian"
+      this._completed = !!data.values.completed.basic.value
     }
 
     get id() {
@@ -75,5 +79,9 @@ export class PGCRCharacter extends PGCREntry {
 
     get className(): string {
       return this._className
+    }
+
+    get wasFinal () {
+      return this._completed
     }
   }

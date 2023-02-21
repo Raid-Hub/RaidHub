@@ -1,9 +1,9 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
-import { RaidInfo, raidFromHash } from "../../util/raid-hashes"
+import { RaidDifficulty, RaidInfo, raidFromHash } from "../../util/raid-hashes"
 import { Tags } from '../../util/tags'
 import { Seasons } from '../../util/dates'
+import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
-import { round } from '../../util/math'
 
 export class ActivityData {
   private _activityHash: number
@@ -14,43 +14,45 @@ export class ActivityData {
   private _playerCount: number
   private _flawless: boolean
   private _speed: DestinyHistoricalStatsValuePair
-  private _members: PGCRMember[]
-  constructor(data: DestinyPostGameCarnageReportData) {
-    this._activityHash = data.activityDetails.directorActivityHash
-    this._complete = data.entries.some(e => e.values['completed'].basic.value)
-    this._startedTime = new Date(data.period);
-    this._finishedTime = new Date(this._startedTime.getTime() + data.entries[0].values.activityDurationSeconds.basic.value * 1000)
-    this._playerCount = (new Set(data.entries.map(e => e.player.destinyUserInfo.membershipId))).size
-    this._flawless = this._complete && data.entries.reduce((b, entry) => b && entry.values["deaths"].basic.value == 0, true)
-    this._speed = data.entries[0].values.activityDurationSeconds.basic
-    this._fresh = data.activityWasStartedFromBeginning === false ? this.badWqCpData() : data.activityWasStartedFromBeginning ?? data.startingPhaseIndex === 0 ?? null
-    const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
-    data.entries.forEach(entry => (dict[entry.player.destinyUserInfo.membershipId] ??= []).push(entry))
-    this._members = Object.entries(dict).map(([id, vals]) => new PGCRMember(id, vals))
-  }
-
-  get raidManifest(): RaidInfo {
-    return raidFromHash(`${this._activityHash}`);
+  private _stats: ActivityStats
+  private _raidManifest: RaidInfo
+  constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
+    this._activityHash = pgcr.activityDetails.directorActivityHash
+    this._complete = pgcr.entries.some(e => e.values.completed?.basic.value)
+    this._startedTime = new Date(pgcr.period);
+    this._finishedTime = new Date(this._startedTime.getTime() + pgcr.entries[0].values.activityDurationSeconds.basic.value * 1000)
+    this._playerCount = (new Set(pgcr.entries.map(e => e.player.destinyUserInfo.membershipId))).size
+    this._flawless = this._complete && pgcr.entries.reduce((b, entry) => b && entry.values.deaths?.basic.value == 0, true)
+    this._speed = pgcr.entries[0].values.activityDurationSeconds.basic
+    /* This is kinda ugly but its a 1 liner :) */
+    this._fresh = this.isFresh(pgcr.startingPhaseIndex, pgcr.activityWasStartedFromBeginning)
+    this._stats = new ActivityStats(pgcr, members)
+    this._raidManifest = raidFromHash(`${this._activityHash}`);
   }
 
   get name(): string {
-    return this.raidManifest.name
-  }
-
-  get difficulty(): string {
-    return this.raidManifest.isContest(this._startedTime) ? "Contest" : this.raidManifest.difficulty
+    return this._raidManifest.name
   }
 
   get tags(): string[] {
     const tags: string[] = []
-    if (this.raidManifest.isDayOne(this._finishedTime)) tags.push(Tags.DayOne)
-    if (this.difficulty === "Contest") tags.push(Tags.Contest)
+    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(Tags.DayOne)
+    if (this._raidManifest.isContest(this._startedTime)) {
+      switch (this._raidManifest.difficulty) {
+        case RaidDifficulty.challengeKF: tags.push(Tags.ChallengeKF); break
+        case RaidDifficulty.challengeVog: tags.push(Tags.ChallengeVog); break
+        default: tags.push(Tags.Contest)
+      }
+    }
     if (this._fresh === false) tags.push(Tags.Checkpoint)
-    if (this.difficulty === "Master") tags.push(Tags.Master)
-    if (this._flawless && this._fresh && this._complete) tags.push(Tags.Flawless)
+    if (this._raidManifest.difficulty === RaidDifficulty.master) tags.push(Tags.Master)
     if (this._playerCount === 1) tags.push(Tags.Solo)
     else if (this._playerCount === 2) tags.push(Tags.Duo)
     else if (this._playerCount === 3) tags.push(Tags.Trio)
+    if (this._fresh && this._complete) {
+      if (this._flawless) tags.push(Tags.Flawless)
+      if (this._stats.killsTypeRatio.ability === 100) tags.push(Tags.AbilitiesOnly)
+    }
     return tags;
   }
 
@@ -66,51 +68,28 @@ export class ActivityData {
     }
   }
 
+  get stats(): ActivityStats {
+    return this._stats
+  }
+
   /**
-   * Determines the MVP of the activity by KDA (kills as the tiebreaker)
+   * Given a report, determines if it was completed from the start
+   * @returns null if it cannot be determined
    */
-  get mvp(): string {
-    return (this._members.reduce((mvp, current) => (
-      (current.stats.kda === mvp.stats.kda)
-        ? (current.stats.kills > mvp.stats.kills ? current : mvp)
-        : (current.stats.kda > mvp.stats.kda ? current : mvp)
-    ), { stats: { kda: 0, kills: 0 } }) as PGCRMember).displayName
-  }
-
-  get totalKills() {
-    return this._members.reduce((total, current) => (
-      total + current.stats.kills
-    ), 0)
-  }
-
-  get totalDeaths() {
-    return this._members.reduce((total, current) => (
-      total + current.stats.deaths
-    ), 0)
-  }
-
-  get killsTypeRatio() {
-    const { weapon, ability } = this._members.reduce((total, curr) => (
-      {
-        weapon: total.weapon + curr.stats.weaponKills,
-        ability: total.ability + curr.stats.abilityKills,
-      }
-    ), { weapon: 0, ability: 0 })
-    console.log( weapon, ability )
-    return {
-      weapon: round(weapon / (weapon + ability) * 100, 2),
-      ability: round(ability / (weapon + ability) * 100, 2)
+  private isFresh(startingPhaseIndex: number | undefined, activityWasStartedFromBeginning: boolean | undefined): boolean | null {
+    if (this._finishedTime.getTime() < Seasons[12].start.getTime()) {
+      /* pre-BL -- startingPhaseIndex working as intended */
+      return startingPhaseIndex === 0
+    } else if (this._finishedTime.getTime() < Seasons[16].start.getTime()) {
+      /* beyond light -- startingPhaseIndex reporting 0 always */
+      return null
+    } else if (this._finishedTime.getTime() < Seasons[17].start.getTime()) {
+      /* season of the risen -- activityWasStartedFromBeginning added but not populating properly
+       because a wipe made it not fresh */
+      return activityWasStartedFromBeginning || null
+    } else {
+      /* modern era -- working as intended with activityWasStartedFromBeginning */
+      return !!activityWasStartedFromBeginning
     }
-  }
-
-  /**
-   * Given a report with a false 'activityWasStartedFromBeginning', 
-   * determines if it was completed during Season of the Risen when any 
-   * wipes were causing a report to be a checkpoint.
-   * @returns null if the report was completed during Season of the Risen, otherwise returns false
-   */
-  private badWqCpData() {
-    return this._startedTime.getTime() >= Seasons[16].start.getTime()
-      && this._finishedTime.getTime() < Seasons[17].start.getTime() ? null : false
   }
 }
