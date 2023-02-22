@@ -3,10 +3,10 @@
     max-width: 950px;
     display: flex;
     flex-wrap: wrap;
-    overflow: auto;
     flex-direction: row;
     margin: auto;
     font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+    overflow: auto;
 }
 
 @media only screen and (orientation: portrait) {
@@ -25,7 +25,7 @@
 
 .soft-rectangle {
     border-radius: 15px;
-    border: rgb(182, 182, 182);
+    border: rgba(182, 182, 182, 0.431);
     border-style: solid;
     border-width: 2px;
 }
@@ -36,12 +36,23 @@
     flex-grow: 4;
 }
 
+@media only screen and (orientation: landscape)  {
+    #summary-card {
+        min-width: 600px;
+    }
+}
+
+@media only screen and (orientation: portrait)  {
+    #summary-card {
+        min-width: 300px;
+    }
+}
+
 #activity-card-header {
     padding: 10px;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    overflow: auto;
 }
 
 #left-info {
@@ -120,7 +131,6 @@
     height: auto;
     display: grid;
     grid-gap: 10px;
-    overflow: auto;
     grid-template-rows: 1fr;
 }
 
@@ -149,26 +159,12 @@
     margin: 2px;
     margin-right: 5%;
     margin-left: 5%;
-    min-width: 250px;
+    min-width: 260px;
     min-height: 85px;
     max-height: 70px;
     overflow: hidden;
     position: relative;
-    padding: 0
-}
-
-.entry-card-not-selected:hover {
-    border-color: rgb(255, 0, 204);
-    background-color: rgba(255, 0, 234, 0.267);
-}
-
-.entry-card:hover span {
-    color: aqua
-}
-
-.entry-card-selected {
-    border-color: rgb(0, 255, 26);
-    background-color: rgba(255, 0, 234, 0.267);
+    padding: 0;
 }
 
 .entry-card>img {
@@ -190,7 +186,7 @@
     width: 100%;
     height: 100%;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
@@ -204,10 +200,22 @@
 }
 
 .class-logo {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0px;
+    max-width: 81px;
+    height: 100%;
+    background-color: rgba(111, 111, 111, 0.45);
+}
+
+.class-logo>img {
     /*background-color: rgb(255, 255, 255);*/
-    min-height: 40px;
-    max-height: 60px;
+    max-height: 50px;
     aspect-ratio: 1/1;
+    padding: 10px;
 }
 
 .member-properties {
@@ -231,28 +239,56 @@
 .member-class>span {
     font-style: italic;
     color: rgb(219, 219, 219);
-
     font-size: large;
     opacity: 1
 }
 
 .flawless-diamond {
     flex: 1;
-    min-width: 60px;
-    min-height: 60px;
     position: relative;
     margin-left: auto;
+    min-width: 80px;
 }
 
 .flawless-diamond>img {
-    max-width: 60%;
-    max-height: 60%;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 60px;
+    max-height: 60px;
     position: absolute;
     left: 0;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
     padding: 5px;
+}
+
+.class-button-container {
+    height: auto;
+    margin: 2px;
+    margin-right: 5%;
+    margin-left: 5%;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    display:flex;
+    flex-direction: row;
+}
+
+.class-button {
+    margin-right: 10px;
+    width: 85px;
+    height: 85px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+}
+
+.class-button > img {
+    width: 70%;
+    height: 70%;
+    margin:auto
 }
 
 #summary-stats {
@@ -264,12 +300,26 @@
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 10px;
+    overflow-y: auto;
+    height: 444px;
 }
 
+
 .summary-stat {
+    min-height: 57px;
     padding: 10px;
     background-color: rgba(78, 9, 9, 0.35);
     display: flex
+}
+
+@media only screen and (orientation: portrait) {
+    #summary-stats {
+        max-height: none;
+    }
+    
+    .summary-stat {
+        min-height: 40px;
+    }
 }
 
 .summary-stat-content {
@@ -280,7 +330,7 @@
 }
 
 
-.summary-stat-content > img {
+.summary-stat-content>img {
     margin-right: 10px;
     max-width: 50px;
     max-height: 50px;
@@ -308,4 +358,23 @@
     font-size: x-large;
     text-align: left;
     line-height: 100%;
+}
+
+/** dynamic styling */
+.selected {
+    border-color: rgb(214, 246, 255);
+    background-color: rgba(137, 233, 255, 0.267);
+}
+
+.selected span {
+    color: rgb(203, 255, 253)
+}
+
+.selectable:hover {
+    border-color: rgb(214, 246, 255);
+    background-color: rgba(137, 233, 255, 0.267);
+}
+
+.selectable:hover span {
+    color: rgb(203, 255, 253)
 }

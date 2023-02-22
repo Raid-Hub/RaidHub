@@ -47,6 +47,21 @@ export class SummaryStats extends React.Component<PGCRComponent> {
           name: "TOTAL CHARACTERS USED",
           value: stats?.totalCharactersUsed ?? 0
         },
+        {
+          icon: "/images/flawless_diamond.png",
+          name: "TOTAL CHARACTERS USED",
+          value: stats?.totalCharactersUsed ?? 0
+        },
+        {
+          icon: "/images/flawless_diamond.png",
+          name: "TOTAL CHARACTERS USED",
+          value: stats?.totalCharactersUsed ?? 0
+        },
+        {
+          icon: "/images/flawless_diamond.png",
+          name: "TOTAL CHARACTERS USED",
+          value: stats?.totalCharactersUsed ?? 0
+        },
       ]
     return (<>
       {statsData.map((stat, idx) => (

@@ -46,7 +46,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get characterClass(): string {
-      return this._characters.map(char => char.className).join("/")
+      return this._characters.map(char => char.className).join("/") || "Guardian"
     }
 
     get flawless(): boolean {
@@ -69,7 +69,7 @@ export class PGCRCharacter extends PGCREntry {
     constructor(data: DestinyPostGameCarnageReportEntry) {
       super(data, {values: data.values, extended: data.extended});
       this._id = data.characterId
-      this._className = data.player.characterClass || "Guardian"
+      this._className = data.player.characterClass
       this._completed = !!data.values.completed.basic.value
     }
 
@@ -78,7 +78,7 @@ export class PGCRCharacter extends PGCREntry {
     }
 
     get className(): string {
-      return this._className
+      return this._className || "Guardian"
     }
 
     get wasFinal () {
