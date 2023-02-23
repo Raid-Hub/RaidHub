@@ -23,42 +23,42 @@ export class SummaryStats extends React.Component<PGCRComponent> {
       value: number | string
     }[] = [
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "MVP",
           value: stats?.mvp.toUpperCase() ?? "???"
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/kills.png",
           name: "TOTAL KILLS",
           value: stats?.totalKills ?? 0
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/deaths.png",
           name: "TOTAL DEATHS",
           value: stats?.totalDeaths ?? 0
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "ABILITY KILLS %",
           value: (stats?.killsTypeRatio.ability ?? 0) + "%"
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "TOTAL CHARACTERS USED",
           value: stats?.totalCharactersUsed ?? 0
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "TOTAL CHARACTERS USED",
           value: stats?.totalCharactersUsed ?? 0
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "TOTAL CHARACTERS USED",
           value: stats?.totalCharactersUsed ?? 0
         },
         {
-          icon: "/images/flawless_diamond.png",
+          icon: "/icons/question_mark.png",
           name: "TOTAL CHARACTERS USED",
           value: stats?.totalCharactersUsed ?? 0
         },

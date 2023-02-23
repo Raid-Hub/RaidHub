@@ -190,3 +190,19 @@ export const raidFromHash = (hash: string): RaidInfo => {
         }
     }
 }
+
+export enum Backdrop {
+    leviathan = "/vow.png",
+    eaterOfWorlds = "/vow.png",
+    spireOfStars = "/vow.png",
+    lastWish = "/vow.png",
+    scourgeOfThePast = "/vow.png",
+    crownOfSorrow = "/vow.png",
+    gardenOfSalvation = "/vow.png",
+    deepStoneCrypt = "/vow.png",
+    vaultOfGlass = "/vow.png",
+    vowOfTheDisciple = "/vow.png",
+    kingsFall = "/vow.png",
+    lightfall = "/vow.png",
+    na = "/vow.png"
+}

@@ -3,6 +3,7 @@ export enum Tags {
     DayOne = "Day One",
     Contest = "Contest",
     Master = "Master",
+    Prestige = "Prestige",
     Solo = "Solo",
     Duo = "Duo",
     Trio = "Trio",

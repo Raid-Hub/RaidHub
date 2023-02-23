@@ -1,5 +1,5 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
-import { RaidInfo, raidFromHash } from "../../util/raid-hashes"
+import { RaidInfo, raidFromHash } from "../../util/raid"
 import { Tags } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { PGCRMember } from './Entry'

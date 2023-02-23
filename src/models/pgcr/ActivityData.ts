@@ -1,9 +1,10 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
-import { RaidDifficulty, RaidInfo, raidFromHash } from "../../util/raid-hashes"
+import { RaidDifficulty, RaidInfo, raidFromHash } from "../../util/raid"
 import { Tags } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
+import { ActivityPlacements } from '../../util/server-connection'
 
 export class ActivityData {
   private _activityHash: number
@@ -16,6 +17,7 @@ export class ActivityData {
   private _speed: DestinyHistoricalStatsValuePair
   private _stats: ActivityStats
   private _raidManifest: RaidInfo
+  private _placements: ActivityPlacements
   constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
     this._activityHash = pgcr.activityDetails.directorActivityHash
     this._complete = pgcr.entries.some(e => e.values.completed?.basic.value)
@@ -28,6 +30,7 @@ export class ActivityData {
     this._fresh = this.isFresh(pgcr.startingPhaseIndex, pgcr.activityWasStartedFromBeginning)
     this._stats = new ActivityStats(pgcr, members)
     this._raidManifest = raidFromHash(`${this._activityHash}`);
+    this._placements = {}
   }
 
   get name(): string {
@@ -36,19 +39,19 @@ export class ActivityData {
 
   get tags(): string[] {
     const tags: string[] = []
-    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(Tags.DayOne)
+    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tags.DayOne))
     if (this._raidManifest.isContest(this._startedTime)) {
       switch (this._raidManifest.difficulty) {
-        case RaidDifficulty.challengeKF: tags.push(Tags.ChallengeKF); break
-        case RaidDifficulty.challengeVog: tags.push(Tags.ChallengeVog); break
-        default: tags.push(Tags.Contest)
+        case RaidDifficulty.challengeKF: tags.push(this.placementTag(Tags.ChallengeKF)); break
+        case RaidDifficulty.challengeVog: tags.push(this.placementTag(Tags.ChallengeVog)); break
+        default: tags.push(this.placementTag(Tags.Contest))
       }
     }
     if (this._fresh === false) tags.push(Tags.Checkpoint)
-    if (this._raidManifest.difficulty === RaidDifficulty.master) tags.push(Tags.Master)
-    if (this._playerCount === 1) tags.push(Tags.Solo)
-    else if (this._playerCount === 2) tags.push(Tags.Duo)
-    else if (this._playerCount === 3) tags.push(Tags.Trio)
+    if (this._raidManifest.difficulty === RaidDifficulty.master) tags.push(this.placementTag(Tags.Master))
+    if (this._playerCount === 1) tags.push(this.placementTag(Tags.Solo))
+    else if (this._playerCount === 2) tags.push(this.placementTag(Tags.Duo))
+    else if (this._playerCount === 3) tags.push(this.placementTag(Tags.Trio))
     if (this._fresh && this._complete) {
       if (this._flawless) tags.push(Tags.Flawless)
       if (this._stats.killsTypeRatio.ability === 100) tags.push(Tags.AbilitiesOnly)
@@ -72,6 +75,10 @@ export class ActivityData {
     return this._stats
   }
 
+  set placements(placements: ActivityPlacements) {
+    this._placements = placements
+  }
+
   /**
    * Given a report, determines if it was completed from the start
    * @returns null if it cannot be determined
@@ -91,5 +98,12 @@ export class ActivityData {
       /* modern era -- working as intended with activityWasStartedFromBeginning */
       return !!activityWasStartedFromBeginning
     }
+  }
+
+  private placementTag(tag: string): string {
+    const placement = this._placements[tag as keyof typeof Tags]
+    if (placement) {
+      return `${tag} #${placement}`
+    } else return tag.toString()
   }
 }
