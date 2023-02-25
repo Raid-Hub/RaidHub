@@ -1,6 +1,6 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
-import { RaidDifficulty, RaidInfo, raidFromHash } from "../../util/raid"
-import { Tags } from '../../util/tags'
+import { RaidDifficulty, RaidInfo, raidFromHash, Raid } from "../../util/raid"
+import { Tag } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
@@ -33,28 +33,28 @@ export class ActivityData {
     this._placements = {}
   }
 
-  get name(): string {
+  get name(): Raid {
     return this._raidManifest.name
   }
 
   get tags(): string[] {
     const tags: string[] = []
-    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tags.DayOne))
+    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tag.DayOne))
     if (this._raidManifest.isContest(this._startedTime)) {
       switch (this._raidManifest.difficulty) {
-        case RaidDifficulty.challengeKF: tags.push(this.placementTag(Tags.ChallengeKF)); break
-        case RaidDifficulty.challengeVog: tags.push(this.placementTag(Tags.ChallengeVog)); break
-        default: tags.push(this.placementTag(Tags.Contest))
+        case RaidDifficulty.ChallengeKF: tags.push(this.placementTag(Tag.ChallengeKF)); break
+        case RaidDifficulty.ChallengeVog: tags.push(this.placementTag(Tag.ChallengeVog)); break
+        default: tags.push(this.placementTag(Tag.Contest))
       }
     }
-    if (this._fresh === false) tags.push(Tags.Checkpoint)
-    if (this._raidManifest.difficulty === RaidDifficulty.master) tags.push(this.placementTag(Tags.Master))
-    if (this._playerCount === 1) tags.push(this.placementTag(Tags.Solo))
-    else if (this._playerCount === 2) tags.push(this.placementTag(Tags.Duo))
-    else if (this._playerCount === 3) tags.push(this.placementTag(Tags.Trio))
+    if (this._fresh === false) tags.push(Tag.Checkpoint)
+    if (this._raidManifest.difficulty === RaidDifficulty.Master) tags.push(this.placementTag(Tag.Master))
+    if (this._playerCount === 1) tags.push(this.placementTag(Tag.Solo))
+    else if (this._playerCount === 2) tags.push(this.placementTag(Tag.Duo))
+    else if (this._playerCount === 3) tags.push(this.placementTag(Tag.Trio))
     if (this._fresh && this._complete) {
-      if (this._flawless) tags.push(Tags.Flawless)
-      if (this._stats.killsTypeRatio.ability === 100) tags.push(Tags.AbilitiesOnly)
+      if (this._flawless) tags.push(Tag.Flawless)
+      if (this._stats.killsTypeRatio.ability === 100) tags.push(Tag.AbilitiesOnly)
     }
     return tags;
   }
@@ -101,7 +101,7 @@ export class ActivityData {
   }
 
   private placementTag(tag: string): string {
-    const placement = this._placements[tag as keyof typeof Tags]
+    const placement = this._placements[tag as keyof typeof Tag]
     if (placement) {
       return `${tag} #${placement}`
     } else return tag.toString()

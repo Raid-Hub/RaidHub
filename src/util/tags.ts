@@ -1,4 +1,4 @@
-export enum Tags {
+export enum Tag {
     Checkpoint = "Checkpoint",
     DayOne = "Day One",
     Contest = "Contest",

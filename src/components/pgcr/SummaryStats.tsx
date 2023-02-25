@@ -8,15 +8,8 @@ import { ActivityStats } from '../../models/pgcr/ActivityStats';
 
 
 export class SummaryStats extends React.Component<PGCRComponent> {
-  constructor(props: PGCRComponent) {
-    super(props)
-  }
-
   render() {
-    let stats: ActivityStats | null = null
-    if (this.props.pgcr && this.props.members) {
-      stats = new ActivityData(this.props.pgcr, this.props.members).stats
-    }
+    const stats = this.props.activity?.stats
     const statsData: {
       icon: string,
       name: string,

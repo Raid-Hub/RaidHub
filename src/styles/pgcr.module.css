@@ -1,8 +1,9 @@
 #content {
     width: 70%;
     max-width: 950px;
+    min-width: 620px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap:wrap;
     flex-direction: row;
     margin: auto;
     overflow: auto;
@@ -10,9 +11,10 @@
 
 @media only screen and (orientation: portrait) {
     #content {
+        width: 90%;
         flex-direction: column;
         height: auto;
-        width: 90%;
+        min-width: 300px;
     }
 }
 
@@ -58,18 +60,21 @@
 
 #summary-card {
     background-color: rgba(30, 30, 30, 0.35);
-    flex-grow: 4;
+    min-width: 65%;
+    max-width: 800px;
 }
 
-@media only screen and (orientation: landscape) {
+@media  only screen and (max-width: 1290px) {
     #summary-card {
-        min-width: 600px;
+      width: 100%;
+      max-width: none;
     }
 }
 
 @media only screen and (orientation: portrait) {
     #summary-card {
         min-width: 300px;
+        max-width: 95%;
     }
 }
 
@@ -119,6 +124,7 @@
 #right-info {
     flex-grow: 1;
     padding-top: 10px;
+    padding-right: 10px;
     margin-left: 5px;
 }
 
@@ -127,6 +133,7 @@
     font-style: oblique;
     font-size: x-large;
     display: flex;
+    justify-content: right;
 }
 
 .duration>span {
@@ -310,6 +317,7 @@
     flex-direction: row;
     justify-content: center;
     align-content: center;
+    background-color: rgba(151, 151, 151, 0.274);
 }
 
 .class-button>img {
@@ -399,4 +407,13 @@
 
 .selected span {
     color: rgb(203, 255, 253)
+}
+
+/* Raid films */
+.color-film-vow {
+    background-color: rgba(212, 68, 39, 0.003);
+}
+
+.color-film-kf {
+    background-color: rgba(255, 242, 155, 0.006);
 }

@@ -9,18 +9,19 @@ import { SummaryStats } from '../../components/pgcr/SummaryStats'
 import { DestinyPostGameCarnageReportData, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
 import styles from '../../styles/pgcr.module.css';
 import { PGCRMember } from '../../models/pgcr/Entry';
-import { Backdrop } from '../../util/raid';
+import { Backdrop, Raid } from '../../util/raid';
 import { ActivityPlacements, fetchActivityPlacements } from '../../util/server-connection';
+import { ActivityData } from '../../models/pgcr/ActivityData';
 
 type PGCRProps = {
   activityId: string
 }
 
 export type PGCRComponent = {
-  pgcr?: DestinyPostGameCarnageReportData | null
   members?: PGCRMember[] | null,
   emblems?: { [characterId: string]: string } | null,
-  placements?: ActivityPlacements | null
+  placements?: ActivityPlacements
+  activity?: ActivityData | null
 }
 
 export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
@@ -28,10 +29,9 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
   constructor(props: PGCRProps) {
     super(props)
     this.state = {
-      pgcr: null,
-      members: null,
       emblems: null,
-      placements: null
+      members: null,
+      activity: null
     }
   }
 
@@ -65,11 +65,13 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
       else return b.values.kills.basic.value - a.values.kills.basic.value
       /* Sort by (kdr * kills) */
     }))).sort((a, b) => (b.stats.kdr * b.stats.kills) - (a.stats.kdr * a.stats.kills))
-    this.setState({ pgcr, members }, async () => {
-      /** Set the placement state when ready */
+
+    const activity = new ActivityData(pgcr, members)
+    this.setState({ activity, members }, async () => {
+      /** Set the placement when ready */
       placementsPromise.then(placements => this.setState({ placements }))
       /** Once the pgcr has been set, find the emblems and set those */
-      const emblems = await Promise.all(this.state.pgcr?.entries?.map(profile => (
+      const emblems = await Promise.all(pgcr?.entries?.map(profile => (
         client.getCharacterEmblem(profile.characterId, profile.player.destinyUserInfo.membershipId, profile.player.destinyUserInfo.membershipType)
           .then(path => ([profile.characterId, path]))))
         ?? []).then(all => Object.fromEntries(all))
@@ -83,13 +85,20 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
         <Header />
         <main id={styles.content}>
           <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
-            <div id={styles["summary-card-bg"]} style={{ backgroundImage: `url(/backdrops${Backdrop.na})` }} className={styles["bg"]}>
-              <ActivityHeader pgcr={this.state.pgcr} members={this.state.members} placements={this.state.placements}/>
-              <PGCREntries members={this.state.members} emblems={this.state.emblems} />
+            <div id={styles["summary-card-bg"]}
+              style={{ backgroundImage: `url(/backdrops${Backdrop[this.state.activity?.name ?? Raid.NA]})` }} 
+              className={styles["bg"]}>
+              <ActivityHeader
+                activity={this.state.activity}
+                placements={this.state.placements} />
+              <PGCREntries
+                raid={this.state.activity?.name ?? Raid.NA}
+                members={this.state.members}
+                emblems={this.state.emblems} />
             </div>
           </section>
           <section id={styles["summary-stats"]} className={styles["main-element"]}>
-            <SummaryStats pgcr={this.state.pgcr} members={this.state.members} />
+            <SummaryStats activity={this.state.activity} />
           </section>
         </main>
         <Footer />

@@ -3,14 +3,15 @@ import { PGCRMember } from '../../models/pgcr/Entry'
 import styles from '../../styles/pgcr.module.css'
 import { PGCRComponent } from '../../pages/pgcr/[activityId]';
 import { CharacterLogos } from '../../util/character-logos';
+import { ColorFilm, Raid } from '../../util/raid';
 
 interface EntriesTableState {
   memberIndex: number
   characterIndex: number
 }
 
-export class PGCREntries extends React.Component<PGCRComponent, EntriesTableState> {
-  constructor(props: PGCRComponent) {
+export class PGCREntries extends React.Component<PGCRComponent & { raid: Raid }, EntriesTableState> {
+  constructor(props: PGCRComponent & { raid: Raid }) {
     super(props)
     this.state = {
       /** Represents the index the user is currently inspecting */
@@ -20,13 +21,15 @@ export class PGCREntries extends React.Component<PGCRComponent, EntriesTableStat
   }
   render() {
     const members: PGCRMember[] = this.props.members ?? new Array(6).fill({});
-    const cardLayout = members.length < 4 ? styles["members-low"] : (members.length % 2 ? styles["members-odd"] : styles["members-even"])
+    const cardLayout = members.length < 4 && this.state.memberIndex == -1
+      ? styles["members-low"]
+      : (members.length % 2 && this.state.memberIndex == -1 ? styles["members-odd"] : styles["members-even"])
     return (
       <div id={styles["members"]} className={cardLayout}>
         {this.state.memberIndex === -1
-          ? members.map((member, idx) => this.memberToCard(member, idx))
+          ? members.map((member, idx) => this.memberToCard(member, idx, this.props.raid))
           : <>
-            {this.memberToCard(members[this.state.memberIndex], this.state.memberIndex)}
+            {this.memberToCard(members[this.state.memberIndex], this.state.memberIndex, this.props.raid)}
             <div className={styles["class-button-container"]}>
               {members[this.state.memberIndex].characters.map((character, idx) => (
                 <div key={idx}
@@ -41,16 +44,17 @@ export class PGCREntries extends React.Component<PGCRComponent, EntriesTableStat
     );
   }
 
-  private memberToCard(member: PGCRMember, index: number) {
+  private memberToCard(member: PGCRMember, index: number, raid: Raid) {
     const emblemBackground = this.props.emblems?.[member.characterIds[0]] ?? ""
     const { icon } = CharacterLogos[member.characters?.[0].className ?? "Guardian"];
     const displayClass = this.state.memberIndex === index ? styles["selected"] : styles["selectable"]
+    console.log(ColorFilm[raid])
     return (
       <div key={index}
         className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], displayClass].join(' ')}
         onClick={() => this.updateMemberIndex(index)}>
         <img src={emblemBackground} alt={"Emblem for " + member.displayName} />
-        <div className={styles["member-card-container"]} style={emblemBackground ? {} : { backgroundColor: "rgba(255, 199, 94, 0.166)" }}>
+        <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
           <div className={styles["class-logo"]} >
             {member.characters ? <img src={icon} /> : <></>}
           </div>

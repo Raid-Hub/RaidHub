@@ -7,19 +7,16 @@ const checkpointDisclaimer = "Note: this report may or may not be a checkpoint d
 const incomplete = "Incomplete"
 
 export class ActivityHeader extends React.Component<PGCRComponent> {
-  private data: ActivityData | null = null
   render() {
-    if (!this.data && this.props.pgcr && this.props.members) {
-      this.data = new ActivityData(this.props.pgcr, this.props.members)
-    }
-    if (this.props.placements && this.data) this.data.placements = this.props.placements
+    const { activity, placements } = this.props
+    if (placements && activity) activity.placements = placements
     return (
       <>
         <div id={styles["activity-card-header"]}>
           <div id={styles["left-info"]}>
             <div id={styles["raid-info-top"]}>
               <span id={styles["completion-time"]}>{
-                this.data?.completionDate.toLocaleDateString(navigator.language, {
+                activity?.completionDate.toLocaleDateString(navigator.language, {
                   month: "long",
                   day: "numeric",
                   year: "numeric"
@@ -27,15 +24,15 @@ export class ActivityHeader extends React.Component<PGCRComponent> {
               </span>
             </div>
             <div id={styles["raid-name"]}>
-              <span>{this.data?.name.toUpperCase()}</span>
+              <span>{activity?.name.toUpperCase()}</span>
             </div>
-            {this.data?.speed.fresh === null ? <div id={styles["cp-error"]}>
+            {activity?.speed.fresh === null ? <div id={styles["cp-error"]}>
               <p>{checkpointDisclaimer}</p>
             </div> : <></>}
           </div>
           <div id={styles["right-info"]}>
             <div className={styles.duration}>
-              {this.data?.speed.complete ? this.data?.speed.duration.split(" ").map((t, idx) => (
+              {activity?.speed.complete ? activity?.speed.duration.split(" ").map((t, idx) => (
                 <span key={idx}>
                   <b>{t.substring(0, t.length - 1)}</b>
                   {t[t.length - 1]}
@@ -45,7 +42,7 @@ export class ActivityHeader extends React.Component<PGCRComponent> {
           </div>
         </div>
         <div id={styles["tags-container"]}>
-          {this.data?.tags.map((tag, idx) => (
+          {activity?.tags.map((tag, idx) => (
             <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>{tag}</div>
           ))}
         </div>
