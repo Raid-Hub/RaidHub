@@ -1,6 +1,7 @@
 import { getCharacter, getPostGameCarnageReport } from 'oodestiny/endpoints/Destiny2'
 import {
     BungieMembershipType,
+    DestinyClass,
     DestinyComponentType,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
@@ -11,9 +12,15 @@ const emblems: { [hash: string]: string } = Emblems
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
 const CACHE_MINUTES = 10
 
-type CacheRequest = {
+export type CharacterProps = {
+    name: string,
+    class: DestinyClass,
+    emblem: string
+}
+
+type CacheRequest<T> = {
     timestamp: number
-    data: string
+    data: T
 }
 
 export class BungieNetClient {
@@ -36,53 +43,49 @@ export class BungieNetClient {
     }
 
     async getCharacterEmblem(characterId: string, destinyMembershipId: string, membershipType: BungieMembershipType): Promise<string> {
-        const CACHE_KEY = `getCharacter_${characterId}_${destinyMembershipId}_${membershipType}`;
-        const cached = this.hitCache(CACHE_KEY)
-        if (cached) return cached;
+        const CACHE_KEY = `getCharacterEmblem${characterId}_${destinyMembershipId}_${membershipType}`;
+        const cached = BungieNetClient.hitCache<string>(CACHE_KEY)
+        if (cached) return `https://bungie.net${cached}`;
 
-        let rv: string = ""
+        let rv: string = defaultEmblem
         try {
+            // TODO bad profiles actually return 0 here, maybe test 1,2,3?
             const res = await getCharacter({ characterId, destinyMembershipId, membershipType, components: [DestinyComponentType.Characters] })
-            if (!res.Response.character.data) {
-                rv = "https://bungie.net" + defaultEmblem
-            } else {
-                rv = "https://bungie.net" + this.emblemFromHash(res.Response.character.data.emblemHash)
+            const data = res.Response.character.data
+            if (data) {
+                rv = BungieNetClient.emblemFromHash(data.emblemHash)
             }
-            this.setCache(CACHE_KEY, rv)
+            BungieNetClient.setCache(CACHE_KEY, rv)
         } catch (e) {
-            // TODO: handle errors here
-            rv = "https://bungie.net" + defaultEmblem
+            // TODO handle errors
         } finally {
-            return rv
+            return `https://bungie.net${rv}`
         }
     }
 
-    private emblemFromHash(hash: number) {
+    private static emblemFromHash(hash: number) {
         return emblems[hash] ?? defaultEmblem
     }
 
     /** Checks the local cache for value first */
-    private hitCache(cashKey: string): string | null {
+    private static hitCache<T>(cashKey: string): T | null {
         const cachedData = localStorage.getItem(cashKey);
         if (cachedData) {
             try {
-                const { timestamp, data } = JSON.parse(cachedData) as CacheRequest;
+                const { timestamp, data } = JSON.parse(cachedData) as CacheRequest<T>;
                 if (Date.now() - timestamp < CACHE_MINUTES * 60 * 1000) {
                     return data
-                } else {
-                    return null
                 }
             } catch (e) {
-                return null
+                // ignore error for now
             }
-        } else {
-            return null
         }
+        return null
     }
 
     /** Set a key of the cache to a value */
-    private setCache(cashKey: string, value: string): void {
-        const dataToCache: CacheRequest = { timestamp: Date.now(), data: value };
+    private static setCache<T>(cashKey: string, value: T): void {
+        const dataToCache: CacheRequest<T> = { timestamp: Date.now(), data: value };
         localStorage.setItem(cashKey, JSON.stringify(dataToCache));
     }
 }

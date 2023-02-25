@@ -2,8 +2,9 @@ import React from 'react';
 import { PGCRMember } from '../../models/pgcr/Entry'
 import styles from '../../styles/pgcr.module.css'
 import { PGCRComponent } from '../../pages/pgcr/[activityId]';
-import { CharacterLogos } from '../../util/character-logos';
+import { CharacterLogos, CharacterName } from '../../util/characters';
 import { ColorFilm, Raid } from '../../util/raid';
+import { DestinyClass } from 'oodestiny/schemas';
 
 interface EntriesTableState {
   memberIndex: number
@@ -35,7 +36,7 @@ export class PGCREntries extends React.Component<PGCRComponent & { raid: Raid },
                 <div key={idx}
                   className={[styles["soft-rectangle"], idx === this.state.characterIndex ? styles["selected"] : styles["selectable"], styles["class-button"]].join(" ")}
                   onClick={() => this.updateCharacterIndex(idx)}>
-                  <img src={CharacterLogos[character.className].icon} />
+                  <img src={character.logo} />
                 </div>
               ))}
             </div>
@@ -46,12 +47,13 @@ export class PGCREntries extends React.Component<PGCRComponent & { raid: Raid },
 
   private memberToCard(member: PGCRMember, index: number, raid: Raid) {
     const emblemBackground = this.props.emblems?.[member.characterIds[0]] ?? ""
-    const { icon } = CharacterLogos[member.characters?.[0].className ?? "Guardian"];
-    const displayClass = this.state.memberIndex === index ? styles["selected"] : styles["selectable"]
-    console.log(ColorFilm[raid])
+    const icon = member.characters?.[0].logo
+    const cssClass = this.state.memberIndex === index ? styles["selected"] : styles["selectable"]
+    const displayName = member.displayName ?? member.membershipId
+    const displayClass = member.characterClass
     return (
       <div key={index}
-        className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], displayClass].join(' ')}
+        className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], cssClass].join(' ')}
         onClick={() => this.updateMemberIndex(index)}>
         <img src={emblemBackground} alt={"Emblem for " + member.displayName} />
         <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
@@ -60,10 +62,10 @@ export class PGCREntries extends React.Component<PGCRComponent & { raid: Raid },
           </div>
           <div className={styles["member-properties"]}>
             <div className={styles["member-name"]}>
-              <span>{member.displayName}</span>
+              <span className={styles["contained-span"]}>{displayName}</span>
             </div>
             <div className={styles["member-class"]}>
-              <span>{member.characterClass}</span>
+              <span className={styles["contained-span"]}>{displayClass}</span>
             </div>
           </div>
           <div className={styles["flawless-diamond"]}>

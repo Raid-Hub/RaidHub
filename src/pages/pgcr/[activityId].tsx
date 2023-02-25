@@ -1,38 +1,38 @@
 import React from 'react';
 import { NextPageContext } from 'next'
-import { BungieNetClient } from '../../util/bungie-client'
+import { BungieNetClient, CharacterProps } from '../../util/bungie-client'
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { ActivityHeader } from '../../components/pgcr/ActivityHeader'
+import ActivityHeader from '../../components/pgcr/ActivityHeader'
 import { PGCREntries } from '../../components/pgcr/PGCREntries'
-import { SummaryStats } from '../../components/pgcr/SummaryStats'
-import { DestinyPostGameCarnageReportData, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
+import SummaryStats from '../../components/pgcr/SummaryStats'
+import { DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
 import styles from '../../styles/pgcr.module.css';
-import { PGCRMember } from '../../models/pgcr/Entry';
+import { PGCRCharacter, PGCRMember } from '../../models/pgcr/Entry';
 import { Backdrop, Raid } from '../../util/raid';
 import { ActivityPlacements, fetchActivityPlacements } from '../../util/server-connection';
 import { ActivityData } from '../../models/pgcr/ActivityData';
+import { Tag } from '../../util/tags';
 
 type PGCRProps = {
   activityId: string
 }
 
 export type PGCRComponent = {
-  members?: PGCRMember[] | null,
-  emblems?: { [characterId: string]: string } | null,
+  members?: PGCRMember[]
+  emblems?: { [characterId: string]: string }
   placements?: ActivityPlacements
-  activity?: ActivityData | null
+  activity?: ActivityData
 }
 
 export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
+  private placementsPromise: Promise<Partial<Record<Tag, number>>> | undefined
+  private client: BungieNetClient
 
   constructor(props: PGCRProps) {
     super(props)
-    this.state = {
-      emblems: null,
-      members: null,
-      activity: null
-    }
+    this.state = {}
+    this.client = new BungieNetClient();
   }
 
   static async getInitialProps(ctx: NextPageContext) {
@@ -41,13 +41,12 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
   }
 
   async componentDidMount() {
-    const client = new BungieNetClient();
 
-    const pgcrPromise = client.getPGCR(this.props.activityId)
+    const pgcrPromise = this.client.getPGCR(this.props.activityId)
       .catch((e) => { console.error(e); return null })
       .finally(console.log)
 
-    const placementsPromise = fetchActivityPlacements(this.props.activityId)
+    this.placementsPromise = fetchActivityPlacements(this.props.activityId)
       .catch((e) => { console.error(e); return {} })
       .finally(console.log)
 
@@ -56,6 +55,7 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
       // TODO: handle what to do if no pgcr
       return;
     }
+
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
     pgcr.entries.forEach(entry => (dict[entry.player.destinyUserInfo.membershipId] ??= []).push(entry))
     /** Sort characters by kills, but always keep the final one first*/
@@ -67,26 +67,32 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
     }))).sort((a, b) => (b.stats.kdr * b.stats.kills) - (a.stats.kdr * a.stats.kills))
 
     const activity = new ActivityData(pgcr, members)
-    this.setState({ activity, members }, async () => {
-      /** Set the placement when ready */
-      placementsPromise.then(placements => this.setState({ placements }))
-      /** Once the pgcr has been set, find the emblems and set those */
-      const emblems = await Promise.all(pgcr?.entries?.map(profile => (
-        client.getCharacterEmblem(profile.characterId, profile.player.destinyUserInfo.membershipId, profile.player.destinyUserInfo.membershipType)
-          .then(path => ([profile.characterId, path]))))
-        ?? []).then(all => Object.fromEntries(all))
-      this.setState({ emblems })
-    })
+    this.setState({ activity, members }, this.followUp)
+  }
+
+  async followUp() {
+    /** Send the placements when ready */
+    this.placementsPromise?.then(placements => this.setState({ placements }))
+    /** Once the pgcr has been set, find the emblems and set those */
+    const emblems = await Promise.all(this.state.members
+      ?.reduce((characters, member) => characters.concat(member.characters), new Array<PGCRCharacter>())
+      .map(character => (
+        this.client.getCharacterEmblem(character.id, character.membershipId, character.membershipType)
+          .then((emblem): [string, string] => ([character.id, emblem]))
+      ))
+      ?? [])
+      .then((pairs): Record<string, string> => Object.fromEntries(pairs))
+    this.setState({ emblems })
   }
 
   render() {
     return (
-      <div id={styles["page-background"]} className={styles["bg"]}>
+      <>
         <Header />
         <main id={styles.content}>
           <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
             <div id={styles["summary-card-bg"]}
-              style={{ backgroundImage: `url(/backdrops${Backdrop[this.state.activity?.name ?? Raid.NA]})` }} 
+              style={{ backgroundImage: `url(/backdrops${Backdrop[this.state.activity?.name ?? Raid.NA]})` }}
               className={styles["bg"]}>
               <ActivityHeader
                 activity={this.state.activity}
@@ -102,7 +108,7 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
           </section>
         </main>
         <Footer />
-      </div>
+      </>
     );
   }
 }

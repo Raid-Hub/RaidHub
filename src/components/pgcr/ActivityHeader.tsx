@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { ActivityData } from '../../models/pgcr/ActivityData'
 import { PGCRComponent } from '../../pages/pgcr/[activityId]'
 import styles from '../../styles/pgcr.module.css';
@@ -6,9 +6,8 @@ import styles from '../../styles/pgcr.module.css';
 const checkpointDisclaimer = "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen"
 const incomplete = "Incomplete"
 
-export class ActivityHeader extends React.Component<PGCRComponent> {
-  render() {
-    const { activity, placements } = this.props
+const ActivityHeader: FC<PGCRComponent> = (props) => {
+    const { activity, placements } = props
     if (placements && activity) activity.placements = placements
     return (
       <>
@@ -49,4 +48,5 @@ export class ActivityHeader extends React.Component<PGCRComponent> {
       </>
     );
   }
-}
+
+export default ActivityHeader;

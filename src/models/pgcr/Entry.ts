@@ -1,20 +1,20 @@
 import { 
     DestinyPostGameCarnageReportEntry,
-    BungieMembershipType
+    BungieMembershipType,
+    DestinyClass
   } from 'oodestiny/schemas'
+import { CharacterLogos, CharacterName, CharacterType } from '../../util/characters'
 import { PGCRStats, StatsKeys } from './PlayerStats'
 
 abstract class PGCREntry {
     protected _membershipId: string
     protected _membershipType: BungieMembershipType
-    protected _emblemPath: string
-    protected _displayName: string
+    protected _displayName: string | undefined
     protected _stats: PGCRStats
     constructor(data: DestinyPostGameCarnageReportEntry, stats: StatsKeys | StatsKeys[]) {
       const info = data.player.destinyUserInfo
-      this._membershipId = info.membershipId,
-      this._membershipType = info.membershipType,
-      this._emblemPath = info.iconPath,
+      this._membershipId = info.membershipId
+      this._membershipType = info.membershipType
       this._displayName = info.bungieGlobalDisplayName || info.displayName
       this._stats = new PGCRStats(stats)
     }
@@ -28,7 +28,7 @@ abstract class PGCREntry {
     }
   
     get displayName() {
-      return this._displayName;
+      return this._displayName
     }
 
     get stats() {
@@ -46,7 +46,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get characterClass(): string {
-      return this._characters.map(char => char.className).join("/") || "Guardian"
+      return this._characters.map(char => char.className).join("/")
     }
 
     get flawless(): boolean {
@@ -64,7 +64,7 @@ export class PGCRMember extends PGCREntry {
   
 export class PGCRCharacter extends PGCREntry {
     private _id: string
-    private _className: string
+    private _className: string | undefined
     private _completed: boolean
     constructor(data: DestinyPostGameCarnageReportEntry) {
       super(data, {values: data.values, extended: data.extended});
@@ -78,10 +78,15 @@ export class PGCRCharacter extends PGCREntry {
     }
 
     get className(): string {
-      return this._className || "Guardian"
+      return this._className ?? CharacterName[DestinyClass.Unknown]
     }
 
     get wasFinal () {
       return this._completed
+    }
+
+    get logo() {
+      console.log(CharacterType[this._className ?? ""])
+      return CharacterLogos[CharacterType[this._className ?? ""]]
     }
   }

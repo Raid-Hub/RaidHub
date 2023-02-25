@@ -1,9 +1,9 @@
 #content {
-    width: 70%;
-    max-width: 950px;
+    width: 75%;
+    max-width: 1150px;
     min-width: 620px;
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     flex-direction: row;
     margin: auto;
     overflow: auto;
@@ -14,22 +14,8 @@
         width: 90%;
         flex-direction: column;
         height: auto;
-        min-width: 300px;
+        min-width: 350px;
     }
-}
-
-.bg {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    width: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-#page-background {
-    background-image: url("/background-gradient.png");
 }
 
 .main-element {
@@ -43,32 +29,10 @@
     border-width: 2px;
 }
 
-#summary-card-bg {
-    border-radius: inherit;
-    position: relative
-}
-
-#summary-card-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.2;
-  }
-
 #summary-card {
+    flex: 1;
     background-color: rgba(30, 30, 30, 0.35);
-    min-width: 65%;
-    max-width: 800px;
-}
-
-@media  only screen and (max-width: 1290px) {
-    #summary-card {
-      width: 100%;
-      max-width: none;
-    }
+    min-width: 600px
 }
 
 @media only screen and (orientation: portrait) {
@@ -76,6 +40,22 @@
         min-width: 300px;
         max-width: 95%;
     }
+}
+
+#summary-card-bg {
+    border-radius: inherit;
+    position: relative;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+#summary-card-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
 }
 
 #activity-card-header {
@@ -255,26 +235,43 @@
 
 .member-properties {
     min-width: 100px;
+    max-width: 300px;
     flex-grow: 4;
     padding: 10px;
     position: relative;
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
 }
 
-.member-name {}
+.member-name {
+    overflow: hidden;
+    display: flex;
+}
+
+.contained-span {
+    flex: 1;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+}
 
 .member-name>span {
     font-weight: bolder;
-    font-size: large;
-    opacity: 1
+    font-size: 1.25rem
 }
 
-.member-class {}
+.member-class {
+    overflow: hidden;
+    display: flex;
+}
 
 .member-class>span {
+    display: inline-block;
     font-style: italic;
+    font-size: 1.25rem;
     color: rgb(219, 219, 219);
-    font-size: large;
-    opacity: 1
 }
 
 .flawless-diamond {
@@ -327,16 +324,17 @@
 }
 
 #summary-stats {
+    box-sizing: border-box;
     flex-grow: 1;
     margin: 0px;
-    padding: 10px;
-    min-height: 20px;
+    margin-top: 10px;
+    padding: 0 10px;
     min-width: 250px;
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     overflow-y: auto;
-    height: 444px;
+    max-height: 447px;
 }
 
 
@@ -400,8 +398,9 @@
     border-color: rgb(214, 246, 255);
 }
 
-.selectable:hover, .selected:hover {
-    background-color: rgba(137, 233, 255, 0.267);
+.selectable:hover,
+.selected:hover {
+    background-color: rgba(137, 233, 255, 0.452);
     cursor: pointer
 }
 
