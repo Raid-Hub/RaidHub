@@ -23,6 +23,8 @@ export enum RaidDifficulty {
     ChallengeKF,
 }
 
+const ContestRaidDifficulties = [RaidDifficulty.ChallengeVog, RaidDifficulty.ChallengeKF]
+
 export class RaidInfo {
     name: Raid
     difficulty: RaidDifficulty
@@ -39,9 +41,10 @@ export class RaidInfo {
     }
 
     isContest(started: Date): boolean {
+        console.log(started)
         if (ContestEnd[this.name] === undefined) {
             return false;
-        } else if (this.difficulty in [RaidDifficulty.ChallengeVog, RaidDifficulty.ChallengeKF]) {
+        } else if (ContestRaidDifficulties.includes(this.difficulty)) {
             return true
         } else {
             return started.getTime() < ContestEnd[this.name]!.getTime()

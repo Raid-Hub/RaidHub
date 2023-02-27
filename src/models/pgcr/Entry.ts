@@ -6,7 +6,7 @@ import {
 import { CharacterLogos, CharacterName, CharacterType } from '../../util/characters'
 import { PGCRStats, StatsKeys } from './PlayerStats'
 
-abstract class PGCREntry {
+export abstract class PGCREntry {
     protected _membershipId: string
     protected _membershipType: BungieMembershipType
     protected _displayName: string | undefined
@@ -34,6 +34,8 @@ abstract class PGCREntry {
     get stats() {
       return this._stats
     }
+
+    abstract get didComplete(): boolean
   }
   
 export class PGCRMember extends PGCREntry {
@@ -60,6 +62,10 @@ export class PGCRMember extends PGCREntry {
     get characters() {
       return this._characters
     }
+
+    get didComplete(): boolean {
+      return this._characters.some(c => c.didComplete)
+    }
   }
   
 export class PGCRCharacter extends PGCREntry {
@@ -81,12 +87,11 @@ export class PGCRCharacter extends PGCREntry {
       return this._className ?? CharacterName[DestinyClass.Unknown]
     }
 
-    get wasFinal () {
-      return this._completed
+    get logo() {
+      return CharacterLogos[CharacterType[this._className ?? ""]]
     }
 
-    get logo() {
-      console.log(CharacterType[this._className ?? ""])
-      return CharacterLogos[CharacterType[this._className ?? ""]]
+    get didComplete(): boolean {
+      return this._completed
     }
   }

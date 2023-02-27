@@ -100,10 +100,9 @@ export class ActivityData {
     }
   }
 
-  private placementTag(tag: string): string {
-    const placement = this._placements[tag as keyof typeof Tag]
-    if (placement) {
-      return `${tag} #${placement}`
-    } else return tag.toString()
+  private placementTag(tag: Tag): string {
+    const placement = this._placements[tag]
+    if (placement) return `${tag} #${placement}`
+    else return tag
   }
 }

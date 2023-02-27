@@ -54,7 +54,10 @@ const SummaryStats: FC<PGCRComponent> = (props) => {
     {statsData.map((stat, idx) => (
       <div key={idx} className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}>
         <div className={styles["summary-stat-content"]}>
-          <img src={stat.icon} alt={stat.name + ": " + stat.value} />
+          <img
+            src={stat.icon}
+            alt={stat.name + ": " + stat.value}
+            className={styles["stat-icon"]} />
           <div className={styles["summary-stat-info"]}>
             <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>{stat.name}</span>
             <span className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>{stat.value}</span>

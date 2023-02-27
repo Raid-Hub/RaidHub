@@ -1,10 +1,10 @@
 import React from 'react';
 import { NextPageContext } from 'next'
-import { BungieNetClient, CharacterProps } from '../../util/bungie-client'
+import { BungieNetClient } from '../../util/bungie-client'
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import ActivityHeader from '../../components/pgcr/ActivityHeader'
-import { PGCREntries } from '../../components/pgcr/PGCREntries'
+import { PGCREntries } from '../../components/pgcr/Entries'
 import SummaryStats from '../../components/pgcr/SummaryStats'
 import { DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
 import styles from '../../styles/pgcr.module.css';
@@ -57,14 +57,17 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
     }
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
+    /** Group characters by member */
     pgcr.entries.forEach(entry => (dict[entry.player.destinyUserInfo.membershipId] ??= []).push(entry))
-    /** Sort characters by kills, but always keep the final one first*/
-    const members: PGCRMember[] = Object.entries(dict).map(([_, vals]) => new PGCRMember(vals.sort((a, b) => {
-      if (a.values.completed.basic.value) return -1;
-      else if (b.values.completed.basic.value) return 1;
-      else return b.values.kills.basic.value - a.values.kills.basic.value
-      /* Sort by (kdr * kills) */
-    }))).sort((a, b) => (b.stats.kdr * b.stats.kills) - (a.stats.kdr * a.stats.kills))
+    /** Sort each member's characters by latest start time, and always keep the completed one first*/
+    const members: PGCRMember[] = Object.entries(dict).map(([_, vals]) => new PGCRMember(vals.sort((charA, charB) => {
+      if (charA.values.completed.basic.value) return -1;
+      else if (charB.values.completed.basic.value) return 1;
+      else return charB.values.startSeconds.basic.value - charA.values.startSeconds.basic.value
+      /* Sort member by completion then (kdr * kills) */
+    }))).sort((memA, memB) => {
+      if (!memA.didComplete || !memB.didComplete && (memA.didComplete || memB.didComplete)) return !memA.didComplete ? 1 : -1
+      else return (memB.stats.kdr * memB.stats.kills) - (memA.stats.kdr * memA.stats.kills)})
 
     const activity = new ActivityData(pgcr, members)
     this.setState({ activity, members }, this.followUp)

@@ -19,11 +19,11 @@ const ActivityHeader: FC<PGCRComponent> = (props) => {
                   month: "long",
                   day: "numeric",
                   year: "numeric"
-                })}
+                }) ?? "Loading..."}
               </span>
             </div>
             <div id={styles["raid-name"]}>
-              <span>{activity?.name.toUpperCase()}</span>
+              <span>{activity?.name.toUpperCase() ?? "Loading..."}</span>
             </div>
             {activity?.speed.fresh === null ? <div id={styles["cp-error"]}>
               <p>{checkpointDisclaimer}</p>

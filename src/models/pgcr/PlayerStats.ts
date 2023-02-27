@@ -88,4 +88,11 @@ export class PGCRStats {
   get abilityKills() {
     return this._abilityKills
   }
+
+  get timePlayed() {
+    const totalMinutes = round(this._timePlayedSeconds / 60, 0)
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes - hours * 60
+    return `${hours}h ${minutes}m`
+  }
 }

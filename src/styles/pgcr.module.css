@@ -1,6 +1,6 @@
 #content {
     width: 75%;
-    max-width: 1150px;
+    max-width: 1000px;
     min-width: 620px;
     display: flex;
     flex-wrap: wrap;
@@ -26,13 +26,13 @@
     border-radius: 15px;
     border: rgba(182, 182, 182, 0.431);
     border-style: solid;
-    border-width: 2px;
+    border-width: 1px;
 }
 
 #summary-card {
     flex: 1;
     background-color: rgba(30, 30, 30, 0.35);
-    min-width: 600px
+    min-width: 95%;
 }
 
 @media only screen and (orientation: portrait) {
@@ -45,7 +45,9 @@
 #summary-card-bg {
     border-radius: inherit;
     position: relative;
-    background-position: center;
+    background-position: top;
+    box-sizing: border-box;
+    padding-bottom: 10px;
     width: 100%;
     height: 100%;
 }
@@ -141,7 +143,7 @@
 }
 
 #members {
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 10px;
     height: auto;
     display: grid;
@@ -171,9 +173,6 @@
 
 .entry-card {
     height: auto;
-    margin: 2px;
-    margin-right: 5%;
-    margin-left: 5%;
     min-width: 260px;
     min-height: 85px;
     max-height: 70px;
@@ -182,11 +181,10 @@
     padding: 0;
 }
 
-.entry-card>img {
+.entry-card .emblem {
     border-radius: inherit;
     max-height: 100%;
-    position: absolute;
-    left: -200px;
+    left: -100px;
     opacity: .8;
 }
 
@@ -223,11 +221,10 @@
     margin: 0px;
     max-width: 81px;
     height: 100%;
-    background-color: rgba(111, 111, 111, 0.45);
+    background: linear-gradient(to right, #212121a5, #ffffff00);
 }
 
 .class-logo>img {
-    /*background-color: rgb(255, 255, 255);*/
     max-height: 50px;
     aspect-ratio: 1/1;
     padding: 10px;
@@ -235,13 +232,20 @@
 
 .member-properties {
     min-width: 100px;
-    max-width: 300px;
     flex-grow: 4;
     padding: 10px;
     position: relative;
     font-size: 2rem;
     display: flex;
     flex-direction: column;
+}
+
+.centered {
+    align-items: center
+}
+
+.centered span {
+    margin: auto
 }
 
 .member-name {
@@ -251,10 +255,12 @@
 
 .contained-span {
     flex: 1;
-    display: inline-block;
+    display: inline;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 1;
+    color: white
 }
 
 .member-name>span {
@@ -275,30 +281,37 @@
 }
 
 .flawless-diamond {
-    flex: 1;
-    position: relative;
+    flex: 0;
+    justify-self: flex-end;
     margin-left: auto;
+    margin-right: 2%;
     min-width: 80px;
+    display: flex
 }
 
 .flawless-diamond>img {
-    min-width: 40px;
-    min-height: 40px;
-    max-width: 60px;
-    max-height: 60px;
-    position: absolute;
+    flex: 1;
+    min-width: 42px;
+    min-height: 30px;
+    max-width: 63px;
+    max-height: 45px;
     left: 0;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     padding: 5px;
+}
+
+@media only screen and (orientation: portrait) {
+    .flawless-diamond>img {
+        min-width: 28px;
+        min-height: 20px;
+        max-width: 40px;
+        max-height: 30px;
+    }
 }
 
 .class-button-container {
     height: auto;
     margin: 2px;
-    margin-right: 5%;
-    margin-left: 5%;
     overflow: hidden;
     position: relative;
     padding: 0;
@@ -308,7 +321,9 @@
 
 .class-button {
     margin-right: 10px;
-    width: 85px;
+    min-width: 90px;
+    min-height: 85px;
+    width: 90px;
     height: 85px;
     display: flex;
     flex-direction: row;
@@ -323,6 +338,17 @@
     margin: auto
 }
 
+.member-profile {
+    height: 85px;
+    flex: 1;
+    background-color: rgba(200, 113, 0, 0.287);
+}
+
+.member-profile-link {
+    color: white;
+    font-size: 1.25rem;
+}
+
 #summary-stats {
     box-sizing: border-box;
     flex-grow: 1;
@@ -331,42 +357,46 @@
     padding: 0 10px;
     min-width: 250px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
-    overflow-y: auto;
-    max-height: 447px;
 }
 
 
 .summary-stat {
     min-height: 57px;
-    padding: 10px;
+    padding: 10px 15px;
     background-color: rgba(78, 9, 9, 0.35);
     display: flex
 }
 
-@media only screen and (orientation: portrait) {
-    #summary-stats {
-        max-height: none;
-    }
-
-    .summary-stat {
-        min-height: 40px;
-    }
+.character-stat {
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: rgba(61, 60, 60, 0.355);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .summary-stat-content {
     flex: 1;
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 
-.summary-stat-content>img {
+.stat-icon {
     margin-right: 10px;
     max-width: 50px;
     max-height: 50px;
+    aspect-ratio: 1/1;
     flex: 1;
 }
 
@@ -393,6 +423,15 @@
     line-height: 100%;
 }
 
+.dnf {
+    background-color: rgb(103, 0, 0);
+    border-color: rgb(157, 20, 10);
+}
+
+.dnf span {
+    color: rgb(159, 159, 159);
+}
+
 /** dynamic styling */
 .selected {
     border-color: rgb(214, 246, 255);
@@ -402,10 +441,6 @@
 .selected:hover {
     background-color: rgba(137, 233, 255, 0.452);
     cursor: pointer
-}
-
-.selected span {
-    color: rgb(203, 255, 253)
 }
 
 /* Raid films */
