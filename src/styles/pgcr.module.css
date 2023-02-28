@@ -1,37 +1,63 @@
 #content {
-    width: 70%;
+    width: 75%;
+    max-width: 1000px;
+    min-width: 620px;
     display: flex;
     flex-wrap: wrap;
-    overflow: auto;
     flex-direction: row;
     margin: auto;
-    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+    overflow: auto;
 }
 
 @media only screen and (orientation: portrait) {
     #content {
+        width: 90%;
         flex-direction: column;
         height: auto;
-        width: 90%;
+        min-width: 350px;
     }
 }
 
 .main-element {
-    padding-left: 10px;
-    padding-right: 10px;
     margin: 10px;
 }
 
 .soft-rectangle {
     border-radius: 15px;
-    border: rgb(182, 182, 182);
+    border: rgba(182, 182, 182, 0.431);
     border-style: solid;
+    border-width: 1px;
 }
 
 #summary-card {
-    flex-grow: 4;
-    max-height: 640px;
-    padding: 10px;
+    flex: 1;
+    background-color: rgba(30, 30, 30, 0.35);
+    min-width: 95%;
+}
+
+@media only screen and (orientation: portrait) {
+    #summary-card {
+        min-width: 300px;
+        max-width: 95%;
+    }
+}
+
+#summary-card-bg {
+    border-radius: inherit;
+    position: relative;
+    background-position: top;
+    box-sizing: border-box;
+    padding-bottom: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+#summary-card-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
 }
 
 #activity-card-header {
@@ -39,10 +65,11 @@
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    overflow: auto;
+    padding-left: 10px;
 }
 
 #left-info {
+    padding-left: inherit;
     flex-grow: 1;
 }
 
@@ -56,7 +83,7 @@
 }
 
 #completion-time {
-    color:rgb(182, 182, 182);
+    color: rgb(182, 182, 182);
     font-style: oblique;
     padding: 3px;
 }
@@ -67,16 +94,19 @@
     line-height: 100%
 }
 
-#cp-error p {
+#cp-error {
+    max-width: 400px;
+}
+
+#cp-error>p {
     font-size: small;
     font-style: italic;
-    max-width: 80%;
-  
 }
 
 #right-info {
     flex-grow: 1;
     padding-top: 10px;
+    padding-right: 10px;
     margin-left: 5px;
 }
 
@@ -85,14 +115,16 @@
     font-style: oblique;
     font-size: x-large;
     display: flex;
+    justify-content: right;
 }
 
-.duration span {
+.duration>span {
     margin: 0.2rem
 }
 
 #tags-container {
     padding: 10px;
+    padding-left: 20px;
     padding-top: 2px;
     display: flex;
     flex-direction: row;
@@ -107,16 +139,15 @@
     border-radius: 6px;
     margin-right: 6px;
     border-width: 2px;
-    background-color: rgb(73, 4, 6);
+    background-color: rgb(125, 168, 65);
 }
 
 #members {
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 10px;
     height: auto;
     display: grid;
     grid-gap: 10px;
-    overflow: auto;
     grid-template-rows: 1fr;
 }
 
@@ -140,21 +171,40 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
-.member-card {
-    background-color: aqua;
+.entry-card {
     height: auto;
+    min-width: 260px;
+    min-height: 85px;
+    max-height: 70px;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+}
+
+.entry-card .emblem {
+    border-radius: inherit;
+    max-height: 100%;
+    left: -100px;
+    opacity: .8;
+}
+
+.member-card-container {
+    position: absolute;
     display: flex;
     flex-direction: row;
-    padding: 3px;
-    margin: 2px;
-    margin-right: 5%;
-    margin-left: 5%;
-    min-width: 250px;
+    margin: 0;
+    font-size: larger;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: left;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
 @media only screen and (orientation: landscape) {
-    .members-odd .member-card:nth-child(1) {
+    .members-odd>.entry-card:nth-child(1) {
         grid-column-start: 1;
         grid-column-end: span 2;
         margin-right: 25%;
@@ -162,40 +212,242 @@
     }
 }
 
-.member-card > div {
-    margin: 6px;
-  }
-
 .class-logo {
-    background-color: rgb(255, 255, 255);
-    height: 60px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0px;
+    max-width: 81px;
+    height: 100%;
+    background: linear-gradient(to right, #212121a5, #ffffff00);
+}
+
+.class-logo>img {
+    max-height: 50px;
     aspect-ratio: 1/1;
+    padding: 10px;
 }
 
 .member-properties {
-    background-color: rgb(214, 48, 145);
     min-width: 100px;
     flex-grow: 4;
+    padding: 10px;
+    position: relative;
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.centered {
+    align-items: center
+}
+
+.centered span {
+    margin: auto
 }
 
 .member-name {
-    
+    overflow: hidden;
+    display: flex;
+}
+
+.contained-span {
+    flex: 1;
+    display: inline;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    color: white
+}
+
+.member-name>span {
+    font-weight: bolder;
+    font-size: 1.25rem
 }
 
 .member-class {
-    
+    overflow: hidden;
+    display: flex;
+}
+
+.member-class>span {
+    display: inline-block;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: rgb(219, 219, 219);
 }
 
 .flawless-diamond {
-    background-color: rgb(55, 226, 160);
-    height: 60px;
-    aspect-ratio: 1/2;
+    flex: 0;
+    justify-self: flex-end;
+    margin-left: auto;
+    margin-right: 2%;
+    min-width: 80px;
+    display: flex
+}
+
+.flawless-diamond>img {
+    flex: 1;
+    min-width: 42px;
+    min-height: 30px;
+    max-width: 63px;
+    max-height: 45px;
+    left: 0;
+    right: 0;
+    padding: 5px;
+}
+
+@media only screen and (orientation: portrait) {
+    .flawless-diamond>img {
+        min-width: 28px;
+        min-height: 20px;
+        max-width: 40px;
+        max-height: 30px;
+    }
+}
+
+.class-button-container {
+    height: auto;
+    margin: 2px;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.class-button {
+    margin-right: 10px;
+    min-width: 90px;
+    min-height: 85px;
+    width: 90px;
+    height: 85px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    background-color: rgba(151, 151, 151, 0.274);
+}
+
+.class-button>img {
+    width: 70%;
+    height: 70%;
+    margin: auto
+}
+
+.member-profile {
+    height: 85px;
+    flex: 1;
+    background-color: rgba(200, 113, 0, 0.287);
+}
+
+.member-profile-link {
+    color: white;
+    font-size: 1.25rem;
 }
 
 #summary-stats {
-    background-color: red;
-    flex-grow: 2;
-    /* temp */
-    min-height: 20px;
-    min-width: 300px;
+    box-sizing: border-box;
+    flex-grow: 1;
+    margin: 0px;
+    margin-top: 10px;
+    padding: 0 10px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+
+.summary-stat {
+    min-height: 57px;
+    padding: 10px 15px;
+    background-color: rgba(78, 9, 9, 0.35);
+    display: flex
+}
+
+.character-stat {
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: rgba(61, 60, 60, 0.355);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.summary-stat-content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+
+.stat-icon {
+    margin-right: 10px;
+    max-width: 50px;
+    max-height: 50px;
+    aspect-ratio: 1/1;
+    flex: 1;
+}
+
+.summary-stat-info {
+    flex: 3;
+    display: flex;
+    padding: 3px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.summary-stat-name {
+    text-align: left;
+    font-size: small;
+    font-style: italic;
+    color: rgb(192, 192, 192);
+    line-height: 100%;
+}
+
+.summary-stat-value {
+    font-weight: 900;
+    font-size: x-large;
+    text-align: left;
+    line-height: 100%;
+}
+
+.dnf {
+    background-color: rgb(103, 0, 0);
+    border-color: rgb(157, 20, 10);
+}
+
+.dnf span {
+    color: rgb(159, 159, 159);
+}
+
+/** dynamic styling */
+.selected {
+    border-color: rgb(214, 246, 255);
+}
+
+.selectable:hover,
+.selected:hover {
+    background-color: rgba(137, 233, 255, 0.452);
+    cursor: pointer
+}
+
+/* Raid films */
+.color-film-vow {
+    background-color: rgba(212, 68, 39, 0.003);
+}
+
+.color-film-kf {
+    background-color: rgba(255, 242, 155, 0.006);
 }

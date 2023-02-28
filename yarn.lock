@@ -3088,10 +3088,10 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-oodestiny@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/oodestiny/-/oodestiny-1.7.3.tgz#ee99fd2e0a65cf3129fc3fd5b5f4ff2f87143cc6"
-  integrity sha512-ZxpXPhCI5IJ+spdKg6Z0epCevOay5rrbBRSO5jmKqaW3ZXODHuqp+Ly5BCryIw+8cSy5KX4aJFxS09ScRN0HkA==
+oodestiny@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/oodestiny/-/oodestiny-1.7.4.tgz#f71251e952b178e7d80f1a3a3d24e47965d47a90"
+  integrity sha512-zedzarP7dYdQgcChqe0E/y+BZuhzSHAsxPhGMCm4o/Y72goJ8zHvJBm8JKwBYBYF0uEnYoc+aKtiQEDc0BCElQ==
 
 optionator@^0.9.1:
   version "0.9.1"
