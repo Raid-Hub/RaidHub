@@ -28,35 +28,35 @@ export class PGCRStats {
   }
 
   private init(data: StatsKeys) {
-    this._kills = data.values['kills'].basic.value
-    this._deaths = data.values['deaths'].basic.value
-    this._assists = data.values['assists'].basic.value
-    this._startSeconds = data.values['startSeconds'].basic.value
-    this._timePlayedSeconds = data.values['timePlayedSeconds'].basic.value
+    this._kills = data.values.kills.basic.value
+    this._deaths = data.values.deaths.basic.value
+    this._assists = data.values.assists.basic.value
+    this._startSeconds = data.values.startSeconds.basic.value
+    this._timePlayedSeconds = data.values.timePlayedSeconds.basic.value
     this._weaponKills = data.extended.weapons?.reduce((total, current) => (
-      total + current.values["uniqueWeaponKills"].basic.value
+      total + current.values.uniqueWeaponKills.basic.value
     ), 0) || 0
-    this._abilityKills = data.extended.values['weaponKillsAbility'].basic.value
-      + data.extended.values['weaponKillsGrenade'].basic.value
-      + data.extended.values['weaponKillsMelee'].basic.value
-      + data.extended.values['weaponKillsSuper'].basic.value
+    this._abilityKills = data.extended.values.weaponKillsAbility.basic.value
+      + data.extended.values.weaponKillsGrenade.basic.value
+      + data.extended.values.weaponKillsMelee.basic.value
+      + data.extended.values.weaponKillsSuper.basic.value
   }
 
   private merge(data: StatsKeys[]) {
-    const maxTimePlayed = data[0].values['activityDurationSeconds'].basic.value;
+    const maxTimePlayed = data[0].values.activityDurationSeconds.basic.value;
     data.forEach(entry => {
-      this._kills += entry.values['kills'].basic.value
-      this._deaths += entry.values['deaths'].basic.value
-      this._assists += entry.values['assists'].basic.value
-      this._startSeconds = Math.min(entry.values['startSeconds'].basic.value, this._startSeconds)
-      this._timePlayedSeconds += entry.values['timePlayedSeconds'].basic.value
+      this._kills += entry.values.kills.basic.value
+      this._deaths += entry.values.deaths.basic.value
+      this._assists += entry.values.assists.basic.value
+      this._startSeconds = Math.min(entry.values.startSeconds.basic.value, this._startSeconds)
+      this._timePlayedSeconds += entry.values.timePlayedSeconds.basic.value
       this._weaponKills += entry.extended.weapons?.reduce((total, current) => (
-        total + current.values["uniqueWeaponKills"].basic.value
+        total + current.values.uniqueWeaponKills.basic.value
       ), 0) || 0
-      this._abilityKills += (entry.extended.values['weaponKillsAbility'].basic.value
-        + entry.extended.values['weaponKillsGrenade'].basic.value
-        + entry.extended.values['weaponKillsMelee'].basic.value
-        + entry.extended.values['weaponKillsSuper'].basic.value)
+      this._abilityKills += (entry.extended.values.weaponKillsAbility.basic.value
+        + entry.extended.values.weaponKillsGrenade.basic.value
+        + entry.extended.values.weaponKillsMelee.basic.value
+        + entry.extended.values.weaponKillsSuper.basic.value)
     })
     this._timePlayedSeconds = Math.min(this._timePlayedSeconds, maxTimePlayed)
   }
@@ -94,5 +94,10 @@ export class PGCRStats {
     const hours = Math.floor(totalMinutes / 60)
     const minutes = totalMinutes - hours * 60
     return `${hours}h ${minutes}m`
+  }
+
+  get weapons(): Record<string, string> {
+    // TODO
+    return {}
   }
 }

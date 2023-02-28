@@ -11,8 +11,9 @@ import styles from '../../styles/pgcr.module.css';
 import { PGCRCharacter, PGCRMember } from '../../models/pgcr/Entry';
 import { Backdrop, Raid } from '../../util/raid';
 import { ActivityPlacements, fetchActivityPlacements } from '../../util/server-connection';
-import { ActivityData } from '../../models/pgcr/ActivityData';
+import { Activity } from '../../models/pgcr/Activity';
 import { Tag } from '../../util/tags';
+import Error from '../../components/Error';
 
 type PGCRProps = {
   activityId: string
@@ -22,10 +23,10 @@ export type PGCRComponent = {
   members?: PGCRMember[]
   emblems?: { [characterId: string]: string }
   placements?: ActivityPlacements
-  activity?: ActivityData
+  activity?: Activity
 }
 
-export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
+export default class PGCR extends React.Component<PGCRProps, PGCRComponent & { error?: string }> {
   private placementsPromise: Promise<Partial<Record<Tag, number>>> | undefined
   private client: BungieNetClient
 
@@ -43,17 +44,16 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
   async componentDidMount() {
 
     const pgcrPromise = this.client.getPGCR(this.props.activityId)
-      .catch((e) => { console.error(e); return null })
-      .finally(console.log)
 
     this.placementsPromise = fetchActivityPlacements(this.props.activityId)
       .catch((e) => { console.error(e); return {} })
-      .finally(console.log)
 
-    const pgcr = await pgcrPromise;
-    if (!pgcr) {
-      // TODO: handle what to do if no pgcr
-      return;
+    let pgcr;
+    try {
+      pgcr = await pgcrPromise
+    } catch (e: any) {
+      this.setState({ error: e.message })
+      return
     }
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
@@ -69,7 +69,7 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
       if (!memA.didComplete || !memB.didComplete && (memA.didComplete || memB.didComplete)) return !memA.didComplete ? 1 : -1
       else return (memB.stats.kdr * memB.stats.kills) - (memA.stats.kdr * memA.stats.kills)})
 
-    const activity = new ActivityData(pgcr, members)
+    const activity = new Activity(pgcr, members)
     this.setState({ activity, members }, this.followUp)
   }
 
@@ -89,10 +89,12 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent> {
   }
 
   render() {
+    
     return (
       <>
         <Header />
         <main id={styles.content}>
+        {this.state.error ? <Error message={this.state.error}/> : <></>}
           <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
             <div id={styles["summary-card-bg"]}
               style={{ backgroundImage: `url(/backdrops${Backdrop[this.state.activity?.name ?? Raid.NA]})` }}

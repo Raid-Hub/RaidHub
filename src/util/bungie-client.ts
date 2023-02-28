@@ -5,6 +5,7 @@ import {
     DestinyComponentType,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
+    PlatformErrorCodes
 } from 'oodestiny/schemas'
 import Emblems from "./emblems.json" assert { type: "json" }
 
@@ -36,9 +37,10 @@ export class BungieNetClient {
                 ...res.Response,
                 entries: res.Response.entries.filter(entry => !nonParticipant(entry))
             }
-        } catch (e) {
-            // TODO: handle errors here
-            throw e
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled) throw Error("The Bungie.net API is currently down for maintence.")
+            else if (e.ErrorCode === PlatformErrorCodes.ParameterParseFailure) throw Error(`Invalid Activity ID [${activityId}]`)
+            throw Error(e.Message ?? e.message)
         }
     }
 

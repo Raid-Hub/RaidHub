@@ -1,4 +1,4 @@
-import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair, DestinyPostGameCarnageReportEntry } from 'oodestiny/schemas'
+import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair } from 'oodestiny/schemas'
 import { RaidDifficulty, RaidInfo, raidFromHash, Raid } from "../../util/raid"
 import { Tag } from '../../util/tags'
 import { Seasons } from '../../util/dates'
@@ -6,7 +6,7 @@ import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
 import { ActivityPlacements } from '../../util/server-connection'
 
-export class ActivityData {
+export class Activity {
   private _activityHash: number
   private _fresh: boolean | null
   private _complete: boolean

@@ -4,6 +4,7 @@ import { PGCREntry, PGCRMember } from '../../models/pgcr/Entry'
 import styles from '../../styles/pgcr.module.css'
 import { PGCRComponent } from '../../pages/pgcr/[activityId]';
 import { ColorFilm, Raid } from '../../util/raid';
+import { Icons } from '../../util/icons';
 
 interface EntriesTableState {
   memberIndex: number
@@ -34,16 +35,16 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
               {members[this.state.memberIndex].characters.map((character, idx) => (
                 <button key={idx}
                   className={[styles["soft-rectangle"], idx === this.state.characterIndex ? styles["selected"] : styles["selectable"], styles["class-button"]].join(" ")}
-                  onClick={() => this.updateCharacterIndex(idx)}>
+                  onClick={this.props.members ? () => this.updateCharacterIndex(idx) : undefined}>
                   <img src={character.logo} />
                 </button>
               ))}
-              <button 
-              className={[styles["member-profile"], styles["soft-rectangle"]].join(" ")}>
-                <Link 
-                href={this.memberProfile()}
-                className={styles["member-profile-link"]}>View Profile</Link>
-                </button>
+              <button
+                className={[styles["member-profile"], styles["soft-rectangle"]].join(" ")}>
+                <Link
+                  href={this.memberProfile()}
+                  className={styles["member-profile-link"]}>View Profile</Link>
+              </button>
             </div>
             <PGCREntries.StatCard entry={members[this.state.memberIndex].characters[this.state.characterIndex] ?? members[this.state.memberIndex]} />
           </>}
@@ -59,7 +60,7 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
     return (
       <button key={index}
         className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], dynamicCssClass, completionClass].join(' ')}
-        onClick={() => this.updateMemberIndex(index)}>
+        onClick={member.membershipId ? () => this.updateMemberIndex(index) : undefined}>
         <img
           src={emblemBackground}
           alt={"Emblem for " + (member.displayName ?? "Loading...")}
@@ -118,32 +119,32 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
       value: number | string
     }[] = [
         {
-          icon: "/icons/kills.png",
+          icon: Icons.Kills,
           name: "KILLS",
           value: entry.stats.kills
         },
         {
-          icon: "/icons/deaths.png",
+          icon: Icons.Deaths,
           name: "DEATHS",
           value: entry.stats.deaths
         },
         {
-          icon: "/icons/question_mark.png",
+          icon: Icons.Assists,
           name: "ASSISTS",
           value: entry.stats.assists
         },
         {
-          icon: "/icons/question_mark.png",
+          icon: Icons.Abilities,
           name: "ABILITY KILLS",
           value: entry.stats.abilityKills
         },
         {
-          icon: "/icons/question_mark.png",
+          icon: Icons.Time,
           name: "TIME SPENT",
           value: entry.stats.timePlayed
         },
         {
-          icon: "/icons/question_mark.png",
+          icon: Icons.Unknown,
           name: "PLACEHOLDER",
           value: "placeholder"
         }
@@ -151,10 +152,10 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
     return (<>
       {statsData.map((stat, idx) => (
         <div key={idx} className={[styles["soft-rectangle"], styles["entry-card"], styles["character-stat"]].join(' ')}>
-          <img 
-          src={stat.icon} 
-          alt={stat.name + ": " + stat.value} 
-          className={styles["stat-icon"]}/>
+          <img
+            src={stat.icon}
+            alt={stat.name + ": " + stat.value}
+            className={styles["stat-icon"]} />
           <div className={styles["summary-stat-info"]}>
             <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>{stat.name}</span>
             <span className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>{stat.value}</span>

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ActivityData } from '../../models/pgcr/ActivityData'
+import { Activity } from '../../models/pgcr/Activity'
 import { PGCRComponent } from '../../pages/pgcr/[activityId]'
 import styles from '../../styles/pgcr.module.css';
 

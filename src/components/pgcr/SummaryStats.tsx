@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { PGCRComponent } from '../../pages/pgcr/[activityId]'
 import styles from '../../styles/pgcr.module.css';
+import { Icons } from '../../util/icons';
 
 const SummaryStats: FC<PGCRComponent> = (props) => {
   const stats = props.activity?.stats
@@ -10,42 +11,42 @@ const SummaryStats: FC<PGCRComponent> = (props) => {
     value: number | string
   }[] = [
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.MVP,
         name: "MVP",
         value: stats?.mvp.toUpperCase() ?? "???"
       },
       {
-        icon: "/icons/kills.png",
+        icon: Icons.Kills,
         name: "TOTAL KILLS",
         value: stats?.totalKills ?? 0
       },
       {
-        icon: "/icons/deaths.png",
+        icon: Icons.Deaths,
         name: "TOTAL DEATHS",
         value: stats?.totalDeaths ?? 0
       },
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.Abilities,
         name: "ABILITY KILLS %",
         value: (stats?.killsTypeRatio.ability ?? 0) + "%"
       },
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.Unknown,
         name: "TOTAL CHARACTERS USED",
         value: stats?.totalCharactersUsed ?? 0
       },
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.Unknown,
         name: "STAT PLACEHOLDER",
         value: 0
       },
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.Unknown,
         name: "STAT PLACEHOLDER 2",
         value: "None"
       },
       {
-        icon: "/icons/question_mark.png",
+        icon: Icons.Unknown,
         name: "STAT PLACEHOLDER 3",
         value: "123"
       },

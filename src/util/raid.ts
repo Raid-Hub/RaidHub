@@ -10,7 +10,7 @@ export enum Raid {
     VaultOfGlass = "Vault of Glass",
     VowOfTheDisciple = "Vow of the Disciple",
     KingsFall = "King's Fall",
-    Lightfall = "Lightfall Raid",
+    RootOfNightmares = "Root of Nightmares",
     NA = "Non-raid"
 }
 
@@ -133,7 +133,7 @@ export const Backdrop: { [key in Raid]: string } = {
     [Raid.VaultOfGlass]: "/dne.png",
     [Raid.VowOfTheDisciple]: "/vow.png",
     [Raid.KingsFall]: "/kf.png",
-    [Raid.Lightfall]: "/dne.png",
+    [Raid.RootOfNightmares]: "/dne.png",
     [Raid.NA]: "/dne.png",
 }
 
@@ -149,7 +149,7 @@ export const ColorFilm: { [key in Raid]: string } = {
     [Raid.VaultOfGlass]: "",
     [Raid.VowOfTheDisciple]: "color-film-vow",
     [Raid.KingsFall]: "color-film-kf",
-    [Raid.Lightfall]: "",
+    [Raid.RootOfNightmares]: "",
     [Raid.NA]: "",
 }
 
@@ -160,7 +160,7 @@ export const ContestEnd: Partial<Record<Raid, Date>> = {
     [Raid.VaultOfGlass]: new Date('May 23, 2021 10:00:00 AM PDT'),
     [Raid.VowOfTheDisciple]: new Date('March 7, 2022 10:00:00 AM PST'),
     [Raid.KingsFall]: new Date('August 27, 2022 10:00:00 AM PDT'),
-    [Raid.Lightfall]: new Date('March 12, 2022 9:00:00 AM PST')
+    [Raid.RootOfNightmares]: new Date('March 12, 2022 9:00:00 AM PST')
 }
 
 export const DayOneEnd: Partial<Record<Raid, Date>> = {
@@ -175,5 +175,5 @@ export const DayOneEnd: Partial<Record<Raid, Date>> = {
     [Raid.VaultOfGlass]: new Date('May 23, 2021 10:00:00 AM PDT'),
     [Raid.VowOfTheDisciple]: new Date('March 6, 2022 10:00:00 AM PST'),
     [Raid.KingsFall]: new Date('August 27, 2022 10:00:00 AM PDT'),
-    [Raid.Lightfall]: new Date('March 11, 2023 9:00:00 AM PST')
+    [Raid.RootOfNightmares]: new Date('March 11, 2023 9:00:00 AM PST')
 }
