@@ -145,8 +145,13 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
         },
         {
           icon: Icons.Unknown,
-          name: "PLACEHOLDER",
-          value: "placeholder"
+          name: "Most Used Weapon",
+          value: entry.stats.weapons.first()?.name ?? "None"
+        },
+        {
+          icon: Icons.Unknown,
+          name: "Placeholder",
+          value: "PLACEHOLDER"
         }
       ]
     return (<>

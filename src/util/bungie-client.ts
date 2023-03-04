@@ -7,9 +7,9 @@ import {
     DestinyPostGameCarnageReportEntry,
     PlatformErrorCodes
 } from 'oodestiny/schemas'
-import Emblems from "./emblems.json" assert { type: "json" }
+import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
+const emblems: { [hash: string]: string } = EmblemsJson
 
-const emblems: { [hash: string]: string } = Emblems
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
 const CACHE_MINUTES = 10
 

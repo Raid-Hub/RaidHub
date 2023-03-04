@@ -41,7 +41,6 @@ export class RaidInfo {
     }
 
     isContest(started: Date): boolean {
-        console.log(started)
         if (ContestEnd[this.name] === undefined) {
             return false;
         } else if (ContestRaidDifficulties.includes(this.difficulty)) {

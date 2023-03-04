@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "destiny": "$PWD/update-manifest"
   },
   "dependencies": {
+    "@discordjs/collection": "^1.3.0",
     "next": "^13.1.6",
     "oodestiny": "^1.7.5",
     "react": "^18.2.0",

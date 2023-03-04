@@ -51,6 +51,7 @@ export default class PGCR extends React.Component<PGCRProps, PGCRComponent & { e
     let pgcr;
     try {
       pgcr = await pgcrPromise
+      console.log(pgcr)
     } catch (e: any) {
       this.setState({ error: e.message })
       return

@@ -291,21 +291,22 @@
 
 .flawless-diamond>img {
     flex: 1;
-    min-width: 42px;
-    min-height: 30px;
+    min-width: 44px;
+    min-height: 44px;
     max-width: 63px;
-    max-height: 45px;
+    max-height: 63px;
     left: 0;
     right: 0;
     padding: 5px;
+    aspect-ratio: 1/1;
 }
 
 @media only screen and (orientation: portrait) {
     .flawless-diamond>img {
-        min-width: 28px;
-        min-height: 20px;
+        min-width: 24px;
+        min-height: 24px;
         max-width: 40px;
-        max-height: 30px;
+        max-height: 40px;
     }
 }
 
