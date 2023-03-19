@@ -1,7 +1,17 @@
-import { DestinyHistoricalStatsValue, DestinyPostGameCarnageReportExtendedData } from 'oodestiny/schemas'
+import { DestinyHistoricalStatsValue, DestinyHistoricalWeaponStats, DestinyPostGameCarnageReportExtendedData } from 'oodestiny/schemas'
 import { round } from '../../util/math';
+import { PlayerWeapons } from './PlayerWeapon';
 
-export type StatsKeys = { values: Record<string, DestinyHistoricalStatsValue>, extended: DestinyPostGameCarnageReportExtendedData }
+type StatsDictionary = {
+  kills: number
+  deaths: number
+  assists: number
+  startSeconds: number
+  timePlayedSeconds: number
+  weaponKills: number
+  abilityKills: number
+}
+export type StatsKeys = { values: { [key: string]: DestinyHistoricalStatsValue }, extended: DestinyPostGameCarnageReportExtendedData }
 
 
 export class PGCRStats {
@@ -12,53 +22,66 @@ export class PGCRStats {
   private _timePlayedSeconds: number
   private _weaponKills: number
   private _abilityKills: number
+  private _weapons: PlayerWeapons
   constructor(data: StatsKeys | StatsKeys[]) {
-    this._kills = 0
-    this._deaths = 0
-    this._assists = 0
-    this._startSeconds = Number.MAX_SAFE_INTEGER
-    this._timePlayedSeconds = 0
-    this._weaponKills = 0
-    this._abilityKills = 0
+    let stats: StatsDictionary
     if (Array.isArray(data)) {
-      this.merge(data)
+      stats = PGCRStats.merge(data)
+      this._weapons = PlayerWeapons.fromArray(data.map(d => d.extended.weapons));
     } else {
-      this.init(data)
+      stats = {
+        kills: data.values.kills.basic.value,
+        deaths: data.values.deaths.basic.value,
+        assists: data.values.assists.basic.value,
+        startSeconds: data.values.startSeconds.basic.value,
+        timePlayedSeconds: data.values.timePlayedSeconds.basic.value,
+        weaponKills: data.extended.weapons?.reduce((total, current) => (
+          total + current.values.uniqueWeaponKills.basic.value
+        ), 0) || 0,
+        abilityKills: data.extended.values.weaponKillsAbility.basic.value
+          + data.extended.values.weaponKillsGrenade.basic.value
+          + data.extended.values.weaponKillsMelee.basic.value
+          + data.extended.values.weaponKillsSuper.basic.value,
+      }
+      this._weapons = PlayerWeapons.fromSingle(data.extended.weapons);
     }
+    this._kills = stats.kills
+    this._deaths = stats.deaths
+    this._assists = stats.assists
+    this._startSeconds = stats.startSeconds
+    this._timePlayedSeconds = stats.timePlayedSeconds
+    this._weaponKills = stats.weaponKills
+    this._abilityKills = stats.abilityKills
   }
 
-  private init(data: StatsKeys) {
-    this._kills = data.values.kills.basic.value
-    this._deaths = data.values.deaths.basic.value
-    this._assists = data.values.assists.basic.value
-    this._startSeconds = data.values.startSeconds.basic.value
-    this._timePlayedSeconds = data.values.timePlayedSeconds.basic.value
-    this._weaponKills = data.extended.weapons?.reduce((total, current) => (
-      total + current.values.uniqueWeaponKills.basic.value
-    ), 0) || 0
-    this._abilityKills = data.extended.values.weaponKillsAbility.basic.value
-      + data.extended.values.weaponKillsGrenade.basic.value
-      + data.extended.values.weaponKillsMelee.basic.value
-      + data.extended.values.weaponKillsSuper.basic.value
-  }
-
-  private merge(data: StatsKeys[]) {
+  private static merge(data: StatsKeys[]): StatsDictionary {
     const maxTimePlayed = data[0].values.activityDurationSeconds.basic.value;
+    const stats: StatsDictionary = {
+      kills: 0,
+      deaths: 0,
+      assists: 0,
+      startSeconds: Number.MAX_SAFE_INTEGER,
+      timePlayedSeconds: 0,
+      weaponKills: 0,
+      abilityKills: 0
+    }
+    const weaponStats: { [key: string]: { kills: number, precision: number } } = {}
     data.forEach(entry => {
-      this._kills += entry.values.kills.basic.value
-      this._deaths += entry.values.deaths.basic.value
-      this._assists += entry.values.assists.basic.value
-      this._startSeconds = Math.min(entry.values.startSeconds.basic.value, this._startSeconds)
-      this._timePlayedSeconds += entry.values.timePlayedSeconds.basic.value
-      this._weaponKills += entry.extended.weapons?.reduce((total, current) => (
+      stats.kills += entry.values.kills.basic.value
+      stats.deaths += entry.values.deaths.basic.value
+      stats.assists += entry.values.assists.basic.value
+      stats.startSeconds = Math.min(entry.values.startSeconds.basic.value, stats.startSeconds)
+      stats.timePlayedSeconds += entry.values.timePlayedSeconds.basic.value
+      stats.weaponKills += entry.extended.weapons?.reduce((total, current) => (
         total + current.values.uniqueWeaponKills.basic.value
       ), 0) || 0
-      this._abilityKills += (entry.extended.values.weaponKillsAbility.basic.value
+      stats.abilityKills += (entry.extended.values.weaponKillsAbility.basic.value
         + entry.extended.values.weaponKillsGrenade.basic.value
         + entry.extended.values.weaponKillsMelee.basic.value
         + entry.extended.values.weaponKillsSuper.basic.value)
     })
-    this._timePlayedSeconds = Math.min(this._timePlayedSeconds, maxTimePlayed)
+    stats.timePlayedSeconds = Math.min(stats.timePlayedSeconds, maxTimePlayed)
+    return stats
   }
 
   get kills() {
@@ -96,8 +119,7 @@ export class PGCRStats {
     return `${hours}h ${minutes}m`
   }
 
-  get weapons(): Record<string, string> {
-    // TODO
-    return {}
+  get weapons() {
+    return this._weapons
   }
 }

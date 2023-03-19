@@ -1,9 +1,10 @@
 import { DestinyPostGameCarnageReportData } from 'oodestiny/schemas'
 import { PGCRMember } from './Entry'
 import { round } from '../../util/math'
+import { WeaponStatsValues } from './PlayerWeapon'
 
 export class ActivityStats {
-  
+
   private _members: PGCRMember[]
   constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
     this._members = members
@@ -47,5 +48,11 @@ export class ActivityStats {
 
   get totalCharactersUsed() {
     return this._members.reduce((total, curr) => (total + curr.characterIds.length), 0)
+  }
+
+  get mostUsedWeapon() {
+    return this._members
+      .map(member => member.stats.weapons.first())
+      .reduce((mostKills, current) => ((current?.kills ?? 0) > (mostKills?.kills ?? 0) ? current : mostKills))
   }
 }

@@ -119,34 +119,39 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
       value: number | string
     }[] = [
         {
-          icon: Icons.Kills,
+          icon: Icons.KILLS,
           name: "KILLS",
           value: entry.stats.kills
         },
         {
-          icon: Icons.Deaths,
+          icon: Icons.DEATHS,
           name: "DEATHS",
           value: entry.stats.deaths
         },
         {
-          icon: Icons.Assists,
+          icon: Icons.ASSISTS,
           name: "ASSISTS",
           value: entry.stats.assists
         },
         {
-          icon: Icons.Abilities,
+          icon: Icons.ABILITIES,
           name: "ABILITY KILLS",
           value: entry.stats.abilityKills
         },
         {
-          icon: Icons.Time,
+          icon: Icons.TIME,
           name: "TIME SPENT",
           value: entry.stats.timePlayed
         },
         {
-          icon: Icons.Unknown,
-          name: "PLACEHOLDER",
-          value: "placeholder"
+          icon: Icons.UNKNOWN,
+          name: "Most Used Weapon",
+          value: entry.stats.weapons.first()?.name ?? "None"
+        },
+        {
+          icon: Icons.UNKNOWN,
+          name: "Placeholder",
+          value: "PLACEHOLDER"
         }
       ]
     return (<>

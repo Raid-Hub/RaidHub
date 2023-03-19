@@ -1,0 +1,10 @@
+#!/bin/sh -ex
+
+REPO="https://raw.githubusercontent.com/Raid-Hub/RaidHub-Destiny-Definitions/main/lib"
+DEFINITIONS="src/util/destiny-definitions"
+
+EMBLEMS="/emblems.json"
+curl -o "$DEFINITIONS$EMBLEMS" "$REPO$EMBLEMS"
+
+WEAPONS="/weapons.json"
+curl -o "$DEFINITIONS$WEAPONS" "$REPO$WEAPONS"
