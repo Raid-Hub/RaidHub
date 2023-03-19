@@ -5,8 +5,9 @@ export enum SupportedLanguage {
 }
 interface LocalStrings {
     checkPointDisclaimer: string,
-    incompleteRaid: string
-    raidNames: {[key in Raid]: string}
+    incompleteRaid: string,
+    raidNames: {[key in Raid]: string},
+    loading: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -27,7 +28,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.KINGS_FALL]: "King's Fall",
             [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
             [Raid.NA]: "Non-Raid",
-        }
+        },
+        loading: "Loading..."
     }
 }
 

@@ -52,7 +52,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get flawless(): boolean {
-      return this._flawless
+      return this._flawless && this.didComplete
     }
 
     get characterIds() {

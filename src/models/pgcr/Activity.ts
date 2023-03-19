@@ -1,10 +1,11 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair } from 'oodestiny/schemas'
-import { RaidDifficulty, RaidInfo, raidFromHash, Raid } from "../../util/raid"
+import { RaidDifficulty, raidFromHash, Raid } from "../../util/raid"
 import { Tag } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
 import { ActivityPlacements } from '../../util/server-connection'
+import { RaidInfo } from './raid'
 
 export class Activity {
   private _activityHash: number
