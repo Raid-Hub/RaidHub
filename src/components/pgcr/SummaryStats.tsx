@@ -38,7 +38,7 @@ const SummaryStats: FC<PGCRComponent> = (props) => {
       {
         icon: Icons.UNKNOWN,
         name: "MOST USED WEAPON",
-        value: stats?.mostUsedWeapon?.name ?? "None"
+        value: stats?.mostUsedWeapon?.name.toUpperCase() ?? "None"
       },
       {
         icon: Icons.UNKNOWN,

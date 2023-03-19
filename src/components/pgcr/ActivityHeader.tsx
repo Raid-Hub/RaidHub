@@ -25,7 +25,7 @@ const ActivityHeader: FC<PGCRComponent> = (props) => {
             </span>
           </div>
           <div id={styles["raid-name"]}>
-            <span>{activity ? strings.raidNames[activity.name].toUpperCase() : "Loading..."}</span>
+            <span>{activity ? strings.raidNames[activity.name].toUpperCase() : strings.loading}</span>
           </div>
           {activity?.speed.fresh === null ? <div id={styles["cp-error"]}>
             <p>{checkpointDisclaimer}</p>

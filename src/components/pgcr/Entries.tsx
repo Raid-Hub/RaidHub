@@ -40,10 +40,15 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
                 </button>
               ))}
               <button
-                className={[styles["member-profile"], styles["soft-rectangle"]].join(" ")}>
+                className={[styles["member-profile-button"], styles["soft-rectangle"], styles["selectable"]].join(" ")}>
                 <Link
                   href={this.memberProfile()}
-                  className={styles["member-profile-link"]}>View Profile</Link>
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles["member-profile-link"]}>
+                    <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]}/>
+                    <span>View Profile</span>
+                    </Link>
               </button>
             </div>
             <PGCREntries.StatCard entry={members[this.state.memberIndex].characters[this.state.characterIndex] ?? members[this.state.memberIndex]} />
@@ -63,7 +68,6 @@ export class PGCREntries extends Component<PGCRComponent & { raid: Raid }, Entri
         onClick={member.membershipId ? () => this.updateMemberIndex(index) : undefined}>
         <img
           src={emblemBackground}
-          alt={"Emblem for " + (member.displayName ?? "Loading...")}
           className={styles["emblem"]} />
         <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
           {this.state.memberIndex == -1

@@ -1,3 +1,5 @@
+import { RaidInfo } from "../models/pgcr/raid"
+
 export enum Raid {
     LEVIATHAN,
     EATER_OF_WORLDS,
@@ -23,33 +25,7 @@ export enum RaidDifficulty {
     CHALLENGEKF,
 }
 
-const ContestRaidDifficulties = [RaidDifficulty.CHALLENGEVOG, RaidDifficulty.CHALLENGEKF]
-
-export class RaidInfo {
-    name: Raid
-    difficulty: RaidDifficulty
-    constructor(name: Raid, difficulty: RaidDifficulty) {
-        this.name = name
-        this.difficulty = difficulty
-    }
-    isDayOne(ended: Date): boolean {
-        if (DayOneEnd[this.name] === undefined) {
-            return false;
-        } else {
-            return ended.getTime() <= DayOneEnd[this.name]!.getTime()
-        }
-    }
-
-    isContest(started: Date): boolean {
-        if (ContestEnd[this.name] === undefined) {
-            return false;
-        } else if (ContestRaidDifficulties.includes(this.difficulty)) {
-            return true
-        } else {
-            return started.getTime() < ContestEnd[this.name]!.getTime()
-        }
-    }
-}
+export const ContestRaidDifficulties = [RaidDifficulty.CHALLENGEVOG, RaidDifficulty.CHALLENGEKF]
 
 export function raidFromHash(hash: string): RaidInfo {
     switch (hash) {
@@ -165,7 +141,7 @@ export const ContestEnd: Partial<Record<Raid, Date>> = {
     [Raid.VAULT_OF_GLASS]: new Date('May 23, 2021 10:00:00 AM PDT'),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date('March 7, 2022 10:00:00 AM PST'),
     [Raid.KINGS_FALL]: new Date('August 27, 2022 10:00:00 AM PDT'),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date('March 12, 2022 9:00:00 AM PST')
+    [Raid.ROOT_OF_NIGHTMARES]: new Date('March 12, 2023 9:00:00 AM PST')
 }
 
 export const DayOneEnd: Partial<Record<Raid, Date>> = {
