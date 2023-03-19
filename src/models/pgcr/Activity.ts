@@ -39,21 +39,21 @@ export class Activity {
 
   get tags(): string[] {
     const tags: string[] = []
-    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tag.DayOne))
+    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tag.DAY_ONE))
     if (this._raidManifest.isContest(this._startedTime)) {
       switch (this._raidManifest.difficulty) {
-        case RaidDifficulty.ChallengeKF: tags.push(this.placementTag(Tag.ChallengeKF)); break
-        case RaidDifficulty.ChallengeVog: tags.push(this.placementTag(Tag.ChallengeVog)); break
-        default: tags.push(this.placementTag(Tag.Contest))
+        case RaidDifficulty.CHALLENGEKF: tags.push(this.placementTag(Tag.CHALLENGE_KF)); break
+        case RaidDifficulty.CHALLENGEVOG: tags.push(this.placementTag(Tag.CHALLENGE_VOG)); break
+        default: tags.push(this.placementTag(Tag.CONTEST))
       }
     }
-    if (this._fresh === false) tags.push(Tag.Checkpoint)
-    if (this._raidManifest.difficulty === RaidDifficulty.Master) tags.push(this.placementTag(Tag.Master))
-    if (this._playerCount === 1) tags.push(this.placementTag(Tag.Solo))
-    else if (this._playerCount === 2) tags.push(this.placementTag(Tag.Duo))
-    else if (this._playerCount === 3) tags.push(this.placementTag(Tag.Trio))
+    if (this._fresh === false) tags.push(Tag.CHECKPOINT)
+    if (this._raidManifest.difficulty === RaidDifficulty.MASTER) tags.push(this.placementTag(Tag.MASTER))
+    if (this._playerCount === 1) tags.push(this.placementTag(Tag.SOLO))
+    else if (this._playerCount === 2) tags.push(this.placementTag(Tag.DUO))
+    else if (this._playerCount === 3) tags.push(this.placementTag(Tag.TRIO))
     if (this._fresh && this._complete) {
-      if (this._flawless) tags.push(Tag.Flawless)
+      if (this._flawless) tags.push(Tag.FLAWLESS)
       if (this._stats.killsTypeRatio.ability === 100) tags.push(Tag.AbilitiesOnly)
     }
     return tags;

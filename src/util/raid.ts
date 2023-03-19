@@ -1,29 +1,29 @@
 export enum Raid {
-    Leviathan = "Leviathan",
-    EaterOfWorlds = "Eater of Worlds",
-    SpireOfStars = "Spire of Stars",
-    LastWish = "Last Wish",
-    ScourgeOfThePast = "Scourge of the Past",
-    CrownOfSorrow = "Crown of Sorrow",
-    GardenOfSalvation = "Garden of Salvation",
-    DeepStoneCrypt = "Deep Stone Crypt",
-    VaultOfGlass = "Vault of Glass",
-    VowOfTheDisciple = "Vow of the Disciple",
-    KingsFall = "King's Fall",
-    RootOfNightmares = "Root of Nightmares",
-    NA = "Non-raid"
+    LEVIATHAN,
+    EATER_OF_WORLDS,
+    SPIRE_OF_STARS,
+    LAST_WISH,
+    SCOURGE_OF_THE_PAST,
+    CROWN_OF_SORROW,
+    GARDEN_OF_SALVATION,
+    DEEP_STONE_CRYPT,
+    VAULT_OF_GLASS,
+    VOW_OF_THE_DISCIPLE,
+    KINGS_FALL,
+    ROOT_OF_NIGHTMARES,
+    NA
 }
 
 export enum RaidDifficulty {
-    Normal,
-    Prestige,
-    Contest,
-    Master,
-    ChallengeVog,
-    ChallengeKF,
+    NORMAL,
+    PRESTIGE,
+    CONTEST,
+    MASTER,
+    CHALLENGEVOG,
+    CHALLENGEKF,
 }
 
-const ContestRaidDifficulties = [RaidDifficulty.ChallengeVog, RaidDifficulty.ChallengeKF]
+const ContestRaidDifficulties = [RaidDifficulty.CHALLENGEVOG, RaidDifficulty.CHALLENGEKF]
 
 export class RaidInfo {
     name: Raid
@@ -51,128 +51,134 @@ export class RaidInfo {
     }
 }
 
-export function raidFromHash (hash: string): RaidInfo {
+export function raidFromHash(hash: string): RaidInfo {
     switch (hash) {
         case "89727599": case "287649202": case "1699948563": case "1875726950":
         case "2693136600": case "2693136601": case "2693136602": case "2693136603":
         case "2693136604": case "2693136605": case "3916343513": case "4039317196":
-            return new RaidInfo(Raid.Leviathan, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.LEVIATHAN, RaidDifficulty.NORMAL)
 
         case "417231112": case "508802457": case "757116822": case "771164842":
         case "1685065161": case "1800508819": case "2449714930": case "3446541099":
         case "4206123728": case "3912437239": case "3879860661": case "3857338478":
-            return new RaidInfo(Raid.Leviathan, RaidDifficulty.Prestige)
+            return new RaidInfo(Raid.LEVIATHAN, RaidDifficulty.PRESTIGE)
 
         case "2164432138": case "3089205900":
-            return new RaidInfo(Raid.EaterOfWorlds, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.EATER_OF_WORLDS, RaidDifficulty.NORMAL)
 
         case "809170886":
-            return new RaidInfo(Raid.EaterOfWorlds, RaidDifficulty.Prestige)
+            return new RaidInfo(Raid.EATER_OF_WORLDS, RaidDifficulty.PRESTIGE)
 
         case "119944200": case "3004605630":
-            return new RaidInfo(Raid.SpireOfStars, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.SPIRE_OF_STARS, RaidDifficulty.NORMAL)
 
         case "3213556450":
-            return new RaidInfo(Raid.SpireOfStars, RaidDifficulty.Prestige)
+            return new RaidInfo(Raid.SPIRE_OF_STARS, RaidDifficulty.PRESTIGE)
 
         case "1661734046": case "2122313384": case "2214608157":
-            return new RaidInfo(Raid.LastWish, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.LAST_WISH, RaidDifficulty.NORMAL)
 
         case "2812525063": case "548750096":
-            return new RaidInfo(Raid.ScourgeOfThePast, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.SCOURGE_OF_THE_PAST, RaidDifficulty.NORMAL)
 
         case "960175301": case "3333172150":
-            return new RaidInfo(Raid.CrownOfSorrow, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.CROWN_OF_SORROW, RaidDifficulty.NORMAL)
 
         case "2497200493": case "2659723068": case "3458480158": case "3845997235":
-            return new RaidInfo(Raid.GardenOfSalvation, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.GARDEN_OF_SALVATION, RaidDifficulty.NORMAL)
 
         case "910380154": case "3976949817":
-            return new RaidInfo(Raid.DeepStoneCrypt, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.DEEP_STONE_CRYPT, RaidDifficulty.NORMAL)
 
         case "3711931140": case "3881495763":
-            return new RaidInfo(Raid.VaultOfGlass, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.NORMAL)
 
         case "1485585878":
-            return new RaidInfo(Raid.VaultOfGlass, RaidDifficulty.ChallengeVog)
+            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.CHALLENGEVOG)
 
         case "1681562271":
-            return new RaidInfo(Raid.VaultOfGlass, RaidDifficulty.Master)
+            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.MASTER)
 
         case "1441982566": case "2906950631": case "4156879541":
-            return new RaidInfo(Raid.VowOfTheDisciple, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.VOW_OF_THE_DISCIPLE, RaidDifficulty.NORMAL)
 
         case "4217492330":
-            return new RaidInfo(Raid.VowOfTheDisciple, RaidDifficulty.Master)
+            return new RaidInfo(Raid.VOW_OF_THE_DISCIPLE, RaidDifficulty.MASTER)
 
         case "1374392663": case "2897223272":
-            return new RaidInfo(Raid.KingsFall, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.NORMAL)
 
         case "1063970578":
-            return new RaidInfo(Raid.KingsFall, RaidDifficulty.ChallengeKF)
+            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.CHALLENGEKF)
 
         case "2964135793":
-            return new RaidInfo(Raid.KingsFall, RaidDifficulty.Master)
+            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.MASTER)
+
+        case "1191701339": case "2381413764":
+            return new RaidInfo(Raid.ROOT_OF_NIGHTMARES, RaidDifficulty.NORMAL)
+
+        case "2918919505":
+            return new RaidInfo(Raid.ROOT_OF_NIGHTMARES, RaidDifficulty.MASTER)
 
         default:
-            return new RaidInfo(Raid.NA, RaidDifficulty.Normal)
+            return new RaidInfo(Raid.NA, RaidDifficulty.NORMAL)
     }
 }
 
 // TODO
 export const Backdrop: { [key in Raid]: string } = {
-    [Raid.Leviathan]: "/dne.png",
-    [Raid.EaterOfWorlds]: "/dne.png",
-    [Raid.SpireOfStars]: "/dne.png",
-    [Raid.LastWish]: "/dne.png",
-    [Raid.ScourgeOfThePast]: "/dne.png",
-    [Raid.CrownOfSorrow]: "/dne.png",
-    [Raid.GardenOfSalvation]: "/dne.png",
-    [Raid.DeepStoneCrypt]: "/dne.png",
-    [Raid.VaultOfGlass]: "/dne.png",
-    [Raid.VowOfTheDisciple]: "/vow.png",
-    [Raid.KingsFall]: "/kf.png",
-    [Raid.RootOfNightmares]: "/dne.png",
+    [Raid.LEVIATHAN]: "/dne.png",
+    [Raid.EATER_OF_WORLDS]: "/dne.png",
+    [Raid.SPIRE_OF_STARS]: "/dne.png",
+    [Raid.LAST_WISH]: "/dne.png",
+    [Raid.SCOURGE_OF_THE_PAST]: "/dne.png",
+    [Raid.CROWN_OF_SORROW]: "/dne.png",
+    [Raid.GARDEN_OF_SALVATION]: "/dne.png",
+    [Raid.DEEP_STONE_CRYPT]: "/dne.png",
+    [Raid.VAULT_OF_GLASS]: "/dne.png",
+    [Raid.VOW_OF_THE_DISCIPLE]: "/vow.png",
+    [Raid.KINGS_FALL]: "/kf.png",
+    [Raid.ROOT_OF_NIGHTMARES]: "/dne.png",
     [Raid.NA]: "/dne.png",
 }
 
 export const ColorFilm: { [key in Raid]: string } = {
-    [Raid.Leviathan]: "",
-    [Raid.EaterOfWorlds]: "",
-    [Raid.SpireOfStars]: "",
-    [Raid.LastWish]: "",
-    [Raid.ScourgeOfThePast]: "",
-    [Raid.CrownOfSorrow]: "",
-    [Raid.GardenOfSalvation]: "",
-    [Raid.DeepStoneCrypt]: "",
-    [Raid.VaultOfGlass]: "",
-    [Raid.VowOfTheDisciple]: "color-film-vow",
-    [Raid.KingsFall]: "color-film-kf",
-    [Raid.RootOfNightmares]: "",
+    [Raid.LEVIATHAN]: "",
+    [Raid.EATER_OF_WORLDS]: "",
+    [Raid.SPIRE_OF_STARS]: "",
+    [Raid.LAST_WISH]: "",
+    [Raid.SCOURGE_OF_THE_PAST]: "",
+    [Raid.CROWN_OF_SORROW]: "",
+    [Raid.GARDEN_OF_SALVATION]: "",
+    [Raid.DEEP_STONE_CRYPT]: "",
+    [Raid.VAULT_OF_GLASS]: "",
+    [Raid.VOW_OF_THE_DISCIPLE]: "color-film-vow",
+    [Raid.KINGS_FALL]: "color-film-kf",
+    [Raid.ROOT_OF_NIGHTMARES]: "",
     [Raid.NA]: "",
 }
 
 export const ContestEnd: Partial<Record<Raid, Date>> = {
-    [Raid.CrownOfSorrow]: new Date('June 5, 2019 4:00:00 PM PDT'),
-    [Raid.GardenOfSalvation]: new Date('October 6, 2019 10:00:00 AM PDT'),
-    [Raid.DeepStoneCrypt]: new Date('November 22, 2020 10:00:00 AM PST'),
-    [Raid.VaultOfGlass]: new Date('May 23, 2021 10:00:00 AM PDT'),
-    [Raid.VowOfTheDisciple]: new Date('March 7, 2022 10:00:00 AM PST'),
-    [Raid.KingsFall]: new Date('August 27, 2022 10:00:00 AM PDT'),
-    [Raid.RootOfNightmares]: new Date('March 12, 2022 9:00:00 AM PST')
+    [Raid.CROWN_OF_SORROW]: new Date('June 5, 2019 4:00:00 PM PDT'),
+    [Raid.GARDEN_OF_SALVATION]: new Date('October 6, 2019 10:00:00 AM PDT'),
+    [Raid.DEEP_STONE_CRYPT]: new Date('November 22, 2020 10:00:00 AM PST'),
+    [Raid.VAULT_OF_GLASS]: new Date('May 23, 2021 10:00:00 AM PDT'),
+    [Raid.VOW_OF_THE_DISCIPLE]: new Date('March 7, 2022 10:00:00 AM PST'),
+    [Raid.KINGS_FALL]: new Date('August 27, 2022 10:00:00 AM PDT'),
+    [Raid.ROOT_OF_NIGHTMARES]: new Date('March 12, 2022 9:00:00 AM PST')
 }
 
 export const DayOneEnd: Partial<Record<Raid, Date>> = {
-    [Raid.Leviathan]: new Date('September 14, 2017 10:00:00 AM PDT'),
-    [Raid.EaterOfWorlds]: new Date('December 9th, 2017 10:00:00 AM PST'),
-    [Raid.SpireOfStars]: new Date('May 12, 2018 10:00:00 AM PDT'),
-    [Raid.LastWish]: new Date('September 15, 2018 10:00:00 AM PDT'),
-    [Raid.ScourgeOfThePast]: new Date('December 8, 2018 9:00:00 AM PST'),
-    [Raid.CrownOfSorrow]: new Date('June 5, 2019 4:00:00 PM PDT'),
-    [Raid.GardenOfSalvation]: new Date('October 6, 2019 10:00:00 AM PDT'),
-    [Raid.DeepStoneCrypt]: new Date('November 22, 2020 10:00:00 AM PST'),
-    [Raid.VaultOfGlass]: new Date('May 23, 2021 10:00:00 AM PDT'),
-    [Raid.VowOfTheDisciple]: new Date('March 6, 2022 10:00:00 AM PST'),
-    [Raid.KingsFall]: new Date('August 27, 2022 10:00:00 AM PDT'),
-    [Raid.RootOfNightmares]: new Date('March 11, 2023 9:00:00 AM PST')
+    [Raid.LEVIATHAN]: new Date('September 14, 2017 10:00:00 AM PDT'),
+    [Raid.EATER_OF_WORLDS]: new Date('December 9th, 2017 10:00:00 AM PST'),
+    [Raid.SPIRE_OF_STARS]: new Date('May 12, 2018 10:00:00 AM PDT'),
+    [Raid.LAST_WISH]: new Date('September 15, 2018 10:00:00 AM PDT'),
+    [Raid.SCOURGE_OF_THE_PAST]: new Date('December 8, 2018 9:00:00 AM PST'),
+    [Raid.CROWN_OF_SORROW]: new Date('June 5, 2019 4:00:00 PM PDT'),
+    [Raid.GARDEN_OF_SALVATION]: new Date('October 6, 2019 10:00:00 AM PDT'),
+    [Raid.DEEP_STONE_CRYPT]: new Date('November 22, 2020 10:00:00 AM PST'),
+    [Raid.VAULT_OF_GLASS]: new Date('May 23, 2021 10:00:00 AM PDT'),
+    [Raid.VOW_OF_THE_DISCIPLE]: new Date('March 6, 2022 10:00:00 AM PST'),
+    [Raid.KINGS_FALL]: new Date('August 27, 2022 10:00:00 AM PDT'),
+    [Raid.ROOT_OF_NIGHTMARES]: new Date('March 11, 2023 9:00:00 AM PST')
 }

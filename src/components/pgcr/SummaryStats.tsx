@@ -16,42 +16,42 @@ const SummaryStats: FC<PGCRComponent> = (props) => {
         value: stats?.mvp.toUpperCase() ?? "???"
       },
       {
-        icon: Icons.Kills,
+        icon: Icons.KILLS,
         name: "TOTAL KILLS",
         value: stats?.totalKills ?? 0
       },
       {
-        icon: Icons.Deaths,
+        icon: Icons.DEATHS,
         name: "TOTAL DEATHS",
         value: stats?.totalDeaths ?? 0
       },
       {
-        icon: Icons.Abilities,
+        icon: Icons.ABILITIES,
         name: "ABILITY KILLS %",
         value: (stats?.killsTypeRatio.ability ?? 0) + "%"
       },
       {
-        icon: Icons.Unknown,
+        icon: Icons.UNKNOWN,
         name: "TOTAL CHARACTERS USED",
         value: stats?.totalCharactersUsed ?? 0
       },
       {
-        icon: Icons.Unknown,
+        icon: Icons.UNKNOWN,
         name: "MOST USED WEAPON",
         value: stats?.mostUsedWeapon?.name ?? "None"
       },
       {
-        icon: Icons.Unknown,
+        icon: Icons.UNKNOWN,
         name: "STAT PLACEHOLDER",
         value: 0
       },
       {
-        icon: Icons.Unknown,
+        icon: Icons.UNKNOWN,
         name: "STAT PLACEHOLDER 2",
         value: "None"
       },
       {
-        icon: Icons.Unknown,
+        icon: Icons.UNKNOWN,
         name: "STAT PLACEHOLDER 3",
         value: "123"
       },

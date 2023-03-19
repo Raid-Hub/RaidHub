@@ -1,9 +1,9 @@
 export enum Icons {
-    Unknown = "/icons/question_mark.png",
-    Kills = "/icons/kills.png",
-    Deaths = "/icons/deaths.png",
-    Assists = "/icons/assists.png",
-    Abilities = "/icons/abilities.png",
+    UNKNOWN = "/icons/question_mark.png",
+    KILLS = "/icons/kills.png",
+    DEATHS = "/icons/deaths.png",
+    ASSISTS = "/icons/assists.png",
+    ABILITIES = "/icons/abilities.png",
     MVP = "/icons/mvp.png",
-    Time = "/icons/time.png"
+    TIME = "/icons/time.png"
 }
