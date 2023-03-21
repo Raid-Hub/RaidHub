@@ -464,9 +464,11 @@
 .selected {
     border-color: rgb(214, 246, 255);
 }
+.selectable {
+    border-width: 2px;
+}
 
-.selectable:hover,
-.selected:hover {
+.selectable:hover {
     background-color: rgba(137, 233, 255, 0.452);
     cursor: pointer
 }

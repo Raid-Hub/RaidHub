@@ -60,9 +60,9 @@ export class BungieNetClient {
             BungieNetClient.setCache(CACHE_KEY, rv)
         } catch (e) {
             // TODO handle errors
-        } finally {
-            return `https://bungie.net${rv}`
+            throw(e)
         }
+        return `https://bungie.net${rv}`
     }
 
     private static emblemFromHash(hash: number) {
@@ -103,3 +103,5 @@ function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
         && entry.values.kills?.basic.value === 0
         && entry.values.deaths?.basic.value === 0
 }
+
+export const shared = new BungieNetClient()

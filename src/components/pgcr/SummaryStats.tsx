@@ -1,10 +1,18 @@
 import { FC } from 'react';
-import { PGCRComponent } from '../../pages/pgcr/[activityId]'
+import { useLanguage } from '../../hooks/language';
+import { Activity } from '../../models/pgcr/Activity';
 import styles from '../../styles/pgcr.module.css';
 import { Icons } from '../../util/icons';
+import { LocalizedStrings } from '../../util/localized-strings';
 
-const SummaryStats: FC<PGCRComponent> = (props) => {
-  const stats = props.activity?.stats
+interface SummaryStatsProps {
+  activity: Activity | null
+}
+
+const SummaryStats = ({ activity }: SummaryStatsProps) => {
+  const language = useLanguage()
+  const strings = LocalizedStrings[language]
+  const stats = activity?.stats
   const statsData: {
     icon: string,
     name: string,
@@ -12,49 +20,34 @@ const SummaryStats: FC<PGCRComponent> = (props) => {
   }[] = [
       {
         icon: Icons.MVP,
-        name: "MVP",
+        name: strings.mvp,
         value: stats?.mvp.toUpperCase() ?? "???"
       },
       {
         icon: Icons.KILLS,
-        name: "TOTAL KILLS",
+        name: strings.totalKills.toLocaleUpperCase(),
         value: stats?.totalKills ?? 0
       },
       {
         icon: Icons.DEATHS,
-        name: "TOTAL DEATHS",
+        name: strings.deaths.toLocaleUpperCase(),
         value: stats?.totalDeaths ?? 0
       },
       {
         icon: Icons.ABILITIES,
-        name: "ABILITY KILLS %",
+        name: strings.abilityKillsPercentage.toLocaleUpperCase(),
         value: (stats?.killsTypeRatio.ability ?? 0) + "%"
       },
       {
         icon: Icons.UNKNOWN,
-        name: "TOTAL CHARACTERS USED",
+        name: strings.totalCharactersUsed.toLocaleUpperCase(),
         value: stats?.totalCharactersUsed ?? 0
       },
       {
         icon: Icons.UNKNOWN,
-        name: "MOST USED WEAPON",
-        value: stats?.mostUsedWeapon?.name.toUpperCase() ?? "None"
-      },
-      {
-        icon: Icons.UNKNOWN,
-        name: "STAT PLACEHOLDER",
-        value: 0
-      },
-      {
-        icon: Icons.UNKNOWN,
-        name: "STAT PLACEHOLDER 2",
-        value: "None"
-      },
-      {
-        icon: Icons.UNKNOWN,
-        name: "STAT PLACEHOLDER 3",
-        value: "123"
-      },
+        name: strings.mostUsedWeapon.toLocaleUpperCase(),
+        value: stats?.mostUsedWeapon?.name[language] ?? strings.none
+      }
     ]
   return (<>
     {statsData.map((stat, idx) => (

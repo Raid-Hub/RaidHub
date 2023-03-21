@@ -1,11 +1,16 @@
 import { FC } from 'react';
 import { useLanguage } from '../../hooks/language';
-import { PGCRComponent } from '../../pages/pgcr/[activityId]'
+import { Activity } from '../../models/pgcr/Activity';
 import styles from '../../styles/pgcr.module.css';
 import { LocalizedStrings } from '../../util/localized-strings';
+import { ActivityPlacements } from '../../util/server-connection';
 
-const ActivityHeader: FC<PGCRComponent> = (props) => {
-  const { activity, placements } = props
+interface ActivityHeaderProps {
+  placements: ActivityPlacements | null
+  activity: Activity | null
+}
+
+const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
   const language = useLanguage()
   if (placements && activity) activity.placements = placements
   const strings = LocalizedStrings[language]
