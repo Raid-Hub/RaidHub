@@ -14,11 +14,12 @@ export class ActivityStats {
    * Determines the MVP of the activity by KDA (kills as the tiebreaker)
    */
   get mvp(): string {
-    return (this._members.reduce((mvp, current) => (
+    const member = (this._members.reduce((mvp, current) => (
       (current.stats.kda === mvp.stats.kda)
         ? (current.stats.kills > mvp.stats.kills ? current : mvp)
         : (current.stats.kda > mvp.stats.kda ? current : mvp)
-    ), { stats: { kda: 0, kills: 0 } }) as PGCRMember).displayName ?? "to fix later"
+    ), { stats: { kda: 0, kills: 0 } }) as PGCRMember)
+    return member.displayName ?? member.membershipId
   }
 
   get totalKills() {

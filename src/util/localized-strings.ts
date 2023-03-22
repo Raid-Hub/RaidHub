@@ -1,13 +1,24 @@
 import { Raid } from "./raid"
-
 export enum SupportedLanguage {
-    ENGLISH = "en-US"
+    ENGLISH = "en"
 }
+
 interface LocalStrings {
-    checkPointDisclaimer: string,
-    incompleteRaid: string,
-    raidNames: {[key in Raid]: string},
+    checkPointDisclaimer: string
+    incompleteRaid: string
+    raidNames: {[key in Raid]: string}
     loading: string
+    none: string
+    mvp: string
+    totalKills: string
+    deaths: string
+    abilityKillsPercentage: string
+    totalCharactersUsed: string
+    mostUsedWeapon: string
+    kills: string
+    assists: string
+    abilityKills: string
+    timeSpent: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -29,7 +40,18 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
             [Raid.NA]: "Non-Raid",
         },
-        loading: "Loading..."
+        loading: "Loading...",
+        none: "None",
+        mvp: "MVP",
+        totalKills: "Total Kills",
+        deaths: "Deaths",
+        abilityKillsPercentage: "Ability Kills %",
+        totalCharactersUsed: "Total Characters Used",
+        mostUsedWeapon: "Most Used Weapon",
+        kills: "Kills",
+        assists: "Assists",
+        abilityKills: "Ability Kills",
+        timeSpent: "Time Spent",
     }
 }
 

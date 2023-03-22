@@ -3,7 +3,7 @@ import { DestinyHistoricalWeaponStats } from "oodestiny/schemas";
 import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
 const weaponsDefs: {
     [hash: string]: {
-        name?: string
+        name?: { [language: string] : string }
         icon?: string
         type?: string
     }
@@ -12,7 +12,7 @@ const weaponsDefs: {
 export interface WeaponStatsValues {
     kills: number,
     precision: number
-    name: string,
+    name: { [language: string] : string },
     type: string,
     icon: string,
 }
@@ -43,7 +43,7 @@ export class PlayerWeapons extends Collection<number, WeaponStatsValues> {
         return new PlayerWeapons(weapons?.map(weapon => {
             const def = weaponsDefs[weapon.referenceId]
             return [weapon.referenceId, {
-                name: def?.name ?? "Unknown",
+                name: def?.name ?? {},
                 icon: "https://bungie.net" + (def?.icon ?? "/img/misc/missing_icon_d2.png"),
                 type: def?.type ?? "Unknown",
                 kills: weapon.values.uniqueWeaponKills.basic.value,
