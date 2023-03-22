@@ -49,9 +49,9 @@ const PGCR = ({ activityId }: PGCRProps) => {
   );
 }
 
-PGCR.getInitialProps = async (ctx: NextPageContext) => {
-  const { activityId } = ctx.query;
-  return { activityId };
+export async function getServerSideProps({ params }: { params: { activityId: string } }) {
+  const { activityId } = params;
+  return { props: { activityId } }
 }
 
 export default PGCR;
