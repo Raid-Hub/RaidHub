@@ -21,7 +21,7 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
       {
         icon: Icons.MVP,
         name: strings.mvp,
-        value: stats?.mvp.toUpperCase() ?? "???"
+        value: stats?.mvp ?? "???"
       },
       {
         icon: Icons.KILLS,
