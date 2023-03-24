@@ -1,7 +1,6 @@
 import React from 'react';
-import { NextPageContext } from 'next'
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import ActivityHeader from '../../components/pgcr/ActivityHeader'
 import PGCREntries from '../../components/pgcr/Entries'
 import SummaryStats from '../../components/pgcr/SummaryStats'
@@ -25,8 +24,8 @@ const PGCR = ({ activityId }: PGCRProps) => {
   return (
     <>
       <Header />
-      <main id={styles.content}>
-        {pgcrError ? <Error message={pgcrError} /> : <></>}
+      <main className={styles["main"]}>
+        {pgcrError && <Error message={pgcrError} />}
         <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
           <div id={styles["summary-card-bg"]}
             style={{ backgroundImage: `url(/backdrops${Backdrop[activity?.name ?? Raid.NA]})` }}

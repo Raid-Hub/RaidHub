@@ -24,7 +24,7 @@ type CacheRequest<T> = {
     data: T
 }
 
-export class BungieNetClient {
+class BungieNetClient {
     public readonly access_token: string | null;
     constructor(access_token?: string) {
         this.access_token = access_token ?? null;

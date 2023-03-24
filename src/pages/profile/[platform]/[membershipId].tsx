@@ -1,7 +1,5 @@
-import { NextPageContext } from 'next'
-import { Header } from '../../../components/Header';
-import { Footer } from '../../../components/Footer';
-import { BungieMembershipType } from 'oodestiny/schemas';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
 import Sidebar from '../../../components/profile/Sidebar';
 import RaidCards from '../../../components/profile/RaidCards';
 import ProfileHeader from '../../../components/profile/ProfileHeader';
@@ -13,20 +11,15 @@ interface ProfileProps {
 }
 
 const Profile = ({ membershipType, membershipId }: ProfileProps) => {
-  // const { activity, members, error: pgcrError } = usePGCR(activityId)
-  // const { placements, error: placementError } = usePlacements(activityId)
-  // const { emblems, error: emblemError } = useEmblems(members
-  //   ?.map(({membershipId, membershipType, characterIds}) => ({membershipId, membershipType, characterId: characterIds[0]})))
-
   return (
     <>
       <Header />
-      <main>
-        <Sidebar/>
+      <main className={styles["main"]}>
+        <Sidebar />
         <div className={styles["content"]}>
           <div className={styles["card"]}>
-            <ProfileHeader/>
-            <RaidCards/>
+            <ProfileHeader />
+            <RaidCards />
           </div>
         </div>
       </main>

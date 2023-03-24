@@ -2,43 +2,44 @@ import { PGCRMember } from "../../models/pgcr/Entry"
 import { ColorFilm, Raid } from "../../util/raid"
 import styles from '../../styles/pgcr.module.css'
 
-interface MemberCardProps { 
-    member: PGCRMember | null
-    index: number
-    raid: Raid 
-    emblemBackground: string
-    memberIndex: number
-    updateMemberIndex: (clicked: number) => void
+interface MemberCardProps {
+  member: PGCRMember | null
+  index: number
+  raid: Raid
+  emblemBackground: string
+  memberIndex: number
+  updateMemberIndex: (clicked: number) => void
 }
 
 const MemberCard = ({ member, index, raid, emblemBackground, memberIndex, updateMemberIndex }: MemberCardProps) => {
-    const dynamicCssClass = memberIndex === index ? styles["selected"] : styles["selectable"]
-    const completionClass = member?.didComplete ? "" : styles["dnf"]
-    return (
-        <button key={index}
-            className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], dynamicCssClass, completionClass].join(' ')}
-            onClick={member ? () => updateMemberIndex(index) : undefined}>
-            <img
-                src={emblemBackground}
-                className={styles["emblem"]} />
-            <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
-                {memberIndex == -1 || !member
-                    ? <StandardMemberCard member={member} />
-                    : <SelectedMemberCard member={member} />}
-            </div>
-        </button>
-    )
+  const dynamicCssClass = memberIndex === index ? styles["selected"] : styles["selectable"]
+  const completionClass = member?.didComplete ? "" : styles["dnf"]
+  return (
+    <button key={index}
+      className={[styles["soft-rectangle"], styles["entry-card"], styles["selectable"], dynamicCssClass, completionClass].join(' ')}
+      onClick={member ? () => updateMemberIndex(index) : undefined}>
+      <img
+        src={emblemBackground}
+        className={styles["emblem"]} />
+      <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
+        {memberIndex == -1 || !member
+          ? <StandardMemberCard member={member} />
+          : <SelectedMemberCard member={member} />}
+      </div>
+    </button>
+  )
 }
 
 export default MemberCard;
 
-const StandardMemberCard = ({ member }: {member: PGCRMember | null}) => {
-    const icon = member?.characters?.[0].logo
-    const displayName = member?.displayName ?? member?.membershipId
-    const displayClass = member?.characterClass
-    return (<>
+const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
+  const icon = member?.characters?.[0].logo
+  const displayName = member?.displayName ?? member?.membershipId
+  const displayClass = member?.characterClass
+  return (
+    <div className={styles["member-card"]}>
       <div className={styles["class-logo"]} >
-        {member?.characters ? <img src={icon} /> : <></>}
+        {member?.characters && <img src={icon} />}
       </div>
       <div className={styles["member-properties"]}>
         <div className={styles["member-name"]}>
@@ -49,16 +50,17 @@ const StandardMemberCard = ({ member }: {member: PGCRMember | null}) => {
         </div>
       </div>
       <div className={styles["flawless-diamond"]}>
-        {member?.flawless ? <img src="/icons/flawless_diamond.png" alt={member.displayName + " went flawless this raid"} />
-          : <></>}
+        {member?.flawless && <img src="/icons/flawless_diamond.png" alt={member.displayName + " went flawless this raid"} />}
       </div>
-    </>)
-  }
+    </div>
+  )
+}
 
 const SelectedMemberCard = ({ member }: { member: PGCRMember }) => {
-    const displayName = member.displayName ?? member.membershipId
-    const displayClass = member.characterClass
-    return (<>
+  const displayName = member.displayName ?? member.membershipId
+  const displayClass = member.characterClass
+  return (
+    <div className={styles["member-card"]}>
       <div className={[styles["member-properties"], styles["centered"]].join(" ")}>
         <div className={styles["member-name"]}>
           <span className={styles["contained-span"]}>{displayName}</span>
@@ -67,5 +69,5 @@ const SelectedMemberCard = ({ member }: { member: PGCRMember }) => {
           <span className={styles["contained-span"]}>{displayClass}</span>
         </div>
       </div>
-    </>)
-  }
+    </div>)
+}

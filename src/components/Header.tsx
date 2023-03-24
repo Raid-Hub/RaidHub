@@ -1,12 +1,16 @@
 import styles from "../styles/header.module.css"
 
-export const Header = () => {
+interface HeaderProps {
+}
+
+
+const Header = ({}: HeaderProps) => {
   return (
     <header>
       <nav id={styles.nav}>
         <div id={styles.logo}>
           <img id={styles["logo-img"]} src="/logo.png" alt="logo" />
-          <p id={styles["logo-text"]}>raid hub</p>
+          <p id={styles["logo-text"]}>Raid Hub</p>
         </div>
         <div id={styles["right-content"]}>
           <img id={styles["search-img"]} src="/icons/search.png" alt="search" />
@@ -17,3 +21,5 @@ export const Header = () => {
     </header>
   )
 }
+
+export default Header;

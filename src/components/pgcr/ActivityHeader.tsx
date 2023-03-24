@@ -17,7 +17,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
   const checkpointDisclaimer = strings.checkPointDisclaimer
   const incomplete = strings.incompleteRaid
   return (
-    <>
+    <div className={styles["activity-card-header-container"]}>
       <div id={styles["activity-card-header"]}>
         <div id={styles["left-info"]}>
           <div id={styles["raid-info-top"]}>
@@ -32,9 +32,9 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
           <div id={styles["raid-name"]}>
             <span>{activity ? strings.raidNames[activity.name].toUpperCase() : strings.loading}</span>
           </div>
-          {activity?.speed.fresh === null ? <div id={styles["cp-error"]}>
+          {activity?.speed.fresh === null && <div id={styles["cp-error"]}>
             <p>{checkpointDisclaimer}</p>
-          </div> : <></>}
+          </div>}
         </div>
         <div id={styles["right-info"]}>
           <div className={styles.duration}>
@@ -52,7 +52,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
           <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>{tag}</div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -40,10 +40,10 @@ const PGCREntries = ({ members, raid, emblems }: PGCREntriesProps) => {
     : (members.length % 2 && memberIndex == -1 ? styles["members-odd"] : styles["members-even"])
     : styles["members-even"]
 
-  return (
-    <div id={styles["members"]} className={cardLayout}>
-      {memberIndex === -1 || !members
-        ? members?.map((member, idx) =>
+  if (memberIndex === -1 || !members) {
+    return (
+      <div id={styles["members"]} className={cardLayout}>
+        {members?.map((member, idx) =>
           <MemberCard
             key={idx}
             member={member}
@@ -51,38 +51,42 @@ const PGCREntries = ({ members, raid, emblems }: PGCREntriesProps) => {
             raid={raid}
             emblemBackground={emblems?.[member.characterIds[0]] ?? ""}
             memberIndex={-1}
-            updateMemberIndex={updateMemberIndex} />)
-        : <>
-          <MemberCard
-            member={members[memberIndex] ?? null}
-            index={memberIndex}
-            raid={raid}
-            emblemBackground={emblems?.[members[memberIndex]?.characterIds[0] ?? ""] ?? ""}
-            memberIndex={memberIndex}
-            updateMemberIndex={updateMemberIndex} />
-          <div className={styles["class-button-container"]}>
-            {members?.[memberIndex].characters.map((character, idx) => (
-              <button key={idx}
-                className={[styles["soft-rectangle"], styles["selectable"], idx === characterIndex ? styles["selected"] : "", styles["class-button"]].join(" ")}
-                onClick={members ? () => updateCharacterIndex(idx) : undefined}>
-                <img src={character.logo} />
-              </button>
-            ))}
-            <button
-              className={[styles["member-profile-button"], styles["soft-rectangle"], styles["selectable"]].join(" ")}>
-              <Link
-                href={memberProfile()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles["member-profile-link"]}>
-                <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
-                <span>View Profile</span>
-              </Link>
+            updateMemberIndex={updateMemberIndex} />)}
+      </div>
+    )
+  } else {
+    return (
+      <div id={styles["members"]} className={cardLayout}>
+        <MemberCard
+          member={members[memberIndex] ?? null}
+          index={memberIndex}
+          raid={raid}
+          emblemBackground={emblems?.[members[memberIndex]?.characterIds[0] ?? ""] ?? ""}
+          memberIndex={memberIndex}
+          updateMemberIndex={updateMemberIndex} />
+        <div className={styles["class-button-container"]}>
+          {members?.[memberIndex].characters.map((character, idx) => (
+            <button key={idx}
+              className={[styles["soft-rectangle"], styles["selectable"], idx === characterIndex ? styles["selected"] : "", styles["class-button"]].join(" ")}
+              onClick={members ? () => updateCharacterIndex(idx) : undefined}>
+              <img src={character.logo} />
             </button>
-          </div>
-          <StatCards entry={members[memberIndex].characters[characterIndex] ?? members[memberIndex]} />
-        </>}
-    </div>
-  );
+          ))}
+          <button
+            className={[styles["member-profile-button"], styles["soft-rectangle"], styles["selectable"]].join(" ")}>
+            <Link
+              href={memberProfile()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles["member-profile-link"]}>
+              <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
+              <span>View Profile</span>
+            </Link>
+          </button>
+        </div>
+        <StatCards entry={members[memberIndex].characters[characterIndex] ?? members[memberIndex]} />
+      </div>
+    )
+  }
 }
 export default PGCREntries;

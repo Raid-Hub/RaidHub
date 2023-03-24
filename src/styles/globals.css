@@ -73,3 +73,21 @@ scrollbar-color: #f5f5f5 #f5f5f5 ;
   font-style: normal;
   font-weight: 600;
 }
+
+main {
+  width: 75%;
+  max-width: 1000px;
+  min-width: 620px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  overflow: auto;
+}
+
+@media only screen and (orientation: portrait) {
+  main {
+      width: 90%;
+      height: auto;
+      min-width: 350px;
+  }
+}
