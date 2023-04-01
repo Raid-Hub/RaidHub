@@ -6,15 +6,15 @@ import { Icons } from '../../util/icons';
 import MemberCard from './MemberCard';
 import StatCards from './StatCard';
 import styles from '../../styles/pgcr.module.css'
-import { EmblemDict } from '../../hooks/emblems';
+import { EmblemDict, useEmblems } from '../../hooks/emblems';
 
 export interface PGCREntriesProps {
   members: PGCRMember[] | null
-  emblems: EmblemDict | null
   raid: Raid
 }
 
-const PGCREntries = ({ members, raid, emblems }: PGCREntriesProps) => {
+const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
+  const { emblems, error: emblemError } = useEmblems(members)
   const [memberIndex, setMemberIndex] = useState(-1);
   const [characterIndex, setCharacterIndex] = useState(-1);
 
