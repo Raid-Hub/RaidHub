@@ -1,7 +1,6 @@
 import { DestinyPostGameCarnageReportData } from 'oodestiny/schemas'
 import { PGCRMember } from './Entry'
 import { round } from '../../util/math'
-import { WeaponStatsValues } from './PlayerWeapon'
 
 export class ActivityStats {
 
@@ -15,10 +14,8 @@ export class ActivityStats {
    */
   get mvp(): string {
     const member = (this._members.reduce((mvp, current) => (
-      (current.stats.kda === mvp.stats.kda)
-        ? (current.stats.kills > mvp.stats.kills ? current : mvp)
-        : (current.stats.kda > mvp.stats.kda ? current : mvp)
-    ), { stats: { kda: 0, kills: 0 } }) as PGCRMember)
+      (current.stats.score > mvp.stats.score ? current : mvp)
+    ), { stats: { score: Number.MIN_SAFE_INTEGER } }) as PGCRMember)
     return member.displayName ?? member.membershipId
   }
 

@@ -7,7 +7,6 @@ import { Backdrop, Raid } from '../../util/raid';
 import Error from '../../components/Error';
 import { usePGCR } from '../../hooks/pgcr';
 import { usePlacements } from '../../hooks/placements';
-import { useEmblems } from '../../hooks/emblems';
 
 interface PGCRProps {
   activityId: string
@@ -16,8 +15,6 @@ interface PGCRProps {
 const PGCR = ({ activityId }: PGCRProps) => {
   const { activity, members, error: pgcrError } = usePGCR(activityId)
   const { placements, error: placementError } = usePlacements(activityId)
-  const { emblems, error: emblemError } = useEmblems(members
-    ?.map(({ membershipId, membershipType, characterIds }) => ({ membershipId, membershipType, characterId: characterIds[0] })))
 
   return (
     <main className={styles["main"]}>
@@ -31,8 +28,7 @@ const PGCR = ({ activityId }: PGCRProps) => {
             placements={placements} />
           <PGCREntries
             raid={activity?.name ?? Raid.NA}
-            members={members}
-            emblems={emblems} />
+            members={members} />
         </div>
       </section>
       <section id={styles["summary-stats"]} className={styles["main-element"]}>
