@@ -1,5 +1,9 @@
 .main {
+  display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  margin: auto;
+  overflow: auto;
 }
 
 .main-element {

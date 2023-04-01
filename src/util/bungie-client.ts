@@ -1,10 +1,12 @@
-import { getCharacter, getPostGameCarnageReport } from 'oodestiny/endpoints/Destiny2'
+import { getCharacter, getPostGameCarnageReport, getProfile } from 'oodestiny/endpoints/Destiny2'
 import {
     BungieMembershipType,
+    ComponentPrivacySetting,
     DestinyClass,
     DestinyComponentType,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
+    DestinyProfileComponent,
     PlatformErrorCodes
 } from 'oodestiny/schemas'
 import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
@@ -13,7 +15,7 @@ const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
 const CACHE_MINUTES = 10
 
-export type CharacterProps = {
+export interface CharacterProps {
     name: string,
     class: DestinyClass,
     emblem: string
@@ -22,6 +24,11 @@ export type CharacterProps = {
 type CacheRequest<T> = {
     timestamp: number
     data: T
+}
+
+interface ErrSuccess<T> {
+    success?: T
+    error?: Error
 }
 
 class BungieNetClient {
@@ -63,6 +70,21 @@ class BungieNetClient {
             throw(e)
         }
         return `https://bungie.net${rv}`
+    }
+
+    async getProfile(destinyMembershipId: string, membershipType: BungieMembershipType): Promise<ErrSuccess<DestinyProfileComponent>> {
+        try {
+            const res = await getProfile({ destinyMembershipId, membershipType, components: [DestinyComponentType.Profiles] })
+            if (res.Response.profile.privacy === ComponentPrivacySetting.Private) {
+                // private profile
+                return { error: Error("Private profile") }
+            } else {
+                const profile = res.Response.profile.data
+                return { success: profile }
+            }
+        } catch (e) {
+            return { error: e as Error }
+        }
     }
 
     private static emblemFromHash(hash: number) {

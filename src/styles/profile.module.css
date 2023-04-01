@@ -1,6 +1,10 @@
 .main {
+    display: flex;
     flex-direction: row;
-}
+    flex-wrap: wrap;
+    margin: auto;
+    overflow: auto;
+  }
 
 /* width */
 .dots-container::-webkit-scrollbar {

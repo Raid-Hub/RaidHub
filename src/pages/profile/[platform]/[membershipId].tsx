@@ -1,35 +1,31 @@
-import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
 import Sidebar from '../../../components/profile/Sidebar';
 import RaidCards from '../../../components/profile/RaidCards';
 import ProfileHeader from '../../../components/profile/ProfileHeader';
 import styles from '../../../styles/profile.module.css';
+import { shared as bungieClient } from '../../../util/bungie-client';
+import { BungieMembershipType, DestinyProfileComponent } from 'oodestiny/schemas';
 
 interface ProfileProps {
-  membershipType: string
-  membershipId: string
+  profile: DestinyProfileComponent | string
 }
 
-const Profile = ({ membershipType, membershipId }: ProfileProps) => {
+const Profile = ({ profile }: ProfileProps) => {
   return (
-    <>
-      <Header />
-      <main className={styles["main"]}>
-        <Sidebar />
-        <div className={styles["content"]}>
-          <div className={styles["card"]}>
-            <ProfileHeader />
-            <RaidCards />
-          </div>
+    <main className={styles["main"]}>
+      <Sidebar />
+      <div className={styles["content"]}>
+        <div className={styles["card"]}>
+          <ProfileHeader />
+          <RaidCards />
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </main>
   );
 }
 export async function getServerSideProps({ params }: { params: { platform: string, membershipId: string } }) {
   const { platform: membershipType, membershipId } = params;
-  return { props: { membershipType, membershipId } }
+  const profile = await bungieClient.getProfile(membershipId, membershipType as unknown as BungieMembershipType)
+  return { props: { profile: profile.success ?? profile.error!.message } }
 }
 
 export default Profile;
