@@ -23,6 +23,8 @@ export class PGCRStats {
   private _weaponKills: number
   private _abilityKills: number
   private _weapons: PlayerWeapons
+  // calculates a player's raw score for an activity, used to determine the MVP
+  private _score: number
   constructor(data: StatsKeys | StatsKeys[]) {
     let stats: StatsDictionary
     if (Array.isArray(data)) {
@@ -52,6 +54,12 @@ export class PGCRStats {
     this._timePlayedSeconds = stats.timePlayedSeconds
     this._weaponKills = stats.weaponKills
     this._abilityKills = stats.abilityKills
+    // ranking
+    // rewarded for being in the activity for longer
+    const killScore = (this._kills + 0.5 * this._assists) / Math.sqrt(this._timePlayedSeconds) * 1000
+    // a multiplier based on your deaths per 5 minutes
+    const deathScore = ((this._timePlayedSeconds / 300) / (this._deaths + 1))
+    this._score = killScore * deathScore
   }
 
   private static merge(data: StatsKeys[]): StatsDictionary {
@@ -121,5 +129,9 @@ export class PGCRStats {
 
   get weapons() {
     return this._weapons
+  }
+
+  get score(): number {
+    return this._score
   }
 }

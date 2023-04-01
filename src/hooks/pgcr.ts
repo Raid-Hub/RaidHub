@@ -5,7 +5,6 @@ import { PGCRMember } from "../models/pgcr/Entry"
 import { shared as client } from "../util/bungie-client"
 
 interface UsePGCR {
-    pgcr: DestinyPostGameCarnageReportData | null
     members: PGCRMember[] | null
     activity: Activity | null
     error: string | null
@@ -18,8 +17,8 @@ export function usePGCR(activityId: string): UsePGCR {
         client.getPGCR(activityId)
             .then(pgcr => setPGCR(pgcr))
             .catch(err => setError(err))
-    }, [])
-    if (!pgcr) return { pgcr: null, members: null, activity: null, error}
+    }, [activityId])
+    if (!pgcr) return { members: null, activity: null, error}
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
     /** Group characters by member */
@@ -35,5 +34,5 @@ export function usePGCR(activityId: string): UsePGCR {
         else return (memB.stats.kdr * memB.stats.kills) - (memA.stats.kdr * memA.stats.kills)
     })
     const activity = new Activity(pgcr, members)
-    return { pgcr, members, activity, error }
+    return { members, activity, error }
 }

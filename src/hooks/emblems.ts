@@ -1,12 +1,8 @@
-import { BungieMembershipType } from "oodestiny/schemas"
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/bungie-client"
+import { PGCRMember } from "../models/pgcr/Entry"
 
-type UseEmblemsParams = {
-    membershipId: string
-    membershipType: BungieMembershipType
-    characterId: string
-}[] | undefined
+type UseEmblemsParams = PGCRMember[] | null
 
 export type EmblemDict = { [characterId: string]: string }
 
@@ -24,11 +20,11 @@ export function useEmblems(members: UseEmblemsParams): UseEmblems {
         const errs: string[] = []
         const emblemsList: EmblemTuple[] = []
         Promise.all(members?.map(member =>
-            client.getCharacterEmblem(member.characterId, member.membershipId, member.membershipType)
-                .then(emblem => emblemsList.push([member.characterId, emblem]))
+            client.getCharacterEmblem(member.characterIds[0], member.membershipId, member.membershipType)
+                .then(emblem => emblemsList.push([member.characterIds[0], emblem]))
                 .catch(err => {
                     errs.push(err)
-                    emblemsList.push([member.characterId, ""])
+                    emblemsList.push([member.characterIds[0], ""])
                 })) ?? [])
             .then(() => {
                 setEmblems(Object.fromEntries(emblemsList))
