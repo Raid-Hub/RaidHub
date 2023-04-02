@@ -13,16 +13,22 @@ const Sidebar = ({ }: SidebarProps) => {
                 </div>
 
                 <div className={styles["profile-image"]}>
-                    <img src="images/bruce.png" alt="" />
+                    <img src="/images/bruce.png" alt="" />
                     <p>Bruce<span>#2366</span></p>
                 </div>
 
-                <p className={styles["linked-text"]}>Linked Accounts</p>
-                <img src="images/icons.png" alt="" className={styles["img-social"]}/>
+                <span className={styles["linked-text"]}>Linked Accounts</span>
+                <div className={styles["icons"]}>
+                    <img src="/icons/twitter.png" alt="" className={styles["img-social"]}/>
+                    <img src="/icons/discord.png" alt="" className={styles["img-social"]}/>
+                    <img src="/icons/bungie.png" alt="" className={styles["img-social"]}/>
+                    <img src="/icons/twitch.png" alt="" className={styles["img-social"]}/>
+                    <img src="/icons/youtube.png" alt="" className={styles["img-social"]}/>
+                </div>
             </div>
 
             <div className={styles["profile-banners"]}>
-                <img src="images/Skull.png" alt="" />
+                <img src="/icons/skull.png" alt="" />
 
                 <div className={styles["banners-text"]}>
                     <p>Clears Rank</p>
@@ -32,7 +38,7 @@ const Sidebar = ({ }: SidebarProps) => {
             </div>
 
             <div className={styles["profile-banners"]}>
-                <img src="images/speed.png" alt="" />
+                <img src="/icons/speed.png" alt="" />
 
                 <div className={styles["banners-text"]}>
                     <p>Speed Rank</p>
@@ -42,32 +48,32 @@ const Sidebar = ({ }: SidebarProps) => {
             </div>
 
             <div className={styles["description"]}>
-                <img className={styles["desc-img"]} src="images/Codex Banner.png" alt="" />
+                <img className={styles["desc-img"]} src="/icons/Codex Banner.png" alt="" />
 
                 <div className={styles["description-right"]}>
-                    <p className={styles["desc-title"]}>SNOW [わ]</p>
-                    <p className={styles["desc-subtitle"]}>"七転び八起き"</p>
-                    <p className={styles["desc-text"]}>Requirements: Clarify's approval</p>
+                    <span className={styles["desc-title"]}>CLAN [X]</span>
+                    <span className={styles["desc-subtitle"]}>"Clan Moto"</span>
+                    <span className={styles["desc-text"]}>Clan bio</span>
 
                     <div className={styles["description-list"]}>
-                        <img src="images/Diamond.png" alt="" />
+                        <img src="/icons/diamond.png" alt="" />
                         <p>Trio Flawless <span>x150</span></p>
                     </div>
 
                     <div className={styles["description-list"]}>
-                        <img src="images/Diamond.png" alt="" />
+                        <img src="/icons/diamond.png" alt="" />
                         <p>Trio Flawless <span>x150</span></p>
                     </div>
 
                     <div className={styles["description-list"]}>
-                        <img src="images/Diamond.png" alt="" />
+                        <img src="/icons/diamond.png" alt="" />
                         <p>Trio Flawless Master<span>x150</span></p>
                     </div>
                 </div>
             </div>
 
             <div className={styles["token"]}>
-                <img src="images/logo.png" alt="" />
+                <img src="/logo.png" alt="" />
 
                 <div className={styles["token-text-content"]}>
                     <p className={styles["token-title"]}>RaidHub Founder</p>

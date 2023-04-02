@@ -4,6 +4,7 @@
   flex-wrap: wrap;
   margin: auto;
   overflow: auto;
+  max-width: 1000px;
 }
 
 .main-element {

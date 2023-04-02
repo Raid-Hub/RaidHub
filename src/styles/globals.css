@@ -76,8 +76,9 @@ scrollbar-color: #f5f5f5 #f5f5f5 ;
 
 main {
   width: 75%;
-  max-width: 1000px;
+  max-width: 1200px;
   min-width: 620px;
+  justify-content: center;
 }
 
 @media only screen and (orientation: portrait) {

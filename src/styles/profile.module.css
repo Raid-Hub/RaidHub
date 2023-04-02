@@ -1,10 +1,18 @@
 .main {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: auto;
-    overflow: auto;
-  }
+    margin: 0 auto;
+    margin-top: 1em;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1em;
+}
+
+.sidebar {
+    min-width: 300px;
+}
 
 /* width */
 .dots-container::-webkit-scrollbar {
@@ -19,90 +27,26 @@
 
 /* Handle */
 .dots-container::-webkit-scrollbar-thumb {
-    background: rgb(92, 92, 92);
+    background: #ecebeb;
     border-radius: 7px;
 }
 
 /* Handle on hover */
 .dots-container::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: rgb(79, 187, 70);
 }
 
 .dot {
     cursor: pointer;
 }
 
-.graph-content .dots-left {
-    max-width: 180px;
-    max-height: 100%;
-}
-
 .dots-container {
-    width: 100%;
+    margin-right: 2em;
+    max-height: 100%;
     height: 100px;
     overflow-y: hidden;
-    overflow-x: auto;
-}
-
-.nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 1em 20em;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    font-family: Neue;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.logo-img {
-    width: 40px;
-    height: 40px;
-    margin-right: .5em;
-}
-
-.logo-text {
-    letter-spacing: 1px;
-    font-size: 18px;
-}
-
-.right-content {
-    display: flex;
-    align-items: center;
-}
-
-.search-img {
-    width: 25px;
-    height: 25px;
-    margin-right: 1em;
-}
-
-.profile-img {
-    width: 30px;
-    height: 30px;
-    margin-left: 1em;
-}
-
-.search-bar {
-    border: 1px solid #5b5b5b;
-    border-radius: 4px;
-    width: 260px;
-    height: 35px;
-    background-color: #161616;
-    color: #909090;
-    font-weight: 400;
-    font-size: 14px;
-    font-style: italic;
-    padding-left: 1em;
-}
-
-.content {
-    margin: 1em 20em;
-    display: grid;
-    grid-template-columns: 300px 980px;
+    overflow-x: auto; 
+    direction: rtl; /* initially set direction to right-to-left */
 }
 
 .profile {
@@ -156,9 +100,16 @@
     margin-bottom: .5em;
 }
 
+.icons {
+    display: flex;
+    justify-content: left;
+    margin: 0 1.2em;
+}
+
 .img-social {
-    margin-left: 1.5em;
-    width: 80px;
+    padding: 0.2em;
+    width: 20px;
+    height: 20px;
 }
 
 .profile-banners {
@@ -268,7 +219,6 @@
 .card-header {
     border: 1px solid #292929;
     border-radius: 20px;
-    margin-left: 1em;
     background: rgb(31, 41, 69);
     padding: .2em 3em;
 }
@@ -321,35 +271,51 @@
 }
 
 .cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    margin-left: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
     margin-top: 1em;
     gap: 1em;
 }
 
-.card-boxes {
+.raid-card {
     background-image: url("");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 90%;
     border: 1px solid #4e4e4e;
     border-radius: 20px;
+    min-width: 300px;
+    width: 500px;
+    flex: 1
 }
 
-.card-boxes-content {
-    padding: 0 1em;
+.raid-card-img-container {
+    position: relative;
 }
 
-.card-boxes .top-image {
+.raid-card-img-container .top-image {
     width: 100%;
     border-bottom: 1px solid #4e4e4e;
     border-radius: 20px 20px 0 0;
 }
 
-.card-boxes-title {
-    margin-top: -3em;
-    font-size: 22px;
+.img-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.462), rgba(0, 0, 0, 0.251));
+    padding-left: 1em;
+    box-sizing: border-box;
+}
+
+.raid-card-content {
+    padding: 0 1.5em;
+}
+
+.raid-card-title {
+    font-size: x-large;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -357,7 +323,7 @@
 .card-diamonds {
     display: flex;
     align-items: center;
-    margin-top: -2.5em;
+    margin: -0.4em 0;
 }
 
 .diamond {
@@ -365,20 +331,15 @@
     align-items: center;
 }
 
-.diamond1 {
-    margin-right: .5em;
-}
-
 .diamond img {
-    margin-right: .5em;
+    margin: 0 .5em;
     width: 15px;
 }
 
 .graph-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin: 0;
+    justify-content: center;
 }
 
 .graph-img {
@@ -418,9 +379,8 @@
     padding: 0;
 }
 
-.fastest,
-.average {
-    margin-right: 1em;
+.timing {
+    margin: 1em;
 }
 
 .timings-number {
