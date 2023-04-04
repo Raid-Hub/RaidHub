@@ -468,11 +468,6 @@
     cursor: pointer
 }
 
-/* Raid films */
-.color-film-vow {
+.color-film {
     background-color: rgba(212, 68, 39, 0.003);
-}
-
-.color-film-kf {
-    background-color: rgba(255, 242, 155, 0.006);
 }

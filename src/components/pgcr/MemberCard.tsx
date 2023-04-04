@@ -1,8 +1,8 @@
 import { PGCRMember } from "../../models/pgcr/Entry"
-import { ColorFilm, Raid } from "../../util/raid"
 import styles from '../../styles/pgcr.module.css'
+import { Raid } from "../../util/raid"
 
-interface MemberCardProps {
+type MemberCardProps = {
   member: PGCRMember | null
   index: number
   raid: Raid
@@ -21,7 +21,7 @@ const MemberCard = ({ member, index, raid, emblemBackground, memberIndex, update
       <img
         src={emblemBackground}
         className={styles["emblem"]} />
-      <div className={[styles["member-card-container"], styles[ColorFilm[raid]]].join(" ")}>
+      <div className={[styles["member-card-container"], styles["color-film"]].join(" ")}>
         {memberIndex == -1 || !member
           ? <StandardMemberCard member={member} />
           : <SelectedMemberCard member={member} />}

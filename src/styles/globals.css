@@ -33,22 +33,6 @@ body, html {
   background-image: url("/background-gradient.png");
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  background-color: #555;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #f5f5f5;
-}
-
-/* Change the appearance of the scrollbar in Firefox */
-scrollbar-color: #f5f5f5 #f5f5f5 ;
-
-::-webkit-scrollbar-track {
-  display: none;
-}
-
 @font-face {
   font-family: 'Neue';
   src: url('/fonts/NeueHaasDisplayBlack.ttf') format('truetype');
@@ -86,4 +70,9 @@ main {
       width: 90%;
       min-width: 350px;
   }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

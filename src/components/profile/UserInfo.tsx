@@ -1,29 +1,35 @@
+import { DestinyProfileComponent } from 'oodestiny/schemas';
 import styles from '../../styles/profile.module.css';
 
-interface SidebarProps {
-
+type UserInfoProps = {
+    profile: DestinyProfileComponent
 }
 
-const Sidebar = ({ }: SidebarProps) => {
+const UserInfo = ({ profile }: UserInfoProps) => {
     return (
-        <aside className={styles["sidebar"]}>
+        <section className={styles["sidebar"]}>
             <div className={styles["profile"]}>
                 <div className={styles["profile-banner"]}>
                     <img className={styles["image-background"]} src="images/Bruce_Final.png" alt="" />
                 </div>
 
                 <div className={styles["profile-image"]}>
-                    <img src="/images/bruce.png" alt="" />
-                    <p>Bruce<span>#2366</span></p>
+                    <img src={"https://bungie.net" + (profile.userInfo.iconPath ?? "/img/profile/avatars/default_avatar.gif")} alt="" />
+                    <p>
+                        <span>{profile.userInfo.bungieGlobalDisplayName ?? profile.userInfo.displayName}</span>
+                        <span className={styles["discrim"]}>
+                            {profile.userInfo.bungieGlobalDisplayNameCode ? "#" + profile.userInfo.bungieGlobalDisplayNameCode : ""}
+                        </span>
+                    </p>
                 </div>
 
-                <span className={styles["linked-text"]}>Linked Accounts</span>
+                <p className={styles["linked-text"]}>Linked Accounts</p>
                 <div className={styles["icons"]}>
-                    <img src="/icons/twitter.png" alt="" className={styles["img-social"]}/>
-                    <img src="/icons/discord.png" alt="" className={styles["img-social"]}/>
-                    <img src="/icons/bungie.png" alt="" className={styles["img-social"]}/>
-                    <img src="/icons/twitch.png" alt="" className={styles["img-social"]}/>
-                    <img src="/icons/youtube.png" alt="" className={styles["img-social"]}/>
+                    <img src="/icons/twitter.png" alt="" className={styles["img-social"]} />
+                    <img src="/icons/discord.png" alt="" className={styles["img-social"]} />
+                    <img src="/icons/bungie.png" alt="" className={styles["img-social"]} />
+                    <img src="/icons/twitch.png" alt="" className={styles["img-social"]} />
+                    <img src="/icons/youtube.png" alt="" className={styles["img-social"]} />
                 </div>
             </div>
 
@@ -80,8 +86,8 @@ const Sidebar = ({ }: SidebarProps) => {
                     <p className={styles["token-text"]}>The user contributed to creating RaidHub</p>
                 </div>
             </div>
-        </aside>
+        </section>
     )
 }
 
-export default Sidebar;
+export default UserInfo;

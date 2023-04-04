@@ -1,35 +1,23 @@
-import { getCharacter, getPostGameCarnageReport, getProfile } from 'oodestiny/endpoints/Destiny2'
+import { getActivityHistory, getCharacter, getPostGameCarnageReport, getProfile } from 'oodestiny/endpoints/Destiny2'
 import {
     BungieMembershipType,
     ComponentPrivacySetting,
-    DestinyClass,
+    DestinyActivityModeType,
     DestinyComponentType,
+    DestinyHistoricalStatsPeriodGroup,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
     DestinyProfileComponent,
     PlatformErrorCodes
 } from 'oodestiny/schemas'
 import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
+import { CacheRequest, ErrSuccess } from './types'
 const emblems: { [hash: string]: string } = EmblemsJson
 
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
 const CACHE_MINUTES = 10
 
-export interface CharacterProps {
-    name: string,
-    class: DestinyClass,
-    emblem: string
-}
-
-type CacheRequest<T> = {
-    timestamp: number
-    data: T
-}
-
-interface ErrSuccess<T> {
-    success?: T
-    error?: Error
-}
+export const ACTIVITIES_PER_PAGE = 250
 
 class BungieNetClient {
     public readonly access_token: string | null;
@@ -66,24 +54,50 @@ class BungieNetClient {
             }
             BungieNetClient.setCache(CACHE_KEY, rv)
         } catch (e) {
-            // TODO handle errors
-            throw(e)
+            // TODO record errors
+        } finally {
+            return `https://bungie.net${rv}`
         }
-        return `https://bungie.net${rv}`
     }
 
     async getProfile(destinyMembershipId: string, membershipType: BungieMembershipType): Promise<ErrSuccess<DestinyProfileComponent>> {
         try {
-            const res = await getProfile({ destinyMembershipId, membershipType, components: [DestinyComponentType.Profiles] })
-            if (res.Response.profile.privacy === ComponentPrivacySetting.Private) {
+            const res = await getProfile({ destinyMembershipId, membershipType, components: [DestinyComponentType.Profiles, DestinyComponentType.Characters] })
+            if (res.Response.profile.privacy === ComponentPrivacySetting.Private
+                || res.Response.characters.privacy === ComponentPrivacySetting.Private) {
                 // private profile
                 return { error: Error("Private profile") }
             } else {
                 const profile = res.Response.profile.data
-                return { success: profile }
+                return { success: {
+                    ...profile, 
+                    // TODO: find deleted character Ids
+                    characterIds: Object.keys(res.Response.characters.data)
+                } }
             }
         } catch (e) {
             return { error: e as Error }
+        }
+    }
+
+    async getActivityHistory(
+        destinyMembershipId: string,
+        characterId: string,
+        membershipType: BungieMembershipType,
+        page: number
+    ): Promise<DestinyHistoricalStatsPeriodGroup[]> {
+        try {
+            const res = await getActivityHistory({
+                characterId,
+                destinyMembershipId,
+                membershipType,
+                page,
+                mode: DestinyActivityModeType.Raid,
+                count: ACTIVITIES_PER_PAGE,
+            })
+            return res.Response.activities ?? []
+        } catch (e) {
+            throw e
         }
     }
 
