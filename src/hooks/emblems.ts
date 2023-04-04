@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/bungie-client"
 import { PGCRMember } from "../models/pgcr/Entry"
+import { EmblemDict, EmblemTuple } from "../util/types"
 
 type UseEmblemsParams = PGCRMember[] | null
 
-export type EmblemDict = { [characterId: string]: string }
-
-type EmblemTuple = [id: string, emblem: string]
-
-interface UseEmblems {
+type UseEmblems = {
     emblems: EmblemDict | null
     error: string | null
 }

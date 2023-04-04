@@ -8,7 +8,7 @@ import Error from '../../components/Error';
 import { usePGCR } from '../../hooks/pgcr';
 import { usePlacements } from '../../hooks/placements';
 
-interface PGCRProps {
+type PGCRProps = {
   activityId: string
 }
 
@@ -21,7 +21,7 @@ const PGCR = ({ activityId }: PGCRProps) => {
       {pgcrError && <Error message={pgcrError} />}
       <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
         <div id={styles["summary-card-bg"]}
-          style={{ backgroundImage: `url(/backdrops${Backdrop[activity?.name ?? Raid.NA]})` }}
+          style={{ backgroundImage: `url(${Backdrop[activity?.name ?? Raid.NA]})` }}
           className={styles["bg"]}>
           <ActivityHeader
             activity={activity}

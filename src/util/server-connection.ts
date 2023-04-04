@@ -1,10 +1,9 @@
 import { Tag } from "./tags"
+import { ActivityPlacements } from "./types"
 
 type ActivityPlacementsResponse = {
 
-} 
-
-export type ActivityPlacements = Partial<Record<Tag, number>>
+}
 
 export async function fetchActivityPlacements(activityId: string): Promise<ActivityPlacements> {
     // TODO: THIS FUNCTIONALITY IS CURRENTLY MOCKED

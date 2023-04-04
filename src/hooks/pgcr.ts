@@ -4,7 +4,7 @@ import { Activity } from "../models/pgcr/Activity"
 import { PGCRMember } from "../models/pgcr/Entry"
 import { shared as client } from "../util/bungie-client"
 
-interface UsePGCR {
+type UsePGCR = {
     members: PGCRMember[] | null
     activity: Activity | null
     error: string | null

@@ -5,7 +5,7 @@ import styles from '../../styles/pgcr.module.css';
 import { Icons } from '../../util/icons';
 import { LocalizedStrings } from '../../util/localized-strings';
 
-interface SummaryStatsProps {
+type SummaryStatsProps = {
   activity: Activity | null
 }
 

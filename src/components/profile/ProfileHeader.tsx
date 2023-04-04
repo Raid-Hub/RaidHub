@@ -1,6 +1,6 @@
 import styles from '../../styles/profile.module.css';
 
-interface ProfileHeaderProps {
+type ProfileHeaderProps = {
 }
 
 const ProfileHeader = ({ }: ProfileHeaderProps) => {
@@ -21,7 +21,7 @@ const ProfileHeader = ({ }: ProfileHeaderProps) => {
                 <p>Achieved on February 23rd, 2022</p>
 
                 <div className={styles["card-header-time"]}>
-                    <img src="/icons/speed.png" alt="" width={"20px"} height={"20px"}/>
+                    <img src="/icons/speed.png" alt="" width="20px" height="20px"/>
                     <p>34m 15s</p>
                 </div>
             </div>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { ActivityPlacements, fetchActivityPlacements } from "../util/server-connection"
+import { fetchActivityPlacements } from "../util/server-connection"
+import { ActivityPlacements } from "../util/types"
 
-interface UsePlacements {
+type UsePlacements = {
     placements: ActivityPlacements | null
     error: string | null
 }

@@ -1,11 +1,11 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair } from 'oodestiny/schemas'
-import { RaidDifficulty, raidFromHash, Raid } from "../../util/raid"
+import { RaidDifficulty, raidDetailsFromHash, Raid } from "../../util/raid"
 import { Tag } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
-import { ActivityPlacements } from '../../util/server-connection'
 import { RaidInfo } from './raid'
+import { ActivityPlacements } from '../../util/types'
 
 export class Activity {
   private _activityHash: number
@@ -30,7 +30,7 @@ export class Activity {
     /* This is kinda ugly but its a 1 liner :) */
     this._fresh = this.isFresh(pgcr.startingPhaseIndex, pgcr.activityWasStartedFromBeginning)
     this._stats = new ActivityStats(pgcr, members)
-    this._raidManifest = raidFromHash(`${this._activityHash}`);
+    this._raidManifest = raidDetailsFromHash(`${this._activityHash}`);
     this._placements = {}
   }
 

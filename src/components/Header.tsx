@@ -1,6 +1,6 @@
 import styles from "../styles/header.module.css"
 
-interface HeaderProps {
+type HeaderProps = {
 }
 
 

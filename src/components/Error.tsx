@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/errors.module.css'
 
-interface ErrorProps {
+type ErrorProps = {
   message: string
 }
 

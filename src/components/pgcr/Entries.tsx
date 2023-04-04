@@ -6,9 +6,9 @@ import { Icons } from '../../util/icons';
 import MemberCard from './MemberCard';
 import StatCards from './StatCard';
 import styles from '../../styles/pgcr.module.css'
-import { EmblemDict, useEmblems } from '../../hooks/emblems';
+import { useEmblems } from '../../hooks/emblems';
 
-export interface PGCREntriesProps {
+type PGCREntriesProps = {
   members: PGCRMember[] | null
   raid: Raid
 }

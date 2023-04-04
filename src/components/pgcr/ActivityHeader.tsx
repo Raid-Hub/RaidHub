@@ -3,9 +3,9 @@ import { useLanguage } from '../../hooks/language';
 import { Activity } from '../../models/pgcr/Activity';
 import styles from '../../styles/pgcr.module.css';
 import { LocalizedStrings } from '../../util/localized-strings';
-import { ActivityPlacements } from '../../util/server-connection';
+import { ActivityPlacements } from '../../util/types';
 
-interface ActivityHeaderProps {
+type ActivityHeaderProps = {
   placements: ActivityPlacements | null
   activity: Activity | null
 }
@@ -38,12 +38,13 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
         </div>
         <div id={styles["right-info"]}>
           <div className={styles.duration}>
-            {activity?.speed.complete ? activity?.speed.duration.split(" ").map((t, idx) => (
+            {activity?.speed.duration.split(" ").map((t, idx) => (
               <span key={idx}>
                 <b>{t.substring(0, t.length - 1)}</b>
                 {t[t.length - 1]}
               </span>
-            )) : <span><b>{incomplete}</b></span>}
+            ))}
+            {!(activity?.speed.complete ?? true) && <span><b>{`(${incomplete})`}</b></span>}
           </div>
         </div>
       </div>
