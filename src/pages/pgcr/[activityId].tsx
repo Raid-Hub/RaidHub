@@ -20,16 +20,13 @@ const PGCR = ({ activityId }: PGCRProps) => {
     <main className={styles["main"]}>
       {pgcrError && <Error message={pgcrError} />}
       <section id={styles["summary-card"]} className={[styles["main-element"], styles["soft-rectangle"]].join(' ')}>
-        <div id={styles["summary-card-bg"]}
-          style={{ backgroundImage: `url(${Backdrop[activity?.name ?? Raid.NA]})` }}
-          className={styles["bg"]}>
+          <div className={styles["background-img"]} style={Backdrop[activity?.name ?? Raid.NA]}/>
           <ActivityHeader
             activity={activity}
             placements={placements} />
           <PGCREntries
             raid={activity?.name ?? Raid.NA}
             members={members} />
-        </div>
       </section>
       <section id={styles["summary-stats"]} className={styles["main-element"]}>
         <SummaryStats activity={activity} />

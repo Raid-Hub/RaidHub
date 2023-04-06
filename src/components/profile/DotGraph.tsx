@@ -2,10 +2,15 @@ import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas";
 import styles from '../../styles/profile.module.css';
 import { median } from "../../util/math";
 import { ActivityCollection } from "../../util/types";
-import Dot, { RADIUS, SPACING } from "./Dot";
+import Dot from "./Dot";
+import Loading from "../Loading";
 
-const CANVAS_HEIGHT = 80
-const BORDER = 10
+// constants used to manage the height of the graph
+const CANVAS_HEIGHT = 60
+const BORDER = 7
+export const SPACING = 20
+export const RADIUS = 6
+// calculated constants
 const MIN_Y = BORDER + (2 * RADIUS)
 const LINE_Y = (0.6 * CANVAS_HEIGHT) + BORDER
 const MAX_Y = BORDER + CANVAS_HEIGHT - (2 * RADIUS)
@@ -13,13 +18,14 @@ const FULL_HEIGHT = CANVAS_HEIGHT + (2 * BORDER)
 
 type DotGraphProps = {
     activities: ActivityCollection
+    isLoading: boolean
     filter: (dot: DestinyHistoricalStatsPeriodGroup) => boolean
 }
 
 type Statistics = { min: number, max: number, total: number }
 const baseStats: Statistics = { min: Number.MAX_SAFE_INTEGER, max: 0, total: 0 }
 
-const DotGraph = ({ activities, filter }: DotGraphProps) => {
+const DotGraph = ({ activities, isLoading, filter }: DotGraphProps) => {
     const dots = activities.toJSON()
         .filter(filter)
         .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime())
@@ -36,20 +42,23 @@ const DotGraph = ({ activities, filter }: DotGraphProps) => {
     const avg = median(orderedByDuration)
     const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     return (
-        <div className={styles["dots-container"]}>
-            <svg style={{ width: SPACING * dots.length + "px", height: `${FULL_HEIGHT}px;`, minWidth: "100%;" }}>
-                <line x1="0%" y1={LINE_Y} x2="100%" y2={LINE_Y}
-                    style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }} />
-                {dots.map((dot, idx) =>
-                    <Dot
-                        key={idx}
-                        idx={idx}
-                        id={dot.activityDetails.instanceId}
-                        completed={!!dot.values.completed.basic.value}
-                        star={/*dot.values.deaths.basic.value == 0 || */dot.values.playerCount.basic.value <= 3}
-                        cy={getHeight(dot.values.activityDurationSeconds.basic.value)} />
-                )}
-            </svg>
+        <div className={styles["dots-container"]} style={{height: FULL_HEIGHT}}>
+            {isLoading
+                ? <Loading />
+                : <svg style={{ width: SPACING * dots.length + "px", height: `${FULL_HEIGHT}px;`, minWidth: "100%;" }}>
+                    <line x1="0%" y1={LINE_Y} x2="100%" y2={LINE_Y}
+                        style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }} />
+                    {dots.map((dot, idx) =>
+                        <Dot
+                            key={idx}
+                            idx={idx}
+                            id={dot.activityDetails.instanceId}
+                            completed={!!dot.values.completed.basic.value}
+                            star={/*dot.values.deaths.basic.value == 0 || */dot.values.playerCount.basic.value <= 3}
+                            cy={getHeight(dot.values.activityDurationSeconds.basic.value)} />
+                    )}
+                </svg>
+            }
         </div>
     )
 }

@@ -84,7 +84,9 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
             </Link>
           </button>
         </div>
-        <StatCards entry={members[memberIndex].characters[characterIndex] ?? members[memberIndex]} />
+        <StatCards
+          entry={members[memberIndex].characters[characterIndex] ?? members[memberIndex]}
+          emblemBackground={emblems?.[members[memberIndex]?.characterIds[0]] ?? ""} />
       </div>
     )
   }

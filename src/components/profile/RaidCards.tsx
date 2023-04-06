@@ -9,6 +9,7 @@ import { secondsToHMS } from '../../util/math';
 import { AllRaids, Raid, RaidCardBackground } from '../../util/raid';
 import { ActivityCollection } from '../../util/types';
 import DotGraph from './DotGraph';
+import Loading from '../Loading';
 
 type RaidCardsProps = {
   membershipId: string
@@ -18,7 +19,7 @@ type RaidCardsProps = {
 
 const RaidCards = ({ membershipId, membershipType, characterIds }: RaidCardsProps) => {
   const language = useLanguage()
-  const { activities } = useActivityHistory({ membershipId, membershipType, characterIds })
+  const { activities, loading: isLoadingDots } = useActivityHistory({ membershipId, membershipType, characterIds })
 
   const strings = LocalizedStrings[language]
   return (
@@ -35,6 +36,7 @@ const RaidCards = ({ membershipId, membershipType, characterIds }: RaidCardsProp
           raidName={strings.raidNames[raid]}
           raid={raid}
           activities={activities ? activities[raid] : new Collection()}
+          isLoadingDots={isLoadingDots}
         />
       ))}
     </div>
@@ -53,10 +55,11 @@ type RaidCardProps = {
   raidName: string
   activities: ActivityCollection
   stats: RaidStats
+  isLoadingDots: boolean
 }
 
-const RaidCard = ({ raid, raidName, activities, stats }: RaidCardProps) => {
-  
+const RaidCard = ({ raid, raidName, activities, stats, isLoadingDots }: RaidCardProps) => {
+
 
   return (
     <div className={styles["raid-card"]}>
@@ -84,9 +87,11 @@ const RaidCard = ({ raid, raidName, activities, stats }: RaidCardProps) => {
       </div>
       <div className={styles["raid-card-content"]}>
         <div className={styles["graph-content"]}>
-          <DotGraph 
-          activities={activities}
-          filter={() => true /** (dot) => dot.values.completed.basic.value */}/>
+          
+            <DotGraph
+              activities={activities}
+              isLoading={isLoadingDots}
+              filter={() => true /** (dot) => dot.values.completed.basic.value */} />
           <div className={styles["graph-count"]}>
             <div className={styles["graph-number-img"]}>
               <p className={styles["graph-number"]}>{stats.totalClears}</p>

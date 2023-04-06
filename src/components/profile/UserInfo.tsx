@@ -7,7 +7,7 @@ type UserInfoProps = {
 
 const UserInfo = ({ profile }: UserInfoProps) => {
     return (
-        <section className={styles["sidebar"]}>
+        <section className={styles["user-info"]}>
             <div className={styles["profile"]}>
                 <div className={styles["profile-banner"]}>
                     <img className={styles["image-background"]} src="images/Bruce_Final.png" alt="" />
@@ -24,7 +24,7 @@ const UserInfo = ({ profile }: UserInfoProps) => {
                 </div>
 
                 <p className={styles["linked-text"]}>Linked Accounts</p>
-                <div className={styles["icons"]}>
+                <div className={styles["profile-icons"]}>
                     <img src="/icons/twitter.png" alt="" className={styles["img-social"]} />
                     <img src="/icons/discord.png" alt="" className={styles["img-social"]} />
                     <img src="/icons/bungie.png" alt="" className={styles["img-social"]} />
@@ -33,27 +33,38 @@ const UserInfo = ({ profile }: UserInfoProps) => {
                 </div>
             </div>
 
-            <div className={styles["profile-banners"]}>
-                <img src="/icons/skull.png" alt="" />
+            <div className={styles["ranking-banners"]}>
+                <div className={styles["ranking-banner"]}>
+                    <img src="/icons/skull.png" alt="" />
 
-                <div className={styles["banners-text"]}>
-                    <p>Clears Rank</p>
-                    <p className={styles["bold-banner"]}>Challenger #1</p>
-                    <p>1hr 01ms 01s</p>
+                    <div className={styles["banners-text"]}>
+                        <p>Clears Rank</p>
+                        <p className={styles["bold-banner"]}>Challenger #1</p>
+                        <p>1hr 01ms 01s</p>
+                    </div>
+                </div>
+
+                <div className={styles["ranking-banner"]}>
+                    <img src="/icons/speed.png" alt="" />
+
+                    <div className={styles["banners-text"]}>
+                        <p>Speed Rank</p>
+                        <p className={styles["bold-banner"]}>Challenger #1</p>
+                        <p>1hr 01ms 01s</p>
+                    </div>
+                </div>
+
+                <div className={styles["ranking-banner"]}>
+                    <img src="/logo.png" alt="" style={{marginRight: "0.5em"}}/>
+
+                    <div className={styles["token-text-content"]}>
+                        <p className={styles["token-title"]}>RaidHub Founder</p>
+                        <p className={styles["token-text"]}>The user contributed to creating RaidHub</p>
+                    </div>
                 </div>
             </div>
 
-            <div className={styles["profile-banners"]}>
-                <img src="/icons/speed.png" alt="" />
-
-                <div className={styles["banners-text"]}>
-                    <p>Speed Rank</p>
-                    <p className={styles["bold-banner"]}>Challenger #1</p>
-                    <p>1hr 01ms 01s</p>
-                </div>
-            </div>
-
-            <div className={styles["description"]}>
+            <div className={styles["clan"]}>
                 <img className={styles["desc-img"]} src="/icons/Codex Banner.png" alt="" />
 
                 <div className={styles["description-right"]}>
@@ -75,15 +86,6 @@ const UserInfo = ({ profile }: UserInfoProps) => {
                         <img src="/icons/diamond.png" alt="" />
                         <p>Trio Flawless Master<span>x150</span></p>
                     </div>
-                </div>
-            </div>
-
-            <div className={styles["token"]}>
-                <img src="/logo.png" alt="" />
-
-                <div className={styles["token-text-content"]}>
-                    <p className={styles["token-title"]}>RaidHub Founder</p>
-                    <p className={styles["token-text"]}>The user contributed to creating RaidHub</p>
                 </div>
             </div>
         </section>

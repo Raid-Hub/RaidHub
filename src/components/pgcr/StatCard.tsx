@@ -4,7 +4,12 @@ import { Icons } from "../../util/icons"
 import styles from '../../styles/pgcr.module.css'
 import { LocalizedStrings } from "../../util/localized-strings"
 
-const StatCards = ({ entry }: { entry: PGCREntry }) => {
+type StatCardProps = {
+  entry: PGCREntry
+  emblemBackground: string
+}
+
+const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
   const language = useLanguage()
   const strings = LocalizedStrings[language]
   const statsData: {
@@ -55,6 +60,11 @@ const StatCards = ({ entry }: { entry: PGCREntry }) => {
             <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>{stat.name}</span>
             <span className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>{stat.value}</span>
           </div>
+
+          <div className={styles["background-img"]}
+              style={{
+                backgroundImage: `url(${emblemBackground})`,
+                }} />
         </div>
       ))}
     </>

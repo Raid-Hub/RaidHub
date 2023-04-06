@@ -1,16 +1,11 @@
 .main {
     display: flex;
+    gap: 1em;
     flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column;
     margin: 0 auto;
     margin-top: 1em;
 }
-
-@media only screen and (orientation: portrait) {
-    .main {
-        flex-direction: column;
-    }
-  }
 
 .content {
     flex: 5;
@@ -19,7 +14,11 @@
     margin-left: 1em;
 }
 
-.sidebar {
+.user-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
     flex: 1;
     min-width: 300px;
 }
@@ -55,14 +54,14 @@
 }
 
 .dot circle:hover {
-    r: 10;
+    r: 9;
     transition: r 0.1s ease-in-out;
 }
 
 .dots-container {
     margin-right: 2em;
+    min-width: 200px;
     max-height: 100%;
-    height: 126px;
     overflow-y: hidden;
     overflow-x: auto;
     direction: rtl;
@@ -70,12 +69,13 @@
 }
 
 .profile {
-    height: 210px;
+    flex: 1;
     border: 1px solid #5b5b5b;
     border-radius: 20px;
 }
 
 .profile-banner {
+    margin: 0;
     height: 80px;
 }
 
@@ -87,8 +87,6 @@
 }
 
 .profile-image {
-    width: 70px;
-    height: 70px;
     display: flex;
     align-items: center;
     margin: -1.5em 1em;
@@ -100,6 +98,8 @@
     height: 100%;
     object-fit: cover;
     border-radius: 100px;
+    max-width: 80px;
+    max-height: 80px;
 }
 
 .profile-image p {
@@ -114,16 +114,16 @@
 
 .linked-text {
     font-weight: 600;
-    margin-top: 3em;
+    margin-top: 2.7em;
     font-size: 14px;
     margin-left: 1.5em;
-    margin-bottom: .5em;
+    margin-bottom: 0em;
 }
 
-.icons {
+.profile-icons {
     display: flex;
     justify-content: left;
-    margin: 0 1.2em;
+    margin: 0em 1em;
 }
 
 .img-social {
@@ -132,9 +132,16 @@
     height: 20px;
 }
 
-.profile-banners {
-    background: #d04749;
-    margin-top: 1em;
+.ranking-banners {
+    flex: 1;
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+}
+
+.ranking-banner {
+    min-width: 150;
+    flex: 1;
     border: 1px solid #5b5b5b;
     border-radius: 20px;
     display: flex;
@@ -142,7 +149,7 @@
     padding: 0 1.5em;
 }
 
-.profile-banners img {
+.ranking-banner img {
     width: 30px;
 }
 
@@ -156,12 +163,12 @@
     font-weight: 600;
 }
 
-.description {
+.clan {
+    flex: 1;
     display: flex;
     border: 1px solid #5b5b5b;
     border-radius: 20px;
     align-items: center;
-    margin-top: 1em;
     padding: 1em;
     height: 220px;
 }
@@ -209,19 +216,6 @@
 
 .description-list span {
     color: rgb(135, 135, 135);
-}
-
-.token {
-    display: flex;
-    border: 1px solid #5b5b5b;
-    border-radius: 20px;
-    align-items: center;
-    margin-top: 1em;
-    padding: 6px 1em;
-}
-
-.token img {
-    margin-right: .5em;
 }
 
 .token-title {

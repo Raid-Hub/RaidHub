@@ -13,10 +13,12 @@ type UseActivityHistoryParams = {
 
 type UseActivityHistory = {
     activities: ActivityHistory
+    loading: boolean
 }
 
 export function useActivityHistory({ membershipId, membershipType, characterIds }: UseActivityHistoryParams): UseActivityHistory {
     const [activities, setActivities] = useState<ActivityHistory>(null)
+    const [loading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         const activities: ActivityCollectionDictionary = {
             [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -45,7 +47,10 @@ export function useActivityHistory({ membershipId, membershipType, characterIds 
                 hasMore = (newActivities.length == ACTIVITIES_PER_PAGE)
                 page++
             }
-        })).then(() => setActivities(activities))
+        })).then(() => {
+            setActivities(activities)
+            setLoading(false)
+        })
     }, [])
-    return { activities };
+    return { activities, loading };
 }

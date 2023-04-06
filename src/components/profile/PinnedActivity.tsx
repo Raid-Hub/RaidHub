@@ -1,9 +1,9 @@
 import styles from '../../styles/profile.module.css';
 
-type ProfileHeaderProps = {
+type PinnedActivityProps = {
 }
 
-const ProfileHeader = ({ }: ProfileHeaderProps) => {
+const PinnedActivity = ({ }: PinnedActivityProps ) => {
     return (
         <div className={styles["card-header"]}
             style={{ backgroundImage: "url('https://www.bungie.net/img/destiny_content/pgcr/raid_beanstalk.jpg')" }}>
@@ -29,4 +29,4 @@ const ProfileHeader = ({ }: ProfileHeaderProps) => {
     )
 }
 
-export default ProfileHeader;
+export default PinnedActivity;

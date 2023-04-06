@@ -1,9 +1,8 @@
 import styles from '../../styles/profile.module.css';
+import { RADIUS, SPACING } from './DotGraph';
 
 const red = "#F44336"
 const green = "#4CAF50"
-export const SPACING = 20
-export const RADIUS = 6
 
 type DotProps = {
     idx: number

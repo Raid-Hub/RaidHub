@@ -1,4 +1,5 @@
 import { RaidInfo } from "../models/pgcr/raid"
+import { HTMLAttributes } from 'react';
 
 export enum Raid {
     LEVIATHAN,
@@ -116,37 +117,75 @@ export function raidDetailsFromHash(hash: string): RaidInfo {
     }
 }
 
-// TODO backdrops for other raids
-export const Backdrop: { [key in Raid]: string } = {
-    [Raid.LEVIATHAN]: "/backdrops/dne.png",
-    [Raid.EATER_OF_WORLDS]: "/backdrops/dne.png",
-    [Raid.SPIRE_OF_STARS]: "/backdrops/dne.png",
-    [Raid.LAST_WISH]: "/backdrops/dne.png",
-    [Raid.SCOURGE_OF_THE_PAST]: "/backdrops/dne.png",
-    [Raid.CROWN_OF_SORROW]: "/backdrops/dne.png",
-    [Raid.GARDEN_OF_SALVATION]: "/backdrops/dne.png",
-    [Raid.DEEP_STONE_CRYPT]: "/backdrops/dne.png",
-    [Raid.VAULT_OF_GLASS]: "/backdrops/dne.png",
-    [Raid.VOW_OF_THE_DISCIPLE]: "/backdrops/vow.png",
-    [Raid.KINGS_FALL]: "/backdrops/kf.png",
-    [Raid.ROOT_OF_NIGHTMARES]: "/backdrops/dne.png",
-    [Raid.NA]: "/backdrops/dne.png",
-}
-
 export const RaidCardBackground: { [key in Raid]: string } = {
     [Raid.LEVIATHAN]: "https://www.bungie.net/img/destiny_content/pgcr/raid_gluttony.jpg",
     [Raid.EATER_OF_WORLDS]: "https://www.bungie.net/img/destiny_content/pgcr/raids_leviathan_eater_of_worlds.jpg",
     [Raid.SPIRE_OF_STARS]: "https://www.bungie.net/img/destiny_content/pgcr/raid_greed.jpg",
-    [Raid.LAST_WISH]: "/card-backgrounds/wish.jpg",
+    [Raid.LAST_WISH]: "/card-backgrounds/wish.png",
     [Raid.SCOURGE_OF_THE_PAST]: "https://www.bungie.net/img/destiny_content/pgcr/raids.1305rh0093145r13t5hn10tnz.raid_sunset.jpg",
     [Raid.CROWN_OF_SORROW]: "https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg",
     [Raid.GARDEN_OF_SALVATION]: "https://cdna.artstation.com/p/assets/images/images/021/286/652/large/kevin-whitmeyer-kwhitmeyer-shadowkeep-wide-39.jpg?1571100180",
     [Raid.DEEP_STONE_CRYPT]: "https://cdn1.dotesports.com/wp-content/uploads/2022/11/09110809/d2-dsc-entrance.jpg",
     [Raid.VAULT_OF_GLASS]: "https://assets.reedpopcdn.com/destiny_2_vault_of_glass_walkthrough_4.jpg/BROK/resize/1200x1200%3E/format/jpg/quality/70/destiny_2_vault_of_glass_walkthrough_4.jpg",
-    [Raid.VOW_OF_THE_DISCIPLE]: "/card-backgrounds/vow.jpg",
+    [Raid.VOW_OF_THE_DISCIPLE]: "/card-backgrounds/vow.png",
     [Raid.KINGS_FALL]: "https://cdn1.dotesports.com/wp-content/uploads/2022/09/16144345/2022_KingsFall_Raid_Press_Kit_Oryx_Compressed_009.jpg",
     [Raid.ROOT_OF_NIGHTMARES]: "https://www.bungie.net/img/destiny_content/pgcr/raid_root_of_nightmares.jpg",
     [Raid.NA]: "/backdrops/dne.png",
+}
+
+export const Backdrop: { [key in Raid]: HTMLAttributes<HTMLDivElement>['style'] } = {
+    [Raid.LEVIATHAN]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.LEVIATHAN]})`,
+        opacity: 0.4
+    },
+    [Raid.EATER_OF_WORLDS]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.EATER_OF_WORLDS]})`,
+        opacity: 0.4
+    },
+    [Raid.SPIRE_OF_STARS]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.SPIRE_OF_STARS]})`,
+        opacity: 0.4
+    },
+    [Raid.LAST_WISH]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.LAST_WISH]})`,
+        opacity: 0.2
+    },
+    [Raid.SCOURGE_OF_THE_PAST]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.SCOURGE_OF_THE_PAST]})`,
+        opacity: 0.4
+    },
+    [Raid.CROWN_OF_SORROW]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.CROWN_OF_SORROW]})`,
+        opacity: 0.4
+    },
+    [Raid.GARDEN_OF_SALVATION]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.GARDEN_OF_SALVATION]})`,
+        opacity: 0.4
+    },
+    [Raid.DEEP_STONE_CRYPT]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.DEEP_STONE_CRYPT]})`,
+        opacity: 0.8
+    },
+    [Raid.VAULT_OF_GLASS]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.VAULT_OF_GLASS]})`,
+        opacity: 0.4
+    },
+    [Raid.VOW_OF_THE_DISCIPLE]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.VOW_OF_THE_DISCIPLE]})`,
+        opacity: 0.4
+    },
+    [Raid.KINGS_FALL]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.KINGS_FALL]})`,
+        opacity: 0.4
+    },
+    [Raid.ROOT_OF_NIGHTMARES]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.ROOT_OF_NIGHTMARES]})`,
+        opacity: 0.6
+    },
+    [Raid.NA]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.NA]})`,
+        opacity: 0.4
+    },
 }
 
 export const ContestEnd: Partial<Record<Raid, Date>> = {
