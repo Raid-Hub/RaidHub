@@ -1,11 +1,15 @@
 import { DestinyProfileComponent } from 'oodestiny/schemas';
 import styles from '../../styles/profile.module.css';
+import { useClan } from '../../hooks/clan';
+import { RGBA } from '../../util/types';
 
 type UserInfoProps = {
     profile: DestinyProfileComponent
 }
 
 const UserInfo = ({ profile }: UserInfoProps) => {
+    const { clan, isLoading: isClanLoading } = useClan(profile.userInfo)
+    console.log(clan)
     return (
         <section className={styles["user-info"]}>
             <div className={styles["profile"]}>
@@ -55,7 +59,7 @@ const UserInfo = ({ profile }: UserInfoProps) => {
                 </div>
 
                 <div className={styles["ranking-banner"]}>
-                    <img src="/logo.png" alt="" style={{marginRight: "0.5em"}}/>
+                    <img src="/logo.png" alt="" style={{ marginRight: "0.5em" }} />
 
                     <div className={styles["token-text-content"]}>
                         <p className={styles["token-title"]}>RaidHub Founder</p>
@@ -65,7 +69,9 @@ const UserInfo = ({ profile }: UserInfoProps) => {
             </div>
 
             <div className={styles["clan"]}>
-                <img className={styles["desc-img"]} src="/icons/Codex Banner.png" alt="" />
+                <svg className={styles["clan-img"]}>
+                    <rect x="0" y="0" width="100%" height="100%" fill={RGBAToHex(clan?.clanBanner.primary)} />
+                </svg>
 
                 <div className={styles["description-right"]}>
                     <span className={styles["desc-title"]}>CLAN [X]</span>
@@ -90,6 +96,24 @@ const UserInfo = ({ profile }: UserInfoProps) => {
             </div>
         </section>
     )
+}
+
+function RGBAToHex(rgba: RGBA | undefined): string {
+    if (!rgba) return "#EE0000"
+    let { red, green, blue, alpha } = rgba
+    let r = red.toString(16);
+    let g = green.toString(16);
+    let b = blue.toString(16);
+    let a = alpha.toString(16);
+
+    if (r.length == 1)
+        r = "0" + r;
+    if (g.length == 1)
+        g = "0" + g;
+    if (b.length == 1)
+        b = "0" + b;
+
+    return "#" + r + g + b;
 }
 
 export default UserInfo;

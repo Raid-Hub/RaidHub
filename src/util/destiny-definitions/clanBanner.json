@@ -1,0 +1,1495 @@
+{
+  "clanBannerDecals": {
+    "4125445792": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_4d8db3cd88cff2b122dfcf9dfbd57785.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_61621182c0f1f979040298118a2b0984.png"
+    },
+    "4125445793": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_40417971f9d525775bd560a12b50a4dc.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_ccce3f3dc581ed24328edb6577db5b71.png"
+    },
+    "4125445800": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_c2a701e65e68f598e85adf74994a0fbb.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_5c55c263c033fc1fc76f46eb1d135796.png"
+    },
+    "4125445801": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_0ff65f958dda1d611b562e7db0391f59.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_bdbfb1cd4655388d767a521b03f7f6e9.png"
+    },
+    "4125445802": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_7fc3f2065440e7d4f819029eb566b332.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_944737a66c80328b728f026f72129669.png"
+    },
+    "4125445803": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_c46582739e3bbb593182d0e7b4d47eab.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_99ba5270d5d0bbb564b5f253b124f3d1.png"
+    },
+    "4125445804": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_2404c34b473bd8cf84dc56baf3aa4201.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_3262efbeed66203da11be462779e3d0b.png"
+    },
+    "4125445805": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_3a8cc352aa5cf3db65a6f49cb7587ef0.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_1a9b6f77aba7d1080eca53f7bf0c8632.png"
+    },
+    "4125445806": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_105d511fd1c26bb714a5f4b88760937e.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_adadfa9116ef5809970d5fa8fb0ff3aa.png"
+    },
+    "4125445807": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_4d868e64853e609f06dda9dc1d611e7c.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_680182be4d0e4cd283a3d4b1195725c2.png"
+    },
+    "4142223378": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_7f87bbd39ec4e0d9bb9bf6631e3eaece.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_813d99b081c56b6314b40a3ba38626db.png"
+    },
+    "4142223379": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_e7bc230e5204a1024f9ba28411b13afd.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_fc74502fdae3ece37fa042249f359e7e.png"
+    },
+    "4142223384": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_8dee209c6f24487d16c831d0395d52d4.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_d9a8bd414dc07973e42db158dc38539c.png"
+    },
+    "4142223385": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_8f7ca1d7b25f0ded0e8f668fc3c7d408.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_b40912140ec1f9b7a692a23baf6f86d6.png"
+    },
+    "4142223386": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_09c334f3b95c5545e99a1ac4d3a4ff6a.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_188ff73196da09df4fb78c63e649a99d.png"
+    },
+    "4142223387": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_28363682d4b36cbe51f6ca0fa3914f99.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_51cc8e38f3afccd2a48f2cc1bcc663e5.png"
+    },
+    "4142223388": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_6dee9053ca892f7bfdafa5895cf048ab.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_e217cb5a8e47ac3a047cb61643851fe0.png"
+    },
+    "4142223389": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_ddffe0b352ee7221ccf52a0302e258c8.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_f2804313e11034028dca23fdc0be1b51.png"
+    },
+    "4142223390": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_7385f7a2e3fde260923463225e8ebc51.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_a103db6ab8a89d9d003156d9eb6c8482.png"
+    },
+    "4142223391": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_f8ae0d51ef7897afc12bdb0157cc407b.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_3e3b55f254c3383dd203fdd62ca56050.png"
+    },
+    "4175778656": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_a4d35c0e86faaf355c2bd9cded7a116a.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_3c469c50685a89c6c89fe7aa21e2443e.png"
+    },
+    "4175778657": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_62173ea7721ee717c13916917a4271d1.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_01bba1d7299235504ade8234bbaa9fc8.png"
+    },
+    "4175778658": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_332f7e7f37b4d6495f1392fae5045465.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_2f25874550d8d6a9667679f046ff5d48.png"
+    },
+    "4175778659": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_328e3fcb2ef160a06472403d90180e2d.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_e85e0d6cd8c6e5569746f2360d97518d.png"
+    }
+  },
+  "clanBannerDecalPrimaryColors": {
+    "3312277344": {
+      "blue": 100,
+      "green": 73,
+      "red": 128,
+      "alpha": 255
+    },
+    "3312277345": {
+      "blue": 77,
+      "green": 51,
+      "red": 76,
+      "alpha": 255
+    },
+    "3312277346": {
+      "blue": 166,
+      "green": 89,
+      "red": 159,
+      "alpha": 255
+    },
+    "3312277347": {
+      "blue": 119,
+      "green": 92,
+      "red": 125,
+      "alpha": 255
+    },
+    "3312277348": {
+      "blue": 226,
+      "green": 131,
+      "red": 211,
+      "alpha": 255
+    },
+    "3312277349": {
+      "blue": 226,
+      "green": 131,
+      "red": 195,
+      "alpha": 255
+    },
+    "3312277350": {
+      "blue": 118,
+      "green": 69,
+      "red": 68,
+      "alpha": 255
+    },
+    "3312277351": {
+      "blue": 209,
+      "green": 81,
+      "red": 211,
+      "alpha": 255
+    },
+    "3312277358": {
+      "blue": 40,
+      "green": 31,
+      "red": 46,
+      "alpha": 255
+    },
+    "3312277359": {
+      "blue": 55,
+      "green": 43,
+      "red": 43,
+      "alpha": 255
+    },
+    "3345832516": {
+      "blue": 167,
+      "green": 148,
+      "red": 43,
+      "alpha": 255
+    },
+    "3345832517": {
+      "blue": 160,
+      "green": 171,
+      "red": 118,
+      "alpha": 255
+    },
+    "3345832520": {
+      "blue": 70,
+      "green": 82,
+      "red": 60,
+      "alpha": 255
+    },
+    "3345832521": {
+      "blue": 80,
+      "green": 67,
+      "red": 54,
+      "alpha": 255
+    },
+    "3345832522": {
+      "blue": 57,
+      "green": 47,
+      "red": 38,
+      "alpha": 255
+    },
+    "3345832523": {
+      "blue": 222,
+      "green": 231,
+      "red": 91,
+      "alpha": 255
+    },
+    "3345832524": {
+      "blue": 180,
+      "green": 195,
+      "red": 137,
+      "alpha": 255
+    },
+    "3345832525": {
+      "blue": 161,
+      "green": 171,
+      "red": 119,
+      "alpha": 255
+    },
+    "3345832526": {
+      "blue": 56,
+      "green": 99,
+      "red": 49,
+      "alpha": 255
+    },
+    "3345832527": {
+      "blue": 81,
+      "green": 140,
+      "red": 107,
+      "alpha": 255
+    },
+    "3362610230": {
+      "blue": 129,
+      "green": 38,
+      "red": 32,
+      "alpha": 255
+    },
+    "3362610231": {
+      "blue": 165,
+      "green": 41,
+      "red": 51,
+      "alpha": 255
+    },
+    "3362610232": {
+      "blue": 166,
+      "green": 48,
+      "red": 69,
+      "alpha": 255
+    },
+    "3362610233": {
+      "blue": 211,
+      "green": 81,
+      "red": 105,
+      "alpha": 255
+    },
+    "3362610234": {
+      "blue": 76,
+      "green": 64,
+      "red": 51,
+      "alpha": 255
+    },
+    "3362610235": {
+      "blue": 194,
+      "green": 130,
+      "red": 106,
+      "alpha": 255
+    },
+    "3362610236": {
+      "blue": 206,
+      "green": 162,
+      "red": 121,
+      "alpha": 255
+    },
+    "3362610237": {
+      "blue": 228,
+      "green": 194,
+      "red": 122,
+      "alpha": 255
+    },
+    "3362610238": {
+      "blue": 85,
+      "green": 74,
+      "red": 25,
+      "alpha": 255
+    },
+    "3362610239": {
+      "blue": 119,
+      "green": 119,
+      "red": 75,
+      "alpha": 255
+    },
+    "3379387792": {
+      "blue": 126,
+      "green": 126,
+      "red": 126,
+      "alpha": 255
+    },
+    "3379387793": {
+      "blue": 69,
+      "green": 69,
+      "red": 69,
+      "alpha": 255
+    },
+    "3379387794": {
+      "blue": 240,
+      "green": 240,
+      "red": 240,
+      "alpha": 255
+    },
+    "3379387795": {
+      "blue": 190,
+      "green": 190,
+      "red": 190,
+      "alpha": 255
+    },
+    "3379387796": {
+      "blue": 35,
+      "green": 28,
+      "red": 28,
+      "alpha": 255
+    },
+    "3379387797": {
+      "blue": 18,
+      "green": 17,
+      "red": 17,
+      "alpha": 255
+    },
+    "3379387798": {
+      "blue": 119,
+      "green": 101,
+      "red": 100,
+      "alpha": 255
+    },
+    "3379387799": {
+      "blue": 46,
+      "green": 37,
+      "red": 36,
+      "alpha": 255
+    },
+    "3379387802": {
+      "blue": 70,
+      "green": 70,
+      "red": 255,
+      "alpha": 255
+    },
+    "3379387803": {
+      "blue": 6,
+      "green": 40,
+      "red": 191,
+      "alpha": 255
+    },
+    "3396165376": {
+      "blue": 31,
+      "green": 89,
+      "red": 242,
+      "alpha": 255
+    },
+    "3396165377": {
+      "blue": 36,
+      "green": 53,
+      "red": 106,
+      "alpha": 255
+    },
+    "3396165378": {
+      "blue": 55,
+      "green": 131,
+      "red": 213,
+      "alpha": 255
+    },
+    "3396165379": {
+      "blue": 48,
+      "green": 105,
+      "red": 202,
+      "alpha": 255
+    },
+    "3396165380": {
+      "blue": 100,
+      "green": 87,
+      "red": 151,
+      "alpha": 255
+    },
+    "3396165381": {
+      "blue": 46,
+      "green": 36,
+      "red": 157,
+      "alpha": 255
+    },
+    "3396165382": {
+      "blue": 67,
+      "green": 77,
+      "red": 195,
+      "alpha": 255
+    },
+    "3396165383": {
+      "blue": 52,
+      "green": 65,
+      "red": 181,
+      "alpha": 255
+    },
+    "3396165388": {
+      "blue": 180,
+      "green": 231,
+      "red": 231,
+      "alpha": 255
+    },
+    "3396165389": {
+      "blue": 52,
+      "green": 200,
+      "red": 232,
+      "alpha": 255
+    }
+  },
+  "clanBannerDecalSecondaryColors": {
+    "3501638304": {
+      "blue": 100,
+      "green": 73,
+      "red": 128,
+      "alpha": 255
+    },
+    "3501638305": {
+      "blue": 77,
+      "green": 51,
+      "red": 76,
+      "alpha": 255
+    },
+    "3501638306": {
+      "blue": 166,
+      "green": 89,
+      "red": 159,
+      "alpha": 255
+    },
+    "3501638307": {
+      "blue": 119,
+      "green": 92,
+      "red": 125,
+      "alpha": 255
+    },
+    "3501638308": {
+      "blue": 226,
+      "green": 131,
+      "red": 211,
+      "alpha": 255
+    },
+    "3501638309": {
+      "blue": 226,
+      "green": 131,
+      "red": 195,
+      "alpha": 255
+    },
+    "3501638310": {
+      "blue": 118,
+      "green": 69,
+      "red": 68,
+      "alpha": 255
+    },
+    "3501638311": {
+      "blue": 209,
+      "green": 81,
+      "red": 211,
+      "alpha": 255
+    },
+    "3501638318": {
+      "blue": 40,
+      "green": 31,
+      "red": 46,
+      "alpha": 255
+    },
+    "3501638319": {
+      "blue": 55,
+      "green": 43,
+      "red": 43,
+      "alpha": 255
+    },
+    "3518415897": {
+      "blue": 0,
+      "green": 0,
+      "red": 0,
+      "alpha": 0
+    },
+    "3535193476": {
+      "blue": 167,
+      "green": 148,
+      "red": 43,
+      "alpha": 255
+    },
+    "3535193477": {
+      "blue": 160,
+      "green": 171,
+      "red": 118,
+      "alpha": 255
+    },
+    "3535193480": {
+      "blue": 70,
+      "green": 82,
+      "red": 60,
+      "alpha": 255
+    },
+    "3535193481": {
+      "blue": 80,
+      "green": 67,
+      "red": 54,
+      "alpha": 255
+    },
+    "3535193482": {
+      "blue": 57,
+      "green": 47,
+      "red": 38,
+      "alpha": 255
+    },
+    "3535193483": {
+      "blue": 222,
+      "green": 231,
+      "red": 91,
+      "alpha": 255
+    },
+    "3535193484": {
+      "blue": 180,
+      "green": 195,
+      "red": 137,
+      "alpha": 255
+    },
+    "3535193485": {
+      "blue": 161,
+      "green": 171,
+      "red": 119,
+      "alpha": 255
+    },
+    "3535193486": {
+      "blue": 56,
+      "green": 99,
+      "red": 49,
+      "alpha": 255
+    },
+    "3535193487": {
+      "blue": 81,
+      "green": 140,
+      "red": 107,
+      "alpha": 255
+    },
+    "3551971190": {
+      "blue": 129,
+      "green": 38,
+      "red": 32,
+      "alpha": 255
+    },
+    "3551971191": {
+      "blue": 165,
+      "green": 41,
+      "red": 51,
+      "alpha": 255
+    },
+    "3551971192": {
+      "blue": 166,
+      "green": 48,
+      "red": 69,
+      "alpha": 255
+    },
+    "3551971193": {
+      "blue": 211,
+      "green": 81,
+      "red": 105,
+      "alpha": 255
+    },
+    "3551971194": {
+      "blue": 76,
+      "green": 64,
+      "red": 51,
+      "alpha": 255
+    },
+    "3551971195": {
+      "blue": 194,
+      "green": 130,
+      "red": 106,
+      "alpha": 255
+    },
+    "3551971196": {
+      "blue": 206,
+      "green": 162,
+      "red": 121,
+      "alpha": 255
+    },
+    "3551971197": {
+      "blue": 228,
+      "green": 194,
+      "red": 122,
+      "alpha": 255
+    },
+    "3551971198": {
+      "blue": 85,
+      "green": 74,
+      "red": 25,
+      "alpha": 255
+    },
+    "3551971199": {
+      "blue": 119,
+      "green": 119,
+      "red": 75,
+      "alpha": 255
+    },
+    "3568748752": {
+      "blue": 126,
+      "green": 126,
+      "red": 126,
+      "alpha": 255
+    },
+    "3568748753": {
+      "blue": 69,
+      "green": 69,
+      "red": 69,
+      "alpha": 255
+    },
+    "3568748754": {
+      "blue": 240,
+      "green": 240,
+      "red": 240,
+      "alpha": 255
+    },
+    "3568748755": {
+      "blue": 190,
+      "green": 190,
+      "red": 190,
+      "alpha": 255
+    },
+    "3568748756": {
+      "blue": 35,
+      "green": 28,
+      "red": 28,
+      "alpha": 255
+    },
+    "3568748757": {
+      "blue": 18,
+      "green": 17,
+      "red": 17,
+      "alpha": 255
+    },
+    "3568748758": {
+      "blue": 119,
+      "green": 101,
+      "red": 100,
+      "alpha": 255
+    },
+    "3568748759": {
+      "blue": 46,
+      "green": 37,
+      "red": 36,
+      "alpha": 255
+    },
+    "3568748762": {
+      "blue": 70,
+      "green": 70,
+      "red": 255,
+      "alpha": 255
+    },
+    "3568748763": {
+      "blue": 6,
+      "green": 40,
+      "red": 191,
+      "alpha": 255
+    },
+    "3585526336": {
+      "blue": 31,
+      "green": 89,
+      "red": 242,
+      "alpha": 255
+    },
+    "3585526337": {
+      "blue": 36,
+      "green": 53,
+      "red": 106,
+      "alpha": 255
+    },
+    "3585526338": {
+      "blue": 55,
+      "green": 131,
+      "red": 213,
+      "alpha": 255
+    },
+    "3585526339": {
+      "blue": 48,
+      "green": 105,
+      "red": 202,
+      "alpha": 255
+    },
+    "3585526340": {
+      "blue": 100,
+      "green": 87,
+      "red": 151,
+      "alpha": 255
+    },
+    "3585526341": {
+      "blue": 46,
+      "green": 36,
+      "red": 157,
+      "alpha": 255
+    },
+    "3585526342": {
+      "blue": 67,
+      "green": 77,
+      "red": 195,
+      "alpha": 255
+    },
+    "3585526343": {
+      "blue": 52,
+      "green": 65,
+      "red": 181,
+      "alpha": 255
+    },
+    "3585526348": {
+      "blue": 180,
+      "green": 231,
+      "red": 231,
+      "alpha": 255
+    },
+    "3585526349": {
+      "blue": 52,
+      "green": 200,
+      "red": 232,
+      "alpha": 255
+    }
+  },
+  "clanBannerGonfalons": {
+    "1473910866": "/common/destiny2_content/icons/cb_gonfalon_f6fada502c393950662df87b131bbb6f.png"
+  },
+  "clanBannerGonfalonColors": {
+    "2124081024": {
+      "blue": 180,
+      "green": 195,
+      "red": 137,
+      "alpha": 255
+    },
+    "2124081025": {
+      "blue": 161,
+      "green": 171,
+      "red": 119,
+      "alpha": 255
+    },
+    "2124081026": {
+      "blue": 56,
+      "green": 99,
+      "red": 49,
+      "alpha": 255
+    },
+    "2124081027": {
+      "blue": 81,
+      "green": 140,
+      "red": 107,
+      "alpha": 255
+    },
+    "2124081028": {
+      "blue": 70,
+      "green": 82,
+      "red": 60,
+      "alpha": 255
+    },
+    "2124081029": {
+      "blue": 80,
+      "green": 67,
+      "red": 54,
+      "alpha": 255
+    },
+    "2124081030": {
+      "blue": 57,
+      "green": 47,
+      "red": 38,
+      "alpha": 255
+    },
+    "2124081031": {
+      "blue": 222,
+      "green": 231,
+      "red": 91,
+      "alpha": 255
+    },
+    "2124081032": {
+      "blue": 167,
+      "green": 148,
+      "red": 43,
+      "alpha": 255
+    },
+    "2124081033": {
+      "blue": 160,
+      "green": 171,
+      "red": 118,
+      "alpha": 255
+    },
+    "2140858736": {
+      "blue": 206,
+      "green": 162,
+      "red": 121,
+      "alpha": 255
+    },
+    "2140858737": {
+      "blue": 228,
+      "green": 194,
+      "red": 122,
+      "alpha": 255
+    },
+    "2140858738": {
+      "blue": 85,
+      "green": 74,
+      "red": 25,
+      "alpha": 255
+    },
+    "2140858739": {
+      "blue": 119,
+      "green": 119,
+      "red": 75,
+      "alpha": 255
+    },
+    "2140858740": {
+      "blue": 166,
+      "green": 48,
+      "red": 69,
+      "alpha": 255
+    },
+    "2140858741": {
+      "blue": 211,
+      "green": 81,
+      "red": 105,
+      "alpha": 255
+    },
+    "2140858742": {
+      "blue": 76,
+      "green": 64,
+      "red": 51,
+      "alpha": 255
+    },
+    "2140858743": {
+      "blue": 194,
+      "green": 130,
+      "red": 106,
+      "alpha": 255
+    },
+    "2140858746": {
+      "blue": 129,
+      "green": 38,
+      "red": 32,
+      "alpha": 255
+    },
+    "2140858747": {
+      "blue": 165,
+      "green": 41,
+      "red": 51,
+      "alpha": 255
+    },
+    "2157636320": {
+      "blue": 35,
+      "green": 28,
+      "red": 28,
+      "alpha": 255
+    },
+    "2157636321": {
+      "blue": 18,
+      "green": 17,
+      "red": 17,
+      "alpha": 255
+    },
+    "2157636322": {
+      "blue": 119,
+      "green": 101,
+      "red": 100,
+      "alpha": 255
+    },
+    "2157636323": {
+      "blue": 46,
+      "green": 37,
+      "red": 36,
+      "alpha": 255
+    },
+    "2157636324": {
+      "blue": 126,
+      "green": 126,
+      "red": 126,
+      "alpha": 255
+    },
+    "2157636325": {
+      "blue": 69,
+      "green": 69,
+      "red": 69,
+      "alpha": 255
+    },
+    "2157636326": {
+      "blue": 240,
+      "green": 240,
+      "red": 240,
+      "alpha": 255
+    },
+    "2157636327": {
+      "blue": 190,
+      "green": 190,
+      "red": 190,
+      "alpha": 255
+    },
+    "2157636334": {
+      "blue": 70,
+      "green": 70,
+      "red": 255,
+      "alpha": 255
+    },
+    "2157636335": {
+      "blue": 6,
+      "green": 40,
+      "red": 191,
+      "alpha": 255
+    },
+    "2174413904": {
+      "blue": 180,
+      "green": 231,
+      "red": 231,
+      "alpha": 255
+    },
+    "2174413905": {
+      "blue": 52,
+      "green": 200,
+      "red": 232,
+      "alpha": 255
+    },
+    "2174413912": {
+      "blue": 100,
+      "green": 87,
+      "red": 151,
+      "alpha": 255
+    },
+    "2174413913": {
+      "blue": 46,
+      "green": 36,
+      "red": 157,
+      "alpha": 255
+    },
+    "2174413914": {
+      "blue": 67,
+      "green": 77,
+      "red": 195,
+      "alpha": 255
+    },
+    "2174413915": {
+      "blue": 52,
+      "green": 65,
+      "red": 181,
+      "alpha": 255
+    },
+    "2174413916": {
+      "blue": 31,
+      "green": 89,
+      "red": 242,
+      "alpha": 255
+    },
+    "2174413917": {
+      "blue": 36,
+      "green": 53,
+      "red": 106,
+      "alpha": 255
+    },
+    "2174413918": {
+      "blue": 55,
+      "green": 131,
+      "red": 213,
+      "alpha": 255
+    },
+    "2174413919": {
+      "blue": 48,
+      "green": 105,
+      "red": 202,
+      "alpha": 255
+    },
+    "2224746768": {
+      "blue": 226,
+      "green": 131,
+      "red": 211,
+      "alpha": 255
+    },
+    "2224746769": {
+      "blue": 226,
+      "green": 131,
+      "red": 195,
+      "alpha": 255
+    },
+    "2224746770": {
+      "blue": 118,
+      "green": 69,
+      "red": 68,
+      "alpha": 255
+    },
+    "2224746771": {
+      "blue": 209,
+      "green": 81,
+      "red": 211,
+      "alpha": 255
+    },
+    "2224746772": {
+      "blue": 100,
+      "green": 73,
+      "red": 128,
+      "alpha": 255
+    },
+    "2224746773": {
+      "blue": 77,
+      "green": 51,
+      "red": 76,
+      "alpha": 255
+    },
+    "2224746774": {
+      "blue": 166,
+      "green": 89,
+      "red": 159,
+      "alpha": 255
+    },
+    "2224746775": {
+      "blue": 119,
+      "green": 92,
+      "red": 125,
+      "alpha": 255
+    },
+    "2224746778": {
+      "blue": 40,
+      "green": 31,
+      "red": 46,
+      "alpha": 255
+    },
+    "2224746779": {
+      "blue": 40,
+      "green": 31,
+      "red": 46,
+      "alpha": 255
+    }
+  },
+  "clanBannerGonfalonDetails": {
+    "1647698440": "/common/destiny2_content/icons/cb_gdetail_4fbe1d5843c69cd0f37c5cf56e9eea35.png",
+    "1647698441": "/common/destiny2_content/icons/cb_gdetail_66a0b304b9fc48186d97d48ea1f1e3b7.png",
+    "1647698442": "/common/destiny2_content/icons/cb_gdetail_9c263449a4b290b38d8ae3a757e6d206.png",
+    "1647698443": "/common/destiny2_content/icons/cb_gdetail_40fbf61c1e0526b8554a4a5744eacd8d.png",
+    "1647698444": "/common/destiny2_content/icons/cb_gdetail_3f9df64cf7583323331c151c3f493203.png",
+    "1647698445": "/common/destiny2_content/icons/cb_gdetail_b6494ed2504c7ffd486d8034b9c6fa56.png",
+    "1647698446": "/common/destiny2_content/icons/cb_gdetail_6c0b081846186083c23cdaa8125d3ecb.png",
+    "1647698447": "/common/destiny2_content/icons/cb_gdetail_a8b6cc2073e4a8638d85665e123029f2.png",
+    "1664476150": "/common/destiny2_content/icons/cb_gdetail_41fedc0cc1d0b0d7d9f016c9fa62744f.png",
+    "1664476151": "/common/destiny2_content/icons/cb_gdetail_13dfe885806a72c5b149805021246a98.png",
+    "1664476152": "/common/destiny2_content/icons/cb_gdetail_7b07e04a6737d77899e948412a1d66eb.png",
+    "1664476153": "/common/destiny2_content/icons/cb_gdetail_045293e95974183397fea80319beac8f.png",
+    "1664476154": "/common/destiny2_content/icons/cb_gdetail_0428df9c2cbcee31dfc8c0faf1d6a7e2.png",
+    "1664476155": "/common/destiny2_content/icons/cb_gdetail_a223659183079dd650d6b7f745c92411.png",
+    "1664476156": "/common/destiny2_content/icons/cb_gdetail_c3bba9292505d8876f6e14609f6c5100.png",
+    "1664476157": "/common/destiny2_content/icons/cb_gdetail_041b56e0969aa28bcd661235fe547f5b.png",
+    "1664476158": "/common/destiny2_content/icons/cb_gdetail_1cbfa08d80417c79d406945995897548.png",
+    "1664476159": "/common/destiny2_content/icons/cb_gdetail_800df7fd0969c4876add7d87caf63dae.png",
+    "1681253712": "/common/destiny2_content/icons/cb_gdetail_602ad0d929620f18f8494589e52d50d7.png",
+    "1681253713": "/common/destiny2_content/icons/cb_gdetail_20e2af73cf254fe688255824225bea44.png",
+    "1681253714": "/common/destiny2_content/icons/cb_gdetail_4bdee6f5cf8bb7d13e0bf86d42943624.png",
+    "1681253715": "/common/destiny2_content/icons/cb_gdetail_70eee553054563de23a74b8c707d5cbc.png",
+    "1681253716": "/common/destiny2_content/icons/cb_gdetail_46629eb04470e64569b7046ca38e20f0.png",
+    "1681253717": "/common/destiny2_content/icons/cb_gdetail_6af09d97026f2c7a8d0be5b9e8cffe8f.png",
+    "1681253718": "/common/destiny2_content/icons/cb_gdetail_6ffc385657be40985a2ed697fbf7ac5a.png",
+    "1681253719": "/common/destiny2_content/icons/cb_gdetail_896a24ca29419a106dba40a8e4d4c7e4.png",
+    "1681253722": "/common/destiny2_content/icons/cb_gdetail_0cf5ab3d6191e12dbdcaedcbf4fbad60.png",
+    "1681253723": "/common/destiny2_content/icons/cb_gdetail_733b749dbc318f4a4f0894ef410a7906.png",
+    "1698031296": "/common/destiny2_content/icons/cb_gdetail_f698eff50b0a9db71268f9445c1a25c5.png",
+    "1698031297": "/common/destiny2_content/icons/cb_gdetail_c46b3f0f32959a7905cc756344fe5638.png",
+    "1698031298": "/common/destiny2_content/icons/cb_gdetail_53203c281a9d3ea40433499663baa070.png",
+    "1698031299": "/common/destiny2_content/icons/cb_gdetail_5a15b647151250512dcb62d2361ad682.png",
+    "1698031300": "/common/destiny2_content/icons/cb_gdetail_2ed5184dbbd45fb5136bf44d290181d1.png",
+    "1698031301": "/common/destiny2_content/icons/cb_gdetail_acc3a34c845e25e7afd5cbbf08fae8ec.png",
+    "1698031302": "/common/destiny2_content/icons/cb_gdetail_e176d7df14cf8ec5cef1d6eb17b44bc5.png",
+    "1698031303": "/common/destiny2_content/icons/cb_gdetail_efcecd0ae4d140b3b945a3c26d6cb37d.png",
+    "1698031308": "/common/destiny2_content/icons/cb_gdetail_ac9af5ab0f4e2c868a2357e391df664c.png",
+    "1698031309": "/common/destiny2_content/icons/cb_gdetail_9b7c33e79535e5c8eb5189daaf958612.png"
+  },
+  "clanBannerGonfalonDetailColors": {
+    "4078567632": {
+      "blue": 165,
+      "green": 41,
+      "red": 51,
+      "alpha": 255
+    },
+    "4078567633": {
+      "blue": 129,
+      "green": 38,
+      "red": 32,
+      "alpha": 255
+    },
+    "4078567640": {
+      "blue": 119,
+      "green": 119,
+      "red": 75,
+      "alpha": 255
+    },
+    "4078567641": {
+      "blue": 85,
+      "green": 74,
+      "red": 25,
+      "alpha": 255
+    },
+    "4078567642": {
+      "blue": 228,
+      "green": 194,
+      "red": 122,
+      "alpha": 255
+    },
+    "4078567643": {
+      "blue": 206,
+      "green": 162,
+      "red": 121,
+      "alpha": 255
+    },
+    "4078567644": {
+      "blue": 194,
+      "green": 130,
+      "red": 106,
+      "alpha": 255
+    },
+    "4078567645": {
+      "blue": 76,
+      "green": 64,
+      "red": 51,
+      "alpha": 255
+    },
+    "4078567646": {
+      "blue": 211,
+      "green": 81,
+      "red": 105,
+      "alpha": 255
+    },
+    "4078567647": {
+      "blue": 166,
+      "green": 48,
+      "red": 69,
+      "alpha": 255
+    },
+    "4095345218": {
+      "blue": 160,
+      "green": 171,
+      "red": 118,
+      "alpha": 255
+    },
+    "4095345219": {
+      "blue": 167,
+      "green": 148,
+      "red": 43,
+      "alpha": 255
+    },
+    "4095345224": {
+      "blue": 81,
+      "green": 140,
+      "red": 107,
+      "alpha": 255
+    },
+    "4095345225": {
+      "blue": 56,
+      "green": 99,
+      "red": 49,
+      "alpha": 255
+    },
+    "4095345226": {
+      "blue": 161,
+      "green": 171,
+      "red": 119,
+      "alpha": 255
+    },
+    "4095345227": {
+      "blue": 180,
+      "green": 195,
+      "red": 137,
+      "alpha": 255
+    },
+    "4095345228": {
+      "blue": 222,
+      "green": 231,
+      "red": 91,
+      "alpha": 255
+    },
+    "4095345229": {
+      "blue": 57,
+      "green": 47,
+      "red": 38,
+      "alpha": 255
+    },
+    "4095345230": {
+      "blue": 80,
+      "green": 67,
+      "red": 54,
+      "alpha": 255
+    },
+    "4095345231": {
+      "blue": 70,
+      "green": 82,
+      "red": 60,
+      "alpha": 255
+    },
+    "4112122934": {
+      "blue": 52,
+      "green": 200,
+      "red": 232,
+      "alpha": 255
+    },
+    "4112122935": {
+      "blue": 180,
+      "green": 231,
+      "red": 231,
+      "alpha": 255
+    },
+    "4112122936": {
+      "blue": 48,
+      "green": 105,
+      "red": 202,
+      "alpha": 255
+    },
+    "4112122937": {
+      "blue": 55,
+      "green": 131,
+      "red": 213,
+      "alpha": 255
+    },
+    "4112122938": {
+      "blue": 36,
+      "green": 53,
+      "red": 106,
+      "alpha": 255
+    },
+    "4112122939": {
+      "blue": 31,
+      "green": 89,
+      "red": 242,
+      "alpha": 255
+    },
+    "4112122940": {
+      "blue": 52,
+      "green": 65,
+      "red": 181,
+      "alpha": 255
+    },
+    "4112122941": {
+      "blue": 67,
+      "green": 77,
+      "red": 195,
+      "alpha": 255
+    },
+    "4112122942": {
+      "blue": 46,
+      "green": 36,
+      "red": 157,
+      "alpha": 255
+    },
+    "4112122943": {
+      "blue": 100,
+      "green": 87,
+      "red": 151,
+      "alpha": 255
+    },
+    "4128900496": {
+      "blue": 190,
+      "green": 190,
+      "red": 190,
+      "alpha": 255
+    },
+    "4128900497": {
+      "blue": 240,
+      "green": 240,
+      "red": 240,
+      "alpha": 255
+    },
+    "4128900498": {
+      "blue": 69,
+      "green": 69,
+      "red": 69,
+      "alpha": 255
+    },
+    "4128900499": {
+      "blue": 126,
+      "green": 126,
+      "red": 126,
+      "alpha": 255
+    },
+    "4128900500": {
+      "blue": 46,
+      "green": 37,
+      "red": 36,
+      "alpha": 255
+    },
+    "4128900501": {
+      "blue": 119,
+      "green": 101,
+      "red": 100,
+      "alpha": 255
+    },
+    "4128900502": {
+      "blue": 18,
+      "green": 17,
+      "red": 17,
+      "alpha": 255
+    },
+    "4128900503": {
+      "blue": 35,
+      "green": 28,
+      "red": 28,
+      "alpha": 255
+    },
+    "4128900504": {
+      "blue": 6,
+      "green": 40,
+      "red": 191,
+      "alpha": 255
+    },
+    "4128900505": {
+      "blue": 70,
+      "green": 70,
+      "red": 255,
+      "alpha": 255
+    },
+    "4196010964": {
+      "blue": 55,
+      "green": 43,
+      "red": 43,
+      "alpha": 255
+    },
+    "4196010965": {
+      "blue": 40,
+      "green": 31,
+      "red": 46,
+      "alpha": 255
+    },
+    "4196010968": {
+      "blue": 119,
+      "green": 92,
+      "red": 125,
+      "alpha": 255
+    },
+    "4196010969": {
+      "blue": 166,
+      "green": 89,
+      "red": 159,
+      "alpha": 255
+    },
+    "4196010970": {
+      "blue": 77,
+      "green": 51,
+      "red": 76,
+      "alpha": 255
+    },
+    "4196010971": {
+      "blue": 100,
+      "green": 73,
+      "red": 128,
+      "alpha": 255
+    },
+    "4196010972": {
+      "blue": 209,
+      "green": 81,
+      "red": 211,
+      "alpha": 255
+    },
+    "4196010973": {
+      "blue": 118,
+      "green": 69,
+      "red": 68,
+      "alpha": 255
+    },
+    "4196010974": {
+      "blue": 226,
+      "green": 131,
+      "red": 195,
+      "alpha": 255
+    },
+    "4196010975": {
+      "blue": 226,
+      "green": 131,
+      "red": 211,
+      "alpha": 255
+    }
+  },
+  "clanBannerDecalsSquare": {
+    "4125445792": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_2e1ff58a0168ac02a7f4d5713f941521.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_b88478e98bfe65d6f5eb36a9440acb38.png"
+    },
+    "4125445793": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_803d1a67249d0bb83fe759de8782ff75.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_a6f6fd2cdd2f7d018e0a8311a364ee59.png"
+    },
+    "4125445800": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_5743e146aab20a604beb54ea2e0c9a98.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_bdf3e7919023f9faf1ed52d59c319536.png"
+    },
+    "4125445801": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_3818b4cd0f1f7291c040ba98e7dbc8ec.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_a1570fa133ecfbc9a3864fe832a62ffa.png"
+    },
+    "4125445802": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_86cec002003021fe140d9369ed7f3154.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_d2f1966cf6815c95b4de53203866d6aa.png"
+    },
+    "4125445803": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_6ef623552d87e235b15e3f50d9509ca3.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_1d174c9cd4562f2cc0f2a483dfea68d9.png"
+    },
+    "4125445804": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_d9bc14a63c1eb85be0417dda98a1a6a0.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_992878861157c91bdc3206b50fb2b912.png"
+    },
+    "4125445805": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_9edc72700cc9454c575f557a11d1e611.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_382464cf640f1e22de3e1099428bb07a.png"
+    },
+    "4125445806": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_53bce853eeb0c3caa73f210a630325f2.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_b40435ce93bd19390e76556562b628f6.png"
+    },
+    "4125445807": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_fe8f3ef75edbad07764859fd88baee01.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_e0a56037d91d1fef4f24c5282ca2fd34.png"
+    },
+    "4142223378": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_7c4648bf7b7a87c7af3893aca9f05baa.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_16a1ba1bfc6b49d36e219f5639b3802b.png"
+    },
+    "4142223379": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_d7a4febde6eb834098cdd0ae6ae35bed.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_7b0b991eff3abce1f4f83d1ac7df8a15.png"
+    },
+    "4142223384": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_c0ecd484a44c9aa934f9fb67e1ac1108.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_53468fe0799b424f995509d03be6bfa8.png"
+    },
+    "4142223385": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_5d427aba5cb10e9e45a7117c5843ef36.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_bfa7ab8b2dc008680ccea6fd3d9ad8d3.png"
+    },
+    "4142223386": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_862f6923ae3270d66a0483a2beaf4b65.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_eb519bb8de67b42afcbe04946473ba48.png"
+    },
+    "4142223387": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_611491d8b2faa442a61b89ac80e51ca6.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_07e063b57a6a45016c21a17b52ba1a2a.png"
+    },
+    "4142223388": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_236989d57e958a21a0fad20f52ef8f8c.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_9539b08afd42259aa1efe8b083928d48.png"
+    },
+    "4142223389": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_5482462ead8491867ba37222cf248b6e.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_48abbaadb1dfd418c214005a6db99e93.png"
+    },
+    "4142223390": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_d7cfd84e154ef625feb934cad3b17be6.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_a924d1935aeefa72214bd111a4bd0118.png"
+    },
+    "4142223391": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_35ee2d786460505e8eb347747f5e3475.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_0e081ab27a10949fb6daa352c572c2b9.png"
+    },
+    "4175778656": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_264dfb33718daacc16fe72fd56978aed.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_3caf451f734a415d60329ccc7c9ea9a4.png"
+    },
+    "4175778657": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_b7218e13d0d3e246744b648824b37d14.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_cedaa876dda3bc226ec7b6717d65143a.png"
+    },
+    "4175778658": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_646ed304fa1dc34509819094720a2666.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_aa5a1d3b97fc8201ba39afba5ca4c692.png"
+    },
+    "4175778659": {
+      "foregroundPath": "/common/destiny2_content/icons/cb_decal_square_398074639d287f0be66773416efb3851.png",
+      "backgroundPath": "/common/destiny2_content/icons/cb_decal_square_42290f3ab89c10fb324a88a464463b64.png"
+    }
+  },
+  "clanBannerGonfalonDetailsSquare": {
+    "1647698440": "/common/destiny2_content/icons/cb_detail_square_4b9790c03ac02d09923300f1e62e1341.png",
+    "1647698441": "/common/destiny2_content/icons/cb_detail_square_ca2c431d0d8937015467667f4ad92634.png",
+    "1647698442": "/common/destiny2_content/icons/cb_detail_square_dd808bf3569cdb72051eee4bd4cd6163.png",
+    "1647698443": "/common/destiny2_content/icons/cb_detail_square_7231a141bbac5207936b04573c0831e1.png",
+    "1647698444": "/common/destiny2_content/icons/cb_detail_square_a0b57ef850214ce981d0b35a1604d676.png",
+    "1647698445": "/common/destiny2_content/icons/cb_detail_square_74eeade47160e050e1def1cde9879c9b.png",
+    "1647698446": "/common/destiny2_content/icons/cb_detail_square_85baa3ab866af6a4b585ca053f841d87.png",
+    "1647698447": "/common/destiny2_content/icons/cb_detail_square_08986e0e7c86f0a31bad500323a8a08e.png",
+    "1664476150": "/common/destiny2_content/icons/cb_detail_square_014ea423780a071039d5c1ee69f9d52d.png",
+    "1664476151": "/common/destiny2_content/icons/cb_detail_square_c35b1ad42afaf31f3d342748b64b7c09.png",
+    "1664476152": "/common/destiny2_content/icons/cb_detail_square_abbfbec8bf8a960d7fac7abfc641fe46.png",
+    "1664476153": "/common/destiny2_content/icons/cb_detail_square_22ff5d16d15a19d90103a6ec9eae1296.png",
+    "1664476154": "/common/destiny2_content/icons/cb_detail_square_a7f8c4f9f19fed51d641ecf9f792c8dc.png",
+    "1664476155": "/common/destiny2_content/icons/cb_detail_square_2fcd2526ac3cc5822be4aceb8e6443e6.png",
+    "1664476156": "/common/destiny2_content/icons/cb_detail_square_7a59f9e69e7a5d35ecedccb5cc858b25.png",
+    "1664476157": "/common/destiny2_content/icons/cb_detail_square_31cdacbfad7ddd76cff6f2c6c138adf6.png",
+    "1664476158": "/common/destiny2_content/icons/cb_detail_square_04d1eb93f3530bcf9f642e865dcbc954.png",
+    "1664476159": "/common/destiny2_content/icons/cb_detail_square_82085687d09a84a46daa973d28e3088b.png",
+    "1681253712": "/common/destiny2_content/icons/cb_detail_square_e8cd7e81ad5533c902607b5503e8a906.png",
+    "1681253713": "/common/destiny2_content/icons/cb_detail_square_7feb7a85bcfa1c113ef0b2c1c596bbd0.png",
+    "1681253714": "/common/destiny2_content/icons/cb_detail_square_cb3fc8c432af9131e6ceefdef944de42.png",
+    "1681253715": "/common/destiny2_content/icons/cb_detail_square_657d79d8b629024b1c94442a3cca4af8.png",
+    "1681253716": "/common/destiny2_content/icons/cb_detail_square_d8d5d2b9c36a5bbe6fef95f83a9f4ce3.png",
+    "1681253717": "/common/destiny2_content/icons/cb_detail_square_bff6f78b3d39d09189a5cf1037df2903.png",
+    "1681253718": "/common/destiny2_content/icons/cb_detail_square_f95c28f4e61ef5b7555615ee55749374.png",
+    "1681253719": "/common/destiny2_content/icons/cb_detail_square_536eb50b048f7cfb5257375fd5c41022.png",
+    "1681253722": "/common/destiny2_content/icons/cb_detail_square_5365d9fb340422d8c227ca04471977b6.png",
+    "1681253723": "/common/destiny2_content/icons/cb_detail_square_371013dd81b02c35dd438a81b3366b56.png",
+    "1698031296": "/common/destiny2_content/icons/cb_detail_square_7d82228c642d13737d5fbf9f2ad42371.png",
+    "1698031297": "/common/destiny2_content/icons/cb_detail_square_c1f94a3b6839e235a74db9324fd13cc9.png",
+    "1698031298": "/common/destiny2_content/icons/cb_detail_square_e044d3f9e6f4f6be1748ced9fe808d2e.png",
+    "1698031299": "/common/destiny2_content/icons/cb_detail_square_0ea3b10b18f3b2cea171a94863f7780a.png",
+    "1698031300": "/common/destiny2_content/icons/cb_detail_square_23ec50e61a077c2d6aee73df47ef51b5.png",
+    "1698031301": "/common/destiny2_content/icons/cb_detail_square_edc315f88f2dcdbf7a3e37e6882bc0a9.png",
+    "1698031302": "/common/destiny2_content/icons/cb_detail_square_dbe1aa04392eeaba3fa65e5d7701bc2c.png",
+    "1698031303": "/common/destiny2_content/icons/cb_detail_square_761a9c98fed5f3b9ed73ffdc5bb40aee.png",
+    "1698031308": "/common/destiny2_content/icons/cb_detail_square_af8783a2c35cd1741db710a4bde38ea8.png",
+    "1698031309": "/common/destiny2_content/icons/cb_detail_square_b487ff0bebe4b58bbc892dd9c46dea1a.png"
+  }
+}

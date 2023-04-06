@@ -45,7 +45,7 @@ const DotGraph = ({ activities, isLoading, filter }: DotGraphProps) => {
         <div className={styles["dots-container"]} style={{height: FULL_HEIGHT}}>
             {isLoading
                 ? <Loading />
-                : <svg style={{ width: SPACING * dots.length + "px", height: `${FULL_HEIGHT}px;`, minWidth: "100%;" }}>
+                : <svg style={{ width: SPACING * dots.length + "px", height: FULL_HEIGHT, minWidth: "100%" }}>
                     <line x1="0%" y1={LINE_Y} x2="100%" y2={LINE_Y}
                         style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }} />
                     {dots.map((dot, idx) =>

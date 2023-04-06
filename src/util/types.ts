@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection";
-import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas";
+import { DestinyHistoricalStatsPeriodGroup, GroupV2 } from "oodestiny/schemas";
 import { Raid } from "./raid";
 import { Tag } from "./tags";
 
@@ -17,3 +17,23 @@ export interface CacheRequest<T> {
     timestamp: number
     data: T
 }
+export type FB = {
+    foregroundPath: string
+    backgroundPath: string
+}
+export type RGBA = {
+    blue: number,
+    green: number,
+    red: number,
+    alpha: number
+}
+export interface ClanBannerData {
+    primary: RGBA,
+    secondary: RGBA,
+    square: FB,
+    gonfalconsColor: RGBA,
+    gonfalconsDetailColor: RGBA,
+    gonfalconsDetail: string,
+    gonfalconsLink: string
+}
+export type Clan = GroupV2 & { clanBanner: ClanBannerData }

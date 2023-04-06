@@ -1,4 +1,5 @@
 import { getActivityHistory, getCharacter, getPostGameCarnageReport, getProfile } from 'oodestiny/endpoints/Destiny2'
+import { getGroupsForMember } from 'oodestiny/endpoints/GroupV2'
 import {
     BungieMembershipType,
     ComponentPrivacySetting,
@@ -8,13 +9,32 @@ import {
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
     DestinyProfileComponent,
+    GroupType,
+    GroupV2,
+    GroupsForMemberFilter,
     PlatformErrorCodes
 } from 'oodestiny/schemas'
-import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
-import { CacheRequest, ErrSuccess } from './types'
-const emblems: { [hash: string]: string } = EmblemsJson
+import { CacheRequest, Clan, ClanBannerData, ErrSuccess, FB, RGBA } from './types'
 
+// TODO: move these to a CDN
+import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
+import BannersJson from "./destiny-definitions/clanBanner.json" assert { type: "json" }
+
+const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
+
+const clanBanners: {
+    clanBannerDecals: { [hash: string]: FB },
+    clanBannerDecalPrimaryColors: { [hash: string]: RGBA },
+    clanBannerDecalSecondaryColors: { [hash: string]: RGBA },
+    clanBannerGonfalons: { [hash: string]: string },
+    clanBannerGonfalonColors: { [hash: string]: RGBA },
+    clanBannerGonfalonDetails: { [hash: string]: string },
+    clanBannerGonfalonDetailColors: { [hash: string]: RGBA },
+    clanBannerDecalsSquare: { [hash: string]: FB },
+    clanBannerGonfalonDetailsSquare: { [hash: string]: string }
+} = BannersJson
+
 const CACHE_MINUTES = 10
 
 export const ACTIVITIES_PER_PAGE = 250
@@ -69,11 +89,13 @@ class BungieNetClient {
                 return { error: Error("Private profile") }
             } else {
                 const profile = res.Response.profile.data
-                return { success: {
-                    ...profile, 
-                    // TODO: find deleted character Ids
-                    characterIds: Object.keys(res.Response.characters.data)
-                } }
+                return {
+                    success: {
+                        ...profile,
+                        // TODO: find deleted character Ids
+                        characterIds: Object.keys(res.Response.characters.data)
+                    }
+                }
             }
         } catch (e) {
             return { error: e as Error }
@@ -96,6 +118,32 @@ class BungieNetClient {
                 count: ACTIVITIES_PER_PAGE,
             })
             return res.Response.activities ?? []
+        } catch (e) {
+            throw e
+        }
+    }
+    async getClan(membershipId: string, membershipType: BungieMembershipType): Promise<Clan> {
+        try {
+            const res = await getGroupsForMember({
+                filter: GroupsForMemberFilter.All,
+                groupType: GroupType.Clan,
+                membershipId,
+                membershipType
+            })
+            const group = res.Response.results[0].group
+            const clanBannerData = group.clanInfo.clanBannerData
+            return {
+                ...group,
+                clanBanner: {
+                    primary: clanBanners.clanBannerDecalPrimaryColors[clanBannerData.decalColorId],
+                    secondary: clanBanners.clanBannerDecalSecondaryColors[clanBannerData.decalBackgroundColorId],
+                    square: clanBanners.clanBannerDecalsSquare[clanBannerData.decalId],
+                    gonfalconsColor: clanBanners.clanBannerGonfalonColors[clanBannerData.gonfalonColorId],
+                    gonfalconsDetailColor: clanBanners.clanBannerGonfalonDetailColors[clanBannerData.gonfalonDetailColorId],
+                    gonfalconsDetail: clanBanners.clanBannerGonfalonDetailsSquare[clanBannerData.gonfalonDetailId],
+                    gonfalconsLink: clanBanners.clanBannerGonfalons[clanBannerData.gonfalonId],
+                }
+            }
         } catch (e) {
             throw e
         }
