@@ -30,7 +30,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
             </span>
           </div>
           <div id={styles["raid-name"]}>
-            <span>{activity ? strings.raidNames[activity.name].toUpperCase() : strings.loading}</span>
+            <span>{activity ? strings.raidNames[activity.raid].toUpperCase() : strings.loading}</span>
           </div>
           {activity?.speed.fresh === null && <div id={styles["cp-error"]}>
             <p>{checkpointDisclaimer}</p>
@@ -49,7 +49,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
         </div>
       </div>
       <div id={styles["tags-container"]}>
-        {activity?.tags.map((tag, idx) => (
+        {activity?.tags(strings).map((tag, idx) => (
           <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>{tag}</div>
         ))}
       </div>

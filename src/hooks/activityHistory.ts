@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
 import { useEffect, useState } from "react"
-import { ACTIVITIES_PER_PAGE, shared as client } from "../util/bungie-client"
+import { ACTIVITIES_PER_PAGE, shared as client } from "../util/http/bungie"
 import { Raid, raidDetailsFromHash } from "../util/raid"
 import { ActivityCollectionDictionary, ActivityHistory } from "../util/types"
 
@@ -13,12 +13,12 @@ type UseActivityHistoryParams = {
 
 type UseActivityHistory = {
     activities: ActivityHistory
-    loading: boolean
+    isLoading: boolean
 }
 
 export function useActivityHistory({ membershipId, membershipType, characterIds }: UseActivityHistoryParams): UseActivityHistory {
     const [activities, setActivities] = useState<ActivityHistory>(null)
-    const [loading, setLoading] = useState<boolean>(true)
+    const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         const activities: ActivityCollectionDictionary = {
             [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -42,15 +42,14 @@ export function useActivityHistory({ membershipId, membershipType, characterIds 
                 const newActivities = await client.getActivityHistory(membershipId, characterId, membershipType, page)
                 newActivities.forEach(activity => {
                     const info = raidDetailsFromHash(activity.activityDetails.referenceId.toString())
-                    activities[info.name].set(activity.activityDetails.instanceId, activity)
+                    activities[info.raid].set(activity.activityDetails.instanceId, activity)
                 })
                 hasMore = (newActivities.length == ACTIVITIES_PER_PAGE)
                 page++
             }
-        })).then(() => {
-            setActivities(activities)
-            setLoading(false)
-        })
+        }))
+            .then(() => setActivities(activities))
+            .finally(() => setLoading(false))
     }, [])
-    return { activities, loading };
+    return { activities, isLoading };
 }

@@ -1,12 +1,13 @@
 import { Raid } from "./raid"
+import { Tag } from "./tags"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }
 
-interface LocalStrings {
+export interface LocalStrings {
     checkPointDisclaimer: string
     incompleteRaid: string
-    raidNames: {[key in Raid]: string}
+    raidNames: { [key in Raid]: string }
     loading: string
     none: string
     mvp: string
@@ -19,6 +20,7 @@ interface LocalStrings {
     assists: string
     abilityKills: string
     timeSpent: string
+    tags: { [key in Tag]: string }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -52,6 +54,20 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         assists: "Assists",
         abilityKills: "Ability Kills",
         timeSpent: "Time Spent",
+        tags: {
+            [Tag.CHECKPOINT]: "Checkpoint",
+            [Tag.DAY_ONE]: "Day One",
+            [Tag.CONTEST]: "Contest",
+            [Tag.MASTER]: "Master",
+            [Tag.PRESTIGE]: "Prestige",
+            [Tag.SOLO]: "Solo",
+            [Tag.DUO]: "Duo",
+            [Tag.TRIO]: "Trio",
+            [Tag.FLAWLESS]: "Flawless",
+            [Tag.CHALLENGE_VOG]: "Tempo's Edge",
+            [Tag.CHALLENGE_KF]: "Regicide",
+            [Tag.ABILITIES_ONLY]: "Abilities Only",
+        }
     }
 }
 

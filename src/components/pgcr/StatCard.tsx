@@ -61,8 +61,9 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
             <span className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>{stat.value}</span>
           </div>
 
-          <div className={styles["background-img"]}
+          <div className={["background-img", styles["emblem"]].join(" ")}
               style={{
+                opacity: 0.9,
                 backgroundImage: `url(${emblemBackground})`,
                 }} />
         </div>

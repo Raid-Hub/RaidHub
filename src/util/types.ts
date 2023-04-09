@@ -1,8 +1,9 @@
 import { Collection } from "@discordjs/collection";
-import { DestinyHistoricalStatsPeriodGroup, GroupV2 } from "oodestiny/schemas";
+import { DestinyHistoricalStatsPeriodGroup, DestinyProfileComponent, GroupV2 } from "oodestiny/schemas";
 import { Raid } from "./raid";
 import { Tag } from "./tags";
 
+export type ProfileComponent = DestinyProfileComponent & { emblemBackgroundPath: string }
 export type ActivityCollection = Collection<string, DestinyHistoricalStatsPeriodGroup>
 export type ActivityCollectionDictionary = { [key in Raid]: ActivityCollection }
 export type ActivityHistory = ActivityCollectionDictionary | null
@@ -17,10 +18,6 @@ export interface CacheRequest<T> {
     timestamp: number
     data: T
 }
-export type FB = {
-    foregroundPath: string
-    backgroundPath: string
-}
 export type RGBA = {
     blue: number,
     green: number,
@@ -28,12 +25,14 @@ export type RGBA = {
     alpha: number
 }
 export interface ClanBannerData {
-    primary: RGBA,
-    secondary: RGBA,
-    square: FB,
-    gonfalconsColor: RGBA,
-    gonfalconsDetailColor: RGBA,
-    gonfalconsDetail: string,
-    gonfalconsLink: string
+    decalPrimary: string,
+    decalPrimaryColor: string,
+    decalSecondary: string,
+    decalSecondaryColor: string,
+    gonfalcons: string
+    gonfalconsColor: string,
+    decalTop: string,
+    decalTopColor: string,
 }
 export type Clan = GroupV2 & { clanBanner: ClanBannerData }
+export type RaidHubProfile = {}

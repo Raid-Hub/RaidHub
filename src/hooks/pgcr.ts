@@ -2,23 +2,29 @@ import { DestinyPostGameCarnageReportData, DestinyPostGameCarnageReportEntry } f
 import { useEffect, useState } from "react"
 import { Activity } from "../models/pgcr/Activity"
 import { PGCRMember } from "../models/pgcr/Entry"
-import { shared as client } from "../util/bungie-client"
+import { shared as client } from "../util/http/bungie"
 
 type UsePGCR = {
     members: PGCRMember[] | null
     activity: Activity | null
     error: string | null
+    isLoading: boolean
 }
 
 export function usePGCR(activityId: string): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [isLoading, setLoading] = useState<boolean>(true)
+
     useEffect(() => {
         client.getPGCR(activityId)
-            .then(pgcr => setPGCR(pgcr))
-            .catch(err => setError(err))
+            .then(pgcr => client.validatePGCR(pgcr))
+            .then(validatedPGCR => setPGCR(validatedPGCR))
+            //.catch(err => setError(err))
+            .finally(() => setLoading(false))
     }, [activityId])
-    if (!pgcr) return { members: null, activity: null, error}
+    
+    if (isLoading || !pgcr) return { members: null, activity: null, error, isLoading }
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
     /** Group characters by member */
@@ -28,11 +34,11 @@ export function usePGCR(activityId: string): UsePGCR {
         if (charA.values.completed.basic.value) return -1;
         else if (charB.values.completed.basic.value) return 1;
         else return charB.values.startSeconds.basic.value - charA.values.startSeconds.basic.value
-        /* Sort member by completion then (kdr * kills) */
+        /* Sort member by completion then score */
     }))).sort((memA, memB) => {
-        if (!memA.didComplete || !memB.didComplete && (memA.didComplete || memB.didComplete)) return !memA.didComplete ? 1 : -1
-        else return (memB.stats.kdr * memB.stats.kills) - (memA.stats.kdr * memA.stats.kills)
+        if ((!memA.didComplete || !memB.didComplete) && (memA.didComplete != memB.didComplete)) return !memA.didComplete ? 1 : -1
+        else return memB.stats.score - memA.stats.score
     })
     const activity = new Activity(pgcr, members)
-    return { members, activity, error }
+    return { members, activity, error, isLoading }
 }

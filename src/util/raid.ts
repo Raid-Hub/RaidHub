@@ -118,19 +118,19 @@ export function raidDetailsFromHash(hash: string): RaidInfo {
 }
 
 export const RaidCardBackground: { [key in Raid]: string } = {
-    [Raid.LEVIATHAN]: "https://www.bungie.net/img/destiny_content/pgcr/raid_gluttony.jpg",
-    [Raid.EATER_OF_WORLDS]: "https://www.bungie.net/img/destiny_content/pgcr/raids_leviathan_eater_of_worlds.jpg",
-    [Raid.SPIRE_OF_STARS]: "https://www.bungie.net/img/destiny_content/pgcr/raid_greed.jpg",
+    [Raid.LEVIATHAN]: "/card-backgrounds/levi.png",
+    [Raid.EATER_OF_WORLDS]: "/card-backgrounds/eow.png",
+    [Raid.SPIRE_OF_STARS]: "/card-backgrounds/spire.png",
     [Raid.LAST_WISH]: "/card-backgrounds/wish.png",
-    [Raid.SCOURGE_OF_THE_PAST]: "https://www.bungie.net/img/destiny_content/pgcr/raids.1305rh0093145r13t5hn10tnz.raid_sunset.jpg",
-    [Raid.CROWN_OF_SORROW]: "https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg",
-    [Raid.GARDEN_OF_SALVATION]: "https://cdna.artstation.com/p/assets/images/images/021/286/652/large/kevin-whitmeyer-kwhitmeyer-shadowkeep-wide-39.jpg?1571100180",
-    [Raid.DEEP_STONE_CRYPT]: "https://cdn1.dotesports.com/wp-content/uploads/2022/11/09110809/d2-dsc-entrance.jpg",
-    [Raid.VAULT_OF_GLASS]: "https://assets.reedpopcdn.com/destiny_2_vault_of_glass_walkthrough_4.jpg/BROK/resize/1200x1200%3E/format/jpg/quality/70/destiny_2_vault_of_glass_walkthrough_4.jpg",
+    [Raid.SCOURGE_OF_THE_PAST]: "/card-backgrounds/sotp.png",
+    [Raid.CROWN_OF_SORROW]: "/card-backgrounds/crown.png",
+    [Raid.GARDEN_OF_SALVATION]: "/card-backgrounds/gos.png",
+    [Raid.DEEP_STONE_CRYPT]: "/card-backgrounds/dsc.png",
+    [Raid.VAULT_OF_GLASS]: "/card-backgrounds/vog.png",
     [Raid.VOW_OF_THE_DISCIPLE]: "/card-backgrounds/vow.png",
-    [Raid.KINGS_FALL]: "https://cdn1.dotesports.com/wp-content/uploads/2022/09/16144345/2022_KingsFall_Raid_Press_Kit_Oryx_Compressed_009.jpg",
-    [Raid.ROOT_OF_NIGHTMARES]: "https://www.bungie.net/img/destiny_content/pgcr/raid_root_of_nightmares.jpg",
-    [Raid.NA]: "/backdrops/dne.png",
+    [Raid.KINGS_FALL]: "/card-backgrounds/kf.png",
+    [Raid.ROOT_OF_NIGHTMARES]: "/card-backgrounds/ron.png",
+    [Raid.NA]: "/card-backgrounds/dne.png",
 }
 
 export const Backdrop: { [key in Raid]: HTMLAttributes<HTMLDivElement>['style'] } = {
@@ -186,6 +186,22 @@ export const Backdrop: { [key in Raid]: HTMLAttributes<HTMLDivElement>['style'] 
         backgroundImage: `url(${RaidCardBackground[Raid.NA]})`,
         opacity: 0.4
     },
+}
+
+export const RaidBanner: { [key in Raid]: string } = {
+    [Raid.LEVIATHAN]: "/banners/levi.png",
+    [Raid.EATER_OF_WORLDS]: "/banners/eow.png",
+    [Raid.SPIRE_OF_STARS]: "/banners/spire.png",
+    [Raid.LAST_WISH]: "/banners/wish.png",
+    [Raid.SCOURGE_OF_THE_PAST]: "/banners/sotp.png",
+    [Raid.CROWN_OF_SORROW]: "/banners/crown.png",
+    [Raid.GARDEN_OF_SALVATION]: "/banners/gos.png",
+    [Raid.DEEP_STONE_CRYPT]: "/banners/dsc.png",
+    [Raid.VAULT_OF_GLASS]: "/banners/vog.png",
+    [Raid.VOW_OF_THE_DISCIPLE]: "/banners/vow.png",
+    [Raid.KINGS_FALL]: "/banners/kf.png",
+    [Raid.ROOT_OF_NIGHTMARES]: "/banners/ron.png",
+    [Raid.NA]: "",
 }
 
 export const ContestEnd: Partial<Record<Raid, Date>> = {

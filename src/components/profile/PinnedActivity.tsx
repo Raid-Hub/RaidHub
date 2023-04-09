@@ -1,31 +1,47 @@
+import Link from 'next/link';
+import { useLanguage } from '../../hooks/language';
+import { usePGCR } from '../../hooks/pgcr';
 import styles from '../../styles/profile.module.css';
+import { LocalizedStrings } from '../../util/localized-strings';
+import { RaidBanner } from '../../util/raid';
 
 type PinnedActivityProps = {
+    activityId: string
 }
 
-const PinnedActivity = ({ }: PinnedActivityProps ) => {
-    return (
-        <div className={styles["card-header"]}
-            style={{ backgroundImage: "url('https://www.bungie.net/img/destiny_content/pgcr/raid_beanstalk.jpg')" }}>
-            <img className={styles["pin"]} src="/icons/pin.png" alt="" />
+const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
+    const { activity, isLoading: isLoadingActivity } = usePGCR(activityId)
+    const language = useLanguage()
+    const strings = LocalizedStrings[language]
+    if (isLoadingActivity || !activity) return (<></>)
+    else return (
+        <Link
+        href={`/pgcr/${activityId}`}
+        target="_blank"
+        rel="noopener noreferrer">
+            <div className={styles["pinned-activity"]}>
+                <div id={styles["pinned-background"]} className="background-img" style={{
+                    backgroundImage: `url('${RaidBanner[activity.raid]}')`
+                }} />
+                <img className={styles["pin"]} src="/icons/pin.png" alt="" />
 
-            <div className={styles["card-header-text"]}>
-                <p className={styles["card-header-title"]}>last wish</p>
+                <div className={styles["card-header-text"]}>
+                    <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
+                </div>
+                <div className={styles["card-header-subtext"]}>
+                    <p>{`Achieved on ${activity.completionDate.toLocaleDateString(navigator.language, {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric"
+                    })}`}</p>
 
-                <div className={styles["card-badge"]}>
-                    <img src="/icons/diamond.png" alt="" />
-                    <p>Trio Flawless</p>
+                    <div className={styles["card-header-time"]}>
+                        <img src="/icons/speed.png" alt="" width="20px" height="20px" />
+                        <span>{activity.speed.duration}</span>
+                    </div>
                 </div>
             </div>
-            <div className={styles["card-header-subtext"]}>
-                <p>Achieved on February 23rd, 2022</p>
-
-                <div className={styles["card-header-time"]}>
-                    <img src="/icons/speed.png" alt="" width="20px" height="20px"/>
-                    <p>34m 15s</p>
-                </div>
-            </div>
-        </div>
+        </Link>
     )
 }
 

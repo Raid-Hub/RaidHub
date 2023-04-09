@@ -19,7 +19,7 @@ type RaidCardsProps = {
 
 const RaidCards = ({ membershipId, membershipType, characterIds }: RaidCardsProps) => {
   const language = useLanguage()
-  const { activities, loading: isLoadingDots } = useActivityHistory({ membershipId, membershipType, characterIds })
+  const { activities, isLoading: isLoadingDots } = useActivityHistory({ membershipId, membershipType, characterIds })
 
   const strings = LocalizedStrings[language]
   return (

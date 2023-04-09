@@ -29,7 +29,7 @@ const DotGraph = ({ activities, isLoading, filter }: DotGraphProps) => {
     const dots = activities.toJSON()
         .filter(filter)
         .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime())
-    const { min, max, total } = dots.reduce((ac, cv) => {
+    let { min, max, total } = dots.reduce((ac, cv) => {
         const cvTime = cv.values.activityDurationSeconds.basic.value
         return {
             min: Math.min(ac.min, cvTime),
@@ -37,6 +37,10 @@ const DotGraph = ({ activities, isLoading, filter }: DotGraphProps) => {
             total: ac.total + cvTime
         }
     }, baseStats)
+    if (dots.length === 1) {
+        min -= 1
+        max += 1
+    }
 
     const orderedByDuration = dots.map(dot => dot.values.activityDurationSeconds.basic.value).sort((a, b) => a - b)
     const avg = median(orderedByDuration)

@@ -1,9 +1,5 @@
-import { Tag } from "./tags"
-import { ActivityPlacements } from "./types"
-
-type ActivityPlacementsResponse = {
-
-}
+import { Tag } from "../tags"
+import { ActivityPlacements } from "../types"
 
 export async function fetchActivityPlacements(activityId: string): Promise<ActivityPlacements> {
     // TODO: THIS FUNCTIONALITY IS CURRENTLY MOCKED

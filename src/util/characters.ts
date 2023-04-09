@@ -11,7 +11,7 @@ export const CharacterType: {[key: string]: DestinyClass} = {
 export const CharacterName: {[key in DestinyClass]: string} = {
     [DestinyClass.Hunter]: "Hunter",
     [DestinyClass.Titan]: "Titan",
-    [DestinyClass.Warlock]: "Hunter",
+    [DestinyClass.Warlock]: "Warlock",
     [DestinyClass.Unknown]: "Unknown"
 }
 

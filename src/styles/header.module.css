@@ -4,6 +4,7 @@
     width: 60vw;
     max-width: 950px;
     margin: auto;
+    margin-top: 0.5em;
 }
 
 @media only screen and (orientation: portrait) {
@@ -32,6 +33,13 @@
     margin-right: 5px;
     letter-spacing: 1px;
     font-size: 18px;
+    white-space: nowrap;
+}
+
+@media only screen and (max-width: 450px) {
+    #logo-text {
+        display: none
+    }
 }
 
 #right-content {

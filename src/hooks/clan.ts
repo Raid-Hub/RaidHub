@@ -1,6 +1,6 @@
-import { BungieMembershipType, GroupV2 } from "oodestiny/schemas"
+import { BungieMembershipType } from "oodestiny/schemas"
 import { useEffect, useState } from "react"
-import { shared as client } from "../util/bungie-client"
+import { shared as client } from "../util/http/bungie"
 import { Clan } from "../util/types"
 
 type UseClanParams = {
@@ -17,10 +17,9 @@ export function useClan({ membershipId, membershipType }: UseClanParams): UseCla
     const [clan, setClan] = useState<Clan | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
-        client.getClan(membershipId, membershipType).then(clan => {
-            setClan(clan)
-            setLoading(false)
-        })
+        client.getClan(membershipId, membershipType)
+            .then(clan => setClan(clan))
+            .finally(() => setLoading(false))
     }, [])
     return { clan, isLoading };
 }

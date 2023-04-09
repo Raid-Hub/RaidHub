@@ -10,7 +10,7 @@ const Header = ({}: HeaderProps) => {
       <nav id={styles.nav}>
         <div id={styles.logo}>
           <img id={styles["logo-img"]} src="/logo.png" alt="logo" />
-          <p id={styles["logo-text"]}>Raid Hub</p>
+          <span id={styles["logo-text"]}>RaidHub</span>
         </div>
         <div id={styles["right-content"]}>
           <img id={styles["search-img"]} src="/icons/search.png" alt="search" />

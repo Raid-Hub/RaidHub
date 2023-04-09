@@ -1,11 +1,12 @@
 import { DestinyPostGameCarnageReportData, DestinyHistoricalStatsValuePair } from 'oodestiny/schemas'
 import { RaidDifficulty, raidDetailsFromHash, Raid } from "../../util/raid"
-import { Tag } from '../../util/tags'
+import { Tag, addModifiers } from '../../util/tags'
 import { Seasons } from '../../util/dates'
 import { ActivityStats } from './ActivityStats'
 import { PGCRMember } from './Entry'
 import { RaidInfo } from './raid'
 import { ActivityPlacements } from '../../util/types'
+import { LocalStrings } from '../../util/localized-strings'
 
 export class Activity {
   private _activityHash: number
@@ -19,6 +20,7 @@ export class Activity {
   private _stats: ActivityStats
   private _raidManifest: RaidInfo
   private _placements: ActivityPlacements
+  private _tags: Tag[]
   constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
     this._activityHash = pgcr.activityDetails.directorActivityHash
     this._complete = pgcr.entries.some(e => e.values.completed?.basic.value)
@@ -32,32 +34,28 @@ export class Activity {
     this._stats = new ActivityStats(pgcr, members)
     this._raidManifest = raidDetailsFromHash(`${this._activityHash}`);
     this._placements = {}
-  }
-
-  get name(): Raid {
-    return this._raidManifest.name
-  }
-
-  get tags(): string[] {
-    const tags: string[] = []
-    if (this._raidManifest.isDayOne(this._finishedTime)) tags.push(this.placementTag(Tag.DAY_ONE))
+    this._tags = []
+    if (this._raidManifest.isDayOne(this._finishedTime)) this._tags.push(Tag.DAY_ONE)
     if (this._raidManifest.isContest(this._startedTime)) {
       switch (this._raidManifest.difficulty) {
-        case RaidDifficulty.CHALLENGEKF: tags.push(this.placementTag(Tag.CHALLENGE_KF)); break
-        case RaidDifficulty.CHALLENGEVOG: tags.push(this.placementTag(Tag.CHALLENGE_VOG)); break
-        default: tags.push(this.placementTag(Tag.CONTEST))
+        case RaidDifficulty.CHALLENGEKF: this._tags.push(Tag.CHALLENGE_KF); break
+        case RaidDifficulty.CHALLENGEVOG: this._tags.push(Tag.CHALLENGE_VOG); break
+        default: this._tags.push(Tag.CONTEST)
       }
     }
-    if (this._fresh === false) tags.push(Tag.CHECKPOINT)
-    if (this._raidManifest.difficulty === RaidDifficulty.MASTER) tags.push(this.placementTag(Tag.MASTER))
-    if (this._playerCount === 1) tags.push(this.placementTag(Tag.SOLO))
-    else if (this._playerCount === 2) tags.push(this.placementTag(Tag.DUO))
-    else if (this._playerCount === 3) tags.push(this.placementTag(Tag.TRIO))
+    if (this._fresh === false) this._tags.push(Tag.CHECKPOINT)
+    if (this._raidManifest.difficulty === RaidDifficulty.MASTER) this._tags.push(Tag.MASTER)
+    if (this._playerCount === 1) this._tags.push(Tag.SOLO)
+    else if (this._playerCount === 2) this._tags.push(Tag.DUO)
+    else if (this._playerCount === 3) this._tags.push(Tag.TRIO)
     if (this._fresh && this._complete) {
-      if (this._flawless) tags.push(Tag.FLAWLESS)
-      if (this._stats.killsTypeRatio.ability === 100) tags.push(Tag.AbilitiesOnly)
+      if (this._flawless) this._tags.push(Tag.FLAWLESS)
+      if (this._stats.killsTypeRatio.ability === 100) this._tags.push(Tag.ABILITIES_ONLY)
     }
-    return tags;
+  }
+
+  get raid(): Raid {
+    return this._raidManifest.raid
   }
 
   get completionDate() {
@@ -74,6 +72,14 @@ export class Activity {
 
   get stats(): ActivityStats {
     return this._stats
+  }
+
+  tags(strings: LocalStrings): string[] {
+    return this._tags.map(tag => this.placementTag(tag, strings.tags[tag]))
+  }
+
+  title(strings: LocalStrings): string {
+    return addModifiers(this._raidManifest.raid, this._tags, strings)
   }
 
   set placements(placements: ActivityPlacements) {
@@ -101,9 +107,9 @@ export class Activity {
     }
   }
 
-  private placementTag(tag: Tag): string {
+  private placementTag(tag: Tag, tagString: string): string {
     const placement = this._placements[tag]
-    if (placement) return `${tag} #${placement}`
-    else return tag
+    if (placement) return `${tagString} #${placement}`
+    else return tagString
   }
 }

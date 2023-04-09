@@ -7,11 +7,14 @@
     margin-top: 1em;
 }
 
+.main section {
+    max-width: 100%;
+}
+
 .content {
     flex: 5;
     display: flex;
     flex-direction: column;
-    margin-left: 1em;
 }
 
 .user-info {
@@ -20,7 +23,6 @@
     flex-wrap: wrap;
     gap: 1em;
     flex: 1;
-    min-width: 300px;
 }
 
 /* width */
@@ -72,64 +74,72 @@
     flex: 1;
     border: 1px solid #5b5b5b;
     border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 
 .profile-banner {
     margin: 0;
-    height: 80px;
+    border-radius: inherit
 }
 
 .image-background {
+    min-height: 50px;
+    min-width: 240px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 20px 20px 0 0;
+    border-radius: inherit;
+    border: 1px solid #b09494;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
-.profile-image {
-    display: flex;
+.profile-details {
     align-items: center;
     margin: -1.5em 1em;
+    margin-bottom: 0em;
+    display: flex;
 }
 
-.profile-image img {
+.profile-details>img {
+    flex: 1;
     margin-right: .5em;
-    width: 100%;
-    height: 100%;
     object-fit: cover;
-    border-radius: 100px;
     max-width: 80px;
     max-height: 80px;
+    border-radius: 50%; /* makes the border circular */
+    border: 1px solid #5b5b5b;
 }
 
-.profile-image p {
+.profile-username {
+    flex: 1;
+}
+
+.profile-username>span {
+    white-space: nowrap;
     font-weight: 600;
     font-size: 18px;
-    margin-top: 1.5em;
 }
 
 .discrim {
     color: #13e6ff;
 }
 
-.linked-text {
-    font-weight: 600;
-    margin-top: 2.7em;
-    font-size: 14px;
-    margin-left: 1.5em;
-    margin-bottom: 0em;
-}
-
 .profile-icons {
+    flex: 1;
+    margin: 1em;
     display: flex;
-    justify-content: left;
-    margin: 0em 1em;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start
 }
 
 .img-social {
-    padding: 0.2em;
-    width: 20px;
-    height: 20px;
+    margin: 0.3em;
+    max-height: 30px;
+    width: auto;
 }
 
 .ranking-banners {
@@ -140,27 +150,38 @@
 }
 
 .ranking-banner {
-    min-width: 150;
     flex: 1;
     border: 1px solid #5b5b5b;
     border-radius: 20px;
     display: flex;
     align-items: center;
-    padding: 0 1.5em;
+    padding: 0.5em 0;
+    min-width: 200px;
 }
 
 .ranking-banner img {
     width: 30px;
+    margin: 0 1em;
 }
 
-.banners-text p {
+.banners-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.banners-text > span {
+    flex: 1;
     font-size: 14px;
-    line-height: 2px;
-    margin-left: .5em;
+    margin-right: 1em;
 }
 
-.banners-text .bold-banner {
+.banner-bold {
     font-weight: 600;
+}
+
+.banner-subtext {
+    font-style: italic;
+    color: #8a8a8a;
 }
 
 .clan {
@@ -170,71 +191,94 @@
     border-radius: 20px;
     align-items: center;
     padding: 1em;
-    height: 220px;
+    box-sizing: border-box;
 }
 
 .clan-img {
-    width: 99px;
-    height: 192px;
+    display: flex;
+    width: 90px;
+    height: 180px;
     margin-right: 1em;
 }
 
+svg.clan-img {
+    overflow: visible;
+}
+
+.clan-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em
+}
+
 .desc-title {
+    display: inline-block;
+    flex: 1;
+    white-space: nowrap;
+
     font-weight: 600;
     font-size: 24px;
     letter-spacing: 2px;
-    margin-top: -1.5em;
 }
 
 .desc-subtitle {
+    display: inline-block;
+    flex: 1;
+
     font-style: italic;
     font-size: 18px;
-    margin-top: -1.5em;
     color: rgb(133, 133, 133);
 }
 
 .desc-text {
+    flex: 1;
+
+    white-space: pre-line;
     color: rgb(183, 183, 183);
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .description-list {
     display: flex;
+    flex-direction: column;
+}
+
+.description-list-item {
+    display: flex;
     align-items: center;
 }
 
-.description-list img {
+.description-list-item img {
     width: 14px;
     height: 10px;
     margin-right: 5px;
 }
 
-.description-list p {
+.description-list-item p {
     font-size: 12px;
     margin: 0;
 }
 
-.description-list span {
+.description-list-item span {
     color: rgb(135, 135, 135);
 }
 
-.token-title {
-    font-weight: 600;
-    font-size: 12px;
-}
-
-.token-text {
-    color: rgb(109, 109, 109);
-    margin-top: -10px;
-    font-size: 12px;
-    font-style: italic;
-}
-
-.card-header {
-    border: 1px solid #292929;
+.pinned-activity {
+    border: 1px solid #5b5b5b;
     border-radius: 20px;
-    background: rgb(31, 41, 69);
     padding: .2em 3em;
+    position: relative;
+}
+
+.pinned-activity {
+    border: 1px solid #5b5b5b;
+    border-radius: 20px;
+    padding: .2em 3em;
+    position: relative;
+}
+
+#pinned-background {
+    opacity: 0.6;
 }
 
 .pin {
@@ -255,11 +299,6 @@
     font-size: 22px;
     text-transform: uppercase;
     margin-right: .5em;
-}
-
-.card-badge {
-    display: flex;
-    align-items: center;
 }
 
 .card-badge img {
@@ -290,13 +329,14 @@
     flex-direction: row;
     margin-top: 1em;
     gap: 1em;
+    max-width: 100%;
 }
 
 .raid-card {
     border: 1px solid #4e4e4e;
     border-radius: 20px;
     min-width: 300px;
-    width: 500px;
+    max-width: 100%;
     flex: 1
 }
 

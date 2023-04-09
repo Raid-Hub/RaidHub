@@ -124,7 +124,7 @@ export class PGCRStats {
     const totalMinutes = round(this._timePlayedSeconds / 60, 0)
     const hours = Math.floor(totalMinutes / 60)
     const minutes = totalMinutes - hours * 60
-    return `${hours}h ${minutes}m`
+    return `${totalMinutes == 546 ? ">" : ""}${hours}h ${minutes}m`
   }
 
   get weapons() {

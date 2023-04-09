@@ -24,7 +24,6 @@ body, html {
   height: 100vh;
   overflow-x: hidden;
   color: white;
-  font-family: Neue;
   position: relative;
   z-index: 1;
   background-position: left;
@@ -59,7 +58,7 @@ body, html {
 }
 
 main {
-  width: 75%;
+  width: 85vw;
   max-width: 1200px;
   min-width: 620px;
   justify-content: center;
@@ -67,7 +66,7 @@ main {
 
 @media only screen and (orientation: portrait) {
   main {
-      width: 90%;
+      width: 95vw;
       min-width: 350px;
   }
 }
@@ -87,14 +86,10 @@ a {
   animation-fill-mode: none;
   animation-play-state: running;
 
-  transform: scale(1, 0.60);
-  margin-top: 0;
-  border-radius: 4px;
-  margin-bottom: 0;
-  transform-origin: 0 60%;
+  border-radius: 6px;
 
-  height: 100%;
-  width: auto;
+  height: inherit;
+  width: inherit;
   background-color: rgba(255, 255, 255, 0.13);
 }
 
@@ -108,4 +103,17 @@ a {
   100% {
     opacity: 1;
   }
+}
+
+.background-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: inherit;
 }
