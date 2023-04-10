@@ -22,11 +22,51 @@ const UserCard = ({ userInfo, emblemBackgroundPath }: UserCardProps) => {
             </div>
         </div>
         <div className={styles["profile-icons"]}>
-            <img src="/icons/twitter.png" alt="twitter" className={styles["img-social"]} />
-            <img src="/icons/discord.png" alt="discord" className={styles["img-social"]} />
-            <img src="/icons/bungo.png" alt="bungie" className={styles["img-social"]} />
-            <img src="/icons/twitch.png" alt="twitch" className={styles["img-social"]} />
-            <img src="/icons/youtube.png" alt="youtube" className={styles["img-social"]} />
+            <svg className={styles["img-social"]}>
+                <defs>
+                    <mask id="twitter">
+                        <image x="0" y="0" width="100%" height="100%" xlinkHref={"/icons/twitter.png"} />
+                    </mask>
+                </defs>
+                <rect className={styles["twitter-logo"]}
+                    x="0" y="0" width="100%" height="100%" mask="url(#twitter)" />
+            </svg>
+            <svg className={styles["img-social"]}>
+                <defs>
+                    <mask id="discord">
+                        <image x="0" y="0" width="100%" height="100%" xlinkHref={"/icons/discord.png"} />
+                    </mask>
+                </defs>
+                <rect className={styles["discord-logo"]}
+                    x="0" y="0" width="100%" height="100%" mask="url(#discord)" />
+            </svg>
+            <svg className={styles["img-social"]}>
+                <defs>
+                    <mask id="youtube">
+                        <image x="0" y="0" width="100%" height="100%" xlinkHref={"/icons/youtube.png"} />
+                    </mask>
+                </defs>
+                <rect className={styles["youtube-logo"]}
+                    x="0" y="0" width="100%" height="100%" mask="url(#youtube)" />
+            </svg>
+            <svg className={styles["img-social"]}>
+                <defs>
+                    <mask id="twitch">
+                        <image x="0" y="0" width="100%" height="100%" xlinkHref={"/icons/twitch.png"} />
+                    </mask>
+                </defs>
+                <rect className={styles["twitch-logo"]}
+                    x="0" y="0" width="100%" height="100%" mask="url(#twitch)" />
+            </svg>
+            <svg className={styles["img-social"]}>
+                <defs>
+                    <mask id="bungie">
+                        <image x="0" y="0" width="100%" height="100%" xlinkHref={"/icons/bungie.png"} />
+                    </mask>
+                </defs>
+                <rect className={styles["bungie-logo"]}
+                    x="0" y="0" width="100%" height="100%" mask="url(#bungie)" />
+            </svg>
         </div>
     </div>)
 }

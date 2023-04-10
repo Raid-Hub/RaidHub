@@ -25,27 +25,27 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
       },
       {
         icon: Icons.KILLS,
-        name: strings.totalKills.toLocaleUpperCase(),
+        name: strings.totalKills,
         value: stats?.totalKills ?? 0
       },
       {
         icon: Icons.DEATHS,
-        name: strings.deaths.toLocaleUpperCase(),
+        name: strings.deaths,
         value: stats?.totalDeaths ?? 0
       },
       {
         icon: Icons.ABILITIES,
-        name: strings.abilityKillsPercentage.toLocaleUpperCase(),
+        name: strings.abilityKillsPercentage,
         value: (stats?.killsTypeRatio.ability ?? 0) + "%"
       },
       {
         icon: Icons.UNKNOWN,
-        name: strings.totalCharactersUsed.toLocaleUpperCase(),
+        name: strings.totalCharactersUsed,
         value: stats?.totalCharactersUsed ?? 0
       },
       {
         icon: Icons.UNKNOWN,
-        name: strings.mostUsedWeapon.toLocaleUpperCase(),
+        name: strings.mostUsedWeapon,
         value: stats?.mostUsedWeapon?.name[language] ?? strings.none
       }
     ]

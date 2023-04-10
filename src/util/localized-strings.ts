@@ -7,12 +7,14 @@ export enum SupportedLanguage {
 export interface LocalStrings {
     checkPointDisclaimer: string
     incompleteRaid: string
+    success: string
     raidNames: { [key in Raid]: string }
     loading: string
     none: string
     mvp: string
     totalKills: string
     deaths: string
+    totalDeaths: string
     abilityKillsPercentage: string
     totalCharactersUsed: string
     mostUsedWeapon: string
@@ -21,12 +23,14 @@ export interface LocalStrings {
     abilityKills: string
     timeSpent: string
     tags: { [key in Tag]: string }
+    loadMore: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
     [SupportedLanguage.ENGLISH]: {
         checkPointDisclaimer: "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen",
         incompleteRaid: "Incomplete",
+        success: "Success",
         raidNames: {
             [Raid.LEVIATHAN]: "Leviathan",
             [Raid.EATER_OF_WORLDS]: "Eater of Worlds",
@@ -47,6 +51,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         mvp: "MVP",
         totalKills: "Total Kills",
         deaths: "Deaths",
+        totalDeaths: "Total Deaths",
         abilityKillsPercentage: "Ability Kills %",
         totalCharactersUsed: "Total Characters Used",
         mostUsedWeapon: "Most Used Weapon",
@@ -67,7 +72,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.CHALLENGE_VOG]: "Tempo's Edge",
             [Tag.CHALLENGE_KF]: "Regicide",
             [Tag.ABILITIES_ONLY]: "Abilities Only",
-        }
+        },
+        loadMore: "Load more"
     }
 }
 

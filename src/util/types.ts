@@ -36,3 +36,7 @@ export interface ClanBannerData {
 }
 export type Clan = GroupV2 & { clanBanner: ClanBannerData }
 export type RaidHubProfile = {}
+export type InitialProfileProps = {
+  bungieNetProfile?: ProfileComponent
+  error: string
+}

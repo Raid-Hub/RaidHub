@@ -20,7 +20,7 @@ export function useActivityHistory({ membershipId, membershipType, characterIds 
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
-        const activities: ActivityCollectionDictionary = {
+        const dict: ActivityCollectionDictionary = {
             [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
             [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
             [Raid.SPIRE_OF_STARS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -42,13 +42,13 @@ export function useActivityHistory({ membershipId, membershipType, characterIds 
                 const newActivities = await client.getActivityHistory(membershipId, characterId, membershipType, page)
                 newActivities.forEach(activity => {
                     const info = raidDetailsFromHash(activity.activityDetails.referenceId.toString())
-                    activities[info.raid].set(activity.activityDetails.instanceId, activity)
+                    dict[info.raid].set(activity.activityDetails.instanceId, activity)
                 })
                 hasMore = (newActivities.length == ACTIVITIES_PER_PAGE)
                 page++
             }
         }))
-            .then(() => setActivities(activities))
+            .then(() => setActivities(dict))
             .finally(() => setLoading(false))
     }, [])
     return { activities, isLoading };

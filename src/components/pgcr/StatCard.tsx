@@ -19,32 +19,32 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
   }[] = [
       {
         icon: Icons.KILLS,
-        name: strings.kills.toLocaleUpperCase(),
+        name: strings.kills,
         value: entry.stats.kills
       },
       {
         icon: Icons.DEATHS,
-        name: strings.deaths.toLocaleUpperCase(),
+        name: strings.deaths,
         value: entry.stats.deaths
       },
       {
         icon: Icons.ASSISTS,
-        name: strings.assists.toLocaleUpperCase(),
+        name: strings.assists,
         value: entry.stats.assists
       },
       {
         icon: Icons.ABILITIES,
-        name: strings.abilityKills.toLocaleUpperCase(),
+        name: strings.abilityKills,
         value: entry.stats.abilityKills
       },
       {
         icon: Icons.TIME,
-        name: strings.timeSpent.toLocaleUpperCase(),
+        name: strings.timeSpent,
         value: entry.stats.timePlayed
       },
       {
         icon: Icons.UNKNOWN,
-        name: strings.mostUsedWeapon.toLocaleUpperCase(),
+        name: strings.mostUsedWeapon,
         value: entry.stats.weapons.first()?.name[language] ?? strings.none
       }
     ]

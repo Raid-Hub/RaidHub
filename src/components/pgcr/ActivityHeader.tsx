@@ -30,7 +30,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
             </span>
           </div>
           <div id={styles["raid-name"]}>
-            <span>{activity ? strings.raidNames[activity.raid].toUpperCase() : strings.loading}</span>
+            <span>{activity ? strings.raidNames[activity.raid] : strings.loading}</span>
           </div>
           {activity?.speed.fresh === null && <div id={styles["cp-error"]}>
             <p>{checkpointDisclaimer}</p>

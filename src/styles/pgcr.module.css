@@ -67,7 +67,8 @@
 #raid-name {
     font-weight: 900;
     font-size: xx-large;
-    line-height: 100%
+    line-height: 100%;
+    text-transform: uppercase;
 }
 
 #cp-error {
@@ -413,6 +414,7 @@
 
 .summary-stat-name {
     text-align: left;
+    text-transform: uppercase;
     font-size: small;
     font-style: italic;
     color: rgb(192, 192, 192);
