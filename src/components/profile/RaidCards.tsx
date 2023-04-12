@@ -81,14 +81,15 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
               <ActivityCard
                 info={raidDetailsFromHash(activity.activityDetails.referenceId.toString())}
                 strings={strings}
-                completed={!!activity.values.completed.basic.value} 
-                activityId={activity.activityDetails.instanceId}/>
+                completed={!!activity.values.completed.basic.value}
+                activityId={activity.activityDetails.instanceId}
+                completionDate={new Date(activity.period)} />
             ))}
           {!isLoadingDots
-            ? <button className={styles["load-more"]}
+            ? allActivities.length > pages * CARDS_PER_PAGE ? <button className={styles["load-more"]}
               onClick={() => setPages(pages + 1)}>
               <span>{strings.loadMore}</span>
-            </button>
+            </button> : <></>
             : Array(CARDS_PER_PAGE).fill(null).map((_, idx) => (
               <div className={styles["placeholder"]} key={idx}>
                 <Loading />

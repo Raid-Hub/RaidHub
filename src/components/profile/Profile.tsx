@@ -10,7 +10,6 @@ import PinnedActivity from "./PinnedActivity";
 import RaidCards, { Layout } from "./RaidCards";
 import ToggleSwitch from "../ToggleSwitch";
 import { useState } from "react";
-import { useRouter } from 'next/router';
 
 export interface ProfileProps {
   bungieNetProfile: ProfileComponent
@@ -66,7 +65,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
 
             <div className={styles["banners-text"]}>
               <span className={styles["banner-bold"]}>RaidHub Founder</span>
-              <span className={styles["banner-subtext"]}>The user contributed to creating RaidHub</span>
+              <span className={styles["banner-subtext"]}>This user contributed to creating RaidHub</span>
             </div>
           </div>}
         </div>

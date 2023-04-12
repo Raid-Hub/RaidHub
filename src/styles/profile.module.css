@@ -574,7 +574,7 @@ svg.clan-img {
 .activity {
     flex: 1;
     flex-basis: 250px;
-    transition: transform .2s ease-in-out;
+    transition: transform .1s ease-in-out;
     border: 1px solid #4e4e4e;
     border-radius: 12px;
 
@@ -583,9 +583,15 @@ svg.clan-img {
     position: relative;
 }
 
+@media only screen and (orientation: portrait) {
+    .activity {
+        flex-basis: 180px;
+    }
+  }
+
 .activity:hover {
     cursor: pointer;
-    transform: scale(1.02);
+    transform: scale(1.035);
 }
 
 .activity-content {
@@ -595,6 +601,7 @@ svg.clan-img {
 
 .activity-content-img {
     width: 100%;
+    opacity: 0.8;
 
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
@@ -603,7 +610,10 @@ svg.clan-img {
 .activity-title {
     position: absolute;
     bottom: 20%;
-    left: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 90%;
 
     font-size: 1.2em;
     font-weight: 600;
@@ -639,7 +649,8 @@ svg.clan-img {
 }
 
 .load-more:hover {
-    transform: scale(1.02);
+    cursor: pointer;
+    transform: scale(1.05);
 }
 
 .load-more > span {
