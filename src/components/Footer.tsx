@@ -1,10 +1,9 @@
-import React from 'react';
+import React from "react"
 
-type FooterProps = {
-}
+type FooterProps = {}
 
-const Footer = ({ }: FooterProps) => {
-  return (<footer>Footer</footer>)
+const Footer = ({}: FooterProps) => {
+    return <footer>Footer</footer>
 }
 
 export default Footer

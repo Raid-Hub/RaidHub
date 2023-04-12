@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import styles from '../../styles/profile.module.css';
-import { RADIUS, SPACING } from './profile/DotGraph';
+import { useState } from "react"
+import styles from "../../styles/profile.module.css"
+import { RADIUS, SPACING } from "./profile/DotGraph"
 
 const red = "#F44336"
 const green = "#4CAF50"
@@ -11,17 +11,20 @@ type ToggleProps = {
 }
 
 const ToggleSwitch = ({ defaultState, onToggle }: ToggleProps) => {
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onToggle(event.target.checked)
-    };
+    }
 
     return (
         <label className="switch">
-            <input type="checkbox" onChange={handleChange} defaultChecked={defaultState} />
+            <input
+                type="checkbox"
+                onChange={handleChange}
+                defaultChecked={defaultState}
+            />
             <span className="slider" />
         </label>
     )
 }
 
-export default ToggleSwitch;
+export default ToggleSwitch

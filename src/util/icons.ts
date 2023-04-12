@@ -6,5 +6,5 @@ export enum Icons {
     ABILITIES = "/icons/abilities.png",
     MVP = "/icons/mvp.png",
     TIME = "/icons/time.png",
-    EXTERNAL = "/icons/external.png"
+    EXTERNAL = "/icons/external.png",
 }

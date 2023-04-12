@@ -1,5 +1,5 @@
-import styles from '../../styles/profile.module.css';
-import { RADIUS, SPACING } from './DotGraph';
+import styles from "../../styles/profile.module.css"
+import { RADIUS, SPACING } from "./DotGraph"
 
 const red = "#F44336"
 const green = "#4CAF50"
@@ -13,27 +13,28 @@ type DotProps = {
 }
 
 const Dot = ({ idx, id, completed, star, cy }: DotProps) => {
-    const cx = (SPACING / 2) + SPACING * idx
+    const cx = SPACING / 2 + SPACING * idx
     return (
         <a
             href={`/pgcr/${id}`}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
             aria-describedby="dot-hover-tooltip"
             target="_blank"
-            rel="noopener noreferrer">
+            rel="noopener noreferrer"
+        >
             <circle
                 fill={completed ? green : red}
                 fillOpacity="0.9783869573466908"
                 r={RADIUS}
                 cx={cx}
-                cy={cy}>
-            </circle>
-            {star && <Star x={cx} y={cy}/>}
+                cy={cy}
+            ></circle>
+            {star && <Star x={cx} y={cy} />}
         </a>
     )
 }
 
-type StarProps = { x: number, y: number }
+type StarProps = { x: number; y: number }
 const Star = ({ x, y }: StarProps) => {
     // top
     // y = 6
@@ -65,9 +66,11 @@ const Star = ({ x, y }: StarProps) => {
         [x + 3.52671151375, y + 4.85410196625],
     ]
     return (
-        <polygon fill="#ffffff"
-            points={points.map(coords => coords.join(",")).join(" ")}/>
+        <polygon
+            fill="#ffffff"
+            points={points.map(coords => coords.join(",")).join(" ")}
+        />
     )
 }
 
-export default Dot;
+export default Dot

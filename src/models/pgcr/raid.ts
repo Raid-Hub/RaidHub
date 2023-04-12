@@ -1,4 +1,10 @@
-import { ContestEnd, ContestRaidDifficulties, DayOneEnd, Raid, RaidDifficulty } from "../../util/raid";
+import {
+    ContestEnd,
+    ContestRaidDifficulties,
+    DayOneEnd,
+    Raid,
+    RaidDifficulty,
+} from "../../util/raid"
 
 export class RaidInfo {
     raid: Raid
@@ -9,7 +15,7 @@ export class RaidInfo {
     }
     isDayOne(ended: Date): boolean {
         if (DayOneEnd[this.raid] === undefined) {
-            return false;
+            return false
         } else {
             return ended.getTime() <= DayOneEnd[this.raid]!.getTime()
         }
@@ -17,7 +23,7 @@ export class RaidInfo {
 
     isContest(started: Date): boolean {
         if (ContestEnd[this.raid] === undefined) {
-            return false;
+            return false
         } else if (ContestRaidDifficulties.includes(this.difficulty)) {
             return true
         } else {

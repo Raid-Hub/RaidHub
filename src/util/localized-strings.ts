@@ -1,7 +1,7 @@
 import { Raid, RaidDifficulty } from "./raid"
 import { Tag } from "./tags"
 export enum SupportedLanguage {
-    ENGLISH = "en"
+    ENGLISH = "en",
 }
 
 export interface LocalStrings {
@@ -23,15 +23,16 @@ export interface LocalStrings {
     abilityKills: string
     timeSpent: string
     tags: { [key in Tag]: string }
-    loadMore: string,
+    loadMore: string
     difficulty: { [key in RaidDifficulty]: string }
-    dayOne: string,
+    dayOne: string
     contest: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
     [SupportedLanguage.ENGLISH]: {
-        checkPointDisclaimer: "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen",
+        checkPointDisclaimer:
+            "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen",
         incompleteRaid: "Incomplete",
         success: "Success",
         raidNames: {
@@ -83,11 +84,11 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [RaidDifficulty.MASTER]: "Master",
             [RaidDifficulty.CONTEST]: "Contest",
             [RaidDifficulty.CHALLENGEVOG]: "Tempo's Edge",
-            [RaidDifficulty.CHALLENGEKF]: "Regicide"
+            [RaidDifficulty.CHALLENGEKF]: "Regicide",
         },
         dayOne: "Day One",
-        contest: "Contest"
-    }
+        contest: "Contest",
+    },
 }
 
 export function isSupported(language: string) {
