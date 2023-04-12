@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import styles from '../../styles/profile.module.css';
 import { Raid, RaidCardBackground } from '../../util/raid';
-import { ActivityCollection } from '../../util/types';
 import DotGraph from './DotGraph';
 import { secondsToHMS } from '../../util/math';
+import { DestinyHistoricalStatsPeriodGroup } from 'oodestiny/schemas';
 
 type RaidStats = {
     totalClears: number
@@ -15,7 +15,7 @@ type RaidStats = {
 type RaidCardProps = {
     raid: Raid
     raidName: string
-    activities: ActivityCollection
+    activities: DestinyHistoricalStatsPeriodGroup[]
     stats: RaidStats
     isLoadingDots: boolean
 }
@@ -49,7 +49,7 @@ const RaidCard = ({ raid, raidName, activities, stats, isLoadingDots }: RaidCard
                 <div className={styles["graph-content"]}>
 
                     <DotGraph
-                        activities={activities}
+                        dots={activities}
                         isLoading={isLoadingDots}
                         filter={() => true /** (dot) => dot.values.completed.basic.value */} />
                     <div className={styles["graph-count"]}>

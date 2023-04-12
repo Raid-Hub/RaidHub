@@ -17,7 +17,7 @@ const MAX_Y = BORDER + CANVAS_HEIGHT - (2 * RADIUS)
 const FULL_HEIGHT = CANVAS_HEIGHT + (2 * BORDER)
 
 type DotGraphProps = {
-    activities: ActivityCollection
+    dots: DestinyHistoricalStatsPeriodGroup[]
     isLoading: boolean
     filter: (dot: DestinyHistoricalStatsPeriodGroup) => boolean
 }
@@ -25,10 +25,7 @@ type DotGraphProps = {
 type Statistics = { min: number, max: number, total: number }
 const baseStats: Statistics = { min: Number.MAX_SAFE_INTEGER, max: 0, total: 0 }
 
-const DotGraph = ({ activities, isLoading, filter }: DotGraphProps) => {
-    const dots = activities.toJSON()
-        .filter(filter)
-        .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime())
+const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
     let { min, max, total } = dots.reduce((ac, cv) => {
         const cvTime = cv.values.activityDurationSeconds.basic.value
         return {

@@ -40,3 +40,4 @@ export type InitialProfileProps = {
   bungieNetProfile?: ProfileComponent
   error: string
 }
+export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean;

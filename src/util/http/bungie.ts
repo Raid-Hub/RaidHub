@@ -47,7 +47,6 @@ const clanBanners: {
 } = BannersJson
 
 const CACHE_MINUTES = 10
-
 export const ACTIVITIES_PER_PAGE = 250
 
 class BungieNetClient {
@@ -197,7 +196,6 @@ class BungieNetClient {
                         newInfo = profile.Response.profile.data?.userInfo
                         const classInfo = profile.Response.characters.data?.[entry.characterId]
                         newClassInfo = { ...classInfo, characterClass: CharacterName[classInfo.classType] }
-                        console.log(newClassInfo)
                         found = newInfo.crossSaveOverride || type
                         newInfo = { ...newInfo, membershipType: found }
                         break;

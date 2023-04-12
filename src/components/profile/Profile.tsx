@@ -10,6 +10,7 @@ import PinnedActivity from "./PinnedActivity";
 import RaidCards, { Layout } from "./RaidCards";
 import ToggleSwitch from "../ToggleSwitch";
 import { useState } from "react";
+import { useRouter } from 'next/router';
 
 export interface ProfileProps {
   bungieNetProfile: ProfileComponent
@@ -19,11 +20,16 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
   const { membership } = useBungieNextMembership(bungieNetProfile.userInfo)
   const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
+  const handleToggle = (buttonState: boolean) => {
+    const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
+    setLayout(newState)
+  };
+
   const name = bungieNetProfile.userInfo.bungieGlobalDisplayName ?? bungieNetProfile.userInfo.displayName
   return (
     <main className={styles["main"]}>
       <Head>
-        <title>{name + " | RaidHub"}</title>
+        <title>{`${name} | RaidHub`}</title>
       </Head>
       <section className={styles["user-info"]}>
         <UserCard
@@ -69,10 +75,10 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
       </section>
       <section className={styles["content"]}>
         <div className={styles["mid"]}>
-          <PinnedActivity activityId={"12685770593"} />
+          <PinnedActivity activityId={"4129239230"} />
           <div className={styles["layout-toggle"]}>
             <span>X</span>
-            <ToggleSwitch defaultState={false} onToggle={(state) => setLayout(state ? Layout.RecentActivities : Layout.DotCharts)} />
+            <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />
             <span>O</span>
           </div>
         </div>

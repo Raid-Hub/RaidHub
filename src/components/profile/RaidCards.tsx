@@ -1,13 +1,17 @@
-import { Collection } from '@discordjs/collection';
-import { BungieMembershipType } from 'oodestiny/schemas';
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from 'oodestiny/schemas';
 import { useActivityHistory } from '../../hooks/activityHistory';
 import { useLanguage } from '../../hooks/language';
 import styles from '../../styles/profile.module.css';
 import { LocalizedStrings } from '../../util/localized-strings';
-import { AllRaids } from '../../util/raid';
+import { AllRaids, Raid, raidDetailsFromHash } from '../../util/raid';
 import RaidCard from './RaidCard';
 import ActivityCard from './ActivityCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Loading from '../Loading';
+import { usePrefs } from '../../hooks/prefs';
+import { DefaultPreferences, Prefs } from '../../util/preferences';
+
+const CARDS_PER_PAGE = 60
 
 export enum Layout {
   DotCharts,
@@ -23,9 +27,30 @@ type RaidCardsProps = {
 
 const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidCardsProps) => {
   const language = useLanguage()
+  const { prefs, isLoading: isLoadingPrefs } = usePrefs([Prefs.FILTER])
   const { activities, isLoading: isLoadingDots } = useActivityHistory({ membershipId, membershipType, characterIds })
+  const [allActivities, setAllActivities] = useState<DestinyHistoricalStatsPeriodGroup[]>([])
+  const [activitiesByRaid, setActivitiesByRaid] = useState<Record<Raid, DestinyHistoricalStatsPeriodGroup[]> | null>(null)
   const [pages, setPages] = useState<number>(1)
+
+  useEffect(() => {
+    if (!activities) return;
+
+    setAllActivities(Object.values(activities)
+      .flatMap((set) => set.toJSON())
+      .filter(!isLoadingPrefs ? prefs![Prefs.FILTER] : DefaultPreferences[Prefs.FILTER])
+      .sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime()))
+
+    setActivitiesByRaid(Object.fromEntries(AllRaids.map(raid => (
+      [raid, activities[raid]
+        .toJSON()
+        .filter(!isLoadingPrefs ? prefs![Prefs.FILTER] : DefaultPreferences[Prefs.FILTER])
+        .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime())]
+    ))) as Record<Raid, DestinyHistoricalStatsPeriodGroup[]>)
+  }, [isLoadingDots, prefs])
+
   const strings = LocalizedStrings[language]
+
   switch (layout) {
     case Layout.DotCharts:
       return (
@@ -41,8 +66,8 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
               key={idx}
               raidName={strings.raidNames[raid]}
               raid={raid}
-              activities={activities ? activities[raid] : new Collection()}
-              isLoadingDots={isLoadingDots}
+              activities={activitiesByRaid ? activitiesByRaid![raid] : []}
+              isLoadingDots={isLoadingDots || !activitiesByRaid}
             />
           ))}
         </div>
@@ -50,17 +75,25 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
     case Layout.RecentActivities:
       return (
         <div className={styles["recent"]}>
-          {Object.values(activities ?? {})
-            .flatMap((set) => set.toJSON())
-            .sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime())
-            .slice(0, pages * 100)
+          {allActivities
+            .slice(0, pages * CARDS_PER_PAGE)
             .map(activity => (
-              <ActivityCard activity={activity} />
+              <ActivityCard
+                info={raidDetailsFromHash(activity.activityDetails.referenceId.toString())}
+                strings={strings}
+                completed={!!activity.values.completed.basic.value} 
+                activityId={activity.activityDetails.instanceId}/>
             ))}
-          <button className={styles["load-more"]}
-            onClick={() => setPages(pages + 1)}>
-            <span>{strings.loadMore}</span>
-          </button>
+          {!isLoadingDots
+            ? <button className={styles["load-more"]}
+              onClick={() => setPages(pages + 1)}>
+              <span>{strings.loadMore}</span>
+            </button>
+            : Array(CARDS_PER_PAGE).fill(null).map((_, idx) => (
+              <div className={styles["placeholder"]} key={idx}>
+                <Loading />
+              </div>
+            ))}
         </div>
       )
   }

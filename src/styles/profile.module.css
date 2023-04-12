@@ -563,6 +563,14 @@ svg.clan-img {
     justify-content: stretch;
 }
 
+.placeholder {
+    flex: 1;
+    flex-basis: 250px;
+    height: 240px;
+    border: 1px solid #4e4e4e;
+    border-radius: 12px;
+}
+
 .activity {
     flex: 1;
     flex-basis: 250px;

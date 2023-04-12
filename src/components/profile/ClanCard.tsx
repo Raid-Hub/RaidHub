@@ -56,7 +56,7 @@ function urlHighlight(str: string): JSX.Element[] {
     while (match = urlRegex.exec(str)) {
         // Capture the non-matching substring before the matched URL
         if (match.index > lastIndex) {
-            elements.push(<span>{str.substring(lastIndex, match.index)}</span>)
+            elements.push(<span key={lastIndex}>{str.substring(lastIndex, match.index)}</span>)
         }
         // Capture the matched URL
         let url = match[0]
@@ -65,7 +65,7 @@ function urlHighlight(str: string): JSX.Element[] {
     }
     // Capture the final non-matching substring after the last matched URL
     if (lastIndex < str.length) {
-        elements.push(<span>{str.substring(lastIndex)}</span>);
+        elements.push(<span key={lastIndex}>{str.substring(lastIndex)}</span>);
     }
     return elements
 }
