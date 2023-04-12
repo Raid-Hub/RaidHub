@@ -21,43 +21,40 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         {
             icon: Icons.MVP,
             name: strings.mvp,
-            value: stats?.mvp ?? "???",
+            value: stats?.mvp ?? "???"
         },
         {
             icon: Icons.KILLS,
             name: strings.totalKills,
-            value: stats?.totalKills ?? 0,
+            value: stats?.totalKills ?? 0
         },
         {
             icon: Icons.DEATHS,
             name: strings.deaths,
-            value: stats?.totalDeaths ?? 0,
+            value: stats?.totalDeaths ?? 0
         },
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
-            value: (stats?.killsTypeRatio.ability ?? 0) + "%",
+            value: (stats?.killsTypeRatio.ability ?? 0) + "%"
         },
         {
             icon: Icons.UNKNOWN,
             name: strings.totalCharactersUsed,
-            value: stats?.totalCharactersUsed ?? 0,
+            value: stats?.totalCharactersUsed ?? 0
         },
         {
             icon: Icons.UNKNOWN,
             name: strings.mostUsedWeapon,
-            value: stats?.mostUsedWeapon?.name[language] ?? strings.none,
-        },
+            value: stats?.mostUsedWeapon?.name[language] ?? strings.none
+        }
     ]
     return (
         <>
             {statsData.map((stat, idx) => (
                 <div
                     key={idx}
-                    className={[
-                        styles["soft-rectangle"],
-                        styles["summary-stat"],
-                    ].join(" ")}
+                    className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}
                 >
                     <div className={styles["summary-stat-content"]}>
                         <img
@@ -69,7 +66,7 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
                             <span
                                 className={[
                                     styles["summary-stat-name"],
-                                    styles["contained-span"],
+                                    styles["contained-span"]
                                 ].join(" ")}
                             >
                                 {stat.name}
@@ -77,7 +74,7 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
                             <span
                                 className={[
                                     styles["summary-stat-value"],
-                                    styles["contained-span"],
+                                    styles["contained-span"]
                                 ].join(" ")}
                             >
                                 {stat.value}

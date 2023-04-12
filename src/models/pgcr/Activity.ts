@@ -1,6 +1,6 @@
 import {
     DestinyPostGameCarnageReportData,
-    DestinyHistoricalStatsValuePair,
+    DestinyHistoricalStatsValuePair
 } from "oodestiny/schemas"
 import { RaidDifficulty, raidDetailsFromHash, Raid } from "../../util/raid"
 import { Tag, addModifiers } from "../../util/tags"
@@ -30,30 +30,22 @@ export class Activity {
         this._startedTime = new Date(pgcr.period)
         this._finishedTime = new Date(
             this._startedTime.getTime() +
-                pgcr.entries[0].values.activityDurationSeconds.basic.value *
-                    1000,
+                pgcr.entries[0].values.activityDurationSeconds.basic.value * 1000
         )
         this._playerCount = new Set(
-            pgcr.entries.map(e => e.player.destinyUserInfo.membershipId),
+            pgcr.entries.map(e => e.player.destinyUserInfo.membershipId)
         ).size
         this._flawless =
             this._complete &&
-            pgcr.entries.reduce(
-                (b, entry) => b && entry.values.deaths?.basic.value == 0,
-                true,
-            )
+            pgcr.entries.reduce((b, entry) => b && entry.values.deaths?.basic.value == 0, true)
         this._speed = pgcr.entries[0].values.activityDurationSeconds.basic
         /* This is kinda ugly but its a 1 liner :) */
-        this._fresh = this.isFresh(
-            pgcr.startingPhaseIndex,
-            pgcr.activityWasStartedFromBeginning,
-        )
+        this._fresh = this.isFresh(pgcr.startingPhaseIndex, pgcr.activityWasStartedFromBeginning)
         this._stats = new ActivityStats(pgcr, members)
         this._raidManifest = raidDetailsFromHash(`${this._activityHash}`)
         this._placements = {}
         this._tags = []
-        if (this._raidManifest.isDayOne(this._finishedTime))
-            this._tags.push(Tag.DAY_ONE)
+        if (this._raidManifest.isDayOne(this._finishedTime)) this._tags.push(Tag.DAY_ONE)
         if (this._raidManifest.isContest(this._startedTime)) {
             switch (this._raidManifest.difficulty) {
                 case RaidDifficulty.CHALLENGEKF:
@@ -67,15 +59,13 @@ export class Activity {
             }
         }
         if (this._fresh === false) this._tags.push(Tag.CHECKPOINT)
-        if (this._raidManifest.difficulty === RaidDifficulty.MASTER)
-            this._tags.push(Tag.MASTER)
+        if (this._raidManifest.difficulty === RaidDifficulty.MASTER) this._tags.push(Tag.MASTER)
         if (this._playerCount === 1) this._tags.push(Tag.SOLO)
         else if (this._playerCount === 2) this._tags.push(Tag.DUO)
         else if (this._playerCount === 3) this._tags.push(Tag.TRIO)
         if (this._fresh && this._complete) {
             if (this._flawless) this._tags.push(Tag.FLAWLESS)
-            if (this._stats.killsTypeRatio.ability === 100)
-                this._tags.push(Tag.ABILITIES_ONLY)
+            if (this._stats.killsTypeRatio.ability === 100) this._tags.push(Tag.ABILITIES_ONLY)
         }
     }
 
@@ -91,7 +81,7 @@ export class Activity {
         return {
             fresh: this._fresh,
             duration: this._speed.displayValue,
-            complete: this._complete,
+            complete: this._complete
         }
     }
 
@@ -117,7 +107,7 @@ export class Activity {
      */
     private isFresh(
         startingPhaseIndex: number | undefined,
-        activityWasStartedFromBeginning: boolean | undefined,
+        activityWasStartedFromBeginning: boolean | undefined
     ): boolean | null {
         if (this._finishedTime.getTime() < Seasons[12].start.getTime()) {
             /* pre-BL -- startingPhaseIndex working as intended */

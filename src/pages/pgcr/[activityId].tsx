@@ -21,36 +21,20 @@ const PGCR = ({ activityId }: PGCRProps) => {
             {pgcrError && <Error message={pgcrError} />}
             <section
                 id={styles["summary-card"]}
-                className={[
-                    styles["main-element"],
-                    styles["soft-rectangle"],
-                ].join(" ")}
+                className={[styles["main-element"], styles["soft-rectangle"]].join(" ")}
             >
-                <div
-                    className="background-img"
-                    style={Backdrop[activity?.raid ?? Raid.NA]}
-                />
+                <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
                 <ActivityHeader activity={activity} placements={placements} />
-                <PGCREntries
-                    raid={activity?.raid ?? Raid.NA}
-                    members={members}
-                />
+                <PGCREntries raid={activity?.raid ?? Raid.NA} members={members} />
             </section>
-            <section
-                id={styles["summary-stats"]}
-                className={styles["main-element"]}
-            >
+            <section id={styles["summary-stats"]} className={styles["main-element"]}>
                 <SummaryStats activity={activity} />
             </section>
         </main>
     )
 }
 
-export async function getServerSideProps({
-    params,
-}: {
-    params: { activityId: string }
-}) {
+export async function getServerSideProps({ params }: { params: { activityId: string } }) {
     const { activityId } = params
     return { props: { activityId } }
 }

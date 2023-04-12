@@ -17,11 +17,7 @@ const ToggleSwitch = ({ defaultState, onToggle }: ToggleProps) => {
 
     return (
         <label className="switch">
-            <input
-                type="checkbox"
-                onChange={handleChange}
-                defaultChecked={defaultState}
-            />
+            <input type="checkbox" onChange={handleChange} defaultChecked={defaultState} />
             <span className="slider" />
         </label>
     )

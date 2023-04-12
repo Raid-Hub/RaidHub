@@ -6,11 +6,7 @@ type RankingBannerProps = {
     backgroundColor: string
     children: ReactNode
 }
-const RankingBanner = ({
-    icon,
-    backgroundColor,
-    children: spanStack,
-}: RankingBannerProps) => {
+const RankingBanner = ({ icon, backgroundColor, children: spanStack }: RankingBannerProps) => {
     return (
         <div className={styles["ranking-banner"]} style={{ backgroundColor }}>
             <img src={icon} alt="" />

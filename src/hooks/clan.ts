@@ -13,10 +13,7 @@ type UseClan = {
     isLoading: boolean
 }
 
-export function useClan({
-    membershipId,
-    membershipType,
-}: UseClanParams): UseClan {
+export function useClan({ membershipId, membershipType }: UseClanParams): UseClan {
     const [clan, setClan] = useState<Clan | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {

@@ -1,7 +1,4 @@
-import {
-    BungieMembershipType,
-    DestinyHistoricalStatsPeriodGroup,
-} from "oodestiny/schemas"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
 import { useActivityHistory } from "../../hooks/activityHistory"
 import { useLanguage } from "../../hooks/language"
 import styles from "../../styles/profile.module.css"
@@ -18,7 +15,7 @@ const CARDS_PER_PAGE = 60
 
 export enum Layout {
     DotCharts,
-    RecentActivities,
+    RecentActivities
 }
 
 type RaidCardsProps = {
@@ -28,22 +25,15 @@ type RaidCardsProps = {
     layout: Layout
 }
 
-const RaidCards = ({
-    membershipId,
-    membershipType,
-    characterIds,
-    layout,
-}: RaidCardsProps) => {
+const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidCardsProps) => {
     const language = useLanguage()
     const { prefs, isLoading: isLoadingPrefs } = usePrefs([Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
         membershipId,
         membershipType,
-        characterIds,
+        characterIds
     })
-    const [allActivities, setAllActivities] = useState<
-        DestinyHistoricalStatsPeriodGroup[]
-    >([])
+    const [allActivities, setAllActivities] = useState<DestinyHistoricalStatsPeriodGroup[]>([])
     const [activitiesByRaid, setActivitiesByRaid] = useState<Record<
         Raid,
         DestinyHistoricalStatsPeriodGroup[]
@@ -56,16 +46,8 @@ const RaidCards = ({
         setAllActivities(
             Object.values(activities)
                 .flatMap(set => set.toJSON())
-                .filter(
-                    !isLoadingPrefs
-                        ? prefs![Prefs.FILTER]
-                        : DefaultPreferences[Prefs.FILTER],
-                )
-                .sort(
-                    (a, b) =>
-                        new Date(b.period).getTime() -
-                        new Date(a.period).getTime(),
-                ),
+                .filter(!isLoadingPrefs ? prefs![Prefs.FILTER] : DefaultPreferences[Prefs.FILTER])
+                .sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime())
         )
 
         setActivitiesByRaid(
@@ -77,15 +59,11 @@ const RaidCards = ({
                         .filter(
                             !isLoadingPrefs
                                 ? prefs![Prefs.FILTER]
-                                : DefaultPreferences[Prefs.FILTER],
+                                : DefaultPreferences[Prefs.FILTER]
                         )
-                        .sort(
-                            (a, b) =>
-                                new Date(a.period).getTime() -
-                                new Date(b.period).getTime(),
-                        ),
-                ]),
-            ) as Record<Raid, DestinyHistoricalStatsPeriodGroup[]>,
+                        .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime())
+                ])
+            ) as Record<Raid, DestinyHistoricalStatsPeriodGroup[]>
         )
     }, [isLoadingDots, prefs])
 
@@ -101,14 +79,12 @@ const RaidCards = ({
                                 totalClears: 0,
                                 fastestClear: 0,
                                 averageClear: 0,
-                                sherpas: 0,
+                                sherpas: 0
                             }}
                             key={idx}
                             raidName={strings.raidNames[raid]}
                             raid={raid}
-                            activities={
-                                activitiesByRaid ? activitiesByRaid![raid] : []
-                            }
+                            activities={activitiesByRaid ? activitiesByRaid![raid] : []}
                             isLoadingDots={isLoadingDots || !activitiesByRaid}
                         />
                     ))}
@@ -117,21 +93,17 @@ const RaidCards = ({
         case Layout.RecentActivities:
             return (
                 <div className={styles["recent"]}>
-                    {allActivities
-                        .slice(0, pages * CARDS_PER_PAGE)
-                        .map(activity => (
-                            <ActivityCard
-                                info={raidDetailsFromHash(
-                                    activity.activityDetails.referenceId.toString(),
-                                )}
-                                strings={strings}
-                                completed={
-                                    !!activity.values.completed.basic.value
-                                }
-                                activityId={activity.activityDetails.instanceId}
-                                completionDate={new Date(activity.period)}
-                            />
-                        ))}
+                    {allActivities.slice(0, pages * CARDS_PER_PAGE).map(activity => (
+                        <ActivityCard
+                            info={raidDetailsFromHash(
+                                activity.activityDetails.referenceId.toString()
+                            )}
+                            strings={strings}
+                            completed={!!activity.values.completed.basic.value}
+                            activityId={activity.activityDetails.instanceId}
+                            completionDate={new Date(activity.period)}
+                        />
+                    ))}
                     {!isLoadingDots ? (
                         allActivities.length > pages * CARDS_PER_PAGE ? (
                             <button
@@ -147,10 +119,7 @@ const RaidCards = ({
                         Array(CARDS_PER_PAGE)
                             .fill(null)
                             .map((_, idx) => (
-                                <div
-                                    className={styles["placeholder"]}
-                                    key={idx}
-                                >
+                                <div className={styles["placeholder"]} key={idx}>
                                     <Loading />
                                 </div>
                             ))

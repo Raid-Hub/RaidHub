@@ -9,20 +9,20 @@ const StandardProfile = ({ bungieNetProfile }: InitialProfileProps) => {
 }
 
 export async function getServerSideProps({
-    params,
+    params
 }: {
     params: { platform: string; membershipId: string }
 }): Promise<{ props: InitialProfileProps }> {
     const { platform: membershipType, membershipId } = params
     const profile = await bungieClient.getProfile(
         membershipId,
-        membershipType as unknown as BungieMembershipType,
+        membershipType as unknown as BungieMembershipType
     )
     return {
         props: {
             bungieNetProfile: profile.success ?? undefined,
-            error: profile.error?.message ?? "",
-        },
+            error: profile.error?.message ?? ""
+        }
     }
 }
 

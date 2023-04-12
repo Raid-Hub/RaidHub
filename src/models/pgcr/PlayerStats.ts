@@ -1,7 +1,7 @@
 import {
     DestinyHistoricalStatsValue,
     DestinyHistoricalWeaponStats,
-    DestinyPostGameCarnageReportExtendedData,
+    DestinyPostGameCarnageReportExtendedData
 } from "oodestiny/schemas"
 import { round } from "../../util/math"
 import { PlayerWeapons } from "./PlayerWeapon"
@@ -35,9 +35,7 @@ export class PGCRStats {
         let stats: StatsDictionary
         if (Array.isArray(data)) {
             stats = PGCRStats.merge(data)
-            this._weapons = PlayerWeapons.fromArray(
-                data.map(d => d.extended.weapons),
-            )
+            this._weapons = PlayerWeapons.fromArray(data.map(d => d.extended.weapons))
         } else {
             stats = {
                 kills: data.values.kills.basic.value,
@@ -47,16 +45,14 @@ export class PGCRStats {
                 timePlayedSeconds: data.values.timePlayedSeconds.basic.value,
                 weaponKills:
                     data.extended.weapons?.reduce(
-                        (total, current) =>
-                            total +
-                            current.values.uniqueWeaponKills.basic.value,
-                        0,
+                        (total, current) => total + current.values.uniqueWeaponKills.basic.value,
+                        0
                     ) || 0,
                 abilityKills:
                     data.extended.values.weaponKillsAbility.basic.value +
                     data.extended.values.weaponKillsGrenade.basic.value +
                     data.extended.values.weaponKillsMelee.basic.value +
-                    data.extended.values.weaponKillsSuper.basic.value,
+                    data.extended.values.weaponKillsSuper.basic.value
             }
             this._weapons = PlayerWeapons.fromSingle(data.extended.weapons)
         }
@@ -70,9 +66,7 @@ export class PGCRStats {
         // ranking
         // rewarded for being in the activity for longer
         const killScore =
-            ((this._kills + 0.5 * this._assists) /
-                Math.sqrt(this._timePlayedSeconds)) *
-            1000
+            ((this._kills + 0.5 * this._assists) / Math.sqrt(this._timePlayedSeconds)) * 1000
         // a multiplier based on your deaths per 5 minutes
         const deathScore = this._timePlayedSeconds / 300 / (this._deaths + 1)
         this._score = killScore * deathScore
@@ -87,7 +81,7 @@ export class PGCRStats {
             startSeconds: Number.MAX_SAFE_INTEGER,
             timePlayedSeconds: 0,
             weaponKills: 0,
-            abilityKills: 0,
+            abilityKills: 0
         }
         const weaponStats: {
             [key: string]: { kills: number; precision: number }
@@ -96,17 +90,12 @@ export class PGCRStats {
             stats.kills += entry.values.kills.basic.value
             stats.deaths += entry.values.deaths.basic.value
             stats.assists += entry.values.assists.basic.value
-            stats.startSeconds = Math.min(
-                entry.values.startSeconds.basic.value,
-                stats.startSeconds,
-            )
-            stats.timePlayedSeconds +=
-                entry.values.timePlayedSeconds.basic.value
+            stats.startSeconds = Math.min(entry.values.startSeconds.basic.value, stats.startSeconds)
+            stats.timePlayedSeconds += entry.values.timePlayedSeconds.basic.value
             stats.weaponKills +=
                 entry.extended.weapons?.reduce(
-                    (total, current) =>
-                        total + current.values.uniqueWeaponKills.basic.value,
-                    0,
+                    (total, current) => total + current.values.uniqueWeaponKills.basic.value,
+                    0
                 ) || 0
             stats.abilityKills +=
                 entry.extended.values.weaponKillsAbility.basic.value +
@@ -114,10 +103,7 @@ export class PGCRStats {
                 entry.extended.values.weaponKillsMelee.basic.value +
                 entry.extended.values.weaponKillsSuper.basic.value
         })
-        stats.timePlayedSeconds = Math.min(
-            stats.timePlayedSeconds,
-            maxTimePlayed,
-        )
+        stats.timePlayedSeconds = Math.min(stats.timePlayedSeconds, maxTimePlayed)
         return stats
     }
 

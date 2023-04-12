@@ -9,9 +9,7 @@ type UsePlacements = {
 }
 
 export function usePlacements(activityId: string): UsePlacements {
-    const [placements, setPlacements] = useState<ActivityPlacements | null>(
-        null,
-    )
+    const [placements, setPlacements] = useState<ActivityPlacements | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
 

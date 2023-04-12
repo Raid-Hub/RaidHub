@@ -26,7 +26,7 @@ type Statistics = { min: number; max: number; total: number }
 const baseStats: Statistics = {
     min: Number.MAX_SAFE_INTEGER,
     max: 0,
-    total: 0,
+    total: 0
 }
 
 const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
@@ -35,7 +35,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
         return {
             min: Math.min(ac.min, cvTime),
             max: Math.max(ac.max, cvTime),
-            total: ac.total + cvTime,
+            total: ac.total + cvTime
         }
     }, baseStats)
     if (dots.length === 1) {
@@ -49,10 +49,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
     const avg = median(orderedByDuration)
     const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     return (
-        <div
-            className={styles["dots-container"]}
-            style={{ height: FULL_HEIGHT }}
-        >
+        <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
             {isLoading ? (
                 <Loading />
             ) : (
@@ -60,7 +57,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
                     style={{
                         width: SPACING * dots.length + "px",
                         height: FULL_HEIGHT,
-                        minWidth: "100%",
+                        minWidth: "100%"
                     }}
                 >
                     <line
@@ -77,12 +74,10 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
                             id={dot.activityDetails.instanceId}
                             completed={!!dot.values.completed.basic.value}
                             star={
-                                /*dot.values.deaths.basic.value == 0 || */ dot
-                                    .values.playerCount.basic.value <= 3
+                                /*dot.values.deaths.basic.value == 0 || */ dot.values.playerCount
+                                    .basic.value <= 3
                             }
-                            cy={getHeight(
-                                dot.values.activityDurationSeconds.basic.value,
-                            )}
+                            cy={getHeight(dot.values.activityDurationSeconds.basic.value)}
                         />
                     ))}
                 </svg>
@@ -96,11 +91,7 @@ export default DotGraph
 type Point = [number, number]
 
 // Returns a function to determine the Y coordinate of a dot based on the slowest, fastest, and avg runs
-function findCurve(
-    min: Point,
-    avg: Point,
-    max: Point,
-): (duration: number) => number {
+function findCurve(min: Point, avg: Point, max: Point): (duration: number) => number {
     const [s1, y1] = min
     const [s2, y2] = avg
     const [s3, y3] = max

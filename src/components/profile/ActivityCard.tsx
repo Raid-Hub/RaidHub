@@ -17,12 +17,11 @@ const ActivityCard = ({
     strings,
     completed,
     activityId,
-    completionDate,
+    completionDate
 }: ActivityCardProps) => {
-    const difficultyString = [
-        RaidDifficulty.CHALLENGEKF,
-        RaidDifficulty.CHALLENGEVOG,
-    ].includes(info.difficulty)
+    const difficultyString = [RaidDifficulty.CHALLENGEKF, RaidDifficulty.CHALLENGEVOG].includes(
+        info.difficulty
+    )
         ? strings.difficulty[info.difficulty]
         : info.isDayOne(completionDate)
         ? strings.dayOne

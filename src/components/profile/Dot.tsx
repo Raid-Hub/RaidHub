@@ -63,14 +63,9 @@ const Star = ({ x, y }: StarProps) => {
         [x - 3.52671151375, y + 4.85410196625],
         [x + 5.70633909777, y - 1.85410196625],
         [x - 5.70633909777, y - 1.85410196625],
-        [x + 3.52671151375, y + 4.85410196625],
+        [x + 3.52671151375, y + 4.85410196625]
     ]
-    return (
-        <polygon
-            fill="#ffffff"
-            points={points.map(coords => coords.join(",")).join(" ")}
-        />
-    )
+    return <polygon fill="#ffffff" points={points.map(coords => coords.join(",")).join(" ")} />
 }
 
 export default Dot

@@ -22,53 +22,30 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
         )
     else
         return (
-            <Link
-                href={`/pgcr/${activityId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-            >
+            <Link href={`/pgcr/${activityId}`} target="_blank" rel="noopener noreferrer">
                 <div className={styles["pinned-activity"]}>
                     <div
-                        className={[
-                            "background-img",
-                            styles["pinned-background"],
-                        ].join(" ")}
+                        className={["background-img", styles["pinned-background"]].join(" ")}
                         style={{
-                            backgroundImage: `url('${
-                                RaidBanner[activity.raid]
-                            }')`,
+                            backgroundImage: `url('${RaidBanner[activity.raid]}')`
                         }}
                     />
-                    <img
-                        className={styles["pin"]}
-                        src="/icons/pin.png"
-                        alt=""
-                    />
+                    <img className={styles["pin"]} src="/icons/pin.png" alt="" />
 
                     <div className={styles["card-header-text"]}>
-                        <p className={styles["card-header-title"]}>
-                            {activity.title(strings)}
-                        </p>
+                        <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
                     </div>
                     <div className={styles["card-header-subtext"]}>
                         <p>
-                            {activity.completionDate.toLocaleDateString(
-                                navigator.language,
-                                {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                },
-                            )}
+                            {activity.completionDate.toLocaleDateString(navigator.language, {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric"
+                            })}
                         </p>
 
                         <div className={styles["card-header-time"]}>
-                            <img
-                                src="/icons/speed.png"
-                                alt=""
-                                width="20px"
-                                height="20px"
-                            />
+                            <img src="/icons/speed.png" alt="" width="20px" height="20px" />
                             <span>{activity.speed.duration}</span>
                         </div>
                     </div>

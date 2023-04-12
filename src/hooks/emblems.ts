@@ -25,16 +25,14 @@ export function useEmblems(members: UseEmblemsParams): UseEmblems {
                     .getCharacterEmblem(
                         member.characterIds[0],
                         member.membershipId,
-                        member.membershipType,
+                        member.membershipType
                     )
-                    .then(emblem =>
-                        emblemsList.push([member.characterIds[0], emblem]),
-                    )
+                    .then(emblem => emblemsList.push([member.characterIds[0], emblem]))
                     .catch(err => {
                         errs.push(err)
                         emblemsList.push([member.characterIds[0], ""])
-                    }),
-            ) ?? [],
+                    })
+            ) ?? []
         )
             .then(() => {
                 setEmblems(Object.fromEntries(emblemsList))

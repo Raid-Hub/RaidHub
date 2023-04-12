@@ -3,7 +3,7 @@ import {
     ContestRaidDifficulties,
     DayOneEnd,
     Raid,
-    RaidDifficulty,
+    RaidDifficulty
 } from "../../util/raid"
 
 export class RaidInfo {

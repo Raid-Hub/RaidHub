@@ -1,7 +1,7 @@
 import { Raid, RaidDifficulty } from "./raid"
 import { Tag } from "./tags"
 export enum SupportedLanguage {
-    ENGLISH = "en",
+    ENGLISH = "en"
 }
 
 export interface LocalStrings {
@@ -48,7 +48,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.VOW_OF_THE_DISCIPLE]: "Vow of the Disciple",
             [Raid.KINGS_FALL]: "King's Fall",
             [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
-            [Raid.NA]: "Non-Raid",
+            [Raid.NA]: "Non-Raid"
         },
         loading: "Loading...",
         none: "None",
@@ -75,7 +75,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.FLAWLESS]: "Flawless",
             [Tag.CHALLENGE_VOG]: "Tempo's Edge",
             [Tag.CHALLENGE_KF]: "Regicide",
-            [Tag.ABILITIES_ONLY]: "Abilities Only",
+            [Tag.ABILITIES_ONLY]: "Abilities Only"
         },
         loadMore: "Load more",
         difficulty: {
@@ -84,11 +84,11 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [RaidDifficulty.MASTER]: "Master",
             [RaidDifficulty.CONTEST]: "Contest",
             [RaidDifficulty.CHALLENGEVOG]: "Tempo's Edge",
-            [RaidDifficulty.CHALLENGEKF]: "Regicide",
+            [RaidDifficulty.CHALLENGEKF]: "Regicide"
         },
         dayOne: "Day One",
-        contest: "Contest",
-    },
+        contest: "Contest"
+    }
 }
 
 export function isSupported(language: string) {

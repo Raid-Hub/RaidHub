@@ -20,15 +20,12 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
     const handleToggle = (buttonState: boolean) => {
-        const newState = buttonState
-            ? Layout.RecentActivities
-            : Layout.DotCharts
+        const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
         setLayout(newState)
     }
 
     const name =
-        bungieNetProfile.userInfo.bungieGlobalDisplayName ??
-        bungieNetProfile.userInfo.displayName
+        bungieNetProfile.userInfo.bungieGlobalDisplayName ?? bungieNetProfile.userInfo.displayName
     return (
         <main className={styles["main"]}>
             <Head>
@@ -41,49 +38,30 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                 />
 
                 <div className={styles["ranking-banners"]}>
-                    <RankingBanner
-                        icon={"/icons/skull.png"}
-                        backgroundColor={"#fa6b6bA9"}
-                    >
+                    <RankingBanner icon={"/icons/skull.png"} backgroundColor={"#fa6b6bA9"}>
                         <span>Clears Rank</span>
-                        <span className={styles["banner-bold"]}>
-                            Challenger #1
-                        </span>
+                        <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9999</span>
                     </RankingBanner>
 
-                    <RankingBanner
-                        icon={"/icons/speed.png"}
-                        backgroundColor={"#fa6b6bA9"}
-                    >
+                    <RankingBanner icon={"/icons/speed.png"} backgroundColor={"#fa6b6bA9"}>
                         <span>Speed Rank</span>
-                        <span className={styles["banner-bold"]}>
-                            Challenger #1
-                        </span>
+                        <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9hr 99m 99s</span>
                     </RankingBanner>
 
-                    <RankingBanner
-                        icon={"/icons/diamond.png"}
-                        backgroundColor={"#4ea2ccA9"}
-                    >
+                    <RankingBanner icon={"/icons/diamond.png"} backgroundColor={"#4ea2ccA9"}>
                         <span>Low-Mans</span>
-                        <span className={styles["banner-bold"]}>
-                            Diamond IV
-                        </span>
+                        <span className={styles["banner-bold"]}>Diamond IV</span>
                         <span>69</span>
                     </RankingBanner>
 
-                    {Object.keys(Founders).includes(
-                        bungieNetProfile.userInfo.membershipId,
-                    ) && (
+                    {Object.keys(Founders).includes(bungieNetProfile.userInfo.membershipId) && (
                         <div className={styles["ranking-banner"]}>
                             <img src="/logo.png" alt="" />
 
                             <div className={styles["banners-text"]}>
-                                <span className={styles["banner-bold"]}>
-                                    RaidHub Founder
-                                </span>
+                                <span className={styles["banner-bold"]}>RaidHub Founder</span>
                                 <span className={styles["banner-subtext"]}>
                                     This user contributed to creating RaidHub
                                 </span>
@@ -99,10 +77,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                     <PinnedActivity activityId={"4129239230"} />
                     <div className={styles["layout-toggle"]}>
                         <span>X</span>
-                        <ToggleSwitch
-                            defaultState={!!layout}
-                            onToggle={handleToggle}
-                        />
+                        <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />
                         <span>O</span>
                     </div>
                 </div>

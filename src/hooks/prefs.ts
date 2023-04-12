@@ -12,9 +12,7 @@ type UsePrefs<T extends Prefs[]> = {
 
 export function usePrefs<T extends Prefs[]>(prefs: [...T]): UsePrefs<T> {
     const [isLoading, setLoading] = useState<boolean>(true)
-    const [fetchedPrefs, setFetchedPrefs] = useState<
-        PrefsRecord<T> | undefined
-    >(undefined)
+    const [fetchedPrefs, setFetchedPrefs] = useState<PrefsRecord<T> | undefined>(undefined)
 
     useEffect(() => {
         const temp = {} as PrefsRecord<T>
@@ -27,6 +25,6 @@ export function usePrefs<T extends Prefs[]>(prefs: [...T]): UsePrefs<T> {
 
     return {
         isLoading: isLoading,
-        prefs: fetchedPrefs,
+        prefs: fetchedPrefs
     }
 }

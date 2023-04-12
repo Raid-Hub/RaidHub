@@ -1,13 +1,9 @@
 import {
     DestinyPostGameCarnageReportEntry,
     BungieMembershipType,
-    DestinyClass,
+    DestinyClass
 } from "oodestiny/schemas"
-import {
-    CharacterLogos,
-    CharacterName,
-    CharacterType,
-} from "../../util/characters"
+import { CharacterLogos, CharacterName, CharacterType } from "../../util/characters"
 import { PGCRStats, StatsKeys } from "./PlayerStats"
 
 export abstract class PGCREntry {
@@ -15,10 +11,7 @@ export abstract class PGCREntry {
     protected _membershipType: BungieMembershipType
     protected _displayName: string | undefined
     protected _stats: PGCRStats
-    constructor(
-        data: DestinyPostGameCarnageReportEntry,
-        stats: StatsKeys | StatsKeys[],
-    ) {
+    constructor(data: DestinyPostGameCarnageReportEntry, stats: StatsKeys | StatsKeys[]) {
         const info = data.player.destinyUserInfo
         this._membershipId = info.membershipId
         this._membershipType = info.membershipType
@@ -53,12 +46,10 @@ export class PGCRMember extends PGCREntry {
             characters[0],
             characters.map(character => ({
                 values: character.values,
-                extended: character.extended,
-            })),
+                extended: character.extended
+            }))
         )
-        this._flawless = characters.every(
-            character => character.values["deaths"].basic.value === 0,
-        )
+        this._flawless = characters.every(character => character.values["deaths"].basic.value === 0)
         this._characters = characters.map(char => new PGCRCharacter(char))
     }
 

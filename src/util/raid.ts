@@ -14,7 +14,7 @@ export enum Raid {
     VOW_OF_THE_DISCIPLE,
     KINGS_FALL,
     ROOT_OF_NIGHTMARES,
-    NA,
+    NA
 }
 
 export const AllRaids: Raid[] = [
@@ -29,7 +29,7 @@ export const AllRaids: Raid[] = [
     Raid.SCOURGE_OF_THE_PAST,
     Raid.SPIRE_OF_STARS,
     Raid.EATER_OF_WORLDS,
-    Raid.LEVIATHAN,
+    Raid.LEVIATHAN
 ]
 
 export enum RaidDifficulty {
@@ -38,13 +38,10 @@ export enum RaidDifficulty {
     CONTEST,
     MASTER,
     CHALLENGEVOG,
-    CHALLENGEKF,
+    CHALLENGEKF
 }
 
-export const ContestRaidDifficulties = [
-    RaidDifficulty.CHALLENGEVOG,
-    RaidDifficulty.CHALLENGEKF,
-]
+export const ContestRaidDifficulties = [RaidDifficulty.CHALLENGEVOG, RaidDifficulty.CHALLENGEKF]
 
 export function raidDetailsFromHash(hash: string): RaidInfo {
     switch (hash) {
@@ -118,10 +115,7 @@ export function raidDetailsFromHash(hash: string): RaidInfo {
             return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.NORMAL)
 
         case "1485585878":
-            return new RaidInfo(
-                Raid.VAULT_OF_GLASS,
-                RaidDifficulty.CHALLENGEVOG,
-            )
+            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.CHALLENGEVOG)
 
         case "1681562271":
         case "3022541210":
@@ -170,7 +164,7 @@ export const RaidCardBackground: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "/card-backgrounds/vow.png",
     [Raid.KINGS_FALL]: "/card-backgrounds/kf.png",
     [Raid.ROOT_OF_NIGHTMARES]: "/card-backgrounds/ron.png",
-    [Raid.NA]: "/card-backgrounds/dne.png",
+    [Raid.NA]: "/card-backgrounds/dne.png"
 }
 
 export const Backdrop: {
@@ -178,56 +172,56 @@ export const Backdrop: {
 } = {
     [Raid.LEVIATHAN]: {
         backgroundImage: `url(${RaidCardBackground[Raid.LEVIATHAN]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.EATER_OF_WORLDS]: {
         backgroundImage: `url(${RaidCardBackground[Raid.EATER_OF_WORLDS]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.SPIRE_OF_STARS]: {
         backgroundImage: `url(${RaidCardBackground[Raid.SPIRE_OF_STARS]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.LAST_WISH]: {
         backgroundImage: `url(${RaidCardBackground[Raid.LAST_WISH]})`,
-        opacity: 0.2,
+        opacity: 0.2
     },
     [Raid.SCOURGE_OF_THE_PAST]: {
         backgroundImage: `url(${RaidCardBackground[Raid.SCOURGE_OF_THE_PAST]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.CROWN_OF_SORROW]: {
         backgroundImage: `url(${RaidCardBackground[Raid.CROWN_OF_SORROW]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.GARDEN_OF_SALVATION]: {
         backgroundImage: `url(${RaidCardBackground[Raid.GARDEN_OF_SALVATION]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.DEEP_STONE_CRYPT]: {
         backgroundImage: `url(${RaidCardBackground[Raid.DEEP_STONE_CRYPT]})`,
-        opacity: 0.8,
+        opacity: 0.8
     },
     [Raid.VAULT_OF_GLASS]: {
         backgroundImage: `url(${RaidCardBackground[Raid.VAULT_OF_GLASS]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.VOW_OF_THE_DISCIPLE]: {
         backgroundImage: `url(${RaidCardBackground[Raid.VOW_OF_THE_DISCIPLE]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.KINGS_FALL]: {
         backgroundImage: `url(${RaidCardBackground[Raid.KINGS_FALL]})`,
-        opacity: 0.4,
+        opacity: 0.4
     },
     [Raid.ROOT_OF_NIGHTMARES]: {
         backgroundImage: `url(${RaidCardBackground[Raid.ROOT_OF_NIGHTMARES]})`,
-        opacity: 0.6,
+        opacity: 0.6
     },
     [Raid.NA]: {
         backgroundImage: `url(${RaidCardBackground[Raid.NA]})`,
-        opacity: 0.4,
-    },
+        opacity: 0.4
+    }
 }
 
 export const RaidBanner: { [key in Raid]: string } = {
@@ -243,7 +237,7 @@ export const RaidBanner: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "/banners/vow.png",
     [Raid.KINGS_FALL]: "/banners/kf.png",
     [Raid.ROOT_OF_NIGHTMARES]: "/banners/ron.png",
-    [Raid.NA]: "",
+    [Raid.NA]: ""
 }
 
 export const ContestEnd: Partial<Record<Raid, Date>> = {
@@ -253,7 +247,7 @@ export const ContestEnd: Partial<Record<Raid, Date>> = {
     [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 7, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST"),
+    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST")
 }
 
 export const DayOneEnd: Partial<Record<Raid, Date>> = {
@@ -268,5 +262,5 @@ export const DayOneEnd: Partial<Record<Raid, Date>> = {
     [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 6, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST"),
+    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST")
 }

@@ -21,20 +21,15 @@ const UserCard = ({ userInfo, emblemBackgroundPath }: UserCardProps) => {
                 <img
                     src={
                         "https://bungie.net" +
-                        (userInfo.iconPath ??
-                            "/img/profile/avatars/default_avatar.gif")
+                        (userInfo.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                     }
                     alt=""
                 />
                 <div className={styles["profile-username"]}>
-                    <span>
-                        {userInfo.bungieGlobalDisplayName ??
-                            userInfo.displayName}
-                    </span>
+                    <span>{userInfo.bungieGlobalDisplayName ?? userInfo.displayName}</span>
                     <span className={styles["discrim"]}>
                         {userInfo.bungieGlobalDisplayNameCode
-                            ? "#" +
-                              fixCode(userInfo.bungieGlobalDisplayNameCode)
+                            ? "#" + fixCode(userInfo.bungieGlobalDisplayNameCode)
                             : ""}
                     </span>
                 </div>

@@ -2,7 +2,7 @@ import { Collection } from "@discordjs/collection"
 import {
     DestinyHistoricalStatsPeriodGroup,
     DestinyProfileComponent,
-    GroupV2,
+    GroupV2
 } from "oodestiny/schemas"
 import { Raid } from "./raid"
 import { Tag } from "./tags"
@@ -10,10 +10,7 @@ import { Tag } from "./tags"
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
 }
-export type ActivityCollection = Collection<
-    string,
-    DestinyHistoricalStatsPeriodGroup
->
+export type ActivityCollection = Collection<string, DestinyHistoricalStatsPeriodGroup>
 export type ActivityCollectionDictionary = {
     [key in Raid]: ActivityCollection
 }
@@ -51,8 +48,4 @@ export type InitialProfileProps = {
     bungieNetProfile?: ProfileComponent
     error: string
 }
-export type FilterCallbackType<T> = (
-    value: T,
-    index: number,
-    array: T[],
-) => boolean
+export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean

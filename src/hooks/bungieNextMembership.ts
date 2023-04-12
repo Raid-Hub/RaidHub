@@ -14,20 +14,13 @@ type UseBungieProfile = {
     isLoading: boolean
 }
 
-export function useBungieNextMembership(
-    params: UseBungieProfileParams,
-): UseBungieProfile {
-    const [membership, setMembership] = useState<UserInfoCard | undefined>(
-        undefined,
-    )
+export function useBungieNextMembership(params: UseBungieProfileParams): UseBungieProfile {
+    const [membership, setMembership] = useState<UserInfoCard | undefined>(undefined)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         if (params?.membershipId && params.membershipType)
             client
-                .getBungieNextMembership(
-                    params.membershipId,
-                    params.membershipType,
-                )
+                .getBungieNextMembership(params.membershipId, params.membershipType)
                 .then(membership => setMembership(membership))
                 .finally(() => setLoading(false))
     }, [params])

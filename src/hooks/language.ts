@@ -6,7 +6,7 @@ export function useLanguage(): SupportedLanguage {
 
     useEffect(() => {
         const lang = new Intl.DisplayNames([navigator.language], {
-            type: "language",
+            type: "language"
         }).of(navigator.language)
         if (lang && isSupported(lang)) {
             setLanguage(lang as SupportedLanguage)

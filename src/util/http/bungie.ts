@@ -3,7 +3,7 @@ import {
     getCharacter,
     getLinkedProfiles,
     getPostGameCarnageReport,
-    getProfile,
+    getProfile
 } from "oodestiny/endpoints/Destiny2"
 import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
 import {
@@ -18,15 +18,9 @@ import {
     GroupType,
     GroupsForMemberFilter,
     PlatformErrorCodes,
-    UserInfoCard,
+    UserInfoCard
 } from "oodestiny/schemas"
-import {
-    CacheRequest,
-    Clan,
-    ErrSuccess,
-    ProfileComponent,
-    RGBA,
-} from "../types"
+import { CacheRequest, Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
 
 // TODO: move these to a CDN
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
@@ -34,8 +28,7 @@ import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: 
 import { CharacterName } from "../characters"
 
 const emblems: { [hash: string]: string } = EmblemsJson
-const defaultEmblem =
-    "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
+const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
 
 const clanBanners: {
     clanBannerDecals: {
@@ -68,22 +61,16 @@ class BungieNetClient {
         this.access_token = access_token ?? null
     }
 
-    async getPGCR(
-        activityId: string,
-    ): Promise<DestinyPostGameCarnageReportData> {
+    async getPGCR(activityId: string): Promise<DestinyPostGameCarnageReportData> {
         try {
             const res = await getPostGameCarnageReport({ activityId })
             return {
                 ...res.Response,
-                entries: res.Response.entries.filter(
-                    entry => !nonParticipant(entry),
-                ),
+                entries: res.Response.entries.filter(entry => !nonParticipant(entry))
             }
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
-                throw Error(
-                    "The Bungie.net API is currently down for maintence.",
-                )
+                throw Error("The Bungie.net API is currently down for maintence.")
             else if (e.ErrorCode === PlatformErrorCodes.ParameterParseFailure)
                 throw Error(`Invalid Activity ID [${activityId}]`)
             throw Error(e.Message ?? e.message)
@@ -93,7 +80,7 @@ class BungieNetClient {
     async getCharacterEmblem(
         characterId: string,
         destinyMembershipId: string,
-        membershipType: BungieMembershipType,
+        membershipType: BungieMembershipType
     ): Promise<string> {
         const CACHE_KEY = `getCharacterEmblem${characterId}_${destinyMembershipId}_${membershipType}`
         const cached = BungieNetClient.hitCache<string>(CACHE_KEY)
@@ -105,7 +92,7 @@ class BungieNetClient {
                 characterId,
                 destinyMembershipId,
                 membershipType,
-                components: [DestinyComponentType.Characters],
+                components: [DestinyComponentType.Characters]
             })
             const data = res.Response.character.data
             if (data) {
@@ -121,22 +108,17 @@ class BungieNetClient {
 
     async getProfile(
         destinyMembershipId: string,
-        membershipType: BungieMembershipType,
+        membershipType: BungieMembershipType
     ): Promise<ErrSuccess<ProfileComponent>> {
         try {
             const res = await getProfile({
                 destinyMembershipId,
                 membershipType,
-                components: [
-                    DestinyComponentType.Profiles,
-                    DestinyComponentType.Characters,
-                ],
+                components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
             })
             if (
-                res.Response.profile.privacy ===
-                    ComponentPrivacySetting.Private ||
-                res.Response.characters.privacy ===
-                    ComponentPrivacySetting.Private
+                res.Response.profile.privacy === ComponentPrivacySetting.Private ||
+                res.Response.characters.privacy === ComponentPrivacySetting.Private
             ) {
                 // private profile
                 return { error: Error("Private profile") }
@@ -145,12 +127,11 @@ class BungieNetClient {
                 return {
                     success: {
                         ...profile,
-                        emblemBackgroundPath: Object.values(
-                            res.Response.characters.data,
-                        )[0].emblemBackgroundPath,
+                        emblemBackgroundPath: Object.values(res.Response.characters.data)[0]
+                            .emblemBackgroundPath
                         // TODO: find deleted character Ids
                         //characterIds: Object.keys(res.Response.characters.data)
-                    },
+                    }
                 }
             }
         } catch (e) {
@@ -162,7 +143,7 @@ class BungieNetClient {
         destinyMembershipId: string,
         characterId: string,
         membershipType: BungieMembershipType,
-        page: number,
+        page: number
     ): Promise<DestinyHistoricalStatsPeriodGroup[]> {
         try {
             const res = await getActivityHistory({
@@ -171,23 +152,20 @@ class BungieNetClient {
                 membershipType,
                 page,
                 mode: DestinyActivityModeType.Raid,
-                count: ACTIVITIES_PER_PAGE,
+                count: ACTIVITIES_PER_PAGE
             })
             return res.Response.activities ?? []
         } catch (e) {
             throw e
         }
     }
-    async getClan(
-        membershipId: string,
-        membershipType: BungieMembershipType,
-    ): Promise<Clan> {
+    async getClan(membershipId: string, membershipType: BungieMembershipType): Promise<Clan> {
         try {
             const res = await getGroupsForMember({
                 filter: GroupsForMemberFilter.All,
                 groupType: GroupType.Clan,
                 membershipId,
-                membershipType,
+                membershipType
             })
             const group = res.Response.results[0].group
             const clanBannerData = group.clanInfo.clanBannerData
@@ -195,42 +173,29 @@ class BungieNetClient {
                 ...group,
                 clanBanner: {
                     decalPrimaryColor: RGBAToHex(
-                        clanBanners.clanBannerDecalPrimaryColors[
-                            clanBannerData.decalColorId
-                        ],
+                        clanBanners.clanBannerDecalPrimaryColors[clanBannerData.decalColorId]
                     ),
                     decalSecondaryColor: RGBAToHex(
                         clanBanners.clanBannerDecalSecondaryColors[
                             clanBannerData.decalBackgroundColorId
-                        ],
+                        ]
                     ),
                     decalPrimary:
-                        clanBanners.clanBannerDecalsSquare[
-                            clanBannerData.decalId
-                        ].foregroundPath,
+                        clanBanners.clanBannerDecalsSquare[clanBannerData.decalId].foregroundPath,
                     decalSecondary:
-                        clanBanners.clanBannerDecalsSquare[
-                            clanBannerData.decalId
-                        ].backgroundPath,
-                    gonfalcons:
-                        clanBanners.clanBannerGonfalons[
-                            clanBannerData.gonfalonId
-                        ],
+                        clanBanners.clanBannerDecalsSquare[clanBannerData.decalId].backgroundPath,
+                    gonfalcons: clanBanners.clanBannerGonfalons[clanBannerData.gonfalonId],
                     gonfalconsColor: RGBAToHex(
-                        clanBanners.clanBannerGonfalonColors[
-                            clanBannerData.gonfalonColorId
-                        ],
+                        clanBanners.clanBannerGonfalonColors[clanBannerData.gonfalonColorId]
                     ),
                     decalTopColor: RGBAToHex(
                         clanBanners.clanBannerGonfalonDetailColors[
                             clanBannerData.gonfalonDetailColorId
-                        ],
+                        ]
                     ),
                     decalTop:
-                        clanBanners.clanBannerGonfalonDetailsSquare[
-                            clanBannerData.gonfalonDetailId
-                        ],
-                },
+                        clanBanners.clanBannerGonfalonDetailsSquare[clanBannerData.gonfalonDetailId]
+                }
             }
         } catch (e) {
             throw e
@@ -239,12 +204,12 @@ class BungieNetClient {
 
     async getBungieNextMembership(
         membershipId: string,
-        membershipType: BungieMembershipType,
+        membershipType: BungieMembershipType
     ): Promise<UserInfoCard | undefined> {
         try {
             const res = await getLinkedProfiles({
                 membershipId,
-                membershipType,
+                membershipType
             })
             return res.Response.bnetMembership
         } catch (e) {
@@ -253,7 +218,7 @@ class BungieNetClient {
     }
 
     async validatePGCR(
-        pgcr: DestinyPostGameCarnageReportData,
+        pgcr: DestinyPostGameCarnageReportData
     ): Promise<DestinyPostGameCarnageReportData> {
         const validatedEntries = await Promise.all(
             pgcr.entries.map(async entry => {
@@ -274,7 +239,7 @@ class BungieNetClient {
                         BungieMembershipType.TigerEgs,
                         BungieMembershipType.TigerStadia,
                         BungieMembershipType.TigerDemon,
-                        BungieMembershipType.TigerBlizzard,
+                        BungieMembershipType.TigerBlizzard
                     ]
 
                     for (const type of possibleTypes) {
@@ -284,18 +249,14 @@ class BungieNetClient {
                                 membershipType: type,
                                 components: [
                                     DestinyComponentType.Profiles,
-                                    DestinyComponentType.Characters,
-                                ],
+                                    DestinyComponentType.Characters
+                                ]
                             })
                             newInfo = profile.Response.profile.data?.userInfo
-                            const classInfo =
-                                profile.Response.characters.data?.[
-                                    entry.characterId
-                                ]
+                            const classInfo = profile.Response.characters.data?.[entry.characterId]
                             newClassInfo = {
                                 ...classInfo,
-                                characterClass:
-                                    CharacterName[classInfo.classType],
+                                characterClass: CharacterName[classInfo.classType]
                             }
                             found = newInfo.crossSaveOverride || type
                             newInfo = { ...newInfo, membershipType: found }
@@ -312,14 +273,14 @@ class BungieNetClient {
                                 ...newClassInfo!,
                                 destinyUserInfo: {
                                     ...info,
-                                    ...newInfo!,
-                                },
-                            },
+                                    ...newInfo!
+                                }
+                            }
                         }
                     }
                 }
                 return entry
-            }),
+            })
         )
         return { ...pgcr, entries: validatedEntries }
     }
@@ -333,9 +294,7 @@ class BungieNetClient {
         const cachedData = localStorage.getItem(cashKey)
         if (cachedData) {
             try {
-                const { timestamp, data } = JSON.parse(
-                    cachedData,
-                ) as CacheRequest<T>
+                const { timestamp, data } = JSON.parse(cachedData) as CacheRequest<T>
                 if (Date.now() - timestamp < CACHE_MINUTES * 60 * 1000) {
                     return data
                 }
@@ -350,7 +309,7 @@ class BungieNetClient {
     private static setCache<T>(cashKey: string, value: T): void {
         const dataToCache: CacheRequest<T> = {
             timestamp: Date.now(),
-            data: value,
+            data: value
         }
         localStorage.setItem(cashKey, JSON.stringify(dataToCache))
     }

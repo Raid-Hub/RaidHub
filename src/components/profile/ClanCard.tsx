@@ -27,9 +27,7 @@ const ClanCard = ({ info }: ClanCardProps) => {
                 </span>
                 <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                 <div className={styles["desc-text-wrapper"]}>
-                    <p className={styles["desc-text"]}>
-                        {urlHighlight(clan?.about ?? "")}
-                    </p>
+                    <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
                 </div>
 
                 <div className={styles["description-list"]}>
@@ -69,18 +67,14 @@ function urlHighlight(str: string): JSX.Element[] {
     while ((match = urlRegex.exec(str))) {
         // Capture the non-matching substring before the matched URL
         if (match.index > lastIndex) {
-            elements.push(
-                <span key={lastIndex}>
-                    {str.substring(lastIndex, match.index)}
-                </span>,
-            )
+            elements.push(<span key={lastIndex}>{str.substring(lastIndex, match.index)}</span>)
         }
         // Capture the matched URL
         let url = match[0]
         elements.push(
             <a href={url} target="_blank" rel="noopener noreferrer">
                 {url}
-            </a>,
+            </a>
         )
         lastIndex = urlRegex.lastIndex
     }

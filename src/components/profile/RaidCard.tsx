@@ -20,21 +20,11 @@ type RaidCardProps = {
     isLoadingDots: boolean
 }
 
-const RaidCard = ({
-    raid,
-    raidName,
-    activities,
-    stats,
-    isLoadingDots,
-}: RaidCardProps) => {
+const RaidCard = ({ raid, raidName, activities, stats, isLoadingDots }: RaidCardProps) => {
     return (
         <div className={styles["raid-card"]}>
             <div className={styles["raid-card-img-container"]}>
-                <img
-                    className={styles["top-image"]}
-                    src={RaidCardBackground[raid]}
-                    alt=""
-                />
+                <img className={styles["top-image"]} src={RaidCardBackground[raid]} alt="" />
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
                         <Link href="/" className={styles["clickable-tag"]}>
@@ -42,9 +32,7 @@ const RaidCard = ({
                         </Link>
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
-                        <span className={styles["raid-card-title"]}>
-                            {raidName}
-                        </span>
+                        <span className={styles["raid-card-title"]}>{raidName}</span>
                         <div className={styles["card-diamonds"]}>
                             <Link href="/" className={styles["clickable-tag"]}>
                                 <img src="/icons/flawless_diamond.png" alt="" />
@@ -62,21 +50,14 @@ const RaidCard = ({
                     <DotGraph
                         dots={activities}
                         isLoading={isLoadingDots}
-                        filter={
-                            () =>
-                                true /** (dot) => dot.values.completed.basic.value */
-                        }
+                        filter={() => true /** (dot) => dot.values.completed.basic.value */}
                     />
                     <div className={styles["graph-count"]}>
                         <div className={styles["graph-number-img"]}>
-                            <p className={styles["graph-number"]}>
-                                {stats.totalClears}
-                            </p>
+                            <p className={styles["graph-number"]}>{stats.totalClears}</p>
                         </div>
 
-                        <p className={styles["graph-count-text"]}>
-                            total clears
-                        </p>
+                        <p className={styles["graph-count-text"]}>total clears</p>
                     </div>
                 </div>
 
@@ -96,9 +77,7 @@ const RaidCard = ({
                     </div>
 
                     <div className={styles["timing"]}>
-                        <p className={styles["timings-number"]}>
-                            {stats.sherpas}
-                        </p>
+                        <p className={styles["timings-number"]}>{stats.sherpas}</p>
                         <p className={styles["timings-subtitle"]}>Sherpas</p>
                     </div>
                 </div>

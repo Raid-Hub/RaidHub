@@ -22,22 +22,15 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
                 <div id={styles["left-info"]}>
                     <div id={styles["raid-info-top"]}>
                         <span id={styles["completion-time"]}>
-                            {activity?.completionDate.toLocaleDateString(
-                                navigator.language,
-                                {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
-                                },
-                            ) ?? "Loading..."}
+                            {activity?.completionDate.toLocaleDateString(navigator.language, {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric"
+                            }) ?? "Loading..."}
                         </span>
                     </div>
                     <div id={styles["raid-name"]}>
-                        <span>
-                            {activity
-                                ? strings.raidNames[activity.raid]
-                                : strings.loading}
-                        </span>
+                        <span>{activity ? strings.raidNames[activity.raid] : strings.loading}</span>
                     </div>
                     {activity?.speed.fresh === null && (
                         <div id={styles["cp-error"]}>
@@ -63,12 +56,7 @@ const ActivityHeader = ({ activity, placements }: ActivityHeaderProps) => {
             </div>
             <div id={styles["tags-container"]}>
                 {activity?.tags(strings).map((tag, idx) => (
-                    <div
-                        key={idx}
-                        className={[styles["soft-rectangle"], styles.tag].join(
-                            " ",
-                        )}
-                    >
+                    <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>
                         {tag}
                     </div>
                 ))}
