@@ -1,5 +1,5 @@
 type SeasonInfo = { start: Date }
-export const Seasons: {[season: number]: SeasonInfo } = {
+export const Seasons: { [season: number]: SeasonInfo } = {
     12: {
         start: new Date("November 10, 2020 9:00:00 AM PST")
     },
