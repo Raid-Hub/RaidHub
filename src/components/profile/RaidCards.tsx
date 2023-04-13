@@ -27,7 +27,7 @@ type RaidCardsProps = {
 
 const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidCardsProps) => {
     const language = useLanguage()
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs([Prefs.FILTER])
+    const { prefs, isLoading: isLoadingPrefs } = usePrefs(membershipId, [Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
         membershipId,
         membershipType,

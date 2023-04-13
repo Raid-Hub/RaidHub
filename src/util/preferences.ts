@@ -2,11 +2,14 @@ import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
 import { FilterCallbackType } from "./types"
 
 export enum Prefs {
-    FILTER
+    FILTER,
+    PROFILE_BACKGROUND
 }
 
 export type PrefType<T extends Prefs> = T extends Prefs.FILTER
     ? FilterCallbackType<DestinyHistoricalStatsPeriodGroup>
+    : T extends Prefs.PROFILE_BACKGROUND
+    ? string
     : never
 
 export enum FilterOptions {
@@ -39,5 +42,12 @@ export const AvailableFilterOptions: {
 }
 
 export const DefaultPreferences: { [K in Prefs]: PrefType<K> } = {
-    [Prefs.FILTER]: AvailableFilterOptions[FilterOptions.FINISH_OR_FULL_TEAM_5_MIN]
+    [Prefs.FILTER]: AvailableFilterOptions[FilterOptions.FINISH_OR_FULL_TEAM_5_MIN],
+    [Prefs.PROFILE_BACKGROUND]: ""
+}
+
+// temporary
+export const NewoPrefs: { [K in Prefs]: PrefType<K> } = {
+    [Prefs.FILTER]: AvailableFilterOptions[FilterOptions.FINISH_OR_FULL_TEAM_5_MIN],
+    [Prefs.PROFILE_BACKGROUND]: "linear-gradient(25deg, #220333, #c688e6, #220333 70%);"
 }

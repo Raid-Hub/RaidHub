@@ -1,6 +1,7 @@
 import {
     getActivityHistory,
     getCharacter,
+    getHistoricalStats,
     getLinkedProfiles,
     getPostGameCarnageReport,
     getProfile
@@ -8,7 +9,6 @@ import {
 import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
 import {
     BungieMembershipType,
-    ComponentPrivacySetting,
     DestinyActivityModeType,
     DestinyClass,
     DestinyComponentType,
@@ -116,10 +116,7 @@ class BungieNetClient {
                 membershipType,
                 components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
             })
-            if (
-                res.Response.profile.privacy === ComponentPrivacySetting.Private ||
-                res.Response.characters.privacy === ComponentPrivacySetting.Private
-            ) {
+            if ([res.Response.profile.data, res.Response.characters.data].some(data => !data)) {
                 // private profile
                 return { error: Error("Private profile") }
             } else {
@@ -129,8 +126,6 @@ class BungieNetClient {
                         ...profile,
                         emblemBackgroundPath: Object.values(res.Response.characters.data)[0]
                             .emblemBackgroundPath
-                        // TODO: find deleted character Ids
-                        //characterIds: Object.keys(res.Response.characters.data)
                     }
                 }
             }

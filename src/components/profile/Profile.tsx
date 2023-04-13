@@ -10,6 +10,8 @@ import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "../ToggleSwitch"
 import { useState } from "react"
+import { usePrefs } from "../../hooks/prefs"
+import { DefaultPreferences, Prefs } from "../../util/preferences"
 
 export interface ProfileProps {
     bungieNetProfile: ProfileComponent
@@ -18,6 +20,9 @@ export interface ProfileProps {
 const Profile = ({ bungieNetProfile }: ProfileProps) => {
     const { membership } = useBungieNextMembership(bungieNetProfile.userInfo)
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
+    const { prefs, isLoading: isLoadingPrefs } = usePrefs(bungieNetProfile.userInfo.membershipId, [
+        Prefs.PROFILE_BACKGROUND
+    ])
 
     const handleToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
@@ -26,6 +31,9 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
 
     const name =
         bungieNetProfile.userInfo.bungieGlobalDisplayName ?? bungieNetProfile.userInfo.displayName
+    const backgroundImage = prefs
+        ? prefs[Prefs.PROFILE_BACKGROUND]
+        : DefaultPreferences[Prefs.PROFILE_BACKGROUND]
     return (
         <main className={styles["main"]}>
             <Head>
@@ -35,6 +43,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                 <UserCard
                     userInfo={{ ...membership, ...bungieNetProfile.userInfo }}
                     emblemBackgroundPath={bungieNetProfile.emblemBackgroundPath}
+                    backgroundImage={backgroundImage.replace(/;$/, "")}
                 />
 
                 <div className={styles["ranking-banners"]}>

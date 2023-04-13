@@ -17,7 +17,7 @@ const ClanCard = ({ info }: ClanCardProps) => {
                     <Loading />
                 </div>
             ) : (
-                <ClanBanner data={clan!.clanBanner} />
+                <ClanBanner {...clan!.clanBanner} />
             )}
 
             <div className={styles["clan-desc"]}>

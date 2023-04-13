@@ -1,10 +1,3 @@
-import { useState } from "react"
-import styles from "../../styles/profile.module.css"
-import { RADIUS, SPACING } from "./profile/DotGraph"
-
-const red = "#F44336"
-const green = "#4CAF50"
-
 type ToggleProps = {
     defaultState: boolean
     onToggle: (state: boolean) => void

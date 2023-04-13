@@ -1,6 +1,5 @@
 import {
     DestinyHistoricalStatsValue,
-    DestinyHistoricalWeaponStats,
     DestinyPostGameCarnageReportExtendedData
 } from "oodestiny/schemas"
 import { round } from "../../util/math"

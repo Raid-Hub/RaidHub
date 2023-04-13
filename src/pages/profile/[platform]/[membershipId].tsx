@@ -1,6 +1,6 @@
 import { shared as bungieClient } from "../../../util/http/bungie"
 import { BungieMembershipType } from "oodestiny/schemas"
-import Profile, { ProfileProps } from "../../../components/profile/Profile"
+import Profile from "../../../components/profile/Profile"
 import { InitialProfileProps } from "../../../util/types"
 
 const StandardProfile = ({ bungieNetProfile }: InitialProfileProps) => {

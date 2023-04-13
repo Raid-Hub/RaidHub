@@ -1,10 +1,17 @@
-import { ClanBannerData, RGBA } from "../../util/types"
+import { ClanBannerData } from "../../util/types"
 import styles from "../../styles/profile.module.css"
 
-type ClanBannerProps = {
-    data: ClanBannerData
-}
-const ClanBanner = ({ data }: ClanBannerProps) => {
+type ClanBannerProps = ClanBannerData
+const ClanBanner = ({
+    gonfalcons,
+    gonfalconsColor,
+    decalTop,
+    decalTopColor,
+    decalSecondary,
+    decalSecondaryColor,
+    decalPrimary,
+    decalPrimaryColor
+}: ClanBannerProps) => {
     const decalYPos = "25%"
     const decalHeight = "70%"
     const topDecalY = "2%"
@@ -18,7 +25,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                         y="0"
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${data.gonfalcons}`}
+                        xlinkHref={`https://bungie.net${gonfalcons}`}
                     />
                 </mask>
                 <mask id="topDecal">
@@ -27,7 +34,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                         y={topDecalY}
                         width="100%"
                         height={decalTopHeight}
-                        xlinkHref={`https://bungie.net${data.decalTop}`}
+                        xlinkHref={`https://bungie.net${decalTop}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -37,7 +44,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                         y={decalYPos}
                         width="100%"
                         height={decalHeight}
-                        xlinkHref={`https://bungie.net${data.decalSecondary}`}
+                        xlinkHref={`https://bungie.net${decalSecondary}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -47,7 +54,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                         y={decalYPos}
                         width="100%"
                         height={decalHeight}
-                        xlinkHref={`https://bungie.net${data.decalPrimary}`}
+                        xlinkHref={`https://bungie.net${decalPrimary}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -57,7 +64,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                 y="0"
                 width="100%"
                 height="100%"
-                fill={data.gonfalconsColor}
+                fill={gonfalconsColor}
                 mask="url(#gonfalcons)"
             />
             <rect
@@ -65,7 +72,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                 y={topDecalY}
                 width="100%"
                 height={decalTopHeight}
-                fill={data.decalTopColor}
+                fill={decalTopColor}
                 mask="url(#topDecal)"
             />
             <rect
@@ -73,7 +80,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                 y={decalYPos}
                 width="100%"
                 height={decalHeight}
-                fill={data.decalSecondaryColor}
+                fill={decalSecondaryColor}
                 mask="url(#decal2)"
             />
             <rect
@@ -81,7 +88,7 @@ const ClanBanner = ({ data }: ClanBannerProps) => {
                 y={decalYPos}
                 width="100%"
                 height={decalHeight}
-                fill={data.decalPrimaryColor}
+                fill={decalPrimaryColor}
                 mask="url(#decal)"
             />
         </svg>

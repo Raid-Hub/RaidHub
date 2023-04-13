@@ -1,4 +1,4 @@
-import { LocalStrings, LocalizedStrings } from "./localized-strings"
+import { LocalStrings } from "./localized-strings"
 import { Raid } from "./raid"
 
 export enum Tag {

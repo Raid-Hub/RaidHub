@@ -1,7 +1,6 @@
 import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
 import styles from "../../styles/profile.module.css"
 import { median } from "../../util/math"
-import { ActivityCollection } from "../../util/types"
 import Dot from "./Dot"
 import Loading from "../Loading"
 

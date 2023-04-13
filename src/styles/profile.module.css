@@ -82,7 +82,7 @@
 
 .profile-banner {
     margin: 0;
-    border-radius: inherit
+    border-radius: inherit;
 }
 
 .image-background {
@@ -102,28 +102,35 @@
     display: flex;
 }
 
-.profile-details>img {
+.profile-details > img {
     flex: 1;
-    margin-right: .5em;
+    margin-right: 0.5em;
     object-fit: cover;
     max-width: 80px;
     max-height: 80px;
     border-radius: 50%;
     /* makes the border circular */
     border: 1px solid #5b5b5b;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
 
 .profile-username {
     flex: 1;
 }
 
-.profile-username>span {
+.profile-username > span {
+    border-radius: 6px 0 0 6px;
+    padding: 0.5em 0 0.5em 0.5em;
+    background-color: #00000077;
     white-space: nowrap;
     font-weight: 600;
     font-size: 18px;
 }
 
-.discrim {
+.profile-username .discrim {
+    border-radius: 0 6px 6px 0;
+    padding-left: 0em;
+    padding-right: 0.5em;
     color: #13e6ff;
 }
 
@@ -132,44 +139,76 @@
     margin: 1em;
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5em;
     align-items: flex-start;
+    justify-content: center;
+}
+
+.social {
+    background-color: #00000077;
+    display: flex;
+    border-radius: 5px;
+    border: 1px solid #5b5b5b;
+}
+
+.social:hover {
+    cursor: pointer;
+    transform: scale(1.035);
+}
+
+.social-divider {
+    width: 1px;
+    margin: 0.4em 0.1em;
+    background-color: #34353a;
+}
+
+.social-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 0.5em;
+}
+
+.social-text > span {
+    text-align: center;
+    flex: 1;
 }
 
 .img-social {
     margin: 0.3em;
-    margin-top: 10%;
+    margin-left: 0.5em;
     max-height: 30px;
     max-width: 30px;
 }
 
 .img-social rect {
-    fill: #FFFFFF
+    fill: #ffffff;
 }
 
 .img-social rect:hover {
     cursor: pointer;
 }
 
-.twitter-logo:hover {
-    fill: #1DA1F2
+#twitter:hover .twitter-logo {
+    fill: #1da1f2;
 }
 
-.discord-logo:hover {
-    fill: #4e5d94
+#discord:hover .discord-logo {
+    fill: #6876a7;
 }
 
-.youtube-logo:hover {
-    fill: #FF0000
+#youtube:hover .youtube-logo {
+    fill: #f12d2d;
 }
 
-.twitch-logo:hover {
-    fill: #6441a5
+#twitch:hover .twitch-logo {
+    fill: #6441a5;
 }
 
-.bungie-logo:hover {
-    fill: #00a3e3
+#bungie:hover .bungie-logo {
+    fill: #9ad5ec;
 }
 
 .ranking-banners {
@@ -199,7 +238,7 @@
     flex-direction: column;
 }
 
-.banners-text>span {
+.banners-text > span {
     flex: 1;
     font-size: 14px;
     margin-right: 1em;
@@ -222,6 +261,7 @@
     align-items: center;
     padding: 1em;
     box-sizing: border-box;
+    align-items: stretch;
 }
 
 .clan-img {
@@ -243,6 +283,7 @@ svg.clan-img {
 }
 
 .desc-title {
+    flex-grow: 1;
     display: inline-block;
     flex: 1;
     white-space: nowrap;
@@ -255,7 +296,7 @@ svg.clan-img {
 
 .desc-subtitle {
     display: inline-block;
-    flex: 1;
+    flex-grow: 1;
 
     font-style: italic;
     font-size: 18px;
@@ -263,10 +304,11 @@ svg.clan-img {
 }
 
 .desc-text-wrapper {
+    flex-grow: 100;
+    flex-basis: 100px;
     height: 100px;
     overflow-y: auto;
     display: flex;
-    flex-grow: 1;
     margin-bottom: 0.5em;
 }
 
@@ -305,6 +347,7 @@ svg.clan-img {
 }
 
 .description-list-item {
+    flex-grow: 1;
     display: flex;
     align-items: center;
 }
@@ -330,7 +373,7 @@ svg.clan-img {
     align-items: center;
 }
 
-.mid>a {
+.mid > a {
     flex: 1;
 }
 
@@ -345,7 +388,7 @@ svg.clan-img {
 .pinned-activity {
     border: 1px solid #5b5b5b;
     border-radius: 20px;
-    padding: .2em 3em;
+    padding: 0.2em 3em;
     position: relative;
 }
 
@@ -359,7 +402,6 @@ svg.clan-img {
     margin-bottom: -1.5em;
 }
 
-
 .card-header-text {
     display: flex;
     align-items: center;
@@ -370,12 +412,12 @@ svg.clan-img {
     font-weight: 600;
     font-size: 22px;
     text-transform: uppercase;
-    margin-right: .5em;
+    margin-right: 0.5em;
 }
 
 .card-badge img {
     width: 16px;
-    margin-right: .5em;
+    margin-right: 0.5em;
 }
 
 .card-header-subtext {
@@ -391,11 +433,11 @@ svg.clan-img {
 }
 
 .card-header-time img {
-    margin-right: .5em;
+    margin-right: 0.5em;
     width: 20px;
 }
 
-.card-header-time>span {
+.card-header-time > span {
     white-space: nowrap;
 }
 
@@ -413,7 +455,7 @@ svg.clan-img {
     border-radius: 20px;
     min-width: 300px;
     max-width: 100%;
-    flex: 1
+    flex: 1;
 }
 
 .raid-card-img-container {
@@ -432,7 +474,12 @@ svg.clan-img {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.462), rgba(0, 0, 0, 0.251));
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0.462),
+        rgba(0, 0, 0, 0.251)
+    );
     padding-left: 1em;
     box-sizing: border-box;
     display: flex;
@@ -486,13 +533,12 @@ svg.clan-img {
     margin-top: 0.2em;
 }
 
-
 .raid-card-content {
     padding: 0 1.5em;
 }
 
 .clickable-tag img {
-    margin: 0 .2em;
+    margin: 0 0.2em;
     width: 15px;
 }
 
@@ -574,7 +620,7 @@ svg.clan-img {
 .activity {
     flex: 1;
     flex-basis: 250px;
-    transition: transform .1s ease-in-out;
+    transition: transform 0.1s ease-in-out;
     border: 1px solid #4e4e4e;
     border-radius: 12px;
 
@@ -587,7 +633,7 @@ svg.clan-img {
     .activity {
         flex-basis: 180px;
     }
-  }
+}
 
 .activity:hover {
     cursor: pointer;
@@ -596,7 +642,6 @@ svg.clan-img {
 
 .activity-content {
     flex: 4;
-
 }
 
 .activity-content-img {
@@ -635,7 +680,7 @@ svg.clan-img {
 }
 
 .load-more {
-    transition: transform .2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
     width: 100%;
     border: 1px solid #4e4e4e;
     border-radius: 12px;
@@ -643,7 +688,7 @@ svg.clan-img {
 
     margin: 0 20%;
     flex-basis: 100%;
-    
+
     display: flex;
     justify-content: center;
 }

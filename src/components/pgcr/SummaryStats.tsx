@@ -1,4 +1,3 @@
-import { FC } from "react"
 import { useLanguage } from "../../hooks/language"
 import { Activity } from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"

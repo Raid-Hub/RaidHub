@@ -8,7 +8,7 @@ export const Founders: { [id: string]: string } = {
 export const Vanity: {
     [id: string]: { membershipType: BungieMembershipType; membershipId: string }
 } = {
-    newo: {
+    ["newo"]: {
         membershipType: 3,
         membershipId: "4611686018488107374"
     }

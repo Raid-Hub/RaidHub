@@ -16,12 +16,12 @@ export async function getServerSideProps({
     params: { vanity: string }
 }): Promise<{ props: InitialProfileProps }> {
     const vanity = Vanity[params.vanity.toLowerCase()]
-    if (!vanity) return { props: { error: "Vanity not found" } }
+    if (!vanity) return { props: { error: "Vanity not found", bungieNetProfile: null } }
     const { membershipId, membershipType } = Vanity[params.vanity.toLowerCase()]
     const profile = await bungieClient.getProfile(membershipId, membershipType)
     return {
         props: {
-            bungieNetProfile: profile.success ?? undefined,
+            bungieNetProfile: profile.success ?? null,
             error: profile.error?.message ?? ""
         }
     }

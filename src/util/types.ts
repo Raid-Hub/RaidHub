@@ -45,7 +45,7 @@ export interface ClanBannerData {
 export type Clan = GroupV2 & { clanBanner: ClanBannerData }
 export type RaidHubProfile = {}
 export type InitialProfileProps = {
-    bungieNetProfile?: ProfileComponent
+    bungieNetProfile: ProfileComponent | null
     error: string
 }
 export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean

@@ -1,14 +1,17 @@
 import { UserInfoCard } from "oodestiny/schemas"
 import styles from "../../styles/profile.module.css"
+import SocialTag from "./SocialTag"
+import { Socials } from "../../util/socials"
 
 type UserCardProps = {
     userInfo: UserInfoCard
     emblemBackgroundPath: string
+    backgroundImage: string
 }
 
-const UserCard = ({ userInfo, emblemBackgroundPath }: UserCardProps) => {
+const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage }: UserCardProps) => {
     return (
-        <div className={styles["profile"]}>
+        <div className={styles["profile"]} style={{ backgroundImage }}>
             <div className={styles["profile-banner"]}>
                 <img
                     className={styles["image-background"]}
@@ -16,7 +19,6 @@ const UserCard = ({ userInfo, emblemBackgroundPath }: UserCardProps) => {
                     alt=""
                 />
             </div>
-
             <div className={styles["profile-details"]}>
                 <img
                     src={
@@ -35,111 +37,27 @@ const UserCard = ({ userInfo, emblemBackgroundPath }: UserCardProps) => {
                 </div>
             </div>
             <div className={styles["profile-icons"]}>
-                <svg className={styles["img-social"]}>
-                    <defs>
-                        <mask id="twitter">
-                            <image
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                xlinkHref={"/icons/twitter.png"}
-                            />
-                        </mask>
-                    </defs>
-                    <rect
-                        className={styles["twitter-logo"]}
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        mask="url(#twitter)"
-                    />
-                </svg>
-                <svg className={styles["img-social"]}>
-                    <defs>
-                        <mask id="discord">
-                            <image
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                xlinkHref={"/icons/discord.png"}
-                            />
-                        </mask>
-                    </defs>
-                    <rect
-                        className={styles["discord-logo"]}
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        mask="url(#discord)"
-                    />
-                </svg>
-                <svg className={styles["img-social"]}>
-                    <defs>
-                        <mask id="youtube">
-                            <image
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                xlinkHref={"/icons/youtube.png"}
-                            />
-                        </mask>
-                    </defs>
-                    <rect
-                        className={styles["youtube-logo"]}
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        mask="url(#youtube)"
-                    />
-                </svg>
-                <svg className={styles["img-social"]}>
-                    <defs>
-                        <mask id="twitch">
-                            <image
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                xlinkHref={"/icons/twitch.png"}
-                            />
-                        </mask>
-                    </defs>
-                    <rect
-                        className={styles["twitch-logo"]}
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        mask="url(#twitch)"
-                    />
-                </svg>
-                <svg className={styles["img-social"]}>
-                    <defs>
-                        <mask id="bungie">
-                            <image
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                xlinkHref={"/icons/bungie.png"}
-                            />
-                        </mask>
-                    </defs>
-                    <rect
-                        className={styles["bungie-logo"]}
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        mask="url(#bungie)"
-                    />
-                </svg>
+                <SocialTag
+                    id={Socials.Bungie}
+                    username={"Newo#9010"}
+                    url={"https://www.bungie.net/7/en/User/Profile/3/4611686018488107374"}
+                />
+                <SocialTag
+                    id={Socials.Twitter}
+                    username={"@kneewoah"}
+                    url={"https://twitter.com/kneewoah"}
+                />
+                <SocialTag
+                    id={Socials.Discord}
+                    username={"Newo#0001"}
+                    url={"https://discord.gg/aXuN3qwDRK"}
+                />
+                <SocialTag
+                    id={Socials.YouTube}
+                    username={"Newo"}
+                    url={"https://youtube.com/@Newo1"}
+                />
+                <SocialTag id={Socials.Twitch} username={"newoX"} url={"https://twitch.tv/newox"} />
             </div>
         </div>
     )
