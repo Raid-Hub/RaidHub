@@ -1,8 +1,12 @@
 import styles from "../styles/header.module.css"
+import SearchBar from "./SearchBar"
 
 type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
+    const handleSearchResults = (results: {}[]) => {
+        console.log(results)
+    }
     return (
         <header>
             <nav id={styles.nav}>
@@ -12,11 +16,7 @@ const Header = ({}: HeaderProps) => {
                 </div>
                 <div id={styles["right-content"]}>
                     <img id={styles["search-img"]} src="/icons/search.png" alt="search" />
-                    <input
-                        id={styles["search-bar"]}
-                        type="text"
-                        placeholder="Search for a Guardian"
-                    />
+                    <SearchBar onResults={handleSearchResults} />
                     <img id={styles["profile-img"]} src="/icons/profile-icon.png" alt="profile" />
                 </div>
             </nav>

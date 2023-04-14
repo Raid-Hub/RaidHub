@@ -1,5 +1,6 @@
 import { Collection } from "@discordjs/collection"
 import {
+    BungieMembershipType,
     DestinyHistoricalStatsPeriodGroup,
     DestinyProfileComponent,
     GroupV2
@@ -49,3 +50,9 @@ export type InitialProfileProps = {
     error: string
 }
 export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean
+export type CustomBungieSearchResult = {
+    bungieGlobalDisplayName: string
+    bungieGlobalDisplayNameCode?: number
+    membershipType: BungieMembershipType
+    membershipId: string
+}
