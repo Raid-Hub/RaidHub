@@ -2,6 +2,7 @@ import { UserInfoCard } from "oodestiny/schemas"
 import styles from "../../styles/profile.module.css"
 import SocialTag from "./SocialTag"
 import { Socials } from "../../util/socials"
+import { fixBungieCode } from "../../util/math"
 
 type UserCardProps = {
     userInfo: UserInfoCard
@@ -31,7 +32,7 @@ const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage }: UserCardP
                     <span>{userInfo.bungieGlobalDisplayName ?? userInfo.displayName}</span>
                     <span className={styles["discrim"]}>
                         {userInfo.bungieGlobalDisplayNameCode
-                            ? "#" + fixCode(userInfo.bungieGlobalDisplayNameCode)
+                            ? "#" + fixBungieCode(userInfo.bungieGlobalDisplayNameCode)
                             : ""}
                     </span>
                 </div>
@@ -64,10 +65,3 @@ const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage }: UserCardP
 }
 
 export default UserCard
-
-// since the code is a number, leading zeroes get cut off
-function fixCode(code: number): string {
-    const str = code.toString()
-    const missingZeroes = 4 - str.length
-    return `${"0".repeat(missingZeroes)}${str}`
-}

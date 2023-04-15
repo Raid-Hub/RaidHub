@@ -1,15 +1,16 @@
 import {
     getActivityHistory,
     getCharacter,
-    getHistoricalStats,
     getLinkedProfiles,
     getPostGameCarnageReport,
-    getProfile
+    getProfile,
+    searchDestinyPlayerByBungieName
 } from "oodestiny/endpoints/Destiny2"
 import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
+    DestinyCharacterComponent,
     DestinyClass,
     DestinyComponentType,
     DestinyHistoricalStatsPeriodGroup,
@@ -18,7 +19,8 @@ import {
     GroupType,
     GroupsForMemberFilter,
     PlatformErrorCodes,
-    UserInfoCard
+    UserInfoCard,
+    UserSearchResponseDetail
 } from "oodestiny/schemas"
 import { CacheRequest, Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
 
@@ -26,6 +28,8 @@ import { CacheRequest, Clan, ErrSuccess, ProfileComponent, RGBA } from "../types
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
 import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
 import { CharacterName } from "../characters"
+import { RGBAToHex } from "../math"
+import { searchByGlobalNamePost } from "oodestiny/endpoints/User"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
@@ -154,6 +158,7 @@ class BungieNetClient {
             throw e
         }
     }
+
     async getClan(membershipId: string, membershipType: BungieMembershipType): Promise<Clan> {
         try {
             const res = await getGroupsForMember({
@@ -207,6 +212,69 @@ class BungieNetClient {
                 membershipType
             })
             return res.Response.bnetMembership
+        } catch (e) {
+            throw e
+        }
+    }
+
+    async searchForUser(username: string): Promise<UserSearchResponseDetail[]> {
+        try {
+            const response = await searchByGlobalNamePost(
+                {
+                    page: 0
+                },
+                {
+                    displayNamePrefix: username
+                }
+            )
+            return response.Response.searchResults
+        } catch (e) {
+            throw e
+        }
+    }
+
+    async getFirstCharacter({
+        membershipId: destinyMembershipId,
+        membershipType
+    }: {
+        membershipId: string
+        membershipType: BungieMembershipType
+    }): Promise<DestinyCharacterComponent | null> {
+        try {
+            const res = await getProfile({
+                destinyMembershipId,
+                membershipType,
+                components: [DestinyComponentType.Characters]
+            })
+            if (!res.Response.characters.data) {
+                // private profile
+                throw Error("Private profile")
+            } else {
+                const characters = res.Response.characters.data
+                return Object.values(characters)[0]
+            }
+        } catch (e) {
+            return null
+            throw e
+            // TODO BETTER ERROR HANDLING
+        }
+    }
+
+    async searchByBungieName(
+        displayName: string,
+        displayNameCode: number
+    ): Promise<UserInfoCard[]> {
+        try {
+            const response = await searchDestinyPlayerByBungieName(
+                {
+                    membershipType: BungieMembershipType.All
+                },
+                {
+                    displayName,
+                    displayNameCode
+                }
+            )
+            return response.Response
         } catch (e) {
             throw e
         }
@@ -321,21 +389,6 @@ function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
         entry.values.kills?.basic.value === 0 &&
         entry.values.deaths?.basic.value === 0
     )
-}
-
-function RGBAToHex(rgba: RGBA): string {
-    const { red, green, blue, alpha } = rgba
-    let r = red.toString(16)
-    let g = green.toString(16)
-    let b = blue.toString(16)
-    let a = alpha.toString(16)
-
-    if (r.length == 1) r = "0" + r
-    if (g.length == 1) g = "0" + g
-    if (b.length == 1) b = "0" + b
-    if (a.length == 1) a = "0" + a
-
-    return `#${r}${g}${b}${a}`
 }
 
 export const shared = new BungieNetClient()

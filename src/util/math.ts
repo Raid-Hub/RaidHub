@@ -1,3 +1,5 @@
+import { RGBA } from "./types"
+
 export function round(val: number, places: number): number {
     const factor = Math.pow(10, places)
     return Math.round(val * factor) / factor
@@ -19,4 +21,30 @@ export function secondsToHMS(seconds: number): string {
     const minutes = Math.floor(time / 60)
     time -= minutes * 60
     return `${hours ? hours + "h" : ""} ${hours | minutes ? minutes + "m" : ""} ${time + "s"}`
+}
+
+export function RGBAToHex(rgba: RGBA): string {
+    const { red, green, blue, alpha } = rgba
+    let r = red.toString(16)
+    let g = green.toString(16)
+    let b = blue.toString(16)
+    let a = alpha.toString(16)
+
+    if (r.length == 1) r = "0" + r
+    if (g.length == 1) g = "0" + g
+    if (b.length == 1) b = "0" + b
+    if (a.length == 1) a = "0" + a
+
+    return `#${r}${g}${b}${a}`
+}
+
+export async function wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+// since the code is a number, leading zeroes get cut off
+export function fixBungieCode(code: number): string {
+    const str = code.toString()
+    const missingZeroes = 4 - str.length
+    return `${"0".repeat(missingZeroes)}${str}`
 }
