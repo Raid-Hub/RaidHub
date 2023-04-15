@@ -20,6 +20,7 @@ export function usePGCR(activityId: string): UsePGCR {
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
+        setLoading(true)
         client
             .getPGCR(activityId)
             .then(pgcr => client.validatePGCR(pgcr))

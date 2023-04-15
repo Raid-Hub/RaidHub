@@ -15,6 +15,7 @@ export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs
     const [fetchedPrefs, setFetchedPrefs] = useState<PrefsRecord<T> | undefined>(undefined)
 
     useEffect(() => {
+        setLoading(true)
         // TODO: this is temporary
         const temp = {} as PrefsRecord<T>
         for (const pref of prefs) {
@@ -22,7 +23,7 @@ export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs
         }
         setLoading(false)
         setFetchedPrefs(temp)
-    }, [])
+    }, [id])
 
     return {
         isLoading: isLoading,

@@ -13,7 +13,14 @@ export function useSearch(query: string): UseSearch {
     const [results, setResults] = useState<CustomBungieSearchResult[]>([])
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        setLoading(!!query)
+        if (query) {
+            fetchUsers()
+        } else {
+            setResults([])
+        }
+
+        async function fetchUsers() {
             const currentSearch = Date.now()
             lastSearch.current = currentSearch
 
@@ -46,14 +53,6 @@ export function useSearch(query: string): UseSearch {
                 setResults(hydratedResponse)
                 setLoading(false)
             }
-        }
-
-        if (query) {
-            setLoading(true)
-            fetchUsers()
-        } else {
-            setLoading(false)
-            setResults([])
         }
     }, [query])
     return { results, isLoading }

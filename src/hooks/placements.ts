@@ -14,10 +14,11 @@ export function usePlacements(activityId: string): UsePlacements {
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
+        setLoading(true)
         fetchActivityPlacements(activityId)
             .then(placements => setPlacements(placements))
             .catch(err => setError(err))
             .finally(() => setLoading(false))
-    }, [])
+    }, [activityId])
     return { placements, error, isLoading }
 }

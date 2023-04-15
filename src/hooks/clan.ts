@@ -17,10 +17,11 @@ export function useClan({ membershipId, membershipType }: UseClanParams): UseCla
     const [clan, setClan] = useState<Clan | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
+        setLoading(true)
         client
             .getClan(membershipId, membershipType)
             .then(clan => setClan(clan))
             .finally(() => setLoading(false))
-    }, [])
+    }, [membershipId])
     return { clan, isLoading }
 }
