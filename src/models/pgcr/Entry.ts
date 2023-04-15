@@ -44,9 +44,9 @@ export class PGCRMember extends PGCREntry {
     constructor(characters: DestinyPostGameCarnageReportEntry[]) {
         super(
             characters[0],
-            characters.map(character => ({
-                values: character.values,
-                extended: character.extended
+            characters.map(({ values, extended }) => ({
+                values,
+                extended
             }))
         )
         this._flawless = characters.every(character => character.values["deaths"].basic.value === 0)
@@ -54,7 +54,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get characterClass(): string {
-        return this._characters.map(char => char.className).join("/")
+        return this._characters.map(({ className }) => className).join("/")
     }
 
     get flawless(): boolean {
@@ -62,7 +62,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get characterIds() {
-        return this._characters.map(char => char.id)
+        return this._characters.map(({ id }) => id)
     }
 
     get characters() {
@@ -70,7 +70,7 @@ export class PGCRMember extends PGCREntry {
     }
 
     get didComplete(): boolean {
-        return this._characters.some(c => c.didComplete)
+        return this._characters.some(({ didComplete }) => didComplete)
     }
 }
 

@@ -11,8 +11,13 @@ type UserCardProps = {
 }
 
 const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage }: UserCardProps) => {
+    const customStyling = backgroundImage
+        ? {
+              style: { backgroundImage }
+          }
+        : {}
     return (
-        <div className={styles["profile"]} style={{ backgroundImage }}>
+        <div className={styles["profile"]} {...customStyling}>
             <div className={styles["profile-banner"]}>
                 <img
                     className={styles["image-background"]}

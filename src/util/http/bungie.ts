@@ -57,7 +57,7 @@ const clanBanners: {
 } = BannersJson
 
 const CACHE_MINUTES = 10
-export const ACTIVITIES_PER_PAGE = 250
+export const ACTIVITIES_PER_PAGE = 200
 
 class BungieNetClient {
     public readonly access_token: string | null

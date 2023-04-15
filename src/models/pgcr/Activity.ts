@@ -33,7 +33,7 @@ export class Activity {
                 pgcr.entries[0].values.activityDurationSeconds.basic.value * 1000
         )
         this._playerCount = new Set(
-            pgcr.entries.map(e => e.player.destinyUserInfo.membershipId)
+            pgcr.entries.map(({ player }) => player.destinyUserInfo.membershipId)
         ).size
         this._flawless =
             this._complete &&

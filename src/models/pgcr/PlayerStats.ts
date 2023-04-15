@@ -34,7 +34,7 @@ export class PGCRStats {
         let stats: StatsDictionary
         if (Array.isArray(data)) {
             stats = PGCRStats.merge(data)
-            this._weapons = PlayerWeapons.fromArray(data.map(d => d.extended.weapons))
+            this._weapons = PlayerWeapons.fromArray(data.map(({ extended }) => extended.weapons))
         } else {
             stats = {
                 kills: data.values.kills.basic.value,

@@ -73,7 +73,7 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
                     updateMemberIndex={updateMemberIndex}
                 />
                 <div className={styles["class-button-container"]}>
-                    {members?.[memberIndex].characters.map((character, idx) => (
+                    {members?.[memberIndex].characters.map(({ logo }, idx) => (
                         <button
                             key={idx}
                             className={[
@@ -84,7 +84,7 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
                             ].join(" ")}
                             onClick={members ? () => updateCharacterIndex(idx) : undefined}
                         >
-                            <img src={character.logo} />
+                            <img src={logo} />
                         </button>
                     ))}
                     <button

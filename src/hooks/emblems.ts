@@ -21,17 +21,13 @@ export function useEmblems(members: UseEmblemsParams): UseEmblems {
         const errs: string[] = []
         const emblemsList: EmblemTuple[] = []
         Promise.all(
-            members?.map(member =>
+            members?.map(({ characterIds, membershipId, membershipType }) =>
                 client
-                    .getCharacterEmblem(
-                        member.characterIds[0],
-                        member.membershipId,
-                        member.membershipType
-                    )
-                    .then(emblem => emblemsList.push([member.characterIds[0], emblem]))
+                    .getCharacterEmblem(characterIds[0], membershipId, membershipType)
+                    .then(emblem => emblemsList.push([characterIds[0], emblem]))
                     .catch(err => {
                         errs.push(err)
-                        emblemsList.push([member.characterIds[0], ""])
+                        emblemsList.push([characterIds[0], ""])
                     })
             ) ?? []
         )

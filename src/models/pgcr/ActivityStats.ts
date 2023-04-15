@@ -47,7 +47,7 @@ export class ActivityStats {
 
     get mostUsedWeapon() {
         return this._members
-            .map(member => member.stats.weapons.first())
+            .map(({ stats }) => stats.weapons.first())
             .reduce((mostKills, current) =>
                 (current?.kills ?? 0) > (mostKills?.kills ?? 0) ? current : mostKills
             )

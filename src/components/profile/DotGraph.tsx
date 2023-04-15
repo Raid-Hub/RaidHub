@@ -43,7 +43,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
     }
 
     const orderedByDuration = dots
-        .map(dot => dot.values.activityDurationSeconds.basic.value)
+        .map(({ values }) => values.activityDurationSeconds.basic.value)
         .sort((a, b) => a - b)
     const avg = median(orderedByDuration)
     const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])

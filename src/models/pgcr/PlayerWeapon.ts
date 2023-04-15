@@ -42,16 +42,16 @@ export class PlayerWeapons extends Collection<number, WeaponStatsValues> {
 
     static fromSingle(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
         return new PlayerWeapons(
-            weapons?.map(weapon => {
-                const def = weaponsDefs[weapon.referenceId]
+            weapons?.map(({ referenceId, values }) => {
+                const def = weaponsDefs[referenceId]
                 return [
-                    weapon.referenceId,
+                    referenceId,
                     {
                         name: def?.name ?? {},
                         icon: "https://bungie.net" + (def?.icon ?? "/img/misc/missing_icon_d2.png"),
                         type: def?.type ?? "Unknown",
-                        kills: weapon.values.uniqueWeaponKills.basic.value,
-                        precision: weapon.values.uniqueWeaponPrecisionKills.basic.value
+                        kills: values.uniqueWeaponKills.basic.value,
+                        precision: values.uniqueWeaponPrecisionKills.basic.value
                     }
                 ]
             })

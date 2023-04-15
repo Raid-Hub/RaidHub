@@ -93,17 +93,18 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
         case Layout.RecentActivities:
             return (
                 <div className={styles["recent"]}>
-                    {allActivities.slice(0, pages * CARDS_PER_PAGE).map(activity => (
-                        <ActivityCard
-                            info={raidDetailsFromHash(
-                                activity.activityDetails.referenceId.toString()
-                            )}
-                            strings={strings}
-                            completed={!!activity.values.completed.basic.value}
-                            activityId={activity.activityDetails.instanceId}
-                            completionDate={new Date(activity.period)}
-                        />
-                    ))}
+                    {allActivities
+                        .slice(0, pages * CARDS_PER_PAGE)
+                        .map(({ activityDetails, values, period }, key) => (
+                            <ActivityCard
+                                key={key}
+                                info={raidDetailsFromHash(activityDetails.referenceId.toString())}
+                                strings={strings}
+                                completed={!!values.completed.basic.value}
+                                activityId={activityDetails.instanceId}
+                                completionDate={new Date(period)}
+                            />
+                        ))}
                     {!isLoadingDots ? (
                         allActivities.length > pages * CARDS_PER_PAGE ? (
                             <button
@@ -118,8 +119,8 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
                     ) : (
                         Array(CARDS_PER_PAGE)
                             .fill(null)
-                            .map((_, idx) => (
-                                <div className={styles["placeholder"]} key={idx}>
+                            .map((_, key) => (
+                                <div className={styles["placeholder"]} key={key}>
                                     <Loading />
                                 </div>
                             ))

@@ -32,6 +32,7 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
     const backgroundImage = prefs
         ? prefs[Prefs.PROFILE_BACKGROUND]
         : DefaultPreferences[Prefs.PROFILE_BACKGROUND]
+
     return (
         <main className={styles["main"]}>
             <Head>
