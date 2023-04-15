@@ -10,6 +10,7 @@ import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
+    DestinyCharacterComponent,
     DestinyClass,
     DestinyComponentType,
     DestinyHistoricalStatsPeriodGroup,
@@ -229,6 +230,33 @@ class BungieNetClient {
             return response.Response.searchResults
         } catch (e) {
             throw e
+        }
+    }
+
+    async getFirstCharacter({
+        membershipId: destinyMembershipId,
+        membershipType
+    }: {
+        membershipId: string
+        membershipType: BungieMembershipType
+    }): Promise<DestinyCharacterComponent | null> {
+        try {
+            const res = await getProfile({
+                destinyMembershipId,
+                membershipType,
+                components: [DestinyComponentType.Characters]
+            })
+            if (!res.Response.characters.data) {
+                // private profile
+                throw Error("Private profile")
+            } else {
+                const characters = res.Response.characters.data
+                return Object.values(characters)[0]
+            }
+        } catch (e) {
+            return null
+            throw e
+            // TODO BETTER ERROR HANDLING
         }
     }
 

@@ -41,3 +41,10 @@ export function RGBAToHex(rgba: RGBA): string {
 export async function wait(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+// since the code is a number, leading zeroes get cut off
+export function fixBungieCode(code: number): string {
+    const str = code.toString()
+    const missingZeroes = 4 - str.length
+    return `${"0".repeat(missingZeroes)}${str}`
+}

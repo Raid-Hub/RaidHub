@@ -53,6 +53,7 @@ export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boo
 export type CustomBungieSearchResult = {
     bungieGlobalDisplayName: string
     bungieGlobalDisplayNameCode?: number
+    displayName: string
     membershipType: BungieMembershipType
     membershipId: string
 }
