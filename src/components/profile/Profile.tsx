@@ -12,6 +12,7 @@ import ToggleSwitch from "../ToggleSwitch"
 import { useState } from "react"
 import { usePrefs } from "../../hooks/prefs"
 import { DefaultPreferences, Prefs } from "../../util/preferences"
+import { Icons } from "../../util/icons"
 
 type ProfileProps = ProfileComponent
 
@@ -44,19 +45,19 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
                 />
 
                 <div className={styles["ranking-banners"]}>
-                    <RankingBanner icon={"/icons/skull.png"} backgroundColor={"#fa6b6bA9"}>
+                    <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
                         <span>Clears Rank</span>
                         <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9999</span>
                     </RankingBanner>
 
-                    <RankingBanner icon={"/icons/speed.png"} backgroundColor={"#fa6b6bA9"}>
+                    <RankingBanner icon={Icons.SPEED} backgroundColor={"#fa6b6bA9"}>
                         <span>Speed Rank</span>
                         <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9hr 99m 99s</span>
                     </RankingBanner>
 
-                    <RankingBanner icon={"/icons/diamond.png"} backgroundColor={"#4ea2ccA9"}>
+                    <RankingBanner icon={Icons.DIAMOND} backgroundColor={"#4ea2ccA9"}>
                         <span>Low-Mans</span>
                         <span className={styles["banner-bold"]}>Diamond IV</span>
                         <span>69</span>

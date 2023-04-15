@@ -5,6 +5,7 @@ import styles from "../../styles/profile.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"
 import { RaidBanner } from "../../util/raid"
 import Loading from "../Loading"
+import { Icons } from "../../util/icons"
 
 type PinnedActivityProps = {
     activityId: string
@@ -30,7 +31,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
                             backgroundImage: `url('${RaidBanner[activity.raid]}')`
                         }}
                     />
-                    <img className={styles["pin"]} src="/icons/pin.png" alt="" />
+                    <img className={styles["pin"]} src={Icons.PIN} alt="" />
 
                     <div className={styles["card-header-text"]}>
                         <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
@@ -45,7 +46,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
                         </p>
 
                         <div className={styles["card-header-time"]}>
-                            <img src="/icons/speed.png" alt="" width="20px" height="20px" />
+                            <img src={Icons.SPEED} alt="" width="20px" height="20px" />
                             <span>{activity.speed.duration}</span>
                         </div>
                     </div>

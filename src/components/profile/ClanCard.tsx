@@ -3,6 +3,7 @@ import { useClan } from "../../hooks/clan"
 import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
+import { Icons } from "../../util/icons"
 
 type ClanCardProps = UserInfoCard
 
@@ -30,21 +31,21 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
 
                 <div className={styles["description-list"]}>
                     <div className={styles["description-list-item"]}>
-                        <img src="/icons/diamond.png" alt="" />
+                        <img src={Icons.DIAMOND} alt="" />
                         <p>
                             Raid Clears <span>x999</span>
                         </p>
                     </div>
 
                     <div className={styles["description-list-item"]}>
-                        <img src="/icons/diamond.png" alt="" />
+                        <img src={Icons.DIAMOND} alt="" />
                         <p>
                             Solos <span>x999</span>
                         </p>
                     </div>
 
                     <div className={styles["description-list-item"]}>
-                        <img src="/icons/diamond.png" alt="" />
+                        <img src={Icons.DIAMOND} alt="" />
                         <p>
                             Flawless Masters <span>x999</span>
                         </p>

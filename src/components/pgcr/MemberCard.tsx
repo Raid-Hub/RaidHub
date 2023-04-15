@@ -1,5 +1,6 @@
 import { PGCRMember } from "../../models/pgcr/Entry"
 import styles from "../../styles/pgcr.module.css"
+import { Icons } from "../../util/icons"
 import { Raid } from "../../util/raid"
 
 type MemberCardProps = {
@@ -65,7 +66,7 @@ const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
             <div className={styles["flawless-diamond"]}>
                 {member?.flawless && (
                     <img
-                        src="/icons/flawless_diamond.png"
+                        src={Icons.FLAWLESS_DIAMOND}
                         alt={member.displayName + " went flawless this raid"}
                     />
                 )}

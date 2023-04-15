@@ -1,4 +1,5 @@
 import { DestinyClass } from "oodestiny/schemas"
+import { Icons } from "./icons"
 
 export const CharacterType: { [key: string]: DestinyClass } = {
     Hunter: DestinyClass.Hunter,
@@ -16,8 +17,8 @@ export const CharacterName: { [key in DestinyClass]: string } = {
 }
 
 export const CharacterLogos: { [key in DestinyClass]: string } = {
-    [DestinyClass.Hunter]: "/icons/hunter.png",
-    [DestinyClass.Titan]: "/icons/titan.png",
-    [DestinyClass.Warlock]: "/icons/warlock.png",
-    [DestinyClass.Unknown]: "/icons/question_mark.png"
+    [DestinyClass.Hunter]: Icons.HUNTER,
+    [DestinyClass.Titan]: Icons.TITAN,
+    [DestinyClass.Warlock]: Icons.WARLOCK,
+    [DestinyClass.Unknown]: Icons.UNKNOWN
 }

@@ -4,6 +4,7 @@ import { Raid, RaidCardBackground } from "../../util/raid"
 import DotGraph from "./DotGraph"
 import { secondsToHMS } from "../../util/math"
 import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
+import { Icons } from "../../util/icons"
 
 type RaidStats = {
     totalClears: number
@@ -35,7 +36,7 @@ const RaidCard = ({ raid, raidName, activities, stats, isLoadingDots }: RaidCard
                         <span className={styles["raid-card-title"]}>{raidName}</span>
                         <div className={styles["card-diamonds"]}>
                             <Link href="/" className={styles["clickable-tag"]}>
-                                <img src="/icons/flawless_diamond.png" alt="" />
+                                <img src={Icons.FLAWLESS_DIAMOND} alt="" />
                                 <span>Trio Flawless</span>
                             </Link>
                             <Link href="/" className={styles["clickable-tag"]}>
