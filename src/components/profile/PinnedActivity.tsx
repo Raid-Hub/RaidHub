@@ -12,10 +12,10 @@ type PinnedActivityProps = {
 }
 
 const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
-    const { activity, isLoading: isLoadingActivity } = usePGCR(activityId)
+    const { activity, loadingState: pgcrLoadingState } = usePGCR(activityId)
     const language = useLanguage()
     const strings = LocalizedStrings[language]
-    if (isLoadingActivity || !activity)
+    if (pgcrLoadingState || !activity)
         return (
             <div className={styles["pinned-activity-loading"]}>
                 <Loading />

@@ -159,7 +159,10 @@ class BungieNetClient {
         }
     }
 
-    async getClan(membershipId: string, membershipType: BungieMembershipType): Promise<Clan> {
+    async getClan(
+        membershipId: string,
+        membershipType: BungieMembershipType
+    ): Promise<Clan | null> {
         try {
             const res = await getGroupsForMember({
                 filter: GroupsForMemberFilter.All,
@@ -167,7 +170,9 @@ class BungieNetClient {
                 membershipId,
                 membershipType
             })
-            const group = res.Response.results[0].group
+            const clan = res.Response.results[0]
+            if (!clan) return null
+            const group = clan.group
             const clanBannerData = group.clanInfo.clanBannerData
             return {
                 ...group,

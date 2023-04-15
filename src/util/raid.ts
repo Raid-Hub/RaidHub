@@ -264,3 +264,19 @@ export const DayOneEnd: Partial<Record<Raid, Date>> = {
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
     [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST")
 }
+
+export const Short: { [key in Raid]: string } = {
+    [Raid.LEVIATHAN]: "Levi",
+    [Raid.EATER_OF_WORLDS]: "EoW",
+    [Raid.SPIRE_OF_STARS]: "Spire",
+    [Raid.LAST_WISH]: "Wish",
+    [Raid.SCOURGE_OF_THE_PAST]: "SotP",
+    [Raid.CROWN_OF_SORROW]: "CoS",
+    [Raid.GARDEN_OF_SALVATION]: "GoS",
+    [Raid.DEEP_STONE_CRYPT]: "DSC",
+    [Raid.VAULT_OF_GLASS]: "VoG",
+    [Raid.VOW_OF_THE_DISCIPLE]: "Vow",
+    [Raid.KINGS_FALL]: "KF",
+    [Raid.ROOT_OF_NIGHTMARES]: "RoN",
+    [Raid.NA]: "*"
+}

@@ -81,6 +81,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                 key={idx}
                                 rel="noopener noreferrer"
                                 href={`/profile/${membershipType}/${membershipId}`}
+                                onClick={() => setTimeout(setShowingResults, 200, false)}
                             >
                                 <li>
                                     <p>

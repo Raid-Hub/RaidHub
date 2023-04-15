@@ -7,13 +7,15 @@ import MemberCard from "./MemberCard"
 import StatCards from "./StatCard"
 import styles from "../../styles/pgcr.module.css"
 import { useEmblems } from "../../hooks/emblems"
+import { Loading } from "../../util/types"
 
 type PGCREntriesProps = {
     members: PGCRMember[] | null
     raid: Raid
+    pgcrLoadingState: Loading
 }
 
-const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
+const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
     const { emblems, error: emblemError } = useEmblems(members)
     const [memberIndex, setMemberIndex] = useState(-1)
     const [characterIndex, setCharacterIndex] = useState(-1)

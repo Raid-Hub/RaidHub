@@ -57,3 +57,8 @@ export type CustomBungieSearchResult = {
     membershipType: BungieMembershipType
     membershipId: string
 }
+export enum Loading {
+    FALSE,
+    LOADING,
+    HYDRATING
+}
