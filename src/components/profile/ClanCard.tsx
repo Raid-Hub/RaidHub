@@ -4,12 +4,10 @@ import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
 
-type ClanCardProps = {
-    info: UserInfoCard
-}
+type ClanCardProps = UserInfoCard
 
-const ClanCard = ({ info }: ClanCardProps) => {
-    const { clan, isLoading: isClanLoading } = useClan(info)
+const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
+    const { clan, isLoading: isClanLoading } = useClan({ membershipId, membershipType })
     return (
         <div className={styles["clan"]}>
             {isClanLoading ? (

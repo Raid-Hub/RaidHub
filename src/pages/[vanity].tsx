@@ -6,7 +6,7 @@ import Custom404 from "./404"
 
 const VanityProfile = ({ bungieNetProfile }: InitialProfileProps) => {
     if (!bungieNetProfile) return <Custom404 />
-    else if (bungieNetProfile) return <Profile bungieNetProfile={bungieNetProfile} />
+    else if (bungieNetProfile) return <Profile {...bungieNetProfile} />
     else return <div>UH OH</div>
 }
 
