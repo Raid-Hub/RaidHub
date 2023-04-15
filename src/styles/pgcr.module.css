@@ -13,7 +13,7 @@
 
 .soft-rectangle {
     border-radius: 15px;
-    border: rgba(182, 182, 182, 0.431);
+    border: var(--border);
     border-style: solid;
     border-width: 1px;
 }
@@ -313,8 +313,8 @@
 }
 
 .class-button > img {
-    width: 90px;
-    height: 90px;
+    width: 70px;
+    height: 70px;
     margin: auto;
 }
 

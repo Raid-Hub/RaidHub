@@ -16,7 +16,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
     const strings = LocalizedStrings[language]
     if (isLoadingActivity || !activity)
         return (
-            <div className={styles["pinned-activity"]}>
+            <div className={styles["pinned-activity-loading"]}>
                 <Loading />
             </div>
         )
