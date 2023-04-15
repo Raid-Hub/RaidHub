@@ -1,10 +1,10 @@
 .main {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  margin: auto;
-  overflow: auto;
-  max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: auto;
+    overflow: auto;
+    max-width: 1000px;
 }
 
 .main-element {
@@ -75,7 +75,7 @@
     max-width: 400px;
 }
 
-#cp-error>p {
+#cp-error > p {
     font-size: small;
     font-style: italic;
 }
@@ -95,8 +95,8 @@
     justify-content: right;
 }
 
-.duration>span {
-    margin: 0.2rem
+.duration > span {
+    margin: 0.2rem;
 }
 
 #tags-container {
@@ -160,7 +160,7 @@
     border-radius: inherit;
     max-height: 100%;
     left: -100px;
-    opacity: .95;
+    opacity: 0.95;
     filter: blur(2px);
 }
 
@@ -171,7 +171,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, #00000000, #2626265f ,#26262684, #2626265f, #00000000);
+    background: linear-gradient(to right, #00000000, #2626265f, #26262684, #2626265f, #00000000);
 }
 
 .member-card {
@@ -186,7 +186,7 @@
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
 @media only screen and (orientation: landscape) {
-    .members-odd>.entry-card:nth-child(1) {
+    .members-odd > .entry-card:nth-child(1) {
         grid-column-start: 1;
         grid-column-end: span 2;
         margin-right: 25%;
@@ -206,7 +206,7 @@
     background: linear-gradient(to right, #212121a5, #ffffff00);
 }
 
-.class-logo>img {
+.class-logo > img {
     max-height: 50px;
     aspect-ratio: 1/1;
     padding: 10px;
@@ -224,11 +224,11 @@
 }
 
 .centered {
-    align-items: center
+    align-items: center;
 }
 
 .centered span {
-    margin: auto
+    margin: auto;
 }
 
 .member-name {
@@ -243,12 +243,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex-shrink: 1;
-    color: white
+    color: white;
 }
 
-.member-name>span {
+.member-name > span {
     font-weight: bolder;
-    font-size: 1.25rem
+    font-size: 1.25rem;
 }
 
 .member-class {
@@ -256,7 +256,7 @@
     display: flex;
 }
 
-.member-class>span {
+.member-class > span {
     display: inline-block;
     font-style: italic;
     font-size: 1.25rem;
@@ -269,10 +269,10 @@
     margin-left: auto;
     margin-right: 2%;
     min-width: 80px;
-    display: flex
+    display: flex;
 }
 
-.flawless-diamond>img {
+.flawless-diamond > img {
     flex: 1;
     min-width: 44px;
     min-height: 44px;
@@ -285,7 +285,7 @@
 }
 
 @media only screen and (orientation: portrait) {
-    .flawless-diamond>img {
+    .flawless-diamond > img {
         min-width: 24px;
         min-height: 24px;
         max-width: 40px;
@@ -305,10 +305,6 @@
 
 .class-button {
     margin-right: 10px;
-    min-width: 90px;
-    min-height: 85px;
-    width: 90px;
-    height: 85px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -316,10 +312,10 @@
     background-color: rgba(151, 151, 151, 0.274);
 }
 
-.class-button>img {
-    width: 70%;
-    height: 70%;
-    margin: auto
+.class-button > img {
+    width: 90px;
+    height: 90px;
+    margin: auto;
 }
 
 .member-profile-button {
@@ -367,12 +363,11 @@
     gap: 10px;
 }
 
-
 .summary-stat {
     min-height: 57px;
     padding: 10px 15px;
     background-color: rgba(78, 9, 9, 0.35);
-    display: flex
+    display: flex;
 }
 
 .character-stat {
@@ -394,7 +389,6 @@
     width: 100%;
     height: 100%;
 }
-
 
 .stat-icon {
     margin-right: 10px;
@@ -438,7 +432,7 @@
 }
 
 .dnf img {
-    opacity: 0.3
+    opacity: 0.3;
 }
 
 /** dynamic styling */
@@ -451,7 +445,7 @@
 
 .selectable:hover {
     background-color: rgba(137, 233, 255, 0.452);
-    cursor: pointer
+    cursor: pointer;
 }
 
 .color-film {
