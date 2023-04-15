@@ -13,14 +13,12 @@ import { useState } from "react"
 import { usePrefs } from "../../hooks/prefs"
 import { DefaultPreferences, Prefs } from "../../util/preferences"
 
-export interface ProfileProps {
-    bungieNetProfile: ProfileComponent
-}
+type ProfileProps = ProfileComponent
 
-const Profile = ({ bungieNetProfile }: ProfileProps) => {
-    const { membership } = useBungieNextMembership(bungieNetProfile.userInfo)
+const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps) => {
+    const { membership } = useBungieNextMembership(userInfo ?? {})
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(bungieNetProfile.userInfo.membershipId, [
+    const { prefs, isLoading: isLoadingPrefs } = usePrefs(userInfo.membershipId, [
         Prefs.PROFILE_BACKGROUND
     ])
 
@@ -29,8 +27,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
         setLayout(newState)
     }
 
-    const name =
-        bungieNetProfile.userInfo.bungieGlobalDisplayName ?? bungieNetProfile.userInfo.displayName
+    const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
     const backgroundImage = prefs
         ? prefs[Prefs.PROFILE_BACKGROUND]
         : DefaultPreferences[Prefs.PROFILE_BACKGROUND]
@@ -41,8 +38,8 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
             </Head>
             <section className={styles["user-info"]}>
                 <UserCard
-                    userInfo={{ ...membership, ...bungieNetProfile.userInfo }}
-                    emblemBackgroundPath={bungieNetProfile.emblemBackgroundPath}
+                    userInfo={{ ...membership, ...userInfo }}
+                    emblemBackgroundPath={emblemBackgroundPath}
                     backgroundImage={backgroundImage.replace(/;$/, "")}
                 />
 
@@ -65,7 +62,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                         <span>69</span>
                     </RankingBanner>
 
-                    {Object.keys(Founders).includes(bungieNetProfile.userInfo.membershipId) && (
+                    {Object.keys(Founders).includes(userInfo.membershipId) && (
                         <div className={styles["ranking-banner"]}>
                             <img src="/logo.png" alt="" />
 
@@ -79,7 +76,7 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                     )}
                 </div>
 
-                <ClanCard info={bungieNetProfile.userInfo} />
+                <ClanCard {...userInfo} />
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
@@ -91,9 +88,9 @@ const Profile = ({ bungieNetProfile }: ProfileProps) => {
                     </div>
                 </div>
                 <RaidCards
-                    membershipId={bungieNetProfile.userInfo.membershipId}
-                    membershipType={bungieNetProfile.userInfo.membershipType}
-                    characterIds={bungieNetProfile.characterIds}
+                    membershipId={userInfo.membershipId}
+                    membershipType={userInfo.membershipType}
+                    characterIds={characterIds}
                     layout={layout}
                 />
             </section>

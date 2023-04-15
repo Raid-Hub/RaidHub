@@ -4,7 +4,7 @@ import Profile from "../../../components/profile/Profile"
 import { InitialProfileProps } from "../../../util/types"
 
 const StandardProfile = ({ bungieNetProfile }: InitialProfileProps) => {
-    if (bungieNetProfile) return <Profile bungieNetProfile={bungieNetProfile} />
+    if (bungieNetProfile) return <Profile {...bungieNetProfile} />
     else return <div>UH OH</div>
 }
 
@@ -20,7 +20,7 @@ export async function getServerSideProps({
     )
     return {
         props: {
-            bungieNetProfile: profile.success ?? undefined,
+            bungieNetProfile: profile.success ?? null,
             error: profile.error?.message ?? ""
         }
     }
