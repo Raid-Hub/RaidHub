@@ -17,6 +17,7 @@ export function useEmblems(members: UseEmblemsParams): UseEmblems {
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
+        setLoading(true)
         const errs: string[] = []
         const emblemsList: EmblemTuple[] = []
         Promise.all(

@@ -24,6 +24,7 @@ export function useActivityHistory({
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
+        setLoading(true)
         const dict: ActivityCollectionDictionary = {
             [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
             [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -63,6 +64,6 @@ export function useActivityHistory({
         )
             .then(() => setActivities(dict))
             .finally(() => setLoading(false))
-    }, [])
+    }, [membershipId, membershipType, characterIds])
     return { activities, isLoading }
 }
