@@ -31,6 +31,12 @@ const SearchBar = ({}: SearchBarProps) => {
         debounceQuery(newQuery)
     }
 
+    const onFormEnter = (event: React.FormEvent<HTMLFormElement>) => {
+        nextQuery.current = enteredText
+        setQuery(enteredText)
+        event.preventDefault()
+    }
+
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             setShowingResults(
@@ -50,11 +56,7 @@ const SearchBar = ({}: SearchBarProps) => {
 
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
-            <form
-                onSubmit={e => {
-                    e.preventDefault()
-                }}
-            >
+            <form onSubmit={onFormEnter}>
                 <input
                     id={styles["search-bar"]}
                     type="text"
@@ -81,8 +83,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                 key={idx}
                                 rel="noopener noreferrer"
                                 href={`/profile/${membershipType}/${membershipId}`}
-                                onClick={() => setTimeout(setShowingResults, 200, false)}
-                            >
+                                onClick={() => setTimeout(setShowingResults, 200, false)}>
                                 <li>
                                     <p>
                                         {bungieGlobalDisplayName && bungieGlobalDisplayNameCode
