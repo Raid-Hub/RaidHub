@@ -4,6 +4,7 @@ import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
 import { Icons } from "../../util/icons"
+import { fixClanName } from "../../util/math"
 
 type ClanCardProps = UserInfoCard
 
@@ -21,8 +22,7 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
                 </div>
                 <div className={styles["clan-desc"]}>
                     <span className={styles["desc-title"]}>
-                        {clan?.name.replace(/[ㅤ ㅤ]/g, "").trim() +
-                            ` [${clan?.clanInfo.clanCallsign}]`}
+                        {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
                     </span>
                     <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                     <div className={styles["desc-text-wrapper"]}>

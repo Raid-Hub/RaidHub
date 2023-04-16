@@ -15,21 +15,23 @@ type UsePGCR = {
     loadingState: Loading
 }
 
-export function usePGCR(activityId: string): UsePGCR {
+export function usePGCR(activityId: string | null | undefined): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
 
     useEffect(() => {
+        setLoading(Loading.LOADING)
         const getPGCR = async () => {
-            setLoading(Loading.LOADING)
-            const pgcr = await client.getPGCR(activityId)
+            const pgcr = await client.getPGCR(activityId!)
             setLoading(Loading.HYDRATING)
             const hydratedPGCR = await client.validatePGCR(pgcr)
             setPGCR(hydratedPGCR)
             setLoading(Loading.FALSE)
         }
-        getPGCR()
+
+        if (activityId) getPGCR()
+        else if (activityId === null) setLoading(Loading.FALSE)
     }, [activityId])
 
     if (loadingState || !pgcr) return { members: null, activity: null, error, loadingState }

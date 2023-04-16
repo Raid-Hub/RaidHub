@@ -21,7 +21,7 @@ export enum Layout {
 type RaidCardsProps = {
     membershipId: string
     membershipType: BungieMembershipType
-    characterIds: string[]
+    characterIds: string[] | null
     layout: Layout
 }
 

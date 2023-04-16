@@ -242,7 +242,6 @@
     display: flex;
     border: 1px solid var(--border);
     border-radius: 20px;
-    align-items: center;
     padding: 1em;
     box-sizing: border-box;
     align-items: stretch;
@@ -270,7 +269,6 @@ svg.clan-img {
     flex-grow: 1;
     display: inline-block;
     flex: 1;
-    white-space: nowrap;
     margin-bottom: -0.1em;
 
     font-weight: 600;

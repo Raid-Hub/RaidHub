@@ -7,12 +7,12 @@ type PrefsRecord<T extends Prefs[]> = {
 
 type UsePrefs<T extends Prefs[]> = {
     isLoading: boolean
-    prefs: PrefsRecord<T> | undefined
+    prefs: PrefsRecord<T> | null
 }
 
 export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs<T> {
     const [isLoading, setLoading] = useState<boolean>(true)
-    const [fetchedPrefs, setFetchedPrefs] = useState<PrefsRecord<T> | undefined>(undefined)
+    const [fetchedPrefs, setFetchedPrefs] = useState<PrefsRecord<T> | null>(null)
 
     useEffect(() => {
         setLoading(true)

@@ -8,19 +8,20 @@ import Loading from "../Loading"
 import { Icons } from "../../util/icons"
 
 type PinnedActivityProps = {
-    activityId: string
+    activityId?: string | null
 }
 
 const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
     const { activity, loadingState: pgcrLoadingState } = usePGCR(activityId)
     const language = useLanguage()
     const strings = LocalizedStrings[language]
-    if (pgcrLoadingState || !activity)
+    if (pgcrLoadingState)
         return (
             <div className={styles["pinned-activity-loading"]}>
                 <Loading />
             </div>
         )
+    else if (!activity) return <></>
     else
         return (
             <Link href={`/pgcr/${activityId}`} target="_blank" rel="noopener noreferrer">

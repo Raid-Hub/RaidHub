@@ -13,15 +13,28 @@ import { useState } from "react"
 import { usePrefs } from "../../hooks/prefs"
 import { DefaultPreferences, Prefs } from "../../util/preferences"
 import { Icons } from "../../util/icons"
+import { useProfileStats } from "../../hooks/profileStats"
+import { useCharacterStats } from "../../hooks/characterStats"
+import { useRaidHubProfile } from "../../hooks/raidhubProfile"
 
 type ProfileProps = ProfileComponent
 
-const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps) => {
-    const { membership } = useBungieNextMembership(userInfo ?? {})
-    const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
+const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
+    const { profile, isLoading: isLoadingProfile } = useRaidHubProfile(userInfo.membershipId)
+    const { membership } = useBungieNextMembership(userInfo)
+    const {
+        stats: profileStats,
+        isLoading: isLoadingProfileStats,
+        characterIds
+    } = useProfileStats(userInfo)
+    const { stats: characterStats, isLoading: isLoadingStats } = useCharacterStats({
+        ...userInfo,
+        characterIds
+    })
     const { prefs, isLoading: isLoadingPrefs } = usePrefs(userInfo.membershipId, [
         Prefs.PROFILE_BACKGROUND
     ])
+    const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
     const handleToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
@@ -82,7 +95,7 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
-                    <PinnedActivity activityId={"4129239230"} />
+                    <PinnedActivity activityId={profile?.pinnedActivity} />
                     <div className={styles["layout-toggle"]}>
                         <span>X</span>
                         <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />

@@ -48,3 +48,19 @@ export function fixBungieCode(code: number): string {
     const missingZeroes = 4 - str.length
     return `${"0".repeat(missingZeroes)}${str}`
 }
+
+export function fixClanName(name: string): string {
+    const blanks = ["ㅤ", "ㅤ", " "]
+    let r = name.length
+    while (r > 0) {
+        if (blanks.includes(name[r - 1])) r--
+        else break
+    }
+
+    let l = 0
+    while (l < name.length) {
+        if (blanks.includes(name[l])) l++
+        else break
+    }
+    return name.substring(l, r)
+}
