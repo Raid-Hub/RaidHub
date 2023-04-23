@@ -1,4 +1,4 @@
-import { UserInfoCard } from "oodestiny/schemas"
+import { UserInfoCard } from "bungie-net-core/lib/models"
 import { useClan } from "../../hooks/clan"
 import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"

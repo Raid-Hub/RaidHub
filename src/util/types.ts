@@ -2,11 +2,14 @@ import { Collection } from "@discordjs/collection"
 import {
     BungieMembershipType,
     DestinyHistoricalStatsPeriodGroup,
+    DestinyHistoricalStatsValue,
+    DestinyPostGameCarnageReportExtendedData,
     DestinyProfileComponent,
     GroupV2
-} from "oodestiny/schemas"
+} from "bungie-net-core/lib/models"
 import { Raid } from "./raid"
 import { Tag } from "./tags"
+import { Socials } from "./socials"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -61,4 +64,49 @@ export enum Loading {
     FALSE,
     LOADING,
     HYDRATING
+}
+export type ProfileSocialData = {
+    id: Socials
+    displayName: string
+    url: string
+}
+export type WeaponStatsValues = {
+    kills: number
+    precision: number
+    name: { [language: string]: string }
+    type: string
+    icon: string
+}
+export type StatsKeys = {
+    values: { [key: string]: DestinyHistoricalStatsValue }
+    extended: DestinyPostGameCarnageReportExtendedData
+}
+export type Flatten<T> = T extends ReadonlyArray<infer U> ? U : never
+export type HistoricalStatsDict<T> = {
+    activityAssists: T
+    activityCompletions: T
+    activityDeaths: T
+    activityKills: T
+    activityPrecisionKills: T
+    activitySecondsPlayed: T
+}
+export interface IRaidStats {
+    assists: number
+    totalClears: number
+    deaths: number
+    kills: number
+    precisionKills: number
+    secondsPlayed: number
+    fastestClear: number
+    averageClear: number
+    sherpas: number
+}
+export type Placement = { number: number; activityId: string }
+export type RaidTag = { string: string; activityId: string; flawless: boolean }
+export type X = {
+    pinnedActivity: string | null
+    socials: ProfileSocialData[]
+    background: string | null
+    placements: Partial<Record<Raid, Placement>>
+    tags: Partial<Record<Raid, RaidTag[]>>
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
-import { BungieMembershipType, DestinyAggregateActivityResults } from "oodestiny/schemas"
+import { BungieMembershipType, DestinyAggregateActivityResults } from "bungie-net-core/lib/models"
+import AggregateStats from "../models/profile/AggregateStats"
 
 type UseCharacterStatsParams = {
     membershipId: string
@@ -9,7 +10,7 @@ type UseCharacterStatsParams = {
 }
 
 type UseCharacterStats = {
-    stats: Map<string, DestinyAggregateActivityResults> | null
+    stats: AggregateStats | null
     isLoading: boolean
 }
 
@@ -18,33 +19,25 @@ export function useCharacterStats({
     membershipType,
     characterIds
 }: UseCharacterStatsParams): UseCharacterStats {
-    const [stats, setStats] = useState<Map<string, DestinyAggregateActivityResults> | null>(null)
+    const [stats, setStats] = useState<AggregateStats | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         setLoading(true)
-        const getStats = async () => {
-            const characterStats = new Map(
-                await Promise.all(
-                    characterIds!.map(
-                        async (
-                            characterId
-                        ): Promise<
-                            [characterId: string, stats: DestinyAggregateActivityResults]
-                        > => [
-                            characterId,
-                            await client.getCharacterStats({
-                                destinyMembershipId: membershipId,
-                                membershipType,
-                                characterId
-                            })
-                        ]
-                    )
+        if (characterIds?.length) getStats()
+
+        async function getStats() {
+            const characterStats = await Promise.all(
+                characterIds!.map(async characterId =>
+                    client.getCharacterStats({
+                        destinyMembershipId: membershipId,
+                        membershipType,
+                        characterId
+                    })
                 )
             )
-            setStats(stats)
+            setStats(new AggregateStats(characterStats))
             setLoading(false)
         }
-        if (characterIds) getStats()
-    }, [membershipId, membershipType, characterIds])
+    }, [characterIds])
     return { stats, isLoading }
 }

@@ -1,18 +1,18 @@
 import Link from "next/link"
 import styles from "../../styles/profile.module.css"
 import { Socials } from "../../util/socials"
+import { ProfileSocialData } from "../../util/types"
 
-type SocialTagProps = { id: Socials; username: string; url: string }
+type SocialTagProps = ProfileSocialData
 
-const SocialTag = ({ id, username, url }: SocialTagProps) => {
+const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
     return (
         <Link
             id={styles[id]}
             className={styles["social"]}
             href={url}
             target="_blank"
-            rel="noopener noreferrer"
-        >
+            rel="noopener noreferrer">
             <svg className={styles["img-social"]}>
                 <defs>
                     <mask id={id}>

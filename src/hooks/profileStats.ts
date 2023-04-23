@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
-import { BungieMembershipType, DestinyHistoricalStatsAccountResult } from "oodestiny/schemas"
+import {
+    BungieMembershipType,
+    DestinyHistoricalStatsAccountResult
+} from "bungie-net-core/lib/models"
 
 type UseProfileStatsParams = {
     membershipId: string

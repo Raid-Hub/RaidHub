@@ -44,7 +44,7 @@
 }
 
 .dots-container {
-    margin-right: 2em;
+    margin: 1em 2em 1em 0;
     border-radius: 5px;
     min-width: 200px;
     max-height: 100%;
@@ -506,10 +506,9 @@ svg.clan-img {
 }
 
 .card-diamonds {
+    margin-bottom: 0.4em;
     display: flex;
     align-items: center;
-    margin: -0.4em 0;
-    margin-top: 0.2em;
 }
 
 .raid-card-content {
@@ -542,12 +541,12 @@ svg.clan-img {
 }
 
 .graph-number {
+    margin-bottom: 0;
     font-size: 28px;
     font-weight: 600;
 }
 
 .graph-count-text {
-    margin-top: -2.7em;
     text-align: center;
     text-transform: uppercase;
     color: rgb(125, 125, 125);
@@ -568,6 +567,7 @@ svg.clan-img {
 }
 
 .timings-number {
+    margin: 0;
     font-weight: 600;
 }
 
@@ -575,7 +575,6 @@ svg.clan-img {
     color: rgb(100, 100, 100);
     text-transform: uppercase;
     font-size: 12px;
-    margin-top: -1em;
 }
 
 .recent {
@@ -684,4 +683,10 @@ svg.clan-img {
     text-transform: uppercase;
     font-size: 15px;
     font-weight: 600;
+}
+
+.number-loading {
+    min-height: 2rem;
+    min-width: 100%;
+    display: flex;
 }

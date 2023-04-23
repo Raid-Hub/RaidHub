@@ -1,4 +1,4 @@
-import { DestinyClass } from "oodestiny/schemas"
+import { DestinyClass } from "bungie-net-core/lib/models"
 import { Icons } from "./icons"
 
 export const CharacterType: { [key: string]: DestinyClass } = {

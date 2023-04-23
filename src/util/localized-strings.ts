@@ -1,4 +1,4 @@
-import { Raid, RaidDifficulty } from "./raid"
+import { Raid, Difficulty } from "./raid"
 import { Tag } from "./tags"
 export enum SupportedLanguage {
     ENGLISH = "en"
@@ -24,7 +24,7 @@ export interface LocalStrings {
     timeSpent: string
     tags: { [key in Tag]: string }
     loadMore: string
-    difficulty: { [key in RaidDifficulty]: string }
+    difficulty: { [key in Difficulty]: string }
     dayOne: string
     contest: string
 }
@@ -79,12 +79,12 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         loadMore: "Load more",
         difficulty: {
-            [RaidDifficulty.NORMAL]: "Normal",
-            [RaidDifficulty.PRESTIGE]: "Prestige",
-            [RaidDifficulty.MASTER]: "Master",
-            [RaidDifficulty.CONTEST]: "Contest",
-            [RaidDifficulty.CHALLENGEVOG]: "Tempo's Edge",
-            [RaidDifficulty.CHALLENGEKF]: "Regicide"
+            [Difficulty.NORMAL]: "Normal",
+            [Difficulty.PRESTIGE]: "Prestige",
+            [Difficulty.MASTER]: "Master",
+            [Difficulty.CONTEST]: "Contest",
+            [Difficulty.CHALLENGEVOG]: "Tempo's Edge",
+            [Difficulty.CHALLENGEKF]: "Regicide"
         },
         dayOne: "Day One",
         contest: "Contest"

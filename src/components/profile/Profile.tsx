@@ -10,8 +10,6 @@ import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "../ToggleSwitch"
 import { useState } from "react"
-import { usePrefs } from "../../hooks/prefs"
-import { DefaultPreferences, Prefs } from "../../util/preferences"
 import { Icons } from "../../util/icons"
 import { useProfileStats } from "../../hooks/profileStats"
 import { useCharacterStats } from "../../hooks/characterStats"
@@ -27,13 +25,10 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
         isLoading: isLoadingProfileStats,
         characterIds
     } = useProfileStats(userInfo)
-    const { stats: characterStats, isLoading: isLoadingStats } = useCharacterStats({
+    const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         ...userInfo,
         characterIds
     })
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(userInfo.membershipId, [
-        Prefs.PROFILE_BACKGROUND
-    ])
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
     const handleToggle = (buttonState: boolean) => {
@@ -42,9 +37,8 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
     }
 
     const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
-    const backgroundImage = prefs
-        ? prefs[Prefs.PROFILE_BACKGROUND]
-        : DefaultPreferences[Prefs.PROFILE_BACKGROUND]
+
+    // console.log(raidMetrics?.get(Raid.ROOT_OF_NIGHTMARES)?.get(Difficulty.NORMAL))
 
     return (
         <main className={styles["main"]}>
@@ -54,8 +48,9 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
             <section className={styles["user-info"]}>
                 <UserCard
                     userInfo={{ ...membership, ...userInfo }}
+                    socials={profile?.socials}
                     emblemBackgroundPath={emblemBackgroundPath}
-                    backgroundImage={backgroundImage.replace(/;$/, "")}
+                    backgroundImage={profile?.background?.replace(/;$/, "") ?? ""}
                 />
 
                 <div className={styles["ranking-banners"]}>
@@ -103,10 +98,12 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
                     </div>
                 </div>
                 <RaidCards
-                    membershipId={userInfo.membershipId}
-                    membershipType={userInfo.membershipType}
+                    {...userInfo}
+                    profile={profile}
                     characterIds={characterIds}
                     layout={layout}
+                    raidMetrics={raidMetrics}
+                    isLoadingRaidMetrics={isLoadingRaidMetrics}
                 />
             </section>
         </main>

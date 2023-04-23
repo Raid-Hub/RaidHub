@@ -128,25 +128,26 @@ export const RaidHashes = {
     [Raid.NA]: { [Difficulty.NORMAL]: [] as const }
 }
 
-export type DifficultyForRaid<R extends Raid> = keyof (typeof RaidHashes)[R]
+export type DifficultyForRaidType<R extends keyof typeof RaidHashes> =
+    keyof (typeof RaidHashes)[R] extends Difficulty ? keyof (typeof RaidHashes)[R] : never
 
-export type RaidHashes<
+export type RaidHashesForRaidAndDifficulty<
     R extends Raid,
-    D extends DifficultyForRaid<R>
+    D extends DifficultyForRaidType<R>
 > = (typeof RaidHashes)[R][Extract<D, keyof (typeof RaidHashes)[R]>]
 
-export type AllRaidHashes<R extends Raid> = Flatten<
+export type AllRaidHashesForRaid<R extends Raid> = Flatten<
     (typeof RaidHashes)[R][Extract<Difficulty, keyof (typeof RaidHashes)[R]>]
 >
 
 export type ValidRaidHash = {
-    [R in Raid]: AllRaidHashes<R>
+    [R in Raid]: AllRaidHashesForRaid<R>
 }[Raid]
 
-type RaidDifficulty = [name: Raid, difficulty: Difficulty]
+export type RaidDifficultyTuple = [name: Raid, difficulty: Difficulty]
 
-const HashDictionary: {
-    [K in ValidRaidHash]: RaidDifficulty
+export const HashDictionary: {
+    [K in ValidRaidHash]: RaidDifficultyTuple
 } = {
     "89727599": [Raid.LEVIATHAN, Difficulty.NORMAL],
     "287649202": [Raid.LEVIATHAN, Difficulty.NORMAL],
@@ -209,7 +210,9 @@ const HashDictionary: {
     "2918919505": [Raid.ROOT_OF_NIGHTMARES, Difficulty.MASTER]
 }
 
-export function raidDetailsFromHash(hash: string): RaidInfo {
+export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
+
+export function raidDetailsFromHash(hash: string): RaidInfo<any> {
     return new RaidInfo(HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL])
 }
 

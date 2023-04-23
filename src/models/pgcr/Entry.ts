@@ -2,9 +2,10 @@ import {
     DestinyPostGameCarnageReportEntry,
     BungieMembershipType,
     DestinyClass
-} from "oodestiny/schemas"
+} from "bungie-net-core/lib/models"
 import { CharacterLogos, CharacterName, CharacterType } from "../../util/characters"
-import { PGCRStats, StatsKeys } from "./PlayerStats"
+import PGCRStats from "./PlayerStats"
+import { StatsKeys } from "../../util/types"
 
 export abstract class PGCREntry {
     protected _membershipId: string

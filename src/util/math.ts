@@ -23,6 +23,11 @@ export function secondsToHMS(seconds: number): string {
     return `${hours ? hours + "h" : ""} ${hours | minutes ? minutes + "m" : ""} ${time + "s"}`
 }
 
+/**
+ * Useful for clan banners since bungie gives us the RGBA values as their own properties
+ * @param rgba a list of the rgba values
+ * @returns a hex string with #
+ */
 export function RGBAToHex(rgba: RGBA): string {
     const { red, green, blue, alpha } = rgba
     let r = red.toString(16)
@@ -30,10 +35,10 @@ export function RGBAToHex(rgba: RGBA): string {
     let b = blue.toString(16)
     let a = alpha.toString(16)
 
-    if (r.length == 1) r = "0" + r
-    if (g.length == 1) g = "0" + g
-    if (b.length == 1) b = "0" + b
-    if (a.length == 1) a = "0" + a
+    if (r.length === 1) r = `0${r}`
+    if (g.length === 1) g = `0${g}`
+    if (b.length === 1) b = `0${b}`
+    if (a.length === 1) a = `0${a}`
 
     return `#${r}${g}${b}${a}`
 }
@@ -42,13 +47,23 @@ export async function wait(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-// since the code is a number, leading zeroes get cut off
+/**
+ * Since Bungie decided to make the code a number, leading zeroes get truncated (lol)
+ * @param code the potentially bad code
+ * @returns a 4 digit string with zeroes added
+ */
 export function fixBungieCode(code: number): string {
     const str = code.toString()
     const missingZeroes = 4 - str.length
     return `${"0".repeat(missingZeroes)}${str}`
 }
 
+/**
+ * Destiny clan names are unique, so players often include blank characters in their name,
+ * so let's just remove them using left and right pointers
+ * @param name the name of the clan
+ * @returns the fixed clan name
+ */
 export function fixClanName(name: string): string {
     const blanks = ["ㅤ", "ㅤ", " "]
     let r = name.length

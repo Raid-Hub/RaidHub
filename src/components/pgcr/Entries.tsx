@@ -40,9 +40,9 @@ const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
     }
 
     const cardLayout = members
-        ? members.length < 4 && memberIndex == -1
+        ? members.length < 4 && memberIndex === -1
             ? styles["members-low"]
-            : members.length % 2 && memberIndex == -1
+            : members.length % 2 && memberIndex === -1
             ? styles["members-odd"]
             : styles["members-even"]
         : styles["members-even"]
@@ -84,8 +84,7 @@ const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
                                 idx === characterIndex ? styles["selected"] : "",
                                 styles["class-button"]
                             ].join(" ")}
-                            onClick={members ? () => updateCharacterIndex(idx) : undefined}
-                        >
+                            onClick={members ? () => updateCharacterIndex(idx) : undefined}>
                             <img src={logo} />
                         </button>
                     ))}
@@ -94,14 +93,12 @@ const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
                             styles["member-profile-button"],
                             styles["soft-rectangle"],
                             styles["selectable"]
-                        ].join(" ")}
-                    >
+                        ].join(" ")}>
                         <Link
                             href={memberProfile()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={styles["member-profile-link"]}
-                        >
+                            className={styles["member-profile-link"]}>
                             <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
                             <span>View Profile</span>
                         </Link>

@@ -20,15 +20,13 @@ const Dot = ({ idx, id, completed, star, cy }: DotProps) => {
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
             aria-describedby="dot-hover-tooltip"
             target="_blank"
-            rel="noopener noreferrer"
-        >
+            rel="noopener noreferrer">
             <circle
                 fill={completed ? green : red}
                 fillOpacity="0.9783869573466908"
                 r={RADIUS}
                 cx={cx}
-                cy={cy}
-            ></circle>
+                cy={cy}></circle>
             {star && <Star x={cx} y={cy} />}
         </a>
     )

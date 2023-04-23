@@ -32,8 +32,7 @@ const PGCR = ({ activityId }: PGCRProps) => {
             {pgcrError && <Error message={pgcrError} />}
             <section
                 id={styles["summary-card"]}
-                className={[styles["main-element"], styles["soft-rectangle"]].join(" ")}
-            >
+                className={[styles["main-element"], styles["soft-rectangle"]].join(" ")}>
                 <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
                 <ActivityHeader
                     activity={activity}

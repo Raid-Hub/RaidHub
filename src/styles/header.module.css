@@ -114,7 +114,7 @@
 }
 
 .search-result:hover {
-    background: #e58b15d2;
+    background: var(--brand-orange);
     cursor: pointer;
     transform: scale(1.1);
     transition: transform 0.02s ease-in-out;

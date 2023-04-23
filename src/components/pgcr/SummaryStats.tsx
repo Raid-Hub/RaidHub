@@ -53,8 +53,7 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
             {statsData.map(({ icon, name, value }, idx) => (
                 <div
                     key={idx}
-                    className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}
-                >
+                    className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}>
                     <div className={styles["summary-stat-content"]}>
                         <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                         <div className={styles["summary-stat-info"]}>
@@ -62,16 +61,14 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
                                 className={[
                                     styles["summary-stat-name"],
                                     styles["contained-span"]
-                                ].join(" ")}
-                            >
+                                ].join(" ")}>
                                 {name}
                             </span>
                             <span
                                 className={[
                                     styles["summary-stat-value"],
                                     styles["contained-span"]
-                                ].join(" ")}
-                            >
+                                ].join(" ")}>
                                 {value}
                             </span>
                         </div>

@@ -1,17 +1,17 @@
 import {
     DestinyPostGameCarnageReportData,
     DestinyHistoricalStatsValuePair
-} from "oodestiny/schemas"
-import { RaidDifficulty, raidDetailsFromHash, Raid } from "../../util/raid"
+} from "bungie-net-core/lib/models"
+import { Difficulty, raidDetailsFromHash, Raid } from "../../util/raid"
 import { Tag, addModifiers } from "../../util/tags"
 import { Seasons } from "../../util/dates"
-import { ActivityStats } from "./ActivityStats"
+import ActivityStats from "./ActivityStats"
 import { PGCRMember } from "./Entry"
-import { RaidInfo } from "./raid"
+import RaidInfo from "./RaidInfo"
 import { ActivityPlacements } from "../../util/types"
 import { LocalStrings } from "../../util/localized-strings"
 
-export class Activity {
+export default class Activity {
     private _activityHash: number
     private _fresh: boolean | null
     private _complete: boolean
@@ -21,7 +21,7 @@ export class Activity {
     private _flawless: boolean
     private _speed: DestinyHistoricalStatsValuePair
     private _stats: ActivityStats
-    private _raidManifest: RaidInfo
+    private _raidManifest: RaidInfo<any>
     private _placements: ActivityPlacements
     private _tags: Tag[]
     constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
@@ -37,7 +37,7 @@ export class Activity {
         ).size
         this._flawless =
             this._complete &&
-            pgcr.entries.reduce((b, entry) => b && entry.values.deaths?.basic.value == 0, true)
+            pgcr.entries.reduce((b, entry) => b && entry.values.deaths?.basic.value === 0, true)
         this._speed = pgcr.entries[0].values.activityDurationSeconds.basic
         /* This is kinda ugly but its a 1 liner :) */
         this._fresh = this.isFresh(pgcr.startingPhaseIndex, pgcr.activityWasStartedFromBeginning)
@@ -48,10 +48,10 @@ export class Activity {
         if (this._raidManifest.isDayOne(this._finishedTime)) this._tags.push(Tag.DAY_ONE)
         if (this._raidManifest.isContest(this._startedTime)) {
             switch (this._raidManifest.difficulty) {
-                case RaidDifficulty.CHALLENGEKF:
+                case Difficulty.CHALLENGEKF:
                     this._tags.push(Tag.CHALLENGE_KF)
                     break
-                case RaidDifficulty.CHALLENGEVOG:
+                case Difficulty.CHALLENGEVOG:
                     this._tags.push(Tag.CHALLENGE_VOG)
                     break
                 default:
@@ -59,7 +59,7 @@ export class Activity {
             }
         }
         if (this._fresh === false) this._tags.push(Tag.CHECKPOINT)
-        if (this._raidManifest.difficulty === RaidDifficulty.MASTER) this._tags.push(Tag.MASTER)
+        if (this._raidManifest.difficulty === Difficulty.MASTER) this._tags.push(Tag.MASTER)
         if (this._playerCount === 1) this._tags.push(Tag.SOLO)
         else if (this._playerCount === 2) this._tags.push(Tag.DUO)
         else if (this._playerCount === 3) this._tags.push(Tag.TRIO)
@@ -77,7 +77,11 @@ export class Activity {
         return this._finishedTime
     }
 
-    get speed() {
+    get speed(): {
+        fresh: boolean | null
+        duration: string
+        complete: boolean
+    } {
         return {
             fresh: this._fresh,
             duration: this._speed.displayValue,

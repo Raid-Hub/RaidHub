@@ -1,9 +1,8 @@
-import {
-    DestinyHistoricalStatsValue,
-    DestinyPostGameCarnageReportExtendedData
-} from "oodestiny/schemas"
 import { round } from "../../util/math"
-import { PlayerWeapons } from "./PlayerWeapon"
+import PlayerWeapons from "./PlayerWeapon"
+import { StatsKeys } from "../../util/types"
+
+const NINE_HR_SIX_MIN = 546
 
 type StatsDictionary = {
     kills: number
@@ -14,12 +13,8 @@ type StatsDictionary = {
     weaponKills: number
     abilityKills: number
 }
-export type StatsKeys = {
-    values: { [key: string]: DestinyHistoricalStatsValue }
-    extended: DestinyPostGameCarnageReportExtendedData
-}
 
-export class PGCRStats {
+export default class PGCRStats {
     private _kills: number
     private _deaths: number
     private _assists: number
@@ -138,7 +133,7 @@ export class PGCRStats {
         const totalMinutes = round(this._timePlayedSeconds / 60, 0)
         const hours = Math.floor(totalMinutes / 60)
         const minutes = totalMinutes - hours * 60
-        return `${totalMinutes == 546 ? ">" : ""}${hours}h ${minutes}m`
+        return `${totalMinutes === NINE_HR_SIX_MIN ? ">" : ""}${hours}h ${minutes}m`
     }
 
     get weapons() {

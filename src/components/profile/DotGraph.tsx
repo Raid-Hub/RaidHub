@@ -1,4 +1,4 @@
-import { DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import styles from "../../styles/profile.module.css"
 import { median } from "../../util/math"
 import Dot from "./Dot"
@@ -18,7 +18,6 @@ const FULL_HEIGHT = CANVAS_HEIGHT + 2 * BORDER
 type DotGraphProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
     isLoading: boolean
-    filter: (dot: DestinyHistoricalStatsPeriodGroup) => boolean
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -28,7 +27,7 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
+const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
     let { min, max, total } = dots.reduce((ac, cv) => {
         const cvTime = cv.values.activityDurationSeconds.basic.value
         return {
@@ -57,8 +56,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
                         width: SPACING * dots.length + "px",
                         height: FULL_HEIGHT,
                         minWidth: "100%"
-                    }}
-                >
+                    }}>
                     <line
                         x1="0%"
                         y1={LINE_Y}
@@ -73,7 +71,7 @@ const DotGraph = ({ dots, isLoading, filter }: DotGraphProps) => {
                             id={dot.activityDetails.instanceId}
                             completed={!!dot.values.completed.basic.value}
                             star={
-                                /*dot.values.deaths.basic.value == 0 || */ dot.values.playerCount
+                                /*dot.values.deaths.basic.value === 0 || */ dot.values.playerCount
                                     .basic.value <= 3
                             }
                             cy={getHeight(dot.values.activityDurationSeconds.basic.value)}

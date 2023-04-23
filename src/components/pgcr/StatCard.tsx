@@ -57,23 +57,20 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
                         styles["soft-rectangle"],
                         styles["entry-card"],
                         styles["character-stat"]
-                    ].join(" ")}
-                >
+                    ].join(" ")}>
                     <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                     <div className={styles["summary-stat-info"]}>
                         <span
                             className={[styles["summary-stat-name"], styles["contained-span"]].join(
                                 " "
-                            )}
-                        >
+                            )}>
                             {name}
                         </span>
                         <span
                             className={[
                                 styles["summary-stat-value"],
                                 styles["contained-span"]
-                            ].join(" ")}
-                        >
+                            ].join(" ")}>
                             {value}
                         </span>
                     </div>

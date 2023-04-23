@@ -32,11 +32,10 @@ const MemberCard = ({
                 dynamicCssClass,
                 completionClass
             ].join(" ")}
-            onClick={member ? () => updateMemberIndex(index) : undefined}
-        >
+            onClick={member ? () => updateMemberIndex(index) : undefined}>
             <img src={emblemBackground} className={styles["emblem"]} />
             <div className={[styles["member-card-container"], styles["color-film"]].join(" ")}>
-                {memberIndex == -1 || !member ? (
+                {memberIndex === -1 || !member ? (
                     <StandardMemberCard member={member} />
                 ) : (
                     <SelectedMemberCard member={member} />

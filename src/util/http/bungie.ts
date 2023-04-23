@@ -1,14 +1,6 @@
-import {
-    getActivityHistory,
-    getCharacter,
-    getDestinyAggregateActivityStats,
-    getHistoricalStatsForAccount,
-    getLinkedProfiles,
-    getPostGameCarnageReport,
-    getProfile,
-    searchDestinyPlayerByBungieName
-} from "oodestiny/endpoints/Destiny2"
-import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
+import { Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
+import { CharacterName } from "../characters"
+import { RGBAToHex } from "../math"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
@@ -25,15 +17,25 @@ import {
     PlatformErrorCodes,
     UserInfoCard,
     UserSearchResponseDetail
-} from "oodestiny/schemas"
-import { CacheRequest, Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
+} from "bungie-net-core/lib/models"
+import {
+    getActivityHistory,
+    getCharacter,
+    getDestinyAggregateActivityStats,
+    getHistoricalStatsForAccount,
+    getLinkedProfiles,
+    getPostGameCarnageReport,
+    getProfile,
+    searchDestinyPlayerByBungieName
+} from "bungie-net-core/lib/endpoints/Destiny2"
+import { getGroupsForMember } from "bungie-net-core/lib/endpoints/GroupV2"
+import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 
 // TODO: move these to a CDN
+// @ts-ignore
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
+// @ts-ignore
 import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
-import { CharacterName } from "../characters"
-import { RGBAToHex } from "../math"
-import { searchByGlobalNamePost } from "oodestiny/endpoints/User"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"

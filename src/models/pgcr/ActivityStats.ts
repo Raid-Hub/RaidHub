@@ -1,8 +1,8 @@
-import { DestinyPostGameCarnageReportData } from "oodestiny/schemas"
+import { DestinyPostGameCarnageReportData } from "bungie-net-core/lib/models"
 import { PGCRMember } from "./Entry"
 import { round } from "../../util/math"
 
-export class ActivityStats {
+export default class ActivityStats {
     private _members: PGCRMember[]
     constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
         this._members = members
