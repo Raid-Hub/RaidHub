@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react"
 import styles from "../styles/header.module.css"
 import { useSearch } from "../hooks/search"
 import { fixBungieCode, wait } from "../util/math"
-import { CustomBungieSearchResult } from "../util/types"
 import Link from "next/link"
 
-const DEBOUNCE_CONSTANT = 250
+const DEBOUNCE = 250
+const HIDE_AFTER_CLICK = 200
 
 type SearchBarProps = {}
 
@@ -14,11 +14,11 @@ const SearchBar = ({}: SearchBarProps) => {
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
     const { results, isLoading: isLoadingResults } = useSearch(query)
-    const searchContainerRef = useRef<HTMLDivElement>(null)
     const [showingResults, setShowingResults] = useState(false)
+    const searchContainerRef = useRef<HTMLDivElement>(null)
 
     const debounceQuery = async (potentialQuery: string) => {
-        await wait(DEBOUNCE_CONSTANT)
+        await wait(DEBOUNCE)
         if (potentialQuery === nextQuery.current) {
             setQuery(potentialQuery)
         }
@@ -31,32 +31,38 @@ const SearchBar = ({}: SearchBarProps) => {
         debounceQuery(newQuery)
     }
 
-    const onFormEnter = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleFormEnter = (event: React.FormEvent<HTMLFormElement>) => {
         nextQuery.current = enteredText
         setQuery(enteredText)
         event.preventDefault()
     }
 
+    const handleSelect = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setTimeout(() => {
+            setShowingResults(false)
+            setQuery("")
+            setEnteredText("")
+        }, HIDE_AFTER_CLICK)
+    }
+
     useEffect(() => {
-        const handleOutsideClick = (event: MouseEvent) => {
+        const handleClick = (event: MouseEvent) => {
             setShowingResults(
-                !(
-                    searchContainerRef.current &&
-                    !searchContainerRef.current.contains(event.target as Node)
-                )
+                !searchContainerRef.current ||
+                    searchContainerRef.current.contains(event.target as Node)
             )
         }
 
-        document.addEventListener("mousedown", handleOutsideClick)
+        document.addEventListener("mousedown", handleClick)
 
         return () => {
-            document.removeEventListener("mousedown", handleOutsideClick)
+            document.removeEventListener("mousedown", handleClick)
         }
     }, [searchContainerRef])
 
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
-            <form onSubmit={onFormEnter}>
+            <form onSubmit={handleFormEnter}>
                 <input
                     id={styles["search-bar"]}
                     type="text"
@@ -78,12 +84,12 @@ const SearchBar = ({}: SearchBarProps) => {
                             },
                             idx
                         ) => (
-                            <Link
+                            <a
                                 className={styles["search-result"]}
                                 key={idx}
                                 rel="noopener noreferrer"
                                 href={`/profile/${membershipType}/${membershipId}`}
-                                onClick={() => setTimeout(setShowingResults, 200, false)}>
+                                onClick={handleSelect}>
                                 <li>
                                     <p>
                                         {bungieGlobalDisplayName && bungieGlobalDisplayNameCode
@@ -93,7 +99,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                             : displayName}
                                     </p>
                                 </li>
-                            </Link>
+                            </a>
                         )
                     )}
                 </ul>
