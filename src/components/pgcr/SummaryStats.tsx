@@ -1,5 +1,5 @@
 import { useLanguage } from "../../hooks/language"
-import { Activity } from "../../models/pgcr/Activity"
+import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
 import { Icons } from "../../util/icons"
 import { LocalizedStrings } from "../../util/localized-strings"
