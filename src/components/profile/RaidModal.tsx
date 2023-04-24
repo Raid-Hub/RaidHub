@@ -51,8 +51,9 @@ const RaidModal = ({
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
                         <div className={styles["card-diamonds"]}>
-                            {tags?.map(({ activityId, string, flawless }) => (
+                            {tags?.map(({ activityId, string, flawless }, key) => (
                                 <Link
+                                    key={key}
                                     href={`/pgcr/${activityId}`}
                                     className={styles["clickable-tag"]}>
                                     {flawless && <img src={Icons.FLAWLESS_DIAMOND} alt="" />}
