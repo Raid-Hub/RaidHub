@@ -50,13 +50,14 @@ const SearchBar = ({}: SearchBarProps) => {
             try {
                 const [user] = await client.searchByBungieName(...bungieName)
                 if (user) {
-                    router.push(`/profile/${user.membershipType}/${user.membershipId}`)
-                    router.reload()
+                    setQuery("")
                     setShowingResults(false)
+                    await router.push(`/profile/${user.membershipType}/${user.membershipId}`)
+                    router.reload()
                     return
                 }
             } catch (e) {
-                // do nothing
+                // fall through
             }
         }
         nextQuery.current = enteredText
