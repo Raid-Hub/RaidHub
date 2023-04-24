@@ -282,7 +282,8 @@ class BungieNetClient {
             )
             return response.Response
         } catch (e) {
-            throw e
+            // todo: better error handling
+            return []
         }
     }
 

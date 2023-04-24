@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../styles/header.module.css"
 import { useSearch } from "../hooks/search"
-import { fixBungieCode, wait } from "../util/math"
+import { asBungieName, fixBungieCode, wait } from "../util/math"
 import Link from "next/link"
+import { useRouter } from "next/router"
+import { shared as client } from "../util/http/bungie"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 200
@@ -16,6 +18,7 @@ const SearchBar = ({}: SearchBarProps) => {
     const { results, isLoading: isLoadingResults } = useSearch(query)
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
+    const router = useRouter()
 
     const debounceQuery = async (potentialQuery: string) => {
         await wait(DEBOUNCE)
@@ -25,24 +28,39 @@ const SearchBar = ({}: SearchBarProps) => {
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setShowingResults(true)
         const newQuery = event.target.value
         setEnteredText(newQuery)
         nextQuery.current = newQuery
         debounceQuery(newQuery)
     }
 
-    const handleFormEnter = (event: React.FormEvent<HTMLFormElement>) => {
-        nextQuery.current = enteredText
-        setQuery(enteredText)
-        event.preventDefault()
-    }
-
-    const handleSelect = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const handleSelect = (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setTimeout(() => {
             setShowingResults(false)
             setQuery("")
             setEnteredText("")
         }, HIDE_AFTER_CLICK)
+    }
+
+    const handleFormEnter = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const bungieName = asBungieName(enteredText)
+        if (bungieName) {
+            try {
+                const [user] = await client.searchByBungieName(...bungieName)
+                if (user) {
+                    router.push(`/profile/${user.membershipType}/${user.membershipId}`)
+                    router.reload()
+                    setShowingResults(false)
+                    return
+                }
+            } catch (e) {
+                // do nothing
+            }
+        }
+        nextQuery.current = enteredText
+        setQuery(enteredText)
     }
 
     useEffect(() => {
@@ -87,7 +105,6 @@ const SearchBar = ({}: SearchBarProps) => {
                             <a
                                 className={styles["search-result"]}
                                 key={idx}
-                                rel="noopener noreferrer"
                                 href={`/profile/${membershipType}/${membershipId}`}
                                 onClick={handleSelect}>
                                 <li>

@@ -79,3 +79,19 @@ export function fixClanName(name: string): string {
     }
     return name.substring(l, r)
 }
+
+/**
+ *
+ * @param name Turns a string into a bungie name
+ * @returns
+ */
+export function asBungieName(name: string): [name: string, code: number] | undefined {
+    if (name.includes("#")) {
+        const [nameStr, code] = name.split("#")
+        let codeNum = parseInt(code)
+        if (nameStr && codeNum) {
+            return [nameStr, codeNum]
+        }
+    }
+    return undefined
+}
