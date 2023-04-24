@@ -7,7 +7,7 @@ type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
     return (
-        <header>
+        <header className={styles["header"]}>
             <nav id={styles.nav}>
                 <Link href={"/"} className={styles["logo"]}>
                     <img className={styles["logo-img"]} src="/logo.png" alt="logo" />

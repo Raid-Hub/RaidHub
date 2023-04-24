@@ -18,16 +18,18 @@
     border-width: 1px;
 }
 
-#summary-card {
+.summary-card {
     flex: 1;
     background-color: rgba(30, 30, 30, 0.35);
     min-width: 95%;
     padding-bottom: 10px;
     position: relative;
+
+    color: white;
 }
 
 @media only screen and (orientation: portrait) {
-    #summary-card {
+    .summary-card {
         min-width: 300px;
         max-width: 95%;
     }
@@ -38,49 +40,49 @@
     margin-left: 10px;
 }
 
-#activity-card-header {
+.activity-card-header {
     padding: 5px;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
 }
 
-#left-info {
+.left-info {
     flex-grow: 1;
 }
 
-#raid-info-top {
+.raid-info-top {
     font-size: medium;
 }
 
-#raid-difficulty {
+.raid-difficulty {
     font-weight: bold;
     margin-right: 0.5rem;
 }
 
-#completion-time {
+.completion-time {
     color: rgb(182, 182, 182);
     font-style: oblique;
     padding: 3px;
 }
 
-#raid-name {
+.raid-name {
     font-weight: 900;
     font-size: xx-large;
     line-height: 100%;
     text-transform: uppercase;
 }
 
-#cp-error {
+.cp-error {
     max-width: 400px;
 }
 
-#cp-error > p {
+.cp-error > p {
     font-size: small;
     font-style: italic;
 }
 
-#right-info {
+.right-info {
     flex-grow: 1;
     padding-top: 10px;
     padding-right: 10px;
@@ -99,7 +101,7 @@
     margin: 0.2rem;
 }
 
-#tags-container {
+.tags-container {
     padding: 5px;
     display: flex;
     flex-direction: row;
@@ -117,7 +119,7 @@
     background-color: rgb(125, 168, 65);
 }
 
-#members {
+.members {
     padding: 10px 20px;
     border-radius: 10px;
     height: auto;
@@ -128,7 +130,7 @@
 
 /* This sets the column count to 1*/
 @media only screen and (orientation: portrait) {
-    #members {
+    .members {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(auto, 1fr);
     }
@@ -349,7 +351,7 @@
     display: inline-flex;
 }
 
-#summary-stats {
+.summary-stats {
     box-sizing: border-box;
     flex-grow: 1;
     margin: 0px;
@@ -411,7 +413,7 @@
     text-transform: uppercase;
     font-size: small;
     font-style: italic;
-    color: rgb(192, 192, 192);
+    color: var(--secondary-text);
     line-height: 100%;
 }
 

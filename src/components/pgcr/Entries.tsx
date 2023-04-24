@@ -49,7 +49,7 @@ const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
 
     if (memberIndex === -1 || !members) {
         return (
-            <div id={styles["members"]} className={cardLayout}>
+            <div className={[styles["members"], cardLayout].join(" ")}>
                 {members?.map((member, idx) => (
                     <MemberCard
                         key={idx}
@@ -65,7 +65,7 @@ const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
         )
     } else {
         return (
-            <div id={styles["members"]} className={cardLayout}>
+            <div className={[styles["members"], cardLayout].join(" ")}>
                 <MemberCard
                     member={members[memberIndex] ?? null}
                     index={memberIndex}

@@ -31,8 +31,11 @@ const PGCR = ({ activityId }: PGCRProps) => {
             </Head>
             {pgcrError && <Error message={pgcrError} />}
             <section
-                id={styles["summary-card"]}
-                className={[styles["main-element"], styles["soft-rectangle"]].join(" ")}>
+                className={[
+                    styles["summary-card"],
+                    styles["main-element"],
+                    styles["soft-rectangle"]
+                ].join(" ")}>
                 <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
                 <ActivityHeader
                     activity={activity}
@@ -45,7 +48,7 @@ const PGCR = ({ activityId }: PGCRProps) => {
                     pgcrLoadingState={pgcrLoadingState}
                 />
             </section>
-            <section id={styles["summary-stats"]} className={styles["main-element"]}>
+            <section className={[styles["summary-stats"], styles["main-element"]].join(" ")}>
                 <SummaryStats activity={activity} />
             </section>
         </main>

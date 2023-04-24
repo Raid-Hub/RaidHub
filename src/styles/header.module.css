@@ -1,16 +1,14 @@
+.header {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5em 1em;
+    background-color: var(--header-background);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
 #nav {
+    margin: 0 2%;
     display: flex;
     justify-content: space-between;
-    width: 85vw;
-    max-width: 950px;
-    margin: auto;
-    margin-top: 0.5em;
-}
-
-@media only screen and (orientation: portrait) {
-    #nav {
-        width: 95vw;
-    }
 }
 
 .logo {
@@ -28,6 +26,7 @@
 }
 
 .logo-text {
+    color: white;
     margin-left: 5px;
     margin-right: 5px;
     letter-spacing: 1px;
@@ -70,12 +69,16 @@
 
     border: 1px solid #5b5b5b;
     border-radius: 4px;
-    background-color: #161616;
+    background-color: var(--search-background);
 
-    color: #909090;
+    color: var(--search-text);
     font-weight: 400;
     font-size: 16px;
     font-style: italic;
+}
+
+#search-bar:focus {
+    outline: none;
 }
 
 .search-results {
