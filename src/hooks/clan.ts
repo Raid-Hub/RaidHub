@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "oodestiny/schemas"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
 import { Clan } from "../util/types"

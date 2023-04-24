@@ -1,6 +1,7 @@
 import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalWeaponStats } from "oodestiny/schemas"
+import { DestinyHistoricalWeaponStats } from "bungie-net-core/lib/models"
 import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
+import { WeaponStatsValues } from "../../util/types"
 const weaponsDefs: {
     [hash: string]: {
         name?: { [language: string]: string }
@@ -9,15 +10,7 @@ const weaponsDefs: {
     }
 } = WeaponsJson
 
-export interface WeaponStatsValues {
-    kills: number
-    precision: number
-    name: { [language: string]: string }
-    type: string
-    icon: string
-}
-
-export class PlayerWeapons extends Collection<number, WeaponStatsValues> {
+export default class PlayerWeapons extends Collection<number, WeaponStatsValues> {
     static fromArray(weapons: DestinyHistoricalWeaponStats[][]): PlayerWeapons {
         let collection = new PlayerWeapons()
         weapons.forEach(weapon => {
@@ -42,16 +35,16 @@ export class PlayerWeapons extends Collection<number, WeaponStatsValues> {
 
     static fromSingle(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
         return new PlayerWeapons(
-            weapons?.map(weapon => {
-                const def = weaponsDefs[weapon.referenceId]
+            weapons?.map(({ referenceId, values }) => {
+                const def = weaponsDefs[referenceId]
                 return [
-                    weapon.referenceId,
+                    referenceId,
                     {
                         name: def?.name ?? {},
                         icon: "https://bungie.net" + (def?.icon ?? "/img/misc/missing_icon_d2.png"),
                         type: def?.type ?? "Unknown",
-                        kills: weapon.values.uniqueWeaponKills.basic.value,
-                        precision: weapon.values.uniqueWeaponPrecisionKills.basic.value
+                        kills: values.uniqueWeaponKills.basic.value,
+                        precision: values.uniqueWeaponPrecisionKills.basic.value
                     }
                 ]
             })

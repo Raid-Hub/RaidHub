@@ -50,35 +50,28 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
     ]
     return (
         <>
-            {statsData.map((stat, idx) => (
+            {statsData.map(({ value, name, icon }, key) => (
                 <div
-                    key={idx}
+                    key={key}
                     className={[
                         styles["soft-rectangle"],
                         styles["entry-card"],
                         styles["character-stat"]
-                    ].join(" ")}
-                >
-                    <img
-                        src={stat.icon}
-                        alt={stat.name + ": " + stat.value}
-                        className={styles["stat-icon"]}
-                    />
+                    ].join(" ")}>
+                    <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                     <div className={styles["summary-stat-info"]}>
                         <span
                             className={[styles["summary-stat-name"], styles["contained-span"]].join(
                                 " "
-                            )}
-                        >
-                            {stat.name}
+                            )}>
+                            {name}
                         </span>
                         <span
                             className={[
                                 styles["summary-stat-value"],
                                 styles["contained-span"]
-                            ].join(" ")}
-                        >
-                            {stat.value}
+                            ].join(" ")}>
+                            {value}
                         </span>
                     </div>
 

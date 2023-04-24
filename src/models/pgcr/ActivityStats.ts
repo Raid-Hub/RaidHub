@@ -1,8 +1,8 @@
-import { DestinyPostGameCarnageReportData } from "oodestiny/schemas"
+import { DestinyPostGameCarnageReportData } from "bungie-net-core/lib/models"
 import { PGCRMember } from "./Entry"
 import { round } from "../../util/math"
 
-export class ActivityStats {
+export default class ActivityStats {
     private _members: PGCRMember[]
     constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
         this._members = members
@@ -47,7 +47,7 @@ export class ActivityStats {
 
     get mostUsedWeapon() {
         return this._members
-            .map(member => member.stats.weapons.first())
+            .map(({ stats }) => stats.weapons.first())
             .reduce((mostKills, current) =>
                 (current?.kills ?? 0) > (mostKills?.kills ?? 0) ? current : mostKills
             )

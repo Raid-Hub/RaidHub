@@ -7,13 +7,15 @@ import MemberCard from "./MemberCard"
 import StatCards from "./StatCard"
 import styles from "../../styles/pgcr.module.css"
 import { useEmblems } from "../../hooks/emblems"
+import { Loading } from "../../util/types"
 
 type PGCREntriesProps = {
     members: PGCRMember[] | null
     raid: Raid
+    pgcrLoadingState: Loading
 }
 
-const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
+const PGCREntries = ({ members, raid, pgcrLoadingState }: PGCREntriesProps) => {
     const { emblems, error: emblemError } = useEmblems(members)
     const [memberIndex, setMemberIndex] = useState(-1)
     const [characterIndex, setCharacterIndex] = useState(-1)
@@ -38,9 +40,9 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
     }
 
     const cardLayout = members
-        ? members.length < 4 && memberIndex == -1
+        ? members.length < 4 && memberIndex === -1
             ? styles["members-low"]
-            : members.length % 2 && memberIndex == -1
+            : members.length % 2 && memberIndex === -1
             ? styles["members-odd"]
             : styles["members-even"]
         : styles["members-even"]
@@ -73,7 +75,7 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
                     updateMemberIndex={updateMemberIndex}
                 />
                 <div className={styles["class-button-container"]}>
-                    {members?.[memberIndex].characters.map((character, idx) => (
+                    {members?.[memberIndex].characters.map(({ logo }, idx) => (
                         <button
                             key={idx}
                             className={[
@@ -82,9 +84,8 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
                                 idx === characterIndex ? styles["selected"] : "",
                                 styles["class-button"]
                             ].join(" ")}
-                            onClick={members ? () => updateCharacterIndex(idx) : undefined}
-                        >
-                            <img src={character.logo} />
+                            onClick={members ? () => updateCharacterIndex(idx) : undefined}>
+                            <img src={logo} />
                         </button>
                     ))}
                     <button
@@ -92,14 +93,12 @@ const PGCREntries = ({ members, raid }: PGCREntriesProps) => {
                             styles["member-profile-button"],
                             styles["soft-rectangle"],
                             styles["selectable"]
-                        ].join(" ")}
-                    >
+                        ].join(" ")}>
                         <Link
                             href={memberProfile()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={styles["member-profile-link"]}
-                        >
+                            className={styles["member-profile-link"]}>
                             <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
                             <span>View Profile</span>
                         </Link>

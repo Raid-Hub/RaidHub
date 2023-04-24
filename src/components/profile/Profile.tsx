@@ -10,17 +10,26 @@ import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "../ToggleSwitch"
 import { useState } from "react"
-import { usePrefs } from "../../hooks/prefs"
-import { DefaultPreferences, Prefs } from "../../util/preferences"
+import { Icons } from "../../util/icons"
+import { useProfileStats } from "../../hooks/profileStats"
+import { useCharacterStats } from "../../hooks/characterStats"
+import { useRaidHubProfile } from "../../hooks/raidhubProfile"
 
 type ProfileProps = ProfileComponent
 
-const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps) => {
-    const { membership } = useBungieNextMembership(userInfo ?? {})
+const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
+    const { profile, isLoading: isLoadingProfile } = useRaidHubProfile(userInfo.membershipId)
+    const { membership } = useBungieNextMembership(userInfo)
+    const {
+        stats: profileStats,
+        isLoading: isLoadingProfileStats,
+        characterIds
+    } = useProfileStats(userInfo)
+    const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
+        ...userInfo,
+        characterIds
+    })
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(userInfo.membershipId, [
-        Prefs.PROFILE_BACKGROUND
-    ])
 
     const handleToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
@@ -28,9 +37,9 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
     }
 
     const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
-    const backgroundImage = prefs
-        ? prefs[Prefs.PROFILE_BACKGROUND]
-        : DefaultPreferences[Prefs.PROFILE_BACKGROUND]
+
+    // console.log(raidMetrics?.get(Raid.ROOT_OF_NIGHTMARES)?.get(Difficulty.NORMAL))
+
     return (
         <main className={styles["main"]}>
             <Head>
@@ -39,24 +48,25 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
             <section className={styles["user-info"]}>
                 <UserCard
                     userInfo={{ ...membership, ...userInfo }}
+                    socials={profile?.socials}
                     emblemBackgroundPath={emblemBackgroundPath}
-                    backgroundImage={backgroundImage.replace(/;$/, "")}
+                    backgroundImage={profile?.background?.replace(/;$/, "") ?? ""}
                 />
 
                 <div className={styles["ranking-banners"]}>
-                    <RankingBanner icon={"/icons/skull.png"} backgroundColor={"#fa6b6bA9"}>
+                    <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
                         <span>Clears Rank</span>
                         <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9999</span>
                     </RankingBanner>
 
-                    <RankingBanner icon={"/icons/speed.png"} backgroundColor={"#fa6b6bA9"}>
+                    <RankingBanner icon={Icons.SPEED} backgroundColor={"#fa6b6bA9"}>
                         <span>Speed Rank</span>
                         <span className={styles["banner-bold"]}>Challenger #1</span>
                         <span>9hr 99m 99s</span>
                     </RankingBanner>
 
-                    <RankingBanner icon={"/icons/diamond.png"} backgroundColor={"#4ea2ccA9"}>
+                    <RankingBanner icon={Icons.DIAMOND} backgroundColor={"#4ea2ccA9"}>
                         <span>Low-Mans</span>
                         <span className={styles["banner-bold"]}>Diamond IV</span>
                         <span>69</span>
@@ -80,7 +90,7 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
-                    <PinnedActivity activityId={"4129239230"} />
+                    <PinnedActivity activityId={profile?.pinnedActivity} />
                     <div className={styles["layout-toggle"]}>
                         <span>X</span>
                         <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />
@@ -88,10 +98,12 @@ const Profile = ({ userInfo, characterIds, emblemBackgroundPath }: ProfileProps)
                     </div>
                 </div>
                 <RaidCards
-                    membershipId={userInfo.membershipId}
-                    membershipType={userInfo.membershipType}
+                    {...userInfo}
+                    profile={profile}
                     characterIds={characterIds}
                     layout={layout}
+                    raidMetrics={raidMetrics}
+                    isLoadingRaidMetrics={isLoadingRaidMetrics}
                 />
             </section>
         </main>

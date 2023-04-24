@@ -27,24 +27,7 @@
 
 /* width */
 .dots-container::-webkit-scrollbar {
-    width: 1px;
-    height: 10px;
-}
-
-/* Track */
-.dots-container::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* Handle */
-.dots-container::-webkit-scrollbar-thumb {
-    background: #ecebeb;
-    border-radius: 7px;
-}
-
-/* Handle on hover */
-.dots-container::-webkit-scrollbar-thumb:hover {
-    background: rgb(231, 121, 43);
+    height: 6px;
 }
 
 .dot {
@@ -61,7 +44,8 @@
 }
 
 .dots-container {
-    margin-right: 2em;
+    margin: 1em 2em 1em 0;
+    border-radius: 5px;
     min-width: 200px;
     max-height: 100%;
     overflow-y: hidden;
@@ -72,7 +56,7 @@
 
 .profile {
     flex: 1;
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -90,7 +74,7 @@
     min-width: 240px;
     width: 100%;
     border-radius: inherit;
-    border: 1px solid #b09494;
+    border: 1px solid var(--border);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
@@ -110,7 +94,7 @@
     max-height: 80px;
     border-radius: 50%;
     /* makes the border circular */
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
     box-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
 
@@ -131,7 +115,7 @@
     border-radius: 0 6px 6px 0;
     padding-left: 0em;
     padding-right: 0.5em;
-    color: #13e6ff;
+    color: var(--bungie-blue);
 }
 
 .profile-icons {
@@ -149,7 +133,7 @@
     background-color: #00000077;
     display: flex;
     border-radius: 5px;
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
 }
 
 .social:hover {
@@ -220,7 +204,7 @@
 
 .ranking-banner {
     flex: 1;
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -256,9 +240,8 @@
 .clan {
     flex: 1;
     display: flex;
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
     border-radius: 20px;
-    align-items: center;
     padding: 1em;
     box-sizing: border-box;
     align-items: stretch;
@@ -286,7 +269,6 @@ svg.clan-img {
     flex-grow: 1;
     display: inline-block;
     flex: 1;
-    white-space: nowrap;
     margin-bottom: -0.1em;
 
     font-weight: 600;
@@ -312,18 +294,8 @@ svg.clan-img {
     margin-bottom: 0.5em;
 }
 
-/* Style the scrollbar */
 .desc-text-wrapper::-webkit-scrollbar {
-    width: 10px;
-}
-
-.desc-text-wrapper::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 5px;
-}
-
-.desc-text-wrapper::-webkit-scrollbar-thumb:hover {
-    background-color: #c56f24;
+    width: 5px;
 }
 
 .desc-text {
@@ -385,8 +357,15 @@ svg.clan-img {
     margin: 0.5em 0;
 }
 
+.pinned-activity-loading {
+    flex: 1;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    height: 100px;
+}
+
 .pinned-activity {
-    border: 1px solid #5b5b5b;
+    border: 1px solid var(--border);
     border-radius: 20px;
     padding: 0.2em 3em;
     position: relative;
@@ -451,7 +430,7 @@ svg.clan-img {
 }
 
 .raid-card {
-    border: 1px solid #4e4e4e;
+    border: 1px solid var(--border);
     border-radius: 20px;
     min-width: 300px;
     max-width: 100%;
@@ -464,7 +443,7 @@ svg.clan-img {
 
 .raid-card-img-container .top-image {
     width: 100%;
-    border-bottom: 1px solid #4e4e4e;
+    border-bottom: 1px solid var(--border);
     border-radius: 20px 20px 0 0;
 }
 
@@ -502,7 +481,7 @@ svg.clan-img {
 
     background-color: #2e2d2da1;
     background-size: 0em;
-    border: 0.1px solid #4e4e4e;
+    border: 0.1px solid var(--border);
     border-radius: 5px;
     padding: 2px 5px;
 
@@ -527,10 +506,9 @@ svg.clan-img {
 }
 
 .card-diamonds {
+    margin-bottom: 0.4em;
     display: flex;
     align-items: center;
-    margin: -0.4em 0;
-    margin-top: 0.2em;
 }
 
 .raid-card-content {
@@ -563,12 +541,12 @@ svg.clan-img {
 }
 
 .graph-number {
+    margin-bottom: 0;
     font-size: 28px;
     font-weight: 600;
 }
 
 .graph-count-text {
-    margin-top: -2.7em;
     text-align: center;
     text-transform: uppercase;
     color: rgb(125, 125, 125);
@@ -576,7 +554,7 @@ svg.clan-img {
 }
 
 .timings {
-    border-top: 1px solid #4e4e4e;
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: center;
     text-align: center;
@@ -589,6 +567,7 @@ svg.clan-img {
 }
 
 .timings-number {
+    margin: 0;
     font-weight: 600;
 }
 
@@ -596,7 +575,6 @@ svg.clan-img {
     color: rgb(100, 100, 100);
     text-transform: uppercase;
     font-size: 12px;
-    margin-top: -1em;
 }
 
 .recent {
@@ -613,7 +591,7 @@ svg.clan-img {
     flex: 1;
     flex-basis: 250px;
     height: 240px;
-    border: 1px solid #4e4e4e;
+    border: 1px solid var(--border);
     border-radius: 12px;
 }
 
@@ -621,7 +599,7 @@ svg.clan-img {
     flex: 1;
     flex-basis: 250px;
     transition: transform 0.1s ease-in-out;
-    border: 1px solid #4e4e4e;
+    border: 1px solid var(--border);
     border-radius: 12px;
 
     display: flex;
@@ -631,7 +609,7 @@ svg.clan-img {
 
 @media only screen and (orientation: portrait) {
     .activity {
-        flex-basis: 180px;
+        flex-basis: 120px;
     }
 }
 
@@ -682,7 +660,7 @@ svg.clan-img {
 .load-more {
     transition: transform 0.2s ease-in-out;
     width: 100%;
-    border: 1px solid #4e4e4e;
+    border: 1px solid var(--border);
     border-radius: 12px;
     background-color: #a5f6b455;
 
@@ -705,4 +683,10 @@ svg.clan-img {
     text-transform: uppercase;
     font-size: 15px;
     font-weight: 600;
+}
+
+.number-loading {
+    min-height: 2rem;
+    min-width: 100%;
+    display: flex;
 }

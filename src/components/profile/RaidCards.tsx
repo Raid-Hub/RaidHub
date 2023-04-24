@@ -1,15 +1,17 @@
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../hooks/activityHistory"
 import { useLanguage } from "../../hooks/language"
 import styles from "../../styles/profile.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"
 import { AllRaids, Raid, raidDetailsFromHash } from "../../util/raid"
-import RaidCard from "./RaidCard"
+import RaidModal from "./RaidModal"
 import ActivityCard from "./ActivityCard"
 import { useEffect, useState } from "react"
 import Loading from "../Loading"
 import { usePrefs } from "../../hooks/prefs"
 import { DefaultPreferences, Prefs } from "../../util/preferences"
+import AggregateStats from "../../models/profile/AggregateStats"
+import { X } from "../../util/types"
 
 const CARDS_PER_PAGE = 60
 
@@ -19,13 +21,24 @@ export enum Layout {
 }
 
 type RaidCardsProps = {
+    profile: X | null
     membershipId: string
     membershipType: BungieMembershipType
-    characterIds: string[]
+    characterIds: string[] | null
     layout: Layout
+    raidMetrics: AggregateStats | null
+    isLoadingRaidMetrics: boolean
 }
 
-const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidCardsProps) => {
+const RaidCards = ({
+    profile,
+    membershipId,
+    membershipType,
+    characterIds,
+    layout,
+    raidMetrics,
+    isLoadingRaidMetrics
+}: RaidCardsProps) => {
     const language = useLanguage()
     const { prefs, isLoading: isLoadingPrefs } = usePrefs(membershipId, [Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
@@ -74,18 +87,17 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
             return (
                 <div className={styles["cards"]}>
                     {AllRaids.map((raid, idx) => (
-                        <RaidCard
-                            stats={{
-                                totalClears: 0,
-                                fastestClear: 0,
-                                averageClear: 0,
-                                sherpas: 0
-                            }}
+                        <RaidModal
+                            membershipId={membershipId}
+                            stats={raidMetrics?.get(raid)}
+                            isLoadingStats={isLoadingRaidMetrics}
                             key={idx}
                             raidName={strings.raidNames[raid]}
                             raid={raid}
                             activities={activitiesByRaid ? activitiesByRaid![raid] : []}
                             isLoadingDots={isLoadingDots || !activitiesByRaid}
+                            placement={profile?.placements[raid]}
+                            tags={profile?.tags[raid]}
                         />
                     ))}
                 </div>
@@ -93,23 +105,23 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
         case Layout.RecentActivities:
             return (
                 <div className={styles["recent"]}>
-                    {allActivities.slice(0, pages * CARDS_PER_PAGE).map(activity => (
-                        <ActivityCard
-                            info={raidDetailsFromHash(
-                                activity.activityDetails.referenceId.toString()
-                            )}
-                            strings={strings}
-                            completed={!!activity.values.completed.basic.value}
-                            activityId={activity.activityDetails.instanceId}
-                            completionDate={new Date(activity.period)}
-                        />
-                    ))}
+                    {allActivities
+                        .slice(0, pages * CARDS_PER_PAGE)
+                        .map(({ activityDetails, values, period }, key) => (
+                            <ActivityCard
+                                key={key}
+                                info={raidDetailsFromHash(activityDetails.referenceId.toString())}
+                                strings={strings}
+                                completed={!!values.completed.basic.value}
+                                activityId={activityDetails.instanceId}
+                                completionDate={new Date(period)}
+                            />
+                        ))}
                     {!isLoadingDots ? (
                         allActivities.length > pages * CARDS_PER_PAGE ? (
                             <button
                                 className={styles["load-more"]}
-                                onClick={() => setPages(pages + 1)}
-                            >
+                                onClick={() => setPages(pages + 1)}>
                                 <span>{strings.loadMore}</span>
                             </button>
                         ) : (
@@ -118,8 +130,8 @@ const RaidCards = ({ membershipId, membershipType, characterIds, layout }: RaidC
                     ) : (
                         Array(CARDS_PER_PAGE)
                             .fill(null)
-                            .map((_, idx) => (
-                                <div className={styles["placeholder"]} key={idx}>
+                            .map((_, key) => (
+                                <div className={styles["placeholder"]} key={key}>
                                     <Loading />
                                 </div>
                             ))

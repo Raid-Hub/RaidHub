@@ -8,7 +8,7 @@
     "jsxSingleQuote": false,
     "trailingComma": "none",
     "bracketSpacing": true,
-    "jsxBracketSameLine": false,
+    "bracketSameLine": true,
     "arrowParens": "avoid",
     "endOfLine": "lf"
 }

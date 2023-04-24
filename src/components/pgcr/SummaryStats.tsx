@@ -1,5 +1,5 @@
 import { useLanguage } from "../../hooks/language"
-import { Activity } from "../../models/pgcr/Activity"
+import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
 import { Icons } from "../../util/icons"
 import { LocalizedStrings } from "../../util/localized-strings"
@@ -50,33 +50,26 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
     ]
     return (
         <>
-            {statsData.map((stat, idx) => (
+            {statsData.map(({ icon, name, value }, idx) => (
                 <div
                     key={idx}
-                    className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}
-                >
+                    className={[styles["soft-rectangle"], styles["summary-stat"]].join(" ")}>
                     <div className={styles["summary-stat-content"]}>
-                        <img
-                            src={stat.icon}
-                            alt={stat.name + ": " + stat.value}
-                            className={styles["stat-icon"]}
-                        />
+                        <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                         <div className={styles["summary-stat-info"]}>
                             <span
                                 className={[
                                     styles["summary-stat-name"],
                                     styles["contained-span"]
-                                ].join(" ")}
-                            >
-                                {stat.name}
+                                ].join(" ")}>
+                                {name}
                             </span>
                             <span
                                 className={[
                                     styles["summary-stat-value"],
                                     styles["contained-span"]
-                                ].join(" ")}
-                            >
-                                {stat.value}
+                                ].join(" ")}>
+                                {value}
                             </span>
                         </div>
                     </div>

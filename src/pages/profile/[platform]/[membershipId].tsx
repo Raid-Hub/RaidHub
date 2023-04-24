@@ -1,5 +1,5 @@
 import { shared as bungieClient } from "../../../util/http/bungie"
-import { BungieMembershipType } from "oodestiny/schemas"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import Profile from "../../../components/profile/Profile"
 import { InitialProfileProps } from "../../../util/types"
 

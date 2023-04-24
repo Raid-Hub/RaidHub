@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "oodestiny/schemas"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useEffect, useState } from "react"
 import { ACTIVITIES_PER_PAGE, shared as client } from "../util/http/bungie"
 import { Raid, raidDetailsFromHash } from "../util/raid"
@@ -8,7 +8,7 @@ import { ActivityCollectionDictionary, ActivityHistory } from "../util/types"
 type UseActivityHistoryParams = {
     membershipId: string
     membershipType: BungieMembershipType
-    characterIds: string[]
+    characterIds: string[] | null
 }
 
 type UseActivityHistory = {
@@ -40,30 +40,31 @@ export function useActivityHistory({
             [Raid.ROOT_OF_NIGHTMARES]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
             [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
         }
-        Promise.all(
-            characterIds.map(async characterId => {
-                let page = 0
-                let hasMore = true
-                while (hasMore) {
-                    const newActivities = await client.getActivityHistory(
-                        membershipId,
-                        characterId,
-                        membershipType,
-                        page
-                    )
-                    newActivities.forEach(activity => {
-                        const info = raidDetailsFromHash(
-                            activity.activityDetails.referenceId.toString()
+        if (characterIds)
+            Promise.all(
+                characterIds.map(async characterId => {
+                    let page = 0
+                    let hasMore = true
+                    while (hasMore) {
+                        const newActivities = await client.getActivityHistory(
+                            membershipId,
+                            characterId,
+                            membershipType,
+                            page
                         )
-                        dict[info.raid].set(activity.activityDetails.instanceId, activity)
-                    })
-                    hasMore = newActivities.length == ACTIVITIES_PER_PAGE
-                    page++
-                }
-            })
-        )
-            .then(() => setActivities(dict))
-            .finally(() => setLoading(false))
+                        newActivities.forEach(activity => {
+                            const info = raidDetailsFromHash(
+                                activity.activityDetails.referenceId.toString()
+                            )
+                            dict[info.raid].set(activity.activityDetails.instanceId, activity)
+                        })
+                        hasMore = newActivities.length == ACTIVITIES_PER_PAGE
+                        page++
+                    }
+                })
+            )
+                .then(() => setActivities(dict))
+                .finally(() => setLoading(false))
     }, [membershipId, membershipType, characterIds])
     return { activities, isLoading }
 }

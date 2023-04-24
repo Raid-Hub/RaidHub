@@ -1,6 +1,7 @@
 import Link from "next/link"
 import styles from "../styles/header.module.css"
 import SearchBar from "./SearchBar"
+import { Icons } from "../util/icons"
 
 type HeaderProps = {}
 
@@ -13,13 +14,9 @@ const Header = ({}: HeaderProps) => {
                     <span className={styles["logo-text"]}>RaidHub</span>
                 </Link>
                 <div className={styles["right-content"]}>
-                    <img className={styles["search-img"]} src="/icons/search.png" alt="search" />
+                    <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
                     <SearchBar />
-                    <img
-                        className={styles["profile-img"]}
-                        src="/icons/profile-icon.png"
-                        alt="profile"
-                    />
+                    <img className={styles["profile-img"]} src={Icons.PROFILE} alt="profile" />
                 </div>
             </nav>
         </header>

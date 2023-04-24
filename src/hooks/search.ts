@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { shared as client } from "../util/http/bungie"
 import { CustomBungieSearchResult } from "../util/types"
+import { asBungieName } from "../util/math"
 
 type UseSearch = {
     results: CustomBungieSearchResult[]
@@ -56,15 +57,4 @@ export function useSearch(query: string): UseSearch {
         }
     }, [query])
     return { results, isLoading }
-}
-
-function asBungieName(name: string): [name: string, code: number] | undefined {
-    if (name.includes("#")) {
-        const [nameStr, code] = name.split("#")
-        let codeNum = parseInt(code)
-        if (nameStr && codeNum) {
-            return [nameStr, codeNum]
-        }
-    }
-    return undefined
 }

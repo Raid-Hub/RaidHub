@@ -1,18 +1,14 @@
-import {
-    getActivityHistory,
-    getCharacter,
-    getLinkedProfiles,
-    getPostGameCarnageReport,
-    getProfile,
-    searchDestinyPlayerByBungieName
-} from "oodestiny/endpoints/Destiny2"
-import { getGroupsForMember } from "oodestiny/endpoints/GroupV2"
+import { Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
+import { CharacterName } from "../characters"
+import { RGBAToHex } from "../math"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
+    DestinyAggregateActivityResults,
     DestinyCharacterComponent,
     DestinyClass,
     DestinyComponentType,
+    DestinyHistoricalStatsAccountResult,
     DestinyHistoricalStatsPeriodGroup,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry,
@@ -21,15 +17,25 @@ import {
     PlatformErrorCodes,
     UserInfoCard,
     UserSearchResponseDetail
-} from "oodestiny/schemas"
-import { CacheRequest, Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
+} from "bungie-net-core/lib/models"
+import {
+    getActivityHistory,
+    getCharacter,
+    getDestinyAggregateActivityStats,
+    getHistoricalStatsForAccount,
+    getLinkedProfiles,
+    getPostGameCarnageReport,
+    getProfile,
+    searchDestinyPlayerByBungieName
+} from "bungie-net-core/lib/endpoints/Destiny2"
+import { getGroupsForMember } from "bungie-net-core/lib/endpoints/GroupV2"
+import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 
 // TODO: move these to a CDN
+// @ts-ignore
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
+// @ts-ignore
 import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
-import { CharacterName } from "../characters"
-import { RGBAToHex } from "../math"
-import { searchByGlobalNamePost } from "oodestiny/endpoints/User"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
@@ -86,10 +92,6 @@ class BungieNetClient {
         destinyMembershipId: string,
         membershipType: BungieMembershipType
     ): Promise<string> {
-        const CACHE_KEY = `getCharacterEmblem${characterId}_${destinyMembershipId}_${membershipType}`
-        const cached = BungieNetClient.hitCache<string>(CACHE_KEY)
-        if (cached) return `https://bungie.net${cached}`
-
         let rv: string = defaultEmblem
         try {
             const res = await getCharacter({
@@ -100,9 +102,8 @@ class BungieNetClient {
             })
             const data = res.Response.character.data
             if (data) {
-                rv = BungieNetClient.emblemFromHash(data.emblemHash)
+                rv = emblemFromHash(data.emblemHash)
             }
-            BungieNetClient.setCache(CACHE_KEY, rv)
         } catch (e) {
             // TODO record errors
         } finally {
@@ -159,7 +160,10 @@ class BungieNetClient {
         }
     }
 
-    async getClan(membershipId: string, membershipType: BungieMembershipType): Promise<Clan> {
+    async getClan(
+        membershipId: string,
+        membershipType: BungieMembershipType
+    ): Promise<Clan | null> {
         try {
             const res = await getGroupsForMember({
                 filter: GroupsForMemberFilter.All,
@@ -167,7 +171,9 @@ class BungieNetClient {
                 membershipId,
                 membershipType
             })
-            const group = res.Response.results[0].group
+            const clan = res.Response.results[0]
+            if (!clan) return null
+            const group = clan.group
             const clanBannerData = group.clanInfo.clanBannerData
             return {
                 ...group,
@@ -276,7 +282,8 @@ class BungieNetClient {
             )
             return response.Response
         } catch (e) {
-            throw e
+            // todo: better error handling
+            return []
         }
     }
 
@@ -348,33 +355,43 @@ class BungieNetClient {
         return { ...pgcr, entries: validatedEntries }
     }
 
-    private static emblemFromHash(hash: number) {
-        return emblems[hash] ?? defaultEmblem
+    async getProfileStats({
+        destinyMembershipId,
+        membershipType
+    }: {
+        destinyMembershipId: string
+        membershipType: BungieMembershipType
+    }): Promise<DestinyHistoricalStatsAccountResult> {
+        try {
+            const stats = await getHistoricalStatsForAccount({
+                destinyMembershipId,
+                membershipType
+            })
+            return stats.Response
+        } catch (e) {
+            throw e
+        }
     }
 
-    /** Checks the local cache for value first */
-    private static hitCache<T>(cashKey: string): T | null {
-        const cachedData = localStorage.getItem(cashKey)
-        if (cachedData) {
-            try {
-                const { timestamp, data } = JSON.parse(cachedData) as CacheRequest<T>
-                if (Date.now() - timestamp < CACHE_MINUTES * 60 * 1000) {
-                    return data
-                }
-            } catch (e) {
-                // ignore error for now
-            }
+    async getCharacterStats({
+        destinyMembershipId,
+        membershipType,
+        characterId
+    }: {
+        destinyMembershipId: string
+        membershipType: BungieMembershipType
+        characterId: string
+    }): Promise<DestinyAggregateActivityResults> {
+        try {
+            const stats = await getDestinyAggregateActivityStats({
+                characterId,
+                destinyMembershipId,
+                membershipType
+            })
+            return stats.Response
+        } catch (e) {
+            throw e
         }
-        return null
-    }
-
-    /** Set a key of the cache to a value */
-    private static setCache<T>(cashKey: string, value: T): void {
-        const dataToCache: CacheRequest<T> = {
-            timestamp: Date.now(),
-            data: value
-        }
-        localStorage.setItem(cashKey, JSON.stringify(dataToCache))
     }
 }
 
@@ -389,6 +406,10 @@ function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
         entry.values.kills?.basic.value === 0 &&
         entry.values.deaths?.basic.value === 0
     )
+}
+
+function emblemFromHash(hash: number) {
+    return emblems[hash] ?? defaultEmblem
 }
 
 export const shared = new BungieNetClient()

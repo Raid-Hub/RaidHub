@@ -3,15 +3,16 @@ import {
     ContestRaidDifficulties,
     DayOneEnd,
     Raid,
-    RaidDifficulty
+    Difficulty,
+    RaidDifficultyTuple
 } from "../../util/raid"
 
-export class RaidInfo {
+export default class RaidInfo<R extends Raid> {
     raid: Raid
-    difficulty: RaidDifficulty
-    constructor(name: Raid, difficulty: RaidDifficulty) {
+    difficulty: Difficulty
+    constructor([name, difficulty]: RaidDifficultyTuple) {
         this.raid = name
-        this.difficulty = difficulty
+        this.difficulty = difficulty as Difficulty
     }
     isDayOne(ended: Date): boolean {
         if (DayOneEnd[this.raid] === undefined) {

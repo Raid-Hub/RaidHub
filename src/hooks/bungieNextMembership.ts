@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
-import { BungieMembershipType, UserInfoCard } from "oodestiny/schemas"
+import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
 
 type UseBungieProfileParams = {
     membershipId: string

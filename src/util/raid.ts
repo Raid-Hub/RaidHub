@@ -1,7 +1,8 @@
-import { RaidInfo } from "../models/pgcr/raid"
+import RaidInfo from "../models/pgcr/RaidInfo"
 import { HTMLAttributes } from "react"
+import { Flatten } from "./types"
 
-export enum Raid {
+export const enum Raid {
     LEVIATHAN,
     EATER_OF_WORLDS,
     SPIRE_OF_STARS,
@@ -32,7 +33,7 @@ export const AllRaids: Raid[] = [
     Raid.LEVIATHAN
 ]
 
-export enum RaidDifficulty {
+export const enum Difficulty {
     NORMAL,
     PRESTIGE,
     CONTEST,
@@ -41,114 +42,178 @@ export enum RaidDifficulty {
     CHALLENGEKF
 }
 
-export const ContestRaidDifficulties = [RaidDifficulty.CHALLENGEVOG, RaidDifficulty.CHALLENGEKF]
+export const CommonRaidDifficulties: Difficulty[] = [
+    Difficulty.NORMAL,
+    Difficulty.PRESTIGE,
+    Difficulty.MASTER
+]
 
-export function raidDetailsFromHash(hash: string): RaidInfo {
-    switch (hash) {
-        case "89727599":
-        case "287649202":
-        case "1699948563":
-        case "1875726950":
-        case "2693136600":
-        case "2693136601":
-        case "2693136602":
-        case "2693136603":
-        case "2693136604":
-        case "2693136605":
-        case "3916343513":
-        case "4039317196":
-            return new RaidInfo(Raid.LEVIATHAN, RaidDifficulty.NORMAL)
+export const ContestRaidDifficulties: Difficulty[] = [
+    Difficulty.CHALLENGEVOG,
+    Difficulty.CHALLENGEKF
+]
 
-        case "417231112":
-        case "508802457":
-        case "757116822":
-        case "771164842":
-        case "1685065161":
-        case "1800508819":
-        case "2449714930":
-        case "3446541099":
-        case "4206123728":
-        case "3912437239":
-        case "3879860661":
-        case "3857338478":
-            return new RaidInfo(Raid.LEVIATHAN, RaidDifficulty.PRESTIGE)
+/**
+ * This constant is where to start when new raid hashes should be added.
+ * TypeScript will catch everything else and show you what else needs to be updated.
+ */
+export const RaidHashes = {
+    [Raid.LEVIATHAN]: {
+        [Difficulty.NORMAL]: [
+            "89727599",
+            "287649202",
+            "1699948563",
+            "1875726950",
+            "2693136600",
+            "2693136601",
+            "2693136602",
+            "2693136603",
+            "2693136604",
+            "2693136605",
+            "3916343513",
+            "4039317196"
+        ] as const,
+        [Difficulty.PRESTIGE]: [
+            "417231112",
+            "508802457",
+            "757116822",
+            "771164842",
+            "1685065161",
+            "1800508819",
+            "2449714930",
+            "3446541099",
+            "4206123728",
+            "3912437239",
+            "3879860661",
+            "3857338478"
+        ] as const
+    },
+    [Raid.EATER_OF_WORLDS]: {
+        [Difficulty.NORMAL]: ["2164432138", "3089205900"] as const,
+        [Difficulty.PRESTIGE]: ["809170886"] as const
+    },
+    [Raid.SPIRE_OF_STARS]: {
+        [Difficulty.NORMAL]: ["119944200", "3004605630"] as const,
+        [Difficulty.PRESTIGE]: ["3213556450"] as const
+    },
+    [Raid.LAST_WISH]: { [Difficulty.NORMAL]: ["1661734046", "2122313384", "2214608157"] as const },
+    [Raid.SCOURGE_OF_THE_PAST]: { [Difficulty.NORMAL]: ["2812525063", "548750096"] as const },
+    [Raid.CROWN_OF_SORROW]: {
+        [Difficulty.NORMAL]: ["960175301", "3333172150"] as const
+    },
+    [Raid.GARDEN_OF_SALVATION]: {
+        [Difficulty.NORMAL]: ["2497200493", "2659723068", "3458480158", "3845997235"] as const
+    },
+    [Raid.DEEP_STONE_CRYPT]: {
+        [Difficulty.NORMAL]: ["910380154", "3976949817"] as const
+    },
+    [Raid.VAULT_OF_GLASS]: {
+        [Difficulty.NORMAL]: ["3711931140", "3881495763"] as const,
+        [Difficulty.CHALLENGEVOG]: ["1485585878"] as const,
+        [Difficulty.MASTER]: ["1681562271", "3022541210"] as const
+    },
+    [Raid.VOW_OF_THE_DISCIPLE]: {
+        [Difficulty.NORMAL]: ["1441982566", "2906950631", "4156879541"] as const,
+        [Difficulty.MASTER]: ["4217492330"] as const
+    },
+    [Raid.KINGS_FALL]: {
+        [Difficulty.NORMAL]: ["1374392663", "2897223272"] as const,
+        [Difficulty.CHALLENGEKF]: ["1063970578"] as const,
+        [Difficulty.MASTER]: ["2964135793"] as const
+    },
+    [Raid.ROOT_OF_NIGHTMARES]: {
+        [Difficulty.NORMAL]: ["1191701339", "2381413764"] as const,
+        [Difficulty.MASTER]: ["2918919505"] as const
+    },
+    [Raid.NA]: { [Difficulty.NORMAL]: [] as const }
+}
 
-        case "2164432138":
-        case "3089205900":
-            return new RaidInfo(Raid.EATER_OF_WORLDS, RaidDifficulty.NORMAL)
+export type DifficultyForRaidType<R extends keyof typeof RaidHashes> =
+    keyof (typeof RaidHashes)[R] extends Difficulty ? keyof (typeof RaidHashes)[R] : never
 
-        case "809170886":
-            return new RaidInfo(Raid.EATER_OF_WORLDS, RaidDifficulty.PRESTIGE)
+export type RaidHashesForRaidAndDifficulty<
+    R extends Raid,
+    D extends DifficultyForRaidType<R>
+> = (typeof RaidHashes)[R][Extract<D, keyof (typeof RaidHashes)[R]>]
 
-        case "119944200":
-        case "3004605630":
-            return new RaidInfo(Raid.SPIRE_OF_STARS, RaidDifficulty.NORMAL)
+export type AllRaidHashesForRaid<R extends Raid> = Flatten<
+    (typeof RaidHashes)[R][Extract<Difficulty, keyof (typeof RaidHashes)[R]>]
+>
 
-        case "3213556450":
-            return new RaidInfo(Raid.SPIRE_OF_STARS, RaidDifficulty.PRESTIGE)
+export type ValidRaidHash = {
+    [R in Raid]: AllRaidHashesForRaid<R>
+}[Raid]
 
-        case "1661734046":
-        case "2122313384":
-        case "2214608157":
-            return new RaidInfo(Raid.LAST_WISH, RaidDifficulty.NORMAL)
+export type RaidDifficultyTuple = [name: Raid, difficulty: Difficulty]
 
-        case "2812525063":
-        case "548750096":
-            return new RaidInfo(Raid.SCOURGE_OF_THE_PAST, RaidDifficulty.NORMAL)
+export const HashDictionary: {
+    [K in ValidRaidHash]: RaidDifficultyTuple
+} = {
+    "89727599": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "287649202": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "1699948563": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "1875726950": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136600": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136601": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136602": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136603": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136604": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "2693136605": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "3916343513": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "4039317196": [Raid.LEVIATHAN, Difficulty.NORMAL],
+    "417231112": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "508802457": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "757116822": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "771164842": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "1685065161": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "1800508819": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "2449714930": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "3446541099": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "4206123728": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "3912437239": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "3879860661": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "3857338478": [Raid.LEVIATHAN, Difficulty.PRESTIGE],
+    "2164432138": [Raid.EATER_OF_WORLDS, Difficulty.NORMAL],
+    "3089205900": [Raid.EATER_OF_WORLDS, Difficulty.NORMAL],
+    "809170886": [Raid.EATER_OF_WORLDS, Difficulty.PRESTIGE],
+    "119944200": [Raid.SPIRE_OF_STARS, Difficulty.NORMAL],
+    "3004605630": [Raid.SPIRE_OF_STARS, Difficulty.NORMAL],
+    "3213556450": [Raid.SPIRE_OF_STARS, Difficulty.PRESTIGE],
+    "1661734046": [Raid.LAST_WISH, Difficulty.NORMAL],
+    "2122313384": [Raid.LAST_WISH, Difficulty.NORMAL],
+    "2214608157": [Raid.LAST_WISH, Difficulty.NORMAL],
+    "2812525063": [Raid.SCOURGE_OF_THE_PAST, Difficulty.NORMAL],
+    "548750096": [Raid.SCOURGE_OF_THE_PAST, Difficulty.NORMAL],
+    "960175301": [Raid.CROWN_OF_SORROW, Difficulty.NORMAL],
+    "3333172150": [Raid.CROWN_OF_SORROW, Difficulty.NORMAL],
+    "2497200493": [Raid.GARDEN_OF_SALVATION, Difficulty.NORMAL],
+    "2659723068": [Raid.GARDEN_OF_SALVATION, Difficulty.NORMAL],
+    "3458480158": [Raid.GARDEN_OF_SALVATION, Difficulty.NORMAL],
+    "3845997235": [Raid.GARDEN_OF_SALVATION, Difficulty.NORMAL],
+    "910380154": [Raid.DEEP_STONE_CRYPT, Difficulty.NORMAL],
+    "3976949817": [Raid.DEEP_STONE_CRYPT, Difficulty.NORMAL],
+    "3711931140": [Raid.VAULT_OF_GLASS, Difficulty.NORMAL],
+    "3881495763": [Raid.VAULT_OF_GLASS, Difficulty.NORMAL],
+    "1485585878": [Raid.VAULT_OF_GLASS, Difficulty.CHALLENGEVOG],
+    "1681562271": [Raid.VAULT_OF_GLASS, Difficulty.MASTER],
+    "3022541210": [Raid.VAULT_OF_GLASS, Difficulty.MASTER],
+    "1441982566": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.NORMAL],
+    "2906950631": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.NORMAL],
+    "4156879541": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.NORMAL],
+    "4217492330": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.MASTER],
+    "1374392663": [Raid.KINGS_FALL, Difficulty.NORMAL],
+    "2897223272": [Raid.KINGS_FALL, Difficulty.NORMAL],
+    "2964135793": [Raid.KINGS_FALL, Difficulty.MASTER],
+    "1063970578": [Raid.KINGS_FALL, Difficulty.CHALLENGEKF],
+    "1191701339": [Raid.ROOT_OF_NIGHTMARES, Difficulty.NORMAL],
+    "2381413764": [Raid.ROOT_OF_NIGHTMARES, Difficulty.NORMAL],
+    "2918919505": [Raid.ROOT_OF_NIGHTMARES, Difficulty.MASTER]
+}
 
-        case "960175301":
-        case "3333172150":
-            return new RaidInfo(Raid.CROWN_OF_SORROW, RaidDifficulty.NORMAL)
+export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
-        case "2497200493":
-        case "2659723068":
-        case "3458480158":
-        case "3845997235":
-            return new RaidInfo(Raid.GARDEN_OF_SALVATION, RaidDifficulty.NORMAL)
-
-        case "910380154":
-        case "3976949817":
-            return new RaidInfo(Raid.DEEP_STONE_CRYPT, RaidDifficulty.NORMAL)
-
-        case "3711931140":
-        case "3881495763":
-            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.NORMAL)
-
-        case "1485585878":
-            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.CHALLENGEVOG)
-
-        case "1681562271":
-        case "3022541210":
-            return new RaidInfo(Raid.VAULT_OF_GLASS, RaidDifficulty.MASTER)
-
-        case "1441982566":
-        case "2906950631":
-        case "4156879541":
-            return new RaidInfo(Raid.VOW_OF_THE_DISCIPLE, RaidDifficulty.NORMAL)
-
-        case "4217492330":
-            return new RaidInfo(Raid.VOW_OF_THE_DISCIPLE, RaidDifficulty.MASTER)
-
-        case "1374392663":
-        case "2897223272":
-            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.NORMAL)
-
-        case "1063970578":
-            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.CHALLENGEKF)
-
-        case "2964135793":
-            return new RaidInfo(Raid.KINGS_FALL, RaidDifficulty.MASTER)
-
-        case "1191701339":
-        case "2381413764":
-            return new RaidInfo(Raid.ROOT_OF_NIGHTMARES, RaidDifficulty.NORMAL)
-
-        case "2918919505":
-            return new RaidInfo(Raid.ROOT_OF_NIGHTMARES, RaidDifficulty.MASTER)
-
-        default:
-            return new RaidInfo(Raid.NA, RaidDifficulty.NORMAL)
-    }
+export function raidDetailsFromHash(hash: string): RaidInfo<any> {
+    return new RaidInfo(HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL])
 }
 
 export const RaidCardBackground: { [key in Raid]: string } = {
@@ -263,4 +328,20 @@ export const DayOneEnd: Partial<Record<Raid, Date>> = {
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 6, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
     [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST")
+}
+
+export const Short: { [key in Raid]: string } = {
+    [Raid.LEVIATHAN]: "Levi",
+    [Raid.EATER_OF_WORLDS]: "EoW",
+    [Raid.SPIRE_OF_STARS]: "Spire",
+    [Raid.LAST_WISH]: "Wish",
+    [Raid.SCOURGE_OF_THE_PAST]: "SotP",
+    [Raid.CROWN_OF_SORROW]: "CoS",
+    [Raid.GARDEN_OF_SALVATION]: "GoS",
+    [Raid.DEEP_STONE_CRYPT]: "DSC",
+    [Raid.VAULT_OF_GLASS]: "VoG",
+    [Raid.VOW_OF_THE_DISCIPLE]: "Vow",
+    [Raid.KINGS_FALL]: "KF",
+    [Raid.ROOT_OF_NIGHTMARES]: "RoN",
+    [Raid.NA]: "*"
 }

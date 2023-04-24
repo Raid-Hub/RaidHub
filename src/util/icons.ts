@@ -6,5 +6,15 @@ export enum Icons {
     ABILITIES = "/icons/abilities.png",
     MVP = "/icons/mvp.png",
     TIME = "/icons/time.png",
-    EXTERNAL = "/icons/external.png"
+    EXTERNAL = "/icons/external.png",
+    SEARCH = "/icons/search.png",
+    FLAWLESS_DIAMOND = "/icons/flawless_diamond.png",
+    DIAMOND = "/icons/diamond.png",
+    SPEED = "/icons/speed.png",
+    PIN = "/icons/pin.png",
+    SKULL = "/icons/skull.png",
+    PROFILE = "/icons/profile-icon.png",
+    HUNTER = "/icons/hunter.png",
+    TITAN = "/icons/titan.png",
+    WARLOCK = "/icons/warlock.png"
 }

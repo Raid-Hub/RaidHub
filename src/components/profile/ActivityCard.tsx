@@ -1,12 +1,12 @@
 import styles from "../../styles/profile.module.css"
-import { RaidCardBackground, RaidDifficulty } from "../../util/raid"
+import { RaidCardBackground, Difficulty } from "../../util/raid"
 import { LocalStrings } from "../../util/localized-strings"
-import { RaidInfo } from "../../models/pgcr/raid"
 import Link from "next/link"
+import RaidInfo from "../../models/pgcr/RaidInfo"
 
 type ActivityCardProps = {
     strings: LocalStrings
-    info: RaidInfo
+    info: RaidInfo<any>
     completed: boolean
     activityId: any
     completionDate: Date
@@ -19,7 +19,7 @@ const ActivityCard = ({
     activityId,
     completionDate
 }: ActivityCardProps) => {
-    const difficultyString = [RaidDifficulty.CHALLENGEKF, RaidDifficulty.CHALLENGEVOG].includes(
+    const difficultyString = [Difficulty.CHALLENGEKF, Difficulty.CHALLENGEVOG].includes(
         info.difficulty
     )
         ? strings.difficulty[info.difficulty]
@@ -27,7 +27,7 @@ const ActivityCard = ({
         ? strings.dayOne
         : info.isContest(completionDate)
         ? strings.contest
-        : info.difficulty !== RaidDifficulty.NORMAL
+        : info.difficulty !== Difficulty.NORMAL
         ? strings.difficulty[info.difficulty]
         : ""
     return (
@@ -35,8 +35,7 @@ const ActivityCard = ({
             href={`/pgcr/${activityId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={styles["activity"]}
-        >
+            className={styles["activity"]}>
             <div className={styles["activity-content"]}>
                 <img
                     src={RaidCardBackground[info.raid]}

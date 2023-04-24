@@ -1,35 +1,40 @@
 import {
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry
-} from "oodestiny/schemas"
+} from "bungie-net-core/lib/models"
 import { useEffect, useState } from "react"
-import { Activity } from "../models/pgcr/Activity"
+import Activity from "../models/pgcr/Activity"
 import { PGCRMember } from "../models/pgcr/Entry"
 import { shared as client } from "../util/http/bungie"
+import { Loading } from "../util/types"
 
 type UsePGCR = {
     members: PGCRMember[] | null
     activity: Activity | null
     error: string | null
-    isLoading: boolean
+    loadingState: Loading
 }
 
-export function usePGCR(activityId: string): UsePGCR {
+export function usePGCR(activityId: string | null | undefined): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [error, setError] = useState<string | null>(null)
-    const [isLoading, setLoading] = useState<boolean>(true)
+    const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
 
     useEffect(() => {
-        setLoading(true)
-        client
-            .getPGCR(activityId)
-            .then(pgcr => client.validatePGCR(pgcr))
-            .then(validatedPGCR => setPGCR(validatedPGCR))
-            //.catch(err => setError(err))
-            .finally(() => setLoading(false))
+        setLoading(Loading.LOADING)
+        const getPGCR = async () => {
+            const pgcr = await client.getPGCR(activityId!)
+            setLoading(Loading.HYDRATING)
+            const hydratedPGCR = await client.validatePGCR(pgcr)
+            setPGCR(hydratedPGCR)
+            setLoading(Loading.FALSE)
+        }
+
+        if (activityId) getPGCR()
+        else if (activityId === null) setLoading(Loading.FALSE)
     }, [activityId])
 
-    if (isLoading || !pgcr) return { members: null, activity: null, error, isLoading }
+    if (loadingState || !pgcr) return { members: null, activity: null, error, loadingState }
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
     /** Group characters by member */
@@ -59,5 +64,5 @@ export function usePGCR(activityId: string): UsePGCR {
             else return memB.stats.score - memA.stats.score
         })
     const activity = new Activity(pgcr, members)
-    return { members, activity, error, isLoading }
+    return { members, activity, error, loadingState }
 }

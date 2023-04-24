@@ -1,5 +1,6 @@
 import { PGCRMember } from "../../models/pgcr/Entry"
 import styles from "../../styles/pgcr.module.css"
+import { Icons } from "../../util/icons"
 import { Raid } from "../../util/raid"
 
 type MemberCardProps = {
@@ -31,11 +32,10 @@ const MemberCard = ({
                 dynamicCssClass,
                 completionClass
             ].join(" ")}
-            onClick={member ? () => updateMemberIndex(index) : undefined}
-        >
+            onClick={member ? () => updateMemberIndex(index) : undefined}>
             <img src={emblemBackground} className={styles["emblem"]} />
             <div className={[styles["member-card-container"], styles["color-film"]].join(" ")}>
-                {memberIndex == -1 || !member ? (
+                {memberIndex === -1 || !member ? (
                     <StandardMemberCard member={member} />
                 ) : (
                     <SelectedMemberCard member={member} />
@@ -65,7 +65,7 @@ const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
             <div className={styles["flawless-diamond"]}>
                 {member?.flawless && (
                     <img
-                        src="/icons/flawless_diamond.png"
+                        src={Icons.FLAWLESS_DIAMOND}
                         alt={member.displayName + " went flawless this raid"}
                     />
                 )}
