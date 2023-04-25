@@ -3,12 +3,15 @@ import Header from "../components/Header"
 import Footer from "../components/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
+import { useLanguage } from "../hooks/language"
 
 function MyApp({ Component, pageProps }: AppProps) {
+    const language = useLanguage()
     return (
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
+                <meta httpEquiv="Content-Language" content={language} />
             </Head>
             <Header />
             <Component {...pageProps} />
