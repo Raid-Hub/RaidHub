@@ -22,10 +22,6 @@ export type ActivityHistory = ActivityCollectionDictionary | null
 export type ActivityPlacements = Partial<Record<Tag, number>>
 export type EmblemDict = { [characterId: string]: string }
 export type EmblemTuple = [id: string, emblem: string]
-export type ErrSuccess<T> = {
-    success?: T
-    error?: Error
-}
 export interface CacheRequest<T> {
     timestamp: number
     data: T
@@ -50,7 +46,7 @@ export type Clan = GroupV2 & { clanBanner: ClanBannerData }
 export type RaidHubProfile = {}
 export type InitialProfileProps = {
     bungieNetProfile: ProfileComponent | null
-    error: string
+    errorString: string
 }
 export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean
 export type CustomBungieSearchResult = {
@@ -110,3 +106,4 @@ export type X = {
     placements: Partial<Record<Raid, Placement>>
     tags: Partial<Record<Raid, RaidTag[]>>
 }
+export type ErrorHandler = (error: any) => void

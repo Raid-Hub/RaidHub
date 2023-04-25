@@ -14,7 +14,6 @@ const Header = ({}: HeaderProps) => {
                     <span className={styles["logo-text"]}>RaidHub</span>
                 </Link>
                 <div className={styles["right-content"]}>
-                    <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
                     <SearchBar />
                     <img className={styles["profile-img"]} src={Icons.PROFILE} alt="profile" />
                 </div>

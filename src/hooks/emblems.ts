@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
-import { PGCRMember } from "../models/pgcr/Entry"
-import { EmblemDict, EmblemTuple } from "../util/types"
+import { EmblemDict, EmblemTuple, ErrorHandler } from "../util/types"
+import PGCRMember from "../models/pgcr/Member"
 
-type UseEmblemsParams = PGCRMember[] | null
+type UseEmblemsParams = { members: PGCRMember[]; errorHandler: ErrorHandler }
 
 type UseEmblems = {
     emblems: EmblemDict | null
-    error: string | null
     isLoading: boolean
 }
 
-export function useEmblems(members: UseEmblemsParams): UseEmblems {
+export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmblems {
     const [emblems, setEmblems] = useState<EmblemDict | null>(null)
-    const [error, setError] = useState<string | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
@@ -25,18 +23,15 @@ export function useEmblems(members: UseEmblemsParams): UseEmblems {
                 client
                     .getCharacterEmblem(characterIds[0], membershipId, membershipType)
                     .then(emblem => emblemsList.push([characterIds[0], emblem]))
-                    .catch(err => {
-                        errs.push(err)
-                        emblemsList.push([characterIds[0], ""])
-                    })
+                    .catch(() => emblemsList.push([characterIds[0], ""]))
             ) ?? []
         )
             .then(() => {
                 setEmblems(Object.fromEntries(emblemsList))
-                setError(errs.join(", ") || null)
             })
+            .catch(errorHandler)
             .finally(() => setLoading(false))
     }, [members])
 
-    return { emblems, error, isLoading }
+    return { emblems, isLoading }
 }

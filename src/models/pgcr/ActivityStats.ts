@@ -1,11 +1,12 @@
-import { DestinyPostGameCarnageReportData } from "bungie-net-core/lib/models"
-import { PGCRMember } from "./Entry"
 import { round } from "../../util/math"
+import PGCRMember from "./Member"
 
 export default class ActivityStats {
     private _members: PGCRMember[]
-    constructor(pgcr: DestinyPostGameCarnageReportData, members: PGCRMember[]) {
+    readonly period: [start: Date, finish: Date]
+    constructor(period: [start: Date, finish: Date], members: PGCRMember[]) {
         this._members = members
+        this.period = period
     }
 
     /**
@@ -25,6 +26,17 @@ export default class ActivityStats {
 
     get totalDeaths() {
         return this._members.reduce((total, current) => total + current.stats.deaths, 0)
+    }
+
+    get totalAssists() {
+        return this._members.reduce((total, current) => total + current.stats.assists, 0)
+    }
+
+    get killsPerMinute() {
+        return round(
+            this.totalKills / ((this.period[1].getTime() - this.period[0].getTime()) / 60000),
+            2
+        )
     }
 
     get killsTypeRatio() {

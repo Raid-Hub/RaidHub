@@ -1,15 +1,24 @@
-import { UserInfoCard } from "bungie-net-core/lib/models"
 import { useClan } from "../../hooks/clan"
 import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
 import { Icons } from "../../util/icons"
 import { fixClanName } from "../../util/math"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { ErrorHandler } from "../../util/types"
 
-type ClanCardProps = UserInfoCard
+type ClanCardProps = {
+    membershipId: string
+    membershipType: BungieMembershipType
+    errorHandler: ErrorHandler
+}
 
-const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
-    const { clan, isLoading: isClanLoading } = useClan({ membershipId, membershipType })
+const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps) => {
+    const { clan, isLoading: isClanLoading } = useClan({
+        membershipId,
+        membershipType,
+        errorHandler
+    })
     return isClanLoading ? (
         <div className={styles["clan"]}>
             <Loading />

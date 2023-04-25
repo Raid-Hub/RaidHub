@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../styles/header.module.css"
 import { useSearch } from "../hooks/search"
-import { asBungieName, fixBungieCode, wait } from "../util/math"
-import Link from "next/link"
+import { fixBungieCode, wait } from "../util/math"
 import { useRouter } from "next/router"
-import { shared as client } from "../util/http/bungie"
+import { Icons } from "../util/icons"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 200
@@ -15,20 +14,24 @@ const SearchBar = ({}: SearchBarProps) => {
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
-    const { results, isLoading: isLoadingResults } = useSearch(query)
+    const {
+        results,
+        isLoading: isLoadingResults,
+        doExactSearch,
+        isPerformingExactSearch
+    } = useSearch(query)
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
 
     const debounceQuery = async (potentialQuery: string) => {
         await wait(DEBOUNCE)
-        if (potentialQuery === nextQuery.current) {
+        if (!isPerformingExactSearch && potentialQuery === nextQuery.current) {
             setQuery(potentialQuery)
         }
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setShowingResults(true)
         const newQuery = event.target.value
         setEnteredText(newQuery)
         nextQuery.current = newQuery
@@ -45,23 +48,12 @@ const SearchBar = ({}: SearchBarProps) => {
 
     const handleFormEnter = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const bungieName = asBungieName(enteredText)
-        if (bungieName) {
-            try {
-                const [user] = await client.searchByBungieName(...bungieName)
-                if (user) {
-                    setQuery("")
-                    setShowingResults(false)
-                    await router.push(`/profile/${user.membershipType}/${user.membershipId}`)
-                    router.reload()
-                    return
-                }
-            } catch (e) {
-                // fall through
-            }
+        try {
+            await doExactSearch(enteredText, router)
+        } catch (e: any) {
+            nextQuery.current = enteredText
+            setQuery(enteredText)
         }
-        nextQuery.current = enteredText
-        setQuery(enteredText)
     }
 
     useEffect(() => {
@@ -81,6 +73,11 @@ const SearchBar = ({}: SearchBarProps) => {
 
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
+            {isPerformingExactSearch || isLoadingResults ? (
+                <div className={styles["loader"]}></div>
+            ) : (
+                <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
+            )}
             <form onSubmit={handleFormEnter}>
                 <input
                     id={styles["search-bar"]}

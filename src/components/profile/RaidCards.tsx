@@ -11,7 +11,7 @@ import Loading from "../Loading"
 import { usePrefs } from "../../hooks/prefs"
 import { DefaultPreferences, Prefs } from "../../util/preferences"
 import AggregateStats from "../../models/profile/AggregateStats"
-import { X } from "../../util/types"
+import { ErrorHandler, X } from "../../util/types"
 
 const CARDS_PER_PAGE = 60
 
@@ -28,6 +28,7 @@ type RaidCardsProps = {
     layout: Layout
     raidMetrics: AggregateStats | null
     isLoadingRaidMetrics: boolean
+    errorHandler: ErrorHandler
 }
 
 const RaidCards = ({
@@ -37,14 +38,16 @@ const RaidCards = ({
     characterIds,
     layout,
     raidMetrics,
-    isLoadingRaidMetrics
+    isLoadingRaidMetrics,
+    errorHandler
 }: RaidCardsProps) => {
     const language = useLanguage()
     const { prefs, isLoading: isLoadingPrefs } = usePrefs(membershipId, [Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
         membershipId,
         membershipType,
-        characterIds
+        characterIds,
+        errorHandler
     })
     const [allActivities, setAllActivities] = useState<DestinyHistoricalStatsPeriodGroup[]>([])
     const [activitiesByRaid, setActivitiesByRaid] = useState<Record<

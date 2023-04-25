@@ -4,20 +4,18 @@ import {
 } from "bungie-net-core/lib/models"
 import { useEffect, useState } from "react"
 import Activity from "../models/pgcr/Activity"
-import { PGCRMember } from "../models/pgcr/Entry"
 import { shared as client } from "../util/http/bungie"
 import { Loading } from "../util/types"
+import PGCRMember from "../models/pgcr/Member"
 
 type UsePGCR = {
     members: PGCRMember[] | null
     activity: Activity | null
-    error: string | null
     loadingState: Loading
 }
 
 export function usePGCR(activityId: string | null | undefined): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
-    const [error, setError] = useState<string | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
 
     useEffect(() => {
@@ -25,6 +23,7 @@ export function usePGCR(activityId: string | null | undefined): UsePGCR {
         const getPGCR = async () => {
             const pgcr = await client.getPGCR(activityId!)
             setLoading(Loading.HYDRATING)
+            setPGCR(pgcr)
             const hydratedPGCR = await client.validatePGCR(pgcr)
             setPGCR(hydratedPGCR)
             setLoading(Loading.FALSE)
@@ -34,7 +33,7 @@ export function usePGCR(activityId: string | null | undefined): UsePGCR {
         else if (activityId === null) setLoading(Loading.FALSE)
     }, [activityId])
 
-    if (loadingState || !pgcr) return { members: null, activity: null, error, loadingState }
+    if (!pgcr) return { members: null, activity: null, loadingState }
 
     const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
     /** Group characters by member */
@@ -64,5 +63,5 @@ export function usePGCR(activityId: string | null | undefined): UsePGCR {
             else return memB.stats.score - memA.stats.score
         })
     const activity = new Activity(pgcr, members)
-    return { members, activity, error, loadingState }
+    return { members, activity, loadingState }
 }
