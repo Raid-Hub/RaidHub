@@ -2,6 +2,7 @@ import { useLanguage } from "../../hooks/language"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"
+import { Raid } from "../../util/raid"
 import { ActivityPlacements, Loading } from "../../util/types"
 
 type ActivityHeaderProps = {
@@ -35,11 +36,9 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                     </div>
                     <div className={styles["raid-name"]}>
                         <span>
-                            {!pgcrLoadingState
-                                ? strings.raidNames[activity!.raid]
-                                : pgcrLoadingState === Loading.LOADING
+                            {pgcrLoadingState === Loading.LOADING
                                 ? "Loading..."
-                                : "Hydrating..."}
+                                : strings.raidNames[activity!.raid]}
                         </span>
                     </div>
                     {activity?.speed.fresh === null && (

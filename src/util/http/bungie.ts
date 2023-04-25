@@ -1,4 +1,4 @@
-import { Clan, ErrSuccess, ProfileComponent, RGBA } from "../types"
+import { Clan, ProfileComponent, RGBA } from "../types"
 import { CharacterName } from "../characters"
 import { RGBAToHex } from "../math"
 import {
@@ -36,6 +36,7 @@ import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
 // @ts-ignore
 import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
+import PrivateProfileError from "./PrivateProfileError"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
@@ -83,7 +84,7 @@ class BungieNetClient {
                 throw Error("The Bungie.net API is currently down for maintence.")
             else if (e.ErrorCode === PlatformErrorCodes.ParameterParseFailure)
                 throw Error(`Invalid Activity ID [${activityId}]`)
-            throw Error(e.Message ?? e.message)
+            throw e
         }
     }
 
@@ -114,7 +115,7 @@ class BungieNetClient {
     async getProfile(
         destinyMembershipId: string,
         membershipType: BungieMembershipType
-    ): Promise<ErrSuccess<ProfileComponent>> {
+    ): Promise<ProfileComponent | null> {
         try {
             const res = await getProfile({
                 destinyMembershipId,
@@ -122,20 +123,30 @@ class BungieNetClient {
                 components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
             })
             if ([res.Response.profile.data, res.Response.characters.data].some(data => !data)) {
-                // private profile
-                return { error: Error("Private profile") }
+                throw new PrivateProfileError({
+                    destinyMembershipId,
+                    membershipType,
+                    components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
+                })
             } else {
                 const profile = res.Response.profile.data
                 return {
-                    success: {
-                        ...profile,
-                        emblemBackgroundPath: Object.values(res.Response.characters.data)[0]
-                            .emblemBackgroundPath
-                    }
+                    ...profile,
+                    emblemBackgroundPath: Object.values(res.Response.characters.data)[0]
+                        .emblemBackgroundPath
                 }
             }
-        } catch (e) {
-            return { error: e as Error }
+        } catch (e: any) {
+            switch (e.ErrorCode) {
+                case undefined:
+                    throw e
+                case PlatformErrorCodes.SystemDisabled:
+                    throw Error("The Bungie.net API is currently down for maintence.")
+                case PlatformErrorCodes.ParameterParseFailure:
+                    throw Error("Profile not found")
+                default:
+                    throw e
+            }
         }
     }
 
@@ -155,7 +166,9 @@ class BungieNetClient {
                 count: ACTIVITIES_PER_PAGE
             })
             return res.Response.activities ?? []
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }
@@ -203,7 +216,9 @@ class BungieNetClient {
                         clanBanners.clanBannerGonfalonDetailsSquare[clanBannerData.gonfalonDetailId]
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }
@@ -218,7 +233,9 @@ class BungieNetClient {
                 membershipType
             })
             return res.Response.bnetMembership
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }
@@ -234,7 +251,9 @@ class BungieNetClient {
                 }
             )
             return response.Response.searchResults
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }
@@ -253,16 +272,19 @@ class BungieNetClient {
                 components: [DestinyComponentType.Characters]
             })
             if (!res.Response.characters.data) {
-                // private profile
-                throw Error("Private profile")
+                throw new PrivateProfileError({
+                    destinyMembershipId,
+                    membershipType,
+                    components: [DestinyComponentType.Characters]
+                })
             } else {
                 const characters = res.Response.characters.data
                 return Object.values(characters)[0]
             }
-        } catch (e) {
-            return null
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
-            // TODO BETTER ERROR HANDLING
         }
     }
 
@@ -281,9 +303,10 @@ class BungieNetClient {
                 }
             )
             return response.Response
-        } catch (e) {
-            // todo: better error handling
-            return []
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
+            throw e
         }
     }
 
@@ -368,7 +391,9 @@ class BungieNetClient {
                 membershipType
             })
             return stats.Response
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }
@@ -389,7 +414,9 @@ class BungieNetClient {
                 membershipType
             })
             return stats.Response
-        } catch (e) {
+        } catch (e: any) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
+                throw Error("The Bungie.net API is currently down for maintence.")
             throw e
         }
     }

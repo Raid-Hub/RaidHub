@@ -22,10 +22,6 @@ export type ActivityHistory = ActivityCollectionDictionary | null
 export type ActivityPlacements = Partial<Record<Tag, number>>
 export type EmblemDict = { [characterId: string]: string }
 export type EmblemTuple = [id: string, emblem: string]
-export type ErrSuccess<T> = {
-    success?: T
-    error?: Error
-}
 export interface CacheRequest<T> {
     timestamp: number
     data: T
