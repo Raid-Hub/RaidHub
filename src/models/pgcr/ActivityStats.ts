@@ -1,5 +1,5 @@
 import { round } from "../../util/math"
-import { PGCRMember } from "./Member"
+import PGCRMember from "./Member"
 
 export default class ActivityStats {
     private _members: PGCRMember[]

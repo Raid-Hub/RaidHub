@@ -2,7 +2,7 @@ import { DestinyPostGameCarnageReportEntry } from "bungie-net-core/lib/models"
 import PGCREntry from "./Entry"
 import PGCRCharacter from "./Character"
 
-export class PGCRMember extends PGCREntry {
+export default class PGCRMember extends PGCREntry {
     readonly characters: PGCRCharacter[]
     private _deathless: boolean
     constructor(characters: DestinyPostGameCarnageReportEntry[]) {

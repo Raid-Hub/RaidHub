@@ -1,8 +1,8 @@
 import { useLanguage } from "../../hooks/language"
-import { PGCREntry } from "../../models/pgcr/Entry"
 import { Icons } from "../../util/icons"
 import styles from "../../styles/pgcr.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"
+import PGCREntry from "../../models/pgcr/Entry"
 
 type StatCardProps = {
     entry: PGCREntry

@@ -1,4 +1,4 @@
-import { PGCRMember } from "../../models/pgcr/Entry"
+import PGCRMember from "../../models/pgcr/Member"
 import styles from "../../styles/pgcr.module.css"
 import { Icons } from "../../util/icons"
 import { Raid } from "../../util/raid"

@@ -46,7 +46,7 @@ export type Clan = GroupV2 & { clanBanner: ClanBannerData }
 export type RaidHubProfile = {}
 export type InitialProfileProps = {
     bungieNetProfile: ProfileComponent | null
-    error: string
+    errorString: string
 }
 export type FilterCallbackType<T> = (value: T, index: number, array: T[]) => boolean
 export type CustomBungieSearchResult = {
@@ -106,3 +106,4 @@ export type X = {
     placements: Partial<Record<Raid, Placement>>
     tags: Partial<Record<Raid, RaidTag[]>>
 }
+export type ErrorHandler = (error: any) => void

@@ -9,7 +9,7 @@ import ActivityStats from "./ActivityStats"
 import RaidInfo from "./RaidInfo"
 import { ActivityPlacements } from "../../util/types"
 import { LocalStrings } from "../../util/localized-strings"
-import { PGCRMember } from "./Member"
+import PGCRMember from "./Member"
 
 export default class Activity {
     private _fresh: boolean | null

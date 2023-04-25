@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import Activity from "../models/pgcr/Activity"
 import { shared as client } from "../util/http/bungie"
 import { Loading } from "../util/types"
-import { PGCRMember } from "../models/pgcr/Member"
+import PGCRMember from "../models/pgcr/Member"
 
 type UsePGCR = {
     members: PGCRMember[] | null

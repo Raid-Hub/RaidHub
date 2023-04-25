@@ -5,7 +5,7 @@ type ErrorProps = {
     message: string
 }
 
-const Error = ({ message }: ErrorProps) => (
+const ErrorComponent = ({ message }: ErrorProps) => (
     <div className={styles["modal"]}>
         <div className={styles["modal-content"]}>
             <p>{"Error: " + message}</p>
@@ -13,4 +13,4 @@ const Error = ({ message }: ErrorProps) => (
     </div>
 )
 
-export default Error
+export default ErrorComponent

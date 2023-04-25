@@ -1,12 +1,14 @@
+import { useState } from "react"
+import ErrorComponent from "../components/Error"
 import Profile from "../components/profile/Profile"
 import { shared as bungieClient } from "../util/http/bungie"
 import { Vanity } from "../util/special"
 import { InitialProfileProps } from "../util/types"
-import Custom404 from "./404"
 
-const VanityProfile = ({ bungieNetProfile, error }: InitialProfileProps) => {
-    if (bungieNetProfile) return <Profile {...bungieNetProfile} />
-    else if (error) return <Custom404 error={error} />
+const VanityProfile = ({ bungieNetProfile, errorString }: InitialProfileProps) => {
+    const [error, setError] = useState<Error | null>(errorString ? new Error(errorString) : null)
+    if (error) return <ErrorComponent {...error} />
+    else if (bungieNetProfile) return <Profile {...bungieNetProfile} errorHandler={setError} />
     else return <div>UH OH</div>
 }
 
@@ -16,21 +18,21 @@ export async function getServerSideProps({
     params: { vanity: string }
 }): Promise<{ props: InitialProfileProps }> {
     const vanity = Vanity[params.vanity.toLowerCase()]
-    if (!vanity) return { props: { error: "Page not found", bungieNetProfile: null } }
+    if (!vanity) return { props: { errorString: "Page not found", bungieNetProfile: null } }
     const { membershipId, membershipType } = Vanity[params.vanity.toLowerCase()]
     try {
         const profile = await bungieClient.getProfile(membershipId, membershipType)
         return {
             props: {
                 bungieNetProfile: profile ?? null,
-                error: ""
+                errorString: ""
             }
         }
     } catch (e: any) {
         return {
             props: {
                 bungieNetProfile: null,
-                error: e.Message ?? e.message
+                errorString: e.Message ?? e.message
             }
         }
     }

@@ -1,6 +1,6 @@
 import styles from "../../styles/profile.module.css"
 import { useBungieNextMembership } from "../../hooks/bungieNextMembership"
-import { ProfileComponent } from "../../util/types"
+import { ErrorHandler, ProfileComponent } from "../../util/types"
 import Head from "next/head"
 import UserCard from "./UserCard"
 import RankingBanner from "./RankingBanner"
@@ -15,19 +15,22 @@ import { useProfileStats } from "../../hooks/profileStats"
 import { useCharacterStats } from "../../hooks/characterStats"
 import { useRaidHubProfile } from "../../hooks/raidhubProfile"
 
-type ProfileProps = ProfileComponent
+type ProfileProps = ProfileComponent & {
+    errorHandler: ErrorHandler
+}
 
-const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
+const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps) => {
     const { profile, isLoading: isLoadingProfile } = useRaidHubProfile(userInfo.membershipId)
-    const { membership } = useBungieNextMembership(userInfo)
+    const { membership } = useBungieNextMembership({ ...userInfo, errorHandler })
     const {
         stats: profileStats,
         isLoading: isLoadingProfileStats,
         characterIds
-    } = useProfileStats(userInfo)
+    } = useProfileStats({ ...userInfo, errorHandler })
     const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         ...userInfo,
-        characterIds
+        characterIds,
+        errorHandler
     })
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
@@ -86,7 +89,7 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
                     )}
                 </div>
 
-                <ClanCard {...userInfo} />
+                <ClanCard {...userInfo} errorHandler={errorHandler} />
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
@@ -104,6 +107,7 @@ const Profile = ({ userInfo, emblemBackgroundPath }: ProfileProps) => {
                     layout={layout}
                     raidMetrics={raidMetrics}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}
+                    errorHandler={errorHandler}
                 />
             </section>
         </main>

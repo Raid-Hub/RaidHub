@@ -1,10 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import ActivityHeader from "../../components/pgcr/ActivityHeader"
 import PGCREntries from "../../components/pgcr/Entries"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
 import { Backdrop, Raid, Short } from "../../util/raid"
-import Error from "../../components/Error"
 import { usePGCR } from "../../hooks/pgcr"
 import { usePlacements } from "../../hooks/placements"
 import Head from "next/head"
@@ -14,13 +13,9 @@ type PGCRProps = {
 }
 
 const PGCR = ({ activityId }: PGCRProps) => {
-    const {
-        activity,
-        members,
-        error: pgcrError,
-        loadingState: pgcrLoadingState
-    } = usePGCR(activityId)
-    const { placements, error: placementError } = usePlacements(activityId)
+    const [error, setError] = useState<Error | null>(null)
+    const { activity, members, loadingState: pgcrLoadingState } = usePGCR(activityId)
+    const { placements } = usePlacements({ activityId, errorHandler: setError })
 
     return (
         <main className={styles["main"]}>
@@ -29,7 +24,6 @@ const PGCR = ({ activityId }: PGCRProps) => {
                     {activity?.raid ? `${Short[activity.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
-            {pgcrError && <Error message={pgcrError} />}
             <section
                 className={[
                     styles["summary-card"],
@@ -46,6 +40,7 @@ const PGCR = ({ activityId }: PGCRProps) => {
                     raid={activity?.raid ?? Raid.NA}
                     members={members}
                     pgcrLoadingState={pgcrLoadingState}
+                    errorHandler={setError}
                 />
             </section>
             <section className={[styles["summary-stats"], styles["main-element"]].join(" ")}>
@@ -55,7 +50,11 @@ const PGCR = ({ activityId }: PGCRProps) => {
     )
 }
 
-export async function getServerSideProps({ params }: { params: { activityId: string } }) {
+export async function getServerSideProps({
+    params
+}: {
+    params: { activityId: string }
+}): Promise<{ props: PGCRProps }> {
     const { activityId } = params
     return { props: { activityId } }
 }
