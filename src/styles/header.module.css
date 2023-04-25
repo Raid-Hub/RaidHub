@@ -81,6 +81,11 @@
     outline: none;
 }
 
+/* search bar */
+#search-bar::placeholder {
+    color: var(--search-placeholder);
+}
+
 .search-results {
     position: absolute;
     z-index: 1;

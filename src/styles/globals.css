@@ -10,6 +10,7 @@
     --header-background: #272727;
     --scroll-track: #7f7f7f;
     --search-background: #5a5a5a;
+    --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
     --modal-background: rgba(0, 0, 0, 0.458);
 }
@@ -65,6 +66,7 @@ body {
         --scroll-track: #434343;
         --search-background: #e9e8e8;
         --search-text: #000000;
+        --search-placeholder: #848484;
         --modal-background: rgba(255, 255, 255, 0.739);
     }
 }
