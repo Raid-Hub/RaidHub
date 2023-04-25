@@ -1,5 +1,4 @@
 import { useState } from "react"
-import Link from "next/link"
 import { Raid } from "../../util/raid"
 import { Icons } from "../../util/icons"
 import MemberCard from "./MemberCard"
@@ -98,14 +97,14 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                             styles["soft-rectangle"],
                             styles["selectable"]
                         ].join(" ")}>
-                        <Link
+                        <a
                             href={memberProfile()}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles["member-profile-link"]}>
                             <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
                             <span>View Profile</span>
-                        </Link>
+                        </a>
                     </button>
                 </div>
                 <StatCards

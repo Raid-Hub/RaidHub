@@ -24,7 +24,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
     else if (!activity) return <></>
     else
         return (
-            <Link href={`/pgcr/${activityId}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`/pgcr/${activityId}`}>
                 <div className={styles["pinned-activity"]}>
                     <div
                         className={["background-img", styles["pinned-background"]].join(" ")}

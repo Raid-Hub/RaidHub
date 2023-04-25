@@ -52,8 +52,6 @@
 }
 
 .search-container {
-    position: relative;
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -95,6 +93,10 @@
     }
 }
 
+.search-container form {
+    position: relative;
+}
+
 #search-bar {
     max-width: 260px;
     min-width: 140px;
@@ -122,6 +124,8 @@
 
 .search-results {
     position: absolute;
+    left: 0;
+    right: 0;
     z-index: 1;
     overflow-x: hidden;
 
@@ -133,7 +137,6 @@
     flex-direction: column;
     max-height: 300px;
     overflow-y: scroll;
-    min-width: 100%;
 
     border-radius: 5px;
     background-color: #161616d2;

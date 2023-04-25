@@ -86,39 +86,39 @@ const SearchBar = ({}: SearchBarProps) => {
                     value={enteredText}
                     onChange={handleInputChange}
                 />
+                {showingResults && (
+                    <ul className={styles["search-results"]}>
+                        {results.map(
+                            (
+                                {
+                                    bungieGlobalDisplayName,
+                                    bungieGlobalDisplayNameCode,
+                                    displayName,
+                                    membershipId,
+                                    membershipType
+                                },
+                                idx
+                            ) => (
+                                <a
+                                    className={styles["search-result"]}
+                                    key={idx}
+                                    href={`/profile/${membershipType}/${membershipId}`}
+                                    onClick={handleSelect}>
+                                    <li>
+                                        <p>
+                                            {bungieGlobalDisplayName && bungieGlobalDisplayNameCode
+                                                ? `${bungieGlobalDisplayName}#${fixBungieCode(
+                                                      bungieGlobalDisplayNameCode
+                                                  )}`
+                                                : displayName}
+                                        </p>
+                                    </li>
+                                </a>
+                            )
+                        )}
+                    </ul>
+                )}
             </form>
-            {showingResults && (
-                <ul className={styles["search-results"]}>
-                    {results.map(
-                        (
-                            {
-                                bungieGlobalDisplayName,
-                                bungieGlobalDisplayNameCode,
-                                displayName,
-                                membershipId,
-                                membershipType
-                            },
-                            idx
-                        ) => (
-                            <a
-                                className={styles["search-result"]}
-                                key={idx}
-                                href={`/profile/${membershipType}/${membershipId}`}
-                                onClick={handleSelect}>
-                                <li>
-                                    <p>
-                                        {bungieGlobalDisplayName && bungieGlobalDisplayNameCode
-                                            ? `${bungieGlobalDisplayName}#${fixBungieCode(
-                                                  bungieGlobalDisplayNameCode
-                                              )}`
-                                            : displayName}
-                                    </p>
-                                </li>
-                            </a>
-                        )
-                    )}
-                </ul>
-            )}
         </div>
     )
 }
