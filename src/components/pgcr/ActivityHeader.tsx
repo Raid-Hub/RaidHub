@@ -18,10 +18,10 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
     const incomplete = strings.incompleteRaid
     return (
         <div className={styles["activity-card-header-container"]}>
-            <div id={styles["activity-card-header"]}>
-                <div id={styles["left-info"]}>
-                    <div id={styles["raid-info-top"]}>
-                        <span id={styles["completion-time"]}>
+            <div className={styles["activity-card-header"]}>
+                <div className={styles["left-info"]}>
+                    <div className={styles["raid-info-top"]}>
+                        <span className={styles["completion-time"]}>
                             {!pgcrLoadingState
                                 ? activity?.completionDate.toLocaleDateString(navigator.language, {
                                       month: "long",
@@ -33,7 +33,7 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                                 : "Hydrating..."}
                         </span>
                     </div>
-                    <div id={styles["raid-name"]}>
+                    <div className={styles["raid-name"]}>
                         <span>
                             {!pgcrLoadingState
                                 ? strings.raidNames[activity!.raid]
@@ -43,12 +43,12 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                         </span>
                     </div>
                     {activity?.speed.fresh === null && (
-                        <div id={styles["cp-error"]}>
+                        <div className={styles["cp-error"]}>
                             <p>{checkpointDisclaimer}</p>
                         </div>
                     )}
                 </div>
-                <div id={styles["right-info"]}>
+                <div className={styles["right-info"]}>
                     <div className={styles.duration}>
                         {activity?.speed.duration.split(" ").map((t, idx) => (
                             <span key={idx}>
@@ -64,7 +64,7 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                     </div>
                 </div>
             </div>
-            <div id={styles["tags-container"]}>
+            <div className={styles["tags-container"]}>
                 {activity?.tags(strings).map((tag, idx) => (
                     <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>
                         {tag}

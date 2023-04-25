@@ -1,43 +1,86 @@
 /* COLORS */
 :root {
-    --border: #5b5b5b;
     --brand-orange: #ee7b29;
     --bungie-blue: #13e6ff;
+
+    color: #ffffff;
+    --secondary-text: #808080;
+    --tertiary-text: rgb(183, 183, 183);
+    --border: #5b5b5b;
+    --header-background: #272727;
+    --scroll-track: #7f7f7f;
+    --search-background: #5a5a5a;
+    --search-text: #e9e8e8;
+    --modal-background: rgba(0, 0, 0, 0.458);
 }
 
 body,
 html {
     height: 100%;
     width: 100%;
-    background-color: black;
     margin: 0;
     padding: 0;
     font-family: Neue;
 }
 
-@media (prefers-color-scheme: dark) {
-    body {
-        color: white;
-    }
+html {
+    overflow: hidden;
+    background-color: #000000;
+    background-image: linear-gradient(
+        -30deg,
+        #00000000,
+        #f8640231,
+        #620d005e,
+        #00000000,
+        #00000000
+    );
+    background-position: left;
+    background-repeat: repeat;
+    background-size: cover;
 }
 
-@media (prefers-color-scheme: light) {
-    body {
-        color: black;
-    }
+body {
+    overflow: auto;
+    overscroll-behavior: none;
 }
 
 #__next {
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;
-    color: white;
     position: relative;
     z-index: 1;
-    background-position: left;
-    background-repeat: repeat;
-    background-size: auto;
-    background-image: url("/background-gradient.png");
+}
+
+@media (prefers-color-scheme: light) {
+    html {
+        background-color: white;
+    }
+    :root {
+        color: #000000;
+        --secondary-text: #4e4e4e;
+        --tertiary-text: rgb(79, 79, 79);
+        --border: #5b5b5b;
+        --header-background: #7f7f7f;
+        --scroll-track: #434343;
+        --search-background: #e9e8e8;
+        --search-text: #000000;
+        --modal-background: rgba(255, 255, 255, 0.739);
+    }
+}
+
+main {
+    width: 85vw;
+    max-width: 1200px;
+    min-width: 620px;
+    justify-content: center;
+}
+
+@media only screen and (orientation: portrait) {
+    main {
+        width: 95vw;
+        min-width: 350px;
+    }
 }
 
 @font-face {
@@ -63,20 +106,6 @@ html {
     src: url("/fonts/NeueHaasDisplayBold.ttf") format("truetype");
     font-style: normal;
     font-weight: 600;
-}
-
-main {
-    width: 85vw;
-    max-width: 1200px;
-    min-width: 620px;
-    justify-content: center;
-}
-
-@media only screen and (orientation: portrait) {
-    main {
-        width: 95vw;
-        min-width: 350px;
-    }
 }
 
 a {
@@ -185,16 +214,17 @@ input:checked + .slider:before {
 ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
+    background-color: transparent;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background-color: transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #ecebeb;
+    background: var(--scroll-track);
     border-radius: 7px;
 }
 
