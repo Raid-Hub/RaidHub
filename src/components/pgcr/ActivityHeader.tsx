@@ -13,7 +13,6 @@ type ActivityHeaderProps = {
 
 const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHeaderProps) => {
     const language = useLanguage()
-    if (placements && activity) activity.placements = placements
     const strings = LocalizedStrings[language]
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid

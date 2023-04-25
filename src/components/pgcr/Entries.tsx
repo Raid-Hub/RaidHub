@@ -1,6 +1,5 @@
 import { useState } from "react"
 import Link from "next/link"
-import { PGCRMember } from "../../models/pgcr/Entry"
 import { Raid } from "../../util/raid"
 import { Icons } from "../../util/icons"
 import MemberCard from "./MemberCard"
@@ -8,6 +7,7 @@ import StatCards from "./StatCard"
 import styles from "../../styles/pgcr.module.css"
 import { useEmblems } from "../../hooks/emblems"
 import { Loading } from "../../util/types"
+import { PGCRMember } from "../../models/pgcr/Member"
 
 type PGCREntriesProps = {
     members: PGCRMember[] | null

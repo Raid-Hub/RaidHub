@@ -20,6 +20,7 @@ export interface LocalStrings {
     mostUsedWeapon: string
     kills: string
     assists: string
+    totalAssists: string
     abilityKills: string
     timeSpent: string
     tags: { [key in Tag]: string }
@@ -27,6 +28,7 @@ export interface LocalStrings {
     difficulty: { [key in Difficulty]: string }
     dayOne: string
     contest: string
+    killsPerMinute: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -61,6 +63,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         mostUsedWeapon: "Most Used Weapon",
         kills: "Kills",
         assists: "Assists",
+        totalAssists: "Total Assists",
         abilityKills: "Ability Kills",
         timeSpent: "Time Spent",
         tags: {
@@ -87,7 +90,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGEKF]: "Regicide"
         },
         dayOne: "Day One",
-        contest: "Contest"
+        contest: "Contest",
+        killsPerMinute: "Kills per Minute"
     }
 }
 

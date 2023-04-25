@@ -4,9 +4,9 @@ import {
 } from "bungie-net-core/lib/models"
 import { useEffect, useState } from "react"
 import Activity from "../models/pgcr/Activity"
-import { PGCRMember } from "../models/pgcr/Entry"
 import { shared as client } from "../util/http/bungie"
 import { Loading } from "../util/types"
+import { PGCRMember } from "../models/pgcr/Member"
 
 type UsePGCR = {
     members: PGCRMember[] | null

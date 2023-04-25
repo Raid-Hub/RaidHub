@@ -29,13 +29,23 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         },
         {
             icon: Icons.DEATHS,
-            name: strings.deaths,
+            name: strings.totalDeaths,
             value: stats?.totalDeaths ?? 0
+        },
+        {
+            icon: Icons.ASSISTS,
+            name: strings.totalAssists,
+            value: stats?.totalAssists ?? 0
         },
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
             value: (stats?.killsTypeRatio.ability ?? 0) + "%"
+        },
+        {
+            icon: Icons.UNKNOWN,
+            name: strings.killsPerMinute,
+            value: stats?.killsPerMinute ?? 0
         },
         {
             icon: Icons.UNKNOWN,
