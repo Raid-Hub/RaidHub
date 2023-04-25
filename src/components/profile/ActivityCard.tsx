@@ -36,17 +36,10 @@ const ActivityCard = ({
             target="_blank"
             rel="noopener noreferrer"
             className={styles["activity"]}>
-            <div className={styles["activity-content"]}>
-                <img
-                    src={RaidCardBackground[info.raid]}
-                    className={styles["activity-content-img"]}
-                />
-                <p className={styles["activity-title"]}>
-                    {`${difficultyString ? difficultyString + " " : ""}${
-                        strings.raidNames[info.raid]
-                    }`}
-                </p>
-            </div>
+            <img src={RaidCardBackground[info.raid]} className={styles["activity-content-img"]} />
+            <p className={styles["activity-title"]}>
+                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[info.raid]}`}
+            </p>
 
             <div className={styles["success-layer"]}>
                 <p style={{ color: completed ? "#98e07b" : "#FF0000" }}>
