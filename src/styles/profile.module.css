@@ -700,6 +700,7 @@ svg.clan-img {
 }
 
 .number-loading {
+    border-radius: 5px;
     min-height: 2rem;
     min-width: 100%;
     display: flex;
