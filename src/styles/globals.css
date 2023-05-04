@@ -158,22 +158,6 @@ a {
     border-radius: inherit;
 }
 
-/* The switch - the box around the slider */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 60px;
-    margin: 1em;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
 /* The slider */
 .slider {
     position: absolute;

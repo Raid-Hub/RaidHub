@@ -1,3 +1,5 @@
+import styles from "../../styles/profile.module.css"
+
 type ToggleProps = {
     defaultState: boolean
     onToggle: (state: boolean) => void
@@ -9,7 +11,7 @@ const ToggleSwitch = ({ defaultState, onToggle }: ToggleProps) => {
     }
 
     return (
-        <label className="switch">
+        <label className={styles["switch"]}>
             <input type="checkbox" onChange={handleChange} defaultChecked={defaultState} />
             <span className="slider" />
         </label>

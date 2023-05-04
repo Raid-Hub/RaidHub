@@ -8,7 +8,7 @@ import { Founders } from "../../util/special"
 import ClanCard from "./ClanCard"
 import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./RaidCards"
-import ToggleSwitch from "../ToggleSwitch"
+import ToggleSwitch from "./ToggleSwitch"
 import { useState } from "react"
 import { Icons } from "../../util/icons"
 import { useProfileStats } from "../../hooks/profileStats"
@@ -95,9 +95,9 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
                 <div className={styles["mid"]}>
                     <PinnedActivity activityId={profile?.pinnedActivity} />
                     <div className={styles["layout-toggle"]}>
-                        <span>X</span>
+                        <span className={styles["description-toggle"]}>Raids</span>
                         <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />
-                        <span>O</span>
+                        <span className={styles["description-toggle"]}>History</span>
                     </div>
                 </div>
                 <RaidCards

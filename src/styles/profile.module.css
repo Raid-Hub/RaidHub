@@ -356,11 +356,35 @@ svg.clan-img {
 }
 
 .layout-toggle {
-    flex-grow: 0;
+    width: 34%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    margin: 0.5em 0;
+    justify-content: center;
+}
+
+.description-toggle{
+    text-align: center;
+    text-transform: uppercase;
+    color: rgb(125, 125, 125);
+    font-size: 1em;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    transform: rotate(90deg);
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 60px;
+    margin: 0 4em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .pinned-activity-loading {
