@@ -558,8 +558,8 @@ svg.clan-img {
 .graph-count-text {
     text-align: center;
     text-transform: uppercase;
-    color: rgb(125, 125, 125);
-    font-size: 10px;
+    color: rgb(100, 100, 100);
+    font-size: 12px;
 }
 
 .timings {
