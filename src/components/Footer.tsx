@@ -2,20 +2,62 @@ import React from "react"
 import styles from "../styles/footer.module.css"
 import SocialTag from "./profile/SocialTag"
 import { Socials } from "../util/socials"
+import Image from "next/image"
+import Twitter from "../../public/icons/twitter.png"
+import Link from "next/link"
+import { EnvelopeIcon } from "@heroicons/react/24/outline"
 
 
 type FooterProps = {}
 
 const developers = ["Theos", "Newo", "Bruce"]
+const raidHubMailAddress = "raidhub@support.com"
+const contactIcons = [
+    {
+        url: "https://www.twitter.com/raidhub",
+        id: Socials.Twitter
+    }
+]
 
 const Footer = ({}: FooterProps) => {
     return <footer className={styles["footer"]}>
         <span className={styles["version"]}> v2023.1.3</span>
         <div className={styles["contact"]}>
             <span className={styles["contact-text"]}>Contact us</span>
-            <SocialTag id={Socials.Twitter} displayName={"@raidhub"} url={"https://www.twitter.com/raidhub"}/>
+            {contactIcons.map((contactIcon) => (
+                <Link
+                    href={contactIcon.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <svg className={styles["img-social"]}>
+                        <defs>
+                            <mask id={contactIcon.id}>
+                                <image
+                                    x="0"
+                                    y="0"
+                                    width="100%"
+                                    height="100%"
+                                    xlinkHref={`/icons/${contactIcon.id}.png`}
+                                />
+                            </mask>
+                        </defs>
+                        <rect
+                            className={styles[`${contactIcon.id}-logo`]}
+                            x="0"
+                            y="0"
+                            width="100%"
+                            height="100%"
+                            mask={`url(#${contactIcon.id})`}
+                        />
+                    </svg>
+                </Link>
+        ))}
+            <Link href={`mailto:${raidHubMailAddress}`}>
+            <EnvelopeIcon className={styles["mail-icon"]}/>
+            </Link>
         </div>
-        <span className={styles["developers"]}>Developed by {developers.join(", ")}</span>
+        <span className={styles["developers"]}>Developed by <b>{developers.join(", ")} </b></span>
     </footer>
 }
 
