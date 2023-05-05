@@ -5,12 +5,12 @@ import { Socials } from "../util/socials"
 import Image from "next/image"
 import Twitter from "../../public/icons/twitter.png"
 import Link from "next/link"
-import { EnvelopeIcon } from "@heroicons/react/24/outline"
+import { EnvelopeIcon } from "@heroicons/react/24/solid"
 
 
 type FooterProps = {}
 
-const developers = ["Theos", "Newo", "Bruce"]
+const developers = [ "Newo", "Bruce", "Theos"]
 const raidHubMailAddress = "raidhub@support.com"
 const contactIcons = [
     {
@@ -21,8 +21,11 @@ const contactIcons = [
 
 const Footer = ({}: FooterProps) => {
     return <footer className={styles["footer"]}>
-        <span className={styles["version"]}> v2023.1.3</span>
+        <span className={styles["footer-text"]}> v2023.1.3</span>
         <div className={styles["contact"]}>
+            <Link href={`mailto:${raidHubMailAddress}`}>
+                <EnvelopeIcon className={styles["mail-icon"]}/>
+            </Link>
             <span className={styles["contact-text"]}>Contact us</span>
             {contactIcons.map((contactIcon) => (
                 <Link
@@ -53,11 +56,8 @@ const Footer = ({}: FooterProps) => {
                     </svg>
                 </Link>
         ))}
-            <Link href={`mailto:${raidHubMailAddress}`}>
-            <EnvelopeIcon className={styles["mail-icon"]}/>
-            </Link>
         </div>
-        <span className={styles["developers"]}>Developed by <b>{developers.join(", ")} </b></span>
+        <span className={styles["footer-text"]}>Developed by <div className={styles["developers"]}>{developers.join(", ")} </div></span>
     </footer>
 }
 
