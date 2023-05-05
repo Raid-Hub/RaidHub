@@ -17,11 +17,13 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
     const strings = LocalizedStrings[language]
     if (pgcrLoadingState)
         return (
-            <div className={styles["pinned-activity-loading"]}>
-                <Loading />
+            <div className={styles["pinned-activity-wrapper"]}>
+                <div className={styles["pinned-activity-loading"]}>
+                    <Loading />
+                </div>
             </div>
         )
-    else if (!activity) return <></>
+    else if (!activity) return <div className={styles["pinned-activity-wrapper"]}></div>
     else
         return (
             <div className={styles["pinned-activity-wrapper"]}>
