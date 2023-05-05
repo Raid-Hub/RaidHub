@@ -10,6 +10,7 @@ import Loading from "../Loading"
 import { usePrefs } from "../../hooks/prefs"
 import { Prefs } from "../../util/preferences"
 import { Placement, RaidTag } from "../../util/types"
+import numberWithCommas from "../../util/formatting"
 
 type RaidModalProps = {
     placement: Placement | undefined
@@ -74,14 +75,14 @@ const RaidModal = ({
                     <div className={styles["graph-count"]}>
                         <div className={styles["graph-number-img"]}>
                             {!isLoadingStats && stats ? (
-                                <p className={styles["graph-number"]}>{stats.totalClears}</p>
+                                <p className={styles["graph-number"]}>{numberWithCommas(stats.totalClears)}</p>
                             ) : (
                                 <div className={styles["number-loading"]}>
                                     <Loading />
                                 </div>
                             )}
                         </div>
-                        <p className={styles["graph-count-text"]}>total clears</p>
+                        <p className={styles["graph-count-text"]}>total<br/> clears</p>
                     </div>
                 </div>
 
