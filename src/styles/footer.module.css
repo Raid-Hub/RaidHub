@@ -17,6 +17,12 @@
     font-size: 1em;
 }
 
+@media (max-width: 600px) {
+    .footer-text {
+    display: none;
+    }
+}
+
 .contact {
     color: rgb(100,100,100);
     align-self: center;
