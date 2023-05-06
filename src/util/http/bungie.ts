@@ -63,9 +63,11 @@ const clanBanners: {
     clanBannerGonfalonDetailsSquare: { [hash: string]: string }
 } = BannersJson
 
-const CACHE_MINUTES = 10
 export const ACTIVITIES_PER_PAGE = 250
 
+/**
+ * This class acts as the main interaction with the BungieAPI. Add methods to this class to add
+ */
 class BungieNetClient {
     public readonly access_token: string | null
     constructor(access_token?: string) {
@@ -439,4 +441,5 @@ function emblemFromHash(hash: number) {
     return emblems[hash] ?? defaultEmblem
 }
 
+/** The shared instance of the BungieClient */
 export const shared = new BungieNetClient()
