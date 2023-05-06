@@ -7,7 +7,7 @@
         "build": "next build",
         "start": "next start",
         "test": "jest",
-        "destiny": "$PWD/update-manifest",
+        "destiny": "./update-manifest",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\""
     },
     "dependencies": {
