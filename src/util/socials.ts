@@ -3,5 +3,6 @@ export enum Socials {
     Discord = "discord",
     YouTube = "youtube",
     Twitch = "twitch",
-    Bungie = "bungie"
+    Bungie = "bungie",
+    Mail = "mail"
 }

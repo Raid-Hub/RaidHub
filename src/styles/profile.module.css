@@ -3,8 +3,6 @@
     gap: 1em;
     flex-wrap: wrap;
     flex-direction: column;
-    margin: 0 auto;
-    margin-top: 1em;
 }
 
 .main section {
@@ -388,7 +386,7 @@ svg.clan-img {
     }
 }
 
-@media (min-width: 576px){
+@media (min-width: 576px) {
     .description-toggle {
         display: flex;
     }
@@ -410,8 +408,8 @@ svg.clan-img {
     height: 0;
 }
 
-.pinned-activity-wrapper{
-    flex:1;
+.pinned-activity-wrapper {
+    flex: 1;
     margin-right: 1em;
 }
 
