@@ -31,8 +31,9 @@ const Footer = ({}: FooterProps) => {
             </div>
             <div className={styles["footer-mid"]}>
                 <div className={styles["contact-text"]}>Contact us</div>
-                {contactIcons.map(({ url, id }) => (
+                {contactIcons.map(({ url, id }, key) => (
                     <Link
+                        key={key}
                         className={styles["img-social"]}
                         href={url}
                         target="_blank"
