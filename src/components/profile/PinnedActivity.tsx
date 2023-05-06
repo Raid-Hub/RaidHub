@@ -6,6 +6,7 @@ import { LocalizedStrings } from "../../util/localized-strings"
 import { RaidBanner } from "../../util/raid"
 import Loading from "../Loading"
 import { Icons } from "../../util/icons"
+import { toCustomDateString } from "../../util/formatting"
 
 type PinnedActivityProps = {
     activityId?: string | null
@@ -41,13 +42,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
                             <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
                         </div>
                         <div className={styles["card-header-subtext"]}>
-                            <p>
-                                {activity.completionDate.toLocaleDateString(navigator.language, {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric"
-                                })}
-                            </p>
+                            <p>{toCustomDateString(activity.completionDate)}</p>
 
                             <div className={styles["card-header-time"]}>
                                 <img src={Icons.SPEED} alt="" width="20px" height="20px" />
