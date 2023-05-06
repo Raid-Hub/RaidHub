@@ -16,5 +16,6 @@ export enum Icons {
     PROFILE = "/icons/profile-icon.png",
     HUNTER = "/icons/hunter.png",
     TITAN = "/icons/titan.png",
-    WARLOCK = "/icons/warlock.png"
+    WARLOCK = "/icons/warlock.png",
+    MAIL = "/icons/mail.png"
 }

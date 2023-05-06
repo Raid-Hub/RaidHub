@@ -46,11 +46,14 @@ body {
 }
 
 #__next {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
     overflow-x: hidden;
     position: relative;
     z-index: 1;
+
+    display: flex;
+    flex-direction: column;
 }
 
 @media (prefers-color-scheme: light) {
@@ -76,6 +79,7 @@ main {
     max-width: 1200px;
     min-width: 620px;
     justify-content: center;
+    margin: 1em auto;
 }
 
 @media only screen and (orientation: portrait) {
