@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { wait } from "../util/math"
-import { ProfileSocialData, X } from "../util/types"
+import { X } from "../util/types"
 import { Socials } from "../util/socials"
 import { Raid } from "../util/raid"
 

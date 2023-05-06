@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import { shared as client } from "../util/http/bungie"
 import { CustomBungieSearchResult } from "../util/types"
-import { asBungieName } from "../util/math"
-import { NextRouter } from "next/router"
+import { asBungieName, fixBungieCode } from "../util/formatting"
 
 type UseSearch = {
     results: CustomBungieSearchResult[]
     isLoading: boolean
-    doExactSearch(query: string, router: NextRouter): Promise<void>
+    doExactSearch(query: string): Promise<void>
     isPerformingExactSearch: boolean
 }
 
@@ -17,18 +16,16 @@ export function useSearch(query: string): UseSearch {
     const lastSearch = useRef<number>(Date.now())
     const [results, setResults] = useState<CustomBungieSearchResult[]>([])
 
-    const doExactSearch = async (query: string, router: NextRouter): Promise<void> => {
+    const doExactSearch = async (query: string): Promise<void> => {
         setIsPerformingExactSearch(true)
         try {
             const bungieName = asBungieName(query)
             if (!bungieName) throw Error(`Unable to perform exact search with ${bungieName}`)
-            const [user] = await client.searchByBungieName(...bungieName)
-            await router.push(`/profile/${user.membershipType}/${user.membershipId}`)
-            router.reload()
+            const { membershipType, membershipId } = await client.searchByBungieName(...bungieName)
+            window.location.href = `/profile/${membershipType}/${membershipId}`
         } catch (e) {
-            throw e
-        } finally {
             setIsPerformingExactSearch(false)
+            throw e
         }
     }
 
@@ -45,32 +42,37 @@ export function useSearch(query: string): UseSearch {
             lastSearch.current = currentSearch
 
             const bungieName = asBungieName(query)
-
-            let hydratedResponse: CustomBungieSearchResult[]
-            if (bungieName) {
-                const response = await client.searchByBungieName(...bungieName)
-                hydratedResponse = await Promise.all(
-                    response.filter(
-                        user =>
-                            !user.crossSaveOverride ||
-                            user.membershipType === user.crossSaveOverride
-                    )
-                    //.map(async user => ({ ...user, ...(await client.getFirstCharacter(user)) }))
-                )
-            } else {
-                const response = await client.searchForUser(query.split("#")[0])
-                hydratedResponse = await Promise.all(
+            const searches: [
+                general: Promise<CustomBungieSearchResult[]>,
+                exact: Promise<CustomBungieSearchResult | undefined> | null
+            ] = [
+                client.searchForUser(query.split("#")[0]).then(response =>
                     response
                         .map(user => ({
                             ...user,
                             ...user.destinyMemberships[0]
                         }))
                         .filter(user => user.membershipId && user.membershipType)
-                    //.map(async user => ({ ...user, ...(await client.getFirstCharacter(user)) }))
-                )
-            }
+                ),
+                bungieName ? client.searchByBungieName(...bungieName) : null
+            ]
+
+            const [general, exact] = await Promise.all(searches)
+
+            const results = bungieName
+                ? exact
+                    ? [exact]
+                    : general.filter(
+                          result =>
+                              result.bungieGlobalDisplayNameCode &&
+                              fixBungieCode(result.bungieGlobalDisplayNameCode).startsWith(
+                                  `${bungieName[1]}`
+                              )
+                      )
+                : general
+
             if (lastSearch.current === currentSearch) {
-                setResults(hydratedResponse)
+                setResults(results)
                 setLoading(false)
             }
         }
