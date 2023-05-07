@@ -18,7 +18,7 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
     const incomplete = strings.incompleteRaid
     return (
         <div className={styles["activity-card-header-container"]}>
-            <div className={styles["activity-card-header"]}>
+            <div className={styles["activity-card-header-top"]}>
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
@@ -40,11 +40,6 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                                 : strings.raidNames[activity!.raid]}
                         </span>
                     </div>
-                    {activity?.speed.fresh === null && (
-                        <div className={styles["cp-error"]}>
-                            <p>{checkpointDisclaimer}</p>
-                        </div>
-                    )}
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>
@@ -62,12 +57,19 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                     </div>
                 </div>
             </div>
-            <div className={styles["tags-container"]}>
-                {activity?.tags(strings).map((tag, idx) => (
-                    <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>
-                        {tag}
+            <div className={styles["activity-card-header-attributes"]}>
+                <div className={styles["tags-container"]}>
+                    {activity?.tags(strings).map((tag, idx) => (
+                        <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>
+                            {tag}
+                        </div>
+                    ))}
+                </div>
+                {activity?.speed.fresh === null && (
+                    <div className={styles["cp-error"]}>
+                        <p>{checkpointDisclaimer}</p>
                     </div>
-                ))}
+                )}
             </div>
         </div>
     )

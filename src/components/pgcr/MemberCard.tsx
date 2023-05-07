@@ -54,13 +54,8 @@ const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
     return (
         <div className={styles["member-card"]}>
             <div className={styles["class-logo"]}>{member?.characters && <img src={icon} />}</div>
-            <div className={styles["member-properties"]}>
-                <div className={styles["member-name"]}>
-                    <span className={styles["contained-span"]}>{displayName}</span>
-                </div>
-                <div className={styles["member-class"]}>
-                    <span className={styles["contained-span"]}>{displayClass}</span>
-                </div>
+            <div className={styles["member-name"]}>
+                <span className={styles["contained-span"]}>{displayName}</span>
             </div>
             <div className={styles["flawless-diamond"]}>
                 {member?.flawless && (
