@@ -262,7 +262,7 @@
     margin-left: 0.5em;
     box-sizing: border-box;
     max-width: 100%;
-    overflow: auto;
+    overflow-y: none;
 
     padding: 0.6em 0;
 
@@ -307,32 +307,6 @@
     max-height: 63px;
     padding: 5px;
     aspect-ratio: 1/1;
-}
-
-/* adjust entry grid for mobile */
-@media only screen and (orientation: portrait) {
-    .members {
-        grid-template-columns: 1fr;
-    }
-    .entry-card {
-        height: 11vh;
-    }
-    .quick-stats {
-        padding: 0.4em 0;
-    }
-    .quick-stat span {
-        font-size: small;
-    }
-    .flawless-diamond {
-        min-width: 24px;
-        min-height: 24px;
-        max-width: 40px;
-        max-height: 40px;
-    }
-    .quick-stat img {
-        width: 13px;
-        height: 13px;
-    }
 }
 
 .class-button-container {
@@ -493,4 +467,43 @@
 
 .color-film {
     background-color: rgba(212, 68, 39, 0.003);
+}
+
+/* adjust entry grid for mobile */
+@media only screen and (orientation: portrait) {
+    .members {
+        grid-template-columns: 1fr;
+    }
+    .entry-card {
+        height: 69px;
+    }
+    .quick-stats {
+        padding: 0.4em 0;
+    }
+    .quick-stat span {
+        font-size: small;
+    }
+    .flawless-diamond {
+        min-width: 24px;
+        min-height: 24px;
+        max-width: 40px;
+        max-height: 40px;
+    }
+    .quick-stat img {
+        width: 13px;
+        height: 13px;
+    }
+    .summary-stat {
+        padding: 5px 8px;
+    }
+    .summary-stat-name {
+        font-size: smaller;
+    }
+    .summary-stat-value {
+        font-size: medium;
+    }
+    .stat-icon {
+        max-width: 35px;
+        max-height: 35px;
+    }
 }
