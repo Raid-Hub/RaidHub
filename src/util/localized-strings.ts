@@ -59,7 +59,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         deaths: "Deaths",
         totalDeaths: "Total Deaths",
         abilityKillsPercentage: "Ability Kills %",
-        totalCharactersUsed: "Total Characters Used",
+        totalCharactersUsed: "Characters Used",
         mostUsedWeapon: "Most Used Weapon",
         kills: "Kills",
         assists: "Assists",

@@ -138,6 +138,7 @@
     display: grid;
     grid-gap: 0.5em;
     grid-template-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .members-low {
@@ -154,9 +155,11 @@
 }
 
 .emblem {
+    position: absolute;
+    left: -100px;
+    top: 0;
     border-radius: inherit;
     max-height: 100%;
-    left: -100px;
     opacity: 0.95;
     filter: blur(2px);
 }
@@ -240,25 +243,68 @@
 
     font-weight: bolder;
     font-size: 1.25rem;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.535);
+}
+
+.quick-stats-container {
+    flex-basis: 50px;
+    height: 100%;
+
+    margin-left: auto;
+    padding-right: 1em;
+    display: flex;
+    justify-content: flex-end;
+
+    background: linear-gradient(to right, #45454500, #0000002f, #00000066, #00000099);
+}
+
+.quick-stats {
+    margin-left: 0.5em;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: auto;
+
+    padding: 0.6em 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.1em;
+}
+
+.quick-stat {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2em;
+    align-items: center;
+
+    justify-content: flex-start;
+}
+
+.quick-stat span {
+    margin-left: 0.2em;
+    min-width: 2.5em;
+    text-align: left;
+
+    font-size: medium;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--search-text);
+}
+
+.quick-stat img {
+    width: 15px;
+    height: 15px;
 }
 
 .flawless-diamond {
-    flex: 0;
-    justify-self: flex-end;
-    margin-left: auto;
-    margin-right: 2%;
-    min-width: 80px;
-    display: flex;
-}
-
-.flawless-diamond > img {
     flex: 1;
+    margin: auto 0;
+
     min-width: 44px;
     min-height: 44px;
     max-width: 63px;
     max-height: 63px;
-    left: 0;
-    right: 0;
     padding: 5px;
     aspect-ratio: 1/1;
 }
@@ -269,15 +315,26 @@
         grid-template-columns: 1fr;
     }
     .entry-card {
-        height: 12vh;
+        height: 11vh;
     }
-    .flawless-diamond > img {
+    .quick-stats {
+        padding: 0.4em 0;
+    }
+    .quick-stat span {
+        font-size: small;
+    }
+    .flawless-diamond {
         min-width: 24px;
         min-height: 24px;
         max-width: 40px;
         max-height: 40px;
     }
+    .quick-stat img {
+        width: 13px;
+        height: 13px;
+    }
 }
+
 .class-button-container {
     height: auto;
     margin: 2px;
@@ -293,7 +350,6 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-content: center;
     background-color: rgba(151, 151, 151, 0.274);
 }
 
@@ -413,7 +469,7 @@
 }
 
 .dnf span {
-    color: rgb(159, 159, 159);
+    color: rgb(96, 70, 70);
 }
 
 .dnf img {
@@ -426,10 +482,12 @@
 }
 .selectable {
     border-width: 2px;
+    transition: transform 0.05s ease-in-out;
 }
 
 .selectable:hover {
-    background-color: rgba(137, 233, 255, 0.452);
+    background-color: rgba(137, 233, 255, 0.416);
+    transform: scale(1.01);
     cursor: pointer;
 }
 
