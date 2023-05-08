@@ -1,8 +1,8 @@
 import { useLanguage } from "../../hooks/language"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
+import { toCustomDateString } from "../../util/formatting"
 import { LocalizedStrings } from "../../util/localized-strings"
-import { Raid } from "../../util/raid"
 import { ActivityPlacements, Loading } from "../../util/types"
 
 type ActivityHeaderProps = {
@@ -22,12 +22,8 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
-                            {!pgcrLoadingState
-                                ? activity?.completionDate.toLocaleDateString(navigator.language, {
-                                      month: "long",
-                                      day: "numeric",
-                                      year: "numeric"
-                                  })
+                            {!pgcrLoadingState && activity
+                                ? toCustomDateString(activity.completionDate)
                                 : pgcrLoadingState === Loading.LOADING
                                 ? "Loading..."
                                 : "Hydrating..."}

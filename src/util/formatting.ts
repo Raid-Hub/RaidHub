@@ -1,8 +1,17 @@
-import { number } from "prop-types"
 import { RGBA } from "./types"
 
-export default function numberWithCommas(clears: number) {
-    return clears.toLocaleString("en")
+const locale = () => navigator.language
+
+export function formattedNumber(num: number): string {
+    return num.toLocaleString(locale())
+}
+
+export function toCustomDateString(date: Date): string {
+    return date.toLocaleDateString(locale(), {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    })
 }
 
 /**

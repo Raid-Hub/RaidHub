@@ -1,6 +1,7 @@
 import { useLanguage } from "../../hooks/language"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
+import { formattedNumber } from "../../util/formatting"
 import { Icons } from "../../util/icons"
 import { LocalizedStrings } from "../../util/localized-strings"
 
@@ -25,27 +26,27 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         {
             icon: Icons.KILLS,
             name: strings.totalKills,
-            value: stats?.totalKills ?? 0
+            value: formattedNumber(stats?.totalKills ?? 0)
         },
         {
             icon: Icons.DEATHS,
             name: strings.totalDeaths,
-            value: stats?.totalDeaths ?? 0
+            value: formattedNumber(stats?.totalDeaths ?? 0)
         },
         {
             icon: Icons.ASSISTS,
             name: strings.totalAssists,
-            value: stats?.totalAssists ?? 0
+            value: formattedNumber(stats?.totalAssists ?? 0)
         },
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
-            value: (stats?.killsTypeRatio.ability ?? 0) + "%"
+            value: formattedNumber(stats?.killsTypeRatio.ability ?? 0) + "%"
         },
         {
             icon: Icons.UNKNOWN,
             name: strings.killsPerMinute,
-            value: stats?.killsPerMinute ?? 0
+            value: formattedNumber(stats?.killsPerMinute ?? 0)
         },
         {
             icon: Icons.UNKNOWN,
