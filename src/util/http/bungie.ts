@@ -1,6 +1,6 @@
 import { Clan, ProfileComponent, RGBA } from "../types"
 import { CharacterName } from "../characters"
-import { RGBAToHex } from "../math"
+import { RGBAToHex } from "../formatting"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
@@ -63,9 +63,11 @@ const clanBanners: {
     clanBannerGonfalonDetailsSquare: { [hash: string]: string }
 } = BannersJson
 
-const CACHE_MINUTES = 10
 export const ACTIVITIES_PER_PAGE = 250
 
+/**
+ * This class acts as the main interaction with the BungieAPI. Add methods to this class to add
+ */
 class BungieNetClient {
     public readonly access_token: string | null
     constructor(access_token?: string) {
@@ -288,10 +290,7 @@ class BungieNetClient {
         }
     }
 
-    async searchByBungieName(
-        displayName: string,
-        displayNameCode: number
-    ): Promise<UserInfoCard[]> {
+    async searchByBungieName(displayName: string, displayNameCode: number): Promise<UserInfoCard> {
         try {
             const response = await searchDestinyPlayerByBungieName(
                 {
@@ -302,7 +301,9 @@ class BungieNetClient {
                     displayNameCode
                 }
             )
-            return response.Response
+            return response.Response.filter(
+                user => !user.crossSaveOverride || user.membershipType === user.crossSaveOverride
+            )[0]
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
                 throw Error("The Bungie.net API is currently down for maintence.")
@@ -439,4 +440,5 @@ function emblemFromHash(hash: number) {
     return emblems[hash] ?? defaultEmblem
 }
 
+/** The shared instance of the BungieClient */
 export const shared = new BungieNetClient()

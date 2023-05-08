@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../styles/header.module.css"
 import { useSearch } from "../hooks/search"
-import { fixBungieCode, wait } from "../util/math"
-import { useRouter } from "next/router"
+import { fixBungieCode } from "../util/formatting"
 import { Icons } from "../util/icons"
+import { wait } from "../util/math"
 
 const DEBOUNCE = 250
-const HIDE_AFTER_CLICK = 200
+const HIDE_AFTER_CLICK = 100
 
 type SearchBarProps = {}
 
 const SearchBar = ({}: SearchBarProps) => {
+    const [isRedirecting, setIsRedirecting] = useState(false)
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
@@ -22,7 +23,6 @@ const SearchBar = ({}: SearchBarProps) => {
     } = useSearch(query)
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
-    const router = useRouter()
 
     const debounceQuery = async (potentialQuery: string) => {
         await wait(DEBOUNCE)
@@ -39,18 +39,20 @@ const SearchBar = ({}: SearchBarProps) => {
     }
 
     const handleSelect = (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setIsRedirecting(true)
+        setQuery("")
         setTimeout(() => {
             setShowingResults(false)
-            setQuery("")
-            setEnteredText("")
         }, HIDE_AFTER_CLICK)
     }
 
     const handleFormEnter = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         try {
-            await doExactSearch(enteredText, router)
+            setShowingResults(false)
+            await doExactSearch(enteredText)
         } catch (e: any) {
+            setShowingResults(true)
             nextQuery.current = enteredText
             setQuery(enteredText)
         }
@@ -73,11 +75,13 @@ const SearchBar = ({}: SearchBarProps) => {
 
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
-            {isPerformingExactSearch || isLoadingResults ? (
-                <div className={styles["loader"]}></div>
-            ) : (
-                <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
-            )}
+            <div className={styles["search-icon"]}>
+                {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
+                    <div className={styles["loader"]} />
+                ) : (
+                    <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
+                )}
+            </div>
             <form onSubmit={handleFormEnter}>
                 <input
                     id={styles["search-bar"]}
@@ -88,34 +92,49 @@ const SearchBar = ({}: SearchBarProps) => {
                 />
                 {showingResults && (
                     <ul className={styles["search-results"]}>
-                        {results.map(
-                            (
-                                {
+                        {results
+                            .filter(
+                                ({
                                     bungieGlobalDisplayName,
                                     bungieGlobalDisplayNameCode,
-                                    displayName,
-                                    membershipId,
-                                    membershipType
-                                },
-                                idx
-                            ) => (
-                                <a
-                                    className={styles["search-result"]}
-                                    key={idx}
-                                    href={`/profile/${membershipType}/${membershipId}`}
-                                    onClick={handleSelect}>
-                                    <li>
-                                        <p>
-                                            {bungieGlobalDisplayName && bungieGlobalDisplayNameCode
-                                                ? `${bungieGlobalDisplayName}#${fixBungieCode(
-                                                      bungieGlobalDisplayNameCode
-                                                  )}`
-                                                : displayName}
-                                        </p>
-                                    </li>
-                                </a>
+                                    displayName
+                                }) =>
+                                    (bungieGlobalDisplayName && bungieGlobalDisplayNameCode
+                                        ? `${bungieGlobalDisplayName}#${fixBungieCode(
+                                              bungieGlobalDisplayNameCode
+                                          )}`
+                                        : displayName
+                                    ).startsWith(enteredText)
                             )
-                        )}
+                            .map(
+                                (
+                                    {
+                                        bungieGlobalDisplayName,
+                                        bungieGlobalDisplayNameCode,
+                                        displayName,
+                                        membershipId,
+                                        membershipType
+                                    },
+                                    idx
+                                ) => (
+                                    <a
+                                        className={styles["search-result"]}
+                                        key={idx}
+                                        href={`/profile/${membershipType}/${membershipId}`}
+                                        onClick={handleSelect}>
+                                        <li>
+                                            <p>
+                                                {bungieGlobalDisplayName &&
+                                                bungieGlobalDisplayNameCode
+                                                    ? `${bungieGlobalDisplayName}#${fixBungieCode(
+                                                          bungieGlobalDisplayNameCode
+                                                      )}`
+                                                    : displayName}
+                                            </p>
+                                        </li>
+                                    </a>
+                                )
+                            )}
                     </ul>
                 )}
             </form>
