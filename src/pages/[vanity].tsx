@@ -7,7 +7,7 @@ import { InitialProfileProps } from "../util/types"
 
 const VanityProfile = ({ bungieNetProfile, errorString }: InitialProfileProps) => {
     const [error, setError] = useState<Error | null>(errorString ? new Error(errorString) : null)
-    if (error) return <ErrorComponent {...error} />
+    if (error) return <ErrorComponent error={error} />
     else if (bungieNetProfile) return <Profile {...bungieNetProfile} errorHandler={setError} />
     else return <div>UH OH</div>
 }

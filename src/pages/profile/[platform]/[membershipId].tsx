@@ -8,7 +8,7 @@ import ErrorComponent from "../../../components/Error"
 
 const StandardProfile = ({ bungieNetProfile, errorString }: InitialProfileProps) => {
     const [error, setError] = useState<Error | null>(errorString ? new Error(errorString) : null)
-    if (error) return <ErrorComponent {...error} />
+    if (error) return <ErrorComponent error={error} />
     else if (bungieNetProfile) return <Profile {...bungieNetProfile} errorHandler={setError} />
     else return <div>UH OH</div>
 }
