@@ -36,11 +36,13 @@
 
 .activity-card-header-container {
     padding: 10px;
+    padding-bottom: 0;
     margin-left: 10px;
 }
 
-.activity-card-header {
+.activity-card-header-top {
     padding: 5px;
+    padding-bottom: 0;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
@@ -72,15 +74,6 @@
     text-transform: uppercase;
 }
 
-.cp-error {
-    max-width: 400px;
-}
-
-.cp-error > p {
-    font-size: small;
-    font-style: italic;
-}
-
 .right-info {
     flex-grow: 1;
     padding-top: 10px;
@@ -100,22 +93,42 @@
     margin: 0.2rem;
 }
 
+.activity-card-header-attributes {
+    display: flex;
+    flex-direction: row;
+
+    gap: 1em;
+}
+
+.cp-error {
+    max-width: 400px;
+}
+
+.cp-error > p {
+    margin: 0.4em 0;
+    font-size: small;
+    font-style: italic;
+}
+
 .tags-container {
     padding: 5px;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: 0.2em;
 }
 
 .tag {
-    font-size: large;
-    padding: 4px;
-    padding-left: 5px;
-    padding-right: 5px;
+    margin: auto 0;
+
     border-radius: 6px;
-    margin-right: 6px;
     border-width: 2px;
+
+    padding: 4px 7px;
     background-color: rgb(125, 168, 65);
+
+    font-size: large;
 }
 
 .members {
@@ -123,66 +136,62 @@
     border-radius: 10px;
     height: auto;
     display: grid;
-    grid-gap: 10px;
+    grid-gap: 0.5em;
     grid-template-rows: 1fr;
-}
-
-/* This sets the column count to 1*/
-@media only screen and (orientation: portrait) {
-    .members {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(auto, 1fr);
-    }
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .members-low {
     grid-template-columns: 1fr;
 }
 
-.members-even {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.members-odd {
-    grid-template-columns: repeat(2, 1fr);
-}
-
 .entry-card {
-    height: auto;
     min-width: 260px;
-    min-height: 85px;
-    max-height: 70px;
+    height: 85px;
     overflow: hidden;
     position: relative;
     padding: 0;
 }
 
 .emblem {
-    border-radius: inherit;
-    max-height: 100%;
-    left: -100px;
-    opacity: 0.95;
-    filter: blur(2px);
-}
-
-.member-card-container {
     position: absolute;
-    margin: 0;
+    z-index: 0;
     top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, #00000000, #2626265f, #26262684, #2626265f, #00000000);
+
+    opacity: 0.95;
+    overflow: hidden;
+}
+
+.emblem img {
+    max-height: 100%;
 }
 
 .member-card {
-    display: flex;
-    flex-direction: row;
-    font-size: larger;
+    position: absolute;
+    z-index: 1;
+    top: 0;
     width: 100%;
     height: 100%;
+
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: left;
+
+    font-size: larger;
+    overflow: hidden;
+}
+
+.color-film {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    border-radius: 12px;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
@@ -196,32 +205,21 @@
 }
 
 .class-logo {
-    flex-grow: 1;
+    padding-left: 1.2vw;
+    height: 100%;
+
+    background: linear-gradient(to right, #212121a5, #ffffff00);
+
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    margin: 0px;
-    max-width: 81px;
-    height: 100%;
-    background: linear-gradient(to right, #212121a5, #ffffff00);
 }
 
 .class-logo > img {
     max-height: 50px;
     aspect-ratio: 1/1;
-    padding: 10px;
-}
-
-.member-properties {
-    min-width: 100px;
-    flex-grow: 4;
-    padding: 10px;
-    position: relative;
-    font-size: 2rem;
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
+    margin: 5px;
+    margin-left: 8px;
 }
 
 .centered {
@@ -230,11 +228,6 @@
 
 .centered span {
     margin: auto;
-}
-
-.member-name {
-    overflow: hidden;
-    display: flex;
 }
 
 .contained-span {
@@ -247,51 +240,83 @@
     color: white;
 }
 
-.member-name > span {
+.member-name {
+    min-width: 100px;
+    flex-grow: 4;
+    overflow: hidden;
+
+    padding: 10px;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+
     font-weight: bolder;
     font-size: 1.25rem;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.535);
 }
 
-.member-class {
-    overflow: hidden;
+.quick-stats-container {
+    flex-basis: 50px;
+    height: 100%;
+
+    margin-left: auto;
+    padding-right: 1em;
     display: flex;
+    justify-content: flex-end;
+
+    background: linear-gradient(to right, #45454500, #0000002f, #00000066, #00000099);
 }
 
-.member-class > span {
-    display: inline-block;
+.quick-stats {
+    margin-left: 0.5em;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-y: none;
+
+    padding: 0.6em 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.1em;
+}
+
+.quick-stat {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2em;
+    align-items: center;
+
+    justify-content: flex-start;
+}
+
+.quick-stat span {
+    margin-left: 0.2em;
+    min-width: 2.5em;
+    text-align: left;
+
+    font-size: medium;
     font-style: italic;
-    font-size: 1.25rem;
-    color: rgb(219, 219, 219);
+    font-weight: 500;
+    color: var(--search-text);
+}
+
+.quick-stat img {
+    width: 15px;
+    height: 15px;
 }
 
 .flawless-diamond {
-    flex: 0;
-    justify-self: flex-end;
-    margin-left: auto;
-    margin-right: 2%;
-    min-width: 80px;
-    display: flex;
-}
-
-.flawless-diamond > img {
     flex: 1;
+    margin: auto 0;
+
     min-width: 44px;
     min-height: 44px;
     max-width: 63px;
     max-height: 63px;
-    left: 0;
-    right: 0;
     padding: 5px;
     aspect-ratio: 1/1;
-}
-
-@media only screen and (orientation: portrait) {
-    .flawless-diamond > img {
-        min-width: 24px;
-        min-height: 24px;
-        max-width: 40px;
-        max-height: 40px;
-    }
 }
 
 .class-button-container {
@@ -309,7 +334,6 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-content: center;
     background-color: rgba(151, 151, 151, 0.274);
 }
 
@@ -372,14 +396,15 @@
 }
 
 .character-stat {
-    box-sizing: border-box;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+
+    background-color: var(--modal-background);
+
+    display: flex;
+    align-items: center;
 }
 
 .summary-stat-content {
@@ -424,12 +449,12 @@
 }
 
 .dnf {
-    background-color: rgb(103, 0, 0);
+    background-color: rgba(103, 0, 0, 0.561);
     border-color: rgb(157, 20, 10);
 }
 
 .dnf span {
-    color: rgb(159, 159, 159);
+    color: rgb(96, 70, 70);
 }
 
 .dnf img {
@@ -442,13 +467,49 @@
 }
 .selectable {
     border-width: 2px;
+    transition: transform 0.05s ease-in-out;
 }
 
 .selectable:hover {
-    background-color: rgba(137, 233, 255, 0.452);
+    transform: scale(1.015);
     cursor: pointer;
 }
 
-.color-film {
-    background-color: rgba(212, 68, 39, 0.003);
+/* adjust entry grid for mobile */
+@media only screen and (orientation: portrait) {
+    .members {
+        grid-template-columns: 1fr;
+    }
+    .entry-card {
+        height: 69px;
+    }
+    .quick-stats {
+        padding: 0.4em 0;
+    }
+    .quick-stat span {
+        font-size: small;
+    }
+    .flawless-diamond {
+        min-width: 24px;
+        min-height: 24px;
+        max-width: 40px;
+        max-height: 40px;
+    }
+    .quick-stat img {
+        width: 13px;
+        height: 13px;
+    }
+    .summary-stat {
+        padding: 5px 8px;
+    }
+    .summary-stat-name {
+        font-size: smaller;
+    }
+    .summary-stat-value {
+        font-size: medium;
+    }
+    .stat-icon {
+        max-width: 35px;
+        max-height: 35px;
+    }
 }

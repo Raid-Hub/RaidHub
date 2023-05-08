@@ -20,7 +20,7 @@ const MemberCard = ({
     memberIndex,
     updateMemberIndex
 }: MemberCardProps) => {
-    const dynamicCssClass = memberIndex === index ? styles["selected"] : styles["selectable"]
+    const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member?.didComplete ? "" : styles["dnf"]
     return (
         <button
@@ -33,14 +33,16 @@ const MemberCard = ({
                 completionClass
             ].join(" ")}
             onClick={member ? () => updateMemberIndex(index) : undefined}>
-            <img src={emblemBackground} className={styles["emblem"]} />
-            <div className={[styles["member-card-container"], styles["color-film"]].join(" ")}>
-                {memberIndex === -1 || !member ? (
-                    <StandardMemberCard member={member} />
-                ) : (
-                    <SelectedMemberCard member={member} />
-                )}
+            <div className={styles["emblem"]}>
+                <img src={emblemBackground} />
             </div>
+            <div className={styles["color-film"]} />
+
+            {memberIndex === -1 || !member ? (
+                <StandardMemberCard member={member} />
+            ) : (
+                <SelectedMemberCard member={member} />
+            )}
         </button>
     )
 }
@@ -50,24 +52,34 @@ export default MemberCard
 const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
     const icon = member?.characters?.[0].logo
     const displayName = member?.displayName ?? member?.membershipId
-    const displayClass = member?.characterClass
     return (
         <div className={styles["member-card"]}>
             <div className={styles["class-logo"]}>{member?.characters && <img src={icon} />}</div>
-            <div className={styles["member-properties"]}>
-                <div className={styles["member-name"]}>
-                    <span className={styles["contained-span"]}>{displayName}</span>
-                </div>
-                <div className={styles["member-class"]}>
-                    <span className={styles["contained-span"]}>{displayClass}</span>
-                </div>
+            <div className={styles["member-name"]}>
+                <span className={styles["contained-span"]}>{displayName}</span>
             </div>
-            <div className={styles["flawless-diamond"]}>
-                {member?.flawless && (
+            <div className={styles["quick-stats-container"]}>
+                {member?.flawless ? (
                     <img
+                        className={styles["flawless-diamond"]}
                         src={Icons.FLAWLESS_DIAMOND}
                         alt={member.displayName + " went flawless this raid"}
                     />
+                ) : (
+                    <div className={styles["quick-stats"]}>
+                        <div className={styles["quick-stat"]}>
+                            {<img src={Icons.KILLS} alt={"Kills"} />}
+                            <span>{member?.stats.kills}</span>
+                        </div>
+                        <div className={styles["quick-stat"]}>
+                            {<img src={Icons.ASSISTS} alt={"Assists"} />}
+                            <span>{member?.stats.assists}</span>
+                        </div>
+                        <div className={styles["quick-stat"]}>
+                            {<img src={Icons.DEATHS} alt={"Deaths"} />}
+                            <span>{member?.stats.deaths}</span>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
@@ -76,16 +88,10 @@ const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
 
 const SelectedMemberCard = ({ member }: { member: PGCRMember }) => {
     const displayName = member.displayName ?? member.membershipId
-    const displayClass = member.characterClass
     return (
         <div className={styles["member-card"]}>
-            <div className={[styles["member-properties"], styles["centered"]].join(" ")}>
-                <div className={styles["member-name"]}>
-                    <span className={styles["contained-span"]}>{displayName}</span>
-                </div>
-                <div className={styles["member-class"]}>
-                    <span className={styles["contained-span"]}>{displayClass}</span>
-                </div>
+            <div className={[styles["member-name"], styles["centered"]].join(" ")}>
+                <span className={styles["contained-span"]}>{displayName}</span>
             </div>
         </div>
     )
