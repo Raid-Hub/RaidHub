@@ -1,3 +1,5 @@
+import { RGBA } from "./types"
+
 const locale = () => navigator.language
 
 export function formattedNumber(num: number): string {
