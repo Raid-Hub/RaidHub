@@ -1,6 +1,6 @@
 import { Clan, ProfileComponent, RGBA } from "../types"
 import { CharacterName } from "../characters"
-import { RGBAToHex } from "../math"
+import { RGBAToHex } from "../formatting"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
@@ -290,10 +290,7 @@ class BungieNetClient {
         }
     }
 
-    async searchByBungieName(
-        displayName: string,
-        displayNameCode: number
-    ): Promise<UserInfoCard[]> {
+    async searchByBungieName(displayName: string, displayNameCode: number): Promise<UserInfoCard> {
         try {
             const response = await searchDestinyPlayerByBungieName(
                 {
@@ -304,7 +301,9 @@ class BungieNetClient {
                     displayNameCode
                 }
             )
-            return response.Response
+            return response.Response.filter(
+                user => !user.crossSaveOverride || user.membershipType === user.crossSaveOverride
+            )[0]
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
                 throw Error("The Bungie.net API is currently down for maintence.")

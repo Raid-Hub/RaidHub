@@ -3,7 +3,7 @@ import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
 import { Icons } from "../../util/icons"
-import { fixClanName } from "../../util/math"
+import { fixClanName } from "../../util/formatting"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../util/types"
 

@@ -2,7 +2,7 @@ import Link from "next/link"
 import styles from "../../styles/profile.module.css"
 import { Raid, RaidCardBackground } from "../../util/raid"
 import DotGraph from "./DotGraph"
-import { secondsToHMS } from "../../util/math"
+import { secondsToHMS } from "../../util/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { Icons } from "../../util/icons"
 import RaidStats from "../../models/profile/RaidStats"
@@ -75,14 +75,19 @@ const RaidModal = ({
                     <div className={styles["graph-count"]}>
                         <div className={styles["graph-number-img"]}>
                             {!isLoadingStats && stats ? (
-                                <p className={styles["graph-number"]}>{numberWithCommas(stats.totalClears)}</p>
+                                <p className={styles["graph-number"]}>
+                                    {numberWithCommas(stats.totalClears)}
+                                </p>
                             ) : (
                                 <div className={styles["number-loading"]}>
                                     <Loading />
                                 </div>
                             )}
                         </div>
-                        <p className={styles["graph-count-text"]}>total<br/> clears</p>
+                        <p className={styles["graph-count-text"]}>
+                            total
+                            <br /> clears
+                        </p>
                     </div>
                 </div>
 
