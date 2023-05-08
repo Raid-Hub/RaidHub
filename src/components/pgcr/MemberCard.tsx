@@ -20,7 +20,7 @@ const MemberCard = ({
     memberIndex,
     updateMemberIndex
 }: MemberCardProps) => {
-    const dynamicCssClass = memberIndex === index ? styles["selected"] : styles["selectable"]
+    const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member?.didComplete ? "" : styles["dnf"]
     return (
         <button
@@ -33,14 +33,16 @@ const MemberCard = ({
                 completionClass
             ].join(" ")}
             onClick={member ? () => updateMemberIndex(index) : undefined}>
-            <img src={emblemBackground} className={styles["emblem"]} />
-            <div className={[styles["member-card-container"], styles["color-film"]].join(" ")}>
-                {memberIndex === -1 || !member ? (
-                    <StandardMemberCard member={member} />
-                ) : (
-                    <SelectedMemberCard member={member} />
-                )}
+            <div className={styles["emblem"]}>
+                <img src={emblemBackground} />
             </div>
+            <div className={styles["color-film"]} />
+
+            {memberIndex === -1 || !member ? (
+                <StandardMemberCard member={member} />
+            ) : (
+                <SelectedMemberCard member={member} />
+            )}
         </button>
     )
 }

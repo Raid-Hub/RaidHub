@@ -74,14 +74,6 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
                             {value}
                         </span>
                     </div>
-
-                    <div
-                        className={["background-img", styles["emblem"]].join(" ")}
-                        style={{
-                            opacity: 0.9,
-                            backgroundImage: `url(${emblemBackground})`
-                        }}
-                    />
                 </div>
             ))}
         </>

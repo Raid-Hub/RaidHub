@@ -55,11 +55,11 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         loading: "Loading...",
         none: "None",
         mvp: "MVP",
-        totalKills: "Total Kills",
+        totalKills: "Kills",
         deaths: "Deaths",
-        totalDeaths: "Total Deaths",
-        abilityKillsPercentage: "Ability Kills %",
-        totalCharactersUsed: "Characters Used",
+        totalDeaths: "Deaths",
+        abilityKillsPercentage: "Kills",
+        totalCharactersUsed: "Characters",
         mostUsedWeapon: "Most Used Weapon",
         kills: "Kills",
         assists: "Assists",
@@ -91,7 +91,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         dayOne: "Day One",
         contest: "Contest",
-        killsPerMinute: "Kills per Minute"
+        killsPerMinute: "Kills / Minute"
     }
 }
 

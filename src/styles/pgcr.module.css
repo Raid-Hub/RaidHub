@@ -146,7 +146,6 @@
 }
 
 .entry-card {
-    height: auto;
     min-width: 260px;
     height: 85px;
     overflow: hidden;
@@ -156,32 +155,43 @@
 
 .emblem {
     position: absolute;
-    left: -100px;
+    z-index: 0;
     top: 0;
-    border-radius: inherit;
-    max-height: 100%;
-    opacity: 0.95;
-    filter: blur(2px);
-}
-
-.member-card-container {
-    position: absolute;
-    margin: 0;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, #00000000, #2626265f, #26262684, #2626265f, #00000000);
+
+    opacity: 0.95;
+    overflow: hidden;
+}
+
+.emblem img {
+    max-height: 100%;
 }
 
 .member-card {
-    display: flex;
-    flex-direction: row;
-    font-size: larger;
+    position: absolute;
+    z-index: 1;
+    top: 0;
     width: 100%;
     height: 100%;
+
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: left;
+
+    font-size: larger;
+    overflow: hidden;
+}
+
+.color-film {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    border-radius: 12px;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
@@ -386,14 +396,15 @@
 }
 
 .character-stat {
-    box-sizing: border-box;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+
+    background-color: var(--modal-background);
+
+    display: flex;
+    align-items: center;
 }
 
 .summary-stat-content {
@@ -438,7 +449,7 @@
 }
 
 .dnf {
-    background-color: rgb(103, 0, 0);
+    background-color: rgba(103, 0, 0, 0.561);
     border-color: rgb(157, 20, 10);
 }
 
@@ -460,13 +471,8 @@
 }
 
 .selectable:hover {
-    background-color: rgba(137, 233, 255, 0.416);
-    transform: scale(1.01);
+    transform: scale(1.015);
     cursor: pointer;
-}
-
-.color-film {
-    background-color: rgba(212, 68, 39, 0.003);
 }
 
 /* adjust entry grid for mobile */
