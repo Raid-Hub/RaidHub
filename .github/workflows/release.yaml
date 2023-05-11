@@ -38,29 +38,30 @@ jobs:
                   git config --local user.name "RaidHub Release Bot"
                   git commit -m "Release version number"
 
-        # - name: Push changes to develop
-        #   uses: ad-m/github-push-action@v0.5.0
-        #   with:
-        #       branch: develop
-        #       github_token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Push changes to develop
+              uses: ad-m/github-push-action@v0.5.0
+              with:
+                  # branch: develop
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
 
-        # - name: Merge changes into main
-        #     uses: ad-m/github-push-action@master
-        #     with:
-        #       branch: main
-        #       base_branch: develop
-        #       force: true
-        #       github_token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Merge changes into main
+              uses: ad-m/github-push-action@master
+              with:
+                  # branch: main
+                  branch: test-main
+                  base_branch: develop
+                  force: true
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
 
-        # - name: Create release
-        #     uses: actions/create-release@v1
-        #     env:
-        #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #     with:
-        #       tag_name: v$VERSION
-        #       release_name: Release v$VERSION
-        #       body: |
-        #         Changes in this release:
-        #         $(git log --pretty=format:"%s" develop --not main)
-        #       draft: false
-        #       prerelease: false
+            - name: Create release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: v$VERSION
+                  release_name: Release v$VERSION
+                  body: |
+                      Changes in this release:
+                      $(git log --pretty=format:"%s" develop --not main)
+                  draft: false
+                  prerelease: false
