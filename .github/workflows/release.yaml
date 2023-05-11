@@ -30,13 +30,13 @@ jobs:
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
 
-        # - name: Commit changes
-        #   run: |
-        #       git add package.json
-        #       git add public/manifest.json
-        #       git config --local user.email "release@raidhub.app"
-        #       git config --local user.name "RaidHub Release Bot"
-        #       git commit -m "Release version number"
+            - name: Commit changes
+              run: |
+                  git add package.json
+                  git add public/manifest.json
+                  git config --local user.email "release@raidhub.app"
+                  git config --local user.name "RaidHub Release Bot"
+                  git commit -m "Release version number"
 
         # - name: Push changes to develop
         #   uses: ad-m/github-push-action@v0.5.0
