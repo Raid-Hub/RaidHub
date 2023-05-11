@@ -17,8 +17,7 @@ type PGCREntriesProps = {
 
 const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
     const { emblems, isLoading: isLoadingEmblems } = useEmblems({
-        members: members ?? [],
-        errorHandler
+        members: members ?? []
     })
     const [memberIndex, setMemberIndex] = useState(-1)
     const [characterIndex, setCharacterIndex] = useState(-1)

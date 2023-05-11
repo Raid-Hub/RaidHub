@@ -3,6 +3,7 @@ import { shared as client } from "../util/http/bungie"
 import { BungieMembershipType, DestinyAggregateActivityResults } from "bungie-net-core/lib/models"
 import AggregateStats from "../models/profile/AggregateStats"
 import { ErrorHandler } from "../util/types"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
 type UseCharacterStatsParams = {
     membershipId: string
@@ -41,7 +42,7 @@ export function useCharacterStats({
                 )
                 setStats(new AggregateStats(characterStats))
             } catch (e) {
-                errorHandler(e)
+                CustomError.handle(errorHandler, e, ErrorCode.CharacterStats)
             } finally {
                 setLoading(false)
             }

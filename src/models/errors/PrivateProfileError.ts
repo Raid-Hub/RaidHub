@@ -1,6 +1,7 @@
 import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/lib/models"
+import CustomError, { ErrorCode } from "./CustomError"
 
-export default class PrivateProfileError extends Error {
+export default class PrivateProfileError extends CustomError {
     membershipId: string
     membershipType: BungieMembershipType
     components: DestinyComponentType[]
@@ -13,7 +14,7 @@ export default class PrivateProfileError extends Error {
         membershipType: BungieMembershipType
         components: DestinyComponentType[]
     }) {
-        super()
+        super("Private Profile", ErrorCode.PrivateProfile)
         this.membershipId = destinyMembershipId
         this.membershipType = membershipType
         this.components = components

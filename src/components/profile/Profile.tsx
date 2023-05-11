@@ -41,8 +41,6 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
 
     const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
 
-    // console.log(raidMetrics?.get(Raid.ROOT_OF_NIGHTMARES)?.get(Difficulty.NORMAL))
-
     return (
         <main className={styles["main"]}>
             <Head>
@@ -93,7 +91,10 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
-                    <PinnedActivity activityId={profile?.pinnedActivity} />
+                    <PinnedActivity
+                        activityId={profile?.pinnedActivity}
+                        errorHandler={errorHandler}
+                    />
                     <div className={styles["layout-toggle"]}>
                         <span className={styles["description-toggle"]}>Raids</span>
                         <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />

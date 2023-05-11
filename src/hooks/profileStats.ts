@@ -5,6 +5,7 @@ import {
     DestinyHistoricalStatsAccountResult
 } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../util/types"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
 type UseProfileStatsParams = {
     membershipId: string
@@ -38,7 +39,7 @@ export function useProfileStats({
                 setCharacterIds(profileStats?.characters.map(({ characterId }) => characterId))
                 setStats(profileStats)
             } catch (e) {
-                errorHandler(e)
+                CustomError.handle(errorHandler, e, ErrorCode.ProfileStats)
             } finally {
                 setLoading(false)
             }

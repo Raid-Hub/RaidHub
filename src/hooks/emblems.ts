@@ -3,20 +3,19 @@ import { shared as client } from "../util/http/bungie"
 import { EmblemDict, EmblemTuple, ErrorHandler } from "../util/types"
 import PGCRMember from "../models/pgcr/Member"
 
-type UseEmblemsParams = { members: PGCRMember[]; errorHandler: ErrorHandler }
+type UseEmblemsParams = { members: PGCRMember[] }
 
 type UseEmblems = {
     emblems: EmblemDict | null
     isLoading: boolean
 }
 
-export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmblems {
+export function useEmblems({ members }: UseEmblemsParams): UseEmblems {
     const [emblems, setEmblems] = useState<EmblemDict | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
         setLoading(true)
-        const errs: string[] = []
         const emblemsList: EmblemTuple[] = []
         Promise.all(
             members?.map(({ characterIds, membershipId, membershipType }) =>
@@ -29,7 +28,6 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
             .then(() => {
                 setEmblems(Object.fromEntries(emblemsList))
             })
-            .catch(errorHandler)
             .finally(() => setLoading(false))
     }, [members])
 

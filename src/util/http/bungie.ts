@@ -36,7 +36,7 @@ import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
 // @ts-ignore
 import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
-import PrivateProfileError from "./PrivateProfileError"
+import PrivateProfileError from "../../models/errors/PrivateProfileError"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"

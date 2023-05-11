@@ -10,6 +10,7 @@ import {
 import { Raid } from "./raid"
 import { Tag } from "./tags"
 import { Socials } from "./socials"
+import CustomError from "../models/errors/CustomError"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -106,4 +107,4 @@ export type X = {
     placements: Partial<Record<Raid, Placement>>
     tags: Partial<Record<Raid, RaidTag[]>>
 }
-export type ErrorHandler = (error: any) => void
+export type ErrorHandler = (error: CustomError) => void

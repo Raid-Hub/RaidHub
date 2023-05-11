@@ -1,11 +1,14 @@
+import { NextPage } from "next"
 import React from "react"
 
-export default class Home extends React.Component {
-    render() {
-        return (
-            <main>
-                <h1>RaidHub</h1>
-            </main>
-        )
-    }
+type HomeProps = {}
+
+const Home: NextPage<HomeProps> = () => {
+    return (
+        <main>
+            <h1>RaidHub</h1>
+        </main>
+    )
 }
+
+export default Home

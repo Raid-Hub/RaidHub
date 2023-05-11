@@ -1,16 +1,9 @@
-import { useState } from "react"
-import ErrorComponent from "../components/Error"
-import Profile from "../components/profile/Profile"
+import ProfileWrapper from "../components/profile/ProfileWrapper"
 import { shared as bungieClient } from "../util/http/bungie"
 import { Vanity } from "../util/special"
 import { InitialProfileProps } from "../util/types"
 
-const VanityProfile = ({ bungieNetProfile, errorString }: InitialProfileProps) => {
-    const [error, setError] = useState<Error | null>(errorString ? new Error(errorString) : null)
-    if (error) return <ErrorComponent error={error} />
-    else if (bungieNetProfile) return <Profile {...bungieNetProfile} errorHandler={setError} />
-    else return <div>UH OH</div>
-}
+export default ProfileWrapper
 
 export async function getServerSideProps({
     params
@@ -37,5 +30,3 @@ export async function getServerSideProps({
         }
     }
 }
-
-export default VanityProfile

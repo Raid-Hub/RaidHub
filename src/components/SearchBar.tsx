@@ -4,6 +4,7 @@ import { useSearch } from "../hooks/search"
 import { fixBungieCode } from "../util/formatting"
 import { Icons } from "../util/icons"
 import { wait } from "../util/math"
+import { ErrorHandler } from "../util/types"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -20,7 +21,7 @@ const SearchBar = ({}: SearchBarProps) => {
         isLoading: isLoadingResults,
         doExactSearch,
         isPerformingExactSearch
-    } = useSearch(query)
+    } = useSearch({ query, errorHandler: () => {} /* TODO: Handle search bar errors */ })
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
 

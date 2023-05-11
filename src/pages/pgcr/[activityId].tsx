@@ -7,15 +7,23 @@ import { Backdrop, Raid, Short } from "../../util/raid"
 import { usePGCR } from "../../hooks/pgcr"
 import { usePlacements } from "../../hooks/placements"
 import Head from "next/head"
+import ErrorComponent from "../../components/Error"
+import CustomError from "../../models/errors/CustomError"
 
 type PGCRProps = {
     activityId: string
 }
 
 const PGCR = ({ activityId }: PGCRProps) => {
-    const [error, setError] = useState<Error | null>(null)
-    const { activity, members, loadingState: pgcrLoadingState } = usePGCR(activityId)
+    const [error, setError] = useState<CustomError | null>(null)
+    const {
+        activity,
+        members,
+        loadingState: pgcrLoadingState
+    } = usePGCR({ activityId, errorHandler: setError })
     const { placements } = usePlacements({ activityId, errorHandler: setError })
+
+    if (error) return <ErrorComponent error={error} title={`PGCR ${activityId} | RaidHub`} />
 
     return (
         <main className={styles["main"]}>

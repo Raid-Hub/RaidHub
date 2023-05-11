@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { shared as client } from "../util/http/bungie"
 import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../util/types"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
 type UseBungieProfileParams = {
     membershipId: string
@@ -23,11 +24,19 @@ export function useBungieNextMembership({
     const [isLoading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         setLoading(true)
-        client
-            .getBungieNextMembership(membershipId, membershipType)
-            .then(membership => setMembership(membership))
-            .catch(errorHandler)
-            .finally(() => setLoading(false))
+        getProfile()
+
+        async function getProfile() {
+            try {
+                await client
+                    .getBungieNextMembership(membershipId, membershipType)
+                    .then(membership => setMembership(membership))
+            } catch (e) {
+                CustomError.handle(errorHandler, e, ErrorCode.BungieNextMembership)
+            } finally {
+                setLoading(false)
+            }
+        }
     }, [membershipId, membershipType])
     return { membership, isLoading }
 }
