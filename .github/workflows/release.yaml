@@ -1,0 +1,63 @@
+name: Version Bump and Release
+
+on:
+    workflow_dispatch:
+
+jobs:
+    bump-and-release:
+        runs-on: ubuntu-latest
+        if: |
+            github.event_name == 'workflow_dispatch' &&
+            startsWith(github.ref, 'refs/heads/develop')
+        steps:
+            - name: Check if user is a repo admin
+              run: |
+                  if [[ $(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r '.permission') != "admin" ]]; then
+                    echo "Only repo admins can run this action."
+                    exit 1
+                  fi
+
+            - name: Checkout code
+              uses: actions/checkout@v2
+              with:
+                  ref: develop
+
+            - name: Bump version
+              run: |
+                  VERSION=$(./bump.sh)
+                  echo "Version: $VERSION"
+
+        # - name: Commit changes
+        #   run: |
+        #       git add package.json
+        #       git add public/manifest.json
+        #       git config --local user.email "release@raidhub.app"
+        #       git config --local user.name "RaidHub Release Bot"
+        #       git commit -m "Release version number"
+
+        # - name: Push changes to develop
+        #   uses: ad-m/github-push-action@v0.5.0
+        #   with:
+        #       branch: develop
+        #       github_token: ${{ secrets.GITHUB_TOKEN }}
+
+        # - name: Merge changes into main
+        #     uses: ad-m/github-push-action@master
+        #     with:
+        #       branch: main
+        #       base_branch: develop
+        #       force: true
+        #       github_token: ${{ secrets.GITHUB_TOKEN }}
+
+        # - name: Create release
+        #     uses: actions/create-release@v1
+        #     env:
+        #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #     with:
+        #       tag_name: v$VERSION
+        #       release_name: Release v$VERSION
+        #       body: |
+        #         Changes in this release:
+        #         $(git log --pretty=format:"%s" develop --not main)
+        #       draft: false
+        #       prerelease: false
