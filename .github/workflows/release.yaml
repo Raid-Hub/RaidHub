@@ -32,7 +32,7 @@ jobs:
 
             - name: Commit changes
               run: |
-                  git config --global --add safe.directory /github/workspace
+                  git config --global --add safe.directory
                   git add package.json
                   git add public/manifest.json
                   git config --local user.email "release@raidhub.app"
@@ -46,7 +46,7 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Merge changes into main
-              uses: ad-m/github-push-action@0.6.0
+              uses: ad-m/github-push-action@v0.5.0
               with:
                   # branch: main
                   branch: test-main
