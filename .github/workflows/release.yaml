@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         if: |
             github.event_name == 'workflow_dispatch' &&
-            startsWith(github.ref, 'refs/heads/develop')
+            startsWith(github.ref, 'refs/heads/version-pipeline')
         steps:
             - name: Check if user is a repo admin
               run: |
