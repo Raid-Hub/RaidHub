@@ -6,7 +6,7 @@ import Head from "next/head"
 import { useLanguage } from "../hooks/language"
 
 function MyApp({ Component, pageProps }: AppProps) {
-    const language = useLanguage()
+    const { language } = useLanguage()
     return (
         <>
             <Head>

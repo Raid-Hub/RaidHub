@@ -11,7 +11,7 @@ type StatCardProps = {
 }
 
 const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
-    const language = useLanguage()
+    const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const statsData: {
         icon: string
@@ -21,22 +21,22 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
         {
             icon: Icons.KILLS,
             name: strings.kills,
-            value: formattedNumber(entry.stats.kills)
+            value: formattedNumber(entry.stats.kills, locale)
         },
         {
             icon: Icons.DEATHS,
             name: strings.deaths,
-            value: formattedNumber(entry.stats.deaths)
+            value: formattedNumber(entry.stats.deaths, locale)
         },
         {
             icon: Icons.ASSISTS,
             name: strings.assists,
-            value: formattedNumber(entry.stats.assists)
+            value: formattedNumber(entry.stats.assists, locale)
         },
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKills,
-            value: formattedNumber(entry.stats.abilityKills)
+            value: formattedNumber(entry.stats.abilityKills, locale)
         },
         {
             icon: Icons.TIME,
