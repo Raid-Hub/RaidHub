@@ -19,6 +19,8 @@ export function useRaidHubProfile(membershipId: string): UseRaidHubProfile {
             await wait(250)
             if (membershipId === "4611686018488107374")
                 setProfile({
+                    profilePicture: null,
+                    bannerPicture: null,
                     pinnedActivity: "4129239230",
                     socials: [
                         {
@@ -72,8 +74,22 @@ export function useRaidHubProfile(membershipId: string): UseRaidHubProfile {
                         ]
                     }
                 })
+            else if(membershipId == "4611686018493378282")
+            {
+                setProfile({
+                    profilePicture: "https://media.discordapp.net/attachments/1102070064083116064/1106208614336704562/avatars-torMpCZWCPtHMtsF-3Hwm0Q-t500x500.jpg",
+                    bannerPicture: "https://media.discordapp.net/attachments/1102070064083116064/1106208632099590144/8b0e6a415c18827941cf29b40f8788dc.png",
+                    pinnedActivity: "13188964627",
+                    socials: [],
+                    background: null,
+                    placements: {},
+                    tags: {}
+                })
+            }
             else
                 setProfile({
+                    profilePicture: null,
+                    bannerPicture: null,
                     pinnedActivity: null,
                     socials: [],
                     background: null,

@@ -1,6 +1,6 @@
 import { RGBA } from "./types"
 
-const locale = () => navigator.language
+const locale = () => global.locale;
 
 export function formattedNumber(num: number): string {
     return num.toLocaleString(locale())

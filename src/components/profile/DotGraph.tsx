@@ -17,7 +17,12 @@ const FULL_HEIGHT = CANVAS_HEIGHT + 2 * BORDER
 
 type DotGraphProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
-    isLoading: boolean
+    isLoading: boolean,
+    showDiv: any,
+    setShowDiv: any,
+    divPosition: any,
+    setDivPosition: any,
+    setActivityDurationSeconds: any
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -27,7 +32,7 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
+const DotGraph = ({ divPosition, setDivPosition, showDiv, setShowDiv, dots, isLoading, setActivityDurationSeconds }: DotGraphProps) => {
     let { min, max, total } = dots.reduce((ac, cv) => {
         const cvTime = cv.values.activityDurationSeconds.basic.value
         return {
@@ -44,6 +49,7 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
     const orderedByDuration = dots
         .map(({ values }) => values.activityDurationSeconds.basic.value)
         .sort((a, b) => a - b)
+
     const avg = median(orderedByDuration)
     const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     return (
@@ -66,6 +72,12 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
                     />
                     {dots.map((dot, idx) => (
                         <Dot
+                            showDiv={showDiv}
+                            setShowDiv={setShowDiv}
+                            divPosition={divPosition}
+                            setDivPosition={setDivPosition}
+                            setActivityDurationSeconds={setActivityDurationSeconds}
+                            dot={dot}
                             key={idx}
                             idx={idx}
                             id={dot.activityDetails.instanceId}
@@ -76,7 +88,8 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
                             }
                             cy={getHeight(dot.values.activityDurationSeconds.basic.value)}
                         />
-                    ))}
+                    ))
+                    }
                 </svg>
             )}
         </div>

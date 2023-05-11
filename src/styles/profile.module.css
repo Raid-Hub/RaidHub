@@ -1,8 +1,8 @@
 .main {
-    display: flex;
+    margin: 1em 20em;
+    display: grid;
     gap: 1em;
-    flex-wrap: wrap;
-    flex-direction: column;
+    grid-template-columns: 300px 1400px;
 }
 
 .main section {
@@ -16,13 +16,46 @@
 }
 
 .user-info {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1em;
-    flex: 1;
+    display: absolute;
 }
 
+.tooltip {
+    z-index: 3;
+    width: fit-content;
+    height: 22px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #ffffff0a;
+    background-color: rgba(26, 24, 24, 0.808);
+}
+
+.tooltip p {
+    font-size: 12px;
+}
+
+.tooltip-content {
+    display: flex;
+    gap: 5px;
+    margin-top: -8px;
+}
+.tooltip-bottom {
+    color: rgb(190, 190, 190);
+}
+.error-color {
+    color: #f44336
+}
+
+.success-color {
+    color: #4caf50
+}
+
+.tooltip-top {
+    font-weight: bold;
+}
+
+.tooltip-bottom {
+    margin-bottom: -1500px;
+}
 /* width */
 .dots-container::-webkit-scrollbar {
     height: 6px;
@@ -64,6 +97,7 @@
 
     color: white;
 }
+
 
 .profile-banner {
     margin: 0;
@@ -197,6 +231,7 @@
 }
 
 .ranking-banners {
+    margin-top: 15px;
     flex: 1;
     display: flex;
     gap: 1em;
@@ -241,6 +276,7 @@
 }
 
 .clan {
+    margin-top: 20px;
     flex: 1;
     display: flex;
     border: 1px solid var(--border);
@@ -753,4 +789,47 @@ svg.clan-img {
     min-height: 2rem;
     min-width: 100%;
     display: flex;
+}
+
+@media only screen and (max-width: 1700px) {
+    .main {
+        transition: 0.5s;
+        transition-timing-function: ease-in-out;
+        grid-template-columns: 20em 65em;
+    } 
+}
+@media only screen and (max-width: 1580px) {
+    .main {
+        margin: 0 5em;
+        transition: 0.5s;
+        transition-timing-function: ease-in-out;
+        grid-template-columns: 20em 60em;
+    } 
+}
+
+@media only screen and  (max-width: 1150px) {
+    .main {
+        transition: 0.5s;
+        transition-timing-function: ease-in-out;
+        grid-template-columns: 20em 40em;
+    } 
+
+}
+
+@media only screen and (max-width: 800px) {
+    .main {
+        margin: 1em;
+        transition: 0.5s;
+        transition-timing-function: ease-in-out;
+        grid-template-columns: 20em 22em;
+    } 
+}
+
+@media only screen and (max-width: 500px) {
+    .main {
+        margin: 0;
+        transition: 0.5s;
+        transition-timing-function: ease-in-out;
+        grid-template-columns: 20em;
+    } 
 }

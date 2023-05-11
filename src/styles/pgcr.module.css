@@ -123,10 +123,10 @@
     margin: auto 0;
 
     border-radius: 6px;
-    border-width: 2px;
+    border-width: 1px;
 
     padding: 4px 7px;
-    background-color: rgb(125, 168, 65);
+    background-color: rgba(49, 78, 49, 0.486);
 
     font-size: large;
 }
@@ -391,7 +391,7 @@
 .summary-stat {
     min-height: 57px;
     padding: 10px 15px;
-    background-color: rgba(78, 9, 9, 0.35);
+    background-color: rgba(71, 14, 14, 0.151);
     display: flex;
 }
 

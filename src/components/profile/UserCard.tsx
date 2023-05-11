@@ -8,10 +8,11 @@ type UserCardProps = {
     userInfo: UserInfoCard
     emblemBackgroundPath: string
     backgroundImage: string
+    userIcon: string
     socials?: ProfileSocialData[]
 }
 
-const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, socials }: UserCardProps) => {
+const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, userIcon, socials }: UserCardProps) => {
     const customStyling = backgroundImage
         ? {
               style: { backgroundImage }
@@ -22,16 +23,13 @@ const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, socials }: 
             <div className={styles["profile-banner"]}>
                 <img
                     className={styles["image-background"]}
-                    src={`https://bungie.net${emblemBackgroundPath}`}
+                    src={`${emblemBackgroundPath}`}
                     alt=""
                 />
             </div>
             <div className={styles["profile-details"]}>
                 <img
-                    src={
-                        "https://bungie.net" +
-                        (userInfo.iconPath ?? "/img/profile/avatars/default_avatar.gif")
-                    }
+                    src={`${userIcon}`}
                     alt=""
                 />
                 <div className={styles["profile-username"]}>
