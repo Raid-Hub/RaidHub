@@ -2,6 +2,7 @@ import React from "react"
 import styles from "../styles/footer.module.css"
 import { Socials } from "../util/socials"
 import Link from "next/link"
+import manifest from "../../public/manifest.json"
 
 type FooterProps = {}
 
@@ -23,11 +24,12 @@ const contactIcons: { url: string; id: Socials }[] = [
 ]
 
 const Footer = ({}: FooterProps) => {
+    const { version } = manifest
     return (
         <footer id={styles["footer"]}>
             <div className={styles["footer-left"]}>
                 <p>Copyright © 2023 RaidHub. All rights reserved.</p>
-                <p>RaidHub v2023.X.X</p>
+                <p>RaidHub v{version}</p>
             </div>
             <div className={styles["footer-mid"]}>
                 <div className={styles["contact-text"]}>Contact us</div>
