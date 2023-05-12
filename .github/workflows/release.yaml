@@ -20,16 +20,13 @@ jobs:
                     exit 1
                   fi
 
-            - name: Checkout code
-              uses: actions/checkout@v3
-              # with:
-              #     ref: develop
-
             - name: Init repo
               run: |
+                  git config --global user.email "release@raidhub.app"
+                  git config --global user.name "RaidHub Release Bot"
+                  git clone -b version-pipeline https://github.com/Raid-Hub/RaidHub-Website.git
+                  cd RaidHub-Website
                   git fetch origin
-                  git config --local user.email "release@raidhub.app"
-                  git config --local user.name "RaidHub Release Bot"
 
             - name: Bump version
               run: |
@@ -41,6 +38,12 @@ jobs:
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
+                  git push origin version-pipeline
+
+            - name: Merge to main
+              run: |
+                  git checkout origin/test-main
+                  git merge --squash -s theirs version-pipeline -m "Release v$VERSION"
                   git push origin test-main
 
             - name: Create release
