@@ -32,7 +32,7 @@ jobs:
 
             - name: Commit changes
               run: |
-                  git config --system --add safe.directory /github/workspace
+                  git config --local --add safe.directory /github/workspace
                   git config --local user.email "release@raidhub.app"
                   git config --local user.name "RaidHub Release Bot"
                   git add package.json
