@@ -42,7 +42,7 @@ jobs:
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
                   git push
-                  git push origin test-main
+                  git push --set-upstream origin test-main
 
             - name: Create release
               uses: actions/create-release@v1
