@@ -30,6 +30,7 @@ jobs:
 
             - name: Bump version
               run: |
+                  ls
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
 
