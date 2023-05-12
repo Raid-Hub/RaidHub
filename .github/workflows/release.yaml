@@ -40,6 +40,7 @@ jobs:
 
             - name: Merge into main
               run: |
+                  git fetch
                   git checkout test-main
                   git merge --ff-only ${{ github.ref }}
                   git push -f origin test-main
