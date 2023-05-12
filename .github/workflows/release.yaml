@@ -23,10 +23,12 @@ jobs:
             - name: Init repo
               run: |
                   git config --global credential.helper store
+                  git config --global user.email "you@example.com"
+                  git config --global user.name "Your Name"
                   git clone https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
                   cd RaidHub-Website
                   git fetch origin
-                  git checkout origin/version-pipeline
+                  git checkout version-pipeline
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   git add package.json
