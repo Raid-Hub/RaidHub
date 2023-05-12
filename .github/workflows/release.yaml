@@ -40,8 +40,9 @@ jobs:
 
             - name: Merge into main
               run: |
-                  git fetch
-                  git push origin --force version-pipeline:test-main
+                  git checkout test-main
+                  git merge --ff-only ${{ github.ref }}
+                  git push -f origin test-main
 
             - name: Create release
               uses: actions/create-release@v1
@@ -55,6 +56,3 @@ jobs:
                       $(git log --pretty=format:"%s" develop --not main)
                   draft: false
                   prerelease: false
-
-            # - name: Push changes
-            #   run: git push REMOTE --all
