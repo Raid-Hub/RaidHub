@@ -39,20 +39,12 @@ jobs:
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
 
-            - name: Push changes to develop
-              uses: ad-m/github-push-action@v0.5.0
+            - name: Merge develop into main
+              uses: devmasx/merge-branch@master
               with:
-                  # branch: develop
-                  branch:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Merge changes into main
-              uses: ad-m/github-push-action@v0.5.0
-              with:
-                  # branch: main
-                  branch: test-main
-                  base_branch: develop
-                  force: true
+                  type: now
+                  target_branch: test-main
+                  message: Merge develop into main for v$VERSION
                   github_token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Create release
@@ -67,3 +59,6 @@ jobs:
                       $(git log --pretty=format:"%s" develop --not main)
                   draft: false
                   prerelease: false
+
+            # - name: Push changes
+            #   run: git push REMOTE --all
