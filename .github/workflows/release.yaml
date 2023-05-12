@@ -22,17 +22,18 @@ jobs:
 
             - name: Init repo
               run: |
-                  git clone -b version-pipeline https://github.com/Raid-Hub/RaidHub-Website.git
-                  cd RaidHub-Website
-                  git config --local user.name "${GITHUB_ACTOR}"
-                  git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+                  mkdir RaidHub
+                  cd RaidHub
+                  git init
+                  git config --global credential.helper store
+                  git remote add origin https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
+                  echo https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
                   git fetch origin
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
-                  git config --list --show-origin
                   git push origin version-pipeline
                   git checkout origin/test-main
                   git merge --squash -s theirs version-pipeline -m "Release v$VERSION"
