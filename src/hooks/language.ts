@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react"
 import { isSupported, SupportedLanguage } from "../util/localized-strings"
 
-export function useLanguage(): SupportedLanguage {
+type UseLanguage = {
+    language: SupportedLanguage
+    locale: string
+}
+
+export function useLanguage(): UseLanguage {
     const [language, setLanguage] = useState<SupportedLanguage | null>(null)
+    const [locale, setLocale] = useState<string | null>(null)
 
     useEffect(() => {
-        const lang = new Intl.DisplayNames([navigator.language], {
+        const navLocale = navigator.language
+        const lang = new Intl.DisplayNames([navLocale], {
             type: "language"
-        }).of(navigator.language)
+        }).of(navLocale)
         if (lang && isSupported(lang)) {
             setLanguage(lang as SupportedLanguage)
         }
+        setLocale(navLocale)
     }, [])
 
-    return language ?? SupportedLanguage.ENGLISH
+    return { language: language ?? SupportedLanguage.ENGLISH, locale: locale ?? "en-US" }
 }
