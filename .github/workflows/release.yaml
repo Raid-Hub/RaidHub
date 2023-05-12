@@ -22,42 +22,31 @@ jobs:
 
             - name: Init repo
               run: |
-                  git config --global user.email "release@raidhub.app"
-                  git config --global user.name "RaidHub Release Bot"
+                  git config --global user.name "${GITHUB_ACTOR}"
+                  git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
                   git clone -b version-pipeline https://github.com/Raid-Hub/RaidHub-Website.git
                   cd RaidHub-Website
                   git fetch origin
-
-            - name: Bump version
-              run: |
-                  cd RaidHub-Website
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
-
-            - name: Commit changes
-              run: |
-                  cd RaidHub-Website
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
+                  git config --list --show-origin
                   git push origin version-pipeline
-
-            - name: Merge to main
-              run: |
-                  cd RaidHub-Website
                   git checkout origin/test-main
                   git merge --squash -s theirs version-pipeline -m "Release v$VERSION"
                   git push origin test-main
 
-            - name: Create release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  tag_name: $VERSION
-                  release_name: Release v$VERSION
-                  body: |
-                      Changes in this release:
-                      $(git log --pretty=format:"%s" develop --not main)
-                  draft: false
-                  prerelease: false
+            # - name: Create release
+            #   uses: actions/create-release@v1
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #       tag_name: $VERSION
+            #       release_name: Release v$VERSION
+            #       body: |
+            #           Changes in this release:
+            #           $(git log --pretty=format:"%s" develop --not main)
+            #       draft: false
+            #       prerelease: false
