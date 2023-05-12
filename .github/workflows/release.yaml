@@ -30,7 +30,8 @@ jobs:
 
             - name: Bump version
               run: |
-                  VERSION=$(./RaidHub-Website/bump.sh)
+                  cd RaidHub-Website
+                  VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
 
             - name: Commit changes
