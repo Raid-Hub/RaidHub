@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - version-pipeline
+            # - develop
     schedule:
         - cron: "0 8 * * 1"
     workflow_dispatch:
@@ -12,7 +13,6 @@ jobs:
     bump-and-release:
         runs-on: ubuntu-latest
         # if: |
-        #     github.event_name == 'workflow_dispatch' &&
         #     startsWith(github.ref, 'refs/heads/develop')
         steps:
             - name: Check if user is a repo admin
@@ -43,7 +43,7 @@ jobs:
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
-                  # git push origin version-pipeline
+                  # git push origin develop
                   git checkout test-main
                   git merge --squash -X theirs version-pipeline
                   git commit -m "Release v$VERSION"
@@ -56,9 +56,9 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   tag_name: $VERSION
-                  release_name: Test Release v$VERSION
+                  release_name: "Test Release v$VERSION"
                   body: |
                       Changes in this release:
-                      $(git log --pretty=format:"%s" develop --not main)
+                      "$(git log --pretty=format:"%s" develop --not main)"
                   draft: false
                   prerelease: false
