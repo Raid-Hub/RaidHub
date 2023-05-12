@@ -2,9 +2,6 @@ name: Version Bump and Release
 
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - version-pipeline
 
 jobs:
     bump-and-release:
