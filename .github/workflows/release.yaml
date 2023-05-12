@@ -29,26 +29,39 @@ jobs:
                   eval "$(ssh-agent -s)"
                   ssh-add ~/.ssh/id_ed25519
 
-            - name: Go
+            - name: Config
               run: |
                   git config --global credential.helper store
                   git config --global user.email "release_bot@raidhub.app"
                   git config --global user.name "Your Name"
+            - name: Clone Repo
+              run: |
                   git clone git@github.com:Raid-Hub/RaidHub-Website.git
                   cd RaidHub-Website
                   git fetch origin
                   git checkout version-pipeline
+            - name: Bump Version
+              run: |
+                  cd RaidHub-Website
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
                   # git push origin develop
+
+            - name: Merge to Main
+              run: |
+                  cd RaidHub-Website
                   git checkout test-main
                   git merge --squash -X theirs version-pipeline
                   git commit -m "Release v$VERSION"
                   git reset --hard HEAD
                   git push origin test-main
+
+            - name: Create Tag
+              run: |
+                  cd RaidHub-Website
                   git checkout main
                   git tag -a v$VERSION main -m "$(git log --pretty=format:"%s" develop --not main)"
                   git push --tags
