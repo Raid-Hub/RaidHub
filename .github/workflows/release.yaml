@@ -27,7 +27,6 @@ jobs:
 
             - name: Init repo
               run: |
-                  git remote add origin https://github.com/Raid-Hub/RaidHub-Website.git
                   git fetch origin
                   git config --local user.email "release@raidhub.app"
                   git config --local user.name "RaidHub Release Bot"
