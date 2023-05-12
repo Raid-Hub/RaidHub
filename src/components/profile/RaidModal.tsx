@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Link from "next/link"
 import styles from "../../styles/profile.module.css"
 import { Raid, RaidCardBackground } from "../../util/raid"
@@ -38,6 +39,9 @@ const RaidModal = ({
 }: RaidModalProps) => {
     const { locale } = useLanguage()
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, [Prefs.FILTER])
+    const [showDiv, setShowDiv] = useState(false);
+    const [activityDurationSeconds, setActivityDurationSeconds] = useState(0);
+    const [divPosition, setDivPosition] = useState({});
     return (
         <div className={styles["raid-card"]}>
             <div className={styles["raid-card-img-container"]}>
@@ -71,8 +75,13 @@ const RaidModal = ({
             <div className={styles["raid-card-content"]}>
                 <div className={styles["graph-content"]}>
                     <DotGraph
+                        divPosition={divPosition}
+                        setDivPosition={setDivPosition}
+                        showDiv={showDiv}
+                        setShowDiv={setShowDiv}
                         dots={activities.filter(prefs?.[Prefs.FILTER] ?? (() => true))}
                         isLoading={isLoadingDots}
+                        setActivityDurationSeconds={setActivityDurationSeconds}
                     />
                     <div className={styles["graph-count"]}>
                         <div className={styles["graph-number-img"]}>
@@ -132,8 +141,33 @@ const RaidModal = ({
                     </div>
                 </div>
             </div>
+            {showDiv && <div className={styles["tooltip"]} style={{ position: 'absolute', top: divPosition.top, left: divPosition.left }}>
+                <div className={styles["tooltip-content"]}>
+                    <div className={styles["tooltip-top"]}>
+                        <p><i className={`${styles["error-color"]} material-icons`} style={{ fontSize: 10 }}>cancel</i> {formatTime(activityDurationSeconds)}</p>
+                    </div>
+                    <div className={styles["tooltip-bottom"]}>
+                        <p><small> (10m ago)</small></p>
+                    </div>
+                </div>
+            </div>}
         </div>
     )
 }
 
+function formatTime(seconds: number) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secondsLeft = seconds % 60;
+  
+    // Add leading zero to single digit values
+    const formattedHours = hours.toString();
+    const formattedMinutes = minutes.toString();
+    const formattedSeconds = secondsLeft.toString();
+  
+    if (hours != 0) {
+        return `${formattedHours}h ${formattedMinutes}m ${formattedSeconds}s`;
+    }
+    return `${formattedMinutes}m ${formattedSeconds}s`;
+  }
 export default RaidModal

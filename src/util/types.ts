@@ -101,6 +101,8 @@ export interface IRaidStats {
 export type Placement = { number: number; activityId: string }
 export type RaidTag = { string: string; activityId: string; flawless: boolean }
 export type X = {
+    profilePicture: string | null
+    bannerPicture: string | null
     pinnedActivity: string | null
     socials: ProfileSocialData[]
     background: string | null

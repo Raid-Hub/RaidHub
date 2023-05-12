@@ -2,6 +2,11 @@ import { RGBA } from "./types"
 
 export function formattedNumber(num: number, locale: string): string {
     return num.toLocaleString(locale)
+  
+const locale = () => global.locale;
+
+export function formattedNumber(num: number): string {
+    return num.toLocaleString(locale())
 }
 
 export function toCustomDateString(date: Date, locale: string): string {
