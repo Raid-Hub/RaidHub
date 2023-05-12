@@ -14,7 +14,7 @@ type PinnedActivityProps = {
 
 const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
     const { activity, loadingState: pgcrLoadingState } = usePGCR(activityId)
-    const language = useLanguage()
+    const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     if (pgcrLoadingState)
         return (
@@ -42,7 +42,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
                             <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
                         </div>
                         <div className={styles["card-header-subtext"]}>
-                            <p>{toCustomDateString(activity.completionDate)}</p>
+                            <p>{toCustomDateString(activity.completionDate, locale)}</p>
 
                             <div className={styles["card-header-time"]}>
                                 <img src={Icons.SPEED} alt="" width="20px" height="20px" />
