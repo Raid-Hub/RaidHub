@@ -40,7 +40,9 @@ jobs:
                   git commit -m "Release version bump $VERSION"
                   git push origin version-pipeline
                   git checkout test-main
-                  git merge --squash -X theirs version-pipeline -m "Release v$VERSION"
+                  git merge --squash -X theirs version-pipeline
+                  git commit -m "Release v$VERSION"
+                  git reset --hard HEAD
                   git push origin test-main
 
             # - name: Create release
