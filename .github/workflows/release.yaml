@@ -19,13 +19,20 @@ jobs:
                     echo "Only repo admins can run this action."
                     exit 1
                   fi
+            - name: Set up SSH
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
+                  eval "$(ssh-agent -s)"
+                  ssh-add ~/.ssh/id_ed25519
 
             - name: Init repo
               run: |
                   git config --global credential.helper store
-                  git config --global user.email "you@example.com"
+                  git config --global user.email "release_bot@raidhub.app"
                   git config --global user.name "Your Name"
-                  git clone https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
+                  git clone git@github.com:Raid-Hub/RaidHub-Website.git
                   cd RaidHub-Website
                   git fetch origin
                   git checkout version-pipeline
