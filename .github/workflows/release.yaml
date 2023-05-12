@@ -22,7 +22,8 @@ jobs:
 
             - name: Checkout code
               uses: actions/checkout@v3
-              # with:
+              with:
+                  set-safe-directory: /github/workspace
               #     ref: develop
 
             - name: Bump version
@@ -32,7 +33,6 @@ jobs:
 
             - name: Commit changes
               run: |
-                  git config --local --add safe.directory /github/workspace
                   git config --local user.email "release@raidhub.app"
                   git config --local user.name "RaidHub Release Bot"
                   git add package.json
