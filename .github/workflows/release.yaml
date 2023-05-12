@@ -1,10 +1,6 @@
 name: Version Bump and Release
 
 on:
-    push:
-        branches:
-            - version-pipeline
-            # - develop
     schedule:
         - cron: "0 8 * * 1"
     workflow_dispatch:
@@ -12,8 +8,8 @@ on:
 jobs:
     bump-and-release:
         runs-on: ubuntu-latest
-        # if: |
-        #     startsWith(github.ref, 'refs/heads/develop')
+        if: |
+            startsWith(github.ref, 'refs/heads/develop')
         steps:
             - name: Check if user is a repo admin
               run: |
@@ -33,32 +29,32 @@ jobs:
               run: |
                   git config --global credential.helper store
                   git config --global user.email "release_bot@raidhub.app"
-                  git config --global user.name "Your Name"
+                  git config --global user.name "Release Action"
             - name: Clone Repo
               run: |
                   git clone git@github.com:Raid-Hub/RaidHub-Website.git
                   cd RaidHub-Website
                   git fetch origin
-                  git checkout version-pipeline
             - name: Bump Version
               run: |
                   cd RaidHub-Website
+                  git checkout develop
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   echo "VERSION=$VERSION" >> $GITHUB_ENV
                   git add package.json
                   git add public/manifest.json
-                  git commit -m "Release version bump $VERSION"
-                  # git push origin develop
+                  git commit -m "Bump $VERSION"
+                  git push origin develop
 
             - name: Merge to Main
               run: |
                   cd RaidHub-Website
-                  git checkout test-main
-                  git merge --squash -X theirs version-pipeline
+                  git checkout main
+                  git merge --squash -X theirs develop
                   git commit -m "Release v$VERSION"
                   git reset --hard HEAD
-                  git push origin test-main
+                  git push origin main
 
             - name: Create Tag
               run: |
