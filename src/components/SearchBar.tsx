@@ -20,7 +20,7 @@ const SearchBar = ({}: SearchBarProps) => {
         isLoading: isLoadingResults,
         doExactSearch,
         isPerformingExactSearch
-    } = useSearch(query)
+    } = useSearch({ query, errorHandler: () => {} /** TODO: Handle search bar errors */ })
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
 

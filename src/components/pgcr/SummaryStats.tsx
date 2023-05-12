@@ -10,7 +10,7 @@ type SummaryStatsProps = {
 }
 
 const SummaryStats = ({ activity }: SummaryStatsProps) => {
-    const language = useLanguage()
+    const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const stats = activity?.stats
     const statsData: {
@@ -26,27 +26,27 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         {
             icon: Icons.KILLS,
             name: strings.totalKills,
-            value: formattedNumber(stats?.totalKills ?? 0)
+            value: formattedNumber(stats?.totalKills ?? 0, locale)
         },
         {
             icon: Icons.DEATHS,
             name: strings.totalDeaths,
-            value: formattedNumber(stats?.totalDeaths ?? 0)
+            value: formattedNumber(stats?.totalDeaths ?? 0, locale)
         },
         {
             icon: Icons.ASSISTS,
             name: strings.totalAssists,
-            value: formattedNumber(stats?.totalAssists ?? 0)
+            value: formattedNumber(stats?.totalAssists ?? 0, locale)
         },
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
-            value: formattedNumber(stats?.killsTypeRatio.ability ?? 0) + "%"
+            value: formattedNumber(stats?.killsTypeRatio.ability ?? 0, locale) + "%"
         },
         {
             icon: Icons.UNKNOWN,
             name: strings.killsPerMinute,
-            value: formattedNumber(stats?.killsPerMinute ?? 0)
+            value: formattedNumber(stats?.killsPerMinute ?? 0, locale)
         },
         {
             icon: Icons.UNKNOWN,

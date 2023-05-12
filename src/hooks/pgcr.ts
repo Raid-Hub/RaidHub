@@ -5,28 +5,38 @@ import {
 import { useEffect, useState } from "react"
 import Activity from "../models/pgcr/Activity"
 import { shared as client } from "../util/http/bungie"
-import { Loading } from "../util/types"
+import { ErrorHandler, Loading } from "../util/types"
 import PGCRMember from "../models/pgcr/Member"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
+type UsePGCRParams = {
+    activityId: string | null | undefined
+    errorHandler: ErrorHandler
+}
 type UsePGCR = {
     members: PGCRMember[] | null
     activity: Activity | null
     loadingState: Loading
 }
 
-export function usePGCR(activityId: string | null | undefined): UsePGCR {
+export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
 
     useEffect(() => {
         setLoading(Loading.LOADING)
         const getPGCR = async () => {
-            const pgcr = await client.getPGCR(activityId!)
-            setLoading(Loading.HYDRATING)
-            setPGCR(pgcr)
-            const hydratedPGCR = await client.validatePGCR(pgcr)
-            setPGCR(hydratedPGCR)
-            setLoading(Loading.FALSE)
+            try {
+                const pgcr = await client.getPGCR(activityId!)
+                setPGCR(pgcr)
+                setLoading(Loading.HYDRATING)
+                const hydratedPGCR = await client.validatePGCR(pgcr)
+                setPGCR(hydratedPGCR)
+            } catch (e) {
+                CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
+            } finally {
+                setLoading(Loading.FALSE)
+            }
         }
 
         if (activityId) getPGCR()

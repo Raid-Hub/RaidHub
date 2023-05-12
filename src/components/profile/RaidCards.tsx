@@ -41,7 +41,7 @@ const RaidCards = ({
     isLoadingRaidMetrics,
     errorHandler
 }: RaidCardsProps) => {
-    const language = useLanguage()
+    const { language } = useLanguage()
     const { prefs, isLoading: isLoadingPrefs } = usePrefs(membershipId, [Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
         membershipId,

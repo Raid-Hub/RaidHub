@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { ACTIVITIES_PER_PAGE, shared as client } from "../util/http/bungie"
 import { Raid, raidDetailsFromHash } from "../util/raid"
 import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../util/types"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
 type UseActivityHistoryParams = {
     membershipId: string
@@ -70,7 +71,7 @@ export function useActivityHistory({
                 )
                 setActivities(dict)
             } catch (e) {
-                errorHandler(e)
+                CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory)
             } finally {
                 setLoading(false)
             }

@@ -93,7 +93,10 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
             </section>
             <section className={styles["content"]}>
                 <div className={styles["mid"]}>
-                    <PinnedActivity activityId={profile?.pinnedActivity} />
+                    <PinnedActivity
+                        activityId={profile?.pinnedActivity}
+                        errorHandler={errorHandler}
+                    />
                     <div className={styles["layout-toggle"]}>
                         <span className={styles["description-toggle"]}>Raids</span>
                         <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />

@@ -7,14 +7,16 @@ import { RaidBanner } from "../../util/raid"
 import Loading from "../Loading"
 import { Icons } from "../../util/icons"
 import { toCustomDateString } from "../../util/formatting"
+import { ErrorHandler } from "../../util/types"
 
 type PinnedActivityProps = {
     activityId?: string | null
+    errorHandler: ErrorHandler
 }
 
-const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
-    const { activity, loadingState: pgcrLoadingState } = usePGCR(activityId)
-    const language = useLanguage()
+const PinnedActivity = ({ activityId, errorHandler }: PinnedActivityProps) => {
+    const { activity, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+    const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     if (pgcrLoadingState)
         return (
@@ -42,7 +44,7 @@ const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
                             <p className={styles["card-header-title"]}>{activity.title(strings)}</p>
                         </div>
                         <div className={styles["card-header-subtext"]}>
-                            <p>{toCustomDateString(activity.completionDate)}</p>
+                            <p>{toCustomDateString(activity.completionDate, locale)}</p>
 
                             <div className={styles["card-header-time"]}>
                                 <img src={Icons.SPEED} alt="" width="20px" height="20px" />

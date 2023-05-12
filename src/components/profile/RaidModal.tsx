@@ -11,6 +11,7 @@ import { usePrefs } from "../../hooks/prefs"
 import { Prefs } from "../../util/preferences"
 import { Placement, RaidTag } from "../../util/types"
 import { formattedNumber } from "../../util/formatting"
+import { useLanguage } from "../../hooks/language"
 
 type RaidModalProps = {
     placement: Placement | undefined
@@ -35,6 +36,7 @@ const RaidModal = ({
     isLoadingDots,
     isLoadingStats
 }: RaidModalProps) => {
+    const { locale } = useLanguage()
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, [Prefs.FILTER])
     return (
         <div className={styles["raid-card"]}>
@@ -76,7 +78,7 @@ const RaidModal = ({
                         <div className={styles["graph-number-img"]}>
                             {!isLoadingStats && stats ? (
                                 <p className={styles["graph-number"]}>
-                                    {formattedNumber(stats.totalClears)}
+                                    {formattedNumber(stats.totalClears, locale)}
                                 </p>
                             ) : (
                                 <div className={styles["number-loading"]}>
