@@ -25,6 +25,13 @@ jobs:
               # with:
               #     ref: develop
 
+            - name: Init repo
+              run: |
+                  git remote add origin https://github.com/Raid-Hub/RaidHub-Website.git
+                  git fetch origin
+                  git config --local user.email "release@raidhub.app"
+                  git config --local user.name "RaidHub Release Bot"
+
             - name: Bump version
               run: |
                   VERSION=$(./bump.sh)
@@ -32,15 +39,12 @@ jobs:
 
             - name: Commit changes
               run: |
-                  git config --local user.email "release@raidhub.app"
-                  git config --local user.name "RaidHub Release Bot"
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
 
             - name: Merge into main
               run: |
-                  git fetch
                   git checkout test-main
                   git merge version-pipeline --strategy-option theirs
                   git push -f origin test-main
