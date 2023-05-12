@@ -12,7 +12,7 @@ type ActivityHeaderProps = {
 }
 
 const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHeaderProps) => {
-    const language = useLanguage()
+    const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
@@ -23,7 +23,7 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
                             {!pgcrLoadingState && activity
-                                ? toCustomDateString(activity.completionDate)
+                                ? toCustomDateString(activity.completionDate, locale)
                                 : pgcrLoadingState === Loading.LOADING
                                 ? "Loading..."
                                 : "Hydrating..."}
