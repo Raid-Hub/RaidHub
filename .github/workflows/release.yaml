@@ -42,7 +42,7 @@ jobs:
               run: |
                   git fetch
                   git checkout test-main
-                  git merge --ff-only version-pipeline
+                  git merge version-pipeline --strategy-option theirs
                   git push -f origin test-main
 
             - name: Create release
