@@ -22,8 +22,7 @@ jobs:
 
             - name: Checkout code
               uses: actions/checkout@v3
-              with:
-                  set-safe-directory: /github/workspace
+              # with:
               #     ref: develop
 
             - name: Bump version
@@ -39,13 +38,11 @@ jobs:
                   git add public/manifest.json
                   git commit -m "Release version bump $VERSION"
 
-            - name: Merge develop into main
-              uses: devmasx/merge-branch@master
-              with:
-                  type: now
-                  target_branch: test-main
-                  message: Merge develop into main for v$VERSION
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Merge into main
+              run: |
+                  git checkout test-main
+                  git reset --hard version-pipeline
+                  git push origin --all
 
             - name: Create release
               uses: actions/create-release@v1
