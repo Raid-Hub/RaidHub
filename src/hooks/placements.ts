@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { fetchActivityPlacements } from "../util/http/raid-hub"
 import { ActivityPlacements, ErrorHandler } from "../util/types"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 type UsePlacementsParams = {
     activityId: string
     errorHandler: ErrorHandler
@@ -16,10 +17,18 @@ export function usePlacements({ activityId, errorHandler }: UsePlacementsParams)
 
     useEffect(() => {
         setLoading(true)
-        fetchActivityPlacements(activityId)
-            .then(placements => setPlacements(placements))
-            .catch(errorHandler)
-            .finally(() => setLoading(false))
+        getPlacements()
+
+        async function getPlacements() {
+            try {
+                const placements = await fetchActivityPlacements(activityId)
+                setPlacements(placements)
+            } catch (e) {
+                CustomError.handle(errorHandler, e, ErrorCode.Placements)
+            } finally {
+                setLoading(false)
+            }
+        }
     }, [activityId])
     return { placements, isLoading }
 }

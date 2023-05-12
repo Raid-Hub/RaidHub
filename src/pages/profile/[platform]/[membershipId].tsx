@@ -1,18 +1,9 @@
 import { shared as bungieClient } from "../../../util/http/bungie"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import Profile from "../../../components/profile/Profile"
 import { InitialProfileProps } from "../../../util/types"
-import Custom404 from "../../404"
-import { useState } from "react"
-import ErrorComponent from "../../../components/Error"
+import ProfileWrapper from "../../../components/profile/ProfileWrapper"
 
-const StandardProfile = ({ bungieNetProfile, errorString }: InitialProfileProps) => {
-    const [error, setError] = useState<Error | null>(errorString ? new Error(errorString) : null)
-    if (error) return <ErrorComponent error={error} />
-    else if (bungieNetProfile) return <Profile {...bungieNetProfile} errorHandler={setError} />
-    else return <div>UH OH</div>
-}
-
+export default ProfileWrapper
 export async function getServerSideProps({
     params
 }: {
@@ -39,5 +30,3 @@ export async function getServerSideProps({
         }
     }
 }
-
-export default StandardProfile

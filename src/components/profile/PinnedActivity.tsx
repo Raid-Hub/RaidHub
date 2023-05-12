@@ -7,13 +7,15 @@ import { RaidBanner } from "../../util/raid"
 import Loading from "../Loading"
 import { Icons } from "../../util/icons"
 import { toCustomDateString } from "../../util/formatting"
+import { ErrorHandler } from "../../util/types"
 
 type PinnedActivityProps = {
     activityId?: string | null
+    errorHandler: ErrorHandler
 }
 
-const PinnedActivity = ({ activityId }: PinnedActivityProps) => {
-    const { activity, loadingState: pgcrLoadingState } = usePGCR(activityId)
+const PinnedActivity = ({ activityId, errorHandler }: PinnedActivityProps) => {
+    const { activity, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
     const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     if (pgcrLoadingState)

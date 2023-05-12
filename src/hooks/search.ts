@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { shared as client } from "../util/http/bungie"
-import { CustomBungieSearchResult } from "../util/types"
+import { CustomBungieSearchResult, ErrorHandler } from "../util/types"
 import { asBungieName, fixBungieCode } from "../util/formatting"
+import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
+type UseSearchParams = {
+    query: string
+    errorHandler: ErrorHandler
+}
 type UseSearch = {
     results: CustomBungieSearchResult[]
     isLoading: boolean
@@ -10,7 +15,7 @@ type UseSearch = {
     isPerformingExactSearch: boolean
 }
 
-export function useSearch(query: string): UseSearch {
+export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isPerformingExactSearch, setIsPerformingExactSearch] = useState<boolean>(false)
     const lastSearch = useRef<number>(Date.now())
@@ -24,8 +29,9 @@ export function useSearch(query: string): UseSearch {
             const { membershipType, membershipId } = await client.searchByBungieName(...bungieName)
             window.location.href = `/profile/${membershipType}/${membershipId}`
         } catch (e) {
+            CustomError.handle(errorHandler, e, ErrorCode.ExactSearch)
+        } finally {
             setIsPerformingExactSearch(false)
-            throw e
         }
     }
 

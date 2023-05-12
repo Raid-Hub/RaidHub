@@ -7,15 +7,32 @@ import { Backdrop, Raid, Short } from "../../util/raid"
 import { usePGCR } from "../../hooks/pgcr"
 import { usePlacements } from "../../hooks/placements"
 import Head from "next/head"
+import { NextPage } from "next"
+import ErrorComponent from "../../components/Error"
 
 type PGCRProps = {
     activityId: string
 }
 
-const PGCR = ({ activityId }: PGCRProps) => {
+const PGCR: NextPage<PGCRProps> = ({ activityId }) => {
     const [error, setError] = useState<Error | null>(null)
-    const { activity, members, loadingState: pgcrLoadingState } = usePGCR(activityId)
+    const {
+        activity,
+        members,
+        loadingState: pgcrLoadingState
+    } = usePGCR({ activityId, errorHandler: setError })
     const { placements } = usePlacements({ activityId, errorHandler: setError })
+
+    if (error) {
+        return (
+            <ErrorComponent
+                error={error}
+                title={
+                    activity?.raid ? `${Short[activity.raid]} ${activityId} | RaidHub` : "RaidHub"
+                }
+            />
+        )
+    }
 
     return (
         <main className={styles["main"]}>

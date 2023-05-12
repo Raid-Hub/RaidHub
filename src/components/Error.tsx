@@ -3,6 +3,7 @@ import styles from "../styles/errors.module.css"
 
 type ErrorProps = {
     error: Error
+    title: string
 }
 
 const ErrorComponent = ({ error }: ErrorProps) => (
