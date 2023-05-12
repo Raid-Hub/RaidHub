@@ -28,7 +28,7 @@ jobs:
                   git config --global credential.helper store
                   git remote add origin https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
                   echo https://${{ secrets.RELEASE_USERNAME }}:${{ secrets.RELEASE_PASSWORD }}@github.com/Raid-Hub/RaidHub-Website.git
-                  git fetch origin
+                  git checkout origin/version-pipeline
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   git add package.json
