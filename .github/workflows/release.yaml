@@ -50,5 +50,5 @@ jobs:
                   git reset --hard HEAD
                   git push origin test-main
                   git checkout main
-                  git tag -a v$VERSION main -m "Release version $VERSION"
-                  git push --follow-tags
+                  git tag -a v$VERSION main -m "$(git log --pretty=format:"%s" develop --not main)"
+                  git push --tags
