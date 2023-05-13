@@ -23,13 +23,6 @@
     color: white;
 }
 
-@media only screen and (orientation: portrait) {
-    .summary-card {
-        min-width: 300px;
-        max-width: 95%;
-    }
-}
-
 .activity-card-header-container {
     margin-bottom: 10px;
 }
@@ -77,13 +70,14 @@
 
 .duration {
     flex-grow: 1;
-    font-style: oblique;
-    font-size: x-large;
     display: flex;
+    flex-wrap: wrap;
     justify-content: right;
 }
 
 .duration > span {
+    font-style: oblique;
+    font-size: x-large;
     margin: 0.2rem;
 }
 
@@ -107,7 +101,7 @@
 }
 
 .tags-container {
-    flex-basis: 50%;
+    flex-basis: 100%;
     padding: 5px;
 
     display: flex;
@@ -506,8 +500,18 @@
 
 /* adjust entry grid for mobile */
 @media only screen and (orientation: portrait) {
+    .raid-name > span {
+        font-size: x-large;
+    }
+
+    .duration > span {
+        font-size: large;
+    }
     .members {
         grid-template-columns: 1fr;
+    }
+    .summary-card {
+        min-width: 300px;
     }
     .entry-card {
         height: 69px;
