@@ -61,6 +61,7 @@
 
 .right-info {
     flex-grow: 1;
+    flex-shrink: 0;
     padding-top: 10px;
     padding-right: 10px;
     margin-left: 5px;
@@ -89,7 +90,7 @@
 
 .cp-error {
     min-width: 40%;
-    max-width: 70%;
+    max-width: 65%;
 }
 
 .cp-error > p {
@@ -99,7 +100,6 @@
 }
 
 .tags-container {
-    flex-basis: 100%;
     padding: 5px;
 
     display: flex;
@@ -111,11 +111,11 @@
 .tag {
     margin: auto 0;
 
-    border: 2px solid var(--border);
+    border: 1px solid var(--border);
     border-radius: 6px;
 
     padding: 4px 7px;
-    background-color: rgb(125, 168, 65);
+    background-color: rgba(235, 142, 36, 0.781);
 
     font-size: large;
     white-space: nowrap;
@@ -155,8 +155,6 @@
     width: 100%;
     height: 100%;
 
-    /* border-radius: inherit; */
-
     background-color: var(--modal-background);
     opacity: 0.9;
     overflow: hidden;
@@ -165,8 +163,6 @@
 .emblem img {
     filter: brightness(0.9) blur(1px);
     max-height: 100%;
-
-    border-radius: 15px;
 }
 
 .member-card {
@@ -327,7 +323,7 @@
 
 .members-header {
     display: flex;
-    gap: 0.7em;
+    gap: 1em;
     flex-direction: row;
     flex-wrap: wrap;
 }
@@ -351,11 +347,7 @@
     height: auto;
     flex: 0;
 
-    margin: 2px;
     padding: 0;
-
-    border-radius: 15px;
-    border: 1px solid var(--border);
 
     display: flex;
     flex-direction: row;
@@ -363,6 +355,7 @@
 
     justify-content: space-evenly;
     align-items: center;
+
     gap: 0.8em;
 }
 
@@ -372,6 +365,9 @@
     height: 80px;
 
     background-color: rgba(151, 151, 151, 0.274);
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
 
     display: flex;
     flex-direction: row;
@@ -441,7 +437,7 @@
     min-height: 50px;
     padding: 10px 15px;
 
-    background-color: rgba(78, 9, 9, 0.35);
+    background-color: rgba(26, 0, 0, 0.689);
 
     border-radius: 15px;
     border: 1px solid var(--border);
@@ -520,6 +516,7 @@
     border-color: rgb(214, 246, 255);
 }
 .selectable {
+    transform: translateZ(0); /* Fixes z-index issue w/ safari */
     border-width: 2px;
     transition: transform 0.05s ease-in-out;
 }
@@ -527,6 +524,10 @@
 .selectable:hover {
     transform: scale(1.015);
     cursor: pointer;
+}
+
+.selectable:hover .color-film {
+    background-color: rgba(255, 189, 122, 0.058);
 }
 
 /* adjust entry grid for mobile */
@@ -545,8 +546,8 @@
         height: 69px;
     }
     .class-button {
-        width: 60px;
-        height: 60px;
+        width: 69px;
+        height: 69px;
     }
     .member-profile-link > span {
         display: none;
