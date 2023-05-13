@@ -10,6 +10,7 @@ type MemberCardProps = {
     emblemBackground: string
     memberIndex: number
     updateMemberIndex: (clicked: number) => void
+    characterIndex: number
 }
 
 const MemberCard = ({
@@ -18,7 +19,8 @@ const MemberCard = ({
     raid,
     emblemBackground,
     memberIndex,
-    updateMemberIndex
+    updateMemberIndex,
+    characterIndex
 }: MemberCardProps) => {
     const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member?.didComplete ? "" : styles["dnf"]
@@ -27,7 +29,7 @@ const MemberCard = ({
             key={index}
             className={[
                 styles["soft-rectangle"],
-                styles["entry-card"],
+                styles["selected-entry-card"],
                 styles["selectable"],
                 dynamicCssClass,
                 completionClass
@@ -41,7 +43,11 @@ const MemberCard = ({
             {memberIndex === -1 || !member ? (
                 <StandardMemberCard member={member} />
             ) : (
-                <SelectedMemberCard member={member} />
+                <SelectedMemberCard
+                    member={member}
+                    destinyClasses={member.characterClass}
+                    characterIndex={characterIndex}
+                />
             )}
         </button>
     )
@@ -86,12 +92,25 @@ const StandardMemberCard = ({ member }: { member: PGCRMember | null }) => {
     )
 }
 
-const SelectedMemberCard = ({ member }: { member: PGCRMember }) => {
+const SelectedMemberCard = ({
+    member,
+    destinyClasses,
+    characterIndex
+}: {
+    member: PGCRMember
+    destinyClasses: string[]
+    characterIndex: number
+}) => {
     const displayName = member.displayName ?? member.membershipId
+    const classString =
+        characterIndex != -1 ? destinyClasses[characterIndex] : destinyClasses.join("/")
     return (
         <div className={styles["member-card"]}>
             <div className={[styles["member-name"], styles["centered"]].join(" ")}>
                 <span className={styles["contained-span"]}>{displayName}</span>
+                <span className={[styles["class-name"], styles["contained-span"]].join(" ")}>
+                    {classString}
+                </span>
             </div>
         </div>
     )

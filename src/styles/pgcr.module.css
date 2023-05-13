@@ -6,10 +6,6 @@
     max-width: 1000px;
 }
 
-.main-element {
-    margin: 10px;
-}
-
 .soft-rectangle {
     border-radius: 15px;
     border: var(--border);
@@ -21,7 +17,7 @@
     flex: 1;
     background-color: rgba(30, 30, 30, 0.35);
     min-width: 95%;
-    padding-bottom: 10px;
+    padding: 0.8em;
     position: relative;
 
     color: white;
@@ -35,9 +31,7 @@
 }
 
 .activity-card-header-container {
-    padding: 10px;
-    padding-bottom: 0;
-    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 .activity-card-header-top {
@@ -96,12 +90,14 @@
 .activity-card-header-attributes {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
     gap: 1em;
 }
 
 .cp-error {
-    max-width: 400px;
+    min-width: 50%;
+    max-width: 70%;
 }
 
 .cp-error > p {
@@ -111,6 +107,7 @@
 }
 
 .tags-container {
+    flex-basis: 50%;
     padding: 5px;
 
     display: flex;
@@ -129,10 +126,11 @@
     background-color: rgb(125, 168, 65);
 
     font-size: large;
+    white-space: nowrap;
 }
 
 .members {
-    padding: 10px 20px;
+    margin-top: 10px;
     border-radius: 10px;
     height: auto;
     display: grid;
@@ -169,9 +167,7 @@
 }
 
 .member-card {
-    position: absolute;
     z-index: 1;
-    top: 0;
     width: 100%;
     height: 100%;
 
@@ -256,6 +252,11 @@
     text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.535);
 }
 
+.class-name {
+    font-weight: 100;
+    color: var(--tertiary-text);
+}
+
 .quick-stats-container {
     flex-basis: 50px;
     height: 100%;
@@ -319,27 +320,53 @@
     aspect-ratio: 1/1;
 }
 
-.class-button-container {
-    height: auto;
-    margin: 2px;
+.members-header {
+    display: flex;
+    gap: 0.7em;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.selected-entry-card {
+    flex: 1;
+    min-width: 220px;
+    height: 85px;
+
     overflow: hidden;
     position: relative;
     padding: 0;
+
+    display: flex;
+}
+
+.class-button-container {
+    height: auto;
+    flex: 1;
+
+    margin: 2px;
+    padding: 0;
+
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
+
+    justify-content: space-evenly;
+    gap: 0.8em;
 }
 
 .class-button {
-    margin-right: 10px;
+    padding: 0.5em;
+
+    background-color: rgba(151, 151, 151, 0.274);
+
     display: flex;
     flex-direction: row;
     justify-content: center;
-    background-color: rgba(151, 151, 151, 0.274);
 }
 
 .class-button > img {
-    width: 70px;
-    height: 70px;
+    max-width: 70px;
+    aspect-ratio: 1;
     margin: auto;
 }
 
@@ -347,12 +374,14 @@
     height: 85px;
     flex: 1;
     background-color: rgba(55, 85, 79, 0.287);
+
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .member-profile-link {
+    margin-right: 0.7em;
     display: flex;
     align-items: center;
     justify-content: center;

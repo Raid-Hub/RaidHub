@@ -62,35 +62,47 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                         emblemBackground={emblems?.[member.characterIds[0]] ?? ""}
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}
+                        characterIndex={-1}
                     />
                 ))}
             </div>
         )
     } else {
         return (
-            <div className={[styles["members"], cardLayout].join(" ")}>
-                <MemberCard
-                    member={members[memberIndex] ?? null}
-                    index={memberIndex}
-                    raid={raid}
-                    emblemBackground={emblems?.[members[memberIndex]?.characterIds[0] ?? ""] ?? ""}
-                    memberIndex={memberIndex}
-                    updateMemberIndex={updateMemberIndex}
-                />
-                <div className={styles["class-button-container"]}>
-                    {members?.[memberIndex].characters.map(({ logo }, idx) => (
-                        <button
-                            key={idx}
-                            className={[
-                                styles["soft-rectangle"],
-                                styles["selectable"],
-                                idx === characterIndex ? styles["selected"] : "",
-                                styles["class-button"]
-                            ].join(" ")}
-                            onClick={members ? () => updateCharacterIndex(idx) : undefined}>
-                            <img src={logo} />
-                        </button>
-                    ))}
+            <>
+                <div className={styles["members-header"]}>
+                    <MemberCard
+                        member={members[memberIndex] ?? null}
+                        index={memberIndex}
+                        raid={raid}
+                        emblemBackground={
+                            emblems?.[
+                                members[memberIndex]?.characterIds[
+                                    characterIndex != -1 ? characterIndex : 0
+                                ] ?? ""
+                            ] ?? ""
+                        }
+                        memberIndex={memberIndex}
+                        updateMemberIndex={updateMemberIndex}
+                        characterIndex={characterIndex}
+                    />
+                    {members?.[memberIndex].characters.length > 1 && (
+                        <div className={styles["class-button-container"]}>
+                            {members?.[memberIndex].characters.map(({ logo }, idx) => (
+                                <button
+                                    key={idx}
+                                    className={[
+                                        styles["soft-rectangle"],
+                                        styles["selectable"],
+                                        idx === characterIndex ? styles["selected"] : "",
+                                        styles["class-button"]
+                                    ].join(" ")}
+                                    onClick={members ? () => updateCharacterIndex(idx) : undefined}>
+                                    <img src={logo} />
+                                </button>
+                            ))}
+                        </div>
+                    )}
                     <button
                         className={[
                             styles["member-profile-button"],
@@ -107,11 +119,15 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                         </a>
                     </button>
                 </div>
-                <StatCards
-                    entry={members[memberIndex].characters[characterIndex] ?? members[memberIndex]}
-                    emblemBackground={emblems?.[members[memberIndex]?.characterIds[0]] ?? ""}
-                />
-            </div>
+                <div className={[styles["members"], cardLayout].join(" ")}>
+                    <StatCards
+                        entry={
+                            members[memberIndex].characters[characterIndex] ?? members[memberIndex]
+                        }
+                        emblemBackground={emblems?.[members[memberIndex]?.characterIds[0]] ?? ""}
+                    />
+                </div>
+            </>
         )
     }
 }
