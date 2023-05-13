@@ -1,21 +1,22 @@
 import { useState } from "react"
 import { Raid } from "../../util/raid"
 import { Icons } from "../../util/icons"
-import MemberCard from "./MemberCard"
-import StatCards from "./StatCard"
+import StatCards from "./PlayerStatCards"
 import styles from "../../styles/pgcr.module.css"
 import { useEmblems } from "../../hooks/emblems"
 import { ErrorHandler, Loading } from "../../util/types"
 import PGCRMember from "../../models/pgcr/Member"
+import SelectedPlayer from "./SelectedPlayer"
+import Player from "./Player"
 
-type PGCREntriesProps = {
+type ParticipantsProps = {
     members: PGCRMember[] | null
     raid: Raid
     pgcrLoadingState: Loading
     errorHandler: ErrorHandler
 }
 
-const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
+const Participants = ({ members, errorHandler }: ParticipantsProps) => {
     const { emblems, isLoading: isLoadingEmblems } = useEmblems({
         members: members ?? [],
         errorHandler
@@ -50,31 +51,30 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
             : styles["members-even"]
         : styles["members-even"]
 
+    // standard view
     if (memberIndex === -1 || !members) {
         return (
             <div className={[styles["members"], cardLayout].join(" ")}>
                 {members?.map((member, idx) => (
-                    <MemberCard
+                    <Player
                         key={idx}
                         member={member}
                         index={idx}
-                        raid={raid}
                         emblemBackground={emblems?.[member.characterIds[0]] ?? ""}
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}
-                        characterIndex={-1}
                     />
                 ))}
             </div>
         )
     } else {
+        // selected view
         return (
             <>
                 <div className={styles["members-header"]}>
-                    <MemberCard
+                    <SelectedPlayer
                         member={members[memberIndex] ?? null}
                         index={memberIndex}
-                        raid={raid}
                         emblemBackground={
                             emblems?.[
                                 members[memberIndex]?.characterIds[
@@ -86,9 +86,9 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                         updateMemberIndex={updateMemberIndex}
                         characterIndex={characterIndex}
                     />
-                    {members?.[memberIndex].characters.length > 1 && (
+                    {members[memberIndex].characters.length > 1 && (
                         <div className={styles["class-button-container"]}>
-                            {members?.[memberIndex].characters.map(({ logo }, idx) => (
+                            {members[memberIndex].characters.map(({ logo }, idx) => (
                                 <button
                                     key={idx}
                                     className={[
@@ -97,7 +97,7 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                                         idx === characterIndex ? styles["selected"] : "",
                                         styles["class-button"]
                                     ].join(" ")}
-                                    onClick={members ? () => updateCharacterIndex(idx) : undefined}>
+                                    onClick={() => updateCharacterIndex(idx)}>
                                     <img src={logo} />
                                 </button>
                             ))}
@@ -124,11 +124,10 @@ const PGCREntries = ({ members, raid, errorHandler }: PGCREntriesProps) => {
                         entry={
                             members[memberIndex].characters[characterIndex] ?? members[memberIndex]
                         }
-                        emblemBackground={emblems?.[members[memberIndex]?.characterIds[0]] ?? ""}
                     />
                 </div>
             </>
         )
     }
 }
-export default PGCREntries
+export default Participants

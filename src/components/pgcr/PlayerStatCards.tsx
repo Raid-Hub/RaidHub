@@ -5,12 +5,11 @@ import { LocalizedStrings } from "../../util/localized-strings"
 import PGCREntry from "../../models/pgcr/Entry"
 import { formattedNumber } from "../../util/formatting"
 
-type StatCardProps = {
+type PlayerStatCardProps = {
     entry: PGCREntry
-    emblemBackground: string
 }
 
-const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
+const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
     const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const statsData: {
@@ -81,4 +80,4 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
     )
 }
 
-export default StatCards
+export default PlayerStatCards

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ActivityHeader from "../../components/pgcr/ActivityHeader"
-import PGCREntries from "../../components/pgcr/Entries"
+import PGCREntries from "../../components/pgcr/Participants"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
 import { Backdrop, Raid, Short } from "../../util/raid"
