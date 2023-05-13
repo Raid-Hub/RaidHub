@@ -55,7 +55,7 @@
 .raid-name {
     font-weight: 900;
     font-size: xx-large;
-    line-height: 100%;
+    line-height: 0.75;
     text-transform: uppercase;
 }
 
