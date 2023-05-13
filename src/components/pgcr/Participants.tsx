@@ -92,7 +92,6 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                                 <button
                                     key={idx}
                                     className={[
-                                        styles["soft-rectangle"],
                                         styles["selectable"],
                                         idx === characterIndex ? styles["selected"] : "",
                                         styles["class-button"]
@@ -104,11 +103,9 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                         </div>
                     )}
                     <button
-                        className={[
-                            styles["member-profile-button"],
-                            styles["soft-rectangle"],
-                            styles["selectable"]
-                        ].join(" ")}>
+                        className={[styles["member-profile-button"], styles["selectable"]].join(
+                            " "
+                        )}>
                         <a
                             href={memberProfile()}
                             target="_blank"

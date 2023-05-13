@@ -56,7 +56,7 @@ const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHead
             <div className={styles["activity-card-header-attributes"]}>
                 <div className={styles["tags-container"]}>
                     {activity?.tags(strings).map((tag, idx) => (
-                        <div key={idx} className={[styles["soft-rectangle"], styles.tag].join(" ")}>
+                        <div key={idx} className={styles.tag}>
                             {tag}
                         </div>
                     ))}

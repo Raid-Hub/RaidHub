@@ -29,7 +29,6 @@ const SelectedPlayer = ({
         <button
             key={index}
             className={[
-                styles["soft-rectangle"],
                 styles["selected-entry-card"],
                 styles["selectable"],
                 dynamicCssClass,

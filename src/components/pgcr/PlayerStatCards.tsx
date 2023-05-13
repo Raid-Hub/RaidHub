@@ -53,11 +53,7 @@ const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
             {statsData.map(({ value, name, icon }, key) => (
                 <div
                     key={key}
-                    className={[
-                        styles["soft-rectangle"],
-                        styles["entry-card"],
-                        styles["character-stat"]
-                    ].join(" ")}>
+                    className={[styles["entry-card"], styles["character-stat"]].join(" ")}>
                     <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                     <div className={styles["summary-stat-info"]}>
                         <span

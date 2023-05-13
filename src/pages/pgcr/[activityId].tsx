@@ -41,7 +41,7 @@ const PGCR: NextPage<PGCRProps> = ({ activityId }) => {
                     {activity?.raid ? `${Short[activity.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
-            <section className={[styles["summary-card"], styles["soft-rectangle"]].join(" ")}>
+            <section className={styles["summary-card"]}>
                 <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
                 <ActivityHeader
                     activity={activity}
