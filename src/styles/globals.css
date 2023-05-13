@@ -7,12 +7,12 @@
     --secondary-text: #808080;
     --tertiary-text: rgb(183, 183, 183);
     --border: #5b5b5b;
-    --header-background: #272727;
+    --header-background: #1a171791;
     --scroll-track: #7f7f7f;
-    --search-background: #5a5a5a;
+    --search-background: #2b2b2b6b;
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
-    --modal-background: rgba(0, 0, 0, 0.458);
+    --modal-background: rgba(15, 14, 14, 0.253);
 }
 
 body,
@@ -25,18 +25,8 @@ html {
 }
 
 html {
-    overflow: hidden;
-    background-color: #000000;
-    background-image: linear-gradient(
-        -30deg,
-        #00000000,
-        #f8640231,
-        #620d005e,
-        #00000000,
-        #00000000
-    );
-    background-position: left;
-    background-repeat: repeat;
+    background: black;
+    background: linear-gradient(90deg, rgba(1,0,17,1) 0%, rgba(1,0,17,1) 25%, rgba(23,1,13,1) 48%, rgba(1,0,17,1) 91%, rgba(19,3,1,1) 100%);
     background-size: cover;
 }
 

@@ -1,3 +1,4 @@
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import styles from "../../styles/profile.module.css"
 import { RADIUS, SPACING } from "./DotGraph"
 
@@ -9,26 +10,49 @@ type DotProps = {
     id: string
     completed: boolean
     star: boolean
-    cy: number
+    cy: number,
+    showDiv: any,
+    setShowDiv: any,
+    divPosition: any,
+    setDivPosition: any,
+    setActivityDurationSeconds: any,
+    dot: DestinyHistoricalStatsPeriodGroup
 }
 
-const Dot = ({ idx, id, completed, star, cy }: DotProps) => {
+const Dot = ({ showDiv, setShowDiv, divPosition, setDivPosition, setActivityDurationSeconds, dot, idx, id, completed, star, cy }: DotProps) => {
     const cx = SPACING / 2 + SPACING * idx
+    const handleHover = (event) => {
+        const { clientX, clientY, target } = event;
+        const targetRect = target.getBoundingClientRect();
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const divTop = scrollY + clientY;
+        const divLeft = targetRect.left + window.scrollX;
+        setActivityDurationSeconds(dot.values.activityDurationSeconds.basic.value);
+        setDivPosition({ top: divTop + 20, left: divLeft });
+        setShowDiv(true);
+      };
+  
+    const handleMouseLeave = () => {
+      setShowDiv(false);
+    };
+    
     return (
         <a
-            href={`/pgcr/${id}`}
-            className={[styles["dot"], styles["dot-hover"]].join(" ")}
-            aria-describedby="dot-hover-tooltip"
-            target="_blank"
-            rel="noopener noreferrer">
-            <circle
-                fill={completed ? green : red}
-                fillOpacity="0.9783869573466908"
-                r={RADIUS}
-                cx={cx}
-                cy={cy}></circle>
-            {star && <Star x={cx} y={cy} />}
-        </a>
+        href={`/pgcr/${id}`}
+        onMouseEnter={handleHover}
+        onMouseLeave={handleMouseLeave}
+        className={[styles["dot"], styles["dot-hover"]].join(" ")}
+        aria-describedby="dot-hover-tooltip"
+        target="_blank"
+        rel="noopener noreferrer">
+        <circle
+            fill={completed ? green : red}
+            fillOpacity="0.9783869573466908"
+            r={RADIUS}
+            cx={cx}
+            cy={cy}></circle>
+        {star && <Star x={cx} y={cy} />}
+    </a>
     )
 }
 

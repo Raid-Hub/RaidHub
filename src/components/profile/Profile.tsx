@@ -22,6 +22,7 @@ type ProfileProps = ProfileComponent & {
 const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps) => {
     const { profile, isLoading: isLoadingProfile } = useRaidHubProfile(userInfo.membershipId)
     const { membership } = useBungieNextMembership({ ...userInfo, errorHandler })
+    const [showDiv, setShowDiv] = useState(false);
     const {
         stats: profileStats,
         isLoading: isLoadingProfileStats,
@@ -40,7 +41,6 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
     }
 
     const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
-
     // console.log(raidMetrics?.get(Raid.ROOT_OF_NIGHTMARES)?.get(Difficulty.NORMAL))
 
     return (
@@ -52,7 +52,8 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
                 <UserCard
                     userInfo={{ ...membership, ...userInfo }}
                     socials={profile?.socials}
-                    emblemBackgroundPath={emblemBackgroundPath}
+                    userIcon={profile?.profilePicture ?? ("https://bungie.net" + (userInfo.iconPath ?? "/img/profile/avatars/default_avatar.gif"))}
+                    emblemBackgroundPath={profile?.bannerPicture ?? "https://bungie.net" + emblemBackgroundPath}
                     backgroundImage={profile?.background?.replace(/;$/, "") ?? ""}
                 />
 
