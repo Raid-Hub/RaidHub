@@ -1,8 +1,6 @@
 name: Version Bump and Release
 
 on:
-    schedule:
-        - cron: "0 8 * * 1"
     workflow_dispatch:
 
 jobs:
@@ -45,16 +43,20 @@ jobs:
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Bump $VERSION"
-                  git push origin develop
 
             - name: Merge to Main
               run: |
                   cd RaidHub-Website
                   git checkout main
-                  git merge --squash -X theirs develop
-                  git commit -m "Release v$VERSION"
-                  git reset --hard HEAD
+                  git merge -X theirs develop
                   git push origin main
+
+            - name: Pull changes back to develop
+              run: |
+                  cd RaidHub-Website
+                  git checkout develop
+                  git merge -X theirs main
+                  git push origin develop
 
             - name: Create Tag
               run: |
