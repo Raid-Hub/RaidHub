@@ -5,6 +5,10 @@ on: [push]
 jobs:
     test:
         runs-on: ubuntu-latest
+        env:
+            BUNGIE_API_KEY: ${{ secrets.BUNGIE_API_KEY }}
+            BUNGIE_CLIENT_ID: ${{ secrets.BUNGIE_CLIENT_ID }}
+            BUNGIE_CLIENT_SECRET: ${{ secrets.BUNGIE_CLIENT_SECRET }}
         steps:
             - uses: actions/checkout@v1
             - name: install node v16.17
