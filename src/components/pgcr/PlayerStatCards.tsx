@@ -5,12 +5,11 @@ import { LocalizedStrings } from "../../util/localized-strings"
 import PGCREntry from "../../models/pgcr/Entry"
 import { formattedNumber } from "../../util/formatting"
 
-type StatCardProps = {
+type PlayerStatCardProps = {
     entry: PGCREntry
-    emblemBackground: string
 }
 
-const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
+const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
     const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const statsData: {
@@ -54,11 +53,7 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
             {statsData.map(({ value, name, icon }, key) => (
                 <div
                     key={key}
-                    className={[
-                        styles["soft-rectangle"],
-                        styles["entry-card"],
-                        styles["character-stat"]
-                    ].join(" ")}>
+                    className={[styles["entry-card"], styles["character-stat"]].join(" ")}>
                     <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
                     <div className={styles["summary-stat-info"]}>
                         <span
@@ -81,4 +76,4 @@ const StatCards = ({ entry, emblemBackground }: StatCardProps) => {
     )
 }
 
-export default StatCards
+export default PlayerStatCards

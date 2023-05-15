@@ -13,7 +13,8 @@ export enum ErrorCode {
     BungieNextMembership = "Banana",
     Clan = "Clam",
     Placements = "Pigeon",
-    ExactSearch = "Eggplant"
+    ExactSearch = "Eggplant",
+    Emblems = "Elephant"
 }
 
 export default class CustomError extends Error {

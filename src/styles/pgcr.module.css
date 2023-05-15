@@ -6,38 +6,23 @@
     max-width: 1000px;
 }
 
-.main-element {
-    margin: 10px;
-}
-
-.soft-rectangle {
-    border-radius: 15px;
-    border: var(--border);
-    border-style: solid;
-    border-width: 1px;
-}
-
 .summary-card {
     flex: 1;
-    background-color: rgba(30, 30, 30, 0.35);
+    padding: 0.8em;
     min-width: 95%;
-    padding-bottom: 10px;
+
+    background-color: rgba(30, 30, 30, 0.35);
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     position: relative;
 
     color: white;
 }
 
-@media only screen and (orientation: portrait) {
-    .summary-card {
-        min-width: 300px;
-        max-width: 95%;
-    }
-}
-
 .activity-card-header-container {
-    padding: 10px;
-    padding-bottom: 0;
-    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 .activity-card-header-top {
@@ -70,12 +55,13 @@
 .raid-name {
     font-weight: 900;
     font-size: xx-large;
-    line-height: 100%;
+    line-height: 0.75;
     text-transform: uppercase;
 }
 
 .right-info {
     flex-grow: 1;
+    flex-shrink: 0;
     padding-top: 10px;
     padding-right: 10px;
     margin-left: 5px;
@@ -83,25 +69,28 @@
 
 .duration {
     flex-grow: 1;
-    font-style: oblique;
-    font-size: x-large;
     display: flex;
+    flex-wrap: wrap;
     justify-content: right;
 }
 
 .duration > span {
+    font-style: oblique;
+    font-size: x-large;
     margin: 0.2rem;
 }
 
 .activity-card-header-attributes {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
     gap: 1em;
 }
 
 .cp-error {
-    max-width: 400px;
+    min-width: 40%;
+    max-width: 65%;
 }
 
 .cp-error > p {
@@ -122,17 +111,18 @@
 .tag {
     margin: auto 0;
 
+    border: 1px solid var(--border);
     border-radius: 6px;
-    border-width: 2px;
 
     padding: 4px 7px;
-    background-color: rgb(125, 168, 65);
+    background-color: rgba(235, 142, 36, 0.781);
 
     font-size: large;
+    white-space: nowrap;
 }
 
 .members {
-    padding: 10px 20px;
+    margin-top: 10px;
     border-radius: 10px;
     height: auto;
     display: grid;
@@ -146,8 +136,13 @@
 }
 
 .entry-card {
+    padding: 0;
     min-width: 260px;
     height: 85px;
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     overflow: hidden;
     position: relative;
     padding: 0;
@@ -160,18 +155,20 @@
     width: 100%;
     height: 100%;
 
-    opacity: 0.95;
+    background-color: var(--modal-background);
+    opacity: 0.9;
     overflow: hidden;
 }
 
 .emblem img {
+    filter: brightness(0.9) blur(1px);
     max-height: 100%;
 }
 
 .member-card {
     position: absolute;
-    z-index: 1;
     top: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
 
@@ -191,7 +188,7 @@
     width: 100%;
     height: 100%;
 
-    border-radius: 12px;
+    border-radius: 15px;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
@@ -254,6 +251,11 @@
     font-weight: bolder;
     font-size: 1.25rem;
     text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.535);
+}
+
+.class-name {
+    font-weight: 100;
+    color: var(--tertiary-text);
 }
 
 .quick-stats-container {
@@ -319,34 +321,73 @@
     aspect-ratio: 1/1;
 }
 
-.class-button-container {
-    height: auto;
-    margin: 2px;
+.members-header {
+    display: flex;
+    gap: 1em;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.selected-entry-card {
+    flex: 1;
+    min-width: 220px;
+    height: 85px;
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     overflow: hidden;
     position: relative;
     padding: 0;
+
+    display: flex;
+}
+
+.class-button-container {
+    height: auto;
+    flex: 0;
+
+    padding: 0;
+
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
+
+    justify-content: space-evenly;
+    align-items: center;
+
+    gap: 0.8em;
 }
 
 .class-button {
-    margin-right: 10px;
+    padding: 0.5em;
+    width: 80px;
+    height: 80px;
+
+    background-color: rgba(151, 151, 151, 0.274);
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     display: flex;
     flex-direction: row;
     justify-content: center;
-    background-color: rgba(151, 151, 151, 0.274);
 }
 
 .class-button > img {
-    width: 70px;
-    height: 70px;
-    margin: auto;
+    width: 100%;
+    height: 100%;
 }
 
 .member-profile-button {
     height: 85px;
-    flex: 1;
+    flex-grow: 0;
+
     background-color: rgba(55, 85, 79, 0.287);
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,6 +397,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5em;
+
     text-decoration: none;
 }
 
@@ -364,14 +407,16 @@
     max-height: 30px;
     max-width: 30px;
     margin: 10px;
-    margin-right: 15px;
 }
 
 .member-profile-link > span {
     flex: 1;
+    margin-right: 0.7em;
+
+    display: inline-flex;
+
     color: white;
     font-size: 1.15rem;
-    display: inline-flex;
 }
 
 .summary-stats {
@@ -389,9 +434,14 @@
 }
 
 .summary-stat {
-    min-height: 57px;
+    min-height: 50px;
     padding: 10px 15px;
-    background-color: rgba(78, 9, 9, 0.35);
+
+    background-color: rgba(26, 0, 0, 0.689);
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
     display: flex;
 }
 
@@ -466,6 +516,7 @@
     border-color: rgb(214, 246, 255);
 }
 .selectable {
+    transform: translateZ(0); /* Fixes z-index issue w/ safari */
     border-width: 2px;
     transition: transform 0.05s ease-in-out;
 }
@@ -475,10 +526,37 @@
     cursor: pointer;
 }
 
+.selectable:hover .color-film {
+    background-color: rgba(255, 189, 122, 0.058);
+}
+
 /* adjust entry grid for mobile */
 @media only screen and (orientation: portrait) {
+    .raid-name > span {
+        font-size: x-large;
+    }
+    .cp-error {
+        max-width: 40%;
+    }
+    .duration > span {
+        font-size: large;
+    }
+    .selected-entry-card,
+    .member-profile-button {
+        height: 69px;
+    }
+    .class-button {
+        width: 69px;
+        height: 69px;
+    }
+    .member-profile-link > span {
+        display: none;
+    }
     .members {
         grid-template-columns: 1fr;
+    }
+    .summary-card {
+        min-width: 300px;
     }
     .entry-card {
         height: 69px;

@@ -1,6 +1,7 @@
-import { DestinyPostGameCarnageReportEntry } from "bungie-net-core/lib/models"
+import { DestinyClass, DestinyPostGameCarnageReportEntry } from "bungie-net-core/lib/models"
 import PGCREntry from "./Entry"
 import PGCRCharacter from "./Character"
+import { CharacterName } from "../../util/characters"
 
 export default class PGCRMember extends PGCREntry {
     readonly characters: PGCRCharacter[]
@@ -19,8 +20,10 @@ export default class PGCRMember extends PGCREntry {
         this.characters = characters.map(char => new PGCRCharacter(char))
     }
 
-    get characterClass(): string {
-        return this.characters.map(({ className }) => className).join("/")
+    get characterClass(): string[] {
+        return this.characters.map(
+            ({ className }) => className ?? CharacterName[DestinyClass.Unknown]
+        )
     }
 
     get flawless(): boolean {
