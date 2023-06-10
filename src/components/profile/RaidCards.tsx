@@ -81,7 +81,7 @@ const RaidCards = ({
                 ])
             ) as Record<Raid, DestinyHistoricalStatsPeriodGroup[]>
         )
-    }, [isLoadingDots, prefs])
+    }, [activities, isLoadingDots, isLoadingPrefs, prefs])
 
     const strings = LocalizedStrings[language]
 

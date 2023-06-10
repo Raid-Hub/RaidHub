@@ -36,7 +36,7 @@ const SelectedPlayer = ({
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
             <div className={styles["emblem"]}>
-                <img src={emblemBackground} />
+                <img src={emblemBackground} alt={`Emblem for ${member.displayName}`} />
             </div>
             <div className={styles["color-film"]} />
 

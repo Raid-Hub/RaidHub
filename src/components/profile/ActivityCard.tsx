@@ -36,7 +36,11 @@ const ActivityCard = ({
             target="_blank"
             rel="noopener noreferrer"
             className={styles["activity"]}>
-            <img src={RaidCardBackground[info.raid]} className={styles["activity-content-img"]} />
+            <img
+                src={RaidCardBackground[info.raid]}
+                alt={`Raid card for ${strings.raidNames[info.raid]}`}
+                className={styles["activity-content-img"]}
+            />
             <p className={styles["activity-title"]}>
                 {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[info.raid]}`}
             </p>

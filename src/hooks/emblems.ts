@@ -52,7 +52,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
                 setLoading(false)
             }
         }
-    }, [members])
+    }, [members, errorHandler])
 
     return { emblems, isLoading }
 }
