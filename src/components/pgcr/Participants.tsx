@@ -88,7 +88,7 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                     />
                     {members[memberIndex].characters.length > 1 && (
                         <div className={styles["class-button-container"]}>
-                            {members[memberIndex].characters.map(({ logo }, idx) => (
+                            {members[memberIndex].characters.map(({ logo, className }, idx) => (
                                 <button
                                     key={idx}
                                     className={[
@@ -97,7 +97,7 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                                         styles["class-button"]
                                     ].join(" ")}
                                     onClick={() => updateCharacterIndex(idx)}>
-                                    <img src={logo} />
+                                    <img src={logo} alt={className} />
                                 </button>
                             ))}
                         </div>
@@ -111,7 +111,11 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles["member-profile-link"]}>
-                            <img src={Icons.EXTERNAL} className={styles["view-profile-icon"]} />
+                            <img
+                                src={Icons.EXTERNAL}
+                                alt={"View profile"}
+                                className={styles["view-profile-icon"]}
+                            />
                             <span>View Profile</span>
                         </a>
                     </button>

@@ -45,6 +45,6 @@ export function useProfileStats({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType])
+    }, [membershipId, membershipType, errorHandler])
     return { stats, characterIds, isLoading }
 }

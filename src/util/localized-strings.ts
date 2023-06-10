@@ -29,6 +29,10 @@ export interface LocalStrings {
     dayOne: string
     contest: string
     killsPerMinute: string
+    worldsFirstLeaderboards: string
+    speedrunLeaderboards: string
+    clearsLeaderboards: string
+    comingSoon: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -91,7 +95,11 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         dayOne: "Day One",
         contest: "Contest",
-        killsPerMinute: "Kills / Minute"
+        killsPerMinute: "Kills / Minute",
+        worldsFirstLeaderboards: "World's First Leaderboards",
+        speedrunLeaderboards: "Speedrun Leaderboards",
+        clearsLeaderboards: "Clears Leaderboards",
+        comingSoon: "Coming soon..."
     }
 }
 

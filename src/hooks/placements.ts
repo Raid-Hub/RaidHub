@@ -29,6 +29,6 @@ export function usePlacements({ activityId, errorHandler }: UsePlacementsParams)
                 setLoading(false)
             }
         }
-    }, [activityId])
+    }, [activityId, errorHandler])
     return { placements, isLoading }
 }

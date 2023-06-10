@@ -39,6 +39,6 @@ export function useBungieNextMembership({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType])
+    }, [membershipId, membershipType, errorHandler])
     return { membership, isLoading }
 }

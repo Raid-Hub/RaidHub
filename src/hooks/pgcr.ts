@@ -41,7 +41,7 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
 
         if (activityId) getPGCR()
         else if (activityId === null) setLoading(Loading.FALSE)
-    }, [activityId])
+    }, [activityId, errorHandler])
 
     if (!pgcr) return { members: null, activity: null, loadingState }
 

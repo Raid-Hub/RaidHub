@@ -32,6 +32,6 @@ export function useClan({ membershipId, membershipType, errorHandler }: UseClanP
                 setLoading(false)
             }
         }
-    }, [membershipId])
+    }, [membershipId, membershipType, errorHandler])
     return { clan, isLoading }
 }

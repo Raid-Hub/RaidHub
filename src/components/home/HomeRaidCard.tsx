@@ -1,16 +1,14 @@
 import React from "react"
 import styles from "../../styles/home.module.css"
 import { Raid, RaidCardBackground } from "../../util/raid"
-import { LocalizedStrings } from "../../util/localized-strings"
-import { useLanguage } from "../../hooks/language"
+import { LocalStrings } from "../../util/localized-strings"
 
 type HomeRaidCardProps = {
     raid: Raid
+    strings: LocalStrings
 }
 
-const HomeRaidCard = ({ raid }: HomeRaidCardProps) => {
-    const { language } = useLanguage()
-    const strings = LocalizedStrings[language]
+const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
     return (
         <div className={styles["home-raid-card"]}>
             <div className={styles["card-image-header"]}>
@@ -19,16 +17,16 @@ const HomeRaidCard = ({ raid }: HomeRaidCardProps) => {
             </div>
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
-                    <h4>World's First Leaderboards</h4>
-                    <p>Coming soon...</p>
+                    <h4>{strings.worldsFirstLeaderboards}</h4>
+                    <p>{strings.comingSoon}</p>
                 </div>
                 <div className={styles["content-section"]}>
-                    <h4>Speedrun Leaderboards</h4>
-                    <p>Coming soon...</p>
+                    <h4>{strings.speedrunLeaderboards}</h4>
+                    <p>{strings.comingSoon}</p>
                 </div>
                 <div className={styles["content-section"]}>
-                    <h4>Clears Leaderboards</h4>
-                    <p>Coming soon...</p>
+                    <h4>{strings.clearsLeaderboards}</h4>
+                    <p>{strings.comingSoon}</p>
                 </div>
             </div>
         </div>

@@ -47,6 +47,6 @@ export function useCharacterStats({
                 setLoading(false)
             }
         }
-    }, [characterIds])
+    }, [membershipId, membershipType, characterIds, errorHandler])
     return { stats, isLoading }
 }

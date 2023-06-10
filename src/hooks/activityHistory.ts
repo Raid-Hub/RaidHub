@@ -76,6 +76,6 @@ export function useActivityHistory({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, characterIds])
+    }, [membershipId, membershipType, characterIds, errorHandler])
     return { activities, isLoading }
 }

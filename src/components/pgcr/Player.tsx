@@ -32,13 +32,15 @@ const Player = ({
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
             <div className={styles["emblem"]}>
-                <img src={emblemBackground} />
+                <img src={emblemBackground} alt={`Emblem for ${member.displayName}`} />
             </div>
             <div className={styles["color-film"]} />
 
             <div className={styles["member-card"]}>
                 <div className={styles["class-logo"]}>
-                    {member.characters.length && <img src={icon} />}
+                    {member.characters.length && (
+                        <img src={icon} alt={member.characters[0].className} />
+                    )}
                 </div>
                 <div className={styles["member-name"]}>
                     <span className={styles["contained-span"]}>{displayName}</span>
