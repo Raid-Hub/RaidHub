@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Raid } from "../../util/raid"
 import { Icons } from "../../util/icons"
 import StatCards from "./PlayerStatCards"
@@ -8,21 +8,30 @@ import { ErrorHandler, Loading } from "../../util/types"
 import PGCRMember from "../../models/pgcr/Member"
 import SelectedPlayer from "./SelectedPlayer"
 import Player from "./Player"
+import { useRouter } from "next/router"
+import { ParsedUrlQuery } from "querystring"
 
 type ParticipantsProps = {
     members: PGCRMember[] | null
     raid: Raid
+    query: ParsedUrlQuery
     pgcrLoadingState: Loading
     errorHandler: ErrorHandler
 }
 
-const Participants = ({ members, errorHandler }: ParticipantsProps) => {
+const Participants = ({ members, query, errorHandler }: ParticipantsProps) => {
     const { emblems, isLoading: isLoadingEmblems } = useEmblems({
-        members: members ?? [],
+        members: members,
         errorHandler
     })
-    const [memberIndex, setMemberIndex] = useState(-1)
-    const [characterIndex, setCharacterIndex] = useState(-1)
+
+    const _memberIndex = () => parseInt(query["player"]?.toString() ?? "")
+    const _characterIndex = () => parseInt(query["character"]?.toString() ?? "")
+    const [memberIndex, setMemberIndex] = useState(isNaN(_memberIndex()) ? -1 : _memberIndex)
+    const [characterIndex, setCharacterIndex] = useState(
+        isNaN(_characterIndex()) ? -1 : _characterIndex
+    )
+    const router = useRouter()
 
     const updateMemberIndex = (clicked: number) => {
         memberIndex === clicked
@@ -33,6 +42,42 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
     const updateCharacterIndex = (clicked: number) => {
         characterIndex === clicked ? setCharacterIndex(-1) : setCharacterIndex(clicked)
     }
+
+    useEffect(() => {
+        const newQuery: ParsedUrlQuery = {
+            activityId: router.query.activityId
+        }
+        if (memberIndex != -1) {
+            newQuery.player = memberIndex.toString()
+            if (characterIndex != -1) {
+                newQuery.character = characterIndex.toString()
+            }
+        }
+        if (
+            router.query["player"] !== newQuery.player ||
+            router.query["character"] !== newQuery.character
+        ) {
+            router.push({
+                pathname: router.pathname,
+                query: newQuery
+            })
+        }
+    }, [memberIndex, characterIndex])
+
+    useEffect(() => {
+        if (!isNaN(_memberIndex())) {
+            setMemberIndex(_memberIndex)
+
+            if (!isNaN(_characterIndex())) {
+                setCharacterIndex(_characterIndex)
+            } else {
+                setCharacterIndex(-1)
+            }
+        } else {
+            setMemberIndex(-1)
+            setCharacterIndex(-1)
+        }
+    }, [query])
 
     const memberProfile = () => {
         if (!members) return `/`
@@ -106,11 +151,7 @@ const Participants = ({ members, errorHandler }: ParticipantsProps) => {
                         className={[styles["member-profile-button"], styles["selectable"]].join(
                             " "
                         )}>
-                        <a
-                            href={memberProfile()}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles["member-profile-link"]}>
+                        <a href={memberProfile()} className={styles["member-profile-link"]}>
                             <img
                                 src={Icons.EXTERNAL}
                                 alt={"View profile"}

@@ -119,6 +119,11 @@ a {
     color: inherit;
 }
 
+img[src=""] {
+    font-size: 0;
+    position: relative;
+}
+
 .loading-pulse {
     animation: loading-pulse 1.5s ease-in-out 0.5s infinite;
     animation-duration: 1.5s;

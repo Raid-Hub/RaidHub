@@ -41,8 +41,6 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
 
     const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
 
-    // console.log(raidMetrics?.get(Raid.ROOT_OF_NIGHTMARES)?.get(Difficulty.NORMAL))
-
     return (
         <main className={styles["main"]}>
             <Head>
