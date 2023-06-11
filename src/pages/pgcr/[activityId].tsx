@@ -1,20 +1,22 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import ActivityHeader from "../../components/pgcr/ActivityHeader"
-import PGCREntries from "../../components/pgcr/Participants"
+import Participants from "../../components/pgcr/Participants"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
 import { Backdrop, Raid, Short } from "../../util/raid"
 import { usePGCR } from "../../hooks/pgcr"
 import { usePlacements } from "../../hooks/placements"
 import Head from "next/head"
-import { NextPage } from "next"
+import { GetServerSidePropsContext, NextPage } from "next"
 import ErrorComponent from "../../components/Error"
+import { ParsedUrlQuery } from "querystring"
 
 type PGCRProps = {
     activityId: string
+    query: ParsedUrlQuery
 }
 
-const PGCR: NextPage<PGCRProps> = ({ activityId }) => {
+const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
     const [error, setError] = useState<Error | null>(null)
     const {
         activity,
@@ -48,9 +50,10 @@ const PGCR: NextPage<PGCRProps> = ({ activityId }) => {
                     placements={placements}
                     pgcrLoadingState={pgcrLoadingState}
                 />
-                <PGCREntries
+                <Participants
                     raid={activity?.raid ?? Raid.NA}
                     members={members}
+                    query={query}
                     pgcrLoadingState={pgcrLoadingState}
                     errorHandler={setError}
                 />
@@ -63,12 +66,11 @@ const PGCR: NextPage<PGCRProps> = ({ activityId }) => {
 }
 
 export async function getServerSideProps({
-    params
-}: {
-    params: { activityId: string }
-}): Promise<{ props: PGCRProps }> {
-    const { activityId } = params
-    return { props: { activityId } }
+    params,
+    query
+}: GetServerSidePropsContext): Promise<{ props: PGCRProps }> {
+    const activityId = params!.activityId as string
+    return { props: { activityId, query } }
 }
 
 export default PGCR

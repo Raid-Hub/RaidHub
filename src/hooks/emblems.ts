@@ -4,7 +4,7 @@ import { EmblemDict, EmblemTuple, ErrorHandler } from "../util/types"
 import PGCRMember from "../models/pgcr/Member"
 import CustomError, { ErrorCode } from "../models/errors/CustomError"
 
-type UseEmblemsParams = { members: PGCRMember[]; errorHandler: ErrorHandler }
+type UseEmblemsParams = { members: PGCRMember[] | null; errorHandler: ErrorHandler }
 
 type UseEmblems = {
     emblems: EmblemDict | null
@@ -16,13 +16,14 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
     const [isLoading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        setLoading(true)
+        if (!members) return
 
-        getEmblems()
-        async function getEmblems() {
+        setLoading(true)
+        getEmblems(members)
+        async function getEmblems(_members: PGCRMember[]) {
             try {
                 const primaryEmblemsPromise: Promise<EmblemTuple[]> = Promise.all(
-                    members.map(({ characterIds, membershipId, membershipType }) =>
+                    _members.map(({ characterIds, membershipId, membershipType }) =>
                         client
                             .getCharacterEmblem(characterIds[0], membershipId, membershipType)
                             .then(emblem => [characterIds[0], emblem] as EmblemTuple)
@@ -30,7 +31,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
                     )
                 )
                 const remainingEmblemsPromise: Promise<EmblemTuple[][]> = Promise.all(
-                    members.map(({ characterIds, membershipId, membershipType }) =>
+                    _members.map(({ characterIds, membershipId, membershipType }) =>
                         Promise.all(
                             characterIds.slice(1).map(characterId =>
                                 client

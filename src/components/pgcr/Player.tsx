@@ -21,6 +21,7 @@ const Player = ({
     const completionClass = member.didComplete ? "" : styles["dnf"]
     const icon = member.characters[0].logo
     const displayName = member.displayName ?? member.membershipId
+
     return (
         <button
             key={index}

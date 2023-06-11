@@ -30,7 +30,7 @@ const PinnedActivity = ({ activityId, errorHandler }: PinnedActivityProps) => {
     else
         return (
             <div className={styles["pinned-activity-wrapper"]}>
-                <Link href={`/pgcr/${activityId}`}>
+                <a href={`/pgcr/${activityId}`}>
                     <div className={styles["pinned-activity"]}>
                         <div
                             className={["background-img", styles["pinned-background"]].join(" ")}
@@ -52,7 +52,7 @@ const PinnedActivity = ({ activityId, errorHandler }: PinnedActivityProps) => {
                             </div>
                         </div>
                     </div>
-                </Link>
+                </a>
             </div>
         )
 }
