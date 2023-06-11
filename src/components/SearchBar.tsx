@@ -86,6 +86,8 @@ const SearchBar = ({}: SearchBarProps) => {
                 <input
                     id={styles["search-bar"]}
                     type="text"
+                    name="search"
+                    autoComplete="off"
                     placeholder="Search for a Guardian"
                     value={enteredText}
                     onChange={handleInputChange}
