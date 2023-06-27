@@ -16,8 +16,7 @@ declare module "next-auth/jwt" {
         bungieUser: GeneralUser
     }
 }
-
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, profile }) {
             if (profile) {
@@ -57,4 +56,5 @@ export default NextAuth({
             }
         })
     ]
-})
+}
+export default NextAuth(authOptions)
