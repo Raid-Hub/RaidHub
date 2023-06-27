@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
             session.error = token.error
             if (token.error) {
                 session.token = undefined
-            } else {
+            } else if (session.token !== token.access.value) {
                 session.token = token.access.value
             }
             return session
