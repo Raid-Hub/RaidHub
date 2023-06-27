@@ -1,4 +1,4 @@
-import { Clan, ProfileComponent, RGBA } from "./types"
+import { Clan, RGBA } from "./types"
 import { CharacterName } from "./characters"
 import { RGBAToHex } from "./formatting"
 import {

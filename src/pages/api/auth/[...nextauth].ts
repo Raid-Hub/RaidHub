@@ -14,7 +14,7 @@ declare module "next-auth" {
     interface Session extends DefaultSession {
         user: {} & DefaultSession["user"] & GeneralUser
         error?: AuthError
-        client: BungieNetClient
+        token?: string
     }
 }
 
@@ -101,10 +101,9 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             session.error = token.error
             if (token.error) {
-                session.client.logout()
+                session.token = undefined
             } else {
-                session.client ??= new BungieNetClient()
-                session.client.login(token.access.value)
+                session.token = token.access.value
             }
             return session
         }
