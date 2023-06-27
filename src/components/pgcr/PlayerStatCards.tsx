@@ -1,4 +1,4 @@
-import { useLanguage } from "../../hooks/language"
+import { useLanguage } from "../../hooks/useLanguage"
 import { Icons } from "../../util/icons"
 import styles from "../../styles/pgcr.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"

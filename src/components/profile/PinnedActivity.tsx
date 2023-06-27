@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { useLanguage } from "../../hooks/language"
-import { usePGCR } from "../../hooks/pgcr"
+import { useLanguage } from "../../hooks/useLanguage"
+import { usePGCR } from "../../hooks/bungie/usePGCR"
 import styles from "../../styles/profile.module.css"
 import { LocalizedStrings } from "../../util/localized-strings"
 import { RaidBanner } from "../../util/raid"

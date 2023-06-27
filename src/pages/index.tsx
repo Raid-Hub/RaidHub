@@ -2,7 +2,7 @@ import { NextPage } from "next"
 import styles from "../styles/home.module.css"
 import { AllRaids } from "../util/raid"
 import HomeRaidCard from "../components/home/HomeRaidCard"
-import { useLanguage } from "../hooks/language"
+import { useLanguage } from "../hooks/useLanguage"
 import { LocalizedStrings } from "../util/localized-strings"
 
 export const Home: NextPage<{}> = () => {

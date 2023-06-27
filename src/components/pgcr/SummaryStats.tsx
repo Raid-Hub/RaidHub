@@ -1,4 +1,4 @@
-import { useLanguage } from "../../hooks/language"
+import { useLanguage } from "../../hooks/useLanguage"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
 import { formattedNumber } from "../../util/formatting"

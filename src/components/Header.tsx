@@ -9,7 +9,7 @@ type HeaderProps = {}
 const Header = ({}: HeaderProps) => {
     const { data: sessionData } = useSession()
     const handleProfileButtonPress = () => {
-        sessionData ? console.log(sessionData) : signIn("bungie")
+        sessionData ? console.log(sessionData) : void signIn("bungie", { callbackUrl: "/" })
     }
     return (
         <header className={styles["header"]}>

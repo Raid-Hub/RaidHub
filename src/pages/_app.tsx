@@ -4,7 +4,7 @@ import Header from "../components/Header"
 import Footer from "../components/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
-import { useLanguage } from "../hooks/language"
+import { useLanguage } from "../hooks/useLanguage"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     const { language } = useLanguage()

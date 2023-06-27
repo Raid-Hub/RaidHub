@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
-import { shared as client } from "../util/http/bungie"
-import { BungieMembershipType, DestinyAggregateActivityResults } from "bungie-net-core/lib/models"
-import AggregateStats from "../models/profile/AggregateStats"
-import { ErrorHandler } from "../util/types"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { useCallback, useEffect, useState } from "react"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
+import AggregateStats from "../../models/profile/AggregateStats"
+import { ErrorHandler } from "../../util/types"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UseCharacterStatsParams = {
     membershipId: string
@@ -25,6 +25,23 @@ export function useCharacterStats({
 }: UseCharacterStatsParams): UseCharacterStats {
     const [stats, setStats] = useState<AggregateStats | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const client = useBungieClient()
+
+    const getCharacterStats = useCallback(
+        async (
+            destinyMembershipId: string,
+            membershipType: BungieMembershipType,
+            characterId: string
+        ) => {
+            return client.getCharacterStats({
+                destinyMembershipId,
+                membershipType,
+                characterId
+            })
+        },
+        [client]
+    )
+
     useEffect(() => {
         setLoading(true)
         if (characterIds?.length) getStats()
@@ -33,11 +50,7 @@ export function useCharacterStats({
             try {
                 const characterStats = await Promise.all(
                     characterIds!.map(async characterId =>
-                        client.getCharacterStats({
-                            destinyMembershipId: membershipId,
-                            membershipType,
-                            characterId
-                        })
+                        getCharacterStats(membershipId, membershipType, characterId)
                     )
                 )
                 setStats(new AggregateStats(characterStats))
@@ -47,6 +60,6 @@ export function useCharacterStats({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, characterIds, errorHandler])
+    }, [membershipId, membershipType, characterIds, errorHandler, getCharacterStats])
     return { stats, isLoading }
 }

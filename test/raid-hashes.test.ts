@@ -1,7 +1,9 @@
 import { expect, describe, test } from "@jest/globals"
-import { ACTIVITIES_PER_PAGE, shared as client } from "../src/util/http/bungie"
+import BungieNetClient, { ACTIVITIES_PER_PAGE } from "../src/util/bungieClient"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { AllValidHashes } from "../src/util/raid"
+
+const shared = new BungieNetClient()
 
 describe("all raid hashes accounted for", () => {
     describe("gladd", () => {
@@ -10,7 +12,7 @@ describe("all raid hashes accounted for", () => {
             (characterId, idx) =>
                 test(`character ${idx + 1}`, async () => {
                     const getHistory = async (page: number) =>
-                        client.getActivityHistory(
+                        shared.getActivityHistory(
                             destinyMembershipId,
                             characterId,
                             BungieMembershipType.TigerSteam,
@@ -38,7 +40,7 @@ describe("all raid hashes accounted for", () => {
             (characterId, idx) =>
                 test(`character ${idx + 1}`, async () => {
                     const getHistory = async (page: number) =>
-                        client.getActivityHistory(
+                        shared.getActivityHistory(
                             destinyMembershipId,
                             characterId,
                             BungieMembershipType.TigerSteam,

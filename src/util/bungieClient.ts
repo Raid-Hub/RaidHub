@@ -1,6 +1,6 @@
-import { Clan, ProfileComponent, RGBA } from "../types"
-import { CharacterName } from "../characters"
-import { RGBAToHex } from "../formatting"
+import { Clan, ProfileComponent, RGBA } from "./types"
+import { CharacterName } from "./characters"
+import { RGBAToHex } from "./formatting"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
@@ -33,10 +33,10 @@ import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 
 // TODO: move these to a CDN
 // @ts-ignore
-import EmblemsJson from "../destiny-definitions/emblems.json" assert { type: "json" }
+import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
 // @ts-ignore
-import BannersJson from "../destiny-definitions/clanBanner.json" assert { type: "json" }
-import PrivateProfileError from "./PrivateProfileError"
+import BannersJson from "./destiny-definitions/clanBanner.json" assert { type: "json" }
+import CustomError from "../models/errors/CustomError"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
@@ -68,10 +68,15 @@ export const ACTIVITIES_PER_PAGE = 250
 /**
  * This class acts as the main interaction with the BungieAPI. Add methods to this class to add
  */
-class BungieNetClient {
-    public readonly access_token: string | null
-    constructor(access_token?: string) {
-        this.access_token = access_token ?? null
+export default class BungieNetClient {
+    private access_token?: string = undefined
+
+    login(access_token: string) {
+        this.access_token = access_token
+    }
+
+    logout() {
+        this.access_token = undefined
     }
 
     async getPGCR(activityId: string): Promise<DestinyPostGameCarnageReportData> {
@@ -111,44 +116,6 @@ class BungieNetClient {
             // TODO record errors
         } finally {
             return `https://bungie.net${rv}`
-        }
-    }
-
-    async getProfile(
-        destinyMembershipId: string,
-        membershipType: BungieMembershipType
-    ): Promise<ProfileComponent | null> {
-        try {
-            const res = await getProfile({
-                destinyMembershipId,
-                membershipType,
-                components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
-            })
-            if ([res.Response.profile.data, res.Response.characters.data].some(data => !data)) {
-                throw new PrivateProfileError({
-                    destinyMembershipId,
-                    membershipType,
-                    components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
-                })
-            } else {
-                const profile = res.Response.profile.data
-                return {
-                    ...profile,
-                    emblemBackgroundPath: Object.values(res.Response.characters.data)[0]
-                        .emblemBackgroundPath
-                }
-            }
-        } catch (e: any) {
-            switch (e.ErrorCode) {
-                case undefined:
-                    throw e
-                case PlatformErrorCodes.SystemDisabled:
-                    throw Error("The Bungie.net API is currently down for maintence.")
-                case PlatformErrorCodes.ParameterParseFailure:
-                    throw Error("Profile not found")
-                default:
-                    throw e
-            }
         }
     }
 
@@ -274,11 +241,7 @@ class BungieNetClient {
                 components: [DestinyComponentType.Characters]
             })
             if (!res.Response.characters.data) {
-                throw new PrivateProfileError({
-                    destinyMembershipId,
-                    membershipType,
-                    components: [DestinyComponentType.Characters]
-                })
+                throw new Error("Private profile")
             } else {
                 const characters = res.Response.characters.data
                 return Object.values(characters)[0]
@@ -439,6 +402,3 @@ function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
 function emblemFromHash(hash: number) {
     return emblems[hash] ?? defaultEmblem
 }
-
-/** The shared instance of the BungieClient */
-export const shared = new BungieNetClient()

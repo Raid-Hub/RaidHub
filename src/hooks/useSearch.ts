@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react"
-import { shared as client } from "../util/http/bungie"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { CustomBungieSearchResult, ErrorHandler } from "../util/types"
 import { asBungieName, fixBungieCode } from "../util/formatting"
 import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { useBungieClient } from "./bungie/useBungieClient"
 
 type UseSearchParams = {
     query: string
@@ -20,13 +20,28 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
     const [isPerformingExactSearch, setIsPerformingExactSearch] = useState<boolean>(false)
     const lastSearch = useRef<number>(Date.now())
     const [results, setResults] = useState<CustomBungieSearchResult[]>([])
+    const client = useBungieClient()
+
+    const searchByBungieName = useCallback(
+        async (bungieName: [name: string, code: number]) => {
+            return client.searchByBungieName(...bungieName)
+        },
+        [client]
+    )
+
+    const searchForUser = useCallback(
+        async (username: string) => {
+            return client.searchForUser(username)
+        },
+        [client]
+    )
 
     const doExactSearch = async (query: string): Promise<void> => {
         setIsPerformingExactSearch(true)
         try {
             const bungieName = asBungieName(query)
             if (!bungieName) throw Error(`Unable to perform exact search with ${bungieName}`)
-            const { membershipType, membershipId } = await client.searchByBungieName(...bungieName)
+            const { membershipType, membershipId } = await searchByBungieName(bungieName)
             window.location.href = `/profile/${membershipType}/${membershipId}`
         } catch (e) {
             CustomError.handle(errorHandler, e, ErrorCode.ExactSearch)
@@ -52,7 +67,7 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
                 general: Promise<CustomBungieSearchResult[]>,
                 exact: Promise<CustomBungieSearchResult | undefined> | null
             ] = [
-                client.searchForUser(query.split("#")[0]).then(response =>
+                searchForUser(query.split("#")[0]).then(response =>
                     response
                         .map(user => ({
                             ...user,
@@ -60,7 +75,7 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
                         }))
                         .filter(user => user.membershipId && user.membershipType)
                 ),
-                bungieName ? client.searchByBungieName(...bungieName) : null
+                bungieName ? searchByBungieName(bungieName) : null
             ]
 
             const [general, exact] = await Promise.all(searches)
@@ -82,6 +97,11 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
                 setLoading(false)
             }
         }
-    }, [query])
-    return { results, isLoading, doExactSearch, isPerformingExactSearch }
+    }, [query, searchByBungieName, searchForUser])
+    return {
+        results,
+        isLoading,
+        doExactSearch,
+        isPerformingExactSearch
+    }
 }

@@ -1,10 +1,11 @@
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import { useEffect, useState } from "react"
-import { ACTIVITIES_PER_PAGE, shared as client } from "../util/http/bungie"
-import { Raid, raidDetailsFromHash } from "../util/raid"
-import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../util/types"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { useCallback, useEffect, useState } from "react"
+import { ACTIVITIES_PER_PAGE } from "../../util/bungieClient"
+import { Raid, raidDetailsFromHash } from "../../util/raid"
+import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../../util/types"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UseActivityHistoryParams = {
     membershipId: string
@@ -26,6 +27,20 @@ export function useActivityHistory({
 }: UseActivityHistoryParams): UseActivityHistory {
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const client = useBungieClient()
+
+    const getActivityHistory = useCallback(
+        async (
+            membershipId: string,
+            characterId: string,
+            membershipType: BungieMembershipType,
+            page: number
+        ) => {
+            return client.getActivityHistory(membershipId, characterId, membershipType, page)
+        },
+        [client]
+    )
+
     useEffect(() => {
         setLoading(true)
         const dict: ActivityCollectionDictionary = {
@@ -52,7 +67,7 @@ export function useActivityHistory({
                         let page = 0
                         let hasMore = true
                         while (hasMore) {
-                            const newActivities = await client.getActivityHistory(
+                            const newActivities = await getActivityHistory(
                                 membershipId,
                                 characterId,
                                 membershipType,
@@ -76,6 +91,6 @@ export function useActivityHistory({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, characterIds, errorHandler])
+    }, [membershipId, membershipType, characterIds, errorHandler, getActivityHistory])
     return { activities, isLoading }
 }
