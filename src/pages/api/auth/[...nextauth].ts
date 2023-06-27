@@ -1,11 +1,11 @@
-import NextAuth from "next-auth"
+import NextAuth, { Profile } from "next-auth"
 import { DefaultSession, NextAuthOptions } from "next-auth"
-import BungieProvider from "next-auth/providers/bungie"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { GeneralUser } from "bungie-net-core/lib/models"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieNetTokens } from "bungie-net-core/lib/auth/tokens"
 import BungieNetClient from "../../../util/bungieClient"
+import { OAuthConfig, OAuthProvider } from "next-auth/providers"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -23,6 +23,44 @@ declare module "next-auth/jwt" {
         error?: AuthError
     }
 }
+
+const BungieProvider: OAuthProvider = options => {
+    return {
+        id: "bungie",
+        name: "Bungie",
+        type: "oauth",
+        authorization: {
+            url: "https://www.bungie.net/en/OAuth/Authorize?reauth=true",
+            params: { scope: "" }
+        },
+        token: "https://www.bungie.net/platform/app/oauth/token/",
+        // Correctly gets the current user info so that the existing `profile` definition works
+        userinfo: {
+            request: async ({ tokens, provider }) => {
+                const client = {
+                    ...tokens,
+                    getMembershipDataForCurrentUser
+                }
+
+                return await client
+                    .getMembershipDataForCurrentUser()
+                    .then(res => res.Response.bungieNetUser)
+            }
+        },
+        profile(profile) {
+            return {
+                id: profile.membershipId,
+                name: profile.displayName,
+                email: null,
+                image: `https://www.bungie.net${
+                    profile.profilePicturePath.startsWith("/") ? "" : "/"
+                }${profile.profilePicturePath}`
+            }
+        },
+        options: options as Required<Pick<OAuthConfig<any>, "clientId" | "clientSecret">>
+    }
+}
+
 export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account }) {
@@ -75,22 +113,7 @@ export const authOptions: NextAuthOptions = {
         BungieProvider({
             clientId: process.env.BUNGIE_CLIENT_ID,
             clientSecret: process.env.BUNGIE_CLIENT_SECRET,
-            // The Bungie API doesn't like scope being set
-            authorization: { params: { scope: "" } },
-            httpOptions: { headers: { "X-API-Key": process.env.BUNGIE_API_KEY } },
-            // Correctly gets the current user info so that the existing `profile` definition works
-            userinfo: {
-                request: async ({ tokens, provider }) => {
-                    const client = {
-                        ...tokens,
-                        getMembershipDataForCurrentUser
-                    }
-
-                    return await client
-                        .getMembershipDataForCurrentUser()
-                        .then(res => res.Response.bungieNetUser)
-                }
-            }
+            httpOptions: { headers: { "X-API-Key": process.env.BUNGIE_API_KEY } }
         })
     ]
 }
