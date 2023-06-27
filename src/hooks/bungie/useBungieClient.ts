@@ -6,6 +6,6 @@ export function useBungieClient(): BungieNetClient {
     const [client] = useState(new BungieNetClient())
     const { data } = useSession()
 
-    console.log(data?.client.getActivityHistory, client.getActivityHistory)
+    console.log(data?.client)
     return data?.client ?? client
 }
