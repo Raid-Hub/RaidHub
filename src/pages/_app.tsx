@@ -1,14 +1,15 @@
 import type { AppProps } from "next/app"
+import { SessionProvider } from "next-auth/react"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import { useLanguage } from "../hooks/language"
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     const { language } = useLanguage()
     return (
-        <>
+        <SessionProvider session={session}>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <meta httpEquiv="Content-Language" content={language} />
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Header />
             <Component {...pageProps} />
             <Footer />
-        </>
+        </SessionProvider>
     )
 }
 

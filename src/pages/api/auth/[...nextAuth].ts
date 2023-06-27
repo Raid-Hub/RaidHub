@@ -1,16 +1,14 @@
+import NextAuth from "next-auth"
 import { DefaultSession, NextAuthOptions } from "next-auth"
 import BungieProvider from "next-auth/providers/bungie"
-import { GeneralUser } from "bungie-net-core/lib/models"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
-
-declare module "next-auth" {
-    interface Session extends DefaultSession {
-        user: {} & DefaultSession["user"] & GeneralUser
-    }
-}
+import { GeneralUser } from "bungie-net-core/lib/models"
 
 declare module "next-auth" {
     interface Profile extends GeneralUser {}
+    interface Session extends DefaultSession {
+        user: {} & DefaultSession["user"] & GeneralUser
+    }
 }
 
 declare module "next-auth/jwt" {
@@ -19,7 +17,7 @@ declare module "next-auth/jwt" {
     }
 }
 
-export const authOptions: NextAuthOptions = {
+export default NextAuth({
     callbacks: {
         async jwt({ token, profile }) {
             if (profile) {
@@ -27,7 +25,7 @@ export const authOptions: NextAuthOptions = {
             }
             return token
         },
-        session({ session, token }) {
+        async session({ session, token }) {
             if (token && session.user) {
                 session.user = {
                     ...session.user,
@@ -52,11 +50,11 @@ export const authOptions: NextAuthOptions = {
                         getMembershipDataForCurrentUser
                     }
 
-                    return client
+                    return await client
                         .getMembershipDataForCurrentUser()
                         .then(res => res.Response.bungieNetUser)
                 }
             }
         })
     ]
-}
+})
