@@ -12,8 +12,9 @@ export function useBungieClient(): BungieNetClient {
         } else {
             client.logout()
         }
-    }, [data?.token])
+    }, [data])
 
-    console.log(client)
+    console.log(data)
+
     return client
 }
