@@ -6,11 +6,11 @@ export function useBungieClient(): BungieNetClient {
     const [client, setClient] = useState(new BungieNetClient())
     const { data } = useSession()
 
-    useEffect(() => {
-        if (data?.client) {
-            setClient(data.client)
-        }
-    }, [data?.client])
+    // useEffect(() => {
+    //     if (data?.client) {
+    //         setClient(data.client)
+    //     }
+    // }, [data?.client])
 
     return client
 }
