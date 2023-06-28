@@ -50,10 +50,10 @@ const BungieProvider: OAuthProvider = options => {
             return {
                 id: profile.membershipId,
                 name: profile.displayName,
-                email: null,
                 image: `https://www.bungie.net${
                     profile.profilePicturePath.startsWith("/") ? "" : "/"
-                }${profile.profilePicturePath}`
+                }${profile.profilePicturePath}`,
+                ...profile
             }
         },
         options: options as Required<Pick<OAuthConfig<any>, "clientId" | "clientSecret">>
