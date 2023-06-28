@@ -1,4 +1,4 @@
-import NextAuth, { Profile } from "next-auth"
+import NextAuth from "next-auth"
 import { DefaultSession, NextAuthOptions } from "next-auth"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { GeneralUser } from "bungie-net-core/lib/models"
@@ -20,7 +20,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
     interface JWT extends BungieNetTokens {
         error?: AuthError
-        profile: Profile
+        bungieUser?: GeneralUser
     }
 }
 
@@ -48,13 +48,8 @@ const BungieProvider: OAuthProvider = options => {
             }
         },
         profile(profile) {
-            console.log("profile(profile)", profile)
             return {
-                // id: profile.membershipId,
-                // name: profile.displayName,
-                // image: `https://www.bungie.net${
-                //     profile.profilePicturePath.startsWith("/") ? "" : "/"
-                // }${profile.profilePicturePath}`,
+                id: profile.membershipId,
                 ...profile
             }
         },
@@ -64,12 +59,13 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account, profile, trigger }) {
+        async jwt({ token, account, profile, user, trigger }) {
+            console.log("profile, user", profile, user)
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 return {
                     ...token,
-                    ...profile,
+                    bungieUser: profile,
                     bungieMembershipId: account.providerAccountId,
                     access: {
                         value: account.access_token,
@@ -86,7 +82,10 @@ export const authOptions: NextAuthOptions = {
                 }
             } else if (Date.now() < token.access.expires) {
                 // If the access token has not expired yet, return it
-                return token
+                return {
+                    ...token,
+                    profile
+                }
             } else if (trigger === "update" || Date.now() < token.refresh.expires) {
                 try {
                     return {
@@ -107,7 +106,7 @@ export const authOptions: NextAuthOptions = {
             } else {
                 session.user = {
                     ...session.user,
-                    ...token.profile
+                    ...token.bungieUser
                 }
                 session.token = token.access.value
             }
