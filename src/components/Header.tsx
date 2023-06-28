@@ -1,13 +1,12 @@
 import Link from "next/link"
 import styles from "../styles/header.module.css"
 import SearchBar from "./SearchBar"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { Icons } from "../util/icons"
 
 type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
-    const { data: sessionData } = useSession()
     return (
         <header className={styles["header"]}>
             <nav id={styles.nav}>

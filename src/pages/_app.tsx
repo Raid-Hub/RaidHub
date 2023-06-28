@@ -5,11 +5,18 @@ import Footer from "../components/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import { useLanguage } from "../hooks/useLanguage"
+import { Session } from "next-auth/core/types"
+import TokenManager from "../components/TokenManager"
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+type PageProps = {
+    session: Session
+}
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const { language } = useLanguage()
     return (
         <SessionProvider session={session}>
+            <TokenManager />
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <meta httpEquiv="Content-Language" content={language} />

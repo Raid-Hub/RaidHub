@@ -2,14 +2,16 @@ import { NextPage } from "next"
 import { signIn, signOut, useSession } from "next-auth/react"
 
 const Account: NextPage = () => {
-    const { status, data: sesssionData } = useSession()
-
     // Force authentication
-    if (status == "loading") {
+    const { status, data: sesssionData } = useSession({
+        required: true,
+        onUnauthenticated() {
+            void signIn("bungie", { callbackUrl: "/account" })
+        }
+    })
+
+    if (status !== "authenticated") {
         return <main>Loading...</main>
-    } else if (status == "unauthenticated" || !sesssionData) {
-        void signIn("bungie", { callbackUrl: "/account" })
-        return <main>Redirecting to Bungie.net...</main>
     }
 
     return (
