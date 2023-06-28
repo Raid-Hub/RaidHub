@@ -47,14 +47,14 @@ const BungieProvider: OAuthProvider = options => {
                     .then(res => res.Response.bungieNetUser)
             }
         },
-        profile(profile: GeneralUser) {
+        profile(profile) {
             console.log("profile(profile)", profile)
             return {
-                id: profile.membershipId,
-                name: profile.displayName,
-                image: `https://www.bungie.net${
-                    profile.profilePicturePath.startsWith("/") ? "" : "/"
-                }${profile.profilePicturePath}`,
+                // id: profile.membershipId,
+                // name: profile.displayName,
+                // image: `https://www.bungie.net${
+                //     profile.profilePicturePath.startsWith("/") ? "" : "/"
+                // }${profile.profilePicturePath}`,
                 ...profile
             }
         },
@@ -65,7 +65,6 @@ const BungieProvider: OAuthProvider = options => {
 export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account, profile, trigger }) {
-            console.log("jwt({profile)}", profile)
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 return {
