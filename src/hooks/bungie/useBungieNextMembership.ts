@@ -23,6 +23,7 @@ export function useBungieNextMembership({
     const [membership, setMembership] = useState<UserInfoCard | undefined>(undefined)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("b")
 
     const getBungieNextMembership = useCallback(
         async (membershipId: string, membershipType: BungieMembershipType) => {

@@ -23,6 +23,7 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
     const client = useBungieClient()
+    console.log("f")
 
     const fetchData = useCallback(
         async (id: string) => {

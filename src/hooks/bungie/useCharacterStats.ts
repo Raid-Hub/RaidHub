@@ -26,6 +26,7 @@ export function useCharacterStats({
     const [stats, setStats] = useState<AggregateStats | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("c")
 
     const getCharacterStats = useCallback(
         async (

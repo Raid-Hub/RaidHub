@@ -28,6 +28,7 @@ export function useActivityHistory({
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("a")
 
     const getActivityHistory = useCallback(
         async (

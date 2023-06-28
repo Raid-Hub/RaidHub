@@ -28,6 +28,7 @@ export function useProfileStats({
     const [characterIds, setCharacterIds] = useState<string[] | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("g")
 
     const getProfileStats = useCallback(
         async (destinyMembershipId: string, membershipType: BungieMembershipType) => {

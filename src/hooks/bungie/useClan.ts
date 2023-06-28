@@ -19,6 +19,7 @@ export function useClan({ membershipId, membershipType, errorHandler }: UseClanP
     const [clan, setClan] = useState<Clan | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("d")
 
     const fetchData = useCallback(
         async (membershipId: string, membershipType: BungieMembershipType) => {

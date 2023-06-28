@@ -21,6 +21,7 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
     const lastSearch = useRef<number>(Date.now())
     const [results, setResults] = useState<CustomBungieSearchResult[]>([])
     const client = useBungieClient()
+    console.log("z")
 
     const searchByBungieName = useCallback(
         async (bungieName: [name: string, code: number]) => {

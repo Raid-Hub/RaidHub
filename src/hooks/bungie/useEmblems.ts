@@ -16,6 +16,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
     const [emblems, setEmblems] = useState<EmblemDict | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
+    console.log("e")
 
     const getEmblem = useCallback(
         async (characterId: string, membershipId: string, membershipType: BungieMembershipType) => {
