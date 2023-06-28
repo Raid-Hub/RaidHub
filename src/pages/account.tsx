@@ -6,18 +6,18 @@ const Account: NextPage = () => {
 
     // Force authentication
     if (status == "loading") {
-        return <></>
+        return <main>Loading...</main>
     } else if (status == "unauthenticated" || !sesssionData) {
         void signIn("bungie", { callbackUrl: "/account" })
-        return <></>
+        return <main>Redirecting to Bungie.net...</main>
     }
 
     return (
-        <div>
-            <h1>Profile</h1>
-            <p>Welcome, {sesssionData.user.displayName}</p>
+        <main>
+            <h1>You are authenticated</h1>
             <button onClick={() => void signOut({ callbackUrl: "/" })}>Log Out</button>
-        </div>
+            <button onClick={() => console.log(sesssionData)}>Print Session Data</button>
+        </main>
     )
 }
 
