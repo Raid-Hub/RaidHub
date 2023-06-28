@@ -4,7 +4,6 @@ import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/U
 import { GeneralUser } from "bungie-net-core/lib/models"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieNetTokens } from "bungie-net-core/lib/auth/tokens"
-import BungieNetClient from "../../../util/bungieClient"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
@@ -102,7 +101,7 @@ export const authOptions: NextAuthOptions = {
             session.error = token.error
             if (token.error) {
                 session.token = undefined
-            } else if (session.token !== token.access.value) {
+            } else {
                 session.token = token.access.value
             }
             return session
