@@ -8,9 +8,6 @@ type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
     const { data: sessionData } = useSession()
-    const handleProfileButtonPress = () => {
-        sessionData ? console.log(sessionData) : void signIn("bungie", { callbackUrl: "/" })
-    }
     return (
         <header className={styles["header"]}>
             <nav id={styles.nav}>
@@ -20,12 +17,9 @@ const Header = ({}: HeaderProps) => {
                 </Link>
                 <div className={styles["right-content"]}>
                     <SearchBar />
-                    <img
-                        className={styles["profile-img"]}
-                        src={Icons.PROFILE}
-                        alt="profile"
-                        onClick={handleProfileButtonPress}
-                    />
+                    <Link href="/account">
+                        <img className={styles["profile-img"]} src={Icons.PROFILE} alt="profile" />
+                    </Link>
                 </div>
             </nav>
         </header>

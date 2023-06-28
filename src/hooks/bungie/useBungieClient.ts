@@ -14,7 +14,5 @@ export function useBungieClient(): BungieNetClient {
         }
     }, [data?.token])
 
-    // console.log(data)
-
     return client
 }
