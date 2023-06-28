@@ -65,6 +65,7 @@ const BungieProvider: OAuthProvider = options => {
 export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account, profile, trigger }) {
+            console.log("jwt({profile)}", profile)
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 return {
