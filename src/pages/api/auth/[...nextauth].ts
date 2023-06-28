@@ -10,8 +10,9 @@ type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
 declare module "next-auth" {
     interface Profile extends GeneralUser {}
+    interface User extends GeneralUser {}
     interface Session extends DefaultSession {
-        user: {} & DefaultSession["user"] & GeneralUser
+        user: {} & DefaultSession["user"] & User
         error?: AuthError
         token?: string
     }
@@ -46,7 +47,7 @@ const BungieProvider: OAuthProvider = options => {
                     .then(res => res.Response.bungieNetUser)
             }
         },
-        profile(profile) {
+        profile(profile: GeneralUser) {
             return {
                 id: profile.membershipId,
                 name: profile.displayName,
@@ -97,7 +98,7 @@ export const authOptions: NextAuthOptions = {
                 return { ...token, error: "ExpiredRefreshTokenError" as const }
             }
         },
-        async session({ session, token }) {
+        async session({ session, token, user }) {
             session.error = token.error
             if (token.error) {
                 session.token = undefined
