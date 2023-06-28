@@ -28,7 +28,7 @@ export function useActivityHistory({
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
-    console.log("a")
+    console.log(isLoading, activities, client)
 
     const getActivityHistory = useCallback(
         async (
@@ -43,7 +43,6 @@ export function useActivityHistory({
     )
 
     useEffect(() => {
-        console.log("333")
         setLoading(true)
         const dict: ActivityCollectionDictionary = {
             [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -86,12 +85,10 @@ export function useActivityHistory({
                         }
                     })
                 )
-                console.log("111")
                 setActivities(dict)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory)
             } finally {
-                console.log("222")
                 setLoading(false)
             }
         }
