@@ -8,7 +8,6 @@ type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
     const { data: sessionData } = useSession()
-    console.log("3")
     const handleProfileButtonPress = () => {
         sessionData ? console.log(sessionData) : void signIn("bungie", { callbackUrl: "/" })
     }
