@@ -56,21 +56,21 @@ export const authOptions: NextAuthOptions = {
             console.log("jwt", { token, account, profile })
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
+                const now = Date.now()
                 return {
                     bungieUser: profile,
                     bungieMembershipId: account.providerAccountId,
                     access: {
                         value: account.access_token,
                         type: "access",
-                        created: Date.now(),
-                        expires: Date.now() + 15000
-                        // (account.expires_at ?? 3540) * 1000
+                        created: now,
+                        expires: Math.round((account.expires_at ?? now / 1000) * 1000)
                     },
                     refresh: {
                         value: account.refresh_token,
                         type: "refresh",
-                        created: Date.now(),
-                        expires: Date.now() + 7775940000
+                        created: now,
+                        expires: now + 3600 * 24 * 89 * 1000
                     }
                 }
             } else if (Date.now() < token.access.expires) {
