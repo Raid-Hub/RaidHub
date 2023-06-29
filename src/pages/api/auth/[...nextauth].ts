@@ -38,14 +38,15 @@ const BungieProvider: OAuthProvider = options => {
         userinfo: {
             request: async ({ tokens }) => getBungieMembershipData(tokens)
         },
-        profile({ membershipId, displayName, profilePicturePath }) {
+        profile(profile) {
+            console.log(profile)
             return {
-                id: membershipId,
-                name: displayName,
+                id: profile.membershipId,
+                name: profile.displayName,
                 email: null,
                 image: `https://www.bungie.net${
-                    profilePicturePath.startsWith("/") ? "" : "/"
-                }${profilePicturePath}`
+                    profile.profilePicturePath.startsWith("/") ? "" : "/"
+                }${profile.profilePicturePath}`
             }
         },
         options: options as Required<Pick<OAuthConfig<any>, "clientId" | "clientSecret">>
