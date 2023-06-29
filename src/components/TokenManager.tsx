@@ -1,14 +1,27 @@
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
+import { useEffect } from "react"
 
-const TokenManager = () => {
-    const { data, update } = useSession()
-    if (data?.error == "ExpiredRefreshTokenError") {
-        update()
-    } else if (data?.error == "RefreshAccessTokenError") {
-        // todo
-        console.error(data)
-    }
-    return <></>
+type TokenManagerProps = {
+    setRefetchInterval(val: number): void
+}
+
+const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
+    const { data: sessionData, status } = useSession()
+
+    // every time the session is updated, we should set the refresh interval to the remaining time on the token
+    useEffect(() => {
+        if (sessionData?.error == "RefreshAccessTokenError") {
+            setRefetchInterval(0)
+        } else if (sessionData?.error == "ExpiredRefreshTokenError") {
+            console.error(sessionData)
+            void signOut()
+        } else if (sessionData) {
+            const timeRemaining = sessionData.token_expiry - Date.now()
+            setRefetchInterval(timeRemaining > 0 ? timeRemaining : 0)
+        }
+    }, [sessionData])
+
+    return null
 }
 
 export default TokenManager

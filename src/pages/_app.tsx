@@ -7,6 +7,7 @@ import Head from "next/head"
 import { useLanguage } from "../hooks/useLanguage"
 import { Session } from "next-auth/core/types"
 import TokenManager from "../components/TokenManager"
+import { useState } from "react"
 
 type PageProps = {
     session: Session
@@ -14,9 +15,11 @@ type PageProps = {
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const { language } = useLanguage()
+    const [refetchInterval, setRefetchInterval] = useState(0)
+
     return (
-        <SessionProvider session={session}>
-            <TokenManager />
+        <SessionProvider session={session} refetchInterval={refetchInterval}>
+            <TokenManager setRefetchInterval={setRefetchInterval} />
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <meta httpEquiv="Content-Language" content={language} />

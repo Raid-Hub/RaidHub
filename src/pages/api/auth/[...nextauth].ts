@@ -5,6 +5,7 @@ import { GeneralUser } from "bungie-net-core/lib/models"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieNetTokens } from "bungie-net-core/lib/auth/tokens"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers"
+import { AccessTokenObject } from "bungie-net-core/lib/client"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -13,7 +14,8 @@ declare module "next-auth" {
     interface Session extends DefaultSession {
         user: {} & DefaultSession["user"] & GeneralUser
         error?: AuthError
-        token?: string
+        access_token?: string
+        token_expiry: number
     }
 }
 
@@ -36,16 +38,7 @@ const BungieProvider: OAuthProvider = options => {
         token: "https://www.bungie.net/platform/app/oauth/token/",
         // Correctly gets the current user info so that the existing `profile` definition works
         userinfo: {
-            request: async ({ tokens }) => {
-                const client = {
-                    ...tokens,
-                    getMembershipDataForCurrentUser
-                }
-
-                return await client
-                    .getMembershipDataForCurrentUser()
-                    .then(res => res.Response.bungieNetUser)
-            }
+            request: async ({ tokens }) => getBungieMembershipData(tokens)
         },
         profile(profile) {
             return {
@@ -59,38 +52,32 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account, profile, user, trigger }) {
+        async jwt({ token, account, profile }) {
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 return {
-                    ...token,
                     bungieUser: profile,
                     bungieMembershipId: account.providerAccountId,
                     access: {
                         value: account.access_token,
                         type: "access",
                         created: Date.now(),
-                        expires: Date.now() + (account.expires_at ?? 3540) * 1000
+                        expires: Date.now() + 15000
+                        // (account.expires_at ?? 3540) * 1000
                     },
                     refresh: {
                         value: account.refresh_token,
                         type: "refresh",
                         created: Date.now(),
-                        expires: Date.now() + 7775940
+                        expires: Date.now() + 7775940000
                     }
                 }
             } else if (Date.now() < token.access.expires) {
                 // If the access token has not expired yet, return it
-                return {
-                    ...token,
-                    profile
-                }
-            } else if (trigger === "update" || Date.now() < token.refresh.expires) {
+                return token
+            } else if (Date.now() < token.refresh.expires) {
                 try {
-                    return {
-                        ...token,
-                        ...(await getAccessTokenFromRefreshToken(token.refresh.value))
-                    }
+                    return getAccessTokenFromRefreshToken(token.refresh.value)
                 } catch (e) {
                     return { ...token, error: "RefreshAccessTokenError" as const }
                 }
@@ -101,13 +88,15 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             session.error = token.error
             if (token.error) {
-                session.token = undefined
+                session.access_token = undefined
+                session.token_expiry = 0
             } else {
                 session.user = {
                     ...session.user,
                     ...token.bungieUser
                 }
-                session.token = token.access.value
+                session.access_token = token.access.value
+                session.token_expiry = token.access.expires
             }
             return session
         }
@@ -122,3 +111,9 @@ export const authOptions: NextAuthOptions = {
 }
 
 export default NextAuth(authOptions)
+
+async function getBungieMembershipData(protoClient: AccessTokenObject): Promise<GeneralUser> {
+    return getMembershipDataForCurrentUser
+        .bind(protoClient)()
+        .then(res => res.Response.bungieNetUser)
+}
