@@ -63,17 +63,16 @@ export const authOptions: NextAuthOptions = {
                         value: account.access_token,
                         type: "access",
                         created: now,
-                        expires: now + 15000
-                        //Math.round((account.expires_at ?? now / 1000) * 1000)
+                        expires: Math.round((account.expires_at ?? now / 1000) * 1000)
                     },
                     refresh: {
                         value: account.refresh_token,
                         type: "refresh",
                         created: now,
-                        expires: now + 3600 * 24 * 89 * 1000
+                        expires: now + 3600 * 24 * 90 * 1000
                     }
                 }
-            } else if (Date.now() < token.access.expires) {
+            } else if (Date.now() + 60 * 1000 * 59.5 < token.access.expires) {
                 console.log("jwt normal")
                 // If the access token has not expired yet, return it
                 return token
