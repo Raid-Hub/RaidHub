@@ -6,7 +6,7 @@ const Account: NextPage = () => {
     const { status, data: sesssionData } = useSession({
         required: true,
         onUnauthenticated() {
-            void signIn("bungie", { callbackUrl: "/account" })
+            void signIn("bungie")
         }
     })
 
@@ -19,7 +19,7 @@ const Account: NextPage = () => {
             <h1>You are authenticated</h1>
             <button onClick={() => void signOut({ callbackUrl: "/" })}>Log Out</button>
             <button onClick={() => console.log(sesssionData)}>Print Session Data</button>
-            <button onClick={() => void signIn("bungie", { callbackUrl: "/" }, "reauth=true")}>
+            <button onClick={() => void signIn("bungie", {}, "reauth=true")}>
                 Sign in with different account
             </button>
         </main>
