@@ -1,4 +1,4 @@
-import { useClan } from "../../hooks/clan"
+import { useClan } from "../../hooks/bungie/useClan"
 import styles from "../../styles/profile.module.css"
 import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"

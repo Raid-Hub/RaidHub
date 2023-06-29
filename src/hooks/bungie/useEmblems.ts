@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
-import { shared as client } from "../util/http/bungie"
-import { EmblemDict, EmblemTuple, ErrorHandler } from "../util/types"
-import PGCRMember from "../models/pgcr/Member"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { useCallback, useEffect, useState } from "react"
+import { EmblemDict, EmblemTuple, ErrorHandler } from "../../util/types"
+import PGCRMember from "../../models/pgcr/Member"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 
 type UseEmblemsParams = { members: PGCRMember[] | null; errorHandler: ErrorHandler }
 
@@ -14,6 +15,14 @@ type UseEmblems = {
 export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmblems {
     const [emblems, setEmblems] = useState<EmblemDict | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const client = useBungieClient()
+
+    const getEmblem = useCallback(
+        async (characterId: string, membershipId: string, membershipType: BungieMembershipType) => {
+            return client.getCharacterEmblem(characterId, membershipId, membershipType)
+        },
+        [client]
+    )
 
     useEffect(() => {
         if (!members) return
@@ -24,8 +33,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
             try {
                 const primaryEmblemsPromise: Promise<EmblemTuple[]> = Promise.all(
                     _members.map(({ characterIds, membershipId, membershipType }) =>
-                        client
-                            .getCharacterEmblem(characterIds[0], membershipId, membershipType)
+                        getEmblem(characterIds[0], membershipId, membershipType)
                             .then(emblem => [characterIds[0], emblem] as EmblemTuple)
                             .catch(() => [characterIds[0], ""] as EmblemTuple)
                     )
@@ -34,8 +42,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
                     _members.map(({ characterIds, membershipId, membershipType }) =>
                         Promise.all(
                             characterIds.slice(1).map(characterId =>
-                                client
-                                    .getCharacterEmblem(characterId, membershipId, membershipType)
+                                getEmblem(characterId, membershipId, membershipType)
                                     .then(emblem => [characterId, emblem] as EmblemTuple)
                                     .catch(() => [characterId, ""] as EmblemTuple)
                             )
@@ -53,7 +60,7 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
                 setLoading(false)
             }
         }
-    }, [members, errorHandler])
+    }, [members, errorHandler, getEmblem])
 
     return { emblems, isLoading }
 }

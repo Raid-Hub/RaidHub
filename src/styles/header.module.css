@@ -51,6 +51,10 @@
     margin-left: 1em;
 }
 
+.profile-img:hover {
+    cursor: pointer;
+}
+
 .search-container {
     display: flex;
     flex-direction: row;

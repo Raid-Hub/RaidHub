@@ -7,22 +7,22 @@ export const Founders: { [id: string]: string } = {
 }
 
 export const Vanity: {
-    [id: string]: { membershipType: BungieMembershipType; membershipId: string }
+    [id: string]: { membershipType: BungieMembershipType; destinyMembershipId: string }
 } = {
     ["newo"]: {
         membershipType: BungieMembershipType.TigerSteam,
-        membershipId: "4611686018488107374"
+        destinyMembershipId: "4611686018488107374"
     },
     ["bruce"]: {
         membershipType: BungieMembershipType.TigerSteam,
-        membershipId: "4611686018493378282"
+        destinyMembershipId: "4611686018493378282"
     },
     ["theos"]: {
         membershipType: BungieMembershipType.TigerSteam,
-        membershipId: "4611686018474149055"
+        destinyMembershipId: "4611686018474149055"
     },
     ["mj"]: {
         membershipType: BungieMembershipType.TigerPsn,
-        membershipId: "4611686018478899141"
+        destinyMembershipId: "4611686018478899141"
     }
 }

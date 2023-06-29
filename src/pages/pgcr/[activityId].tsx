@@ -4,8 +4,7 @@ import Participants from "../../components/pgcr/Participants"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
 import { Backdrop, Raid, Short } from "../../util/raid"
-import { usePGCR } from "../../hooks/pgcr"
-import { usePlacements } from "../../hooks/placements"
+import { usePGCR } from "../../hooks/bungie/usePGCR"
 import Head from "next/head"
 import { GetServerSidePropsContext, NextPage } from "next"
 import ErrorComponent from "../../components/Error"
@@ -23,7 +22,6 @@ const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
         members,
         loadingState: pgcrLoadingState
     } = usePGCR({ activityId, errorHandler: setError })
-    const { placements } = usePlacements({ activityId, errorHandler: setError })
 
     if (error) {
         return (
@@ -45,11 +43,7 @@ const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
             </Head>
             <section className={styles["summary-card"]}>
                 <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
-                <ActivityHeader
-                    activity={activity}
-                    placements={placements}
-                    pgcrLoadingState={pgcrLoadingState}
-                />
+                <ActivityHeader activity={activity} pgcrLoadingState={pgcrLoadingState} />
                 <Participants
                     raid={activity?.raid ?? Raid.NA}
                     members={members}

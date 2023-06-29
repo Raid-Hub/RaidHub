@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
-import { shared as client } from "../util/http/bungie"
+import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
-import { ErrorHandler } from "../util/types"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { ErrorHandler } from "../../util/types"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UseBungieProfileParams = {
     membershipId: string
@@ -22,16 +22,21 @@ export function useBungieNextMembership({
 }: UseBungieProfileParams): UseBungieProfile {
     const [membership, setMembership] = useState<UserInfoCard | undefined>(undefined)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const client = useBungieClient()
+
+    const getBungieNextMembership = useCallback(
+        async (membershipId: string, membershipType: BungieMembershipType) => {
+            return client.getBungieNextMembership(membershipId, membershipType)
+        },
+        [client]
+    )
     useEffect(() => {
         setLoading(true)
         getActivities()
 
         async function getActivities() {
             try {
-                const membership = await client.getBungieNextMembership(
-                    membershipId,
-                    membershipType
-                )
+                const membership = await getBungieNextMembership(membershipId, membershipType)
                 setMembership(membership)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.BungieNextMembership)
@@ -39,6 +44,6 @@ export function useBungieNextMembership({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, errorHandler])
+    }, [membershipId, membershipType, errorHandler, getBungieNextMembership])
     return { membership, isLoading }
 }

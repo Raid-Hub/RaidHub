@@ -7,11 +7,11 @@ import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { Icons } from "../../util/icons"
 import RaidStats from "../../models/profile/RaidStats"
 import Loading from "../Loading"
-import { usePrefs } from "../../hooks/prefs"
+import { usePrefs } from "../../hooks/usePrefs"
 import { Prefs } from "../../util/preferences"
 import { Placement, RaidTag } from "../../util/types"
 import { formattedNumber } from "../../util/formatting"
-import { useLanguage } from "../../hooks/language"
+import { useLanguage } from "../../hooks/useLanguage"
 
 type RaidModalProps = {
     placement: Placement | undefined

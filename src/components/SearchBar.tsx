@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../styles/header.module.css"
-import { useSearch } from "../hooks/search"
+import { useSearch } from "../hooks/useSearch"
 import { fixBungieCode } from "../util/formatting"
 import { Icons } from "../util/icons"
 import { wait } from "../util/math"

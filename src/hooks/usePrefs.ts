@@ -23,7 +23,7 @@ export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs
         }
         setLoading(false)
         setFetchedPrefs(temp)
-    }, [id, prefs])
+    }, [id])
 
     return {
         isLoading: isLoading,

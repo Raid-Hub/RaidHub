@@ -2,12 +2,12 @@ import {
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry
 } from "bungie-net-core/lib/models"
-import { useEffect, useState } from "react"
-import Activity from "../models/pgcr/Activity"
-import { shared as client } from "../util/http/bungie"
-import { ErrorHandler, Loading } from "../util/types"
-import PGCRMember from "../models/pgcr/Member"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { useCallback, useEffect, useState } from "react"
+import Activity from "../../models/pgcr/Activity"
+import { ErrorHandler, Loading } from "../../util/types"
+import PGCRMember from "../../models/pgcr/Member"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UsePGCRParams = {
     activityId: string | null | undefined
@@ -22,15 +22,30 @@ type UsePGCR = {
 export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
+    const client = useBungieClient()
+
+    const fetchData = useCallback(
+        async (id: string) => {
+            return client.getPGCR(id)
+        },
+        [client]
+    )
+
+    const validateData = useCallback(
+        async (data: DestinyPostGameCarnageReportData) => {
+            return client.validatePGCR(data)
+        },
+        [client]
+    )
 
     useEffect(() => {
         setLoading(Loading.LOADING)
         const getPGCR = async () => {
             try {
-                const pgcr = await client.getPGCR(activityId!)
+                const pgcr = await fetchData(activityId!)
                 setPGCR(pgcr)
                 setLoading(Loading.HYDRATING)
-                const hydratedPGCR = await client.validatePGCR(pgcr)
+                const hydratedPGCR = await validateData(pgcr)
                 setPGCR(hydratedPGCR)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
@@ -41,7 +56,7 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
 
         if (activityId) getPGCR()
         else if (activityId === null) setLoading(Loading.FALSE)
-    }, [activityId, errorHandler])
+    }, [activityId, errorHandler, fetchData, validateData])
 
     if (!pgcr) return { members: null, activity: null, loadingState }
 

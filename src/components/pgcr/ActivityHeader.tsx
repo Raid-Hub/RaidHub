@@ -1,4 +1,4 @@
-import { useLanguage } from "../../hooks/language"
+import { useLanguage } from "../../hooks/useLanguage"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
 import { toCustomDateString } from "../../util/formatting"
@@ -6,12 +6,11 @@ import { LocalizedStrings } from "../../util/localized-strings"
 import { ActivityPlacements, Loading } from "../../util/types"
 
 type ActivityHeaderProps = {
-    placements: ActivityPlacements | null
     activity: Activity | null
     pgcrLoadingState: Loading
 }
 
-const ActivityHeader = ({ activity, placements, pgcrLoadingState }: ActivityHeaderProps) => {
+const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => {
     const { language, locale } = useLanguage()
     const strings = LocalizedStrings[language]
     const checkpointDisclaimer = strings.checkPointDisclaimer

@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
-import { shared as client } from "../util/http/bungie"
+import { useCallback, useEffect, useState } from "react"
 import {
     BungieMembershipType,
     DestinyHistoricalStatsAccountResult
 } from "bungie-net-core/lib/models"
-import { ErrorHandler } from "../util/types"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
+import { ErrorHandler } from "../../util/types"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UseProfileStatsParams = {
     membershipId: string
@@ -27,16 +27,25 @@ export function useProfileStats({
     const [stats, setStats] = useState<DestinyHistoricalStatsAccountResult | null>(null)
     const [characterIds, setCharacterIds] = useState<string[] | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const client = useBungieClient()
+
+    const getProfileStats = useCallback(
+        async (destinyMembershipId: string, membershipType: BungieMembershipType) => {
+            return client.getProfileStats({
+                destinyMembershipId,
+                membershipType
+            })
+        },
+        [client]
+    )
+
     useEffect(() => {
         setLoading(true)
         getStats()
 
         async function getStats() {
             try {
-                const profileStats = await client.getProfileStats({
-                    destinyMembershipId: membershipId,
-                    membershipType
-                })
+                const profileStats = await getProfileStats(membershipId, membershipType)
                 setCharacterIds(profileStats?.characters.map(({ characterId }) => characterId))
                 setStats(profileStats)
             } catch (e) {
@@ -45,6 +54,6 @@ export function useProfileStats({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, errorHandler])
+    }, [membershipId, membershipType, errorHandler, getProfileStats])
     return { stats, characterIds, isLoading }
 }

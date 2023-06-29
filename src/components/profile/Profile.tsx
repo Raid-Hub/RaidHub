@@ -1,5 +1,5 @@
 import styles from "../../styles/profile.module.css"
-import { useBungieNextMembership } from "../../hooks/bungieNextMembership"
+import { useBungieNextMembership } from "../../hooks/bungie/useBungieNextMembership"
 import { ErrorHandler, ProfileComponent } from "../../util/types"
 import Head from "next/head"
 import UserCard from "./UserCard"
@@ -11,9 +11,9 @@ import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "./ToggleSwitch"
 import { useState } from "react"
 import { Icons } from "../../util/icons"
-import { useProfileStats } from "../../hooks/profileStats"
-import { useCharacterStats } from "../../hooks/characterStats"
-import { useRaidHubProfile } from "../../hooks/raidhubProfile"
+import { useProfileStats } from "../../hooks/bungie/useProfileStats"
+import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
+import { useRaidHubProfile } from "../../hooks/useRaidHubProfile"
 
 type ProfileProps = ProfileComponent & {
     errorHandler: ErrorHandler
