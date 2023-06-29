@@ -18,7 +18,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
     const [refetchInterval, setRefetchInterval] = useState(0)
 
     return (
-        <SessionProvider session={session} refetchInterval={refetchInterval}>
+        <SessionProvider
+            session={session}
+            refetchInterval={refetchInterval}
+            refetchOnWindowFocus={false}>
             <TokenManager setRefetchInterval={setRefetchInterval} />
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
