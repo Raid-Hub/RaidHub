@@ -15,7 +15,7 @@ const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             console.error(sessionData)
             setRefetchInterval(0)
-            void signOut()
+            signOut()
         } else if (sessionData?.token) {
             const timeRemaining = sessionData.token.expires - Date.now()
             setRefetchInterval(timeRemaining > 0 ? timeRemaining / 1000 : 0)
