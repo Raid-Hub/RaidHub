@@ -21,7 +21,6 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
     interface JWT extends BungieNetTokens {
         error?: AuthError
-        bungieUser?: GeneralUser
     }
 }
 
@@ -39,10 +38,14 @@ const BungieProvider: OAuthProvider = options => {
         userinfo: {
             request: async ({ tokens }) => getBungieMembershipData(tokens)
         },
-        profile(profile) {
+        profile({ membershipId, displayName, profilePicturePath }) {
             return {
-                id: profile.membershipId,
-                ...profile
+                id: membershipId,
+                name: displayName,
+                email: null,
+                image: `https://www.bungie.net${
+                    profilePicturePath.startsWith("/") ? "" : "/"
+                }${profilePicturePath}`
             }
         },
         options: options as Required<Pick<OAuthConfig<any>, "clientId" | "clientSecret">>
@@ -51,12 +54,11 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account, profile }) {
+        async jwt({ token, account }) {
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 const now = Date.now()
                 return {
-                    bungieUser: profile,
                     bungieMembershipId: account.providerAccountId,
                     access: {
                         value: account.access_token,
@@ -92,10 +94,6 @@ export const authOptions: NextAuthOptions = {
             if (token.error) {
                 session.token = undefined
             } else {
-                session.user = {
-                    ...session.user,
-                    ...token.bungieUser
-                }
                 session.token = token.access
             }
             return session
