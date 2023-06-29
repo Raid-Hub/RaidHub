@@ -31,7 +31,7 @@ const BungieProvider: OAuthProvider = options => {
         name: "Bungie",
         type: "oauth",
         authorization: {
-            url: "https://www.bungie.net/en/OAuth/Authorize?reauth=true",
+            url: "https://www.bungie.net/en/OAuth/Authorize",
             params: { scope: "" }
         },
         token: "https://www.bungie.net/platform/app/oauth/token/",
