@@ -7,12 +7,12 @@ export function useBungieClient(): BungieNetClient {
     const { data } = useSession()
 
     useEffect(() => {
-        if (data?.token) {
-            client.login(data.token)
+        if (data?.access_token) {
+            client.login(data.access_token)
         } else {
             client.logout()
         }
-    }, [data?.token])
+    }, [data?.access_token])
 
     return client
 }
