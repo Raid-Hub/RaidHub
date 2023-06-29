@@ -80,7 +80,10 @@ export const authOptions: NextAuthOptions = {
             } else if (Date.now() < token.refresh.expires) {
                 console.log("jwt refresher")
                 try {
-                    return getAccessTokenFromRefreshToken(token.refresh.value)
+                    return {
+                        ...token,
+                        ...(await getAccessTokenFromRefreshToken(token.refresh.value))
+                    }
                 } catch (e) {
                     return { ...token, error: "RefreshAccessTokenError" as const }
                 }
