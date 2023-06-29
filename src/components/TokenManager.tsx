@@ -19,6 +19,8 @@ const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
             const timeRemaining = sessionData.token_expiry - Date.now()
             setRefetchInterval(timeRemaining > 0 ? timeRemaining : 0)
         }
+
+        console.log("useEffectTokenManager", sessionData)
     }, [sessionData])
 
     return null
