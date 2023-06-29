@@ -31,7 +31,7 @@ const BungieProvider: OAuthProvider = options => {
         type: "oauth",
         authorization: {
             url: "https://www.bungie.net/en/OAuth/Authorize",
-            params: { scope: "" }
+            params: { scope: "", abc: "123" }
         },
         token: "https://www.bungie.net/platform/app/oauth/token/",
         // Correctly gets the current user info so that the existing `profile` definition works
