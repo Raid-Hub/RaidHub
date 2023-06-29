@@ -51,7 +51,7 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account, profile, trigger }) {
+        async jwt({ token, account, profile }) {
             if (account && account.access_token && account.refresh_token) {
                 console.log("jwt new")
                 // Save the access token and refresh token in the JWT on the initial login
@@ -80,10 +80,12 @@ export const authOptions: NextAuthOptions = {
             } else if (Date.now() < token.refresh.expires) {
                 console.log("jwt refresher")
                 try {
-                    return {
+                    const t = {
                         ...token,
                         ...(await getAccessTokenFromRefreshToken(token.refresh.value))
                     }
+                    console.log(t)
+                    return t
                 } catch (e) {
                     return { ...token, error: "RefreshAccessTokenError" as const }
                 }
