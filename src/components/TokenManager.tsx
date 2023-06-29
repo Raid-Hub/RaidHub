@@ -19,7 +19,7 @@ const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
         } else if (sessionData?.token) {
             const timeRemaining = sessionData.token.expires - Date.now()
             console.log("timeRemaining", timeRemaining)
-            setRefetchInterval(timeRemaining > 0 ? timeRemaining : 0)
+            setRefetchInterval(timeRemaining > 0 ? timeRemaining / 1000 : 0)
         }
     }, [sessionData])
 
