@@ -53,7 +53,6 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account, profile }) {
             if (account && account.access_token && account.refresh_token) {
-                console.log("jwt new")
                 // Save the access token and refresh token in the JWT on the initial login
                 const now = Date.now()
                 return {
@@ -72,24 +71,19 @@ export const authOptions: NextAuthOptions = {
                         expires: now + 3600 * 24 * 90 * 1000
                     }
                 }
-            } else if (Date.now() + 60 * 1000 * 59.5 < token.access.expires) {
-                console.log("jwt normal")
+            } else if (Date.now() + 1000 < token.access.expires) {
                 // If the access token has not expired yet, return it
                 return token
             } else if (Date.now() < token.refresh.expires) {
-                console.log("jwt refresher")
                 try {
-                    const t = {
+                    return {
                         ...token,
                         ...(await getAccessTokenFromRefreshToken(token.refresh.value))
                     }
-                    console.log(t)
-                    return t
                 } catch (e) {
                     return { ...token, error: "RefreshAccessTokenError" as const }
                 }
             } else {
-                console.log("jwt error")
                 return { ...token, error: "ExpiredRefreshTokenError" as const }
             }
         },
@@ -104,7 +98,6 @@ export const authOptions: NextAuthOptions = {
                 }
                 session.token = token.access
             }
-            console.log(session)
             return session
         }
     },
