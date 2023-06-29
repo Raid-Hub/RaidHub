@@ -1,23 +1,21 @@
-import NextAuth, { DefaultUser, Profile, User } from "next-auth"
-import { DefaultSession, NextAuthOptions } from "next-auth"
+import NextAuth, { NextAuthOptions, DefaultUser, DefaultSession, Profile, User } from "next-auth"
+import { OAuthConfig, OAuthProvider } from "next-auth/providers"
+import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
+import { AccessTokenObject } from "bungie-net-core/lib/client"
+import { BungieNetTokens, Token } from "bungie-net-core/lib/auth/tokens"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
+import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
 import {
     BungieMembershipType,
     DestinyProfileUserInfoCard,
     GeneralUser as BungieUser
 } from "bungie-net-core/lib/models"
-import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
-import { BungieNetTokens, Token } from "bungie-net-core/lib/auth/tokens"
-import { OAuthConfig, OAuthProvider } from "next-auth/providers"
-import { AccessTokenObject } from "bungie-net-core/lib/client"
-import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
 declare module "next-auth" {
     interface Profile extends BungieUser, DestinyProfileUserInfoCard {}
     interface User extends DefaultUser {
-        membershipId: string
         membershipType: BungieMembershipType
     }
     interface Session extends DefaultSession {
@@ -55,7 +53,6 @@ const BungieProvider: OAuthProvider = options => {
             return {
                 id: profile.membershipId,
                 name: profile.displayName,
-                membershipId: profile.membershipId,
                 membershipType: profile.membershipType,
                 email: null,
                 image: `https://www.bungie.net${
@@ -146,11 +143,6 @@ async function getBungieMembershipData({
             membershipType: BungieMembershipType.BungieNext
         })
         .then(res => res.Response.profiles)
-
-    console.log({
-        ...bnetData,
-        ...(linkedProfiles.find(profile => profile.isCrossSavePrimary) ?? linkedProfiles[0])
-    })
     return {
         ...bnetData,
         ...(linkedProfiles.find(profile => profile.isCrossSavePrimary) ?? linkedProfiles[0])
