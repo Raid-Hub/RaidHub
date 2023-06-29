@@ -3,7 +3,7 @@ import { DefaultSession, NextAuthOptions } from "next-auth"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { GeneralUser } from "bungie-net-core/lib/models"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
-import { BungieNetTokens } from "bungie-net-core/lib/auth/tokens"
+import { BungieNetTokens, Token } from "bungie-net-core/lib/auth/tokens"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers"
 import { AccessTokenObject } from "bungie-net-core/lib/client"
 
@@ -14,8 +14,7 @@ declare module "next-auth" {
     interface Session extends DefaultSession {
         user: {} & DefaultSession["user"] & GeneralUser
         error?: AuthError
-        access_token?: string
-        token_expiry: number
+        token?: Token
     }
 }
 
@@ -52,8 +51,7 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account, profile }) {
-            console.log("jwt", { token, account, profile })
+        async jwt({ token, account, profile, trigger }) {
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 const now = Date.now()
@@ -64,7 +62,8 @@ export const authOptions: NextAuthOptions = {
                         value: account.access_token,
                         type: "access",
                         created: now,
-                        expires: Math.round((account.expires_at ?? now / 1000) * 1000)
+                        expires: now + 15000
+                        //Math.round((account.expires_at ?? now / 1000) * 1000)
                     },
                     refresh: {
                         value: account.refresh_token,
@@ -89,15 +88,13 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             session.error = token.error
             if (token.error) {
-                session.access_token = undefined
-                session.token_expiry = 0
+                session.token = undefined
             } else {
                 session.user = {
                     ...session.user,
                     ...token.bungieUser
                 }
-                session.access_token = token.access.value
-                session.token_expiry = token.access.expires
+                session.token = token.access
             }
             return session
         }

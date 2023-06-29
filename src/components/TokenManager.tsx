@@ -16,8 +16,8 @@ const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
             console.error(sessionData)
             setRefetchInterval(0)
             void signOut()
-        } else if (sessionData) {
-            const timeRemaining = Math.round((sessionData.token_expiry - Date.now()) / 1000)
+        } else if (sessionData?.token) {
+            const timeRemaining = sessionData.token.expires - Date.now()
             setRefetchInterval(timeRemaining > 0 ? timeRemaining : 0)
         }
 
