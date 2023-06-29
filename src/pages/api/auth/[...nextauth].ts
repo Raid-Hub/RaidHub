@@ -12,7 +12,7 @@ type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 declare module "next-auth" {
     interface Profile extends GeneralUser {}
     interface Session extends DefaultSession {
-        user: {} & DefaultSession["user"] & GeneralUser
+        user: DefaultSession["user"]
         error?: AuthError
         token?: Token
     }
@@ -21,6 +21,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
     interface JWT extends BungieNetTokens {
         error?: AuthError
+        profile?: DefaultSession["user"]
     }
 }
 
@@ -55,11 +56,12 @@ const BungieProvider: OAuthProvider = options => {
 
 export const authOptions: NextAuthOptions = {
     callbacks: {
-        async jwt({ token, account }) {
+        async jwt({ token, account, profile }) {
             if (account && account.access_token && account.refresh_token) {
                 // Save the access token and refresh token in the JWT on the initial login
                 const now = Date.now()
                 return {
+                    profile,
                     bungieMembershipId: account.providerAccountId,
                     access: {
                         value: account.access_token,
@@ -92,6 +94,7 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token }) {
             session.error = token.error
+            session.user = token.profile
             if (token.error) {
                 session.token = undefined
             } else {
