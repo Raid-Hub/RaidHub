@@ -1,7 +1,6 @@
 import Link from "next/link"
 import styles from "../styles/header.module.css"
 import SearchBar from "./SearchBar"
-import { useSession } from "next-auth/react"
 import { Icons } from "../util/icons"
 
 type HeaderProps = {}
