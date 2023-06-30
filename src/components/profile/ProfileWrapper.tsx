@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { InitialProfileProps } from "../../util/types"
-import ErrorComponent from "../Error"
+import { InitialProfileProps } from "../../types/types"
+import ErrorComponent from "../global/Error"
 import Profile from "./Profile"
 import { NextPage } from "next"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"

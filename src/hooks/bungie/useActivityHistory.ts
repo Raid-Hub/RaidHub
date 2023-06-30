@@ -1,9 +1,9 @@
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
-import { ACTIVITIES_PER_PAGE } from "../../util/bungieClient"
-import { Raid, raidDetailsFromHash } from "../../util/raid"
-import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../../util/types"
+import { ACTIVITIES_PER_PAGE } from "../../services/bungie/bungieClient"
+import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
+import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../../types/types"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
 

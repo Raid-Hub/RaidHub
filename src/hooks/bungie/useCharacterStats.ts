@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType } from "bungie-net-core/models"
 import AggregateStats from "../../models/profile/AggregateStats"
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/types"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
 

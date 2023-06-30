@@ -1,5 +1,5 @@
-import { LocalStrings } from "./localized-strings"
-import { Raid } from "./raid"
+import { LocalStrings } from "../presentation/localized-strings"
+import { Raid } from "../destiny/raid"
 
 export enum Tag {
     CHECKPOINT,

@@ -1,5 +1,5 @@
-import { Vanity } from "../util/special"
-import { InitialProfileProps } from "../util/types"
+import { Vanity } from "../util/raidhub/special"
+import { InitialProfileProps } from "../types/types"
 import ProfileWrapper, { profileProps } from "../components/profile/ProfileWrapper"
 
 export default ProfileWrapper

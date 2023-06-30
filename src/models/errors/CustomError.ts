@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/types"
 
 export enum ErrorCode {
     Allowed = "",

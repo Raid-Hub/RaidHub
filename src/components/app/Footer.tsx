@@ -1,8 +1,8 @@
 import React from "react"
-import styles from "../styles/footer.module.css"
-import { Socials } from "../util/socials"
+import styles from "../../styles/footer.module.css"
+import { Socials } from "../../util/profile/socials"
 import Link from "next/link"
-import manifest from "../../public/manifest.json"
+import manifest from "../../../public/manifest.json"
 
 type FooterProps = {}
 

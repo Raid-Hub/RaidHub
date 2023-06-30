@@ -1,6 +1,6 @@
-import { Clan, RGBA } from "./types"
-import { CharacterName } from "./characters"
-import { RGBAToHex } from "./formatting"
+import { Clan, RGBA } from "../../types/types"
+import { CharacterName } from "../../util/destiny/characters"
+import { RGBAToHex } from "../../util/presentation/formatting"
 import {
     BungieMembershipType,
     DestinyActivityModeType,
@@ -33,10 +33,10 @@ import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
 
 // TODO: move these to a CDN
 // @ts-ignore
-import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "json" }
+import EmblemsJson from "../../util/destiny-definitions/emblems.json" assert { type: "json" }
 // @ts-ignore
-import BannersJson from "./destiny-definitions/clanBanner.json" assert { type: "json" }
-import CustomError from "../models/errors/CustomError"
+import BannersJson from "../../util/destiny-definitions/clanBanner.json" assert { type: "json" }
+import CustomError from "../../models/errors/CustomError"
 import { BasicBungieClient } from "bungie-net-core/api"
 
 const emblems: { [hash: string]: string } = EmblemsJson

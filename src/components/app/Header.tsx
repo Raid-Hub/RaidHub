@@ -1,7 +1,7 @@
 import Link from "next/link"
-import styles from "../styles/header.module.css"
+import styles from "../../styles/header.module.css"
 import SearchBar from "./SearchBar"
-import { Icons } from "../util/icons"
+import { Icons } from "../../util/presentation/icons"
 
 type HeaderProps = {}
 

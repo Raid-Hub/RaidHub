@@ -1,6 +1,6 @@
 import { round } from "../../util/math"
 import PlayerWeapons from "./PlayerWeapon"
-import { StatsKeys } from "../../util/types"
+import { StatsKeys } from "../../types/types"
 
 const NINE_HR_SIX_MIN = 546
 

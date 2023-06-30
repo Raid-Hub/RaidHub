@@ -1,13 +1,13 @@
 import Link from "next/link"
-import { useLanguage } from "../../hooks/useLanguage"
+import { useLanguage } from "../../hooks/util/useLanguage"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
 import styles from "../../styles/profile.module.css"
-import { LocalizedStrings } from "../../util/localized-strings"
-import { RaidBanner } from "../../util/raid"
-import Loading from "../Loading"
-import { Icons } from "../../util/icons"
-import { toCustomDateString } from "../../util/formatting"
-import { ErrorHandler } from "../../util/types"
+import { LocalizedStrings } from "../../util/presentation/localized-strings"
+import { RaidBanner } from "../../util/destiny/raid"
+import Loading from "../global/Loading"
+import { Icons } from "../../util/presentation/icons"
+import { toCustomDateString } from "../../util/presentation/formatting"
+import { ErrorHandler } from "../../types/types"
 
 type PinnedActivityProps = {
     activityId?: string | null

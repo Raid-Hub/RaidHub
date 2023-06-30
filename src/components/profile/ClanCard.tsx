@@ -1,11 +1,11 @@
 import { useClan } from "../../hooks/bungie/useClan"
 import styles from "../../styles/profile.module.css"
-import Loading from "../Loading"
+import Loading from "../global/Loading"
 import ClanBanner from "./ClanBanner"
-import { Icons } from "../../util/icons"
-import { fixClanName } from "../../util/formatting"
+import { Icons } from "../../util/presentation/icons"
+import { fixClanName } from "../../util/presentation/formatting"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/types"
 
 type ClanCardProps = {
     membershipId: string

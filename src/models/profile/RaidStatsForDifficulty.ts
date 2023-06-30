@@ -1,4 +1,4 @@
-import { HistoricalStatsDict, IRaidStats } from "../../util/types"
+import { HistoricalStatsDict, IRaidStats } from "../../types/types"
 
 export default class RaidStatsForDifficulty implements IRaidStats {
     assists: number

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { EmblemDict, EmblemTuple, ErrorHandler } from "../../util/types"
+import { EmblemDict, EmblemTuple, ErrorHandler } from "../../types/types"
 import PGCRMember from "../../models/pgcr/Member"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"

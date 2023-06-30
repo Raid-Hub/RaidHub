@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { wait } from "../util/math"
-import { X } from "../util/types"
-import { Socials } from "../util/socials"
-import { Raid } from "../util/raid"
+import { X } from "../../types/types"
+import { Socials } from "../../util/profile/socials"
+import { Raid } from "../../util/destiny/raid"
+import { wait } from "../../util/wait"
 
 type UseRaidHubProfile = {
     profile: X | null

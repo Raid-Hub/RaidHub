@@ -4,7 +4,7 @@ import {
 } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
 import Activity from "../../models/pgcr/Activity"
-import { ErrorHandler, Loading } from "../../util/types"
+import { ErrorHandler, Loading } from "../../types/types"
 import PGCRMember from "../../models/pgcr/Member"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"

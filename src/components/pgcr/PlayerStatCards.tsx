@@ -1,9 +1,9 @@
-import { useLanguage } from "../../hooks/useLanguage"
-import { Icons } from "../../util/icons"
+import { useLanguage } from "../../hooks/util/useLanguage"
+import { Icons } from "../../util/presentation/icons"
 import styles from "../../styles/pgcr.module.css"
-import { LocalizedStrings } from "../../util/localized-strings"
+import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import PGCREntry from "../../models/pgcr/Entry"
-import { formattedNumber } from "../../util/formatting"
+import { formattedNumber } from "../../util/presentation/formatting"
 
 type PlayerStatCardProps = {
     entry: PGCREntry

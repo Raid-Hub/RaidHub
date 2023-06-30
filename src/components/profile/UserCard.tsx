@@ -1,8 +1,8 @@
 import { UserInfoCard } from "bungie-net-core/models"
 import styles from "../../styles/profile.module.css"
 import SocialTag from "./SocialTag"
-import { fixBungieCode } from "../../util/formatting"
-import { ProfileSocialData } from "../../util/types"
+import { fixBungieCode } from "../../util/presentation/formatting"
+import { ProfileSocialData } from "../../types/types"
 
 type UserCardProps = {
     userInfo: UserInfoCard

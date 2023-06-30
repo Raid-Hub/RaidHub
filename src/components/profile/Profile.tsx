@@ -1,19 +1,19 @@
 import styles from "../../styles/profile.module.css"
 import { useBungieNextMembership } from "../../hooks/bungie/useBungieNextMembership"
-import { ErrorHandler, ProfileComponent } from "../../util/types"
+import { ErrorHandler, ProfileComponent } from "../../types/types"
 import Head from "next/head"
 import UserCard from "./UserCard"
 import RankingBanner from "./RankingBanner"
-import { Founders } from "../../util/special"
+import { Founders } from "../../util/raidhub/special"
 import ClanCard from "./ClanCard"
 import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "./ToggleSwitch"
 import { useState } from "react"
-import { Icons } from "../../util/icons"
+import { Icons } from "../../util/presentation/icons"
 import { useProfileStats } from "../../hooks/bungie/useProfileStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
-import { useRaidHubProfile } from "../../hooks/useRaidHubProfile"
+import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
 
 type ProfileProps = ProfileComponent & {
     errorHandler: ErrorHandler

@@ -3,11 +3,11 @@ import ActivityHeader from "../../components/pgcr/ActivityHeader"
 import Participants from "../../components/pgcr/Participants"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
-import { Backdrop, Raid, Short } from "../../util/raid"
+import { Backdrop, Raid, Short } from "../../util/destiny/raid"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
 import Head from "next/head"
 import { GetServerSidePropsContext, NextPage } from "next"
-import ErrorComponent from "../../components/Error"
+import ErrorComponent from "../../components/global/Error"
 import { ParsedUrlQuery } from "querystring"
 
 type PGCRProps = {

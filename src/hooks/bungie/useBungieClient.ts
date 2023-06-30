@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
-import BungieNetClient from "../../util/bungieClient"
+import BungieNetClient from "../../services/bungie/bungieClient"
 
 export function useBungieClient(): BungieNetClient {
     const [client] = useState(new BungieNetClient())

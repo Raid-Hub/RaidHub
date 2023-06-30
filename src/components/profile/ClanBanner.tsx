@@ -1,4 +1,4 @@
-import { ClanBannerData } from "../../util/types"
+import { ClanBannerData } from "../../types/types"
 import styles from "../../styles/profile.module.css"
 
 type ClanBannerProps = ClanBannerData

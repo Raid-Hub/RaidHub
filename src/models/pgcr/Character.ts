@@ -1,6 +1,6 @@
 import { DestinyClass, DestinyPostGameCarnageReportEntry } from "bungie-net-core/models"
 import PGCREntry from "./Entry"
-import { CharacterLogos, CharacterName, CharacterType } from "../../util/characters"
+import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny/characters"
 
 export default class PGCRCharacter extends PGCREntry {
     readonly id: string

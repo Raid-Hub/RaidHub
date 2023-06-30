@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import styles from "../styles/header.module.css"
-import { useSearch } from "../hooks/useSearch"
-import { fixBungieCode } from "../util/formatting"
-import { Icons } from "../util/icons"
-import { wait } from "../util/math"
+import styles from "../../styles/header.module.css"
+import { useSearch } from "../../hooks/bungie/useSearch"
+import { fixBungieCode } from "../../util/presentation/formatting"
+import { Icons } from "../../util/presentation/icons"
+import { wait } from "../../util/wait"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100

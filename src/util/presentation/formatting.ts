@@ -1,4 +1,4 @@
-import { RGBA } from "./types"
+import { RGBA } from "../../types/types"
 
 export function formattedNumber(num: number, locale: string): string {
     return num.toLocaleString(locale)

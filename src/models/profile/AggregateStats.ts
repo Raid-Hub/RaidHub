@@ -2,10 +2,10 @@ import {
     DestinyAggregateActivityResults,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/models"
-import { AllValidHashes, HashDictionary, Raid, ValidRaidHash } from "../../util/raid"
+import { AllValidHashes, HashDictionary, Raid, ValidRaidHash } from "../../util/destiny/raid"
 import RaidStats from "./RaidStats"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"
-import { HistoricalStatsDict } from "../../util/types"
+import { HistoricalStatsDict } from "../../types/types"
 
 type InputHistoricalStatsValues = HistoricalStatsDict<DestinyHistoricalStatsValue>
 

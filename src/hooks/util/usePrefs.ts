@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { DefaultPreferences, NewoPrefs, PrefType, Prefs } from "../util/preferences"
+import { DefaultPreferences, NewoPrefs, PrefType, Prefs } from "../../util/profile/preferences"
 
 type PrefsRecord<T extends Prefs[]> = {
     [K in T[number]]: PrefType<K>

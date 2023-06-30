@@ -2,13 +2,13 @@ import {
     DestinyPostGameCarnageReportData,
     DestinyHistoricalStatsValuePair
 } from "bungie-net-core/models"
-import { Difficulty, raidDetailsFromHash, Raid } from "../../util/raid"
-import { Tag, addModifiers } from "../../util/tags"
-import { Seasons } from "../../util/dates"
+import { Difficulty, raidDetailsFromHash, Raid } from "../../util/destiny/raid"
+import { Tag, addModifiers } from "../../util/raidhub/tags"
+import { Seasons } from "../../util/destiny/dates"
 import ActivityStats from "./ActivityStats"
 import RaidInfo from "./RaidInfo"
-import { ActivityPlacements } from "../../util/types"
-import { LocalStrings } from "../../util/localized-strings"
+import { ActivityPlacements } from "../../types/types"
+import { LocalStrings } from "../../util/presentation/localized-strings"
 import PGCRMember from "./Member"
 
 export default class Activity {

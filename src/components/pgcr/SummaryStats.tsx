@@ -1,9 +1,9 @@
-import { useLanguage } from "../../hooks/useLanguage"
+import { useLanguage } from "../../hooks/util/useLanguage"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
-import { formattedNumber } from "../../util/formatting"
-import { Icons } from "../../util/icons"
-import { LocalizedStrings } from "../../util/localized-strings"
+import { formattedNumber } from "../../util/presentation/formatting"
+import { Icons } from "../../util/presentation/icons"
+import { LocalizedStrings } from "../../util/presentation/localized-strings"
 
 type SummaryStatsProps = {
     activity: Activity | null

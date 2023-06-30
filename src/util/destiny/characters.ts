@@ -1,5 +1,5 @@
 import { DestinyClass } from "bungie-net-core/models"
-import { Icons } from "./icons"
+import { Icons } from "../presentation/icons"
 
 export const CharacterType: { [key: string]: DestinyClass } = {
     Hunter: DestinyClass.Hunter,

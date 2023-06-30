@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { CustomBungieSearchResult, ErrorHandler } from "../util/types"
-import { asBungieName, fixBungieCode } from "../util/formatting"
-import CustomError, { ErrorCode } from "../models/errors/CustomError"
-import { useBungieClient } from "./bungie/useBungieClient"
+import { CustomBungieSearchResult, ErrorHandler } from "../../types/types"
+import { asBungieName, fixBungieCode } from "../../util/presentation/formatting"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useBungieClient } from "./useBungieClient"
 
 type UseSearchParams = {
     query: string

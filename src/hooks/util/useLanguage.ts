@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { isSupported, SupportedLanguage } from "../util/localized-strings"
+import { isSupported, SupportedLanguage } from "../../util/presentation/localized-strings"
 
 type UseLanguage = {
     language: SupportedLanguage

@@ -1,5 +1,5 @@
-import { Difficulty } from "../../util/raid"
-import { IRaidStats } from "../../util/types"
+import { Difficulty } from "../../util/destiny/raid"
+import { IRaidStats } from "../../types/types"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"
 
 export default class RaidStats

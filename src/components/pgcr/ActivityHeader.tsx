@@ -1,9 +1,9 @@
-import { useLanguage } from "../../hooks/useLanguage"
+import { useLanguage } from "../../hooks/util/useLanguage"
 import Activity from "../../models/pgcr/Activity"
 import styles from "../../styles/pgcr.module.css"
-import { toCustomDateString } from "../../util/formatting"
-import { LocalizedStrings } from "../../util/localized-strings"
-import { ActivityPlacements, Loading } from "../../util/types"
+import { toCustomDateString } from "../../util/presentation/formatting"
+import { LocalizedStrings } from "../../util/presentation/localized-strings"
+import { ActivityPlacements, Loading } from "../../types/types"
 
 type ActivityHeaderProps = {
     activity: Activity | null

@@ -1,6 +1,6 @@
 import { DestinyPostGameCarnageReportEntry, BungieMembershipType } from "bungie-net-core/models"
 import PGCRStats from "./PlayerStats"
-import { StatsKeys } from "../../util/types"
+import { StatsKeys } from "../../types/types"
 
 export default abstract class PGCREntry {
     readonly membershipId: string

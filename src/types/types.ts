@@ -7,9 +7,9 @@ import {
     DestinyProfileComponent,
     GroupV2
 } from "bungie-net-core/models"
-import { Raid } from "./raid"
-import { Tag } from "./tags"
-import { Socials } from "./socials"
+import { Raid } from "../util/destiny/raid"
+import { Tag } from "../util/raidhub/tags"
+import { Socials } from "../util/profile/socials"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
