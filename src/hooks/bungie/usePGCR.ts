@@ -1,7 +1,7 @@
 import {
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportEntry
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
 import Activity from "../../models/pgcr/Activity"
 import { ErrorHandler, Loading } from "../../util/types"

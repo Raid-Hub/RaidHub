@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { InitialProfileProps } from "../../../util/types"
 import ProfileWrapper, { profileProps } from "../../../components/profile/ProfileWrapper"
 

@@ -3,7 +3,7 @@ import { EmblemDict, EmblemTuple, ErrorHandler } from "../../util/types"
 import PGCRMember from "../../models/pgcr/Member"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 type UseEmblemsParams = { members: PGCRMember[] | null; errorHandler: ErrorHandler }
 

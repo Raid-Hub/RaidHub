@@ -1,15 +1,14 @@
 import NextAuth, { NextAuthOptions, DefaultUser, DefaultSession, Profile, User } from "next-auth"
-import { OAuthConfig, OAuthProvider } from "next-auth/providers"
-import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
-import { AccessTokenObject } from "bungie-net-core/lib/client"
-import { BungieNetTokens, Token } from "bungie-net-core/lib/auth/tokens"
-import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
-import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
+import { BungieToken, BungieTokens, getAccessTokenFromRefreshToken } from "bungie-net-core/auth"
+import { getMembershipDataForCurrentUser } from "bungie-net-core/endpoints/User"
+import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
+import { BasicBungieClient } from "bungie-net-core/api"
 import {
     BungieMembershipType,
     DestinyProfileUserInfoCard,
     GeneralUser as BungieUser
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
+import { OAuthConfig, OAuthProvider } from "next-auth/providers/oauth"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -21,12 +20,12 @@ declare module "next-auth" {
     interface Session extends DefaultSession {
         user?: User
         error?: AuthError
-        token?: Token
+        token?: BungieToken
     }
 }
 
 declare module "next-auth/jwt" {
-    interface JWT extends BungieNetTokens {
+    interface JWT extends BungieTokens {
         error?: AuthError
         user?: User
     }
@@ -46,7 +45,7 @@ const BungieProvider: OAuthProvider = options => {
         userinfo: {
             // passed to profile(profile)
             // accessed from jwt ({ profile })
-            request: async ({ tokens }) => getBungieMembershipData(tokens)
+            request: async ({ tokens }) => getBungieMembershipData(tokens.access_token!)
         },
         profile(profile: Profile) {
             // accessed from jwt ({ user })
@@ -124,25 +123,23 @@ export const authOptions: NextAuthOptions = {
 
 export default NextAuth(authOptions)
 
-async function getBungieMembershipData({
-    access_token
-}: AccessTokenObject): Promise<BungieUser & DestinyProfileUserInfoCard> {
-    const protoClient = {
-        access_token,
-        getMembershipDataForCurrentUser,
-        getLinkedProfiles
-    }
+async function getBungieMembershipData(
+    accessToken: string
+): Promise<BungieUser & DestinyProfileUserInfoCard> {
+    const client = new BasicBungieClient()
+    client.setToken(accessToken)
 
-    const bnetData = await protoClient
-        .getMembershipDataForCurrentUser()
-        .then(res => res.Response.bungieNetUser)
+    const bnetData = await getMembershipDataForCurrentUser(client).then(
+        res => res.Response.bungieNetUser
+    )
 
-    const linkedProfiles = await protoClient
-        .getLinkedProfiles({
+    const linkedProfiles = await getLinkedProfiles(
+        {
             membershipId: bnetData.membershipId,
             membershipType: BungieMembershipType.BungieNext
-        })
-        .then(res => res.Response.profiles)
+        },
+        client
+    ).then(res => res.Response.profiles)
     return {
         ...bnetData,
         ...(linkedProfiles.find(profile => profile.isCrossSavePrimary) ?? linkedProfiles[0])

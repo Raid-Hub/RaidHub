@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalWeaponStats } from "bungie-net-core/lib/models"
+import { DestinyHistoricalWeaponStats } from "bungie-net-core/models"
 import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
 import { WeaponStatsValues } from "../../util/types"
 const weaponsDefs: {

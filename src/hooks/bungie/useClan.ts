@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
 import { Clan, ErrorHandler } from "../../util/types"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"

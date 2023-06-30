@@ -1,4 +1,4 @@
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import { FilterCallbackType } from "./types"
 
 export enum Prefs {

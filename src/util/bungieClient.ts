@@ -17,7 +17,7 @@ import {
     PlatformErrorCodes,
     UserInfoCard,
     UserSearchResponseDetail
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import {
     getActivityHistory,
     getCharacter,
@@ -27,9 +27,9 @@ import {
     getPostGameCarnageReport,
     getProfile,
     searchDestinyPlayerByBungieName
-} from "bungie-net-core/lib/endpoints/Destiny2"
-import { getGroupsForMember } from "bungie-net-core/lib/endpoints/GroupV2"
-import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
+} from "bungie-net-core/endpoints/Destiny2"
+import { getGroupsForMember } from "bungie-net-core/endpoints/GroupV2"
+import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
 
 // TODO: move these to a CDN
 // @ts-ignore
@@ -37,6 +37,7 @@ import EmblemsJson from "./destiny-definitions/emblems.json" assert { type: "jso
 // @ts-ignore
 import BannersJson from "./destiny-definitions/clanBanner.json" assert { type: "json" }
 import CustomError from "../models/errors/CustomError"
+import { BasicBungieClient } from "bungie-net-core/api"
 
 const emblems: { [hash: string]: string } = EmblemsJson
 const defaultEmblem = "/common/destiny2_content/icons/1740254cb1bb978b2c7f0f3d03f58c6b.jpg"
@@ -81,7 +82,7 @@ export default class BungieNetClient {
 
     async getPGCR(activityId: string): Promise<DestinyPostGameCarnageReportData> {
         try {
-            const res = await getPostGameCarnageReport({ activityId })
+            const res = await getPostGameCarnageReport({ activityId }, new BasicBungieClient())
             return {
                 ...res.Response,
                 entries: res.Response.entries.filter(entry => !nonParticipant(entry))
@@ -102,12 +103,15 @@ export default class BungieNetClient {
     ): Promise<string> {
         let rv: string = defaultEmblem
         try {
-            const res = await getCharacter({
-                characterId,
-                destinyMembershipId,
-                membershipType,
-                components: [DestinyComponentType.Characters]
-            })
+            const res = await getCharacter(
+                {
+                    characterId,
+                    destinyMembershipId,
+                    membershipType,
+                    components: [DestinyComponentType.Characters]
+                },
+                new BasicBungieClient()
+            )
             const data = res.Response.character.data
             if (data) {
                 rv = emblemFromHash(data.emblemHash)
@@ -126,14 +130,17 @@ export default class BungieNetClient {
         page: number
     ): Promise<DestinyHistoricalStatsPeriodGroup[]> {
         try {
-            const res = await getActivityHistory({
-                characterId,
-                destinyMembershipId,
-                membershipType,
-                page,
-                mode: DestinyActivityModeType.Raid,
-                count: ACTIVITIES_PER_PAGE
-            })
+            const res = await getActivityHistory(
+                {
+                    characterId,
+                    destinyMembershipId,
+                    membershipType,
+                    page,
+                    mode: DestinyActivityModeType.Raid,
+                    count: ACTIVITIES_PER_PAGE
+                },
+                new BasicBungieClient()
+            )
             return res.Response.activities ?? []
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
@@ -147,12 +154,15 @@ export default class BungieNetClient {
         membershipType: BungieMembershipType
     ): Promise<Clan | null> {
         try {
-            const res = await getGroupsForMember({
-                filter: GroupsForMemberFilter.All,
-                groupType: GroupType.Clan,
-                membershipId,
-                membershipType
-            })
+            const res = await getGroupsForMember(
+                {
+                    filter: GroupsForMemberFilter.All,
+                    groupType: GroupType.Clan,
+                    membershipId,
+                    membershipType
+                },
+                new BasicBungieClient()
+            )
             const clan = res.Response.results[0]
             if (!clan) return null
             const group = clan.group
@@ -197,10 +207,13 @@ export default class BungieNetClient {
         membershipType: BungieMembershipType
     ): Promise<UserInfoCard | undefined> {
         try {
-            const res = await getLinkedProfiles({
-                membershipId,
-                membershipType
-            })
+            const res = await getLinkedProfiles(
+                {
+                    membershipId,
+                    membershipType
+                },
+                new BasicBungieClient()
+            )
             return res.Response.bnetMembership
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
@@ -217,7 +230,8 @@ export default class BungieNetClient {
                 },
                 {
                     displayNamePrefix: username
-                }
+                },
+                new BasicBungieClient()
             )
             return response.Response.searchResults
         } catch (e: any) {
@@ -235,11 +249,14 @@ export default class BungieNetClient {
         membershipType: BungieMembershipType
     }): Promise<DestinyCharacterComponent | null> {
         try {
-            const res = await getProfile({
-                destinyMembershipId,
-                membershipType,
-                components: [DestinyComponentType.Characters]
-            })
+            const res = await getProfile(
+                {
+                    destinyMembershipId,
+                    membershipType,
+                    components: [DestinyComponentType.Characters]
+                },
+                new BasicBungieClient()
+            )
             if (!res.Response.characters.data) {
                 throw new Error("Private profile")
             } else {
@@ -262,7 +279,8 @@ export default class BungieNetClient {
                 {
                     displayName,
                     displayNameCode
-                }
+                },
+                new BasicBungieClient()
             )
             return response.Response.filter(
                 user => !user.crossSaveOverride || user.membershipType === user.crossSaveOverride
@@ -301,14 +319,17 @@ export default class BungieNetClient {
 
                     for (const type of possibleTypes) {
                         try {
-                            const profile = await getProfile({
-                                destinyMembershipId: info.membershipId,
-                                membershipType: type,
-                                components: [
-                                    DestinyComponentType.Profiles,
-                                    DestinyComponentType.Characters
-                                ]
-                            })
+                            const profile = await getProfile(
+                                {
+                                    destinyMembershipId: info.membershipId,
+                                    membershipType: type,
+                                    components: [
+                                        DestinyComponentType.Profiles,
+                                        DestinyComponentType.Characters
+                                    ]
+                                },
+                                new BasicBungieClient()
+                            )
                             newInfo = profile.Response.profile.data?.userInfo
                             const classInfo = profile.Response.characters.data?.[entry.characterId]
                             newClassInfo = {
@@ -350,10 +371,13 @@ export default class BungieNetClient {
         membershipType: BungieMembershipType
     }): Promise<DestinyHistoricalStatsAccountResult> {
         try {
-            const stats = await getHistoricalStatsForAccount({
-                destinyMembershipId,
-                membershipType
-            })
+            const stats = await getHistoricalStatsForAccount(
+                {
+                    destinyMembershipId,
+                    membershipType
+                },
+                new BasicBungieClient()
+            )
             return stats.Response
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)
@@ -372,11 +396,14 @@ export default class BungieNetClient {
         characterId: string
     }): Promise<DestinyAggregateActivityResults> {
         try {
-            const stats = await getDestinyAggregateActivityStats({
-                characterId,
-                destinyMembershipId,
-                membershipType
-            })
+            const stats = await getDestinyAggregateActivityStats(
+                {
+                    characterId,
+                    destinyMembershipId,
+                    membershipType
+                },
+                new BasicBungieClient()
+            )
             return stats.Response
         } catch (e: any) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled)

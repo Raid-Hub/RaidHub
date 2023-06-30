@@ -6,7 +6,7 @@ import {
     DestinyPostGameCarnageReportExtendedData,
     DestinyProfileComponent,
     GroupV2
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { Raid } from "./raid"
 import { Tag } from "./tags"
 import { Socials } from "./socials"

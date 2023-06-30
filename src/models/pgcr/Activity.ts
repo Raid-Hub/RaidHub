@@ -1,7 +1,7 @@
 import {
     DestinyPostGameCarnageReportData,
     DestinyHistoricalStatsValuePair
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { Difficulty, raidDetailsFromHash, Raid } from "../../util/raid"
 import { Tag, addModifiers } from "../../util/tags"
 import { Seasons } from "../../util/dates"

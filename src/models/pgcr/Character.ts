@@ -1,4 +1,4 @@
-import { DestinyClass, DestinyPostGameCarnageReportEntry } from "bungie-net-core/lib/models"
+import { DestinyClass, DestinyPostGameCarnageReportEntry } from "bungie-net-core/models"
 import PGCREntry from "./Entry"
 import { CharacterLogos, CharacterName, CharacterType } from "../../util/characters"
 

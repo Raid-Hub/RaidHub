@@ -5,9 +5,9 @@ import Footer from "../components/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import { useLanguage } from "../hooks/useLanguage"
-import { Session } from "next-auth/core/types"
 import TokenManager from "../components/TokenManager"
 import { useState } from "react"
+import { Session } from "next-auth"
 
 type PageProps = {
     session: Session

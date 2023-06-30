@@ -4,7 +4,7 @@ import Loading from "../Loading"
 import ClanBanner from "./ClanBanner"
 import { Icons } from "../../util/icons"
 import { fixClanName } from "../../util/formatting"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { ErrorHandler } from "../../util/types"
 
 type ClanCardProps = {

@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
 import { ACTIVITIES_PER_PAGE } from "../../util/bungieClient"
 import { Raid, raidDetailsFromHash } from "../../util/raid"

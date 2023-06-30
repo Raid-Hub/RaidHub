@@ -1,6 +1,6 @@
 import { expect, describe, test } from "@jest/globals"
 import BungieNetClient, { ACTIVITIES_PER_PAGE } from "../src/util/bungieClient"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { AllValidHashes } from "../src/util/raid"
 
 const shared = new BungieNetClient()

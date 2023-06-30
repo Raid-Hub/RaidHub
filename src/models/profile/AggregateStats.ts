@@ -1,7 +1,7 @@
 import {
     DestinyAggregateActivityResults,
     DestinyHistoricalStatsValue
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { AllValidHashes, HashDictionary, Raid, ValidRaidHash } from "../../util/raid"
 import RaidStats from "./RaidStats"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"

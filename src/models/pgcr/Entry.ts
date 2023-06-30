@@ -1,4 +1,4 @@
-import { DestinyPostGameCarnageReportEntry, BungieMembershipType } from "bungie-net-core/lib/models"
+import { DestinyPostGameCarnageReportEntry, BungieMembershipType } from "bungie-net-core/models"
 import PGCRStats from "./PlayerStats"
 import { StatsKeys } from "../../util/types"
 

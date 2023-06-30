@@ -8,8 +8,9 @@ import {
     BungieMembershipType,
     DestinyComponentType,
     PlatformErrorCodes
-} from "bungie-net-core/lib/models"
-import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
+} from "bungie-net-core/models"
+import { getProfile } from "bungie-net-core/endpoints/Destiny2"
+import { BasicBungieClient } from "bungie-net-core/api"
 
 type ProfileWrapperProps = InitialProfileProps
 
@@ -35,11 +36,14 @@ export async function profileProps({
     membershipType: BungieMembershipType
 }) {
     try {
-        const res = await getProfile({
-            destinyMembershipId,
-            membershipType,
-            components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
-        })
+        const res = await getProfile(
+            {
+                destinyMembershipId,
+                membershipType,
+                components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
+            },
+            new BasicBungieClient()
+        )
         const bungieNetProfile = {
             ...res.Response.profile.data,
             emblemBackgroundPath: Object.values(res.Response.characters.data)[0]

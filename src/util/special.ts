@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export const Founders: { [id: string]: string } = {
     "4611686018488107374": "Newo",
