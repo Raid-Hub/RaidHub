@@ -3,9 +3,9 @@ import styles from "../../styles/profile.module.css"
 import Loading from "../global/Loading"
 import ClanBanner from "./ClanBanner"
 import { Icons } from "../../util/presentation/icons"
-import { fixClanName } from "../../util/presentation/formatting"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { ErrorHandler } from "../../types/types"
+import { ErrorHandler } from "../../types/generic"
+import { fixClanName } from "../../util/destiny/fixClanName"
 
 type ClanCardProps = {
     membershipId: string

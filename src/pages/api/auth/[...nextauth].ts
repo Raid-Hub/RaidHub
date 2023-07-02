@@ -2,13 +2,13 @@ import NextAuth, { NextAuthOptions, DefaultUser, DefaultSession, Profile, User }
 import { BungieToken, BungieTokens, getAccessTokenFromRefreshToken } from "bungie-net-core/auth"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/endpoints/User"
 import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
-import { BasicBungieClient } from "bungie-net-core/api"
 import {
     BungieMembershipType,
     DestinyProfileUserInfoCard,
     GeneralUser as BungieUser
 } from "bungie-net-core/models"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers/oauth"
+import BungieClient from "../../../services/bungie/client"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -126,7 +126,7 @@ export default NextAuth(authOptions)
 async function getBungieMembershipData(
     accessToken: string
 ): Promise<BungieUser & DestinyProfileUserInfoCard> {
-    const client = new BasicBungieClient()
+    const client = new BungieClient()
     client.setToken(accessToken)
 
     const bnetData = await getMembershipDataForCurrentUser(client).then(

@@ -10,8 +10,8 @@ import { useEffect, useState } from "react"
 import Loading from "../global/Loading"
 import { usePrefs } from "../../hooks/util/usePrefs"
 import { DefaultPreferences, Prefs } from "../../util/profile/preferences"
-import AggregateStats from "../../models/profile/AggregateStats"
-import { ErrorHandler, X } from "../../types/types"
+import { AllRaidStats, RaidHubProfile } from "../../types/profile"
+import { ErrorHandler } from "../../types/generic"
 
 const CARDS_PER_PAGE = 60
 
@@ -21,12 +21,12 @@ export enum Layout {
 }
 
 type RaidCardsProps = {
-    profile: X | null
+    profile: RaidHubProfile | null
     membershipId: string
     membershipType: BungieMembershipType
     characterIds: string[] | null
     layout: Layout
-    raidMetrics: AggregateStats | null
+    raidMetrics: AllRaidStats | null
     isLoadingRaidMetrics: boolean
     errorHandler: ErrorHandler
 }

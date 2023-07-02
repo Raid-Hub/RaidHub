@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
-import { fixBungieCode } from "../../util/presentation/formatting"
 import { Icons } from "../../util/presentation/icons"
 import { wait } from "../../util/wait"
+import BungieName from "../../models/BungieName"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -95,48 +95,35 @@ const SearchBar = ({}: SearchBarProps) => {
                 {showingResults && (
                     <ul className={styles["search-results"]}>
                         {results
-                            .filter(
-                                ({
-                                    bungieGlobalDisplayName,
-                                    bungieGlobalDisplayNameCode,
-                                    displayName
-                                }) =>
-                                    (bungieGlobalDisplayName && bungieGlobalDisplayNameCode
-                                        ? `${bungieGlobalDisplayName}#${fixBungieCode(
-                                              bungieGlobalDisplayNameCode
-                                          )}`
-                                        : displayName
-                                    ).startsWith(enteredText)
-                            )
-                            .map(
-                                (
-                                    {
-                                        bungieGlobalDisplayName,
-                                        bungieGlobalDisplayNameCode,
-                                        displayName,
-                                        membershipId,
-                                        membershipType
-                                    },
-                                    idx
-                                ) => (
-                                    <a
-                                        className={styles["search-result"]}
-                                        key={idx}
-                                        href={`/profile/${membershipType}/${membershipId}`}
-                                        onClick={handleSelect}>
-                                        <li>
-                                            <p>
-                                                {bungieGlobalDisplayName &&
-                                                bungieGlobalDisplayNameCode
-                                                    ? `${bungieGlobalDisplayName}#${fixBungieCode(
-                                                          bungieGlobalDisplayNameCode
-                                                      )}`
-                                                    : displayName}
-                                            </p>
-                                        </li>
-                                    </a>
+                            .map(result => {
+                                let name = result.displayName
+                                if (
+                                    result.bungieGlobalDisplayName &&
+                                    result.bungieGlobalDisplayNameCode
                                 )
-                            )}
+                                    try {
+                                        name = new BungieName(
+                                            result.bungieGlobalDisplayName,
+                                            result.bungieGlobalDisplayNameCode
+                                        ).toString()
+                                    } catch {}
+                                return {
+                                    ...result,
+                                    name
+                                }
+                            })
+                            .filter(({ name }) => name.startsWith(enteredText))
+                            .map(({ name, membershipId, membershipType }, idx) => (
+                                <a
+                                    className={styles["search-result"]}
+                                    key={idx}
+                                    href={`/profile/${membershipType}/${membershipId}`}
+                                    onClick={handleSelect}>
+                                    <li>
+                                        <p>{name}</p>
+                                    </li>
+                                </a>
+                            ))}
                     </ul>
                 )}
             </form>

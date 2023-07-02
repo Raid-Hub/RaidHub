@@ -1,6 +1,6 @@
 import styles from "../../styles/profile.module.css"
 import { useBungieNextMembership } from "../../hooks/bungie/useBungieNextMembership"
-import { ErrorHandler, ProfileComponent } from "../../types/types"
+import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./UserCard"
 import RankingBanner from "./RankingBanner"
@@ -11,35 +11,52 @@ import RaidCards, { Layout } from "./RaidCards"
 import ToggleSwitch from "./ToggleSwitch"
 import { useState } from "react"
 import { Icons } from "../../util/presentation/icons"
-import { useProfileStats } from "../../hooks/bungie/useProfileStats"
+import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
 import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
+import { BungieMembershipType } from "bungie-net-core/models"
+import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
 
-type ProfileProps = ProfileComponent & {
+type ProfileProps = {
+    destinyMembershipId: string
+    membershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }
 
-const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps) => {
-    const { profile, isLoading: isLoadingProfile } = useRaidHubProfile(userInfo.membershipId)
-    const { membership } = useBungieNextMembership({ ...userInfo, errorHandler })
+const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileProps) => {
+    const { profile, isLoading: isLoadingProfile } = useDestinyProfile({
+        destinyMembershipId,
+        membershipType,
+        errorHandler
+    })
+    const { profile: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
+        destinyMembershipId,
+        errorHandler
+    })
+    const { membership } = useBungieNextMembership({
+        destinyMembershipId,
+        membershipType,
+        errorHandler
+    })
     const {
         stats: profileStats,
         isLoading: isLoadingProfileStats,
         characterIds
-    } = useProfileStats({ ...userInfo, errorHandler })
+    } = useDestinyStats({ destinyMembershipId, membershipType, errorHandler })
     const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        ...userInfo,
+        destinyMembershipId,
+        membershipType,
         characterIds,
         errorHandler
     })
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
-    const handleToggle = (buttonState: boolean) => {
+    const handleLayoutToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
         setLayout(newState)
     }
 
-    const name = userInfo.bungieGlobalDisplayName ?? userInfo.displayName
+    const name = profile?.userInfo.bungieGlobalDisplayName ?? profile?.userInfo.displayName
 
     return (
         <main className={styles["main"]}>
@@ -47,12 +64,14 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
                 <title>{`${name} | RaidHub`}</title>
             </Head>
             <section className={styles["user-info"]}>
-                <UserCard
-                    userInfo={{ ...membership, ...userInfo }}
-                    socials={profile?.socials}
-                    emblemBackgroundPath={emblemBackgroundPath}
-                    backgroundImage={profile?.background?.replace(/;$/, "") ?? ""}
-                />
+                {profile && (
+                    <UserCard
+                        userInfo={{ ...membership, ...profile.userInfo }}
+                        socials={raidHubProfile?.socials}
+                        emblemBackgroundPath={profile?.emblemBackgroundPath}
+                        backgroundImage={raidHubProfile?.background?.replace(/;$/, "") ?? ""}
+                    />
+                )}
 
                 <div className={styles["ranking-banners"]}>
                     <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
@@ -73,7 +92,7 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
                         <span>69</span>
                     </RankingBanner>
 
-                    {Object.keys(Founders).includes(userInfo.membershipId) && (
+                    {profile && Object.keys(Founders).includes(profile.userInfo.membershipId) && (
                         <div className={styles["ranking-banner"]}>
                             <img src="/logo.png" alt="" />
 
@@ -87,30 +106,34 @@ const Profile = ({ userInfo, emblemBackgroundPath, errorHandler }: ProfileProps)
                     )}
                 </div>
 
-                <ClanCard {...userInfo} errorHandler={errorHandler} />
+                {profile && <ClanCard {...profile.userInfo} errorHandler={errorHandler} />}
             </section>
-            <section className={styles["content"]}>
-                <div className={styles["mid"]}>
-                    <PinnedActivity
-                        activityId={profile?.pinnedActivity}
+            {profile && (
+                <section className={styles["content"]}>
+                    <div className={styles["mid"]}>
+                        {raidHubProfile && (
+                            <PinnedActivity
+                                activityId={raidHubProfile.pinnedActivity}
+                                errorHandler={errorHandler}
+                            />
+                        )}
+                        <div className={styles["layout-toggle"]}>
+                            <span className={styles["description-toggle"]}>Raids</span>
+                            <ToggleSwitch defaultState={!!layout} onToggle={handleLayoutToggle} />
+                            <span className={styles["description-toggle"]}>History</span>
+                        </div>
+                    </div>
+                    <RaidCards
+                        {...profile.userInfo}
+                        profile={raidHubProfile}
+                        characterIds={characterIds}
+                        layout={layout}
+                        raidMetrics={raidMetrics}
+                        isLoadingRaidMetrics={isLoadingRaidMetrics}
                         errorHandler={errorHandler}
                     />
-                    <div className={styles["layout-toggle"]}>
-                        <span className={styles["description-toggle"]}>Raids</span>
-                        <ToggleSwitch defaultState={!!layout} onToggle={handleToggle} />
-                        <span className={styles["description-toggle"]}>History</span>
-                    </div>
-                </div>
-                <RaidCards
-                    {...userInfo}
-                    profile={profile}
-                    characterIds={characterIds}
-                    layout={layout}
-                    raidMetrics={raidMetrics}
-                    isLoadingRaidMetrics={isLoadingRaidMetrics}
-                    errorHandler={errorHandler}
-                />
-            </section>
+                </section>
+            )}
         </main>
     )
 }

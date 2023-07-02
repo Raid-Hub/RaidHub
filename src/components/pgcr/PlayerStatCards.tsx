@@ -2,11 +2,11 @@ import { useLanguage } from "../../hooks/util/useLanguage"
 import { Icons } from "../../util/presentation/icons"
 import styles from "../../styles/pgcr.module.css"
 import { LocalizedStrings } from "../../util/presentation/localized-strings"
-import PGCREntry from "../../models/pgcr/Entry"
 import { formattedNumber } from "../../util/presentation/formatting"
+import { IPGCREntry } from "../../types/pgcr"
 
 type PlayerStatCardProps = {
-    entry: PGCREntry
+    entry: IPGCREntry
 }
 
 const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
@@ -40,12 +40,12 @@ const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
         {
             icon: Icons.TIME,
             name: strings.timeSpent,
-            value: entry.stats.timePlayed
+            value: entry.stats.timePlayedSeconds
         },
         {
             icon: Icons.UNKNOWN,
             name: strings.mostUsedWeapon,
-            value: entry.stats.weapons.first()?.name[language] ?? strings.none
+            value: entry.weapons.first()?.name[language] ?? strings.none
         }
     ]
     return (

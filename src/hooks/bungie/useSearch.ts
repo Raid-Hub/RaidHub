@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { CustomBungieSearchResult, ErrorHandler } from "../../types/types"
-import { asBungieName, fixBungieCode } from "../../util/presentation/formatting"
+import { CustomBungieSearchResult, ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
+import { searchForUsername } from "../../services/bungie/searchForUsername"
+import { searchForBungieName } from "../../services/bungie/searchForBungieName"
+import BungieName from "../../models/BungieName"
 
 type UseSearchParams = {
     query: string
@@ -23,26 +25,27 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
     const client = useBungieClient()
 
     const searchByBungieName = useCallback(
-        async (bungieName: [name: string, code: number]) => {
-            return client.searchByBungieName(...bungieName)
-        },
+        async ({ name, code }: BungieName) =>
+            searchForBungieName({ displayName: name, displayNameCode: code, client }),
         [client]
     )
 
     const searchForUser = useCallback(
-        async (username: string) => {
-            return client.searchForUser(username)
-        },
+        async (displayNamePrefix: string) =>
+            searchForUsername({ displayNamePrefix, pages: 1, client }),
         [client]
     )
 
     const doExactSearch = async (query: string): Promise<void> => {
         setIsPerformingExactSearch(true)
         try {
-            const bungieName = asBungieName(query)
-            if (!bungieName) throw Error(`Unable to perform exact search with ${bungieName}`)
-            const { membershipType, membershipId } = await searchByBungieName(bungieName)
-            window.location.href = `/profile/${membershipType}/${membershipId}`
+            try {
+                const bungieName = BungieName.parse(query)
+                const { membershipType, membershipId } = await searchByBungieName(bungieName)
+                window.location.href = `/profile/${membershipType}/${membershipId}`
+            } catch {
+                throw Error(`Unable to perform exact search with ${query}`)
+            }
         } catch (e) {
             CustomError.handle(errorHandler, e, ErrorCode.ExactSearch)
         } finally {
@@ -62,7 +65,12 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
             const currentSearch = Date.now()
             lastSearch.current = currentSearch
 
-            const bungieName = asBungieName(query)
+            let bungieName: BungieName | undefined
+            try {
+                bungieName = BungieName.parse(query)
+            } catch {
+                bungieName = undefined
+            }
             const searches: [
                 general: Promise<CustomBungieSearchResult[]>,
                 exact: Promise<CustomBungieSearchResult | undefined> | null
@@ -80,17 +88,21 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
 
             const [general, exact] = await Promise.all(searches)
 
-            const results = bungieName
-                ? exact
-                    ? [exact]
-                    : general.filter(
-                          result =>
-                              result.bungieGlobalDisplayNameCode &&
-                              fixBungieCode(result.bungieGlobalDisplayNameCode).startsWith(
-                                  `${bungieName[1]}`
-                              )
-                      )
-                : general
+            const results =
+                bungieName !== undefined
+                    ? exact
+                        ? [exact]
+                        : general.filter(
+                              result =>
+                                  result.bungieGlobalDisplayNameCode &&
+                                  new BungieName(
+                                      result.bungieGlobalDisplayName,
+                                      result.bungieGlobalDisplayNameCode
+                                  )
+                                      .toString()
+                                      .startsWith(`${bungieName!.toString()}`)
+                          )
+                    : general
 
             if (lastSearch.current === currentSearch) {
                 setResults(results)

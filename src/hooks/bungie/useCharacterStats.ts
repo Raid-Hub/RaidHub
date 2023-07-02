@@ -1,29 +1,31 @@
 import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType } from "bungie-net-core/models"
-import AggregateStats from "../../models/profile/AggregateStats"
-import { ErrorHandler } from "../../types/types"
+import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
+import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
+import { AllRaidStats } from "../../types/profile"
+import { raidStatsMap } from "../../util/destiny/raidStatsMap"
 
 type UseCharacterStatsParams = {
-    membershipId: string
+    destinyMembershipId: string
     membershipType: BungieMembershipType
     characterIds: string[] | null
     errorHandler: ErrorHandler
 }
 
 type UseCharacterStats = {
-    stats: AggregateStats | null
+    stats: AllRaidStats | null
     isLoading: boolean
 }
 
 export function useCharacterStats({
-    membershipId,
+    destinyMembershipId,
     membershipType,
     characterIds,
     errorHandler
 }: UseCharacterStatsParams): UseCharacterStats {
-    const [stats, setStats] = useState<AggregateStats | null>(null)
+    const [stats, setStats] = useState<AllRaidStats | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
@@ -33,10 +35,11 @@ export function useCharacterStats({
             membershipType: BungieMembershipType,
             characterId: string
         ) => {
-            return client.getCharacterStats({
+            return getDestinyStatsForCharacter({
                 destinyMembershipId,
                 membershipType,
-                characterId
+                characterId,
+                client
             })
         },
         [client]
@@ -50,16 +53,16 @@ export function useCharacterStats({
             try {
                 const characterStats = await Promise.all(
                     characterIds!.map(async characterId =>
-                        getCharacterStats(membershipId, membershipType, characterId)
+                        getCharacterStats(destinyMembershipId, membershipType, characterId)
                     )
                 )
-                setStats(new AggregateStats(characterStats))
+                setStats(raidStatsMap(characterStats.flatMap(stats => stats.activities)))
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.CharacterStats)
             } finally {
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, characterIds, errorHandler, getCharacterStats])
+    }, [destinyMembershipId, membershipType, characterIds, errorHandler, getCharacterStats])
     return { stats, isLoading }
 }

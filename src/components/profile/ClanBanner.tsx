@@ -1,7 +1,8 @@
-import { ClanBannerData } from "../../types/types"
 import styles from "../../styles/profile.module.css"
+import { ClanBannerData } from "../../util/destiny/clanBanner"
 
 type ClanBannerProps = ClanBannerData
+
 const ClanBanner = ({
     gonfalcons,
     gonfalconsColor,

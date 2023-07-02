@@ -1,8 +1,9 @@
 import { BungieMembershipType } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
-import { Clan, ErrorHandler } from "../../types/types"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
+import { Clan, getClan } from "../../services/bungie/getClan"
+import { ErrorHandler } from "../../types/generic"
 
 type UseClanParams = {
     membershipId: string
@@ -22,7 +23,7 @@ export function useClan({ membershipId, membershipType, errorHandler }: UseClanP
 
     const fetchData = useCallback(
         async (membershipId: string, membershipType: BungieMembershipType) => {
-            return client.getClan(membershipId, membershipType)
+            return getClan({ membershipId, membershipType, client })
         },
         [client]
     )

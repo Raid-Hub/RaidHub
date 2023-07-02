@@ -1,8 +1,8 @@
 import { UserInfoCard } from "bungie-net-core/models"
 import styles from "../../styles/profile.module.css"
 import SocialTag from "./SocialTag"
-import { fixBungieCode } from "../../util/presentation/formatting"
-import { ProfileSocialData } from "../../types/types"
+import { ProfileSocialData } from "../../types/profile"
+import UserName from "./UserName"
 
 type UserCardProps = {
     userInfo: UserInfoCard
@@ -35,12 +35,7 @@ const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, socials }: 
                     alt=""
                 />
                 <div className={styles["profile-username"]}>
-                    <span>{userInfo.bungieGlobalDisplayName ?? userInfo.displayName}</span>
-                    <span className={styles["discrim"]}>
-                        {userInfo.bungieGlobalDisplayNameCode
-                            ? "#" + fixBungieCode(userInfo.bungieGlobalDisplayNameCode)
-                            : ""}
-                    </span>
+                    <UserName {...userInfo} />
                 </div>
             </div>
             <div className={styles["profile-icons"]}>

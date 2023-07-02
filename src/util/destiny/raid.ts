@@ -1,6 +1,6 @@
 import RaidInfo from "../../models/pgcr/RaidInfo"
 import { HTMLAttributes } from "react"
-import { Flatten } from "../../types/types"
+import { Flatten } from "../../types/generic"
 
 export const enum Raid {
     LEVIATHAN,
@@ -212,7 +212,7 @@ export const HashDictionary: {
 
 export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
-export function raidDetailsFromHash(hash: string): RaidInfo<any> {
+export function raidDetailsFromHash(hash: string): RaidInfo {
     return new RaidInfo(HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL])
 }
 

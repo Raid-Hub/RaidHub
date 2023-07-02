@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType, UserInfoCard } from "bungie-net-core/models"
-import { ErrorHandler } from "../../types/types"
+import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
+import { getBungieNextProfile } from "../../services/bungie/getBungieNextProfile"
 
 type UseBungieProfileParams = {
-    membershipId: string
+    destinyMembershipId: string
     membershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }
@@ -16,7 +17,7 @@ type UseBungieProfile = {
 }
 
 export function useBungieNextMembership({
-    membershipId,
+    destinyMembershipId,
     membershipType,
     errorHandler
 }: UseBungieProfileParams): UseBungieProfile {
@@ -25,9 +26,8 @@ export function useBungieNextMembership({
     const client = useBungieClient()
 
     const getBungieNextMembership = useCallback(
-        async (membershipId: string, membershipType: BungieMembershipType) => {
-            return client.getBungieNextMembership(membershipId, membershipType)
-        },
+        async (membershipId: string, membershipType: BungieMembershipType) =>
+            getBungieNextProfile({ membershipId, membershipType, client }),
         [client]
     )
     useEffect(() => {
@@ -36,7 +36,10 @@ export function useBungieNextMembership({
 
         async function getActivities() {
             try {
-                const membership = await getBungieNextMembership(membershipId, membershipType)
+                const membership = await getBungieNextMembership(
+                    destinyMembershipId,
+                    membershipType
+                )
                 setMembership(membership)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.BungieNextMembership)
@@ -44,6 +47,6 @@ export function useBungieNextMembership({
                 setLoading(false)
             }
         }
-    }, [membershipId, membershipType, errorHandler, getBungieNextMembership])
+    }, [destinyMembershipId, membershipType, errorHandler, getBungieNextMembership])
     return { membership, isLoading }
 }

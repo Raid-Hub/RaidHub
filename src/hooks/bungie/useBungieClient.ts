@@ -1,16 +1,17 @@
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
-import BungieNetClient from "../../services/bungie/bungieClient"
+import { useEffect } from "react"
+import BungieClient from "../../services/bungie/client"
 
-export function useBungieClient(): BungieNetClient {
-    const [client] = useState(new BungieNetClient())
+const client = new BungieClient()
+
+export function useBungieClient(): BungieClient {
     const { data } = useSession()
 
     useEffect(() => {
         if (data?.token) {
-            client.login(data.token.value)
+            client.setToken(data.token.value)
         } else {
-            client.logout()
+            client.clearToken()
         }
     }, [data?.token])
 

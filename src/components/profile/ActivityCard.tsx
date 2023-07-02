@@ -6,7 +6,7 @@ import RaidInfo from "../../models/pgcr/RaidInfo"
 
 type ActivityCardProps = {
     strings: LocalStrings
-    info: RaidInfo<any>
+    info: RaidInfo
     completed: boolean
     activityId: any
     completionDate: Date

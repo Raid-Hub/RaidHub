@@ -20,13 +20,13 @@ const TokenManager = ({ setRefetchInterval }: TokenManagerProps) => {
             const timeRemaining = sessionData.token.expires - Date.now()
             setRefetchInterval(timeRemaining > 0 ? timeRemaining / 1000 : 0)
         }
-    }, [sessionData])
+    }, [sessionData, setRefetchInterval])
 
     useEffect(() => {
         if (status == "unauthenticated") {
             setRefetchInterval(0)
         }
-    }, [status])
+    }, [status, setRefetchInterval])
 
     return null
 }

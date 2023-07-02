@@ -1,11 +1,12 @@
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
-import { ACTIVITIES_PER_PAGE } from "../../services/bungie/bungieClient"
 import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
-import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../../types/types"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "./useBungieClient"
+import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../../services/bungie/getRaidHistoryPage"
+import { ErrorHandler } from "../../types/generic"
+import { ActivityCollectionDictionary, ActivityHistory } from "../../types/profile"
 
 type UseActivityHistoryParams = {
     membershipId: string
@@ -31,13 +32,11 @@ export function useActivityHistory({
 
     const getActivityHistory = useCallback(
         async (
-            membershipId: string,
+            destinyMembershipId: string,
             characterId: string,
             membershipType: BungieMembershipType,
             page: number
-        ) => {
-            return client.getActivityHistory(membershipId, characterId, membershipType, page)
-        },
+        ) => getRaidHistoryPage({ destinyMembershipId, characterId, membershipType, page, client }),
         [client]
     )
 

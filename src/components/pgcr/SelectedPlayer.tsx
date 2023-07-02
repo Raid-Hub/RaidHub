@@ -1,4 +1,4 @@
-import PGCRMember from "../../models/pgcr/Member"
+import PGCRMember from "../../models/pgcr/Player"
 import styles from "../../styles/pgcr.module.css"
 
 type SelectedPlayerProps = {

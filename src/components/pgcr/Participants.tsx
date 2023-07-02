@@ -4,12 +4,13 @@ import { Icons } from "../../util/presentation/icons"
 import StatCards from "./PlayerStatCards"
 import styles from "../../styles/pgcr.module.css"
 import { useEmblems } from "../../hooks/bungie/useEmblems"
-import { ErrorHandler, Loading } from "../../types/types"
-import PGCRMember from "../../models/pgcr/Member"
+import { ErrorHandler, Loading } from "../../types/generic"
+import PGCRMember from "../../models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
 import Player from "./Player"
 import { useRouter } from "next/router"
 import { ParsedUrlQuery } from "querystring"
+import { defaultEmblem } from "../../util/destiny/emblems"
 
 type ParticipantsProps = {
     members: PGCRMember[] | null
@@ -105,7 +106,10 @@ const Participants = ({ members, query, errorHandler }: ParticipantsProps) => {
                         key={idx}
                         member={member}
                         index={idx}
-                        emblemBackground={emblems?.[member.characterIds[0]] ?? ""}
+                        emblemBackground={
+                            "https://bungie.net" + emblems?.[member.characterIds[0]] ??
+                            defaultEmblem
+                        }
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}
                     />

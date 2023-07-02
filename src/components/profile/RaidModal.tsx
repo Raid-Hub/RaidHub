@@ -9,9 +9,9 @@ import RaidStats from "../../models/profile/RaidStats"
 import Loading from "../global/Loading"
 import { usePrefs } from "../../hooks/util/usePrefs"
 import { Prefs } from "../../util/profile/preferences"
-import { Placement, RaidTag } from "../../types/types"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLanguage } from "../../hooks/util/useLanguage"
+import { Placement, RaidTag } from "../../types/profile"
 
 type RaidModalProps = {
     placement: Placement | undefined

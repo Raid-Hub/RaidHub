@@ -1,9 +1,10 @@
 import { expect, describe, test } from "@jest/globals"
-import BungieNetClient, { ACTIVITIES_PER_PAGE } from "../src/services/bungie/bungieClient"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { AllValidHashes } from "../src/util/destiny/raid"
+import BungieClient from "../src/services/bungie/client"
+import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../src/services/bungie/getRaidHistoryPage"
 
-const shared = new BungieNetClient()
+const client = new BungieClient()
 
 describe("all raid hashes accounted for", () => {
     describe("gladd", () => {
@@ -12,12 +13,13 @@ describe("all raid hashes accounted for", () => {
             (characterId, idx) =>
                 test(`character ${idx + 1}`, async () => {
                     const getHistory = async (page: number) =>
-                        shared.getActivityHistory(
+                        getRaidHistoryPage({
                             destinyMembershipId,
                             characterId,
-                            BungieMembershipType.TigerSteam,
-                            page
-                        )
+                            membershipType: BungieMembershipType.TigerSteam,
+                            page,
+                            client
+                        })
 
                     let history = await getHistory(0),
                         page = 0
@@ -40,12 +42,13 @@ describe("all raid hashes accounted for", () => {
             (characterId, idx) =>
                 test(`character ${idx + 1}`, async () => {
                     const getHistory = async (page: number) =>
-                        shared.getActivityHistory(
+                        getRaidHistoryPage({
                             destinyMembershipId,
                             characterId,
-                            BungieMembershipType.TigerSteam,
-                            page
-                        )
+                            membershipType: BungieMembershipType.TigerSteam,
+                            page,
+                            client
+                        })
 
                     let history = await getHistory(0),
                         page = 0
