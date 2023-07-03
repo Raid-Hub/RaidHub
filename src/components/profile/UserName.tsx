@@ -2,7 +2,7 @@ import styles from "../../styles/profile.module.css"
 import BungieName from "../../models/BungieName"
 
 type UserNameProps = {
-    displayName?: string
+    displayName: string
     bungieGlobalDisplayName?: string
     bungieGlobalDisplayNameCode?: number
 }

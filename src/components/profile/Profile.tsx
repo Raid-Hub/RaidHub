@@ -16,6 +16,7 @@ import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
 import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
+import Loading from "../global/Loading"
 
 type ProfileProps = {
     destinyMembershipId: string
@@ -33,7 +34,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         destinyMembershipId,
         errorHandler
     })
-    const { membership } = useBungieNextMembership({
+    const { membership, isLoading: isLoadingMembership } = useBungieNextMembership({
         destinyMembershipId,
         membershipType,
         errorHandler
@@ -61,52 +62,54 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
     return (
         <main className={styles["main"]}>
             <Head>
-                <title>{`${name} | RaidHub`}</title>
+                <title>{name ? `${name} | RaidHub` : "RaidHub"}</title>
             </Head>
             <section className={styles["user-info"]}>
-                {profile && (
-                    <UserCard
-                        userInfo={{ ...membership, ...profile.userInfo }}
-                        socials={raidHubProfile?.socials}
-                        emblemBackgroundPath={profile?.emblemBackgroundPath}
-                        backgroundImage={raidHubProfile?.background?.replace(/;$/, "") ?? ""}
-                    />
-                )}
+                <UserCard
+                    isLoading={isLoadingMembership}
+                    userInfo={membership ? { ...membership, ...profile?.userInfo } : undefined}
+                    socials={raidHubProfile?.socials}
+                    emblemBackgroundPath={profile?.emblemBackgroundPath}
+                    backgroundImage={raidHubProfile?.background?.replace(/;$/, "") ?? ""}
+                />
+                {profile ? (
+                    <div className={styles["ranking-banners"]}>
+                        <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
+                            <span>Clears Rank</span>
+                            <span className={styles["banner-bold"]}>Challenger #1</span>
+                            <span>9999</span>
+                        </RankingBanner>
+                        <RankingBanner icon={Icons.SPEED} backgroundColor={"#fa6b6bA9"}>
+                            <span>Speed Rank</span>
+                            <span className={styles["banner-bold"]}>Challenger #1</span>
+                            <span>9hr 99m 99s</span>
+                        </RankingBanner>
+                        <RankingBanner icon={Icons.DIAMOND} backgroundColor={"#4ea2ccA9"}>
+                            <span>Lowman Rank</span>
+                            <span className={styles["banner-bold"]}>Diamond IV</span>
+                            <span>69</span>
+                        </RankingBanner>
+                        {Object.keys(Founders).includes(profile.userInfo.membershipId) && (
+                            <div className={styles["ranking-banner"]}>
+                                <img src="/logo.png" alt="" />
 
-                <div className={styles["ranking-banners"]}>
-                    <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
-                        <span>Clears Rank</span>
-                        <span className={styles["banner-bold"]}>Challenger #1</span>
-                        <span>9999</span>
-                    </RankingBanner>
-
-                    <RankingBanner icon={Icons.SPEED} backgroundColor={"#fa6b6bA9"}>
-                        <span>Speed Rank</span>
-                        <span className={styles["banner-bold"]}>Challenger #1</span>
-                        <span>9hr 99m 99s</span>
-                    </RankingBanner>
-
-                    <RankingBanner icon={Icons.DIAMOND} backgroundColor={"#4ea2ccA9"}>
-                        <span>Low-Mans</span>
-                        <span className={styles["banner-bold"]}>Diamond IV</span>
-                        <span>69</span>
-                    </RankingBanner>
-
-                    {profile && Object.keys(Founders).includes(profile.userInfo.membershipId) && (
-                        <div className={styles["ranking-banner"]}>
-                            <img src="/logo.png" alt="" />
-
-                            <div className={styles["banners-text"]}>
-                                <span className={styles["banner-bold"]}>RaidHub Founder</span>
-                                <span className={styles["banner-subtext"]}>
-                                    This user contributed to creating RaidHub
-                                </span>
+                                <div className={styles["banners-text"]}>
+                                    <span className={styles["banner-bold"]}>RaidHub Founder</span>
+                                    <span className={styles["banner-subtext"]}>
+                                        This user contributed to creating RaidHub
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-
-                {profile && <ClanCard {...profile.userInfo} errorHandler={errorHandler} />}
+                        )}
+                    </div>
+                ) : (
+                    <Loading wrapperClass={styles["ranking-banners"]} />
+                )}
+                <ClanCard
+                    membershipId={destinyMembershipId}
+                    membershipType={membershipType}
+                    errorHandler={errorHandler}
+                />
             </section>
             {profile && (
                 <section className={styles["content"]}>

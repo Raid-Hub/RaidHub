@@ -20,9 +20,7 @@ const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps)
         errorHandler
     })
     return isClanLoading ? (
-        <div className={styles["clan"]}>
-            <Loading />
-        </div>
+        <Loading wrapperClass={styles["clan"]} />
     ) : (
         clan && (
             <div className={styles["clan"]}>

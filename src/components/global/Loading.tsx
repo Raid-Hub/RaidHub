@@ -1,7 +1,9 @@
-import React from "react"
+type LoadingProps = {
+    wrapperClass?: string
+}
 
-type LoadingProps = {}
-
-const Loading = ({}: LoadingProps) => <div className="loading-pulse" />
+const Loading = ({ wrapperClass }: LoadingProps) => (
+    <div className={["loading-pulse", wrapperClass].join(" ")} />
+)
 
 export default Loading

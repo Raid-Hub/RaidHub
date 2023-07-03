@@ -10,14 +10,19 @@ export default class RaidStatsForDifficulty implements IRaidStats {
     secondsPlayed: number
 
     constructor(data: DestinyHistoricalStatsDictionary[]) {
+        const value = (
+            key: keyof DestinyHistoricalStatsDictionary,
+            dict: DestinyHistoricalStatsDictionary
+        ) => dict[key].basic.value
+
         const values = data.reduce(
             (base, current) => ({
-                assists: base.assists + current["activityAssists"].basic.value,
-                totalClears: base.assists + current["activityCompletions"].basic.value,
-                deaths: base.assists + current["activityDeaths"].basic.value,
-                kills: base.assists + current["activityKills"].basic.value,
-                precisionKills: base.assists + current["activityPrecisionKills"].basic.value,
-                secondsPlayed: base.assists + current["activitySecondsPlayed"].basic.value
+                assists: base.assists + value("activityAssists", current),
+                totalClears: base.totalClears + value("activityCompletions", current),
+                deaths: base.deaths + value("activityDeaths", current),
+                kills: base.kills + value("activityKills", current),
+                precisionKills: base.precisionKills + value("activityPrecisionKills", current),
+                secondsPlayed: base.secondsPlayed + value("activitySecondsPlayed", current)
             }),
             {
                 assists: 0,

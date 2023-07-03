@@ -67,11 +67,12 @@ export function resolveClanBanner(clanBanner: ClanBanner): ClanBannerData {
  * @returns a hex string with #
  */
 function RGBAToHex(rgba: RGBA): string {
-    return (
-        "#" +
-        Object.values(rgba)
-            .map(value => value.toString(16))
-            .map(str => (str.length === 1 ? `0${str}` : str))
-            .join()
+    const hex = Object.fromEntries(
+        Object.entries(rgba).map(([channel, value]) => {
+            const str = value.toString(16)
+            return [channel, str.length === 1 ? `0${str}` : str]
+        })
     )
+
+    return `#${hex["red"]}${hex["green"]}${hex["blue"]}${hex["alpha"]}`
 }

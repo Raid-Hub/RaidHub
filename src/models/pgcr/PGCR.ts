@@ -15,6 +15,7 @@ import { Difficulty, raidDetailsFromHash } from "../../util/destiny/raid"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
+import { secondsToHMS } from "../../util/presentation/formatting"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -105,10 +106,10 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         const completionDate = this.completionDate
         const startDate = this.startDate
         return {
+            value: completionDate.getTime() - startDate.getTime(),
             string(strings: LocalStrings) {
-                return "HMS"
-            },
-            value: completionDate.getTime() - startDate.getTime()
+                return secondsToHMS(this.value / 1000)
+            }
         }
     }
 
