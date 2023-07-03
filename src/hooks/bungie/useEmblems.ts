@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import PGCRMember from "../../models/pgcr/Player"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { getCharacterEmblem } from "../../services/bungie/getCharacterEmblem"
 import { ErrorHandler } from "../../types/generic"
 
@@ -21,36 +20,32 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
-    const getEmblem = useCallback(
-        async (
-            characterId: string,
-            destinyMembershipId: string,
-            membershipType: BungieMembershipType
-        ) => {
-            return getCharacterEmblem({ characterId, destinyMembershipId, membershipType, client })
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        if (!members) return
-
-        setLoading(true)
-        getEmblems(members)
-        async function getEmblems(_members: PGCRMember[]) {
+    const fetchData = useCallback(
+        async (members: PGCRMember[]) => {
             try {
+                setEmblems(null)
                 const primaryEmblemsPromise = Promise.all(
-                    _members.map(({ characterIds, membershipId, membershipType }) =>
-                        getEmblem(characterIds[0], membershipId, membershipType)
+                    members.map(({ characterIds, membershipId, membershipType }) =>
+                        getCharacterEmblem({
+                            characterId: characterIds[0],
+                            destinyMembershipId: membershipId,
+                            membershipType,
+                            client
+                        })
                             .then(emblem => [characterIds[0], emblem] as const)
                             .catch(() => [characterIds[0], ""] as const)
                     )
                 )
                 const remainingEmblemsPromise = Promise.all(
-                    _members.map(({ characterIds, membershipId, membershipType }) =>
+                    members.map(({ characterIds, membershipId, membershipType }) =>
                         Promise.all(
                             characterIds.slice(1).map(characterId =>
-                                getEmblem(characterId, membershipId, membershipType)
+                                getCharacterEmblem({
+                                    characterId,
+                                    destinyMembershipId: membershipId,
+                                    membershipType,
+                                    client
+                                })
                                     .then(emblem => [characterId, emblem] as const)
                                     .catch(() => [characterId, ""] as const)
                             )
@@ -67,8 +62,16 @@ export function useEmblems({ members, errorHandler }: UseEmblemsParams): UseEmbl
             } finally {
                 setLoading(false)
             }
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        if (members) {
+            fetchData(members)
         }
-    }, [members, errorHandler, getEmblem])
+    }, [members, fetchData])
 
     return { emblems, isLoading }
 }

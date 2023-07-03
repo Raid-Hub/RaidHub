@@ -1,12 +1,11 @@
-import { useLanguage } from "../../hooks/util/useLanguage"
 import styles from "../../styles/profile.module.css"
-import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import { RaidBanner } from "../../util/destiny/raid"
 import Loading from "../global/Loading"
 import { Icons } from "../../util/presentation/icons"
 import { toCustomDateString } from "../../util/presentation/formatting"
 import { ErrorHandler } from "../../types/generic"
 import { useActivity } from "../../hooks/bungie/useActivity"
+import { useLocale } from "../app/LanguageProvider"
 
 type PinnedActivityProps = {
     activityId?: string | null
@@ -15,8 +14,7 @@ type PinnedActivityProps = {
 
 const PinnedActivity = ({ activityId, errorHandler }: PinnedActivityProps) => {
     const { pgcr, isLoading: pgcrLoadingState } = useActivity({ activityId, errorHandler })
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { locale, strings } = useLocale()
     if (pgcrLoadingState)
         return (
             <div className={styles["pinned-activity-wrapper"]}>

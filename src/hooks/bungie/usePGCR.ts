@@ -2,7 +2,7 @@ import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-c
 import { useCallback, useEffect, useState } from "react"
 import { ErrorHandler, Loading } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { getPGCR } from "../../services/bungie/getPGCR"
 import { findProfileWithoutPlatform } from "../../services/bungie/findProfileWithoutPlatform"
 import DestinyPGCR from "../../models/pgcr/PGCR"
@@ -22,26 +22,10 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (activityId: string) => getPGCR({ activityId, client }),
-        [client]
-    )
-
-    const findCorrectProfile = useCallback(
-        async (destinyMembershipId: string) =>
-            findProfileWithoutPlatform({ destinyMembershipId, client }),
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(Loading.LOADING)
-
-        if (activityId) getPGCR()
-        else if (activityId === null) setLoading(Loading.FALSE)
-
-        async function getPGCR() {
-            setPGCR(null)
+        async (activityId: string) => {
             try {
-                const pgcr = await fetchData(activityId!)
+                setPGCR(null)
+                const pgcr = await getPGCR({ activityId, client })
                 setPGCR(pgcr)
                 setLoading(Loading.HYDRATING)
 
@@ -50,11 +34,12 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                     [DestinyProfileComponent, DestinyCharacterComponent]
                 >()
                 await Promise.all(
-                    pgcr.entries.map(async (entry, idx) => {
+                    pgcr.entries.map(async entry => {
                         if (!entry.player.bungieNetUserInfo.membershipType) {
-                            const res = await findCorrectProfile(
-                                entry.player.bungieNetUserInfo.membershipId
-                            )
+                            const res = await findProfileWithoutPlatform({
+                                destinyMembershipId: entry.player.bungieNetUserInfo.membershipId,
+                                client
+                            })
                             if (res.profile.data && res.characters.data?.[entry.characterId]) {
                                 dataForMissingProfiles.set(
                                     entry.player.bungieNetUserInfo.membershipId,
@@ -70,8 +55,19 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
             } finally {
                 setLoading(Loading.FALSE)
             }
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(Loading.LOADING)
+
+        if (activityId) {
+            fetchData(activityId)
+        } else if (activityId === null) {
+            setLoading(Loading.FALSE)
         }
-    }, [activityId, errorHandler, fetchData, findCorrectProfile])
+    }, [activityId, errorHandler, fetchData])
 
     return { pgcr, loadingState }
 }

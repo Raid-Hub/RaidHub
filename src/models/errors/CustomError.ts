@@ -7,6 +7,7 @@ export enum ErrorCode {
     ProfileNotFound = "Pinecone",
     PrivateProfile = "Pineapple",
     PGCRError = "Pig",
+    ActivityError = "Applesauce",
     ActivityHistory = "Apricot",
     CharacterStats = "Cactus",
     ProfileStats = "Pickle",
@@ -31,7 +32,9 @@ export default class CustomError extends Error {
             e.code = code
             errorHandler(e)
         } else if (e instanceof Error) {
-            errorHandler(new CustomError(e.message, code))
+            const newErr = new CustomError(e.message, code)
+            newErr.stack = e.stack
+            errorHandler(newErr)
         } else {
             errorHandler(new CustomError(String(e), code))
         }

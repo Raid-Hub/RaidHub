@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
 import { AllRaidStats } from "../../types/profile"
 import { raidStatsMap } from "../../util/destiny/raidStatsMap"
@@ -29,31 +29,22 @@ export function useCharacterStats({
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
-    const getCharacterStats = useCallback(
+    const fetchData = useCallback(
         async (
             destinyMembershipId: string,
             membershipType: BungieMembershipType,
-            characterId: string
+            characterIds: string[]
         ) => {
-            return getDestinyStatsForCharacter({
-                destinyMembershipId,
-                membershipType,
-                characterId,
-                client
-            })
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        if (characterIds?.length) getStats()
-
-        async function getStats() {
             try {
+                setStats(null)
                 const characterStats = await Promise.all(
                     characterIds!.map(async characterId =>
-                        getCharacterStats(destinyMembershipId, membershipType, characterId)
+                        getDestinyStatsForCharacter({
+                            destinyMembershipId,
+                            membershipType,
+                            characterId,
+                            client
+                        })
                     )
                 )
                 setStats(raidStatsMap(characterStats.flatMap(stats => stats.activities)))
@@ -62,7 +53,15 @@ export function useCharacterStats({
             } finally {
                 setLoading(false)
             }
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        if (characterIds?.length) {
+            fetchData(destinyMembershipId, membershipType, characterIds)
         }
-    }, [destinyMembershipId, membershipType, characterIds, errorHandler, getCharacterStats])
+    }, [destinyMembershipId, membershipType, characterIds, fetchData])
     return { stats, isLoading }
 }

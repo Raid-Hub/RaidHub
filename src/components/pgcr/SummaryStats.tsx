@@ -1,17 +1,15 @@
-import { useLanguage } from "../../hooks/util/useLanguage"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import styles from "../../styles/pgcr.module.css"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { Icons } from "../../util/presentation/icons"
-import { LocalizedStrings } from "../../util/presentation/localized-strings"
+import { useLocale } from "../app/LanguageProvider"
 
 type SummaryStatsProps = {
     activity: DestinyPGCR | null
 }
 
 const SummaryStats = ({ activity }: SummaryStatsProps) => {
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { language, locale, strings } = useLocale()
     const stats = activity?.stats
     const statsData: {
         icon: string

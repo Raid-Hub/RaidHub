@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
 import { getPGCR } from "../../services/bungie/getPGCR"
 import DestinyPGCR from "../../models/pgcr/PGCR"
+import { useBungieClient } from "../../components/app/TokenManager"
 
 type useActivityParams = {
     activityId: string | null | undefined
@@ -20,28 +20,29 @@ export function useActivity({ activityId, errorHandler }: useActivityParams): Us
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (activityId: string) => getPGCR({ activityId, client }),
-        [client]
+        async (activityId: string) => {
+            setPGCR(null)
+            try {
+                const pgcr = await getPGCR({ activityId, client })
+                setPGCR(pgcr)
+            } catch (e) {
+                CustomError.handle(errorHandler, e, ErrorCode.ActivityError)
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [client, errorHandler]
     )
 
     useEffect(() => {
         setIsLoading(true)
 
-        if (activityId) getPGCR()
-        else if (activityId === null) setIsLoading(false)
-
-        async function getPGCR() {
-            setPGCR(null)
-            try {
-                const pgcr = await fetchData(activityId!)
-                setPGCR(pgcr)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
-            } finally {
-                setIsLoading(false)
-            }
+        if (activityId) {
+            fetchData(activityId)
+        } else if (activityId === null) {
+            setIsLoading(false)
         }
-    }, [activityId, errorHandler, fetchData])
+    }, [activityId, fetchData])
 
     return { pgcr, isLoading }
 }

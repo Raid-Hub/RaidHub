@@ -1,6 +1,5 @@
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import { useActivityHistory } from "../../hooks/bungie/useActivityHistory"
-import { useLanguage } from "../../hooks/util/useLanguage"
 import styles from "../../styles/profile.module.css"
 import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import { AllRaids, Raid, raidDetailsFromHash } from "../../util/destiny/raid"
@@ -12,6 +11,7 @@ import { usePrefs } from "../../hooks/util/usePrefs"
 import { DefaultPreferences, Prefs } from "../../util/profile/preferences"
 import { AllRaidStats, RaidHubProfile } from "../../types/profile"
 import { ErrorHandler } from "../../types/generic"
+import { useLocale } from "../app/LanguageProvider"
 
 const CARDS_PER_PAGE = 60
 
@@ -33,7 +33,7 @@ type RaidCardsProps = {
 
 const RaidCards = ({
     profile,
-    membershipId,
+    membershipId: destinyMembershipId,
     membershipType,
     characterIds,
     layout,
@@ -41,10 +41,10 @@ const RaidCards = ({
     isLoadingRaidMetrics,
     errorHandler
 }: RaidCardsProps) => {
-    const { language } = useLanguage()
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(membershipId, [Prefs.FILTER])
+    const { strings } = useLocale()
+    const { prefs, isLoading: isLoadingPrefs } = usePrefs(destinyMembershipId, [Prefs.FILTER])
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
-        membershipId,
+        destinyMembershipId,
         membershipType,
         characterIds,
         errorHandler
@@ -83,15 +83,13 @@ const RaidCards = ({
         )
     }, [activities, isLoadingDots, isLoadingPrefs, prefs])
 
-    const strings = LocalizedStrings[language]
-
     switch (layout) {
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
                     {AllRaids.map((raid, idx) => (
                         <RaidModal
-                            membershipId={membershipId}
+                            membershipId={destinyMembershipId}
                             stats={raidMetrics?.get(raid)}
                             isLoadingStats={isLoadingRaidMetrics}
                             key={idx}

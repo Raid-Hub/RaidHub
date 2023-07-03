@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType, DestinyHistoricalStatsAccountResult } from "bungie-net-core/models"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStats } from "../../services/bungie/getDestinyStats"
 
 type UseDestinyStatsParams = {
@@ -13,8 +13,8 @@ type UseDestinyStatsParams = {
 
 type UseDestinyStats = {
     stats: DestinyHistoricalStatsAccountResult | null
-    isLoading: boolean
     characterIds: string[] | null
+    isLoading: boolean
 }
 
 export function useDestinyStats({
@@ -27,23 +27,16 @@ export function useDestinyStats({
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
-    const getProfileStats = useCallback(
-        async (destinyMembershipId: string, membershipType: BungieMembershipType) =>
-            getDestinyStats({
-                destinyMembershipId,
-                membershipType,
-                client
-            }),
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        getStats()
-
-        async function getStats() {
+    const fetchData = useCallback(
+        async (destinyMembershipId: string, membershipType: BungieMembershipType) => {
             try {
-                const profileStats = await getProfileStats(destinyMembershipId, membershipType)
+                setCharacterIds(null)
+                setStats(null)
+                const profileStats = await getDestinyStats({
+                    destinyMembershipId,
+                    membershipType,
+                    client
+                })
                 setCharacterIds(profileStats.characters.map(({ characterId }) => characterId))
                 setStats(profileStats)
             } catch (e) {
@@ -51,7 +44,13 @@ export function useDestinyStats({
             } finally {
                 setLoading(false)
             }
-        }
-    }, [destinyMembershipId, membershipType, errorHandler, getProfileStats])
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        fetchData(destinyMembershipId, membershipType)
+    }, [destinyMembershipId, membershipType, fetchData])
     return { stats, characterIds, isLoading }
 }

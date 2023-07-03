@@ -1,7 +1,7 @@
 import { BungieMembershipType } from "bungie-net-core/models"
 import { useCallback, useEffect, useState } from "react"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { Clan, getClan } from "../../services/bungie/getClan"
 import { ErrorHandler } from "../../types/generic"
 
@@ -23,25 +23,22 @@ export function useClan({ membershipId, membershipType, errorHandler }: UseClanP
 
     const fetchData = useCallback(
         async (membershipId: string, membershipType: BungieMembershipType) => {
-            return getClan({ membershipId, membershipType, client })
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        getClan()
-
-        async function getClan() {
             try {
-                const clan = await fetchData(membershipId, membershipType)
+                setClan(null)
+                const clan = await getClan({ membershipId, membershipType, client })
                 setClan(clan)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.Clan)
             } finally {
                 setLoading(false)
             }
-        }
-    }, [membershipId, membershipType, errorHandler, fetchData])
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        fetchData(membershipId, membershipType)
+    }, [membershipId, membershipType, fetchData])
     return { clan, isLoading }
 }

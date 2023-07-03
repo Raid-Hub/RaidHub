@@ -41,11 +41,11 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
     }
 
     get membershipId(): string {
-        return this.player.bungieNetUserInfo.membershipId
+        return this.player.destinyUserInfo.membershipId
     }
 
     get membershipType(): BungieMembershipType {
-        return this.player.bungieNetUserInfo.membershipType
+        return this.player.destinyUserInfo.membershipType
     }
 
     get didComplete(): boolean {

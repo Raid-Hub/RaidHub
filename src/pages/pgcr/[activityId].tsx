@@ -9,6 +9,7 @@ import Head from "next/head"
 import { GetServerSidePropsContext, NextPage } from "next"
 import ErrorComponent from "../../components/global/Error"
 import { ParsedUrlQuery } from "querystring"
+import CustomError from "../../models/errors/CustomError"
 
 type PGCRProps = {
     activityId: string
@@ -16,7 +17,7 @@ type PGCRProps = {
 }
 
 const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
-    const [error, setError] = useState<Error | null>(null)
+    const [error, setError] = useState<CustomError | null>(null)
     const { pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler: setError })
 
     if (error) {

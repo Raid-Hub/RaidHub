@@ -43,7 +43,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.teams = data.teams
 
         // group characters by membershipId
-        const players: PGCRPlayer[] = []
+        const players = new Array<PGCRPlayer>()
         const buckets = new Map<string, DestinyPGCRCharacter[]>()
         this.entries.forEach(char => {
             if (buckets.has(char.membershipId)) {
@@ -53,7 +53,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             }
         })
         buckets.forEach(characters => {
-            this.players.push(new PGCRPlayer(characters))
+            players.push(new PGCRPlayer(characters))
         })
         this.players = players.sort(sortPlayers)
 

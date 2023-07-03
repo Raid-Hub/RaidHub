@@ -2,7 +2,7 @@ import { BungieMembershipType } from "bungie-net-core/models"
 import { ErrorHandler } from "../../types/generic"
 import { getDestinyProfile } from "../../services/bungie/getProfile"
 import { useCallback, useEffect, useState } from "react"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
 import { ProfileComponent } from "../../types/profile"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 
@@ -28,25 +28,26 @@ export const useDestinyProfile = ({
 
     const fetchData = useCallback(
         async (destinyMembershipId: string, membershipType: BungieMembershipType) => {
-            return getDestinyProfile({ destinyMembershipId, membershipType, client })
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        getClan()
-
-        async function getClan() {
             try {
-                const profile = await fetchData(destinyMembershipId, membershipType)
+                setProfile(null)
+                const profile = await getDestinyProfile({
+                    destinyMembershipId,
+                    membershipType,
+                    client
+                })
                 setProfile(profile)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.Clan)
             } finally {
                 setLoading(false)
             }
-        }
-    }, [destinyMembershipId, membershipType, errorHandler, fetchData])
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        fetchData(destinyMembershipId, membershipType)
+    }, [destinyMembershipId, membershipType, fetchData])
     return { profile, isLoading }
 }

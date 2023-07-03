@@ -1,9 +1,8 @@
-import { useLanguage } from "../../hooks/util/useLanguage"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import styles from "../../styles/pgcr.module.css"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
-import { LocalizedStrings } from "../../util/presentation/localized-strings"
+import { useLocale } from "../app/LanguageProvider"
 
 type ActivityHeaderProps = {
     activity: DestinyPGCR | null
@@ -11,8 +10,7 @@ type ActivityHeaderProps = {
 }
 
 const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => {
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { strings, locale } = useLocale()
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
     return (

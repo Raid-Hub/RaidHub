@@ -10,8 +10,8 @@ import Loading from "../global/Loading"
 import { usePrefs } from "../../hooks/util/usePrefs"
 import { Prefs } from "../../util/profile/preferences"
 import { formattedNumber } from "../../util/presentation/formatting"
-import { useLanguage } from "../../hooks/util/useLanguage"
 import { Placement, RaidTag } from "../../types/profile"
+import { useLocale } from "../app/LanguageProvider"
 
 type RaidModalProps = {
     placement: Placement | undefined
@@ -36,7 +36,7 @@ const RaidModal = ({
     isLoadingDots,
     isLoadingStats
 }: RaidModalProps) => {
-    const { locale } = useLanguage()
+    const { locale } = useLocale()
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, [Prefs.FILTER])
     return (
         <div className={styles["raid-card"]}>

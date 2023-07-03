@@ -1,17 +1,15 @@
-import { useLanguage } from "../../hooks/util/useLanguage"
 import { Icons } from "../../util/presentation/icons"
 import styles from "../../styles/pgcr.module.css"
-import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { IPGCREntry } from "../../types/pgcr"
+import { useLocale } from "../app/LanguageProvider"
 
 type PlayerStatCardProps = {
     entry: IPGCREntry
 }
 
 const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { language, locale, strings } = useLocale()
     const statsData: {
         icon: string
         name: string

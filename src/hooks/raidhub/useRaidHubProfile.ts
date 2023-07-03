@@ -2,7 +2,7 @@ import { RaidHubProfile } from "../../types/profile"
 import { getRaidHubProfile } from "../../services/raidhub/getProfile"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { ErrorHandler } from "../../types/generic"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 type UseRaidHubProfileParams = {
     destinyMembershipId: string
@@ -21,20 +21,20 @@ export function useRaidHubProfile({
     const [profile, setProfile] = useState<RaidHubProfile | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    const fetchData = useCallback(async (id: string) => {
+        try {
+            const profile = await getRaidHubProfile(id)
+            setProfile(profile)
+        } catch (e) {
+            CustomError.handle(errorHandler, e, ErrorCode.RaidHubProfile)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [])
+
     useEffect(() => {
         setIsLoading(true)
-
-        getProfile()
-        async function getProfile() {
-            try {
-                const profile = await getRaidHubProfile(destinyMembershipId)
-                setProfile(profile)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.RaidHubProfile)
-            } finally {
-                setIsLoading(false)
-            }
-        }
+        fetchData(destinyMembershipId)
     }, [destinyMembershipId, errorHandler])
     return { profile, isLoading }
 }
