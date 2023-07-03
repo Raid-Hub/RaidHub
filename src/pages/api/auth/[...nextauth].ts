@@ -1,12 +1,12 @@
 import NextAuth, { NextAuthOptions, DefaultUser, DefaultSession, Profile, User } from "next-auth"
-import { BungieToken, BungieTokens, getAccessTokenFromRefreshToken } from "bungie-net-core/auth"
-import { getMembershipDataForCurrentUser } from "bungie-net-core/endpoints/User"
-import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
+import { BungieToken, BungieTokens, getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
+import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
+import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
 import {
     BungieMembershipType,
     DestinyProfileUserInfoCard,
     GeneralUser as BungieUser
-} from "bungie-net-core/models"
+} from "bungie-net-core/lib/models"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers/oauth"
 import BungieClient from "../../../services/bungie/client"
 

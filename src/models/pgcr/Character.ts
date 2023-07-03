@@ -7,7 +7,7 @@ import {
     DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportExtendedData,
     DestinyProfileComponent
-} from "bungie-net-core/models"
+} from "bungie-net-core/lib/models"
 import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny/characters"
 import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"

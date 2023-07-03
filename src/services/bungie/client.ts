@@ -4,8 +4,8 @@ import {
     BungieClientProtocol,
     BungieFetchConfig,
     BungieNetResponse
-} from "bungie-net-core/api"
-import { PlatformErrorCodes } from "bungie-net-core/models"
+} from "bungie-net-core/lib/api"
+import { PlatformErrorCodes } from "bungie-net-core/lib/models"
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null

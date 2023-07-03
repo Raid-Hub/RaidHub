@@ -1,4 +1,4 @@
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../hooks/bungie/useActivityHistory"
 import styles from "../../styles/profile.module.css"
 import { LocalizedStrings } from "../../util/presentation/localized-strings"

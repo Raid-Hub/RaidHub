@@ -1,4 +1,4 @@
-import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/models"
+import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
 import { ErrorHandler, Loading } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"

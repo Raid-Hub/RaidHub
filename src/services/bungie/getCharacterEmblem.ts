@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/api"
-import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/models"
-import { getCharacter } from "bungie-net-core/endpoints/Destiny2"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/lib/models"
+import { getCharacter } from "bungie-net-core/lib/endpoints/Destiny2"
 import { emblemFromHash } from "../../util/destiny/emblems"
 import PrivateProfileError from "../../models/errors/PrivateProfileError"
 

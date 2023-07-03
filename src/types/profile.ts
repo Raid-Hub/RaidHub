@@ -3,7 +3,7 @@ import {
     DestinyHistoricalStatsPeriodGroup,
     DestinyProfileComponent,
     GroupV2
-} from "bungie-net-core/models"
+} from "bungie-net-core/lib/models"
 import RaidStats from "../models/profile/RaidStats"
 import { Raid } from "../util/destiny/raid"
 import { ClanBannerData } from "../util/destiny/clanBanner"

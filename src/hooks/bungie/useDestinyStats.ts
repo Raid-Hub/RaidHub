@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
-import { BungieMembershipType, DestinyHistoricalStatsAccountResult } from "bungie-net-core/models"
+import {
+    BungieMembershipType,
+    DestinyHistoricalStatsAccountResult
+} from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"

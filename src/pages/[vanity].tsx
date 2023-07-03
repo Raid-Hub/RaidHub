@@ -1,5 +1,5 @@
 import { Vanity } from "../util/raidhub/special"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import Custom404 from "./404"
 import Profile from "../components/profile/Profile"
 import ProfileWrapper from "../components/profile/ProfileWrapper"

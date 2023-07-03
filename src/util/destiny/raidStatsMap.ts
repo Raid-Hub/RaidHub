@@ -1,4 +1,7 @@
-import { DestinyAggregateActivityStats, DestinyHistoricalStatsValue } from "bungie-net-core/models"
+import {
+    DestinyAggregateActivityStats,
+    DestinyHistoricalStatsValue
+} from "bungie-net-core/lib/models"
 import { AllValidHashes, HashDictionary, Raid, RaidDifficultyTuple, ValidRaidHash } from "./raid"
 import RaidStats from "../../models/profile/RaidStats"
 

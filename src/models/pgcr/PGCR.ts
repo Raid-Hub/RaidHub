@@ -5,7 +5,7 @@ import {
     DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportTeamEntry,
     DestinyProfileComponent
-} from "bungie-net-core/models"
+} from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"

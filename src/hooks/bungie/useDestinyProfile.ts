@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"
 import { getDestinyProfile } from "../../services/bungie/getProfile"
 import { useCallback, useEffect, useState } from "react"

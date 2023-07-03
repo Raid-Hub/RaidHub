@@ -1,4 +1,4 @@
-import { BungieMembershipType, DestinyClass } from "bungie-net-core/models"
+import { BungieMembershipType, DestinyClass } from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
 import { CharacterName } from "../../util/destiny/characters"
 import { mergeWeaponCollections } from "../../util/destiny/weapons"

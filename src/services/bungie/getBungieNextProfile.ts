@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/api"
-import { BungieMembershipType, UserInfoCard } from "bungie-net-core/models"
-import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
+import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
 
 export async function getBungieNextProfile({
     membershipId,

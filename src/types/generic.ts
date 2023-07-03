@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import CustomError from "../models/errors/CustomError"
 
 export type CustomBungieSearchResult = {

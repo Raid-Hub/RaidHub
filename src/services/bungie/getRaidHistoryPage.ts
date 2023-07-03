@@ -3,9 +3,9 @@ import {
     DestinyActivityModeType,
     DestinyHistoricalStatsPeriodGroup,
     PlatformErrorCodes
-} from "bungie-net-core/models"
-import { getActivityHistory } from "bungie-net-core/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/api"
+} from "bungie-net-core/lib/models"
+import { getActivityHistory } from "bungie-net-core/lib/endpoints/Destiny2"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
 
 export const ACTIVITIES_PER_PAGE = 250
 

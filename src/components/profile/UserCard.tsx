@@ -1,4 +1,4 @@
-import { UserInfoCard } from "bungie-net-core/models"
+import { UserInfoCard } from "bungie-net-core/lib/models"
 import styles from "../../styles/profile.module.css"
 import SocialTag from "./SocialTag"
 import { ProfileSocialData } from "../../types/profile"

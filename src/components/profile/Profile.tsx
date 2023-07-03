@@ -14,7 +14,7 @@ import { Icons } from "../../util/presentation/icons"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
 import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
 import Loading from "../global/Loading"
 

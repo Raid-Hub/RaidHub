@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { Collection } from "@discordjs/collection"
 
 export interface IPGCREntry {

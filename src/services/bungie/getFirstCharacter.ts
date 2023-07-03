@@ -1,10 +1,10 @@
-import { BungieClientProtocol } from "bungie-net-core/api"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
 import {
     BungieMembershipType,
     DestinyCharacterComponent,
     DestinyComponentType
-} from "bungie-net-core/models"
-import { getProfile } from "bungie-net-core/endpoints/Destiny2"
+} from "bungie-net-core/lib/models"
+import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
 import PrivateProfileError from "../../models/errors/PrivateProfileError"
 
 export async function getFirstCharacter({

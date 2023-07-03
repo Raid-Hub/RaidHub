@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/api"
-import { getProfile } from "bungie-net-core/endpoints/Destiny2"
-import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/models"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
+import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/lib/models"
 import { ProfileComponent } from "../../types/profile"
 import PrivateProfileError from "../../models/errors/PrivateProfileError"
 

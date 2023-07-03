@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/api"
-import { UserSearchResponseDetail } from "bungie-net-core/models"
-import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { UserSearchResponseDetail } from "bungie-net-core/lib/models"
+import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 
 export async function searchForUsername({
     displayNamePrefix,

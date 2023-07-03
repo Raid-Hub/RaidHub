@@ -1,5 +1,5 @@
 import { expect, describe, test } from "@jest/globals"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { AllValidHashes } from "../src/util/destiny/raid"
 import BungieClient from "../src/services/bungie/client"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../src/services/bungie/getRaidHistoryPage"

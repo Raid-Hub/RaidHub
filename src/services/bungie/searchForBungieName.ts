@@ -1,6 +1,6 @@
-import { BungieMembershipType, UserInfoCard } from "bungie-net-core/models"
-import { searchDestinyPlayerByBungieName } from "bungie-net-core/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/api"
+import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
+import { searchDestinyPlayerByBungieName } from "bungie-net-core/lib/endpoints/Destiny2"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
 import { isPrimaryCrossSave } from "../../util/destiny/isPrimaryCrossSave"
 
 export async function searchForBungieName({
