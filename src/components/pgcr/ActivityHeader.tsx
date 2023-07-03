@@ -1,18 +1,16 @@
-import { useLanguage } from "../../hooks/useLanguage"
-import Activity from "../../models/pgcr/Activity"
+import DestinyPGCR from "../../models/pgcr/PGCR"
 import styles from "../../styles/pgcr.module.css"
-import { toCustomDateString } from "../../util/formatting"
-import { LocalizedStrings } from "../../util/localized-strings"
-import { ActivityPlacements, Loading } from "../../util/types"
+import { Loading } from "../../types/generic"
+import { toCustomDateString } from "../../util/presentation/formatting"
+import { useLocale } from "../app/LanguageProvider"
 
 type ActivityHeaderProps = {
-    activity: Activity | null
+    activity: DestinyPGCR | null
     pgcrLoadingState: Loading
 }
 
 const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => {
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { strings, locale } = useLocale()
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
     return (
@@ -32,19 +30,22 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         <span>
                             {pgcrLoadingState === Loading.LOADING
                                 ? "Loading..."
-                                : strings.raidNames[activity!.raid]}
+                                : strings.raidNames[activity!.details.raid]}
                         </span>
                     </div>
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>
-                        {activity?.speed.duration.split(" ").map((t, idx) => (
-                            <span key={idx}>
-                                <b>{t.substring(0, t.length - 1)}</b>
-                                {t[t.length - 1]}
-                            </span>
-                        ))}
-                        {!(activity?.speed.complete ?? true) && (
+                        {activity?.speed
+                            .string(strings)
+                            .split(" ")
+                            .map((t, idx) => (
+                                <span key={idx}>
+                                    <b>{t.substring(0, t.length - 1)}</b>
+                                    {t[t.length - 1]}
+                                </span>
+                            ))}
+                        {!(activity?.completed ?? true) && (
                             <span>
                                 <b>{`(${incomplete})`}</b>
                             </span>
@@ -54,13 +55,13 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
             </div>
             <div className={styles["activity-card-header-attributes"]}>
                 <div className={styles["tags-container"]}>
-                    {activity?.tags(strings).map((tag, idx) => (
-                        <div key={idx} className={styles.tag}>
+                    {activity?.tags.map((tag, idx) => (
+                        <div key={idx} className={styles["tag"]}>
                             {tag}
                         </div>
                     ))}
                 </div>
-                {activity?.speed.fresh === null && (
+                {activity?.wasFresh() === null && (
                     <div className={styles["cp-error"]}>
                         <p>{checkpointDisclaimer}</p>
                     </div>

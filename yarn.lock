@@ -1260,10 +1260,10 @@ bundle-name@^3.0.0:
   dependencies:
     run-applescript "^5.0.0"
 
-bungie-net-core@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/bungie-net-core/-/bungie-net-core-1.0.6.tgz#91189e2e7610ed7cb7c3352cd7821b24aaf1880b"
-  integrity sha512-+ESIyZihWaT23/ko1jEjzu7eCgkiu+29tg8hY+n3XstaesIYjflbKLlh+7sw/y9uVszxfWKqYDQqrFsE6EaPnA==
+bungie-net-core@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/bungie-net-core/-/bungie-net-core-1.1.5.tgz#bd0d6279cf863c7fa82bdc28174d7fb8447d52ba"
+  integrity sha512-pIv5ADUMWrjkZ1rxaSVdOkKbm85HZHIsxlpwcKhNR3DvJJGrwdjTUOv9nt4vt0zsUcyq8yRwLl6lkzCGhyGNCg==
   dependencies:
     isomorphic-fetch "^3.0.0"
 

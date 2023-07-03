@@ -1,7 +1,7 @@
 import React from "react"
 import styles from "../../styles/home.module.css"
-import { Raid, RaidCardBackground } from "../../util/raid"
-import { LocalStrings } from "../../util/localized-strings"
+import { Raid, RaidCardBackground } from "../../util/destiny/raid"
+import { LocalStrings } from "../../util/presentation/localized-strings"
 
 type HomeRaidCardProps = {
     raid: Raid

@@ -1,12 +1,12 @@
 import styles from "../../styles/profile.module.css"
-import { RaidCardBackground, Difficulty } from "../../util/raid"
-import { LocalStrings } from "../../util/localized-strings"
+import { RaidCardBackground, Difficulty } from "../../util/destiny/raid"
+import { LocalStrings } from "../../util/presentation/localized-strings"
 import Link from "next/link"
 import RaidInfo from "../../models/pgcr/RaidInfo"
 
 type ActivityCardProps = {
     strings: LocalStrings
-    info: RaidInfo<any>
+    info: RaidInfo
     completed: boolean
     activityId: any
     completionDate: Date

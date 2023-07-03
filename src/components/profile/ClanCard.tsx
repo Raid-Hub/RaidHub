@@ -1,11 +1,11 @@
 import { useClan } from "../../hooks/bungie/useClan"
 import styles from "../../styles/profile.module.css"
-import Loading from "../Loading"
+import Loading from "../global/Loading"
 import ClanBanner from "./ClanBanner"
-import { Icons } from "../../util/icons"
-import { fixClanName } from "../../util/formatting"
+import { Icons } from "../../util/presentation/icons"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/generic"
+import { fixClanName } from "../../util/destiny/fixClanName"
 
 type ClanCardProps = {
     membershipId: string
@@ -20,9 +20,7 @@ const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps)
         errorHandler
     })
     return isClanLoading ? (
-        <div className={styles["clan"]}>
-            <Loading />
-        </div>
+        <Loading wrapperClass={styles["clan"]} />
     ) : (
         clan && (
             <div className={styles["clan"]}>

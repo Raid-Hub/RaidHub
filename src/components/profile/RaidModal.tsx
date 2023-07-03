@@ -1,17 +1,17 @@
 import Link from "next/link"
 import styles from "../../styles/profile.module.css"
-import { Raid, RaidCardBackground } from "../../util/raid"
+import { Raid, RaidCardBackground } from "../../util/destiny/raid"
 import DotGraph from "./DotGraph"
-import { secondsToHMS } from "../../util/formatting"
+import { secondsToHMS } from "../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import { Icons } from "../../util/icons"
+import { Icons } from "../../util/presentation/icons"
 import RaidStats from "../../models/profile/RaidStats"
-import Loading from "../Loading"
-import { usePrefs } from "../../hooks/usePrefs"
-import { Prefs } from "../../util/preferences"
-import { Placement, RaidTag } from "../../util/types"
-import { formattedNumber } from "../../util/formatting"
-import { useLanguage } from "../../hooks/useLanguage"
+import Loading from "../global/Loading"
+import { usePrefs } from "../../hooks/util/usePrefs"
+import { Prefs } from "../../util/profile/preferences"
+import { formattedNumber } from "../../util/presentation/formatting"
+import { Placement, RaidTag } from "../../types/profile"
+import { useLocale } from "../app/LanguageProvider"
 
 type RaidModalProps = {
     placement: Placement | undefined
@@ -36,7 +36,7 @@ const RaidModal = ({
     isLoadingDots,
     isLoadingStats
 }: RaidModalProps) => {
-    const { locale } = useLanguage()
+    const { locale } = useLocale()
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, [Prefs.FILTER])
     return (
         <div className={styles["raid-card"]}>

@@ -1,28 +1,38 @@
 import { UserInfoCard } from "bungie-net-core/lib/models"
 import styles from "../../styles/profile.module.css"
 import SocialTag from "./SocialTag"
-import { fixBungieCode } from "../../util/formatting"
-import { ProfileSocialData } from "../../util/types"
+import { ProfileSocialData } from "../../types/profile"
+import UserName from "./UserName"
+import Loading from "../global/Loading"
 
 type UserCardProps = {
-    userInfo: UserInfoCard
-    emblemBackgroundPath: string
+    isLoading: boolean
+    userInfo: UserInfoCard | undefined
+    emblemBackgroundPath?: string
     backgroundImage: string
-    socials?: ProfileSocialData[]
+    socials: ProfileSocialData[] | undefined
 }
 
-const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, socials }: UserCardProps) => {
+const UserCard = ({
+    isLoading,
+    userInfo,
+    emblemBackgroundPath,
+    backgroundImage,
+    socials
+}: UserCardProps) => {
     const customStyling = backgroundImage
         ? {
               style: { backgroundImage }
           }
         : {}
-    return (
-        <div className={styles["profile"]} {...customStyling}>
+    return isLoading || !userInfo ? (
+        <Loading wrapperClass={styles["profile-card"]} />
+    ) : (
+        <div className={styles["profile-card"]} {...customStyling}>
             <div className={styles["profile-banner"]}>
                 <img
                     className={styles["image-background"]}
-                    src={`https://bungie.net${emblemBackgroundPath}`}
+                    src={emblemBackgroundPath && `https://bungie.net${emblemBackgroundPath}`}
                     alt=""
                 />
             </div>
@@ -30,18 +40,15 @@ const UserCard = ({ userInfo, emblemBackgroundPath, backgroundImage, socials }: 
                 <img
                     src={
                         "https://bungie.net" +
-                        (userInfo.iconPath ?? "/img/profile/avatars/default_avatar.gif")
+                        (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                     }
                     alt=""
                 />
-                <div className={styles["profile-username"]}>
-                    <span>{userInfo.bungieGlobalDisplayName ?? userInfo.displayName}</span>
-                    <span className={styles["discrim"]}>
-                        {userInfo.bungieGlobalDisplayNameCode
-                            ? "#" + fixBungieCode(userInfo.bungieGlobalDisplayNameCode)
-                            : ""}
-                    </span>
-                </div>
+                {
+                    <div className={styles["profile-username"]}>
+                        <UserName {...userInfo} />
+                    </div>
+                }
             </div>
             <div className={styles["profile-icons"]}>
                 {socials?.map((social, key) => (

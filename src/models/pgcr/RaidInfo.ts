@@ -5,9 +5,9 @@ import {
     Raid,
     Difficulty,
     RaidDifficultyTuple
-} from "../../util/raid"
+} from "../../util/destiny/raid"
 
-export default class RaidInfo<R extends Raid> {
+export default class RaidInfo {
     raid: Raid
     difficulty: Difficulty
     constructor([name, difficulty]: RaidDifficultyTuple) {

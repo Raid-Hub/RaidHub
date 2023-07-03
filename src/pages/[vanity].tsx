@@ -1,8 +1,9 @@
-import { Vanity } from "../util/special"
-import { InitialProfileProps } from "../util/types"
-import ProfileWrapper, { profileProps } from "../components/profile/ProfileWrapper"
-
-export default ProfileWrapper
+import { Vanity } from "../util/raidhub/special"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
+import Custom404 from "./404"
+import Profile from "../components/profile/Profile"
+import ProfileWrapper from "../components/profile/ProfileWrapper"
+import { InitialProfileProps } from "../types/profile"
 
 export async function getServerSideProps({
     params
@@ -10,8 +11,9 @@ export async function getServerSideProps({
     params: { vanity: string }
 }): Promise<{ props: InitialProfileProps }> {
     const vanity = Vanity[params.vanity.toLowerCase()]
-    if (!vanity) return { props: { errorString: "Page not found", bungieNetProfile: null } }
-    const { destinyMembershipId, membershipType } = Vanity[params.vanity.toLowerCase()]
-
-    return profileProps({ destinyMembershipId, membershipType })
+    if (!vanity) return { props: null }
+    const details = Vanity[params.vanity.toLowerCase()]
+    return { props: details }
 }
+
+export default ProfileWrapper

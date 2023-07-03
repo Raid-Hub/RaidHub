@@ -2,7 +2,7 @@ import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import styles from "../../styles/profile.module.css"
 import { median } from "../../util/math"
 import Dot from "./Dot"
-import Loading from "../Loading"
+import Loading from "../global/Loading"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60

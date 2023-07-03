@@ -1,65 +1,67 @@
 import { useCallback, useEffect, useState } from "react"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import AggregateStats from "../../models/profile/AggregateStats"
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
+import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
+import { AllRaidStats } from "../../types/profile"
+import { raidStatsMap } from "../../util/destiny/raidStatsMap"
 
 type UseCharacterStatsParams = {
-    membershipId: string
+    destinyMembershipId: string
     membershipType: BungieMembershipType
     characterIds: string[] | null
     errorHandler: ErrorHandler
 }
 
 type UseCharacterStats = {
-    stats: AggregateStats | null
+    stats: AllRaidStats | null
     isLoading: boolean
 }
 
 export function useCharacterStats({
-    membershipId,
+    destinyMembershipId,
     membershipType,
     characterIds,
     errorHandler
 }: UseCharacterStatsParams): UseCharacterStats {
-    const [stats, setStats] = useState<AggregateStats | null>(null)
+    const [stats, setStats] = useState<AllRaidStats | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
-    const getCharacterStats = useCallback(
+    const fetchData = useCallback(
         async (
             destinyMembershipId: string,
             membershipType: BungieMembershipType,
-            characterId: string
+            characterIds: string[]
         ) => {
-            return client.getCharacterStats({
-                destinyMembershipId,
-                membershipType,
-                characterId
-            })
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        if (characterIds?.length) getStats()
-
-        async function getStats() {
             try {
+                setStats(null)
                 const characterStats = await Promise.all(
                     characterIds!.map(async characterId =>
-                        getCharacterStats(membershipId, membershipType, characterId)
+                        getDestinyStatsForCharacter({
+                            destinyMembershipId,
+                            membershipType,
+                            characterId,
+                            client
+                        })
                     )
                 )
-                setStats(new AggregateStats(characterStats))
+                setStats(raidStatsMap(characterStats.flatMap(stats => stats.activities)))
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.CharacterStats)
             } finally {
                 setLoading(false)
             }
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+        if (characterIds?.length) {
+            fetchData(destinyMembershipId, membershipType, characterIds)
         }
-    }, [membershipId, membershipType, characterIds, errorHandler, getCharacterStats])
+    }, [destinyMembershipId, membershipType, characterIds, fetchData])
     return { stats, isLoading }
 }

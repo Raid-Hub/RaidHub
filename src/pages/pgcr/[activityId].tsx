@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import ActivityHeader from "../../components/pgcr/ActivityHeader"
 import Participants from "../../components/pgcr/Participants"
 import SummaryStats from "../../components/pgcr/SummaryStats"
 import styles from "../../styles/pgcr.module.css"
-import { Backdrop, Raid, Short } from "../../util/raid"
+import { Backdrop, Raid, Short } from "../../util/destiny/raid"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
 import Head from "next/head"
 import { GetServerSidePropsContext, NextPage } from "next"
-import ErrorComponent from "../../components/Error"
+import ErrorComponent from "../../components/global/Error"
 import { ParsedUrlQuery } from "querystring"
+import CustomError from "../../models/errors/CustomError"
 
 type PGCRProps = {
     activityId: string
@@ -16,47 +17,50 @@ type PGCRProps = {
 }
 
 const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
-    const [error, setError] = useState<Error | null>(null)
-    const {
-        activity,
-        members,
-        loadingState: pgcrLoadingState
-    } = usePGCR({ activityId, errorHandler: setError })
+    const [error, setError] = useState<CustomError | null>(null)
+    const { pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler: setError })
 
     if (error) {
         return (
             <ErrorComponent
                 error={error}
                 title={
-                    activity?.raid ? `${Short[activity.raid]} ${activityId} | RaidHub` : "RaidHub"
+                    pgcr?.details.raid
+                        ? `${Short[pgcr.details.raid]} ${activityId} | RaidHub`
+                        : "RaidHub"
                 }
             />
         )
+    } else {
+        return (
+            <main className={styles["main"]}>
+                <Head>
+                    <title>
+                        {pgcr?.details?.raid
+                            ? `${Short[pgcr.details.raid]} ${activityId} | RaidHub`
+                            : "RaidHub"}
+                    </title>
+                </Head>
+                <section className={styles["summary-card"]}>
+                    <div
+                        className="background-img"
+                        style={Backdrop[pgcr?.details?.raid ?? Raid.NA]}
+                    />
+                    <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
+                    <Participants
+                        raid={pgcr?.details?.raid ?? Raid.NA}
+                        members={pgcr?.players ?? []}
+                        query={query}
+                        pgcrLoadingState={pgcrLoadingState}
+                        errorHandler={setError}
+                    />
+                </section>
+                <section className={styles["summary-stats"]}>
+                    <SummaryStats activity={pgcr} />
+                </section>
+            </main>
+        )
     }
-
-    return (
-        <main className={styles["main"]}>
-            <Head>
-                <title>
-                    {activity?.raid ? `${Short[activity.raid]} ${activityId} | RaidHub` : "RaidHub"}
-                </title>
-            </Head>
-            <section className={styles["summary-card"]}>
-                <div className="background-img" style={Backdrop[activity?.raid ?? Raid.NA]} />
-                <ActivityHeader activity={activity} pgcrLoadingState={pgcrLoadingState} />
-                <Participants
-                    raid={activity?.raid ?? Raid.NA}
-                    members={members}
-                    query={query}
-                    pgcrLoadingState={pgcrLoadingState}
-                    errorHandler={setError}
-                />
-            </section>
-            <section className={styles["summary-stats"]}>
-                <SummaryStats activity={activity} />
-            </section>
-        </main>
-    )
 }
 
 export async function getServerSideProps({

@@ -1,14 +1,15 @@
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
-import { ACTIVITIES_PER_PAGE } from "../../util/bungieClient"
-import { Raid, raidDetailsFromHash } from "../../util/raid"
-import { ActivityCollectionDictionary, ActivityHistory, ErrorHandler } from "../../util/types"
+import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
+import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../../services/bungie/getRaidHistoryPage"
+import { ErrorHandler } from "../../types/generic"
+import { ActivityCollectionDictionary, ActivityHistory } from "../../types/profile"
 
 type UseActivityHistoryParams = {
-    membershipId: string
+    destinyMembershipId: string
     membershipType: BungieMembershipType
     characterIds: string[] | null
     errorHandler: ErrorHandler
@@ -20,7 +21,7 @@ type UseActivityHistory = {
 }
 
 export function useActivityHistory({
-    membershipId,
+    destinyMembershipId,
     membershipType,
     characterIds,
     errorHandler
@@ -29,50 +30,56 @@ export function useActivityHistory({
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
-    const getActivityHistory = useCallback(
+    const fetchData = useCallback(
         async (
-            membershipId: string,
-            characterId: string,
-            membershipType: BungieMembershipType,
-            page: number
+            ids: string[],
+            destinyMembershipId: string,
+            membershipType: BungieMembershipType
         ) => {
-            return client.getActivityHistory(membershipId, characterId, membershipType, page)
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(true)
-        const dict: ActivityCollectionDictionary = {
-            [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.SPIRE_OF_STARS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.LAST_WISH]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.SCOURGE_OF_THE_PAST]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.CROWN_OF_SORROW]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.GARDEN_OF_SALVATION]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.DEEP_STONE_CRYPT]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.VAULT_OF_GLASS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.VOW_OF_THE_DISCIPLE]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.KINGS_FALL]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.ROOT_OF_NIGHTMARES]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
-            [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
-        }
-        if (characterIds) getActivities(characterIds)
-
-        async function getActivities(ids: string[]) {
+            const dict: ActivityCollectionDictionary = {
+                [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.SPIRE_OF_STARS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.LAST_WISH]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.SCOURGE_OF_THE_PAST]: new Collection<
+                    string,
+                    DestinyHistoricalStatsPeriodGroup
+                >(),
+                [Raid.CROWN_OF_SORROW]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.GARDEN_OF_SALVATION]: new Collection<
+                    string,
+                    DestinyHistoricalStatsPeriodGroup
+                >(),
+                [Raid.DEEP_STONE_CRYPT]: new Collection<
+                    string,
+                    DestinyHistoricalStatsPeriodGroup
+                >(),
+                [Raid.VAULT_OF_GLASS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.VOW_OF_THE_DISCIPLE]: new Collection<
+                    string,
+                    DestinyHistoricalStatsPeriodGroup
+                >(),
+                [Raid.KINGS_FALL]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
+                [Raid.ROOT_OF_NIGHTMARES]: new Collection<
+                    string,
+                    DestinyHistoricalStatsPeriodGroup
+                >(),
+                [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
+            }
+            setActivities(null)
             try {
                 await Promise.all(
                     ids.map(async characterId => {
                         let page = 0
                         let hasMore = true
                         while (hasMore) {
-                            const newActivities = await getActivityHistory(
-                                membershipId,
+                            const newActivities = await getRaidHistoryPage({
+                                destinyMembershipId,
                                 characterId,
                                 membershipType,
-                                page
-                            )
+                                page,
+                                client
+                            })
                             newActivities.forEach(activity => {
                                 const info = raidDetailsFromHash(
                                     activity.activityDetails.referenceId.toString()
@@ -90,7 +97,17 @@ export function useActivityHistory({
             } finally {
                 setLoading(false)
             }
+        },
+        [client, errorHandler]
+    )
+
+    useEffect(() => {
+        setLoading(true)
+
+        if (characterIds) {
+            setActivities(null)
+            fetchData(characterIds, destinyMembershipId, membershipType)
         }
-    }, [membershipId, membershipType, characterIds, errorHandler, getActivityHistory])
+    }, [characterIds, destinyMembershipId, membershipType, fetchData])
     return { activities, isLoading }
 }

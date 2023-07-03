@@ -11,7 +11,3 @@ export function median(sortedArr: number[]): number {
         return (sortedArr[Math.floor(mid)] + sortedArr[Math.ceil(mid)]) / 2
     }
 }
-
-export async function wait(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}

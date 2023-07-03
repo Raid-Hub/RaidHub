@@ -1,39 +1,43 @@
-import { Difficulty } from "../../util/raid"
-import { IRaidStats } from "../../util/types"
+import { Difficulty } from "../../util/destiny/raid"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"
+import { DestinyHistoricalStatsDictionary } from "../../util/destiny/raidStatsMap"
+import { IRaidStats } from "../../types/profile"
 
 export default class RaidStats
     extends Map<Difficulty, RaidStatsForDifficulty>
     implements IRaidStats
 {
-    constructor(entries?: readonly (readonly [Difficulty, RaidStatsForDifficulty])[]) {
-        super(entries)
+    add(difficulty: Difficulty, values: DestinyHistoricalStatsDictionary[]) {
+        this.set(difficulty, new RaidStatsForDifficulty(values))
     }
-    get assists(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.assists + prev, 0)
+    private reduce(key: keyof IRaidStats) {
+        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr[key] + prev, 0)
     }
-    get deaths(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.deaths + prev, 0)
+    get assists() {
+        return this.reduce("assists")
     }
-    get kills(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.kills + prev, 0)
+    get deaths() {
+        return this.reduce("deaths")
     }
-    get precisionKills(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.precisionKills + prev, 0)
+    get kills() {
+        return this.reduce("kills")
     }
-    get secondsPlayed(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.secondsPlayed + prev, 0)
+    get precisionKills() {
+        return this.reduce("precisionKills")
     }
-    get fastestClear(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.fastestClear + prev, 0)
+    get secondsPlayed() {
+        return this.reduce("secondsPlayed")
     }
-    get totalClears(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.totalClears + prev, 0)
+    get fastestClear() {
+        return 0
+    }
+    get totalClears() {
+        return this.reduce("totalClears")
     }
     get averageClear(): number {
         return 0
     }
-    get sherpas(): number {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr.sherpas + prev, 0)
+    get sherpas() {
+        return this.reduce("sherpas")
     }
 }

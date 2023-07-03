@@ -1,17 +1,15 @@
-import { useLanguage } from "../../hooks/useLanguage"
-import Activity from "../../models/pgcr/Activity"
+import DestinyPGCR from "../../models/pgcr/PGCR"
 import styles from "../../styles/pgcr.module.css"
-import { formattedNumber } from "../../util/formatting"
-import { Icons } from "../../util/icons"
-import { LocalizedStrings } from "../../util/localized-strings"
+import { formattedNumber } from "../../util/presentation/formatting"
+import { Icons } from "../../util/presentation/icons"
+import { useLocale } from "../app/LanguageProvider"
 
 type SummaryStatsProps = {
-    activity: Activity | null
+    activity: DestinyPGCR | null
 }
 
 const SummaryStats = ({ activity }: SummaryStatsProps) => {
-    const { language, locale } = useLanguage()
-    const strings = LocalizedStrings[language]
+    const { language, locale, strings } = useLocale()
     const stats = activity?.stats
     const statsData: {
         icon: string
@@ -41,7 +39,9 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
-            value: formattedNumber(stats?.killsTypeRatio.ability ?? 0, locale) + "%"
+            value:
+                formattedNumber(stats?.totalAbilityKills ?? 0 / (stats?.totalKills || 1), locale) +
+                "%"
         },
         {
             icon: Icons.UNKNOWN,

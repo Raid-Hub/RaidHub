@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../../util/types"
+import { ErrorHandler } from "../../types/generic"
 
 export enum ErrorCode {
     Allowed = "",
@@ -7,6 +7,7 @@ export enum ErrorCode {
     ProfileNotFound = "Pinecone",
     PrivateProfile = "Pineapple",
     PGCRError = "Pig",
+    ActivityError = "Applesauce",
     ActivityHistory = "Apricot",
     CharacterStats = "Cactus",
     ProfileStats = "Pickle",
@@ -14,11 +15,12 @@ export enum ErrorCode {
     Clan = "Clam",
     Placements = "Pigeon",
     ExactSearch = "Eggplant",
-    Emblems = "Elephant"
+    Emblems = "Elephant",
+    RaidHubProfile = "Rainbow"
 }
 
 export default class CustomError extends Error {
-    readonly code: ErrorCode
+    code: ErrorCode
 
     constructor(message: string, code?: ErrorCode) {
         super(message)
@@ -27,9 +29,12 @@ export default class CustomError extends Error {
 
     static handle(errorHandler: ErrorHandler, e: any, code: ErrorCode) {
         if (e instanceof CustomError) {
+            e.code = code
             errorHandler(e)
         } else if (e instanceof Error) {
-            errorHandler(new CustomError(e.message, code))
+            const newErr = new CustomError(e.message, code)
+            newErr.stack = e.stack
+            errorHandler(newErr)
         } else {
             errorHandler(new CustomError(String(e), code))
         }

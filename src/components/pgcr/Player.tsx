@@ -1,6 +1,6 @@
-import PGCRMember from "../../models/pgcr/Member"
+import PGCRMember from "../../models/pgcr/Player"
 import styles from "../../styles/pgcr.module.css"
-import { Icons } from "../../util/icons"
+import { Icons } from "../../util/presentation/icons"
 
 type PlayerProps = {
     member: PGCRMember

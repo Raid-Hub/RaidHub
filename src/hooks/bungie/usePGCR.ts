@@ -1,92 +1,73 @@
-import {
-    DestinyPostGameCarnageReportData,
-    DestinyPostGameCarnageReportEntry
-} from "bungie-net-core/lib/models"
+import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
-import Activity from "../../models/pgcr/Activity"
-import { ErrorHandler, Loading } from "../../util/types"
-import PGCRMember from "../../models/pgcr/Member"
+import { ErrorHandler, Loading } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "./useBungieClient"
+import { useBungieClient } from "../../components/app/TokenManager"
+import { getPGCR } from "../../services/bungie/getPGCR"
+import { findProfileWithoutPlatform } from "../../services/bungie/findProfileWithoutPlatform"
+import DestinyPGCR from "../../models/pgcr/PGCR"
 
 type UsePGCRParams = {
     activityId: string | null | undefined
     errorHandler: ErrorHandler
 }
 type UsePGCR = {
-    members: PGCRMember[] | null
-    activity: Activity | null
+    pgcr: DestinyPGCR | null
     loadingState: Loading
 }
 
 export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
-    const [pgcr, setPGCR] = useState<DestinyPostGameCarnageReportData | null>(null)
+    const [pgcr, setPGCR] = useState<DestinyPGCR | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (id: string) => {
-            return client.getPGCR(id)
-        },
-        [client]
-    )
-
-    const validateData = useCallback(
-        async (data: DestinyPostGameCarnageReportData) => {
-            return client.validatePGCR(data)
-        },
-        [client]
-    )
-
-    useEffect(() => {
-        setLoading(Loading.LOADING)
-        const getPGCR = async () => {
+        async (activityId: string) => {
             try {
-                const pgcr = await fetchData(activityId!)
+                setPGCR(null)
+                const pgcr = await getPGCR({ activityId, client })
                 setPGCR(pgcr)
                 setLoading(Loading.HYDRATING)
-                const hydratedPGCR = await validateData(pgcr)
-                setPGCR(hydratedPGCR)
+
+                const dataForMissingProfiles = new Map<
+                    string,
+                    [DestinyProfileComponent, DestinyCharacterComponent]
+                >()
+                await Promise.all(
+                    pgcr.entries.map(async entry => {
+                        if (!entry.player.bungieNetUserInfo.membershipType) {
+                            const res = await findProfileWithoutPlatform({
+                                destinyMembershipId: entry.player.bungieNetUserInfo.membershipId,
+                                client
+                            })
+                            if (res.profile.data && res.characters.data?.[entry.characterId]) {
+                                dataForMissingProfiles.set(
+                                    entry.player.bungieNetUserInfo.membershipId,
+                                    [res.profile.data, res.characters.data[entry.characterId]]
+                                )
+                            }
+                        }
+                    })
+                )
+                pgcr.hydrate(dataForMissingProfiles)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
             } finally {
                 setLoading(Loading.FALSE)
             }
-        }
-
-        if (activityId) getPGCR()
-        else if (activityId === null) setLoading(Loading.FALSE)
-    }, [activityId, errorHandler, fetchData, validateData])
-
-    if (!pgcr) return { members: null, activity: null, loadingState }
-
-    const dict: Record<string, DestinyPostGameCarnageReportEntry[]> = {}
-    /** Group characters by member */
-    pgcr.entries.forEach(entry =>
-        (dict[entry.player.destinyUserInfo.membershipId] ??= []).push(entry)
+        },
+        [client, errorHandler]
     )
-    /** Sort each member's characters by latest start time, and always keep the completed one first*/
-    const members: PGCRMember[] = Object.entries(dict)
-        .map(
-            ([_, vals]) =>
-                new PGCRMember(
-                    vals.sort((charA, charB) => {
-                        if (charA.values.completed.basic.value) return -1
-                        else if (charB.values.completed.basic.value) return 1
-                        else
-                            return (
-                                charB.values.startSeconds.basic.value -
-                                charA.values.startSeconds.basic.value
-                            )
-                        /* Sort member by completion then score */
-                    })
-                )
-        )
-        .sort((memA, memB) => {
-            if ((!memA.didComplete || !memB.didComplete) && memA.didComplete != memB.didComplete)
-                return !memA.didComplete ? 1 : -1
-            else return memB.stats.score - memA.stats.score
-        })
-    const activity = new Activity(pgcr, members)
-    return { members, activity, loadingState }
+
+    useEffect(() => {
+        setLoading(Loading.LOADING)
+
+        if (activityId) {
+            fetchData(activityId)
+        } else if (activityId === null) {
+            setLoading(Loading.FALSE)
+        }
+    }, [activityId, errorHandler, fetchData])
+
+    return { pgcr, loadingState }
 }
