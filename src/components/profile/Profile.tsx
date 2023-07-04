@@ -138,9 +138,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                     <RaidCards
                         {...profile.userInfo}
                         profile={raidHubProfile}
-                        characterIds={
-                            characterProfiles?.flatMap(profile => profile.characterIds) ?? null
-                        }
+                        characterProfiles={characterProfiles}
                         layout={layout}
                         raidMetrics={raidMetrics}
                         isLoadingRaidMetrics={isLoadingRaidMetrics}

@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react"
 import Loading from "../global/Loading"
 import { usePrefs } from "../../hooks/util/usePrefs"
 import { DefaultPreferences, Prefs } from "../../util/profile/preferences"
-import { AllRaidStats, RaidHubProfile } from "../../types/profile"
+import { AllRaidStats, ProfileWithCharacters, RaidHubProfile } from "../../types/profile"
 import { ErrorHandler } from "../../types/generic"
 import { useLocale } from "../app/LanguageProvider"
 
@@ -24,7 +24,7 @@ type RaidCardsProps = {
     profile: RaidHubProfile | null
     membershipId: string
     membershipType: BungieMembershipType
-    characterIds: string[] | null
+    characterProfiles: ProfileWithCharacters[] | null
     layout: Layout
     raidMetrics: AllRaidStats | null
     isLoadingRaidMetrics: boolean
@@ -35,7 +35,7 @@ const RaidCards = ({
     profile,
     membershipId: destinyMembershipId,
     membershipType,
-    characterIds,
+    characterProfiles,
     layout,
     raidMetrics,
     isLoadingRaidMetrics,
@@ -45,9 +45,7 @@ const RaidCards = ({
     const prefOptions = useRef([Prefs.FILTER] as const)
     const { prefs, isLoading: isLoadingPrefs } = usePrefs(destinyMembershipId, prefOptions.current)
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
-        destinyMembershipId,
-        membershipType,
-        characterIds,
+        characterProfiles,
         errorHandler
     })
     const [allActivities, setAllActivities] = useState<DestinyHistoricalStatsPeriodGroup[]>([])
