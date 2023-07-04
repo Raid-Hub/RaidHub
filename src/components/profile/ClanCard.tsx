@@ -71,15 +71,16 @@ function urlHighlight(str: string): JSX.Element[] {
     const elements: JSX.Element[] = []
     let match
     let lastIndex = 0
+    let key = 0
     while ((match = urlRegex.exec(str))) {
         // Capture the non-matching substring before the matched URL
         if (match.index > lastIndex) {
-            elements.push(<span key={lastIndex}>{str.substring(lastIndex, match.index)}</span>)
+            elements.push(<span key={key++}>{str.substring(lastIndex, match.index)}</span>)
         }
         // Capture the matched URL
         let url = match[0]
         elements.push(
-            <a href={url} target="_blank" rel="noopener noreferrer">
+            <a key={key++} href={url} target="_blank" rel="noopener noreferrer">
                 {url}
             </a>
         )

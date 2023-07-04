@@ -1,6 +1,6 @@
-import RaidInfo from "../../models/pgcr/RaidInfo"
-import { HTMLAttributes } from "react"
 import { Flatten } from "../../types/generic"
+import { HTMLAttributes } from "react"
+import RaidInfo from "../../models/pgcr/RaidInfo"
 
 export const enum Raid {
     LEVIATHAN,

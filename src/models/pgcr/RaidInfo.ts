@@ -2,8 +2,8 @@ import {
     ContestEnd,
     ContestRaidDifficulties,
     DayOneEnd,
-    Raid,
     Difficulty,
+    Raid,
     RaidDifficultyTuple
 } from "../../util/destiny/raid"
 

@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { DestinyHistoricalWeaponStats } from "bungie-net-core/lib/models"
-import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
 import { PlayerWeapons } from "../../types/pgcr"
+import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
 
 const weaponsDefs: {
     [hash: string]: {

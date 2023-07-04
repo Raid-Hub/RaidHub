@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
 import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"

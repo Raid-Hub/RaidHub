@@ -1,4 +1,4 @@
-import { GetStaticPropsResult, Redirect } from "next"
+import { GetStaticPropsResult } from "next"
 import { InitialProfileProps } from "../../../types/profile"
 import { Vanity } from "../../../util/raidhub/special"
 import ProfileWrapper from "../../[vanity]"

@@ -1,5 +1,5 @@
 import styles from "../../styles/profile.module.css"
-import { RaidCardBackground, Difficulty } from "../../util/destiny/raid"
+import { Difficulty, RaidCardBackground } from "../../util/destiny/raid"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Link from "next/link"
 import RaidInfo from "../../models/pgcr/RaidInfo"

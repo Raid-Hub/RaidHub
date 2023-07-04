@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import {
     BungieMembershipType,
-    DestinyProfileUserInfoCard,
     UserInfoCard
 } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"

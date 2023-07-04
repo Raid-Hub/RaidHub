@@ -1,15 +1,13 @@
+import { Collection } from "@discordjs/collection"
+import { Raid } from "../util/destiny/raid"
+import RaidStats from "../models/profile/RaidStats"
+import { Socials } from "../util/profile/socials"
+import { Tag } from "../util/raidhub/tags"
 import {
     BungieMembershipType,
     DestinyHistoricalStatsPeriodGroup,
-    DestinyProfileComponent,
-    GroupV2
+    DestinyProfileComponent
 } from "bungie-net-core/lib/models"
-import RaidStats from "../models/profile/RaidStats"
-import { Raid } from "../util/destiny/raid"
-import { ClanBannerData } from "../util/destiny/clanBanner"
-import { Socials } from "../util/profile/socials"
-import { Collection } from "@discordjs/collection"
-import { Tag } from "../util/raidhub/tags"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string

@@ -1,5 +1,5 @@
 import { signOut, useSession } from "next-auth/react"
-import { ReactNode, useEffect, createContext, useContext } from "react"
+import { ReactNode, createContext, useContext, useEffect } from "react"
 import BungieClient from "../../services/bungie/client"
 
 const client = new BungieClient()

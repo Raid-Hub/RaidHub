@@ -1,7 +1,6 @@
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../hooks/bungie/useActivityHistory"
 import styles from "../../styles/profile.module.css"
-import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import { AllRaids, Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import RaidModal from "./RaidModal"
 import ActivityCard from "./ActivityCard"

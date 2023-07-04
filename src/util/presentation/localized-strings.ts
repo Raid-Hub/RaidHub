@@ -1,5 +1,5 @@
-import { Raid, Difficulty } from "../destiny/raid"
 import { Tag } from "../raidhub/tags"
+import { Difficulty, Raid } from "../destiny/raid"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }

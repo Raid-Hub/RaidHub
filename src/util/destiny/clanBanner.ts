@@ -1,5 +1,5 @@
-import { ClanBanner } from "bungie-net-core/lib/models"
 import BannersJson from "../../util/destiny-definitions/clanBanner.json" assert { type: "json" }
+import { ClanBanner } from "bungie-net-core/lib/models"
 
 export type ClanBannerData = {
     decalPrimary: string
