@@ -1,8 +1,7 @@
 import {
     BungieMembershipType,
     DestinyActivityModeType,
-    DestinyHistoricalStatsPeriodGroup,
-    PlatformErrorCodes
+    DestinyHistoricalStatsPeriodGroup
 } from "bungie-net-core/lib/models"
 import { getActivityHistory } from "bungie-net-core/lib/endpoints/Destiny2"
 import { BungieClientProtocol } from "bungie-net-core/lib/api"

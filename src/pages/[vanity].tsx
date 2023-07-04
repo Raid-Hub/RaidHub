@@ -1,6 +1,4 @@
 import { Vanity } from "../util/raidhub/special"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
-import Custom404 from "./404"
 import ProfileWrapper from "../components/profile/ProfileWrapper"
 import { InitialProfileProps } from "../types/profile"
 import { GetStaticPropsResult } from "next"

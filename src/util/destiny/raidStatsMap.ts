@@ -1,9 +1,9 @@
+import RaidStats from "../../models/profile/RaidStats"
+import { AllValidHashes, Difficulty, HashDictionary, Raid, ValidRaidHash } from "./raid"
 import {
     DestinyAggregateActivityStats,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/lib/models"
-import { AllValidHashes, Difficulty, HashDictionary, Raid, ValidRaidHash } from "./raid"
-import RaidStats from "../../models/profile/RaidStats"
 
 export type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
 

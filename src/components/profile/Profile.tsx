@@ -1,5 +1,4 @@
 import styles from "../../styles/profile.module.css"
-import { useBungieNextMembership } from "../../hooks/bungie/useBungieNextMembership"
 import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./UserCard"
@@ -17,6 +16,7 @@ import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
 import Loading from "../global/Loading"
+import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
 
 type ProfileProps = {
     destinyMembershipId: string
@@ -25,31 +25,40 @@ type ProfileProps = {
 }
 
 const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileProps) => {
+    // DATA HOOKS
     const { profile, isLoading: isLoadingProfile } = useDestinyProfile({
         destinyMembershipId,
         membershipType,
         errorHandler
     })
+
     const { profile: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
         destinyMembershipId,
         errorHandler
     })
-    const { membership, isLoading: isLoadingMembership } = useBungieNextMembership({
+
+    const {
+        membership,
+        destinyProfiles,
+        isLoading: isLoadingProfiles
+    } = useBungieMemberships({
         destinyMembershipId,
         membershipType,
         errorHandler
     })
+
     const {
         stats: profileStats,
         isLoading: isLoadingProfileStats,
-        characterIds
-    } = useDestinyStats({ destinyMembershipId, membershipType, errorHandler })
+        characterProfiles
+    } = useDestinyStats({ destinyProfiles, errorHandler })
+
     const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        destinyMembershipId,
-        membershipType,
-        characterIds,
+        characterProfiles,
         errorHandler
     })
+
+    // LAYOUT
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
 
     const handleLayoutToggle = (buttonState: boolean) => {
@@ -66,7 +75,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
             </Head>
             <section className={styles["user-info"]}>
                 <UserCard
-                    isLoading={isLoadingMembership}
+                    isLoading={isLoadingProfile}
                     userInfo={membership ? { ...membership, ...profile?.userInfo } : undefined}
                     socials={raidHubProfile?.socials}
                     emblemBackgroundPath={profile?.emblemBackgroundPath}
@@ -129,7 +138,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                     <RaidCards
                         {...profile.userInfo}
                         profile={raidHubProfile}
-                        characterIds={characterIds}
+                        characterProfiles={characterProfiles}
                         layout={layout}
                         raidMetrics={raidMetrics}
                         isLoadingRaidMetrics={isLoadingRaidMetrics}

@@ -3,25 +3,26 @@ import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
-import { getBungieNextProfile } from "../../services/bungie/getBungieNextProfile"
+import { getLinkedBungieProfiles } from "../../services/bungie/getLinkedBungieProfiles"
+import { ProfileDetails } from "../../types/profile"
 
-type UseBungieProfileParams = {
+type UseBungieProfile = (params: {
     destinyMembershipId: string
     membershipType: BungieMembershipType
     errorHandler: ErrorHandler
-}
-
-type UseBungieProfile = {
+}) => {
     membership: UserInfoCard | null
+    destinyProfiles: ProfileDetails[] | null
     isLoading: boolean
 }
 
-export function useBungieNextMembership({
+export const useBungieMemberships: UseBungieProfile = ({
     destinyMembershipId,
     membershipType,
     errorHandler
-}: UseBungieProfileParams): UseBungieProfile {
+}) => {
     const [membership, setMembership] = useState<UserInfoCard | null>(null)
+    const [destinyProfiles, setDestinyProfiles] = useState<ProfileDetails[] | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
@@ -29,12 +30,21 @@ export function useBungieNextMembership({
         async (membershipId: string, membershipType: BungieMembershipType) => {
             try {
                 setMembership(null)
-                const membership = await getBungieNextProfile({
+                setDestinyProfiles(null)
+                const { bnetMembership, profiles } = await getLinkedBungieProfiles({
                     membershipId,
                     membershipType,
                     client
                 })
-                setMembership(membership)
+                setMembership(bnetMembership)
+                setDestinyProfiles(
+                    profiles
+                        .filter(profile => new Date(profile.dateLastPlayed).getTime())
+                        .map(({ membershipId, membershipType }) => ({
+                            membershipType,
+                            destinyMembershipId: membershipId
+                        }))
+                )
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.BungieNextMembership)
             } finally {
@@ -47,5 +57,5 @@ export function useBungieNextMembership({
         setLoading(true)
         fetchData(destinyMembershipId, membershipType)
     }, [destinyMembershipId, membershipType, fetchData])
-    return { membership, isLoading }
+    return { membership, destinyProfiles, isLoading }
 }

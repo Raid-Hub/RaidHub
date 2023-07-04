@@ -1,41 +1,32 @@
 import { Collection } from "@discordjs/collection"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
 import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../../services/bungie/getRaidHistoryPage"
 import { ErrorHandler } from "../../types/generic"
-import { ActivityCollectionDictionary, ActivityHistory } from "../../types/profile"
+import {
+    ActivityCollectionDictionary,
+    ActivityHistory,
+    ProfileWithCharacters
+} from "../../types/profile"
 
-type UseActivityHistoryParams = {
-    destinyMembershipId: string
-    membershipType: BungieMembershipType
-    characterIds: string[] | null
+type UseActivityHistory = (params: {
+    characterProfiles: ProfileWithCharacters[] | null
     errorHandler: ErrorHandler
-}
-
-type UseActivityHistory = {
+}) => {
     activities: ActivityHistory
     isLoading: boolean
 }
 
-export function useActivityHistory({
-    destinyMembershipId,
-    membershipType,
-    characterIds,
-    errorHandler
-}: UseActivityHistoryParams): UseActivityHistory {
+export const useActivityHistory: UseActivityHistory = ({ characterProfiles, errorHandler }) => {
     const [activities, setActivities] = useState<ActivityHistory>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (
-            ids: string[],
-            destinyMembershipId: string,
-            membershipType: BungieMembershipType
-        ) => {
+        async (profiles: ProfileWithCharacters[]) => {
             const dict: ActivityCollectionDictionary = {
                 [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
                 [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -69,27 +60,34 @@ export function useActivityHistory({
             setActivities(null)
             try {
                 await Promise.all(
-                    ids.map(async characterId => {
-                        let page = 0
-                        let hasMore = true
-                        while (hasMore) {
-                            const newActivities = await getRaidHistoryPage({
-                                destinyMembershipId,
-                                characterId,
-                                membershipType,
-                                page,
-                                client
+                    profiles.map(({ destinyMembershipId, membershipType, characterIds }) =>
+                        Promise.all(
+                            characterIds.map(async characterId => {
+                                let page = 0
+                                let hasMore = true
+                                while (hasMore) {
+                                    const newActivities = await getRaidHistoryPage({
+                                        destinyMembershipId,
+                                        characterId,
+                                        membershipType,
+                                        page,
+                                        client
+                                    })
+                                    newActivities.forEach(activity => {
+                                        const info = raidDetailsFromHash(
+                                            activity.activityDetails.referenceId.toString()
+                                        )
+                                        dict[info.raid].set(
+                                            activity.activityDetails.instanceId,
+                                            activity
+                                        )
+                                    })
+                                    hasMore = newActivities.length == ACTIVITIES_PER_PAGE
+                                    page++
+                                }
                             })
-                            newActivities.forEach(activity => {
-                                const info = raidDetailsFromHash(
-                                    activity.activityDetails.referenceId.toString()
-                                )
-                                dict[info.raid].set(activity.activityDetails.instanceId, activity)
-                            })
-                            hasMore = newActivities.length == ACTIVITIES_PER_PAGE
-                            page++
-                        }
-                    })
+                        )
+                    )
                 )
                 setActivities(dict)
             } catch (e) {
@@ -104,10 +102,9 @@ export function useActivityHistory({
     useEffect(() => {
         setLoading(true)
 
-        if (characterIds) {
-            setActivities(null)
-            fetchData(characterIds, destinyMembershipId, membershipType)
+        if (characterProfiles) {
+            fetchData(characterProfiles)
         }
-    }, [characterIds, destinyMembershipId, membershipType, fetchData])
+    }, [characterProfiles, fetchData])
     return { activities, isLoading }
 }
