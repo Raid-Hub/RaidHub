@@ -1,5 +1,7 @@
+import { round } from "../math"
+
 export function formattedNumber(num: number, locale: string): string {
-    return num.toLocaleString(locale)
+    return round(num, 2).toLocaleString(locale)
 }
 
 export function toCustomDateString(date: Date, locale: string): string {
@@ -16,5 +18,7 @@ export function secondsToHMS(seconds: number): string {
     time -= hours * 3600
     const minutes = Math.floor(time / 60)
     time -= minutes * 60
-    return `${hours ? hours + "h" : ""} ${hours | minutes ? minutes + "m" : ""} ${time + "s"}`
+    return `${hours ? hours + "h" : ""} ${hours || minutes ? minutes + "m" : ""}${
+        !hours ? ` ${time + "s"}` : ""
+    }`
 }

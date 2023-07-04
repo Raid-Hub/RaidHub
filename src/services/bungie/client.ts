@@ -6,6 +6,7 @@ import {
     BungieNetResponse
 } from "bungie-net-core/lib/api"
 import { PlatformErrorCodes } from "bungie-net-core/lib/models"
+import { wait } from "../../util/wait"
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null

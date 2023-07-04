@@ -3,36 +3,40 @@ import { Raid } from "../../util/destiny/raid"
 import { Icons } from "../../util/presentation/icons"
 import StatCards from "./PlayerStatCards"
 import styles from "../../styles/pgcr.module.css"
-import { useEmblems } from "../../hooks/bungie/useEmblems"
 import { ErrorHandler, Loading } from "../../types/generic"
-import PGCRMember from "../../models/pgcr/Player"
+import PGCRPlayer from "../../models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
 import Player from "./Player"
 import { useRouter } from "next/router"
 import { ParsedUrlQuery } from "querystring"
 import { defaultEmblem } from "../../util/destiny/emblems"
+import DestinyPGCRCharacter from "../../models/pgcr/Character"
+import { useEmblems } from "../../hooks/bungie/useEmblems"
 
 type ParticipantsProps = {
-    members: PGCRMember[] | null
+    players: PGCRPlayer[] | null
+    characters: DestinyPGCRCharacter[]
     raid: Raid
     query: ParsedUrlQuery
     pgcrLoadingState: Loading
     errorHandler: ErrorHandler
 }
 
-const Participants = ({ members, query, errorHandler }: ParticipantsProps) => {
+const Participants = ({
+    players: members,
+    query,
+    pgcrLoadingState,
+    characters,
+    errorHandler
+}: ParticipantsProps) => {
     const { emblems, isLoading: isLoadingEmblems } = useEmblems({
-        members: members,
+        characters,
+        pgcrLoadingState,
         errorHandler
     })
 
-    const _memberIndex = () => parseInt(query["player"]?.toString() ?? "")
-    const _characterIndex = () => parseInt(query["character"]?.toString() ?? "")
-    const [memberIndex, setMemberIndex] = useState(isNaN(_memberIndex()) ? -1 : _memberIndex)
-    const [characterIndex, setCharacterIndex] = useState(
-        isNaN(_characterIndex()) ? -1 : _characterIndex
-    )
-    const router = useRouter()
+    const [memberIndex, setMemberIndex] = useState(-1)
+    const [characterIndex, setCharacterIndex] = useState(-1)
 
     const updateMemberIndex = (clicked: number) => {
         memberIndex === clicked
@@ -43,42 +47,6 @@ const Participants = ({ members, query, errorHandler }: ParticipantsProps) => {
     const updateCharacterIndex = (clicked: number) => {
         characterIndex === clicked ? setCharacterIndex(-1) : setCharacterIndex(clicked)
     }
-
-    useEffect(() => {
-        const newQuery: ParsedUrlQuery = {
-            activityId: router.query.activityId
-        }
-        if (memberIndex != -1) {
-            newQuery.player = memberIndex.toString()
-            if (characterIndex != -1) {
-                newQuery.character = characterIndex.toString()
-            }
-        }
-        if (
-            router.query["player"] !== newQuery.player ||
-            router.query["character"] !== newQuery.character
-        ) {
-            router.push({
-                pathname: router.pathname,
-                query: newQuery
-            })
-        }
-    }, [memberIndex, characterIndex])
-
-    useEffect(() => {
-        if (!isNaN(_memberIndex())) {
-            setMemberIndex(_memberIndex)
-
-            if (!isNaN(_characterIndex())) {
-                setCharacterIndex(_characterIndex)
-            } else {
-                setCharacterIndex(-1)
-            }
-        } else {
-            setMemberIndex(-1)
-            setCharacterIndex(-1)
-        }
-    }, [query])
 
     const memberProfile = () => {
         if (!members) return `/`
@@ -107,8 +75,8 @@ const Participants = ({ members, query, errorHandler }: ParticipantsProps) => {
                         member={member}
                         index={idx}
                         emblemBackground={
-                            "https://bungie.net" + emblems?.[member.characterIds[0]] ??
-                            defaultEmblem
+                            "https://bungie.net" +
+                            (emblems?.[member.characterIds[0]] ?? defaultEmblem)
                         }
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}

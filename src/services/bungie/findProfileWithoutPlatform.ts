@@ -5,11 +5,7 @@ import {
     DestinyProfileResponse
 } from "bungie-net-core/lib/models"
 import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
-import { isPrimaryCrossSave } from "../../util/destiny/isPrimaryCrossSave"
-
-type FulfilledPromise = PromiseFulfilledResult<
-    DestinyProfileResponse<[DestinyComponentType.Profiles, DestinyComponentType.Characters]>
->
+import { findPrimaryCrossSave } from "../../util/destiny/crossSave"
 
 export async function findProfileWithoutPlatform({
     destinyMembershipId,
@@ -21,8 +17,8 @@ export async function findProfileWithoutPlatform({
     DestinyProfileResponse<[DestinyComponentType.Profiles, DestinyComponentType.Characters]>
 > {
     const possibleTypes = [
-        BungieMembershipType.TigerPsn,
         BungieMembershipType.TigerXbox,
+        BungieMembershipType.TigerPsn,
         BungieMembershipType.TigerSteam,
         BungieMembershipType.TigerEgs,
         BungieMembershipType.TigerStadia,
@@ -30,26 +26,32 @@ export async function findProfileWithoutPlatform({
         BungieMembershipType.TigerBlizzard
     ]
 
-    const possibleProfilePromises = await Promise.allSettled(
-        possibleTypes.map(membershipType =>
-            getProfile(
-                {
-                    destinyMembershipId,
-                    membershipType,
-                    components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
-                },
-                client
-            ).then(res => res.Response)
+    const getProfileByMembershipType = (membershipType: BungieMembershipType) =>
+        getProfile(
+            {
+                destinyMembershipId,
+                membershipType,
+                components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
+            },
+            client
         )
-    )
 
-    const profile = (
-        possibleProfilePromises.filter(
-            promise => (promise.status = "fulfilled")
-        ) as FulfilledPromise[]
-    )
-        .map(fulfilled => fulfilled.value)
-        .filter(({ profile }) => profile.data && isPrimaryCrossSave(profile.data.userInfo))[0]
-
-    return profile
+    for (const membershipType of possibleTypes) {
+        try {
+            const { Response } = await getProfileByMembershipType(membershipType)
+            if (Response.profile.data) {
+                const primaryMembershipType = findPrimaryCrossSave(Response.profile.data.userInfo)
+                if (membershipType === primaryMembershipType) {
+                    return Response
+                } else {
+                    return getProfileByMembershipType(primaryMembershipType).then(
+                        res => res.Response
+                    )
+                }
+            }
+        } catch {
+            continue
+        }
+    }
+    throw Error("Could not find the proper membership type")
 }

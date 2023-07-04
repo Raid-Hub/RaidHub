@@ -11,7 +11,7 @@ import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
 import RaidInfo from "./RaidInfo"
-import { Difficulty, raidDetailsFromHash } from "../../util/destiny/raid"
+import { Difficulty, Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
@@ -21,11 +21,11 @@ type PostGameCarnageReportOptions = {
     filtered: boolean
 }
 export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
+    readonly activityDetails: DestinyHistoricalStatsActivity
+    readonly activityWasStartedFromBeginning: boolean | undefined
+    readonly entries: DestinyPGCRCharacter[]
     readonly period: string
     readonly startingPhaseIndex: number | undefined
-    readonly activityWasStartedFromBeginning: boolean | undefined
-    readonly activityDetails: DestinyHistoricalStatsActivity
-    readonly entries: DestinyPGCRCharacter[]
     readonly teams: DestinyPostGameCarnageReportTeamEntry[]
 
     readonly players: PGCRPlayer[]
@@ -92,12 +92,13 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             totalWeaponKills: reduce("weaponKills"),
             totalAbilityKills: reduce("abilityKills"),
             killsPerMinute:
-                reduce("kills") /
-                ((this.completionDate.getTime() - this.startDate.getTime()) / 1000),
+                (reduce("kills") /
+                    ((this.completionDate.getTime() - this.startDate.getTime()) / 1000)) *
+                60,
             totalCharactersUsed: this.entries.length,
             mostUsedWeapon: this.entries
                 .map(e => e.weapons)
-                .reduce((a, b) => ((a.first()?.kills ?? 0) >= (b.first()?.kills ?? 0) ? a : b))
+                .reduce((a, b) => ((a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b))
                 .first()
         }
     }
@@ -115,6 +116,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
+        if (this.details.raid == Raid.NA) return []
         if (this.details.isDayOne(this.completionDate)) tags.push(Tag.DAY_ONE)
         if (this.details.isContest(this.startDate)) {
             switch (this.details.difficulty) {
@@ -145,10 +147,8 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     }
 
     hydrate(data: Map<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {
-        data.forEach((components, id) => {
-            this.entries
-                .find(({ player }) => player.bungieNetUserInfo.membershipId === id)
-                ?.hydrate(components)
+        data.forEach((components, characterId) => {
+            this.entries.find(entry => entry.characterId === characterId)?.hydrate(components)
         })
     }
 

@@ -12,6 +12,7 @@ import { Prefs } from "../../util/profile/preferences"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { Placement, RaidTag } from "../../types/profile"
 import { useLocale } from "../app/LanguageProvider"
+import { useRef } from "react"
 
 type RaidModalProps = {
     placement: Placement | undefined
@@ -37,7 +38,8 @@ const RaidModal = ({
     isLoadingStats
 }: RaidModalProps) => {
     const { locale } = useLocale()
-    const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, [Prefs.FILTER])
+    const prefOptions = useRef([Prefs.FILTER] as const)
+    const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, prefOptions.current)
     return (
         <div className={styles["raid-card"]}>
             <div className={styles["raid-card-img-container"]}>
