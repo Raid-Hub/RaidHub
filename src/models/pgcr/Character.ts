@@ -12,6 +12,7 @@ import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny
 import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
+import { Collection } from "@discordjs/collection"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number
@@ -21,6 +22,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
     readonly values: { [key: string]: DestinyHistoricalStatsValue }
     readonly extended: DestinyPostGameCarnageReportExtendedData
     readonly weapons: PlayerWeapons
+    readonly stats: IPGCREntryStats
 
     constructor(data: DestinyPostGameCarnageReportEntry) {
         this.standing = data.standing
@@ -30,14 +32,33 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
         this.characterId = data.characterId
         this.values = data.values
         this.extended = data.extended
-        this.weapons = parseWeapons(this.extended.weapons)
+        this.weapons = this.extended.weapons
+            ? parseWeapons(this.extended.weapons)
+            : new Collection()
+
+        const getStat = (key: string): number | undefined => this.values[key]?.basic.value
+
+        const weaponKills = this.weapons.reduce((kills, weapon) => kills + weapon.kills, 0)
+        const _stats = {
+            kills: getStat("kills")!,
+            deaths: getStat("deaths")!,
+            assists: getStat("assists")!,
+            weaponKills,
+            abilityKills: getStat("kills")! - weaponKills,
+            kdr: getStat("kills")! / (getStat("deaths") || 1),
+            kda: getStat("kills")! + getStat("assists")! / (getStat("deaths") || 1),
+            timePlayedSeconds: getStat("timePlayedSeconds")!
+        }
+
+        this.stats = {
+            ..._stats,
+            score: pgcrEntryRankingScore(_stats)
+        }
     }
 
     get displayName(): string {
-        const info = this.player.bungieNetUserInfo
-        return info.bungieGlobalDisplayName
-            ? info.bungieGlobalDisplayName + "#" + info.bungieGlobalDisplayNameCode
-            : info.displayName
+        const info = this.player.destinyUserInfo
+        return info.bungieGlobalDisplayName ?? info.displayName
     }
 
     get membershipId(): string {
@@ -58,27 +79,6 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
 
     get logo() {
         return CharacterLogos[CharacterType[this.className ?? ""]]
-    }
-
-    get stats(): IPGCREntryStats {
-        const getStat = (key: string): number | undefined => {
-            return this.values[key]?.basic.value
-        }
-        const _stats = {
-            kills: getStat("kills")!,
-            deaths: getStat("deaths")!,
-            assists: getStat("assists")!,
-            weaponKills: getStat("weaponKills")!,
-            abilityKills: getStat("abilityKills")!,
-            kdr: getStat("kills")! / (getStat("deaths") || 1),
-            kda: getStat("kills")! + getStat("assists")! / (getStat("deaths") || 1),
-            timePlayedSeconds: getStat("timePlayedSeconds")!
-        }
-
-        return {
-            ..._stats,
-            score: pgcrEntryRankingScore(_stats)
-        }
     }
 
     hydrate([profile, character]: [

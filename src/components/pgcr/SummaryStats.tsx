@@ -39,9 +39,7 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
         {
             icon: Icons.ABILITIES,
             name: strings.abilityKillsPercentage,
-            value:
-                formattedNumber(stats?.totalAbilityKills ?? 0 / (stats?.totalKills || 1), locale) +
-                "%"
+            value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
         },
         {
             icon: Icons.UNKNOWN,

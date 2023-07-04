@@ -16,6 +16,10 @@ export enum Tag {
     ABILITIES_ONLY
 }
 
+export function tagString(tag: Tag, strings: LocalStrings): string {
+    return strings.tags[tag]
+}
+
 export function addModifiers(raid: Raid, modifiers: Tag[], strings: LocalStrings): string {
     const result: string[] = []
     if (modifiers.includes(Tag.ABILITIES_ONLY)) result.push(strings.tags[Tag.ABILITIES_ONLY])
