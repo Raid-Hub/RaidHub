@@ -26,8 +26,10 @@ export async function searchForUsername({
         new Array(pages).fill(null).map(async (_, pageNumber) => search(pageNumber))
     )
 
-    const successes = results.filter(r => (r.status = "fulfilled")) as PromiseFulfilledResult<
-        UserSearchResponseDetail[]
-    >[]
+    const successes = results.filter(
+        r =>
+            r.status === "fulfilled" &&
+            (r as PromiseFulfilledResult<UserSearchResponseDetail[]>).value
+    ) as PromiseFulfilledResult<UserSearchResponseDetail[]>[]
     return successes.map(s => s.value).flat() ?? []
 }

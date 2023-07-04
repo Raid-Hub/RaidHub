@@ -35,16 +35,16 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                 >()
                 await Promise.all(
                     pgcr.entries.map(async entry => {
-                        if (!entry.player.bungieNetUserInfo.membershipType) {
+                        if (!entry.player.destinyUserInfo.membershipType) {
                             const res = await findProfileWithoutPlatform({
-                                destinyMembershipId: entry.player.bungieNetUserInfo.membershipId,
+                                destinyMembershipId: entry.player.destinyUserInfo.membershipId,
                                 client
                             })
                             if (res.profile.data && res.characters.data?.[entry.characterId]) {
-                                dataForMissingProfiles.set(
-                                    entry.player.bungieNetUserInfo.membershipId,
-                                    [res.profile.data, res.characters.data[entry.characterId]]
-                                )
+                                dataForMissingProfiles.set(entry.characterId, [
+                                    res.profile.data,
+                                    res.characters.data[entry.characterId]
+                                ])
                             }
                         }
                     })

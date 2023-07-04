@@ -49,7 +49,8 @@ const PGCR: NextPage<PGCRProps> = ({ activityId, query }) => {
                     <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                     <Participants
                         raid={pgcr?.details?.raid ?? Raid.NA}
-                        members={pgcr?.players ?? []}
+                        players={pgcr?.players ?? []}
+                        characters={pgcr?.entries ?? []}
                         query={query}
                         pgcrLoadingState={pgcrLoadingState}
                         errorHandler={setError}

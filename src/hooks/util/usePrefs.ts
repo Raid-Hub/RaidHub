@@ -10,7 +10,7 @@ type UsePrefs<T extends Prefs[]> = {
     prefs: PrefsRecord<T> | null
 }
 
-export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs<T> {
+export function usePrefs<T extends Prefs[]>(id: string, prefs: readonly [...T]): UsePrefs<T> {
     const [isLoading, setLoading] = useState<boolean>(true)
     const [fetchedPrefs, setFetchedPrefs] = useState<PrefsRecord<T> | null>(null)
 
@@ -23,7 +23,7 @@ export function usePrefs<T extends Prefs[]>(id: string, prefs: [...T]): UsePrefs
         }
         setLoading(false)
         setFetchedPrefs(temp)
-    }, [id])
+    }, [id, prefs])
 
     return {
         isLoading: isLoading,

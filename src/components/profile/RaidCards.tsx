@@ -5,7 +5,7 @@ import { LocalizedStrings } from "../../util/presentation/localized-strings"
 import { AllRaids, Raid, raidDetailsFromHash } from "../../util/destiny/raid"
 import RaidModal from "./RaidModal"
 import ActivityCard from "./ActivityCard"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Loading from "../global/Loading"
 import { usePrefs } from "../../hooks/util/usePrefs"
 import { DefaultPreferences, Prefs } from "../../util/profile/preferences"
@@ -42,7 +42,8 @@ const RaidCards = ({
     errorHandler
 }: RaidCardsProps) => {
     const { strings } = useLocale()
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(destinyMembershipId, [Prefs.FILTER])
+    const prefOptions = useRef([Prefs.FILTER] as const)
+    const { prefs, isLoading: isLoadingPrefs } = usePrefs(destinyMembershipId, prefOptions.current)
     const { activities, isLoading: isLoadingDots } = useActivityHistory({
         destinyMembershipId,
         membershipType,

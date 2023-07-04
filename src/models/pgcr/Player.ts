@@ -1,9 +1,9 @@
-import { BungieMembershipType, DestinyClass } from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
 import { CharacterName } from "../../util/destiny/characters"
 import { mergeWeaponCollections } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
+import { BungieMembershipType, DestinyClass } from "bungie-net-core/lib/models"
 
 export default class PGCRPlayer implements IPGCREntry {
     readonly characters: PGCRCharacter[]

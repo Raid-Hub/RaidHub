@@ -1,6 +1,6 @@
 import { Icons } from "../../util/presentation/icons"
 import styles from "../../styles/pgcr.module.css"
-import { formattedNumber } from "../../util/presentation/formatting"
+import { formattedNumber, secondsToHMS } from "../../util/presentation/formatting"
 import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LanguageProvider"
 
@@ -38,7 +38,7 @@ const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
         {
             icon: Icons.TIME,
             name: strings.timeSpent,
-            value: entry.stats.timePlayedSeconds
+            value: secondsToHMS(entry.stats.timePlayedSeconds)
         },
         {
             icon: Icons.UNKNOWN,
