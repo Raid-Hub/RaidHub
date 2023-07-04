@@ -40,6 +40,7 @@ const RaidModal = ({
     const { locale } = useLocale()
     const prefOptions = useRef([Prefs.FILTER] as const)
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, prefOptions.current)
+
     return (
         <div className={styles["raid-card"]}>
             <div className={styles["raid-card-img-container"]}>

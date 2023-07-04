@@ -146,6 +146,7 @@ export type ValidRaidHash = {
 
 export type RaidDifficultyTuple = [name: Raid, difficulty: Difficulty]
 
+/** Do not edit this list first, edit the mappings first */
 export const HashDictionary: {
     [K in ValidRaidHash]: RaidDifficultyTuple
 } = {

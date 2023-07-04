@@ -22,6 +22,5 @@ export async function searchForBungieName({
         },
         client
     )
-    console.log(response.Response)
     return response.Response.filter(isPrimaryCrossSave)[0]
 }

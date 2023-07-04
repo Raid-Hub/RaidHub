@@ -14,7 +14,7 @@ import { Tag } from "../util/raidhub/tags"
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
 }
-export type InitialProfileProps = null | {
+export type InitialProfileProps = {
     destinyMembershipId: string
     membershipType: BungieMembershipType
 }
