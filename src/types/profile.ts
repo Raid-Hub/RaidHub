@@ -18,6 +18,12 @@ export type InitialProfileProps = {
     destinyMembershipId: string
     membershipType: BungieMembershipType
 }
+export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
+export type ProfileWithCharacters = {
+    destinyMembershipId: string
+    membershipType: BungieMembershipType
+    characterIds: string[]
+}
 export type AllRaidStats = Map<Raid, RaidStats>
 export interface IRaidStats {
     assists: number

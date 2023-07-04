@@ -24,5 +24,9 @@ export const Vanity: {
     ["mj"]: {
         membershipType: BungieMembershipType.TigerPsn,
         destinyMembershipId: "4611686018478899141"
+    },
+    ["whiz"]: {
+        membershipType: BungieMembershipType.TigerSteam,
+        destinyMembershipId: "4611686018470577804"
     }
 }
