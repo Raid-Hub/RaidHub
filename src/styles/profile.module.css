@@ -33,12 +33,11 @@
 }
 
 .dot circle {
-    transition: r 2s ease-in-out;
+    transition: r 0.1s ease-in-out;
 }
 
 .dot:hover circle {
-    r: 9;
-    transition: r 0.1s ease-in-out;
+    r: 8;
 }
 
 .dots-container {
@@ -583,6 +582,50 @@ svg.clan-img {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.dot-tooltip {
+    position: absolute;
+    transform: translateY(-50%);
+
+    background-color: var(--tooltip-background);
+    color: #fff;
+    padding: 6px;
+    border-radius: 6px;
+
+    border-style: solid;
+    border-width: 1px;
+
+    transition: opacity 0.2s ease-in-out;
+
+    user-select: none;
+    font-size: 0.7rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+    overflow: visible;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.dot-tooltip:hover {
+    display: none;
+}
+
+.dot-tooltip-date {
+    color: var(--secondary-text);
+}
+
+.dot-tooltip hr {
+    border-width: 0.1px;
+    color: var(--border);
+    opacity: 0.4;
+
+    margin: 0.3em 0;
 }
 
 .graph-img {

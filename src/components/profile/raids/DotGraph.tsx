@@ -1,21 +1,41 @@
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import styles from "../../styles/profile.module.css"
-import { median } from "../../util/math"
+import styles from "../../../styles/profile.module.css"
+import { median } from "../../../util/math"
 import Dot from "./Dot"
-import Loading from "../global/Loading"
+import Loading from "../../global/Loading"
+import DotTooltip, { DotTooltipProps } from "./DotTooltip"
+import { useState } from "react"
+import { ValidRaidHash } from "../../../util/destiny/raid"
+import RaidInfo from "../../../models/pgcr/RaidInfo"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
-const BORDER = 7
+export const BORDER = 7
 export const SPACING = 20
-export const RADIUS = 6
+export const RADIUS = 6.5
 // calculated constants
 const MIN_Y = BORDER + 2 * RADIUS
 const LINE_Y = 0.6 * CANVAS_HEIGHT + BORDER
 const MAX_Y = BORDER + CANVAS_HEIGHT - 2 * RADIUS
-const FULL_HEIGHT = CANVAS_HEIGHT + 2 * BORDER
+export const FULL_HEIGHT = CANVAS_HEIGHT + 2 * BORDER
 
-type DotGraphProps = {
+// STAR
+const degreesToRadians = (degrees: number) => degrees * (Math.PI / 180)
+// legs
+const dxLeg = RADIUS * Math.sin(degreesToRadians(36)) // x
+const dyLeg = RADIUS * Math.cos(degreesToRadians(36)) // y
+// arms
+const dxArm = RADIUS * Math.cos(degreesToRadians(18)) // x
+const dyArm = RADIUS * Math.sin(degreesToRadians(18)) // y
+export const STAR_OFFSETS = [
+    [0, -RADIUS], // top
+    [-dxLeg, dyLeg], // left leg
+    [dxArm, -dyArm], // right arm
+    [-dxArm, -dyArm], // left arm
+    [dxLeg, dyLeg] // right leg
+] as const
+
+type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
     isLoading: boolean
 }
@@ -27,7 +47,7 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
+const DotGraphWrapper = ({ dots, isLoading }: DotGraphWrapperProps) => {
     let { min, max, total } = dots.reduce((ac, cv) => {
         const cvTime = cv.values.activityDurationSeconds.basic.value
         return {
@@ -46,8 +66,34 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
         .sort((a, b) => a - b)
     const avg = median(orderedByDuration)
     const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
+
+    return <DotGraph isLoading={isLoading} dots={dots} getHeight={getHeight} />
+}
+
+export default DotGraphWrapper
+
+type DotGraphProps = {
+    isLoading: boolean
+    dots: DestinyHistoricalStatsPeriodGroup[]
+    getHeight: (duration: number) => number
+}
+
+function DotGraph({ isLoading, dots, getHeight }: DotGraphProps) {
+    const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps>({
+        offset: {
+            x: 0,
+            y: 0
+        },
+        isShowing: false,
+        activityCompleted: false,
+        startDate: new Date(),
+        duration: "",
+        details: new RaidInfo([0, 0])
+    })
+
     return (
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
+            <DotTooltip {...dotTooltipData} />
             {isLoading ? (
                 <Loading />
             ) : (
@@ -69,12 +115,19 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
                             key={idx}
                             idx={idx}
                             id={dot.activityDetails.instanceId}
+                            hash={
+                                dot.activityDetails.directorActivityHash.toString() as ValidRaidHash
+                            }
                             completed={!!dot.values.completed.basic.value}
                             star={
                                 /*dot.values.deaths.basic.value === 0 || */ dot.values.playerCount
                                     .basic.value <= 3
                             }
+                            duration={dot.values.activityDurationSeconds.basic.displayValue}
+                            startDate={new Date(dot.period)}
                             cy={getHeight(dot.values.activityDurationSeconds.basic.value)}
+                            setTooltip={setDotTooltipData}
+                            tooltipData={dotTooltipData}
                         />
                     ))}
                 </svg>
@@ -82,8 +135,6 @@ const DotGraph = ({ dots, isLoading }: DotGraphProps) => {
         </div>
     )
 }
-
-export default DotGraph
 
 type Point = [number, number]
 
