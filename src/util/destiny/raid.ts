@@ -3,6 +3,7 @@ import { HTMLAttributes } from "react"
 import RaidInfo from "../../models/pgcr/RaidInfo"
 
 export const enum Raid {
+    NA,
     LEVIATHAN,
     EATER_OF_WORLDS,
     SPIRE_OF_STARS,
@@ -14,8 +15,7 @@ export const enum Raid {
     VAULT_OF_GLASS,
     VOW_OF_THE_DISCIPLE,
     KINGS_FALL,
-    ROOT_OF_NIGHTMARES,
-    NA
+    ROOT_OF_NIGHTMARES
 }
 
 export const AllRaids: Raid[] = [

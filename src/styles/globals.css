@@ -13,6 +13,7 @@
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
     --modal-background: rgba(0, 0, 0, 0.458);
+    --tooltip-background: rgba(0, 0, 0, 0.9);
 }
 
 body,
@@ -71,6 +72,7 @@ body {
         --search-text: #000000;
         --search-placeholder: #848484;
         --modal-background: rgba(255, 255, 255, 0.739);
+        --tooltip-background: rgba(255, 255, 255, 0.92);
     }
 }
 

@@ -1,8 +1,8 @@
-import styles from "../../styles/profile.module.css"
-import { Difficulty, RaidCardBackground } from "../../util/destiny/raid"
-import { LocalStrings } from "../../util/presentation/localized-strings"
+import styles from "../../../styles/profile.module.css"
+import { Difficulty, RaidCardBackground } from "../../../util/destiny/raid"
+import { LocalStrings } from "../../../util/presentation/localized-strings"
 import Link from "next/link"
-import RaidInfo from "../../models/pgcr/RaidInfo"
+import RaidInfo from "../../../models/pgcr/RaidInfo"
 
 type ActivityCardProps = {
     strings: LocalStrings
