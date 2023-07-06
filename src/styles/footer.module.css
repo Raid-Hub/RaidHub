@@ -31,6 +31,9 @@
     justify-content: flex-start;
 }
 
+.footer-left a {
+    font-style: italic;
+}
 .footer-mid {
     flex: 1;
 

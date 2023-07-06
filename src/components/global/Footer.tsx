@@ -28,6 +28,10 @@ const Footer = ({}: FooterProps) => {
     return (
         <footer id={styles["footer"]}>
             <div className={styles["footer-left"]}>
+                <p>
+                    Data Courtesy of <a href="https://raid.report">Raid Report</a> and{" "}
+                    <a href="https://bungie.net/7">Bungie</a>
+                </p>
                 <p>Copyright © 2023 RaidHub. All rights reserved.</p>
                 <p>RaidHub v{version}</p>
             </div>
