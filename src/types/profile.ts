@@ -74,6 +74,7 @@ export type RaidTag = {
     flawless: boolean
     fresh: boolean | null
     difficulty: Difficulty
+    bestPossible: boolean
 }
 export type RaidHubProfile = {
     pinnedActivity: string | null

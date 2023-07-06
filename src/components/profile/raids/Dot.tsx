@@ -81,17 +81,17 @@ const Dot = ({
                 r={RADIUS}
                 cx={cx}
                 cy={cy}></circle>
+            {star && <Star x={cx} y={cy} />}
             {notNormal && (
                 <circle
                     fill="none"
                     stroke="white"
-                    stroke-width={RADIUS / 4}
+                    strokeWidth={RADIUS / 4}
                     strokeOpacity={0.6}
                     r={RADIUS}
                     cx={cx}
                     cy={cy}></circle>
             )}
-            {star && <Star x={cx} y={cy} />}
         </a>
     )
 }

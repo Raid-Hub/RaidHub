@@ -119,8 +119,9 @@ const RaidModal = ({
             <div className={styles["raid-card-content"]}>
                 <div className={styles["graph-content"]}>
                     <DotGraph
+                        report={report}
                         dots={activities.filter(prefs?.[Prefs.FILTER] ?? (() => true))}
-                        isLoading={isLoadingDots}
+                        isLoading={isLoadingDots || isLoadingReport}
                     />
                     <div className={styles["graph-right"]}>
                         <BigNumberStatItem

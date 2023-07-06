@@ -7,6 +7,7 @@ import {
 } from "../../types/profile"
 import { RaidReportPlayerValues } from "../../types/raidreport"
 import { Difficulty, Raid } from "../../util/destiny/raid"
+import { isBestTag } from "../../util/raidhub/tags"
 import RaidReportDataForDifficulty from "./RaidReportDataForDifficulty"
 
 export default class RaidReportData
@@ -141,14 +142,13 @@ export default class RaidReportData
         const tags: RaidTag[] = []
         const getScore = (a: LowManActivity) =>
             (a.flawless ? 3 : 0) + (a.fresh ? 2 : a.fresh === null ? 1 : 0)
-        buckets.forEach(bucket =>
-            tags.push({
-                ...bucket.reduce((base, current) =>
-                    getScore(current) > getScore(base) ? current : base
-                ),
-                raid: this.raid
-            })
-        )
+        buckets.forEach(bucket => {
+            const tag = bucket.reduce((base, current) =>
+                getScore(current) > getScore(base) ? current : base
+            )
+
+            tags.push({ ...tag, raid: this.raid, bestPossible: isBestTag(tag, this.raid) })
+        })
 
         return tags.sort((t1, t2) => t1.playerCount - t2.playerCount)
     }

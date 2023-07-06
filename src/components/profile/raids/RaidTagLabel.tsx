@@ -11,7 +11,7 @@ const RaidTagLabel = (tag: RaidTag) => {
     const { strings } = useLocale()
     return (
         <Link href={`/pgcr/${tag.instanceId}`} className={styles["clickable-tag"]}>
-            {tag.flawless && <img src={Icons.FLAWLESS_DIAMOND} alt="" />}
+            {tag.bestPossible && <img src={Icons.FLAWLESS_DIAMOND} alt="mastery diamond" />}
             <span>{getLabel(tag, strings)}</span>
         </Link>
     )

@@ -7,6 +7,7 @@ import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../util/destiny/raid"
 import RaidInfo from "../../../models/pgcr/RaidInfo"
+import RaidReportData from "../../../models/profile/RaidReportData"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -38,6 +39,7 @@ export const STAR_OFFSETS = [
 type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
     isLoading: boolean
+    report: RaidReportData | undefined
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -47,7 +49,7 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraphWrapper = ({ dots, isLoading }: DotGraphWrapperProps) => {
+const DotGraphWrapper = ({ dots, isLoading, report }: DotGraphWrapperProps) => {
     const getHeight = useMemo(() => {
         let { min, max, total } = dots.reduce((ac, cv) => {
             const cvTime = cv.values.activityDurationSeconds.basic.value
@@ -71,7 +73,7 @@ const DotGraphWrapper = ({ dots, isLoading }: DotGraphWrapperProps) => {
         return getHeight
     }, [dots])
 
-    return <DotGraph isLoading={isLoading} dots={dots} getHeight={getHeight} />
+    return <DotGraph isLoading={isLoading} dots={dots} getHeight={getHeight} report={report} />
 }
 
 export default DotGraphWrapper
@@ -79,10 +81,11 @@ export default DotGraphWrapper
 type DotGraphProps = {
     isLoading: boolean
     dots: DestinyHistoricalStatsPeriodGroup[]
+    report: RaidReportData | undefined
     getHeight: (duration: number) => number
 }
 
-function DotGraph({ isLoading, dots, getHeight }: DotGraphProps) {
+function DotGraph({ isLoading, dots, getHeight, report }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps>({
         offset: {
             x: 0,
@@ -124,8 +127,8 @@ function DotGraph({ isLoading, dots, getHeight }: DotGraphProps) {
                             }
                             completed={!!dot.values.completed.basic.value}
                             star={
-                                /*dot.values.deaths.basic.value === 0 || */ dot.values.playerCount
-                                    .basic.value <= 3
+                                !!report?.flawlessActivities.get(dot.activityDetails.instanceId) ||
+                                !!report?.lowmanActivities.get(dot.activityDetails.instanceId)
                             }
                             duration={dot.values.activityDurationSeconds.basic.displayValue}
                             startDate={new Date(dot.period)}

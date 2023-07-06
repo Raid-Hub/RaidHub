@@ -97,6 +97,22 @@ export default class RaidReportDataForDifficulty implements IRaidReportData {
         )
     }
 
+    get firstFlawless(): IRaidReportActivity | undefined {
+        return this.flawlessActivities.size
+            ? Array.from(this.flawlessActivities.values()).reduce((prev, current) => {
+                  if (current.fresh && prev.fresh === null) {
+                      return current
+                  } else if (current.fresh) {
+                      return parseInt(current.instanceId) < parseInt(prev.instanceId)
+                          ? current
+                          : prev
+                  } else {
+                      return prev
+                  }
+              })
+            : undefined
+    }
+
     get lowmans(): SetOfLowmans {
         let lowest: LowManActivity | null = null
         let lowestFresh: LowManActivity | null = null
@@ -132,14 +148,19 @@ export default class RaidReportDataForDifficulty implements IRaidReportData {
         return {
             lowest,
             lowestFresh,
-            lowestFlawless
+            lowestFlawless:
+                lowestFlawless ??
+                (this.firstFlawless ? { ...this.firstFlawless!, flawless: true } : null)
         }
     }
 }
 
 function moreRelevantLowMan(a: IRaidReportActivity, b: IRaidReportActivity) {
+    const score = (x: boolean | null) => (x === null ? 0 : x ? 2 : 1)
     return (
         a.playerCount < b.playerCount ||
-        (a.playerCount === b.playerCount && parseInt(a.instanceId) < parseInt(b.instanceId))
+        (a.playerCount === b.playerCount &&
+            score(a.fresh) <= score(b.fresh) &&
+            parseInt(a.instanceId) < parseInt(b.instanceId))
     )
 }
