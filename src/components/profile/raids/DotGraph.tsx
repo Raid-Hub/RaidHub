@@ -126,10 +126,10 @@ function DotGraph({ isLoading, dots, getHeight, report }: DotGraphProps) {
                                 dot.activityDetails.directorActivityHash.toString() as ValidRaidHash
                             }
                             completed={!!dot.values.completed.basic.value}
-                            star={
-                                !!report?.flawlessActivities.get(dot.activityDetails.instanceId) ||
-                                !!report?.lowmanActivities.get(dot.activityDetails.instanceId)
+                            flawless={
+                                !!report?.flawlessActivities.get(dot.activityDetails.instanceId)
                             }
+                            lowman={!!report?.lowmanActivities.get(dot.activityDetails.instanceId)}
                             duration={dot.values.activityDurationSeconds.basic.displayValue}
                             startDate={new Date(dot.period)}
                             cy={getHeight(dot.values.activityDurationSeconds.basic.value)}

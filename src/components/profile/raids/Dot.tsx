@@ -10,7 +10,8 @@ export const Green = "#4CAF50"
 type DotProps = {
     id: string
     completed: boolean
-    star: boolean
+    flawless: boolean
+    lowman: boolean
     duration: string
     startDate: Date
     hash: ValidRaidHash
@@ -24,7 +25,8 @@ const Dot = ({
     idx,
     id,
     completed,
-    star,
+    flawless,
+    lowman,
     cy,
     setTooltip,
     tooltipData,
@@ -81,7 +83,7 @@ const Dot = ({
                 r={RADIUS}
                 cx={cx}
                 cy={cy}></circle>
-            {star && <Star x={cx} y={cy} />}
+            {(lowman || flawless) && <Star x={cx} y={cy} spinning={lowman && flawless} />}
             {notNormal && (
                 <circle
                     fill="none"
@@ -96,15 +98,23 @@ const Dot = ({
     )
 }
 
-type StarProps = { x: number; y: number }
-const Star = ({ x, y }: StarProps) => {
+type StarProps = { x: number; y: number; spinning: boolean }
+const Star = ({ x, y, spinning }: StarProps) => {
     const points = STAR_OFFSETS.map(([dx, dy]) => [x + dx, y + dy] as const)
     return (
-        <polygon
-            className={styles["star"]}
-            fill="white"
-            points={points.map(coords => coords.join(",")).join(" ")}
-        />
+        <polygon fill="white" points={points.map(coords => coords.join(",")).join(" ")}>
+            {spinning && (
+                <animateTransform
+                    attributeName="transform"
+                    attributeType="XML"
+                    type="rotate"
+                    from={`0 ${x} ${y}`}
+                    to={`360 ${x} ${y}`}
+                    dur="4s"
+                    repeatCount="indefinite"
+                />
+            )}
+        </polygon>
     )
 }
 
