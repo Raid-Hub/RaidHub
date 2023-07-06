@@ -4,7 +4,7 @@ import { median } from "../../../util/math"
 import Dot from "./Dot"
 import Loading from "../../global/Loading"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../util/destiny/raid"
 import RaidInfo from "../../../models/pgcr/RaidInfo"
 
@@ -48,24 +48,28 @@ const baseStats: Statistics = {
 }
 
 const DotGraphWrapper = ({ dots, isLoading }: DotGraphWrapperProps) => {
-    let { min, max, total } = dots.reduce((ac, cv) => {
-        const cvTime = cv.values.activityDurationSeconds.basic.value
-        return {
-            min: Math.min(ac.min, cvTime),
-            max: Math.max(ac.max, cvTime),
-            total: ac.total + cvTime
+    const getHeight = useMemo(() => {
+        let { min, max, total } = dots.reduce((ac, cv) => {
+            const cvTime = cv.values.activityDurationSeconds.basic.value
+            return {
+                min: Math.min(ac.min, cvTime),
+                max: Math.max(ac.max, cvTime),
+                total: ac.total + cvTime
+            }
+        }, baseStats)
+        if (dots.length === 1) {
+            min -= 1
+            max += 1
         }
-    }, baseStats)
-    if (dots.length === 1) {
-        min -= 1
-        max += 1
-    }
 
-    const orderedByDuration = dots
-        .map(({ values }) => values.activityDurationSeconds.basic.value)
-        .sort((a, b) => a - b)
-    const avg = median(orderedByDuration)
-    const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
+        const orderedByDuration = dots
+            .map(({ values }) => values.activityDurationSeconds.basic.value)
+            .sort((a, b) => a - b)
+        const avg = median(orderedByDuration)
+        const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
+
+        return getHeight
+    }, [dots])
 
     return <DotGraph isLoading={isLoading} dots={dots} getHeight={getHeight} />
 }

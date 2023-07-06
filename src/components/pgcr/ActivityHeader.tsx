@@ -2,7 +2,6 @@ import DestinyPGCR from "../../models/pgcr/PGCR"
 import styles from "../../styles/pgcr.module.css"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
-import { tagString } from "../../util/raidhub/tags"
 import { useLocale } from "../app/LanguageProvider"
 
 type ActivityHeaderProps = {
@@ -58,7 +57,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                 <div className={styles["tags-container"]}>
                     {activity?.tags.map((tag, idx) => (
                         <div key={idx} className={styles["tag"]}>
-                            {tagString(tag, strings)}
+                            {strings.tags[tag]}
                         </div>
                     ))}
                 </div>

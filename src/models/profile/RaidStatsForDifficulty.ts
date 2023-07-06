@@ -40,16 +40,4 @@ export default class RaidStatsForDifficulty implements IRaidStats {
         this.precisionKills = values.precisionKills
         this.secondsPlayed = values.secondsPlayed
     }
-
-    get fastestClear(): number {
-        return 0
-    }
-
-    get averageClear(): number {
-        return 0
-    }
-
-    get sherpas(): number {
-        return 0
-    }
 }

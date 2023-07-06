@@ -1,5 +1,5 @@
 import RaidStats from "../../models/profile/RaidStats"
-import { AllValidHashes, Difficulty, HashDictionary, Raid, ValidRaidHash } from "./raid"
+import { AllValidHashes, HashDictionary, Raid, RaidDifficultyTuple, ValidRaidHash } from "./raid"
 import {
     DestinyAggregateActivityStats,
     DestinyHistoricalStatsValue
@@ -25,7 +25,7 @@ export function raidStatsMap(stats: DestinyAggregateActivityStats[]): Map<Raid, 
     const raidMap = new Map<Raid, RaidStats>()
     map.forEach((values, key) => {
         // deconstruct the key
-        const [raid, difficulty] = key.split("+").map(char => parseInt(char)) as [Raid, Difficulty]
+        const [raid, difficulty] = key.split("+").map(char => parseInt(char)) as RaidDifficultyTuple
         if (raidMap.has(raid)) {
             raidMap.get(raid)!.add(difficulty, values)
         } else {

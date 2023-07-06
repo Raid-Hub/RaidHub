@@ -41,7 +41,8 @@
 }
 
 .dots-container {
-    margin: 1em 1.5em 1em 0;
+    flex: 1;
+    margin: 1em 0;
     border-radius: 5px;
     min-width: 200px;
     max-height: 100%;
@@ -205,29 +206,40 @@
 
 .ranking-banner {
     flex: 1;
+    min-width: 200px;
+    max-height: 100px;
+    padding: 0.5em 0.5em;
+
     border: 1px solid var(--border);
-    background-color: #00000077;
     border-radius: 20px;
+    background-color: #00000077;
+
     display: flex;
     align-items: center;
-    padding: 0.5em 0;
-    min-width: 200px;
 }
 
 .ranking-banner img {
-    width: 30px;
+    object-fit: contain;
+    min-width: 30px;
+    max-width: 40px;
     margin: 0 1em;
 }
 
 .banners-text {
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
 }
 
-.banners-text > span {
+.banners-text > * {
+    font-weight: 400;
+    font-size: 0.875rem;
+    margin: 2% 0;
     flex: 1;
-    font-size: 14px;
-    margin-right: 1em;
+}
+
+.banners-text > h3 {
+    font-size: 1.125rem;
 }
 
 .banner-bold {
@@ -512,7 +524,7 @@ svg.clan-img {
     top: 0;
     width: 100%;
     height: 99%;
-    padding-left: 1em;
+    padding: 0 1em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -532,7 +544,7 @@ svg.clan-img {
 
     color: white;
 
-    background-color: #2e2d2da1;
+    background-color: rgba(31, 31, 31, 0.737);
     background-size: 0em;
     border: 0.1px solid var(--border);
     border-radius: 5px;
@@ -541,7 +553,8 @@ svg.clan-img {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 0.5em;
+
+    white-space: nowrap;
 }
 
 .placement {
@@ -563,7 +576,9 @@ svg.clan-img {
 .card-diamonds {
     margin-bottom: 0.4em;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 0.35em;
 }
 
 .raid-card-content {
@@ -579,10 +594,13 @@ svg.clan-img {
 }
 
 .graph-content {
+    position: relative;
+
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
+    justify-content: space-between;
+
+    gap: 0.5em;
 }
 
 .dot-tooltip {
@@ -628,55 +646,46 @@ svg.clan-img {
     margin: 0.3em 0;
 }
 
-.graph-img {
-    width: 200px;
-}
-
-.graph-count {
-    text-align: center;
-}
-
-.graph-number-img {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.graph-number {
-    margin-bottom: 0;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-.graph-count-text {
-    text-align: center;
-    text-transform: uppercase;
-    color: rgb(100, 100, 100);
-    font-size: 12px;
-}
-
-.timings {
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    padding: 0;
+.graph-right {
+    flex: 0;
 }
 
 .timing {
     margin: 1em;
+    text-align: center;
+}
+
+.timing > p {
+    margin: 0.5em 0;
+}
+
+.timing a {
+    color: #ffc7b4;
 }
 
 .timings-number {
-    margin: 0;
+    white-space: nowrap;
     font-weight: 600;
+}
+
+.timings-number-large {
+    font-weight: 600;
+    font-size: 1.625rem;
 }
 
 .timings-subtitle {
     color: rgb(100, 100, 100);
     text-transform: uppercase;
     font-size: 12px;
+}
+
+.bottom-timings {
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: flex-start;
+    padding: 0;
 }
 
 .recent {

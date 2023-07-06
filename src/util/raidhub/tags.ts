@@ -13,11 +13,8 @@ export enum Tag {
     FLAWLESS,
     CHALLENGE_VOG,
     CHALLENGE_KF,
-    ABILITIES_ONLY
-}
-
-export function tagString(tag: Tag, strings: LocalStrings): string {
-    return strings.tags[tag]
+    ABILITIES_ONLY,
+    FRESH
 }
 
 export function addModifiers(raid: Raid, modifiers: Tag[], strings: LocalStrings): string {

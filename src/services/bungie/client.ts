@@ -40,13 +40,21 @@ export default class BungieClient implements BungieClientProtocol {
             headers
         }
 
-        const res = await fetch(url, payload)
-        const data: BungieNetResponse<T> = await res.json()
-        if (data.ErrorCode !== PlatformErrorCodes.Success || !res.ok) {
-            const err = new BungieAPIError(data)
-            throw err
+        const request = async (retry?: boolean) => {
+            if (retry) url.searchParams.set("retry", true.toString())
+            const res = await fetch(url, payload)
+            const data: BungieNetResponse<T> = await res.json()
+            if (data.ErrorCode !== PlatformErrorCodes.Success || !res.ok) {
+                throw new BungieAPIError(data)
+            }
+            return data
         }
-        return data
+
+        try {
+            return await request()
+        } catch {
+            return await request(true)
+        }
     }
 
     setToken(value: string) {

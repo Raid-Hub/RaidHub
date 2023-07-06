@@ -1,5 +1,6 @@
 import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../destiny/raid"
+import { RankingBannerType } from "../../components/profile/Banners"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }
@@ -33,6 +34,13 @@ export interface LocalStrings {
     speedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
+    bannerTitles: { [key in RankingBannerType]: string }
+    totalClears: string
+    fastestClear: string
+    averageClear: string
+    sherpas: string
+    na: string
+    checkpoints: { [key in Raid]: string }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -82,7 +90,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.FLAWLESS]: "Flawless",
             [Tag.CHALLENGE_VOG]: "Tempo's Edge",
             [Tag.CHALLENGE_KF]: "Regicide",
-            [Tag.ABILITIES_ONLY]: "Abilities Only"
+            [Tag.ABILITIES_ONLY]: "Abilities Only",
+            [Tag.FRESH]: "Full"
         },
         loadMore: "Load more",
         difficulty: {
@@ -99,7 +108,31 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         worldsFirstLeaderboards: "World's First Leaderboards",
         speedrunLeaderboards: "Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
-        comingSoon: "Coming soon..."
+        comingSoon: "Coming soon...",
+        bannerTitles: {
+            [RankingBannerType.FullClears]: "Full Clears Rank",
+            [RankingBannerType.Speed]: "Speed Rank"
+        },
+        totalClears: "Total Clears",
+        fastestClear: "Fastest Clear",
+        averageClear: "Average Clear",
+        sherpas: "Sherpas",
+        na: "N/A",
+        checkpoints: {
+            [Raid.LEVIATHAN]: "Calus",
+            [Raid.EATER_OF_WORLDS]: "Argos",
+            [Raid.SPIRE_OF_STARS]: "Val Ca'uor",
+            [Raid.LAST_WISH]: "Queenswalk",
+            [Raid.SCOURGE_OF_THE_PAST]: "Insurrection Prime",
+            [Raid.CROWN_OF_SORROW]: "Gahlran",
+            [Raid.GARDEN_OF_SALVATION]: "Sanctified Mind",
+            [Raid.DEEP_STONE_CRYPT]: "Taniks",
+            [Raid.VAULT_OF_GLASS]: "Atheon",
+            [Raid.VOW_OF_THE_DISCIPLE]: "Rhulk",
+            [Raid.KINGS_FALL]: "Oryx",
+            [Raid.ROOT_OF_NIGHTMARES]: "Nezarec",
+            [Raid.NA]: ""
+        }
     }
 }
 

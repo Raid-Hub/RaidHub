@@ -77,10 +77,19 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
                                         const info = raidDetailsFromHash(
                                             activity.activityDetails.referenceId.toString()
                                         )
-                                        dict[info.raid].set(
-                                            activity.activityDetails.instanceId,
-                                            activity
-                                        )
+                                        if (
+                                            dict[info.raid].has(
+                                                activity.activityDetails.instanceId
+                                            ) &&
+                                            !activity.values.completed.basic.value
+                                        ) {
+                                            return
+                                        } else {
+                                            dict[info.raid].set(
+                                                activity.activityDetails.instanceId,
+                                                activity
+                                            )
+                                        }
                                     })
                                     hasMore = newActivities.length == ACTIVITIES_PER_PAGE
                                     page++
@@ -100,9 +109,8 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
     )
 
     useEffect(() => {
-        setLoading(true)
-
         if (characterProfiles) {
+            setLoading(true)
             fetchData(characterProfiles)
         }
     }, [characterProfiles, fetchData])

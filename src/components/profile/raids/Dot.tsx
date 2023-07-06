@@ -1,23 +1,23 @@
-import { MouseEvent, useCallback } from "react"
+import { MouseEvent, useCallback, useMemo } from "react"
 import styles from "../../../styles/profile.module.css"
 import { RADIUS, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
-import { ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
+import { Difficulty, ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
 
 type DotProps = {
-    idx: number
     id: string
     completed: boolean
     star: boolean
     duration: string
     startDate: Date
+    hash: ValidRaidHash
+    idx: number
     cy: number
     setTooltip(data: DotTooltipProps): void
     tooltipData: DotTooltipProps
-    hash: ValidRaidHash
 }
 
 const Dot = ({
@@ -64,18 +64,33 @@ const Dot = ({
         [tooltipData, setTooltip]
     )
 
+    const notNormal = useMemo(() => {
+        const details = raidDetailsFromHash(hash)
+        return details.difficulty !== Difficulty.NORMAL || details.isContest(startDate)
+    }, [hash, startDate])
+
     return (
         <a
             href={`/pgcr/${id}`}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
-            onMouseOver={handleHover}
-            onMouseOut={handleMouseLeave}>
+            onMouseEnter={handleHover}
+            onMouseLeave={handleMouseLeave}>
             <circle
                 fill={completed ? Green : Red}
                 fillOpacity={0.978}
                 r={RADIUS}
                 cx={cx}
                 cy={cy}></circle>
+            {notNormal && (
+                <circle
+                    fill="none"
+                    stroke="white"
+                    stroke-width={RADIUS / 4}
+                    strokeOpacity={0.6}
+                    r={RADIUS}
+                    cx={cx}
+                    cy={cy}></circle>
+            )}
             {star && <Star x={cx} y={cy} />}
         </a>
     )

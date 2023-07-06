@@ -34,6 +34,7 @@ export function useSearch({ query, errorHandler }: UseSearchParams): UseSearch {
                     displayNameCode: bungieName.code,
                     client
                 })
+
                 window.location.href = `/profile/${membershipType}/${membershipId}`
             } catch {
                 throw Error(`Unable to perform exact search with ${query}`)

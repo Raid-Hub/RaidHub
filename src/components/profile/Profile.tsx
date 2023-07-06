@@ -2,14 +2,11 @@ import styles from "../../styles/profile.module.css"
 import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./UserCard"
-import RankingBanner from "./RankingBanner"
-import { Founders } from "../../util/raidhub/special"
 import ClanCard from "./ClanCard"
 import PinnedActivity from "./PinnedActivity"
 import RaidCards, { Layout } from "./raids/RaidCards"
 import ToggleSwitch from "./raids/ToggleSwitch"
 import { useState } from "react"
-import { Icons } from "../../util/presentation/icons"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
 import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
@@ -17,6 +14,8 @@ import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
 import Loading from "../global/Loading"
 import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
+import { usePlayers } from "../../hooks/raidreport/usePlayers"
+import { Banners } from "./Banners"
 
 type ProfileProps = {
     destinyMembershipId: string
@@ -44,6 +43,12 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
     } = useBungieMemberships({
         destinyMembershipId,
         membershipType,
+        errorHandler
+    })
+
+    const { player, isLoading: isLoadingPlayer } = usePlayers({
+        destinyMembershipIds: destinyProfiles,
+        primaryMembershipId: destinyMembershipId,
         errorHandler
     })
 
@@ -81,38 +86,15 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                     emblemBackgroundPath={profile?.emblemBackgroundPath}
                     backgroundImage={raidHubProfile?.background?.replace(/;$/, "") ?? ""}
                 />
-                {profile ? (
-                    <div className={styles["ranking-banners"]}>
-                        <RankingBanner icon={Icons.SKULL} backgroundColor={"#fa6b6bA9"}>
-                            <span>Clears Rank</span>
-                            <span className={styles["banner-bold"]}>Challenger #1</span>
-                            <span>9999</span>
-                        </RankingBanner>
-                        <RankingBanner icon={Icons.SPEED} backgroundColor={"#fa6b6bA9"}>
-                            <span>Speed Rank</span>
-                            <span className={styles["banner-bold"]}>Challenger #1</span>
-                            <span>9hr 99m 99s</span>
-                        </RankingBanner>
-                        <RankingBanner icon={Icons.DIAMOND} backgroundColor={"#4ea2ccA9"}>
-                            <span>Lowman Rank</span>
-                            <span className={styles["banner-bold"]}>Diamond IV</span>
-                            <span>69</span>
-                        </RankingBanner>
-                        {Object.keys(Founders).includes(profile.userInfo.membershipId) && (
-                            <div className={styles["ranking-banner"]}>
-                                <img src="/logo.png" alt="" />
-
-                                <div className={styles["banners-text"]}>
-                                    <span className={styles["banner-bold"]}>RaidHub Founder</span>
-                                    <span className={styles["banner-subtext"]}>
-                                        This user contributed to creating RaidHub
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
+                {isLoadingPlayer ? (
                     <Loading wrapperClass={styles["ranking-banners"]} />
+                ) : (
+                    player && (
+                        <Banners
+                            destinyMembershipId={destinyMembershipId}
+                            banners={[player.speedRank, player.clearsRank]}
+                        />
+                    )
                 )}
                 <ClanCard
                     membershipId={destinyMembershipId}
@@ -137,11 +119,13 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                     </div>
                     <RaidCards
                         {...profile.userInfo}
-                        profile={raidHubProfile}
                         characterProfiles={characterProfiles}
+                        isLoadingCharacters={isLoadingProfileStats}
                         layout={layout}
                         raidMetrics={raidMetrics}
                         isLoadingRaidMetrics={isLoadingRaidMetrics}
+                        raidReport={player?.activities || null}
+                        isLoadingRaidReport={isLoadingPlayer}
                         errorHandler={errorHandler}
                     />
                 </section>

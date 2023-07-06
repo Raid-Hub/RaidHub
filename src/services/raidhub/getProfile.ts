@@ -1,5 +1,4 @@
 import { RaidHubProfile } from "../../types/profile"
-import { Raid } from "../../util/destiny/raid"
 import { Socials } from "../../util/profile/socials"
 import { wait } from "../../util/wait"
 
@@ -35,37 +34,12 @@ export async function getRaidHubProfile(membershipId: string): Promise<RaidHubPr
                     url: "https://www.bungie.net/7/en/User/Profile/3/4611686018488107374"
                 }
             ],
-            background: "linear-gradient(25deg, #220333, #c688e6, #220333 70%);",
-            placements: {
-                [Raid.VOW_OF_THE_DISCIPLE]: {
-                    number: 23,
-                    activityId: "10333497701"
-                },
-                [Raid.KINGS_FALL]: {
-                    number: 58,
-                    activityId: "11397970999"
-                },
-                [Raid.ROOT_OF_NIGHTMARES]: {
-                    number: 18,
-                    activityId: "12685770593"
-                }
-            },
-            tags: {
-                [Raid.ROOT_OF_NIGHTMARES]: [
-                    {
-                        string: "Duo Flawless",
-                        activityId: "12738438014",
-                        flawless: true
-                    }
-                ]
-            }
+            background: "linear-gradient(25deg, #220333, #c688e6, #220333 70%);"
         }
     else
         return {
             pinnedActivity: null,
             socials: [],
-            background: null,
-            placements: {},
-            tags: {}
+            background: null
         }
 }

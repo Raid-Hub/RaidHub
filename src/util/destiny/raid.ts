@@ -1,6 +1,7 @@
 import { Flatten } from "../../types/generic"
 import { HTMLAttributes } from "react"
 import RaidInfo from "../../models/pgcr/RaidInfo"
+import { Tag } from "../raidhub/tags"
 
 export const enum Raid {
     NA,
@@ -36,8 +37,8 @@ export const AllRaids: Raid[] = [
 export const enum Difficulty {
     NORMAL,
     PRESTIGE,
-    CONTEST,
     MASTER,
+    CONTEST,
     CHALLENGEVOG,
     CHALLENGEKF
 }
@@ -114,7 +115,7 @@ export const RaidHashes = {
     },
     [Raid.VOW_OF_THE_DISCIPLE]: {
         [Difficulty.NORMAL]: ["1441982566", "2906950631", "4156879541"] as const,
-        [Difficulty.MASTER]: ["4217492330"] as const
+        [Difficulty.MASTER]: ["4217492330", "3889634515"] as const
     },
     [Raid.KINGS_FALL]: {
         [Difficulty.NORMAL]: ["1374392663", "2897223272"] as const,
@@ -202,6 +203,7 @@ export const HashDictionary: {
     "2906950631": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.NORMAL],
     "4156879541": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.NORMAL],
     "4217492330": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.MASTER],
+    "3889634515": [Raid.VOW_OF_THE_DISCIPLE, Difficulty.MASTER],
     "1374392663": [Raid.KINGS_FALL, Difficulty.NORMAL],
     "2897223272": [Raid.KINGS_FALL, Difficulty.NORMAL],
     "2964135793": [Raid.KINGS_FALL, Difficulty.MASTER],
@@ -215,6 +217,12 @@ export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
 export function raidDetailsFromHash(hash: string): RaidInfo {
     return new RaidInfo(HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL])
+}
+
+export function wfRaceMode(raid: Raid): Tag {
+    if (raid === Raid.KINGS_FALL) return Tag.CHALLENGE_KF
+    else if (raid === Raid.VAULT_OF_GLASS) return Tag.CHALLENGE_VOG
+    else return Tag.DAY_ONE
 }
 
 export const RaidCardBackground: { [key in Raid]: string } = {

@@ -11,3 +11,12 @@ export function median(sortedArr: number[]): number {
         return (sortedArr[Math.floor(mid)] + sortedArr[Math.ceil(mid)]) / 2
     }
 }
+
+export function medianElement<E>(sortedArr: E[]): E {
+    const mid = (sortedArr.length - 1) / 2
+    if (mid % 1 === 0) {
+        return sortedArr[mid]
+    } else {
+        return sortedArr[Math.ceil(mid)]
+    }
+}

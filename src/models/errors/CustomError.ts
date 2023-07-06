@@ -1,4 +1,6 @@
+import { BungieAPIError } from "bungie-net-core/lib/api"
 import { ErrorHandler } from "../../types/generic"
+import { PlatformErrorCodes } from "bungie-net-core/lib/models"
 
 export enum ErrorCode {
     Allowed = "",
@@ -16,11 +18,14 @@ export enum ErrorCode {
     Placements = "Pigeon",
     ExactSearch = "Eggplant",
     Emblems = "Elephant",
-    RaidHubProfile = "Rainbow"
+    RaidHubProfile = "Rainbow",
+    RaidReport = "Reppo"
 }
 
 export default class CustomError extends Error {
     code: ErrorCode
+    bungieCode?: PlatformErrorCodes
+    data?: any
 
     constructor(message: string, code?: ErrorCode) {
         super(message)
@@ -28,15 +33,25 @@ export default class CustomError extends Error {
     }
 
     static handle(errorHandler: ErrorHandler, e: any, code: ErrorCode) {
+        let newErr: CustomError
         if (e instanceof CustomError) {
             e.code = code
-            errorHandler(e)
-        } else if (e instanceof Error) {
-            const newErr = new CustomError(e.message, code)
+            newErr = e
+        } else if (e instanceof BungieAPIError) {
+            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled) {
+                newErr = new CustomError(e.Message, ErrorCode.BungieAPIOffline)
+            } else {
+                newErr = new CustomError(e.Message, code)
+            }
+            newErr.bungieCode = e.ErrorCode
             newErr.stack = e.stack
-            errorHandler(newErr)
+        } else if (e instanceof Error) {
+            newErr = new CustomError(e.message, code)
+            newErr.stack = e.stack
         } else {
-            errorHandler(new CustomError(String(e), code))
+            newErr = new CustomError(String(e), code)
+            newErr.data = e
         }
+        errorHandler(newErr)
     }
 }

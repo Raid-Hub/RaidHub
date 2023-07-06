@@ -1,45 +1,94 @@
-import Link from "next/link"
 import styles from "../../../styles/profile.module.css"
-import { Raid, RaidCardBackground } from "../../../util/destiny/raid"
+import { Raid, RaidCardBackground, raidDetailsFromHash } from "../../../util/destiny/raid"
 import DotGraph from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import { Icons } from "../../../util/presentation/icons"
 import RaidStats from "../../../models/profile/RaidStats"
-import Loading from "../../global/Loading"
 import { usePrefs } from "../../../hooks/util/usePrefs"
 import { Prefs } from "../../../util/profile/preferences"
-import { formattedNumber } from "../../../util/presentation/formatting"
-import { Placement, RaidTag } from "../../../types/profile"
 import { useLocale } from "../../app/LanguageProvider"
-import { useRef } from "react"
+import { useMemo, useRef } from "react"
+import BigNumberStatItem from "./BigNumberStatItem"
+import RaidReportData from "../../../models/profile/RaidReportData"
+import { medianElement } from "../../../util/math"
+import RaidTagLabel from "./RaidTagLabel"
+import DayOneTag from "./DayOneTag"
 
 type RaidModalProps = {
-    placement: Placement | undefined
-    tags: RaidTag[] | undefined
     membershipId: string
     raid: Raid
-    raidName: string
     activities: DestinyHistoricalStatsPeriodGroup[]
     stats: RaidStats | undefined
+    report: RaidReportData | undefined
     isLoadingDots: boolean
     isLoadingStats: boolean
+    isLoadingReport: boolean
 }
 
 const RaidModal = ({
-    placement,
-    tags,
     membershipId,
     raid,
-    raidName,
     activities,
     stats,
+    report,
     isLoadingDots,
-    isLoadingStats
+    isLoadingStats,
+    isLoadingReport
 }: RaidModalProps) => {
-    const { locale } = useLocale()
+    const { strings } = useLocale()
     const prefOptions = useRef([Prefs.FILTER] as const)
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, prefOptions.current)
+
+    const averageClear = useMemo(() => {
+        if (report?.fastestFullClear?.value) {
+            const completions = activities
+                .filter(
+                    a =>
+                        a.values.completed.basic.value &&
+                        a.values.activityDurationSeconds.basic.value >=
+                            report.fastestFullClear!.value
+                )
+                .sort(
+                    (a, b) =>
+                        a.values.activityDurationSeconds.basic.value -
+                        b.values.activityDurationSeconds.basic.value
+                )
+            return medianElement(completions)
+        } else {
+            return undefined
+        }
+    }, [activities, report])
+
+    const placementClear = useMemo(() => {
+        if (report?.worldFirstPlacement) {
+            return activities[0]
+        } else {
+            return undefined
+        }
+    }, [activities, report])
+
+    const contestFirstClear = useMemo(() => {
+        const first = activities.find(a => !!a.values.completed.basic.value)
+        if (!first) return
+        const details = raidDetailsFromHash(first.activityDetails.directorActivityHash.toString())
+        const end = new Date(
+            new Date(first.period).getTime() +
+                first.values.activityDurationSeconds.basic.value * 1000
+        )
+        if (details.isDayOne(end)) {
+            return {
+                instanceId: first.activityDetails.instanceId,
+                raid: raid
+            }
+        } else if (details.isContest(end)) {
+            const start = new Date(first.period)
+            return {
+                instanceId: first.activityDetails.instanceId,
+                raid: raid,
+                asterisk: !details.isContest(start)
+            }
+        }
+    }, [activities, raid])
 
     return (
         <div className={styles["raid-card"]}>
@@ -47,27 +96,23 @@ const RaidModal = ({
                 <img className={styles["top-image"]} src={RaidCardBackground[raid]} alt="" />
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
-                        {placement && (
-                            <Link
-                                href={`/pgcr/${placement.activityId}`}
-                                className={styles["clickable-tag"]}>
-                                <span>{`Day One #${placement.number}`}</span>
-                            </Link>
+                        {report?.worldFirstPlacement ? (
+                            <DayOneTag
+                                raid={raid}
+                                instanceId={placementClear?.activityDetails.instanceId}
+                                placement={report?.worldFirstPlacement ?? undefined}
+                            />
+                        ) : (
+                            contestFirstClear && <DayOneTag {...contestFirstClear} />
                         )}
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
                         <div className={styles["card-diamonds"]}>
-                            {tags?.map(({ activityId, string, flawless }, key) => (
-                                <Link
-                                    key={key}
-                                    href={`/pgcr/${activityId}`}
-                                    className={styles["clickable-tag"]}>
-                                    {flawless && <img src={Icons.FLAWLESS_DIAMOND} alt="" />}
-                                    <span>{string}</span>
-                                </Link>
+                            {report?.tags()?.map((tag, key) => (
+                                <RaidTagLabel {...tag} key={key} />
                             ))}
                         </div>
-                        <span className={styles["raid-card-title"]}>{raidName}</span>
+                        <span className={styles["raid-card-title"]}>{strings.raidNames[raid]}</span>
                     </div>
                 </div>
             </div>
@@ -77,62 +122,52 @@ const RaidModal = ({
                         dots={activities.filter(prefs?.[Prefs.FILTER] ?? (() => true))}
                         isLoading={isLoadingDots}
                     />
-                    <div className={styles["graph-count"]}>
-                        <div className={styles["graph-number-img"]}>
-                            {!isLoadingStats && stats ? (
-                                <p className={styles["graph-number"]}>
-                                    {formattedNumber(stats.totalClears, locale)}
-                                </p>
-                            ) : (
-                                <div className={styles["number-loading"]}>
-                                    <Loading />
-                                </div>
-                            )}
-                        </div>
-                        <p className={styles["graph-count-text"]}>
-                            total
-                            <br /> clears
-                        </p>
+                    <div className={styles["graph-right"]}>
+                        <BigNumberStatItem
+                            displayValue={stats?.totalClears ? stats.totalClears : 0}
+                            isLoading={isLoadingStats}
+                            name={strings.totalClears.split(" ").join("\n")}
+                            extraLarge={true}
+                        />
                     </div>
                 </div>
 
-                <div className={styles["timings"]}>
-                    <div className={styles["timing"]}>
-                        {!isLoadingStats && stats ? (
-                            <p className={styles["timings-number"]}>
-                                {secondsToHMS(stats.fastestClear / 1000)}
-                            </p>
-                        ) : (
-                            <div className={styles["number-loading"]}>
-                                <Loading />
-                            </div>
-                        )}
-                        <p className={styles["timings-subtitle"]}>fastest</p>
-                    </div>
+                <div className={styles["bottom-timings"]}>
+                    <BigNumberStatItem
+                        displayValue={
+                            report?.fastestFullClear
+                                ? secondsToHMS(report.fastestFullClear.value)
+                                : strings.na
+                        }
+                        isLoading={isLoadingReport}
+                        name={strings.fastestClear}
+                        href={
+                            report?.fastestFullClear
+                                ? `/pgcr/${report.fastestFullClear.instanceId}`
+                                : undefined
+                        }
+                    />
 
-                    <div className={styles["timing"]}>
-                        {!isLoadingStats && stats ? (
-                            <p className={styles["timings-number"]}>
-                                {secondsToHMS(stats.averageClear)}
-                            </p>
-                        ) : (
-                            <div className={styles["number-loading"]}>
-                                <Loading />
-                            </div>
-                        )}
-                        <p className={styles["timings-subtitle"]}>Average</p>
-                    </div>
+                    <BigNumberStatItem
+                        displayValue={
+                            averageClear
+                                ? averageClear.values.activityDurationSeconds.basic.displayValue
+                                : strings.na
+                        }
+                        isLoading={isLoadingDots}
+                        name={strings.averageClear}
+                        href={
+                            averageClear
+                                ? `/pgcr/${averageClear.activityDetails.instanceId}`
+                                : undefined
+                        }
+                    />
 
-                    <div className={styles["timing"]}>
-                        {!isLoadingStats && stats ? (
-                            <p className={styles["timings-number"]}>{stats.sherpas}</p>
-                        ) : (
-                            <div className={styles["number-loading"]}>
-                                <Loading />
-                            </div>
-                        )}
-                        <p className={styles["timings-subtitle"]}>Sherpas</p>
-                    </div>
+                    <BigNumberStatItem
+                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
+                        isLoading={isLoadingReport}
+                        name={strings.sherpas}
+                    />
                 </div>
             </div>
         </div>

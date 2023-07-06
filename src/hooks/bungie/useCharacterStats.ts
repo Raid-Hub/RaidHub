@@ -48,8 +48,8 @@ export const useCharacterStats: UseCharacterStats = ({ characterProfiles, errorH
     )
 
     useEffect(() => {
-        setLoading(true)
         if (characterProfiles) {
+            setLoading(true)
             fetchData(characterProfiles)
         }
     }, [characterProfiles, fetchData])
