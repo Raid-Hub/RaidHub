@@ -3,7 +3,6 @@ import styles from "../../../styles/profile.module.css"
 import { RADIUS, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty, ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
-import { wait } from "../../../util/wait"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"

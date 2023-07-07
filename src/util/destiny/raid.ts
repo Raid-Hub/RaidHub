@@ -120,7 +120,7 @@ export const RaidHashes = {
     [Raid.KINGS_FALL]: {
         [Difficulty.NORMAL]: ["1374392663", "2897223272"] as const,
         [Difficulty.CHALLENGEKF]: ["1063970578"] as const,
-        [Difficulty.MASTER]: ["2964135793"] as const
+        [Difficulty.MASTER]: ["2964135793", "3257594522"] as const
     },
     [Raid.ROOT_OF_NIGHTMARES]: {
         [Difficulty.NORMAL]: ["1191701339", "2381413764"] as const,
@@ -207,6 +207,7 @@ export const HashDictionary: {
     "1374392663": [Raid.KINGS_FALL, Difficulty.NORMAL],
     "2897223272": [Raid.KINGS_FALL, Difficulty.NORMAL],
     "2964135793": [Raid.KINGS_FALL, Difficulty.MASTER],
+    "3257594522": [Raid.KINGS_FALL, Difficulty.MASTER],
     "1063970578": [Raid.KINGS_FALL, Difficulty.CHALLENGEKF],
     "1191701339": [Raid.ROOT_OF_NIGHTMARES, Difficulty.NORMAL],
     "2381413764": [Raid.ROOT_OF_NIGHTMARES, Difficulty.NORMAL],

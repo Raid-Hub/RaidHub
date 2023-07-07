@@ -2,7 +2,7 @@ import styles from "../../../styles/profile.module.css"
 import Link from "next/link"
 import { Difficulty, Raid, wfRaceMode } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { Icons } from "../../../util/presentation/icons"
 import { RaidTag } from "../../../types/profile"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
@@ -24,10 +24,10 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
         props.instanceId && props.scrollToDot(props.instanceId)
     }
 
-    const handleHover = useCallback(() => {
+    const handleHover = () => {
         const timeout = setTimeout(scroll, 750)
         setTimer(timeout)
-    }, [scroll])
+    }
 
     const handleLeave = useCallback(() => {
         timer && clearTimeout(timer)

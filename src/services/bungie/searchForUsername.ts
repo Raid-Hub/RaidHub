@@ -26,8 +26,6 @@ export async function searchForUsername({
         new Array(pages).fill(null).map(async (_, pageNumber) => search(pageNumber))
     )
 
-    console.log(results)
-
     const successes = results.filter(
         r =>
             r.status === "fulfilled" &&

@@ -37,6 +37,8 @@ export const usePlayers: UsePlayers = ({
                     ) as PromiseFulfilledResult<readonly [string, RaidReportPlayer]>[]
                 ).map(p => p.value)
 
+                if (!goodPlayers.length) return
+
                 const players = new Map(goodPlayers)
                 const { clearsRank, speedRank } = players.get(primaryMembershipId)!
                 players.get(primaryMembershipId)

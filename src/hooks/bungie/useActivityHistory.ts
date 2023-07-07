@@ -1,16 +1,16 @@
 import { Collection } from "@discordjs/collection"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
-import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
+import { Raid } from "../../util/destiny/raid"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
-import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../../services/bungie/getRaidHistoryPage"
 import { ErrorHandler } from "../../types/generic"
 import {
     ActivityCollectionDictionary,
     ActivityHistory,
     ProfileWithCharacters
 } from "../../types/profile"
+import { getAllCharacterRaids } from "../../services/bungie/getAllCharacterRaids"
 
 type UseActivityHistory = (params: {
     characterProfiles: ProfileWithCharacters[] | null
@@ -27,6 +27,7 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
 
     const fetchData = useCallback(
         async (profiles: ProfileWithCharacters[]) => {
+            setActivities(null)
             const dict: ActivityCollectionDictionary = {
                 [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
                 [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -57,44 +58,19 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
                 >(),
                 [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
             }
-            setActivities(null)
             try {
                 await Promise.all(
                     profiles.map(({ destinyMembershipId, membershipType, characterIds }) =>
                         Promise.all(
-                            characterIds.map(async characterId => {
-                                let page = 0
-                                let hasMore = true
-                                while (hasMore) {
-                                    const newActivities = await getRaidHistoryPage({
-                                        destinyMembershipId,
-                                        characterId,
-                                        membershipType,
-                                        page,
-                                        client
-                                    })
-                                    newActivities.forEach(activity => {
-                                        const info = raidDetailsFromHash(
-                                            activity.activityDetails.referenceId.toString()
-                                        )
-                                        if (
-                                            dict[info.raid].has(
-                                                activity.activityDetails.instanceId
-                                            ) &&
-                                            !activity.values.completed.basic.value
-                                        ) {
-                                            return
-                                        } else {
-                                            dict[info.raid].set(
-                                                activity.activityDetails.instanceId,
-                                                activity
-                                            )
-                                        }
-                                    })
-                                    hasMore = newActivities.length == ACTIVITIES_PER_PAGE
-                                    page++
-                                }
-                            })
+                            characterIds.map(characterId =>
+                                getAllCharacterRaids({
+                                    characterId,
+                                    destinyMembershipId,
+                                    membershipType,
+                                    client,
+                                    dict
+                                })
+                            )
                         )
                     )
                 )
