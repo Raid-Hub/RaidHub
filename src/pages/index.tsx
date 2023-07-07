@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import styles from "../styles/home.module.css"
+import styles from "../styles/pages/home.module.css"
 import { AllRaids } from "../util/destiny/raid"
 import HomeRaidCard from "../components/home/HomeRaidCard"
 import { useLocale } from "../components/app/LanguageProvider"

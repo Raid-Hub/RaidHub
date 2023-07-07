@@ -1,6 +1,6 @@
 import { NextPage } from "next"
 import { signIn, signOut, useSession } from "next-auth/react"
-import styles from "../styles/account.module.css"
+import styles from "../styles/pages/account.module.css"
 
 const Account: NextPage = () => {
     const { status, data: sesssionData } = useSession({
