@@ -131,6 +131,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             }
         }
         if (this.wasFresh() === false) tags.push(Tag.CHECKPOINT)
+        if (this.details.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
         if (this.details.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
         if (this.playerCount === 1) tags.push(Tag.SOLO)
         else if (this.playerCount === 2) tags.push(Tag.DUO)
