@@ -34,10 +34,26 @@
 
 .dot circle {
     transition: r 0.1s ease-in-out;
+    transition: fill 0.2 ease-in-out;
 }
 
 .dot:hover circle {
     r: 8;
+}
+
+.blinking-dot circle {
+    transition: r 0.5s ease-in-out;
+    animation: blink 0.5s alternate infinite ease-in-out;
+    r: 10;
+}
+
+@keyframes blink {
+    0% {
+        fill: #ffffff;
+    }
+    100% {
+        fill: #bdf4ff;
+    }
 }
 
 .dots-container {

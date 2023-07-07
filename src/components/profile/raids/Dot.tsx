@@ -1,8 +1,9 @@
-import { MouseEvent, useCallback, useMemo } from "react"
+import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import styles from "../../../styles/profile.module.css"
 import { RADIUS, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty, ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
+import { wait } from "../../../util/wait"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -19,6 +20,7 @@ type DotProps = {
     cy: number
     setTooltip(data: DotTooltipProps): void
     tooltipData: DotTooltipProps
+    targetted: boolean
 }
 
 const Dot = ({
@@ -32,8 +34,10 @@ const Dot = ({
     tooltipData,
     duration,
     startDate,
-    hash
+    hash,
+    targetted
 }: DotProps) => {
+    const ref = useRef<HTMLAnchorElement | null>(null)
     const cx = SPACING / 2 + SPACING * idx
     const handleHover = useCallback(
         ({ clientX, currentTarget }: MouseEvent) => {
@@ -57,7 +61,7 @@ const Dot = ({
     )
 
     const handleMouseLeave = useCallback(
-        (e: MouseEvent) => {
+        ({}: MouseEvent) => {
             setTooltip({
                 ...tooltipData,
                 isShowing: false
@@ -71,10 +75,37 @@ const Dot = ({
         return details.difficulty !== Difficulty.NORMAL || details.isContest(startDate)
     }, [hash, startDate])
 
+    const [blinking, setBlinking] = useState<boolean>(false)
+    useEffect(() => {
+        if (targetted && ref.current) {
+            ref.current.scrollIntoView({
+                block: "nearest",
+                inline: "center",
+                behavior: "smooth"
+            })
+
+            // wait until the scroll "finishes" (estimation)
+            const timer = setTimeout(() => {
+                setBlinking(true)
+            }, Math.abs(window.innerWidth / 2 - ref.current.getBoundingClientRect().left) ** 0.9 + 150)
+
+            return () => {
+                clearTimeout(timer)
+            }
+        } else {
+            setBlinking(false)
+        }
+    }, [targetted])
+
     return (
         <a
+            ref={ref}
             href={`/pgcr/${id}`}
-            className={[styles["dot"], styles["dot-hover"]].join(" ")}
+            className={[
+                styles["dot"],
+                styles["dot-hover"],
+                blinking ? styles["blinking-dot"] : ""
+            ].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
             <circle

@@ -40,6 +40,7 @@ type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
     isLoading: boolean
     report: RaidReportData | undefined
+    targetDot: string | null
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -49,7 +50,7 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraphWrapper = ({ dots, isLoading, report }: DotGraphWrapperProps) => {
+const DotGraphWrapper = ({ dots, isLoading, report, targetDot }: DotGraphWrapperProps) => {
     const getHeight = useMemo(() => {
         let { min, max, total } = dots.reduce((ac, cv) => {
             const cvTime = cv.values.activityDurationSeconds.basic.value
@@ -73,19 +74,24 @@ const DotGraphWrapper = ({ dots, isLoading, report }: DotGraphWrapperProps) => {
         return getHeight
     }, [dots])
 
-    return <DotGraph isLoading={isLoading} dots={dots} getHeight={getHeight} report={report} />
+    return (
+        <DotGraph
+            isLoading={isLoading}
+            dots={dots}
+            getHeight={getHeight}
+            report={report}
+            targetDot={targetDot}
+        />
+    )
 }
 
 export default DotGraphWrapper
 
-type DotGraphProps = {
-    isLoading: boolean
-    dots: DestinyHistoricalStatsPeriodGroup[]
-    report: RaidReportData | undefined
+type DotGraphProps = DotGraphWrapperProps & {
     getHeight: (duration: number) => number
 }
 
-function DotGraph({ isLoading, dots, getHeight, report }: DotGraphProps) {
+function DotGraph({ isLoading, dots, getHeight, report, targetDot }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps>({
         offset: {
             x: 0,
@@ -135,6 +141,7 @@ function DotGraph({ isLoading, dots, getHeight, report }: DotGraphProps) {
                             cy={getHeight(dot.values.activityDurationSeconds.basic.value)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
+                            targetted={targetDot === dot.activityDetails.instanceId}
                         />
                     ))}
                 </svg>

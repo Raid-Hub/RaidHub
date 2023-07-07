@@ -1,23 +1,73 @@
 import styles from "../../../styles/profile.module.css"
 import Link from "next/link"
-import { RaidTag } from "../../../types/profile"
-import { Icons } from "../../../util/presentation/icons"
-import { Tag } from "../../../util/raidhub/tags"
+import { Difficulty, Raid, wfRaceMode } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"
+import { useCallback, useMemo, useState } from "react"
+import { Icons } from "../../../util/presentation/icons"
+import { RaidTag } from "../../../types/profile"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
-import { Difficulty } from "../../../util/destiny/raid"
+import { Tag } from "../../../util/raidhub/tags"
 
-const RaidTagLabel = (tag: RaidTag) => {
-    const { strings } = useLocale()
-    return (
-        <Link href={`/pgcr/${tag.instanceId}`} className={styles["clickable-tag"]}>
-            {tag.bestPossible && <img src={Icons.FLAWLESS_DIAMOND} alt="mastery diamond" />}
-            <span>{getLabel(tag, strings)}</span>
+type RaidTagLabelProps = {
+    instanceId?: string
+    scrollToDot: (instanceId: string) => void
+} & (
+    | ({
+          type: "challenge"
+      } & RaidTag)
+    | { type: "race"; placement?: number; asterisk?: boolean; raid: Raid }
+)
+const RaidTagLabel = (props: RaidTagLabelProps) => {
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+
+    const scroll = () => {
+        props.instanceId && props.scrollToDot(props.instanceId)
+    }
+
+    const handleHover = useCallback(() => {
+        const timeout = setTimeout(scroll, 750)
+        setTimer(timeout)
+    }, [scroll])
+
+    const handleLeave = useCallback(() => {
+        timer && clearTimeout(timer)
+    }, [timer])
+
+    const className = styles["clickable-tag"]
+    return props.instanceId ? (
+        <Link
+            className={className}
+            href={`/pgcr/${props.instanceId}`}
+            onMouseEnter={handleHover}
+            onMouseLeave={handleLeave}>
+            <InnerTag {...props} />
         </Link>
+    ) : (
+        <div className={className}>
+            <InnerTag {...props} />
+        </div>
     )
 }
 
-function getLabel(tag: RaidTag, strings: LocalStrings) {
+const InnerTag = (props: RaidTagLabelProps) => {
+    const { strings } = useLocale()
+    return (
+        <>
+            <span>
+                {props.type === "challenge"
+                    ? getChallengeLabel(props, strings)
+                    : `${strings.tags[wfRaceMode(props.raid)]}${props.asterisk ? "*" : ""}${
+                          props.placement ? ` #${props.placement}` : ""
+                      }`}
+            </span>
+            {props.type === "challenge" && props.bestPossible && (
+                <img src={Icons.FLAWLESS_DIAMOND} alt="mastery diamond" />
+            )}
+        </>
+    )
+}
+
+function getChallengeLabel(tag: RaidTag, strings: LocalStrings) {
     const descriptors: string[] = []
     if (tag.fresh && !tag.flawless) descriptors.push(strings.tags[Tag.FRESH])
     switch (tag.playerCount) {

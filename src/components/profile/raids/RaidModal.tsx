@@ -7,12 +7,11 @@ import RaidStats from "../../../models/profile/RaidStats"
 import { usePrefs } from "../../../hooks/util/usePrefs"
 import { Prefs } from "../../../util/profile/preferences"
 import { useLocale } from "../../app/LanguageProvider"
-import { useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel from "./RaidTagLabel"
-import DayOneTag from "./DayOneTag"
 
 type RaidModalProps = {
     membershipId: string
@@ -38,6 +37,7 @@ const RaidModal = ({
     const { strings } = useLocale()
     const prefOptions = useRef([Prefs.FILTER] as const)
     const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, prefOptions.current)
+    const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
     const averageClear = useMemo(() => {
         if (report?.fastestFullClear?.value) {
@@ -90,6 +90,17 @@ const RaidModal = ({
         }
     }, [activities, raid])
 
+    useEffect(() => {
+        // Set a new timeout
+        const timer = setTimeout(() => {
+            setHoveredTag(null)
+        }, 2500)
+
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [hoveredTag])
+
     return (
         <div className={styles["raid-card"]}>
             <div className={styles["raid-card-img-container"]}>
@@ -97,19 +108,32 @@ const RaidModal = ({
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
                         {report?.worldFirstPlacement ? (
-                            <DayOneTag
+                            <RaidTagLabel
+                                type="race"
                                 raid={raid}
                                 instanceId={placementClear?.activityDetails.instanceId}
                                 placement={report?.worldFirstPlacement ?? undefined}
+                                scrollToDot={setHoveredTag}
                             />
                         ) : (
-                            contestFirstClear && <DayOneTag {...contestFirstClear} />
+                            contestFirstClear && (
+                                <RaidTagLabel
+                                    type="race"
+                                    {...contestFirstClear}
+                                    scrollToDot={setHoveredTag}
+                                />
+                            )
                         )}
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
                         <div className={styles["card-diamonds"]}>
                             {report?.tags()?.map((tag, key) => (
-                                <RaidTagLabel {...tag} key={key} />
+                                <RaidTagLabel
+                                    type="challenge"
+                                    {...tag}
+                                    key={key}
+                                    scrollToDot={setHoveredTag}
+                                />
                             ))}
                         </div>
                         <span className={styles["raid-card-title"]}>{strings.raidNames[raid]}</span>
@@ -122,6 +146,7 @@ const RaidModal = ({
                         report={report}
                         dots={activities.filter(prefs?.[Prefs.FILTER] ?? (() => true))}
                         isLoading={isLoadingDots || isLoadingReport}
+                        targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>
                         <BigNumberStatItem
