@@ -1,4 +1,5 @@
-import styles from "../../../styles/profile.module.css"
+import styles from "../../../styles/pages/profile/raids.module.css"
+import { ChangeEvent } from "react"
 
 type ToggleProps = {
     defaultState: boolean
@@ -6,15 +7,19 @@ type ToggleProps = {
 }
 
 const ToggleSwitch = ({ defaultState, onToggle }: ToggleProps) => {
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         onToggle(event.target.checked)
     }
 
     return (
-        <label className={styles["switch"]}>
-            <input type="checkbox" onChange={handleChange} defaultChecked={defaultState} />
-            <span className="slider" />
-        </label>
+        <div className={styles["layout-toggle"]}>
+            <span className={styles["description-toggle"]}>Raids</span>
+            <label className={styles["switch"]}>
+                <input type="checkbox" onChange={handleChange} defaultChecked={defaultState} />
+                <span className="slider" />
+            </label>
+            <span className={styles["description-toggle"]}>History</span>
+        </div>
     )
 }
 

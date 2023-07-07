@@ -6,7 +6,7 @@ import DestinyPGCR from "../../models/pgcr/PGCR"
 import { useBungieClient } from "../../components/app/TokenManager"
 
 type useActivityParams = {
-    activityId: string | null | undefined
+    activityId: string | null
     errorHandler: ErrorHandler
 }
 type UseActivity = {
@@ -39,7 +39,7 @@ export function useActivity({ activityId, errorHandler }: useActivityParams): Us
 
         if (activityId) {
             fetchData(activityId)
-        } else if (activityId === null) {
+        } else {
             setIsLoading(false)
         }
     }, [activityId, fetchData])

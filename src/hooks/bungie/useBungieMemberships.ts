@@ -11,8 +11,8 @@ type UseBungieProfile = (params: {
     membershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }) => {
-    membership: UserInfoCard | null
-    destinyProfiles: ProfileDetails[] | null
+    bungieMemberhip: UserInfoCard | null
+    destinyMemberships: ProfileDetails[] | null
     isLoading: boolean
 }
 
@@ -21,23 +21,23 @@ export const useBungieMemberships: UseBungieProfile = ({
     membershipType,
     errorHandler
 }) => {
-    const [membership, setMembership] = useState<UserInfoCard | null>(null)
-    const [destinyProfiles, setDestinyProfiles] = useState<ProfileDetails[] | null>(null)
+    const [bungieMemberhip, setBungieMembership] = useState<UserInfoCard | null>(null)
+    const [destinyMemberships, setDestinyMemberships] = useState<ProfileDetails[] | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
         async (membershipId: string, membershipType: BungieMembershipType) => {
             try {
-                setMembership(null)
-                setDestinyProfiles(null)
+                setBungieMembership(null)
+                setDestinyMemberships(null)
                 const { bnetMembership, profiles } = await getLinkedBungieProfiles({
                     membershipId,
                     membershipType,
                     client
                 })
-                setMembership(bnetMembership)
-                setDestinyProfiles(
+                setBungieMembership(bnetMembership)
+                setDestinyMemberships(
                     profiles
                         .filter(profile => new Date(profile.dateLastPlayed).getTime())
                         .map(({ membershipId, membershipType }) => ({
@@ -57,5 +57,5 @@ export const useBungieMemberships: UseBungieProfile = ({
         setLoading(true)
         fetchData(destinyMembershipId, membershipType)
     }, [destinyMembershipId, membershipType, fetchData])
-    return { membership, destinyProfiles, isLoading }
+    return { bungieMemberhip, destinyMemberships, isLoading }
 }

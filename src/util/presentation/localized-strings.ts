@@ -1,6 +1,6 @@
 import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../destiny/raid"
-import { RankingBannerType } from "../../components/profile/Banners"
+import { RankingBannerType } from "../../types/profile"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }

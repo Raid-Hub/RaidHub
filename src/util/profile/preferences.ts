@@ -18,20 +18,12 @@ export enum FilterOptions {
 export const AvailableFilterOptions: {
     [key in FilterOptions]: PrefType<Prefs.FILTER>
 } = {
-    [FilterOptions.SUCCESS_ONLY]: (
-        value: DestinyHistoricalStatsPeriodGroup,
-        index: number,
-        array: DestinyHistoricalStatsPeriodGroup[]
-    ): boolean => !!value.values.completed.basic.value,
-    [FilterOptions.LOWMAN_ONLY]: (
-        value: DestinyHistoricalStatsPeriodGroup,
-        index: number,
-        array: DestinyHistoricalStatsPeriodGroup[]
-    ): boolean => !!value.values.completed.basic.value && value.values.playerCount.basic.value <= 3,
+    [FilterOptions.SUCCESS_ONLY]: (value: DestinyHistoricalStatsPeriodGroup): boolean =>
+        !!value.values.completed.basic.value,
+    [FilterOptions.LOWMAN_ONLY]: (value: DestinyHistoricalStatsPeriodGroup): boolean =>
+        !!value.values.completed.basic.value && value.values.playerCount.basic.value <= 3,
     [FilterOptions.FINISH_OR_FULL_TEAM_5_MIN]: (
-        value: DestinyHistoricalStatsPeriodGroup,
-        index: number,
-        array: DestinyHistoricalStatsPeriodGroup[]
+        value: DestinyHistoricalStatsPeriodGroup
     ): boolean =>
         !!value.values.completed.basic.value ||
         (value.values.playerCount.basic.value >= 6 &&

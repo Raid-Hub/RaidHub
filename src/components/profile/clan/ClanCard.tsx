@@ -1,11 +1,10 @@
-import { useClan } from "../../hooks/bungie/useClan"
-import styles from "../../styles/profile.module.css"
-import Loading from "../global/Loading"
+import styles from "../../../styles/pages/profile/clan.module.css"
+import { useClan } from "../../../hooks/bungie/useClan"
+import Loading from "../../global/Loading"
 import ClanBanner from "./ClanBanner"
-import { Icons } from "../../util/presentation/icons"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { ErrorHandler } from "../../types/generic"
-import { fixClanName } from "../../util/destiny/fixClanName"
+import { ErrorHandler } from "../../../types/generic"
+import { fixClanName } from "../../../util/destiny/fixClanName"
 
 type ClanCardProps = {
     membershipId: string
@@ -14,49 +13,26 @@ type ClanCardProps = {
 }
 
 const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps) => {
-    const { clan, isLoading: isClanLoading } = useClan({
+    const { clan, isLoading } = useClan({
         membershipId,
         membershipType,
         errorHandler
     })
-    return isClanLoading ? (
-        <Loading wrapperClass={styles["clan"]} />
+    return isLoading ? (
+        <Loading wrapperClass={styles["card-loading"]} />
     ) : (
         clan && (
             <div className={styles["clan"]}>
-                <div className={styles["clan-img"]}>
+                <div className={styles["clan-banner-container"]}>
                     <ClanBanner {...clan.clanBanner} />
                 </div>
-                <div className={styles["clan-desc"]}>
+                <div className={styles["desc"]}>
                     <span className={styles["desc-title"]}>
                         {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
                     </span>
                     <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                     <div className={styles["desc-text-wrapper"]}>
                         <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
-                    </div>
-
-                    <div className={styles["description-list"]}>
-                        <div className={styles["description-list-item"]}>
-                            <img src={Icons.DIAMOND} alt="" />
-                            <p>
-                                Raid Clears <span>x999</span>
-                            </p>
-                        </div>
-
-                        <div className={styles["description-list-item"]}>
-                            <img src={Icons.DIAMOND} alt="" />
-                            <p>
-                                Solos <span>x999</span>
-                            </p>
-                        </div>
-
-                        <div className={styles["description-list-item"]}>
-                            <img src={Icons.DIAMOND} alt="" />
-                            <p>
-                                Flawless Masters <span>x999</span>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>

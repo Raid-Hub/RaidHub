@@ -7,27 +7,29 @@ import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStats } from "../../services/bungie/getDestinyStats"
-import { ProfileDetails, ProfileWithCharacters } from "../../types/profile"
+import { ProfileDetails, MembershipWithCharacters } from "../../types/profile"
 
 type UseDestinyStats = (params: {
-    destinyProfiles: ProfileDetails[] | null
+    destinyMemberships: ProfileDetails[] | null
     errorHandler: ErrorHandler
 }) => {
-    stats: DestinyHistoricalStatsPerCharacter[] | null
-    characterProfiles: ProfileWithCharacters[] | null
+    historicalStats: DestinyHistoricalStatsPerCharacter[] | null
+    characterMemberships: MembershipWithCharacters[] | null
     isLoading: boolean
 }
 
-export const useDestinyStats: UseDestinyStats = ({ destinyProfiles, errorHandler }) => {
-    const [stats, setStats] = useState<DestinyHistoricalStatsPerCharacter[] | null>(null)
-    const [characterProfiles, setCharacterProfiles] = useState<ProfileWithCharacters[] | null>(null)
+export const useDestinyStats: UseDestinyStats = ({ destinyMemberships, errorHandler }) => {
+    const [historicalStats, setStats] = useState<DestinyHistoricalStatsPerCharacter[] | null>(null)
+    const [characterMemberships, setCharacterMemberships] = useState<
+        MembershipWithCharacters[] | null
+    >(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
         async (arr: { destinyMembershipId: string; membershipType: BungieMembershipType }[]) => {
             try {
-                setCharacterProfiles(null)
+                setCharacterMemberships(null)
                 setStats(null)
 
                 const profileStats = await Promise.all(
@@ -44,7 +46,7 @@ export const useDestinyStats: UseDestinyStats = ({ destinyProfiles, errorHandler
                             ] as const
                     )
                 )
-                setCharacterProfiles(
+                setCharacterMemberships(
                     profileStats.map(([destinyMembershipId, membershipType, stats]) => ({
                         destinyMembershipId,
                         membershipType,
@@ -63,9 +65,9 @@ export const useDestinyStats: UseDestinyStats = ({ destinyProfiles, errorHandler
 
     useEffect(() => {
         setLoading(true)
-        if (destinyProfiles) {
-            fetchData(destinyProfiles)
+        if (destinyMemberships) {
+            fetchData(destinyMemberships)
         }
-    }, [destinyProfiles, fetchData])
-    return { stats, characterProfiles, isLoading }
+    }, [destinyMemberships, fetchData])
+    return { historicalStats, characterMemberships, isLoading }
 }

@@ -1,7 +1,6 @@
 #footer {
     margin-top: auto;
     width: 100%;
-    box-sizing: border-box;
     padding: 0.5em 1em;
     background-color: var(--header-background);
     box-shadow: rgba(0, 0, 0, 0.3) 0 -19px 38px, rgba(0, 0, 0, 0.22) 0 -15px 12px;

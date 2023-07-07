@@ -1,13 +1,12 @@
+import styles from "../../styles/pages/pgcr.module.css"
 import { useState } from "react"
 import { Raid } from "../../util/destiny/raid"
 import { Icons } from "../../util/presentation/icons"
-import StatCards from "./PlayerStatCards"
-import styles from "../../styles/pgcr.module.css"
+import StatCards from "./PlayerStatCells"
 import { ErrorHandler, Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
-import Player from "./Player"
-import { ParsedUrlQuery } from "querystring"
+import PlayerCell from "./PlayerCell"
 import { defaultEmblem } from "../../util/destiny/emblems"
 import DestinyPGCRCharacter from "../../models/pgcr/Character"
 import { useEmblems } from "../../hooks/bungie/useEmblems"
@@ -16,14 +15,12 @@ type ParticipantsProps = {
     players: PGCRPlayer[] | null
     characters: DestinyPGCRCharacter[]
     raid: Raid
-    query: ParsedUrlQuery
     pgcrLoadingState: Loading
     errorHandler: ErrorHandler
 }
 
-const Participants = ({
+const ParticipantsSection = ({
     players: members,
-    query,
     pgcrLoadingState,
     characters,
     errorHandler
@@ -69,7 +66,8 @@ const Participants = ({
         return (
             <div className={[styles["members"], cardLayout].join(" ")}>
                 {members?.map((member, idx) => (
-                    <Player
+                    <PlayerCell
+                        solo={members.length === 1}
                         key={idx}
                         member={member}
                         index={idx}
@@ -143,4 +141,4 @@ const Participants = ({
         )
     }
 }
-export default Participants
+export default ParticipantsSection

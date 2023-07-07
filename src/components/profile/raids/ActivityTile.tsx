@@ -1,10 +1,10 @@
-import styles from "../../../styles/profile.module.css"
+import styles from "../../../styles/pages/profile/raids.module.css"
 import { Difficulty, RaidCardBackground } from "../../../util/destiny/raid"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
 import Link from "next/link"
 import RaidInfo from "../../../models/pgcr/RaidInfo"
 
-type ActivityCardProps = {
+type ActivityTileProps = {
     strings: LocalStrings
     info: RaidInfo
     completed: boolean
@@ -12,13 +12,13 @@ type ActivityCardProps = {
     completionDate: Date
 }
 
-const ActivityCard = ({
+const ActivityTile = ({
     info,
     strings,
     completed,
     activityId,
     completionDate
-}: ActivityCardProps) => {
+}: ActivityTileProps) => {
     const difficultyString = [Difficulty.CHALLENGEKF, Difficulty.CHALLENGEVOG].includes(
         info.difficulty
     )
@@ -54,4 +54,4 @@ const ActivityCard = ({
     )
 }
 
-export default ActivityCard
+export default ActivityTile

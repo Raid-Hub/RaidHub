@@ -1,63 +1,62 @@
-import styles from "../../styles/profile.module.css"
+import styles from "../../styles/pages/profile/profile.module.css"
+import { RankingBannerData, RankingBannerType } from "../../types/profile"
 import { RaidReportBannerTier } from "../../types/raidreport"
 import { formattedNumber, secondsToHMS } from "../../util/presentation/formatting"
 import { Icons } from "../../util/presentation/icons"
 import { Founders } from "../../util/raidhub/special"
 import { useLocale } from "../app/LanguageProvider"
+import Loading from "../global/Loading"
 import RankingBanner from "./RankingBanner"
 
-export enum RankingBannerType {
-    Speed,
-    FullClears
-}
-export type RankingBannerData = {
-    type: RankingBannerType
-    tier: RaidReportBannerTier
-    secondary: string | number
-    value: number
-}
-
 type BannerProps = {
+    banners: RankingBannerData[] | null
     destinyMembershipId: string
-    banners: RankingBannerData[]
+    isLoading: boolean
 }
-export const Banners = ({ destinyMembershipId, banners }: BannerProps) => {
+const Banners = ({ destinyMembershipId, isLoading, banners }: BannerProps) => {
     const { strings, locale } = useLocale()
-    return (
-        <div className={styles["ranking-banners"]}>
-            {banners.map((banner, key) => (
-                <RankingBanner
-                    key={key}
-                    icon={BannerIcons[banner.type]}
-                    backgroundColor={BannerColors[banner.tier]}>
-                    <h3>{strings.bannerTitles[banner.type]}</h3>
-                    <p>{`${banner.tier} ${
-                        typeof banner.secondary === "number"
-                            ? `#${banner.secondary}`
-                            : banner.secondary
-                    }`}</p>
-                    <p className={styles["banner-bold"]}>
-                        {banner.type === RankingBannerType.Speed
-                            ? secondsToHMS(banner.value)
-                            : formattedNumber(banner.value, locale)}
-                    </p>
-                </RankingBanner>
-            ))}
-            {Object.keys(Founders).includes(destinyMembershipId) && (
-                <div className={styles["ranking-banner"]}>
-                    <img src="/logo.png" alt="" />
 
-                    <div className={styles["banners-text"]}>
-                        <p className={styles["banner-bold"]}>RaidHub Founder</p>
-                        <p className={styles["banner-subtext"]}>
-                            This user contributed to creating RaidHub
+    return isLoading ? (
+        <Loading wrapperClass={styles["ranking-banners-loading"]} />
+    ) : (
+        banners && (
+            <div className={styles["ranking-banners"]}>
+                {banners.map((banner, key) => (
+                    <RankingBanner
+                        key={key}
+                        icon={BannerIcons[banner.type]}
+                        backgroundColor={BannerColors[banner.tier]}>
+                        <h3>{strings.bannerTitles[banner.type]}</h3>
+                        <p>{`${banner.tier} ${
+                            typeof banner.secondary === "number"
+                                ? `#${banner.secondary}`
+                                : banner.secondary
+                        }`}</p>
+                        <p className={styles["banner-bold"]}>
+                            {banner.type === RankingBannerType.Speed
+                                ? secondsToHMS(banner.value)
+                                : formattedNumber(banner.value, locale)}
                         </p>
+                    </RankingBanner>
+                ))}
+                {Object.keys(Founders).includes(destinyMembershipId) && (
+                    <div className={styles["ranking-banner"]}>
+                        <img className={styles["ranking-banner-icon"]} src="/logo.png" alt="" />
+
+                        <div className={styles["banner-text"]}>
+                            <p className={styles["banner-bold"]}>RaidHub Founder</p>
+                            <p className={styles["banner-subtext"]}>
+                                This user contributed to creating RaidHub
+                            </p>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        )
     )
 }
+
+export default Banners
 
 const BannerColors: { [key in RaidReportBannerTier]: string } = {
     [RaidReportBannerTier.Bronze]: "#4e191978",

@@ -3,30 +3,29 @@ import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { ErrorHandler } from "../../types/generic"
 import { mergeActivities } from "../../util/raidreport/mergeActivitiesArray"
 import { getPlayer } from "../../services/raidreport/getPlayer"
-import { AllRaidReportData } from "../../types/profile"
-import { RankingBannerType } from "../../components/profile/Banners"
+import { AllRaidReportData, RankingBannerType } from "../../types/profile"
 import { RaidReportPlayer } from "../../types/raidreport"
 
-type UsePlayers = (params: {
+type UseRaidReport = (params: {
     destinyMembershipIds: { destinyMembershipId: string }[] | null
     primaryMembershipId: string
     errorHandler: ErrorHandler
 }) => {
-    player: AllRaidReportData | null
+    data: AllRaidReportData | null
     isLoading: boolean
 }
 
-export const usePlayers: UsePlayers = ({
+export const useRaidReport: UseRaidReport = ({
     destinyMembershipIds,
     primaryMembershipId,
     errorHandler
 }) => {
-    const [player, setPlayer] = useState<AllRaidReportData | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [data, setData] = useState<AllRaidReportData | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     const fetchData = useCallback(
         async (ids: string[]) => {
-            setPlayer(null)
+            setData(null)
             try {
                 const promise = await Promise.allSettled(
                     ids.map(async id => [id, await getPlayer(id)] as const)
@@ -42,24 +41,26 @@ export const usePlayers: UsePlayers = ({
                 const players = new Map(goodPlayers)
                 const { clearsRank, speedRank } = players.get(primaryMembershipId)!
                 players.get(primaryMembershipId)
-                const _player: AllRaidReportData = {
-                    clearsRank: {
-                        type: RankingBannerType.FullClears,
-                        tier: clearsRank.tier,
-                        secondary: clearsRank.subtier ?? clearsRank.rank!,
-                        value: clearsRank.value
-                    },
-                    speedRank: {
-                        type: RankingBannerType.Speed,
-                        tier: speedRank.tier,
-                        secondary: speedRank.subtier ?? speedRank.rank!,
-                        value: speedRank.value
-                    },
+                const _data: AllRaidReportData = {
+                    rankings: [
+                        {
+                            type: RankingBannerType.FullClears,
+                            tier: clearsRank.tier,
+                            secondary: clearsRank.subtier ?? clearsRank.rank!,
+                            value: clearsRank.value
+                        },
+                        {
+                            type: RankingBannerType.Speed,
+                            tier: speedRank.tier,
+                            secondary: speedRank.subtier ?? speedRank.rank!,
+                            value: speedRank.value
+                        }
+                    ],
                     activities: mergeActivities(
                         Array.from(players.values()).flatMap(player => player.activities)
                     )
                 }
-                setPlayer(_player)
+                setData(_data)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.RaidReport)
             } finally {
@@ -74,9 +75,10 @@ export const usePlayers: UsePlayers = ({
 
         if (destinyMembershipIds) {
             fetchData(destinyMembershipIds.map(obj => obj.destinyMembershipId))
+        } else {
+            setIsLoading(false)
         }
-        setIsLoading(false)
     }, [destinyMembershipIds, fetchData])
 
-    return { player, isLoading }
+    return { data, isLoading }
 }

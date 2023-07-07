@@ -9,7 +9,7 @@ import {
     DestinyProfileComponent
 } from "bungie-net-core/lib/models"
 import RaidReportData from "../models/profile/RaidReportData"
-import { RankingBannerData } from "../components/profile/Banners"
+import { RaidReportBannerTier } from "./raidreport"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -19,7 +19,7 @@ export type InitialProfileProps = {
     membershipType: BungieMembershipType
 }
 export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
-export type ProfileWithCharacters = {
+export type MembershipWithCharacters = {
     destinyMembershipId: string
     membershipType: BungieMembershipType
     characterIds: string[]
@@ -33,10 +33,20 @@ export interface IRaidStats {
     precisionKills: number
     secondsPlayed: number
 }
+
+export enum RankingBannerType {
+    Speed,
+    FullClears
+}
+export type RankingBannerData = {
+    type: RankingBannerType
+    tier: RaidReportBannerTier
+    secondary: string | number
+    value: number
+}
 export type AllRaidReportData = {
     activities: Map<Raid, RaidReportData>
-    clearsRank: RankingBannerData
-    speedRank: RankingBannerData
+    rankings: RankingBannerData[]
 }
 export interface IRaidReportData {
     fastestFullClear: {
@@ -92,4 +102,3 @@ export type ActivityCollection = Collection<string, DestinyHistoricalStatsPeriod
 export type ActivityCollectionDictionary = {
     [key in Raid]: ActivityCollection
 }
-export type ActivityHistory = ActivityCollectionDictionary | null

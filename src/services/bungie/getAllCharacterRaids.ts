@@ -1,6 +1,6 @@
 import { BungieClientProtocol } from "bungie-net-core/lib/client"
 import { ActivityCollectionDictionary } from "../../types/profile"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "./getRaidHistoryPage"
 import { HashDictionary, ValidRaidHash } from "../../util/destiny/raid"
 
@@ -17,7 +17,8 @@ export async function getAllCharacterRaids({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
     dict: ActivityCollectionDictionary
-}): Promise<void> {
+}): Promise<DestinyHistoricalStatsPeriodGroup[]> {
+    const allActivities: DestinyHistoricalStatsPeriodGroup[] = []
     let pages = [0]
     let hasMore = true
     while (hasMore) {
@@ -33,7 +34,7 @@ export async function getAllCharacterRaids({
             )
         ).then(all => all.flat())
 
-        if (!newActivities.length) return
+        if (!newActivities.length) break
 
         newActivities.forEach(activity => {
             const [raid] =
@@ -42,6 +43,7 @@ export async function getAllCharacterRaids({
                 !dict[raid].has(activity.activityDetails.instanceId) ||
                 !!activity.values.completed.basic.value
             ) {
+                allActivities.push(activity)
                 dict[raid].set(activity.activityDetails.instanceId, activity)
             }
         })
@@ -59,7 +61,7 @@ export async function getAllCharacterRaids({
             for (let i = 1; i <= estimate; i++) {
                 pages.push(lastPage + i)
             }
-            console.log({ raidsPerDay, estimate, lastPage, pages })
         }
     }
+    return allActivities
 }

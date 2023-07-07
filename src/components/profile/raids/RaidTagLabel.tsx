@@ -1,4 +1,4 @@
-import styles from "../../../styles/profile.module.css"
+import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { Difficulty, Raid, wfRaceMode } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"

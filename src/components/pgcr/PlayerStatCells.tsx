@@ -1,14 +1,14 @@
+import styles from "../../styles/pages/pgcr.module.css"
 import { Icons } from "../../util/presentation/icons"
-import styles from "../../styles/pgcr.module.css"
 import { formattedNumber, secondsToHMS } from "../../util/presentation/formatting"
 import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LanguageProvider"
 
-type PlayerStatCardProps = {
+type PlayerStatCellProps = {
     entry: IPGCREntry
 }
 
-const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
+const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
     const { language, locale, strings } = useLocale()
     const statsData: {
         icon: string
@@ -74,4 +74,4 @@ const PlayerStatCards = ({ entry }: PlayerStatCardProps) => {
     )
 }
 
-export default PlayerStatCards
+export default PlayerStatCells

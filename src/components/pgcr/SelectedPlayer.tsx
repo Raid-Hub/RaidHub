@@ -1,8 +1,8 @@
-import PGCRMember from "../../models/pgcr/Player"
-import styles from "../../styles/pgcr.module.css"
+import styles from "../../styles/pages/pgcr.module.css"
+import PGCRPlayer from "../../models/pgcr/Player"
 
 type SelectedPlayerProps = {
-    member: PGCRMember
+    member: PGCRPlayer
     index: number
     emblemBackground: string
     memberIndex: number

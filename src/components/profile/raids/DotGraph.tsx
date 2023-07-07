@@ -1,13 +1,13 @@
+import styles from "../../../styles/pages/profile/raids.module.css"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import styles from "../../../styles/profile.module.css"
 import { median } from "../../../util/math"
 import Dot from "./Dot"
-import Loading from "../../global/Loading"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../util/destiny/raid"
 import RaidInfo from "../../../models/pgcr/RaidInfo"
 import RaidReportData from "../../../models/profile/RaidReportData"
+import Loading from "../../global/Loading"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -38,9 +38,9 @@ export const STAR_OFFSETS = [
 
 type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
-    isLoading: boolean
     report: RaidReportData | undefined
     targetDot: string | null
+    isLoading: boolean
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -50,9 +50,9 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraphWrapper = ({ dots, isLoading, report, targetDot }: DotGraphWrapperProps) => {
+const DotGraphWrapper = (props: DotGraphWrapperProps) => {
     const getHeight = useMemo(() => {
-        let { min, max, total } = dots.reduce((ac, cv) => {
+        let { min, max, total } = props.dots.reduce((ac, cv) => {
             const cvTime = cv.values.activityDurationSeconds.basic.value
             return {
                 min: Math.min(ac.min, cvTime),
@@ -60,29 +60,21 @@ const DotGraphWrapper = ({ dots, isLoading, report, targetDot }: DotGraphWrapper
                 total: ac.total + cvTime
             }
         }, baseStats)
-        if (dots.length === 1) {
+        if (props.dots.length === 1) {
             min -= 1
             max += 1
         }
 
-        const orderedByDuration = dots
+        const orderedByDuration = props.dots
             .map(({ values }) => values.activityDurationSeconds.basic.value)
             .sort((a, b) => a - b)
         const avg = median(orderedByDuration)
         const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
 
         return getHeight
-    }, [dots])
+    }, [props.dots])
 
-    return (
-        <DotGraph
-            isLoading={isLoading}
-            dots={dots}
-            getHeight={getHeight}
-            report={report}
-            targetDot={targetDot}
-        />
-    )
+    return <DotGraph getHeight={getHeight} {...props} />
 }
 
 export default DotGraphWrapper
@@ -91,7 +83,7 @@ type DotGraphProps = DotGraphWrapperProps & {
     getHeight: (duration: number) => number
 }
 
-function DotGraph({ isLoading, dots, getHeight, report, targetDot }: DotGraphProps) {
+function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps>({
         offset: {
             x: 0,
@@ -99,6 +91,7 @@ function DotGraph({ isLoading, dots, getHeight, report, targetDot }: DotGraphPro
         },
         isShowing: false,
         activityCompleted: false,
+        flawless: false,
         startDate: new Date(),
         duration: "",
         details: new RaidInfo([0, 0])
@@ -108,7 +101,7 @@ function DotGraph({ isLoading, dots, getHeight, report, targetDot }: DotGraphPro
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
             <DotTooltip {...dotTooltipData} />
             {isLoading ? (
-                <Loading />
+                <Loading wrapperClass={styles["dots-svg-loading"]} />
             ) : (
                 <svg
                     style={{
@@ -126,19 +119,22 @@ function DotGraph({ isLoading, dots, getHeight, report, targetDot }: DotGraphPro
                     {dots.map((dot, idx) => (
                         <Dot
                             key={idx}
-                            idx={idx}
-                            id={dot.activityDetails.instanceId}
-                            hash={
+                            index={idx}
+                            instanceId={dot.activityDetails.instanceId}
+                            raidHash={
                                 dot.activityDetails.directorActivityHash.toString() as ValidRaidHash
                             }
                             completed={!!dot.values.completed.basic.value}
                             flawless={
                                 !!report?.flawlessActivities.get(dot.activityDetails.instanceId)
                             }
-                            lowman={!!report?.lowmanActivities.get(dot.activityDetails.instanceId)}
+                            playerCount={
+                                report?.lowmanActivities.get(dot.activityDetails.instanceId)
+                                    ?.playerCount ?? 6
+                            }
                             duration={dot.values.activityDurationSeconds.basic.displayValue}
                             startDate={new Date(dot.period)}
-                            cy={getHeight(dot.values.activityDurationSeconds.basic.value)}
+                            centerY={getHeight(dot.values.activityDurationSeconds.basic.value)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
                             targetted={targetDot === dot.activityDetails.instanceId}

@@ -1,22 +1,24 @@
-import PGCRMember from "../../models/pgcr/Player"
-import styles from "../../styles/pgcr.module.css"
+import styles from "../../styles/pages/pgcr.module.css"
+import PGCRPlayer from "../../models/pgcr/Player"
 import { Icons } from "../../util/presentation/icons"
 
-type PlayerProps = {
-    member: PGCRMember
+type PlayerCellProps = {
+    member: PGCRPlayer
     index: number
     emblemBackground: string
     memberIndex: number
+    solo: boolean
     updateMemberIndex: (clicked: number) => void
 }
 
-const Player = ({
+const PlayerCell = ({
     member,
     index,
     emblemBackground,
     memberIndex,
+    solo,
     updateMemberIndex
-}: PlayerProps) => {
+}: PlayerCellProps) => {
     const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member.didComplete ? "" : styles["dnf"]
     const icon = member.characters[0].logo
@@ -47,7 +49,7 @@ const Player = ({
                     <span className={styles["contained-span"]}>{displayName}</span>
                 </div>
                 <div className={styles["quick-stats-container"]}>
-                    {member.flawless ? (
+                    {solo ? (
                         <img
                             className={styles["flawless-diamond"]}
                             src={Icons.FLAWLESS_DIAMOND}
@@ -75,4 +77,4 @@ const Player = ({
     )
 }
 
-export default Player
+export default PlayerCell

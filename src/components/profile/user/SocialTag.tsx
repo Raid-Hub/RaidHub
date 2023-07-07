@@ -1,6 +1,6 @@
+import styles from "../../../styles/pages/profile/user.module.css"
 import Link from "next/link"
-import styles from "../../styles/profile.module.css"
-import { ProfileSocialData } from "../../types/profile"
+import { ProfileSocialData } from "../../../types/profile"
 
 type SocialTagProps = ProfileSocialData
 

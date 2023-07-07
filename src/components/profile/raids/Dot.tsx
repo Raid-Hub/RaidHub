@@ -1,63 +1,62 @@
+import styles from "../../../styles/pages/profile/raids.module.css"
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import styles from "../../../styles/profile.module.css"
 import { RADIUS, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty, ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
+export const Teal = "#36c9bd"
 
 type DotProps = {
-    id: string
+    index: number
+    instanceId: string
+    raidHash: ValidRaidHash
     completed: boolean
     flawless: boolean
-    lowman: boolean
-    duration: string
+    playerCount: number
     startDate: Date
-    hash: ValidRaidHash
-    idx: number
-    cy: number
-    setTooltip(data: DotTooltipProps): void
-    tooltipData: DotTooltipProps
+    duration: string
+    centerY: number
     targetted: boolean
+    tooltipData: DotTooltipProps
+    setTooltip(data: DotTooltipProps): void
 }
 
 const Dot = ({
-    idx,
-    id,
+    index,
+    instanceId,
     completed,
     flawless,
-    lowman,
-    cy,
+    playerCount,
+    centerY,
     setTooltip,
     tooltipData,
     duration,
     startDate,
-    hash,
+    raidHash,
     targetted
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
-    const cx = SPACING / 2 + SPACING * idx
-    const handleHover = useCallback(
-        ({ clientX, currentTarget }: MouseEvent) => {
-            const containerToEdge =
-                currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
-            const xOffset = clientX - containerToEdge + SPACING
 
-            setTooltip({
-                isShowing: true,
-                activityCompleted: completed,
-                details: raidDetailsFromHash(hash),
-                startDate,
-                duration,
-                offset: {
-                    x: xOffset,
-                    y: cy
-                }
-            })
-        },
-        [setTooltip, completed, duration, hash, startDate, cy]
-    )
+    const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
+        const containerToEdge =
+            currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
+        const xOffset = clientX - containerToEdge + SPACING
+
+        setTooltip({
+            isShowing: true,
+            activityCompleted: completed,
+            details: raidDetailsFromHash(raidHash),
+            flawless,
+            startDate,
+            duration,
+            offset: {
+                x: xOffset,
+                y: centerY
+            }
+        })
+    }
 
     const handleMouseLeave = useCallback(
         ({}: MouseEvent) => {
@@ -70,9 +69,9 @@ const Dot = ({
     )
 
     const notNormal = useMemo(() => {
-        const details = raidDetailsFromHash(hash)
+        const details = raidDetailsFromHash(raidHash)
         return details.difficulty !== Difficulty.NORMAL || details.isContest(startDate)
-    }, [hash, startDate])
+    }, [raidHash, startDate])
 
     const [blinking, setBlinking] = useState<boolean>(false)
     useEffect(() => {
@@ -96,10 +95,11 @@ const Dot = ({
         }
     }, [targetted])
 
+    const centerX = SPACING / 2 + SPACING * index
     return (
         <a
             ref={ref}
-            href={`/pgcr/${id}`}
+            href={`/pgcr/${instanceId}`}
             className={[
                 styles["dot"],
                 styles["dot-hover"],
@@ -108,21 +108,20 @@ const Dot = ({
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
             <circle
-                fill={completed ? Green : Red}
+                fill={completed ? (flawless ? Teal : Green) : Red}
                 fillOpacity={0.978}
                 r={RADIUS}
-                cx={cx}
-                cy={cy}></circle>
-            {(lowman || flawless) && <Star x={cx} y={cy} spinning={lowman && flawless} />}
+                cx={centerX}
+                cy={centerY}></circle>
+            {playerCount <= 3 && <Star x={centerX} y={centerY} spinning={playerCount === 1} />}
             {notNormal && (
                 <circle
                     fill="none"
                     stroke="white"
-                    strokeWidth={RADIUS / 4}
-                    strokeOpacity={0.6}
-                    r={RADIUS}
-                    cx={cx}
-                    cy={cy}></circle>
+                    strokeWidth={RADIUS / 10}
+                    r={RADIUS * 0.95}
+                    cx={centerX}
+                    cy={centerY}></circle>
             )}
         </a>
     )

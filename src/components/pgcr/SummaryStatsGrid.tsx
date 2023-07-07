@@ -1,5 +1,5 @@
+import styles from "../../styles/pages/pgcr.module.css"
 import DestinyPGCR from "../../models/pgcr/PGCR"
-import styles from "../../styles/pgcr.module.css"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { Icons } from "../../util/presentation/icons"
 import { useLocale } from "../app/LanguageProvider"
@@ -8,7 +8,7 @@ type SummaryStatsProps = {
     activity: DestinyPGCR | null
 }
 
-const SummaryStats = ({ activity }: SummaryStatsProps) => {
+const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
     const { language, locale, strings } = useLocale()
     const stats = activity?.stats
     const statsData: {
@@ -86,4 +86,4 @@ const SummaryStats = ({ activity }: SummaryStatsProps) => {
     )
 }
 
-export default SummaryStats
+export default SummaryStatsGrid

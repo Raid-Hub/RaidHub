@@ -1,5 +1,5 @@
-import styles from "../../styles/profile.module.css"
-import { ClanBannerData } from "../../util/destiny/clanBanner"
+import styles from "../../../styles/pages/profile/profile.module.css"
+import { ClanBannerData } from "../../../util/destiny/clanBanner"
 
 type ClanBannerProps = ClanBannerData
 

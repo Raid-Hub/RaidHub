@@ -1,20 +1,17 @@
-import styles from "../../../styles/profile.module.css"
+import styles from "../../../styles/pages/profile/raids.module.css"
 import { Raid, RaidCardBackground, raidDetailsFromHash } from "../../../util/destiny/raid"
-import DotGraph from "./DotGraph"
+import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import RaidStats from "../../../models/profile/RaidStats"
-import { usePrefs } from "../../../hooks/util/usePrefs"
-import { Prefs } from "../../../util/profile/preferences"
 import { useLocale } from "../../app/LanguageProvider"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel from "./RaidTagLabel"
 
 type RaidModalProps = {
-    membershipId: string
     raid: Raid
     activities: DestinyHistoricalStatsPeriodGroup[]
     stats: RaidStats | undefined
@@ -25,7 +22,6 @@ type RaidModalProps = {
 }
 
 const RaidModal = ({
-    membershipId,
     raid,
     activities,
     stats,
@@ -35,8 +31,6 @@ const RaidModal = ({
     isLoadingReport
 }: RaidModalProps) => {
     const { strings } = useLocale()
-    const prefOptions = useRef([Prefs.FILTER] as const)
-    const { isLoading: isLoadingPrefs, prefs } = usePrefs(membershipId, prefOptions.current)
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
     const averageClear = useMemo(() => {
@@ -102,9 +96,9 @@ const RaidModal = ({
     }, [hoveredTag])
 
     return (
-        <div className={styles["raid-card"]}>
-            <div className={styles["raid-card-img-container"]}>
-                <img className={styles["top-image"]} src={RaidCardBackground[raid]} alt="" />
+        <div className={styles["card"]}>
+            <div className={styles["card-img-container"]}>
+                <img className={styles["card-background"]} src={RaidCardBackground[raid]} alt="" />
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
                         {report?.worldFirstPlacement ? (
@@ -126,7 +120,7 @@ const RaidModal = ({
                         )}
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
-                        <div className={styles["card-diamonds"]}>
+                        <div className={styles["card-challenge-tags"]}>
                             {report?.tags()?.map((tag, key) => (
                                 <RaidTagLabel
                                     type="challenge"
@@ -136,16 +130,16 @@ const RaidModal = ({
                                 />
                             ))}
                         </div>
-                        <span className={styles["raid-card-title"]}>{strings.raidNames[raid]}</span>
+                        <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                     </div>
                 </div>
             </div>
-            <div className={styles["raid-card-content"]}>
+            <div className={styles["card-content"]}>
                 <div className={styles["graph-content"]}>
-                    <DotGraph
+                    <DotGraphWrapper
+                        isLoading={isLoadingDots}
                         report={report}
-                        dots={activities.filter(prefs?.[Prefs.FILTER] ?? (() => true))}
-                        isLoading={isLoadingDots || isLoadingReport}
+                        dots={activities}
                         targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>
@@ -158,7 +152,7 @@ const RaidModal = ({
                     </div>
                 </div>
 
-                <div className={styles["bottom-timings"]}>
+                <div className={styles["timings"]}>
                     <BigNumberStatItem
                         displayValue={
                             report?.fastestFullClear

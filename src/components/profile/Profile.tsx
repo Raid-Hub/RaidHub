@@ -1,10 +1,9 @@
-import styles from "../../styles/profile.module.css"
+import styles from "../../styles/pages/profile/profile.module.css"
 import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
-import UserCard from "./UserCard"
-import ClanCard from "./ClanCard"
-import PinnedActivity from "./PinnedActivity"
-import RaidCards, { Layout } from "./raids/RaidCards"
+import UserCard from "./user/UserCard"
+import ClanCard from "./clan/ClanCard"
+import PinnedActivity from "./raids/PinnedActivity"
 import ToggleSwitch from "./raids/ToggleSwitch"
 import { useState } from "react"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
@@ -12,10 +11,15 @@ import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
 import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
-import Loading from "../global/Loading"
 import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
-import { usePlayers } from "../../hooks/raidreport/usePlayers"
-import { Banners } from "./Banners"
+import { useRaidReport } from "../../hooks/raidreport/useRaidReportData"
+import Banners from "./Banners"
+import Raids from "./raids/Raids"
+
+export enum Layout {
+    DotCharts,
+    RecentActivities
+}
 
 type ProfileProps = {
     destinyMembershipId: string
@@ -25,11 +29,12 @@ type ProfileProps = {
 
 const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileProps) => {
     // DATA HOOKS
-    const { profile, isLoading: isLoadingProfile } = useDestinyProfile({
-        destinyMembershipId,
-        membershipType,
-        errorHandler
-    })
+    const { profile: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
+        useDestinyProfile({
+            destinyMembershipId,
+            membershipType,
+            errorHandler
+        })
 
     const { profile: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
         destinyMembershipId,
@@ -37,31 +42,33 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
     })
 
     const {
-        membership,
-        destinyProfiles,
-        isLoading: isLoadingProfiles
+        bungieMemberhip,
+        destinyMemberships,
+        isLoading: isLoadingMemberships
     } = useBungieMemberships({
         destinyMembershipId,
         membershipType,
         errorHandler
     })
 
-    const { player, isLoading: isLoadingPlayer } = usePlayers({
-        destinyMembershipIds: destinyProfiles,
+    const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
+        destinyMembershipIds: destinyMemberships,
         primaryMembershipId: destinyMembershipId,
         errorHandler
     })
 
     const {
-        stats: profileStats,
-        isLoading: isLoadingProfileStats,
-        characterProfiles
-    } = useDestinyStats({ destinyProfiles, errorHandler })
+        historicalStats,
+        isLoading: isLoadingDestinyStats,
+        characterMemberships
+    } = useDestinyStats({ destinyMemberships, errorHandler })
 
     const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        characterProfiles,
+        characterMemberships,
         errorHandler
     })
+
+    const [mostRecentActivity, setMostRecentActivity] = useState<string | null>(null)
 
     // LAYOUT
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
@@ -71,7 +78,9 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         setLayout(newState)
     }
 
-    const name = profile?.userInfo.bungieGlobalDisplayName ?? profile?.userInfo.displayName
+    const name =
+        primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
+        primaryDestinyProfile?.userInfo.displayName
 
     return (
         <main className={styles["main"]}>
@@ -80,56 +89,53 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
             </Head>
             <section className={styles["user-info"]}>
                 <UserCard
-                    isLoading={isLoadingProfile}
-                    userInfo={membership ? { ...membership, ...profile?.userInfo } : undefined}
-                    socials={raidHubProfile?.socials}
-                    emblemBackgroundPath={profile?.emblemBackgroundPath}
-                    backgroundImage={raidHubProfile?.background?.replace(/;$/, "") ?? ""}
+                    isLoading={
+                        isLoadingDestinyProfile || isLoadingRaidHubProfile || isLoadingMemberships
+                    }
+                    userInfo={
+                        bungieMemberhip
+                            ? { ...bungieMemberhip, ...primaryDestinyProfile?.userInfo }
+                            : undefined
+                    }
+                    socials={raidHubProfile?.socials ?? null}
+                    emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
+                    background={raidHubProfile?.background ?? null}
                 />
-                {isLoadingPlayer ? (
-                    <Loading wrapperClass={styles["ranking-banners"]} />
-                ) : (
-                    player && (
-                        <Banners
-                            destinyMembershipId={destinyMembershipId}
-                            banners={[player.speedRank, player.clearsRank]}
-                        />
-                    )
-                )}
+                <Banners
+                    banners={raidReportData?.rankings ?? null}
+                    destinyMembershipId={destinyMembershipId}
+                    isLoading={isLoadingRaidReportData}
+                />
                 <ClanCard
                     membershipId={destinyMembershipId}
                     membershipType={membershipType}
                     errorHandler={errorHandler}
                 />
             </section>
-            {profile && (
-                <section className={styles["content"]}>
-                    <div className={styles["mid"]}>
-                        {raidHubProfile && (
-                            <PinnedActivity
-                                activityId={raidHubProfile.pinnedActivity}
-                                errorHandler={errorHandler}
-                            />
-                        )}
-                        <div className={styles["layout-toggle"]}>
-                            <span className={styles["description-toggle"]}>Raids</span>
-                            <ToggleSwitch defaultState={!!layout} onToggle={handleLayoutToggle} />
-                            <span className={styles["description-toggle"]}>History</span>
-                        </div>
-                    </div>
-                    <RaidCards
-                        {...profile.userInfo}
-                        characterProfiles={characterProfiles}
-                        isLoadingCharacters={isLoadingProfileStats}
-                        layout={layout}
-                        raidMetrics={raidMetrics}
-                        isLoadingRaidMetrics={isLoadingRaidMetrics}
-                        raidReport={player?.activities || null}
-                        isLoadingRaidReport={isLoadingPlayer}
+
+            <section className={styles["raids"]}>
+                <div className={styles["raids-top"]}>
+                    <PinnedActivity
+                        isLoading={isLoadingRaidHubProfile}
+                        activityId={raidHubProfile?.pinnedActivity ?? mostRecentActivity ?? null}
+                        isPinned={!!raidHubProfile?.pinnedActivity}
                         errorHandler={errorHandler}
                     />
-                </section>
-            )}
+                    <ToggleSwitch defaultState={!!layout} onToggle={handleLayoutToggle} />
+                </div>
+                <Raids
+                    membershipId={destinyMembershipId}
+                    characterMemberships={characterMemberships}
+                    layout={layout}
+                    raidMetrics={raidMetrics}
+                    raidReport={raidReportData?.activities || null}
+                    isLoadingRaidMetrics={isLoadingRaidMetrics}
+                    isLoadingCharacters={isLoadingDestinyStats}
+                    isLoadingRaidReport={isLoadingRaidReportData}
+                    setMostRecentActivity={setMostRecentActivity}
+                    errorHandler={errorHandler}
+                />
+            </section>
         </main>
     )
 }
