@@ -10,8 +10,7 @@ import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
-import RaidInfo from "./RaidInfo"
-import { Difficulty, Raid, raidDetailsFromHash } from "../../util/destiny/raid"
+import { Difficulty, Raid, isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
@@ -31,7 +30,8 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     readonly players: PGCRPlayer[]
     readonly startDate: Date
     readonly completionDate: Date
-    readonly details: RaidInfo
+    readonly raid: Raid
+    readonly difficulty: Difficulty
 
     constructor(data: DestinyPostGameCarnageReportData, options: PostGameCarnageReportOptions) {
         this.period = data.period
@@ -63,7 +63,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             this.startDate.getTime() +
                 this.entries[0].values.activityDurationSeconds.basic.value * 1000
         )
-        this.details = raidDetailsFromHash(`${this.hash}`)
+        ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
     }
 
     get hash(): number {
@@ -116,10 +116,10 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
-        if (this.details.raid == Raid.NA) return []
-        if (this.details.isDayOne(this.completionDate)) tags.push(Tag.DAY_ONE)
-        if (this.details.isContest(this.startDate)) {
-            switch (this.details.difficulty) {
+        if (this.raid == Raid.NA) return []
+        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
+        if (isContest(this.raid, this.startDate)) {
+            switch (this.difficulty) {
                 case Difficulty.CHALLENGEKF:
                     tags.push(Tag.CHALLENGE_KF)
                     break
@@ -131,8 +131,8 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             }
         }
         if (this.wasFresh() === false) tags.push(Tag.CHECKPOINT)
-        if (this.details.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
-        if (this.details.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
+        if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
+        if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
         if (this.playerCount === 1) tags.push(Tag.SOLO)
         else if (this.playerCount === 2) tags.push(Tag.DUO)
         else if (this.playerCount === 3) tags.push(Tag.TRIO)
@@ -144,7 +144,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     }
 
     title(strings: LocalStrings): string {
-        return addModifiers(this.details.raid, this.tags, strings)
+        return addModifiers(this.raid, this.tags, strings)
     }
 
     hydrate(data: Map<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {

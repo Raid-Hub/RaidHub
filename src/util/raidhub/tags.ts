@@ -1,11 +1,18 @@
 import { LocalStrings } from "../presentation/localized-strings"
-import { Difficulty, Raid } from "../destiny/raid"
+import {
+    Difficulty,
+    Raid,
+    RaidsWithReprisedContest,
+    ReprisedContestDifficultyDictionary,
+    ReprisedContestRaidDifficulties
+} from "../destiny/raid"
 import { LowManActivity } from "../../types/profile"
 
 export enum Tag {
     CHECKPOINT,
     DAY_ONE,
     CONTEST,
+    WEEK_ONE,
     MASTER,
     PRESTIGE,
     SOLO,
@@ -16,6 +23,40 @@ export enum Tag {
     CHALLENGE_KF,
     ABILITIES_ONLY,
     FRESH
+}
+
+export const TagForReprisedContest: Record<(typeof ReprisedContestRaidDifficulties)[number], Tag> =
+    {
+        [Difficulty.CHALLENGEVOG]: Tag.CHALLENGE_VOG,
+        [Difficulty.CHALLENGEKF]: Tag.CHALLENGE_KF
+    }
+
+export function wfRaceMode({
+    challenge,
+    raid,
+    dayOne,
+    contest,
+    weekOne
+}: {
+    raid: Raid
+    dayOne: boolean | undefined
+    challenge: boolean | undefined
+    contest: boolean | undefined
+    weekOne: boolean | undefined
+}): Tag | null {
+    if (challenge) {
+        return TagForReprisedContest[
+            ReprisedContestDifficultyDictionary[raid as (typeof RaidsWithReprisedContest)[number]]
+        ]
+    } else if (dayOne) {
+        return Tag.DAY_ONE
+    } else if (contest) {
+        return Tag.CONTEST
+    } else if (weekOne) {
+        return Tag.WEEK_ONE
+    } else {
+        return null
+    }
 }
 
 export function isBestTag(activity: LowManActivity, raid: Raid): boolean {

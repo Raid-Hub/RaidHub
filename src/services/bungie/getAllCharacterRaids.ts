@@ -2,7 +2,7 @@ import { BungieClientProtocol } from "bungie-net-core/lib/client"
 import { ActivityCollectionDictionary } from "../../types/profile"
 import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "./getRaidHistoryPage"
-import { HashDictionary, ValidRaidHash } from "../../util/destiny/raid"
+import { raidTupleFromHash } from "../../util/destiny/raid"
 
 /** Adds all raids into the dictionary */
 export async function getAllCharacterRaids({
@@ -37,8 +37,7 @@ export async function getAllCharacterRaids({
         if (!newActivities.length) break
 
         newActivities.forEach(activity => {
-            const [raid] =
-                HashDictionary[activity.activityDetails.referenceId.toString() as ValidRaidHash]
+            const [raid] = raidTupleFromHash(activity.activityDetails.referenceId.toString())
             if (
                 !dict[raid].has(activity.activityDetails.instanceId) ||
                 !!activity.values.completed.basic.value

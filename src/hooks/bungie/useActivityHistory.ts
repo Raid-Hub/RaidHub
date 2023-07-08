@@ -80,8 +80,14 @@ export const useActivityHistory: UseActivityHistory = ({ characterMemberships, e
                 )
                     .flat(2)
                     .sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime())
-                setActivitiesByRaid(dict)
                 setAllActivities(activities)
+
+                Object.values(dict).forEach(collection =>
+                    collection.sort(
+                        (a, b) => new Date(a.period).getTime() - new Date(b.period).getTime()
+                    )
+                )
+                setActivitiesByRaid(dict)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory)
             } finally {

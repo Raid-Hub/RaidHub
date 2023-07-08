@@ -27,8 +27,6 @@ export interface LocalStrings {
     tags: { [key in Tag]: string }
     loadMore: string
     difficulty: { [key in Difficulty]: string }
-    dayOne: string
-    contest: string
     killsPerMinute: string
     worldsFirstLeaderboards: string
     speedrunLeaderboards: string
@@ -82,6 +80,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.CHECKPOINT]: "Checkpoint",
             [Tag.DAY_ONE]: "Day One",
             [Tag.CONTEST]: "Contest",
+            [Tag.WEEK_ONE]: "Week One",
             [Tag.MASTER]: "Master",
             [Tag.PRESTIGE]: "Prestige",
             [Tag.SOLO]: "Solo",
@@ -102,8 +101,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGEVOG]: "Tempo's Edge",
             [Difficulty.CHALLENGEKF]: "Regicide"
         },
-        dayOne: "Day One",
-        contest: "Contest",
         killsPerMinute: "Kills / Minute",
         worldsFirstLeaderboards: "World's First Leaderboards",
         speedrunLeaderboards: "Speedrun Leaderboards",

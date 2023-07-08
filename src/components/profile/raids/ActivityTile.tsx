@@ -1,35 +1,25 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { Difficulty, RaidCardBackground } from "../../../util/destiny/raid"
-import { LocalStrings } from "../../../util/presentation/localized-strings"
+import { RaidCardBackground, RaidDifficultyTuple, raidVersion } from "../../../util/destiny/raid"
 import Link from "next/link"
-import RaidInfo from "../../../models/pgcr/RaidInfo"
+import { useLocale } from "../../app/LanguageProvider"
 
 type ActivityTileProps = {
-    strings: LocalStrings
-    info: RaidInfo
+    info: RaidDifficultyTuple
     completed: boolean
     activityId: any
+    startDate: Date
     completionDate: Date
 }
 
 const ActivityTile = ({
     info,
-    strings,
     completed,
     activityId,
+    startDate,
     completionDate
 }: ActivityTileProps) => {
-    const difficultyString = [Difficulty.CHALLENGEKF, Difficulty.CHALLENGEVOG].includes(
-        info.difficulty
-    )
-        ? strings.difficulty[info.difficulty]
-        : info.isDayOne(completionDate)
-        ? strings.dayOne
-        : info.isContest(completionDate)
-        ? strings.contest
-        : info.difficulty !== Difficulty.NORMAL
-        ? strings.difficulty[info.difficulty]
-        : ""
+    const { strings } = useLocale()
+    const difficultyString = raidVersion(info, startDate, completionDate, strings)
     return (
         <Link
             href={`/pgcr/${activityId}`}
@@ -37,12 +27,12 @@ const ActivityTile = ({
             rel="noopener noreferrer"
             className={styles["activity"]}>
             <img
-                src={RaidCardBackground[info.raid]}
-                alt={`Raid card for ${strings.raidNames[info.raid]}`}
+                src={RaidCardBackground[info[0]]}
+                alt={`Raid card for ${strings.raidNames[info[0]]}`}
                 className={styles["activity-content-img"]}
             />
             <p className={styles["activity-title"]}>
-                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[info.raid]}`}
+                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[info[0]]}`}
             </p>
 
             <div className={styles["success-layer"]}>

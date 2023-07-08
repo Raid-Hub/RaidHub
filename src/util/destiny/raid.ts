@@ -1,6 +1,6 @@
 import { Flatten } from "../../types/generic"
 import { HTMLAttributes } from "react"
-import RaidInfo from "../../models/pgcr/RaidInfo"
+import { LocalStrings } from "../presentation/localized-strings"
 import { Tag } from "../raidhub/tags"
 
 export const enum Raid {
@@ -19,7 +19,17 @@ export const enum Raid {
     ROOT_OF_NIGHTMARES
 }
 
-export const AllRaids: Raid[] = [
+export const enum Difficulty {
+    NORMAL,
+    PRESTIGE,
+    MASTER,
+    CONTEST,
+    CHALLENGEVOG,
+    CHALLENGEKF
+}
+
+export type AllRaidsUnion = (typeof AllRaids)[number]
+export const AllRaids = [
     Raid.ROOT_OF_NIGHTMARES,
     Raid.KINGS_FALL,
     Raid.VOW_OF_THE_DISCIPLE,
@@ -32,28 +42,78 @@ export const AllRaids: Raid[] = [
     Raid.SPIRE_OF_STARS,
     Raid.EATER_OF_WORLDS,
     Raid.LEVIATHAN
-]
+] as const
 
-export const enum Difficulty {
-    NORMAL,
-    PRESTIGE,
-    MASTER,
-    CONTEST,
-    CHALLENGEVOG,
-    CHALLENGEKF
-}
-
-export const CommonRaidDifficulties: Difficulty[] = [
+export const CommonRaidDifficulties = [
     Difficulty.NORMAL,
     Difficulty.PRESTIGE,
     Difficulty.MASTER
-]
+] as const
 
-export const ContestRaidDifficulties: Difficulty[] = [
+export const NoContestRaids = [
+    Raid.LEVIATHAN,
+    Raid.EATER_OF_WORLDS,
+    Raid.SPIRE_OF_STARS,
+    Raid.LAST_WISH,
+    Raid.SCOURGE_OF_THE_PAST
+] as const
+type ContestRaidsUnion = Exclude<AllRaidsUnion, (typeof NoContestRaids)[number]>
+
+export const RaidsWithReprisedContest = [Raid.VAULT_OF_GLASS, Raid.KINGS_FALL] as const
+
+export const ReprisedContestRaidDifficulties = [
     Difficulty.CHALLENGEVOG,
     Difficulty.CHALLENGEKF
-]
+] as const
 
+export const ReprisedContestDifficultyDictionary: Record<
+    (typeof RaidsWithReprisedContest)[number],
+    (typeof ReprisedContestRaidDifficulties)[number]
+> = {
+    [Raid.VAULT_OF_GLASS]: Difficulty.CHALLENGEVOG,
+    [Raid.KINGS_FALL]: Difficulty.CHALLENGEKF
+}
+
+export function isDayOne(raid: Raid, ended: Date): boolean {
+    if (DayOneEnd[raid as AllRaidsUnion] === undefined) {
+        return false
+    } else {
+        return ended.getTime() <= DayOneEnd[raid as AllRaidsUnion]!.getTime()
+    }
+}
+
+export function isContest(raid: Raid, started: Date): boolean {
+    if (ContestEnd[raid as ContestRaidsUnion] === undefined) {
+        return false
+    } else {
+        return started.getTime() < ContestEnd[raid as ContestRaidsUnion].getTime()
+    }
+}
+
+export function isWeekOne(raid: Raid, ended: Date): boolean {
+    return NoContestRaids.includes(raid as (typeof NoContestRaids)[number])
+}
+
+export function raidVersion(
+    [raid, difficulty]: RaidDifficultyTuple,
+    startDate: Date,
+    endDate: Date,
+    strings: LocalStrings
+): string {
+    if (
+        ReprisedContestRaidDifficulties.includes(
+            difficulty as (typeof ReprisedContestRaidDifficulties)[number]
+        )
+    ) {
+        return strings.difficulty[difficulty]
+    } else if (isDayOne(raid, endDate)) {
+        return strings.tags[Tag.DAY_ONE]
+    } else if (isContest(raid, startDate)) {
+        return strings.difficulty[Difficulty.CONTEST]
+    } else {
+        return strings.difficulty[difficulty]
+    }
+}
 /**
  * This constant is where to start when new raid hashes should be added.
  * TypeScript will catch everything else and show you what else needs to be updated.
@@ -148,7 +208,7 @@ export type ValidRaidHash = {
 export type RaidDifficultyTuple = [name: Raid, difficulty: Difficulty]
 
 /** Do not edit this list first, edit the mappings first */
-export const HashDictionary: {
+const HashDictionary: {
     [K in ValidRaidHash]: RaidDifficultyTuple
 } = {
     "89727599": [Raid.LEVIATHAN, Difficulty.NORMAL],
@@ -216,14 +276,8 @@ export const HashDictionary: {
 
 export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
-export function raidDetailsFromHash(hash: string): RaidInfo {
-    return new RaidInfo(HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL])
-}
-
-export function wfRaceMode(raid: Raid): Tag {
-    if (raid === Raid.KINGS_FALL) return Tag.CHALLENGE_KF
-    else if (raid === Raid.VAULT_OF_GLASS) return Tag.CHALLENGE_VOG
-    else return Tag.DAY_ONE
+export function raidTupleFromHash(hash: string): RaidDifficultyTuple {
+    return HashDictionary[hash as ValidRaidHash] ?? [Raid.NA, Difficulty.NORMAL]
 }
 
 export const RaidCardBackground: { [key in Raid]: string } = {
@@ -315,7 +369,15 @@ export const RaidBanner: { [key in Raid]: string } = {
     [Raid.NA]: ""
 }
 
-export const ContestEnd: Partial<Record<Raid, Date>> = {
+export const WeekOneEnd: Record<(typeof NoContestRaids)[number], Date> = {
+    [Raid.LEVIATHAN]: new Date("September 19, 2017 10:00:00 AM PDT"),
+    [Raid.EATER_OF_WORLDS]: new Date("December 12th, 2017 10:00:00 AM PST"),
+    [Raid.SPIRE_OF_STARS]: new Date("May 15, 2018 10:00:00 AM PDT"),
+    [Raid.LAST_WISH]: new Date("September 18, 2018 10:00:00 AM PDT"),
+    [Raid.SCOURGE_OF_THE_PAST]: new Date("December 11, 2018 9:00:00 AM PST")
+}
+
+export const ContestEnd: Record<ContestRaidsUnion, Date> = {
     [Raid.CROWN_OF_SORROW]: new Date("June 5, 2019 4:00:00 PM PDT"),
     [Raid.GARDEN_OF_SALVATION]: new Date("October 6, 2019 10:00:00 AM PDT"),
     [Raid.DEEP_STONE_CRYPT]: new Date("November 22, 2020 10:00:00 AM PST"),
@@ -325,7 +387,7 @@ export const ContestEnd: Partial<Record<Raid, Date>> = {
     [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST")
 }
 
-export const DayOneEnd: Partial<Record<Raid, Date>> = {
+export const DayOneEnd: Record<AllRaidsUnion, Date> = {
     [Raid.LEVIATHAN]: new Date("September 14, 2017 10:00:00 AM PDT"),
     [Raid.EATER_OF_WORLDS]: new Date("December 9th, 2017 10:00:00 AM PST"),
     [Raid.SPIRE_OF_STARS]: new Date("May 12, 2018 10:00:00 AM PDT"),

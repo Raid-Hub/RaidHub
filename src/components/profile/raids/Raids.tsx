@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
-import { AllRaids, Raid, raidDetailsFromHash } from "../../../util/destiny/raid"
+import { AllRaids, Raid, raidTupleFromHash } from "../../../util/destiny/raid"
 import RaidCard from "./RaidCard"
 import ActivityTile from "./ActivityTile"
 import { useEffect, useMemo, useState } from "react"
@@ -56,10 +56,12 @@ const Raids = ({
     const [pages, setPages] = useState<number>(1)
 
     useEffect(() => {
-        setMostRecentActivity(
-            allActivities?.find(a => !!a.values.completed.basic.value)?.activityDetails
-                .instanceId ?? null
-        )
+        if (allActivities) {
+            setMostRecentActivity(
+                allActivities.find(a => !!a.values.completed.basic.value)?.activityDetails
+                    .instanceId ?? null
+            )
+        }
     }, [allActivities, setMostRecentActivity])
 
     const allActivitiesFiltered = useMemo(() => {
@@ -94,7 +96,12 @@ const Raids = ({
                             key={idx}
                             raid={raid}
                             activities={activitiesByRaidFiltered?.get(raid) ?? []}
-                            isLoadingDots={isLoadingActivities || isLoadingPrefs}
+                            isLoadingDots={
+                                !allActivities ||
+                                isLoadingActivities ||
+                                isLoadingPrefs ||
+                                isLoadingCharacters
+                            }
                             isLoadingReport={isLoadingRaidReport}
                         />
                     ))}
@@ -116,12 +123,17 @@ const Raids = ({
                                       .map(({ activityDetails, values, period }, key) => (
                                           <ActivityTile
                                               key={key}
-                                              info={raidDetailsFromHash(
+                                              info={raidTupleFromHash(
                                                   activityDetails.referenceId.toString()
                                               )}
-                                              strings={strings}
                                               completed={!!values.completed.basic.value}
                                               activityId={activityDetails.instanceId}
+                                              startDate={
+                                                  new Date(
+                                                      new Date(period).getTime() +
+                                                          values.activityDurationSeconds.basic.value
+                                                  )
+                                              }
                                               completionDate={new Date(period)}
                                           />
                                       ))}

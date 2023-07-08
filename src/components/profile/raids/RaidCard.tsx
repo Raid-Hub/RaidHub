@@ -1,5 +1,15 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { Raid, RaidCardBackground, raidDetailsFromHash } from "../../../util/destiny/raid"
+import {
+    Difficulty,
+    Raid,
+    RaidCardBackground,
+    ReprisedContestDifficultyDictionary,
+    ReprisedContestRaidDifficulties,
+    isContest,
+    isDayOne,
+    isWeekOne,
+    raidTupleFromHash
+} from "../../../util/destiny/raid"
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
@@ -9,7 +19,7 @@ import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import { medianElement } from "../../../util/math"
-import RaidTagLabel from "./RaidTagLabel"
+import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
 
 type RaidModalProps = {
     raid: Raid
@@ -53,36 +63,51 @@ const RaidModal = ({
         }
     }, [activities, report])
 
-    const placementClear = useMemo(() => {
-        if (report?.worldFirstPlacement) {
-            return activities[0]
-        } else {
-            return undefined
+    const contestFirstClear: (RaceTag & { instanceId?: string }) | null = useMemo(() => {
+        const contestDifficulty:
+            | (typeof ReprisedContestRaidDifficulties)[number]
+            | Difficulty.NORMAL =
+            // @ts-ignore
+            ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
+        const first = activities.find(
+            a =>
+                !!a.values.completed.basic.value &&
+                raidTupleFromHash(a.activityDetails.directorActivityHash.toString())[1] ===
+                    contestDifficulty
+        )
+        const isChallenge = contestDifficulty !== Difficulty.NORMAL
+        if (!first) {
+            return report?.worldFirstPlacement
+                ? {
+                      raid,
+                      challenge: isChallenge,
+                      dayOne: false,
+                      contest: false,
+                      weekOne: false
+                  }
+                : null
         }
-    }, [activities, report])
-
-    const contestFirstClear = useMemo(() => {
-        const first = activities.find(a => !!a.values.completed.basic.value)
-        if (!first) return
-        const details = raidDetailsFromHash(first.activityDetails.directorActivityHash.toString())
         const end = new Date(
             new Date(first.period).getTime() +
                 first.values.activityDurationSeconds.basic.value * 1000
         )
-        if (details.isDayOne(end)) {
+        const start = new Date(first.period)
+        const contest = isContest(raid, start)
+        const weekOne = isWeekOne(raid, end)
+        if (!contest && !weekOne) {
+            return null
+        } else {
             return {
-                instanceId: first.activityDetails.instanceId,
-                raid: raid
-            }
-        } else if (details.isContest(end)) {
-            const start = new Date(first.period)
-            return {
-                instanceId: first.activityDetails.instanceId,
-                raid: raid,
-                asterisk: !details.isContest(start)
-            }
+                raid,
+                dayOne: isDayOne(raid, end),
+                challenge: isChallenge,
+                contest,
+                weekOne,
+                asterisk: contest && !isContest(raid, end), // completed after contest was over
+                instanceId: first.activityDetails.instanceId
+            } as RaceTag & { instanceId: string }
         }
-    }, [activities, raid])
+    }, [activities, raid, report?.worldFirstPlacement])
 
     useEffect(() => {
         // Set a new timeout
@@ -101,22 +126,13 @@ const RaidModal = ({
                 <img className={styles["card-background"]} src={RaidCardBackground[raid]} alt="" />
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
-                        {report?.worldFirstPlacement ? (
+                        {contestFirstClear && (
                             <RaidTagLabel
                                 type="race"
-                                raid={raid}
-                                instanceId={placementClear?.activityDetails.instanceId}
+                                {...contestFirstClear}
                                 placement={report?.worldFirstPlacement ?? undefined}
                                 scrollToDot={setHoveredTag}
                             />
-                        ) : (
-                            contestFirstClear && (
-                                <RaidTagLabel
-                                    type="race"
-                                    {...contestFirstClear}
-                                    scrollToDot={setHoveredTag}
-                                />
-                            )
                         )}
                     </div>
                     <div className={styles["img-overlay-bottom"]}>

@@ -27,11 +27,11 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
-                        <span>
-                            {pgcrLoadingState === Loading.LOADING
-                                ? "Loading..."
-                                : strings.raidNames[activity!.details.raid]}
-                        </span>
+                        {pgcrLoadingState === Loading.LOADING || !activity ? (
+                            <span>{strings.loading}</span>
+                        ) : (
+                            <span>{strings.raidNames[activity.raid]}</span>
+                        )}
                     </div>
                 </div>
                 <div className={styles["right-info"]}>

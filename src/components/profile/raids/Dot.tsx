@@ -1,8 +1,9 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { RADIUS, SPACING, STAR_OFFSETS } from "./DotGraph"
+import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
-import { Difficulty, ValidRaidHash, raidDetailsFromHash } from "../../../util/destiny/raid"
+import { Difficulty, ValidRaidHash, isContest, raidTupleFromHash } from "../../../util/destiny/raid"
+import { Icons } from "../../../util/presentation/icons"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -16,6 +17,7 @@ type DotProps = {
     flawless: boolean
     playerCount: number
     startDate: Date
+    endDate: Date
     duration: string
     centerY: number
     targetted: boolean
@@ -34,10 +36,13 @@ const Dot = ({
     tooltipData,
     duration,
     startDate,
+    endDate,
     raidHash,
     targetted
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
+
+    const details = useMemo(() => raidTupleFromHash(raidHash), [raidHash])
 
     const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
         const containerToEdge =
@@ -47,8 +52,9 @@ const Dot = ({
         setTooltip({
             isShowing: true,
             activityCompleted: completed,
-            details: raidDetailsFromHash(raidHash),
+            details,
             flawless,
+            endDate,
             startDate,
             duration,
             offset: {
@@ -67,11 +73,6 @@ const Dot = ({
         },
         [tooltipData, setTooltip]
     )
-
-    const notNormal = useMemo(() => {
-        const details = raidDetailsFromHash(raidHash)
-        return details.difficulty !== Difficulty.NORMAL || details.isContest(startDate)
-    }, [raidHash, startDate])
 
     const [blinking, setBlinking] = useState<boolean>(false)
     useEffect(() => {
@@ -107,21 +108,38 @@ const Dot = ({
             ].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
-            <circle
-                fill={completed ? (flawless ? Teal : Green) : Red}
-                fillOpacity={0.978}
-                r={RADIUS}
-                cx={centerX}
-                cy={centerY}></circle>
-            {playerCount <= 3 && <Star x={centerX} y={centerY} spinning={playerCount === 1} />}
-            {notNormal && (
+            {
+                <circle
+                    fill={completed ? (flawless ? Teal : Green) : Red}
+                    fillOpacity={0.978}
+                    r={RADIUS}
+                    cx={centerX}
+                    cy={centerY}
+                />
+            }
+            {playerCount <= 3 ? (
+                <Star x={centerX} y={centerY} spinning={playerCount === 1} />
+            ) : (
+                isContest(details[0], startDate) && (
+                    <image
+                        width={2 * SKULL_FACTOR * RADIUS}
+                        height={2 * SKULL_FACTOR * RADIUS}
+                        className={styles["contest-skull"]}
+                        href={Icons.SKULL}
+                        x={centerX - SKULL_FACTOR * RADIUS}
+                        y={centerY - SKULL_FACTOR * RADIUS}
+                    />
+                )
+            )}
+            {details[1] === Difficulty.MASTER && (
                 <circle
                     fill="none"
                     stroke="white"
                     strokeWidth={RADIUS / 10}
                     r={RADIUS * 0.95}
                     cx={centerX}
-                    cy={centerY}></circle>
+                    cy={centerY}
+                />
             )}
         </a>
     )

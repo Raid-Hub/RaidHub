@@ -1,4 +1,4 @@
-import styles from "../../styles/pages/profile/profile.module.css"
+import styles from "../../../styles/pages/profile/banners.module.css"
 import { ReactNode } from "react"
 
 type RankingBannerProps = {

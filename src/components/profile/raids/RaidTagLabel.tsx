@@ -1,13 +1,22 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
-import { Difficulty, Raid, wfRaceMode } from "../../../util/destiny/raid"
+import { Difficulty, Raid } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"
 import { useCallback, useState } from "react"
 import { Icons } from "../../../util/presentation/icons"
 import { RaidTag } from "../../../types/profile"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
-import { Tag } from "../../../util/raidhub/tags"
+import { Tag, wfRaceMode } from "../../../util/raidhub/tags"
 
+export type RaceTag = {
+    placement?: number
+    asterisk?: boolean
+    raid: Raid
+    challenge: boolean
+    dayOne: boolean
+    contest: boolean
+    weekOne: boolean
+}
 type RaidTagLabelProps = {
     instanceId?: string
     scrollToDot: (instanceId: string) => void
@@ -15,7 +24,9 @@ type RaidTagLabelProps = {
     | ({
           type: "challenge"
       } & RaidTag)
-    | { type: "race"; placement?: number; asterisk?: boolean; raid: Raid }
+    | ({
+          type: "race"
+      } & RaceTag)
 )
 const RaidTagLabel = (props: RaidTagLabelProps) => {
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
@@ -51,15 +62,13 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
 
 const InnerTag = (props: RaidTagLabelProps) => {
     const { strings } = useLocale()
+    const label =
+        props.type === "challenge"
+            ? getChallengeLabel(props, strings)
+            : getRaceLabel(props, strings)
     return (
         <>
-            <span>
-                {props.type === "challenge"
-                    ? getChallengeLabel(props, strings)
-                    : `${strings.tags[wfRaceMode(props.raid)]}${props.asterisk ? "*" : ""}${
-                          props.placement ? ` #${props.placement}` : ""
-                      }`}
-            </span>
+            {label && <span>{label}</span>}
             {props.type === "challenge" && props.bestPossible && (
                 <img src={Icons.FLAWLESS_DIAMOND} alt="mastery diamond" />
             )}
@@ -67,7 +76,18 @@ const InnerTag = (props: RaidTagLabelProps) => {
     )
 }
 
-function getChallengeLabel(tag: RaidTag, strings: LocalStrings) {
+function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
+    const tag = wfRaceMode(props)
+    if (tag) {
+        return `${strings.tags[tag]}${props.asterisk ? "*" : ""}${
+            props.placement ? ` #${props.placement}` : ""
+        }`
+    } else {
+        return null
+    }
+}
+
+function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string {
     const descriptors: string[] = []
     if (tag.fresh && !tag.flawless) descriptors.push(strings.tags[Tag.FRESH])
     switch (tag.playerCount) {

@@ -18,16 +18,14 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
         <main className={styles["main"]}>
             <Head>
                 <title>
-                    {pgcr?.details?.raid
-                        ? `${Short[pgcr.details.raid]} ${activityId} | RaidHub`
-                        : "RaidHub"}
+                    {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
             <section className={styles["summary-card"]}>
-                <div className="background-img" style={Backdrop[pgcr?.details?.raid ?? Raid.NA]} />
+                <div className="background-img" style={Backdrop[pgcr?.raid ?? Raid.NA]} />
                 <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                 <ParticipantsSection
-                    raid={pgcr?.details?.raid ?? Raid.NA}
+                    raid={pgcr?.raid ?? Raid.NA}
                     players={pgcr?.players ?? []}
                     characters={pgcr?.entries ?? []}
                     pgcrLoadingState={pgcrLoadingState}

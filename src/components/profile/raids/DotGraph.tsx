@@ -5,7 +5,6 @@ import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../util/destiny/raid"
-import RaidInfo from "../../../models/pgcr/RaidInfo"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import Loading from "../../global/Loading"
 
@@ -35,6 +34,9 @@ export const STAR_OFFSETS = [
     [-dxArm, -dyArm], // left arm
     [dxLeg, dyLeg] // right leg
 ] as const
+
+// SKULL
+export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
@@ -93,8 +95,9 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
         activityCompleted: false,
         flawless: false,
         startDate: new Date(),
+        endDate: new Date(),
         duration: "",
-        details: new RaidInfo([0, 0])
+        details: [0, 0]
     })
 
     return (
@@ -116,28 +119,32 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
                         y2={LINE_Y}
                         style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                     />
-                    {dots.map((dot, idx) => (
+                    {dots.map(({ period, activityDetails, values }, idx) => (
                         <Dot
                             key={idx}
                             index={idx}
-                            instanceId={dot.activityDetails.instanceId}
+                            instanceId={activityDetails.instanceId}
                             raidHash={
-                                dot.activityDetails.directorActivityHash.toString() as ValidRaidHash
+                                activityDetails.directorActivityHash.toString() as ValidRaidHash
                             }
-                            completed={!!dot.values.completed.basic.value}
-                            flawless={
-                                !!report?.flawlessActivities.get(dot.activityDetails.instanceId)
-                            }
+                            completed={!!values.completed.basic.value}
+                            flawless={!!report?.flawlessActivities.get(activityDetails.instanceId)}
                             playerCount={
-                                report?.lowmanActivities.get(dot.activityDetails.instanceId)
+                                report?.lowmanActivities.get(activityDetails.instanceId)
                                     ?.playerCount ?? 6
                             }
-                            duration={dot.values.activityDurationSeconds.basic.displayValue}
-                            startDate={new Date(dot.period)}
-                            centerY={getHeight(dot.values.activityDurationSeconds.basic.value)}
+                            duration={values.activityDurationSeconds.basic.displayValue}
+                            startDate={new Date(period)}
+                            endDate={
+                                new Date(
+                                    new Date(period).getTime() +
+                                        values.activityDurationSeconds.basic.value * 1000
+                                )
+                            }
+                            centerY={getHeight(values.activityDurationSeconds.basic.value)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            targetted={targetDot === dot.activityDetails.instanceId}
+                            targetted={targetDot === activityDetails.instanceId}
                         />
                     ))}
                 </svg>

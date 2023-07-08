@@ -1,13 +1,13 @@
 import RaidReportData from "../../models/profile/RaidReportData"
 import RaidReportDataForDifficulty from "../../models/profile/RaidReportDataForDifficulty"
 import { RaidReportHashSet, RaidReportPlayerValues } from "../../types/raidreport"
-import { HashDictionary, Raid, RaidDifficultyTuple } from "../destiny/raid"
+import { Raid, RaidDifficultyTuple, raidTupleFromHash } from "../destiny/raid"
 
 export function mergeActivities(activities: RaidReportHashSet[]): Map<Raid, RaidReportData> {
     const buckets = new Map<string, RaidReportPlayerValues[]>()
     activities.forEach(({ activityHash, values }) => {
         try {
-            const key = HashDictionary[activityHash].join("+")
+            const key = raidTupleFromHash(activityHash).join("+")
             if (buckets.has(key)) {
                 buckets.get(key)!.push(values)
             } else {

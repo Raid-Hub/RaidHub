@@ -9,7 +9,7 @@ import { useLocale } from "../../app/LanguageProvider"
 
 type PinnedActivityProps = {
     isLoading: boolean
-    activityId: string | null
+    activityId: string | null | undefined
     isPinned: boolean
     errorHandler: ErrorHandler
 }
@@ -30,7 +30,7 @@ const PinnedActivity = ({
                 <div
                     className={["background-img", styles["pinned-background"]].join(" ")}
                     style={{
-                        backgroundImage: `url('${RaidBanner[pgcr.details.raid]}')`
+                        backgroundImage: `url('${RaidBanner[pgcr.raid]}')`
                     }}
                 />
                 {isPinned ? (

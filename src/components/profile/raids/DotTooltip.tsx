@@ -1,11 +1,10 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useMemo } from "react"
-import { Difficulty } from "../../../util/destiny/raid"
+import { RaidDifficultyTuple, raidVersion } from "../../../util/destiny/raid"
 import { getRelativeTime } from "../../../util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LanguageProvider"
 import { Green, Red, Teal } from "./Dot"
-import RaidInfo from "../../../models/pgcr/RaidInfo"
 
 export type DotTooltipProps = {
     offset: {
@@ -16,8 +15,9 @@ export type DotTooltipProps = {
     activityCompleted: boolean
     flawless: boolean
     startDate: Date
+    endDate: Date
     duration: string
-    details: RaidInfo
+    details: RaidDifficultyTuple
 }
 
 const DotTooltip = ({
@@ -26,11 +26,16 @@ const DotTooltip = ({
     activityCompleted,
     flawless,
     startDate,
+    endDate,
     duration,
     details
 }: DotTooltipProps) => {
     const { strings } = useLocale()
-    const dateString = useMemo(() => getRelativeTime(startDate), [startDate])
+    const dateString = useMemo(() => getRelativeTime(endDate), [endDate])
+    const difficultyString = useMemo(
+        () => raidVersion(details, startDate, endDate, strings),
+        [details, endDate, startDate, strings]
+    )
 
     return (
         <div
@@ -46,15 +51,7 @@ const DotTooltip = ({
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
             {/* <div>{strings.raidNames[raid]}</div> */}
-            <div>
-                {
-                    strings.difficulty[
-                        details.difficulty === Difficulty.NORMAL && details.isContest(startDate)
-                            ? Difficulty.CONTEST
-                            : details.difficulty
-                    ]
-                }
-            </div>
+            <div>{difficultyString}</div>
         </div>
     )
 }

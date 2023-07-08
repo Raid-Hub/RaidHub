@@ -13,7 +13,7 @@ import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
 import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "../../hooks/raidreport/useRaidReportData"
-import Banners from "./Banners"
+import Banners from "./banners/Banners"
 import Raids from "./raids/Raids"
 
 export enum Layout {
@@ -68,7 +68,9 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         errorHandler
     })
 
-    const [mostRecentActivity, setMostRecentActivity] = useState<string | null>(null)
+    const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(
+        undefined
+    )
 
     // LAYOUT
     const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
@@ -116,8 +118,16 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
             <section className={styles["raids"]}>
                 <div className={styles["raids-top"]}>
                     <PinnedActivity
-                        isLoading={isLoadingRaidHubProfile}
-                        activityId={raidHubProfile?.pinnedActivity ?? mostRecentActivity ?? null}
+                        isLoading={
+                            raidHubProfile?.pinnedActivity !== null
+                                ? isLoadingRaidHubProfile
+                                : mostRecentActivity === undefined
+                        }
+                        activityId={
+                            raidHubProfile?.pinnedActivity !== null
+                                ? raidHubProfile?.pinnedActivity
+                                : mostRecentActivity
+                        }
                         isPinned={!!raidHubProfile?.pinnedActivity}
                         errorHandler={errorHandler}
                     />

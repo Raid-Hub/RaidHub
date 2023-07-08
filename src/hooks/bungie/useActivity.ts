@@ -6,7 +6,7 @@ import DestinyPGCR from "../../models/pgcr/PGCR"
 import { useBungieClient } from "../../components/app/TokenManager"
 
 type useActivityParams = {
-    activityId: string | null
+    activityId: string | null | undefined
     errorHandler: ErrorHandler
 }
 type UseActivity = {
