@@ -1,7 +1,7 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import Head from "next/head"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
-import { Backdrop, Raid, Short } from "../../util/destiny/raid"
+import { Backdrop, Raid, Short } from "../../types/raids"
 import { ErrorHandler } from "../../types/generic"
 import ActivityHeader from "./ActivityHeader"
 import ParticipantsSection from "./ParticipantsSection"

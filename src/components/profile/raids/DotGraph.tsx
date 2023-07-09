@@ -4,7 +4,7 @@ import { median } from "../../../util/math"
 import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
-import { ValidRaidHash } from "../../../util/destiny/raid"
+import { ValidRaidHash } from "../../../types/raids"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import Loading from "../../global/Loading"
 

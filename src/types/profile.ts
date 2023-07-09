@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { Difficulty, Raid } from "../util/destiny/raid"
+import { Difficulty, Raid } from "./raids"
 import RaidStats from "../models/profile/RaidStats"
 import { Socials } from "../util/profile/socials"
 import { Tag } from "../util/raidhub/tags"

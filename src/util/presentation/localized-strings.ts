@@ -1,5 +1,5 @@
 import { Tag } from "../raidhub/tags"
-import { Difficulty, Raid } from "../destiny/raid"
+import { Difficulty, Raid } from "../../types/raids"
 import { RankingBannerType } from "../../types/profile"
 export enum SupportedLanguage {
     ENGLISH = "en"

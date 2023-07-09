@@ -5,7 +5,7 @@ import {
     SetOfLowmans
 } from "../../types/profile"
 import { RaidReportPlayerValues } from "../../types/raidreport"
-import { Difficulty } from "../../util/destiny/raid"
+import { Difficulty } from "../../types/raids"
 
 export default class RaidReportDataForDifficulty implements IRaidReportData {
     difficulty: Difficulty

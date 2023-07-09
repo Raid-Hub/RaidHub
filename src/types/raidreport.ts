@@ -1,4 +1,4 @@
-import { ValidRaidHash } from "../util/destiny/raid"
+import { ValidRaidHash } from "./raids"
 
 export type RaidReportHashSet = {
     activityHash: ValidRaidHash

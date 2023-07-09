@@ -1,7 +1,8 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { RaidCardBackground, RaidDifficultyTuple, raidVersion } from "../../../util/destiny/raid"
+import { RaidCardBackground, RaidDifficultyTuple } from "../../../types/raids"
 import Link from "next/link"
 import { useLocale } from "../../app/LanguageProvider"
+import { raidVersion } from "../../../util/destiny/raid"
 
 type ActivityTileProps = {
     info: RaidDifficultyTuple

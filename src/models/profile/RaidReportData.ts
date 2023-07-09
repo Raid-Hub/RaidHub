@@ -6,7 +6,7 @@ import {
     SetOfLowmans
 } from "../../types/profile"
 import { RaidReportPlayerValues } from "../../types/raidreport"
-import { Difficulty, Raid } from "../../util/destiny/raid"
+import { Difficulty, Raid } from "../../types/raids"
 import { isBestTag } from "../../util/raidhub/tags"
 import RaidReportDataForDifficulty from "./RaidReportDataForDifficulty"
 

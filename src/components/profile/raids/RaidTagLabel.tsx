@@ -1,6 +1,6 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
-import { Difficulty, Raid } from "../../../util/destiny/raid"
+import { Difficulty, Raid } from "../../../types/raids"
 import { useLocale } from "../../app/LanguageProvider"
 import { useCallback, useState } from "react"
 import { Icons } from "../../../util/presentation/icons"

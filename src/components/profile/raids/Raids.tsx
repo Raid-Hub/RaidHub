@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
-import { AllRaids, Raid, raidTupleFromHash } from "../../../util/destiny/raid"
+import { AllRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import ActivityTile from "./ActivityTile"
 import { useEffect, useMemo, useState } from "react"
@@ -13,6 +13,7 @@ import { ErrorHandler } from "../../../types/generic"
 import { useLocale } from "../../app/LanguageProvider"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import { Layout } from "../Profile"
+import { raidTupleFromHash } from "../../../util/destiny/raid"
 
 const CARDS_PER_PAGE = 60
 

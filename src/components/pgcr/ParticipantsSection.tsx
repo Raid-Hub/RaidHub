@@ -1,6 +1,6 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { useState } from "react"
-import { Raid } from "../../util/destiny/raid"
+import { Raid } from "../../types/raids"
 import { Icons } from "../../util/presentation/icons"
 import StatCards from "./PlayerStatCells"
 import { ErrorHandler, Loading } from "../../types/generic"

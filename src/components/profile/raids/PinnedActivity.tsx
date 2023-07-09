@@ -1,5 +1,5 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { RaidBanner } from "../../../util/destiny/raid"
+import { RaidBanner } from "../../../types/raids"
 import Loading from "../../global/Loading"
 import { Icons } from "../../../util/presentation/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"

@@ -1,9 +1,10 @@
 import RaidStats from "../../models/profile/RaidStats"
-import { AllValidHashes, Raid, RaidDifficultyTuple, ValidRaidHash, raidTupleFromHash } from "./raid"
+import { Raid, RaidDifficultyTuple, ValidRaidHash } from "../../types/raids"
 import {
     DestinyAggregateActivityStats,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/lib/models"
+import { AllValidHashes, raidTupleFromHash } from "./raid"
 
 export type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
 
@@ -25,7 +26,9 @@ export function raidStatsMap(stats: DestinyAggregateActivityStats[]): Map<Raid, 
     const raidMap = new Map<Raid, RaidStats>()
     map.forEach((values, key) => {
         // deconstruct the key
-        const [raid, difficulty] = key.split("+").map(char => parseInt(char)) as RaidDifficultyTuple
+        const [raid, difficulty] = key
+            .split("+")
+            .map(char => parseInt(char)) as unknown as RaidDifficultyTuple
         if (raidMap.has(raid)) {
             raidMap.get(raid)!.add(difficulty, values)
         } else {

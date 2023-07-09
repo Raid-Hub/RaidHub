@@ -5,7 +5,7 @@ import {
     RaidsWithReprisedContest,
     ReprisedContestDifficultyDictionary,
     ReprisedContestRaidDifficulties
-} from "../destiny/raid"
+} from "../../types/raids"
 import { LowManActivity } from "../../types/profile"
 
 export enum Tag {

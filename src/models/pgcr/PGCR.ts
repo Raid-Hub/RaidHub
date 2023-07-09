@@ -10,11 +10,12 @@ import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
-import { Difficulty, Raid, isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
+import { Difficulty, Raid } from "../../types/raids"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
+import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean

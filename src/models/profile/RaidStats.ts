@@ -1,4 +1,4 @@
-import { Difficulty } from "../../util/destiny/raid"
+import { Difficulty } from "../../types/raids"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"
 import { DestinyHistoricalStatsDictionary } from "../../util/destiny/raidStatsMap"
 import { IRaidStats } from "../../types/profile"

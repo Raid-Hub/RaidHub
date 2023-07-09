@@ -4,12 +4,8 @@ import {
     Raid,
     RaidCardBackground,
     ReprisedContestDifficultyDictionary,
-    ReprisedContestRaidDifficulties,
-    isContest,
-    isDayOne,
-    isWeekOne,
-    raidTupleFromHash
-} from "../../../util/destiny/raid"
+    ReprisedContestRaidDifficulties
+} from "../../../types/raids"
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
@@ -20,6 +16,7 @@ import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportData from "../../../models/profile/RaidReportData"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
+import { isContest, isDayOne, isWeekOne, raidTupleFromHash } from "../../../util/destiny/raid"
 
 type RaidModalProps = {
     raid: Raid
