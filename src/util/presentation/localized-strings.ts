@@ -60,6 +60,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.VOW_OF_THE_DISCIPLE]: "Vow of the Disciple",
             [Raid.KINGS_FALL]: "King's Fall",
             [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
+            [Raid.CROTAS_END]: "Crota's End",
             [Raid.NA]: "Non-Raid"
         },
         loading: "Loading...",
@@ -128,6 +129,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.VOW_OF_THE_DISCIPLE]: "Rhulk",
             [Raid.KINGS_FALL]: "Oryx",
             [Raid.ROOT_OF_NIGHTMARES]: "Nezarec",
+            [Raid.CROTAS_END]: "Crota",
             [Raid.NA]: ""
         }
     }

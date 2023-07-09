@@ -57,8 +57,7 @@ export const useActivityHistory: UseActivityHistory = ({ characterMemberships, e
                 [Raid.ROOT_OF_NIGHTMARES]: new Collection<
                     string,
                     DestinyHistoricalStatsPeriodGroup
-                >(),
-                [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
+                >()
             }
             try {
                 const activities = (

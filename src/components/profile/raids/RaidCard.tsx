@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import {
+    AvailableRaid,
     Difficulty,
-    Raid,
     RaidCardBackground,
     ReprisedContestDifficultyDictionary,
     ReprisedContestRaidDifficulties
@@ -19,7 +19,7 @@ import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
 import { isContest, isDayOne, isWeekOne, raidTupleFromHash } from "../../../util/destiny/raid"
 
 type RaidModalProps = {
-    raid: Raid
+    raid: AvailableRaid
     activities: DestinyHistoricalStatsPeriodGroup[]
     stats: RaidStats | undefined
     report: RaidReportData | undefined

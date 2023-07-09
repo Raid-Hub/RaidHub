@@ -97,7 +97,7 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
         startDate: new Date(),
         endDate: new Date(),
         duration: "",
-        details: [0, 0]
+        details: [1, 0]
     })
 
     return (

@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
-import { AllRaids, Raid } from "../../../types/raids"
+import { AvailableRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import ActivityTile from "./ActivityTile"
 import { useEffect, useMemo, useState } from "react"
@@ -89,7 +89,7 @@ const Raids = ({
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
-                    {AllRaids.map((raid, idx) => (
+                    {AvailableRaids.map((raid, idx) => (
                         <RaidCard
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}

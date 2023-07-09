@@ -1,6 +1,7 @@
 import { Flatten } from "./generic"
 import { HTMLAttributes } from "react"
 
+// add new raids here
 export const enum Raid {
     NA,
     LEVIATHAN,
@@ -14,25 +15,28 @@ export const enum Raid {
     VAULT_OF_GLASS,
     VOW_OF_THE_DISCIPLE,
     KINGS_FALL,
-    ROOT_OF_NIGHTMARES
+    ROOT_OF_NIGHTMARES,
+    CROTAS_END
 }
 
-export type AllRaidsUnion = (typeof AllRaids)[number]
-export const AllRaids = [
+export type AvailableRaid = Exclude<(typeof AvailableRaids)[number], Raid.NA>
+// sorted in reverse order
+export const AvailableRaids = [
     Raid.ROOT_OF_NIGHTMARES,
     Raid.KINGS_FALL,
     Raid.VOW_OF_THE_DISCIPLE,
     Raid.VAULT_OF_GLASS,
     Raid.DEEP_STONE_CRYPT,
     Raid.GARDEN_OF_SALVATION,
-    Raid.LAST_WISH,
     Raid.CROWN_OF_SORROW,
     Raid.SCOURGE_OF_THE_PAST,
+    Raid.LAST_WISH,
     Raid.SPIRE_OF_STARS,
     Raid.EATER_OF_WORLDS,
     Raid.LEVIATHAN
 ] as const
 
+// add new difficulties here
 export const enum Difficulty {
     NORMAL,
     PRESTIGE,
@@ -46,11 +50,11 @@ export type DifficultyForRaidType<R extends keyof typeof RaidHashes> =
     keyof (typeof RaidHashes)[R] extends Difficulty ? keyof (typeof RaidHashes)[R] : never
 
 export type RaidHashesForRaidAndDifficulty<
-    R extends Raid,
+    R extends AvailableRaid,
     D extends DifficultyForRaidType<R>
 > = (typeof RaidHashes)[R][Extract<D, keyof (typeof RaidHashes)[R]>]
 
-export type RaidDifficultyTuple = readonly [name: Raid, difficulty: Difficulty]
+export type RaidDifficultyTuple = readonly [name: AvailableRaid, difficulty: Difficulty]
 
 export const CommonRaidDifficulties = [
     Difficulty.NORMAL,
@@ -66,8 +70,7 @@ export const NoContestRaids = [
     Raid.SCOURGE_OF_THE_PAST
 ] as const
 
-export type ContestRaid = Exclude<AllRaidsUnion, (typeof NoContestRaids)[number]>
-
+export type ContestRaid = Exclude<AvailableRaid, (typeof NoContestRaids)[number]>
 export type NoContestRaid = (typeof NoContestRaids)[number]
 
 export const RaidsWithReprisedContest = [Raid.VAULT_OF_GLASS, Raid.KINGS_FALL] as const
@@ -159,13 +162,13 @@ export const RaidHashes = {
     },
     [Raid.NA]: { [Difficulty.NORMAL]: [] as const }
 }
-export type AllRaidHashesForRaid<R extends Raid> = Flatten<
+export type AllRaidHashesForRaid<R extends AvailableRaid> = Flatten<
     (typeof RaidHashes)[R][Extract<Difficulty, keyof (typeof RaidHashes)[R]>]
 >
 
 export type ValidRaidHash = {
-    [R in Raid]: AllRaidHashesForRaid<R>
-}[Raid]
+    [R in AvailableRaid]: AllRaidHashesForRaid<R>
+}[AvailableRaid]
 
 export const RaidCardBackground: { [key in Raid]: string } = {
     [Raid.LEVIATHAN]: "/card-backgrounds/levi.png",
@@ -180,6 +183,7 @@ export const RaidCardBackground: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "/card-backgrounds/vow.png",
     [Raid.KINGS_FALL]: "/card-backgrounds/kf.png",
     [Raid.ROOT_OF_NIGHTMARES]: "/card-backgrounds/ron.png",
+    [Raid.CROTAS_END]: "/card-backgrounds/dne.png",
     [Raid.NA]: "/card-backgrounds/dne.png"
 }
 
@@ -234,6 +238,10 @@ export const Backdrop: {
         backgroundImage: `url(${RaidCardBackground[Raid.ROOT_OF_NIGHTMARES]})`,
         opacity: 0.6
     },
+    [Raid.CROTAS_END]: {
+        backgroundImage: `url(${RaidCardBackground[Raid.CROTAS_END]})`,
+        opacity: 0.6
+    },
     [Raid.NA]: {
         backgroundImage: `url(${RaidCardBackground[Raid.NA]})`,
         opacity: 0.4
@@ -253,6 +261,7 @@ export const RaidBanner: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "/banners/vow.png",
     [Raid.KINGS_FALL]: "/banners/kf.png",
     [Raid.ROOT_OF_NIGHTMARES]: "/banners/ron.png",
+    [Raid.CROTAS_END]: "/banners/ron.png",
     [Raid.NA]: ""
 }
 
@@ -269,5 +278,6 @@ export const Short: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "Vow",
     [Raid.KINGS_FALL]: "KF",
     [Raid.ROOT_OF_NIGHTMARES]: "RoN",
+    [Raid.CROTAS_END]: "Crota",
     [Raid.NA]: "*"
 }

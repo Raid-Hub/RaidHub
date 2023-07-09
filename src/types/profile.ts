@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { Difficulty, Raid } from "./raids"
+import { AvailableRaid, Difficulty, Raid } from "./raids"
 import RaidStats from "../models/profile/RaidStats"
 import { Socials } from "../util/profile/socials"
 import { Tag } from "../util/raidhub/tags"
@@ -100,5 +100,5 @@ export type ProfileSocialData = {
 export type ActivityPlacements = Partial<Record<Tag, number>>
 export type ActivityCollection = Collection<string, DestinyHistoricalStatsPeriodGroup>
 export type ActivityCollectionDictionary = {
-    [key in Raid]: ActivityCollection
+    [key in AvailableRaid]: ActivityCollection
 }

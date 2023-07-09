@@ -10,7 +10,7 @@ import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
-import { Difficulty, Raid } from "../../types/raids"
+import { AvailableRaid, AvailableRaids, Difficulty, Raid } from "../../types/raids"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
@@ -64,7 +64,12 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             this.startDate.getTime() +
                 this.entries[0].values.activityDurationSeconds.basic.value * 1000
         )
-        ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
+        try {
+            ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
+        } catch {
+            this.raid = Raid.NA
+            this.difficulty = Difficulty.NORMAL
+        }
     }
 
     get hash(): number {
@@ -117,9 +122,9 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
-        if (this.raid == Raid.NA) return []
-        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
-        if (isContest(this.raid, this.startDate)) {
+        if (AvailableRaids.includes(this.raid as AvailableRaid)) return []
+        if (isDayOne(this.raid as AvailableRaid, this.completionDate)) tags.push(Tag.DAY_ONE)
+        if (isContest(this.raid as AvailableRaid, this.startDate)) {
             switch (this.difficulty) {
                 case Difficulty.CHALLENGEKF:
                     tags.push(Tag.CHALLENGE_KF)

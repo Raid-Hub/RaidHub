@@ -1,5 +1,5 @@
 import {
-    AllRaidsUnion,
+    AvailableRaid,
     ContestRaid,
     Difficulty,
     NoContestRaid,
@@ -12,22 +12,22 @@ import {
 import { LocalStrings } from "../presentation/localized-strings"
 import { Tag } from "../raidhub/tags"
 
-export function isDayOne(raid: Raid, ended: Date): boolean {
-    if (DayOneEnd[raid as AllRaidsUnion] === undefined) {
+export function isDayOne(raid: AvailableRaid, ended: Date): boolean {
+    if (DayOneEnd[raid] === undefined) {
         return false
     } else {
-        return ended.getTime() < DayOneEnd[raid as AllRaidsUnion]!.getTime()
+        return ended.getTime() < DayOneEnd[raid]!.getTime()
     }
 }
 
-export function isContest(raid: Raid, started: Date): boolean {
+export function isContest(raid: AvailableRaid, started: Date): boolean {
     if (ContestEnd[raid as ContestRaid] === undefined) {
         return false
     } else {
         return started.getTime() < ContestEnd[raid as ContestRaid].getTime()
     }
 }
-export function isWeekOne(raid: Raid, ended: Date): boolean {
+export function isWeekOne(raid: AvailableRaid, ended: Date): boolean {
     if (WeekOneEnd[raid as NoContestRaid] === undefined) {
         return false
     } else {
@@ -56,7 +56,12 @@ export function raidVersion(
     }
 }
 export function raidTupleFromHash(hash: string): RaidDifficultyTuple {
-    return HashDictionary[hash] ?? [Raid.NA, Difficulty.NORMAL]
+    const tuple = HashDictionary[hash]
+    if (tuple) {
+        return tuple
+    } else {
+        throw new Error("Invalid raid hash " + hash)
+    }
 }
 
 const HashDictionary = (() =>
@@ -70,7 +75,10 @@ const HashDictionary = (() =>
                         hash =>
                             [
                                 hash,
-                                [parseInt(raid) as Raid, parseInt(difficulty) as Difficulty]
+                                [
+                                    parseInt(raid) as AvailableRaid,
+                                    parseInt(difficulty) as Difficulty
+                                ]
                             ] as const
                     )
                 )
@@ -81,7 +89,7 @@ const HashDictionary = (() =>
 export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
 // CONSTANTS
-const DayOneEnd: Record<AllRaidsUnion, Date> = {
+const DayOneEnd: Record<AvailableRaid, Date> = {
     [Raid.LEVIATHAN]: new Date("September 14, 2017 10:00:00 AM PDT"),
     [Raid.EATER_OF_WORLDS]: new Date("December 9th, 2017 10:00:00 AM PST"),
     [Raid.SPIRE_OF_STARS]: new Date("May 12, 2018 10:00:00 AM PDT"),
