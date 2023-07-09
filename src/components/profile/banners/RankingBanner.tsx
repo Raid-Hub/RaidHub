@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react"
-import styles from "../../styles/profile.module.css"
+import styles from "../../../styles/pages/profile/banners.module.css"
+import { ReactNode } from "react"
 
 type RankingBannerProps = {
     icon: string
@@ -9,9 +9,9 @@ type RankingBannerProps = {
 const RankingBanner = ({ icon, backgroundColor, children: spanStack }: RankingBannerProps) => {
     return (
         <div className={styles["ranking-banner"]} style={{ backgroundColor }}>
-            <img src={icon} alt="" />
+            <img className={styles["ranking-banner-icon"]} src={icon} alt="" />
 
-            <div className={styles["banners-text"]}>{spanStack}</div>
+            <div className={styles["banner-text"]}>{spanStack}</div>
         </div>
     )
 }

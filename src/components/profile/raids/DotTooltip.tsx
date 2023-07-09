@@ -1,11 +1,11 @@
+import styles from "../../../styles/pages/profile/raids.module.css"
 import { useMemo } from "react"
-import styles from "../../../styles/profile.module.css"
-import { Difficulty } from "../../../util/destiny/raid"
+import { RaidDifficultyTuple } from "../../../types/raids"
 import { getRelativeTime } from "../../../util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LanguageProvider"
-import { Green, Red } from "./Dot"
-import RaidInfo from "../../../models/pgcr/RaidInfo"
+import { Green, Red, Teal } from "./Dot"
+import { raidVersion } from "../../../util/destiny/raid"
 
 export type DotTooltipProps = {
     offset: {
@@ -14,21 +14,29 @@ export type DotTooltipProps = {
     }
     isShowing: boolean
     activityCompleted: boolean
+    flawless: boolean
     startDate: Date
+    endDate: Date
     duration: string
-    details: RaidInfo
+    details: RaidDifficultyTuple
 }
 
 const DotTooltip = ({
     offset,
     isShowing,
     activityCompleted,
+    flawless,
     startDate,
+    endDate,
     duration,
     details
 }: DotTooltipProps) => {
     const { strings } = useLocale()
-    const dateString = useMemo(() => getRelativeTime(startDate), [startDate])
+    const dateString = useMemo(() => getRelativeTime(endDate), [endDate])
+    const difficultyString = useMemo(
+        () => raidVersion(details, startDate, endDate, strings),
+        [details, endDate, startDate, strings]
+    )
 
     return (
         <div
@@ -38,21 +46,13 @@ const DotTooltip = ({
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activityCompleted ? Green : Red
+                borderColor: activityCompleted ? (flawless ? Teal : Green) : Red
             }}>
             <div>{duration}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
             {/* <div>{strings.raidNames[raid]}</div> */}
-            <div>
-                {
-                    strings.difficulty[
-                        details.difficulty === Difficulty.NORMAL && details.isContest(startDate)
-                            ? Difficulty.CONTEST
-                            : details.difficulty
-                    ]
-                }
-            </div>
+            <div>{difficultyString}</div>
         </div>
     )
 }

@@ -1,8 +1,7 @@
+import styles from "../../styles/pages/pgcr.module.css"
 import DestinyPGCR from "../../models/pgcr/PGCR"
-import styles from "../../styles/pgcr.module.css"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
-import { tagString } from "../../util/raidhub/tags"
 import { useLocale } from "../app/LanguageProvider"
 
 type ActivityHeaderProps = {
@@ -15,8 +14,8 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
     return (
-        <div className={styles["activity-card-header-container"]}>
-            <div className={styles["activity-card-header-top"]}>
+        <div className={styles["activity-tile-header-container"]}>
+            <div className={styles["activity-tile-header-top"]}>
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
@@ -28,11 +27,11 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
-                        <span>
-                            {pgcrLoadingState === Loading.LOADING
-                                ? "Loading..."
-                                : strings.raidNames[activity!.details.raid]}
-                        </span>
+                        {pgcrLoadingState === Loading.LOADING || !activity ? (
+                            <span>{strings.loading}</span>
+                        ) : (
+                            <span>{strings.raidNames[activity.raid]}</span>
+                        )}
                     </div>
                 </div>
                 <div className={styles["right-info"]}>
@@ -54,11 +53,11 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                     </div>
                 </div>
             </div>
-            <div className={styles["activity-card-header-attributes"]}>
+            <div className={styles["activity-tile-header-attributes"]}>
                 <div className={styles["tags-container"]}>
                     {activity?.tags.map((tag, idx) => (
                         <div key={idx} className={styles["tag"]}>
-                            {tagString(tag, strings)}
+                            {strings.tags[tag]}
                         </div>
                     ))}
                 </div>

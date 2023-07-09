@@ -1,32 +1,35 @@
 import { Collection } from "@discordjs/collection"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
-import { Raid, raidDetailsFromHash } from "../../util/destiny/raid"
+import { Raid } from "../../types/raids"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
-import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../../services/bungie/getRaidHistoryPage"
 import { ErrorHandler } from "../../types/generic"
-import {
-    ActivityCollectionDictionary,
-    ActivityHistory,
-    ProfileWithCharacters
-} from "../../types/profile"
+import { ActivityCollectionDictionary, MembershipWithCharacters } from "../../types/profile"
+import { getAllCharacterRaids } from "../../services/bungie/getAllCharacterRaids"
 
 type UseActivityHistory = (params: {
-    characterProfiles: ProfileWithCharacters[] | null
+    characterMemberships: MembershipWithCharacters[] | null
     errorHandler: ErrorHandler
 }) => {
-    activities: ActivityHistory
+    activitiesByRaid: ActivityCollectionDictionary | null
+    allActivities: DestinyHistoricalStatsPeriodGroup[] | null
     isLoading: boolean
 }
 
-export const useActivityHistory: UseActivityHistory = ({ characterProfiles, errorHandler }) => {
-    const [activities, setActivities] = useState<ActivityHistory>(null)
+export const useActivityHistory: UseActivityHistory = ({ characterMemberships, errorHandler }) => {
+    const [activitiesByRaid, setActivitiesByRaid] = useState<ActivityCollectionDictionary | null>(
+        null
+    )
+    const [allActivities, setAllActivities] = useState<DestinyHistoricalStatsPeriodGroup[] | null>(
+        null
+    )
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (profiles: ProfileWithCharacters[]) => {
+        async (profiles: MembershipWithCharacters[]) => {
+            setActivitiesByRaid(null)
             const dict: ActivityCollectionDictionary = {
                 [Raid.LEVIATHAN]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
                 [Raid.EATER_OF_WORLDS]: new Collection<string, DestinyHistoricalStatsPeriodGroup>(),
@@ -54,42 +57,36 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
                 [Raid.ROOT_OF_NIGHTMARES]: new Collection<
                     string,
                     DestinyHistoricalStatsPeriodGroup
-                >(),
-                [Raid.NA]: new Collection<string, DestinyHistoricalStatsPeriodGroup>()
+                >()
             }
-            setActivities(null)
             try {
-                await Promise.all(
-                    profiles.map(({ destinyMembershipId, membershipType, characterIds }) =>
-                        Promise.all(
-                            characterIds.map(async characterId => {
-                                let page = 0
-                                let hasMore = true
-                                while (hasMore) {
-                                    const newActivities = await getRaidHistoryPage({
-                                        destinyMembershipId,
+                const activities = (
+                    await Promise.all(
+                        profiles.map(({ destinyMembershipId, membershipType, characterIds }) =>
+                            Promise.all(
+                                characterIds.map(characterId =>
+                                    getAllCharacterRaids({
                                         characterId,
+                                        destinyMembershipId,
                                         membershipType,
-                                        page,
-                                        client
+                                        client,
+                                        dict
                                     })
-                                    newActivities.forEach(activity => {
-                                        const info = raidDetailsFromHash(
-                                            activity.activityDetails.referenceId.toString()
-                                        )
-                                        dict[info.raid].set(
-                                            activity.activityDetails.instanceId,
-                                            activity
-                                        )
-                                    })
-                                    hasMore = newActivities.length == ACTIVITIES_PER_PAGE
-                                    page++
-                                }
-                            })
+                                )
+                            )
                         )
                     )
                 )
-                setActivities(dict)
+                    .flat(2)
+                    .sort((a, b) => new Date(b.period).getTime() - new Date(a.period).getTime())
+                setAllActivities(activities)
+
+                Object.values(dict).forEach(collection =>
+                    collection.sort(
+                        (a, b) => new Date(a.period).getTime() - new Date(b.period).getTime()
+                    )
+                )
+                setActivitiesByRaid(dict)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory)
             } finally {
@@ -100,11 +97,12 @@ export const useActivityHistory: UseActivityHistory = ({ characterProfiles, erro
     )
 
     useEffect(() => {
-        setLoading(true)
-
-        if (characterProfiles) {
-            fetchData(characterProfiles)
+        if (characterMemberships) {
+            setLoading(true)
+            fetchData(characterMemberships)
+        } else {
+            setLoading(false)
         }
-    }, [characterProfiles, fetchData])
-    return { activities, isLoading }
+    }, [characterMemberships, fetchData])
+    return { activitiesByRaid, allActivities, isLoading }
 }

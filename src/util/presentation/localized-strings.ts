@@ -1,5 +1,6 @@
 import { Tag } from "../raidhub/tags"
-import { Difficulty, Raid } from "../destiny/raid"
+import { Difficulty, Raid } from "../../types/raids"
+import { RankingBannerType } from "../../types/profile"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }
@@ -26,13 +27,18 @@ export interface LocalStrings {
     tags: { [key in Tag]: string }
     loadMore: string
     difficulty: { [key in Difficulty]: string }
-    dayOne: string
-    contest: string
     killsPerMinute: string
     worldsFirstLeaderboards: string
     speedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
+    bannerTitles: { [key in RankingBannerType]: string }
+    totalClears: string
+    fastestClear: string
+    averageClear: string
+    sherpas: string
+    na: string
+    checkpoints: { [key in Raid]: string }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -54,6 +60,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.VOW_OF_THE_DISCIPLE]: "Vow of the Disciple",
             [Raid.KINGS_FALL]: "King's Fall",
             [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
+            [Raid.CROTAS_END]: "Crota's End",
             [Raid.NA]: "Non-Raid"
         },
         loading: "Loading...",
@@ -74,6 +81,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.CHECKPOINT]: "Checkpoint",
             [Tag.DAY_ONE]: "Day One",
             [Tag.CONTEST]: "Contest",
+            [Tag.WEEK_ONE]: "Week One",
             [Tag.MASTER]: "Master",
             [Tag.PRESTIGE]: "Prestige",
             [Tag.SOLO]: "Solo",
@@ -82,7 +90,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.FLAWLESS]: "Flawless",
             [Tag.CHALLENGE_VOG]: "Tempo's Edge",
             [Tag.CHALLENGE_KF]: "Regicide",
-            [Tag.ABILITIES_ONLY]: "Abilities Only"
+            [Tag.ABILITIES_ONLY]: "Abilities Only",
+            [Tag.FRESH]: "Full"
         },
         loadMore: "Load more",
         difficulty: {
@@ -93,13 +102,36 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGEVOG]: "Tempo's Edge",
             [Difficulty.CHALLENGEKF]: "Regicide"
         },
-        dayOne: "Day One",
-        contest: "Contest",
         killsPerMinute: "Kills / Minute",
         worldsFirstLeaderboards: "World's First Leaderboards",
         speedrunLeaderboards: "Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
-        comingSoon: "Coming soon..."
+        comingSoon: "Coming soon...",
+        bannerTitles: {
+            [RankingBannerType.FullClears]: "Full Clears Rank",
+            [RankingBannerType.Speed]: "Speed Rank"
+        },
+        totalClears: "Total Clears",
+        fastestClear: "Fastest Clear",
+        averageClear: "Average Clear",
+        sherpas: "Sherpas",
+        na: "N/A",
+        checkpoints: {
+            [Raid.LEVIATHAN]: "Calus",
+            [Raid.EATER_OF_WORLDS]: "Argos",
+            [Raid.SPIRE_OF_STARS]: "Val Ca'uor",
+            [Raid.LAST_WISH]: "Queenswalk",
+            [Raid.SCOURGE_OF_THE_PAST]: "Insurrection Prime",
+            [Raid.CROWN_OF_SORROW]: "Gahlran",
+            [Raid.GARDEN_OF_SALVATION]: "Sanctified Mind",
+            [Raid.DEEP_STONE_CRYPT]: "Taniks",
+            [Raid.VAULT_OF_GLASS]: "Atheon",
+            [Raid.VOW_OF_THE_DISCIPLE]: "Rhulk",
+            [Raid.KINGS_FALL]: "Oryx",
+            [Raid.ROOT_OF_NIGHTMARES]: "Nezarec",
+            [Raid.CROTAS_END]: "Crota",
+            [Raid.NA]: ""
+        }
     }
 }
 

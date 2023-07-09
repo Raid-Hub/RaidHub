@@ -39,7 +39,7 @@ export function useActivity({ activityId, errorHandler }: useActivityParams): Us
 
         if (activityId) {
             fetchData(activityId)
-        } else if (activityId === null) {
+        } else {
             setIsLoading(false)
         }
     }, [activityId, fetchData])

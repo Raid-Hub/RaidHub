@@ -1,5 +1,5 @@
 type LoadingProps = {
-    wrapperClass?: string
+    wrapperClass: string
 }
 
 const Loading = ({ wrapperClass }: LoadingProps) => (

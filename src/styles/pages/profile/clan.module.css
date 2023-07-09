@@ -1,0 +1,83 @@
+.clan {
+    flex: 1;
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1em;
+    align-items: stretch;
+    background-color: var(--modal-background);
+}
+
+.card-loading {
+    min-height: 30vh;
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    background-color: var(--modal-background);
+}
+
+.clan-banner-container {
+    display: flex;
+    width: 90px;
+    height: 180px;
+    margin-right: 1em;
+    align-self: center;
+}
+
+svg.clan-img {
+    overflow: visible;
+}
+
+.desc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+}
+
+.desc-title {
+    flex-grow: 1;
+    display: inline-block;
+    flex: 1;
+    margin-bottom: -0.1em;
+
+    font-weight: 600;
+    font-size: x-large;
+    letter-spacing: 1px;
+}
+
+.desc-subtitle {
+    display: inline-block;
+    flex-grow: 1;
+
+    font-style: italic;
+    font-size: 18px;
+    color: var(--secondary-text);
+}
+
+.desc-text-wrapper {
+    flex-grow: 100;
+    flex-basis: 100px;
+    height: 100px;
+    overflow-y: auto;
+    display: flex;
+    margin-bottom: 0.5em;
+}
+
+.desc-text-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.desc-text {
+    height: 100%;
+    margin: 0;
+    /* Remove default margin on p element */
+
+    white-space: pre-line;
+    color: var(--tertiary-text);
+    font-size: 12px;
+}
+
+.desc-text a {
+    text-decoration: underline;
+    color: #c56f24;
+}

@@ -1,5 +1,5 @@
-import styles from "../../styles/profile.module.css"
-import BungieName from "../../models/BungieName"
+import styles from "../../../styles/pages/profile/user.module.css"
+import BungieName from "../../../models/BungieName"
 
 type UserNameProps = {
     displayName: string

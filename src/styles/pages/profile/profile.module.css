@@ -1,0 +1,40 @@
+.main {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.main section {
+    max-width: 100%;
+}
+
+.user-info {
+    flex: 1;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.raids {
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+}
+
+.raids-top {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 1em;
+}
+
+.raids-top > a {
+    flex: 1;
+}

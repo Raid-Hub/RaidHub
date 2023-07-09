@@ -1,4 +1,4 @@
-import { Difficulty } from "../../util/destiny/raid"
+import { Difficulty } from "../../types/raids"
 import RaidStatsForDifficulty from "./RaidStatsForDifficulty"
 import { DestinyHistoricalStatsDictionary } from "../../util/destiny/raidStatsMap"
 import { IRaidStats } from "../../types/profile"
@@ -11,7 +11,7 @@ export default class RaidStats
         this.set(difficulty, new RaidStatsForDifficulty(values))
     }
     private reduce(key: keyof IRaidStats) {
-        return Array.from(this.entries()).reduce((prev, [_, curr]) => curr[key] + prev, 0)
+        return Array.from(this.values()).reduce((prev, curr) => curr[key] + prev, 0)
     }
     get assists() {
         return this.reduce("assists")
@@ -28,16 +28,7 @@ export default class RaidStats
     get secondsPlayed() {
         return this.reduce("secondsPlayed")
     }
-    get fastestClear() {
-        return 0
-    }
     get totalClears() {
         return this.reduce("totalClears")
-    }
-    get averageClear(): number {
-        return 0
-    }
-    get sherpas() {
-        return this.reduce("sherpas")
     }
 }

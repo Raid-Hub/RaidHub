@@ -1,0 +1,158 @@
+.card-loading {
+    min-height: 30vh;
+
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    background-color: var(--modal-background);
+}
+
+.card {
+    flex: 1;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+
+    color: white;
+
+    overflow: hidden;
+    min-width: 320px;
+    max-width: 475px;
+}
+
+.banner {
+    margin: 0;
+    border-radius: inherit;
+
+    position: relative;
+}
+
+.image-background {
+    min-height: 50px;
+    min-width: 240px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom-right-radius: 8px;
+}
+
+.details {
+    position: absolute;
+    bottom: 0;
+    left: 0.5em;
+    align-items: center;
+    display: flex;
+    transform: translateY(70%);
+}
+
+.details > img {
+    flex: 1;
+    margin-right: 0.5em;
+    object-fit: cover;
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+}
+
+.username {
+    flex: 1;
+}
+
+.username > span {
+    border-radius: 6px 0 0 6px;
+    padding: 0.5em 0 0.5em 0.5em;
+    background-color: #00000077;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.username .discrim {
+    border-radius: 0 6px 6px 0;
+    padding-left: 0em;
+    padding-right: 0.5em;
+    color: var(--bungie-blue);
+}
+
+.icons {
+    margin-top: 50px;
+    padding: 1em;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.social {
+    background-color: #00000077;
+    display: flex;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+}
+
+.social:hover {
+    cursor: pointer;
+    transform: scale(1.035);
+}
+
+.social-divider {
+    width: 1px;
+    margin: 0.4em 0.1em;
+    background-color: #6a6b71;
+}
+
+.social-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 0.5em;
+}
+
+.social-text > span {
+    text-align: center;
+    flex: 1;
+}
+
+.img-social {
+    margin: 0.3em;
+    margin-left: 0.5em;
+    max-height: 30px;
+    max-width: 30px;
+}
+
+.img-social rect {
+    fill: #ffffff;
+}
+
+.img-social rect:hover {
+    cursor: pointer;
+}
+
+#twitter:hover .twitter-logo {
+    fill: #1da1f2;
+}
+
+#discord:hover .discord-logo {
+    fill: #6876a7;
+}
+
+#youtube:hover .youtube-logo {
+    fill: #f12d2d;
+}
+
+#twitch:hover .twitch-logo {
+    fill: #6441a5;
+}
+
+#bungie:hover .bungie-logo {
+    fill: #9ad5ec;
+}

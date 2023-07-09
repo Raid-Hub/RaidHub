@@ -1,0 +1,36 @@
+import styles from "../../../styles/pages/profile/raids.module.css"
+import Loading from "../../global/Loading"
+
+type BigNumberStatProps = {
+    isLoading: boolean
+    name: string
+    displayValue: string | number
+    extraLarge?: boolean
+    href?: string
+}
+
+const BigNumberStatItem = ({
+    isLoading,
+    displayValue,
+    name,
+    extraLarge,
+    href
+}: BigNumberStatProps) => {
+    return (
+        <div className={styles["timing"]}>
+            {isLoading ? (
+                <Loading wrapperClass={styles["number-loading"]} />
+            ) : (
+                <p
+                    className={
+                        extraLarge ? styles["timings-number-large"] : styles["timings-number"]
+                    }>
+                    {href ? <a href={href}>{displayValue}</a> : displayValue}
+                </p>
+            )}
+            <p className={styles["timings-subtitle"]}>{name}</p>
+        </div>
+    )
+}
+
+export default BigNumberStatItem

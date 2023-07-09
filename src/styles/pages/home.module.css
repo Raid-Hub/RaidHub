@@ -1,6 +1,6 @@
 .raids {
     display: flex;
-    flex-direction: row;
+    flex-direction: reverse;
     flex-wrap: wrap;
 
     gap: 1.5rem;
