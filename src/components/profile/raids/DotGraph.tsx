@@ -86,23 +86,11 @@ type DotGraphProps = DotGraphWrapperProps & {
 }
 
 function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphProps) {
-    const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps>({
-        offset: {
-            x: 0,
-            y: 0
-        },
-        isShowing: false,
-        activityCompleted: false,
-        flawless: false,
-        startDate: new Date(),
-        endDate: new Date(),
-        duration: "",
-        details: [1, 0]
-    })
+    const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
 
     return (
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
-            <DotTooltip {...dotTooltipData} />
+            {dotTooltipData && <DotTooltip {...dotTooltipData} />}
             {isLoading ? (
                 <Loading wrapperClass={styles["dots-svg-loading"]} />
             ) : (

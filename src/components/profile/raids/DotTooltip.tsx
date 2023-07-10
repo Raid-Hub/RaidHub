@@ -6,6 +6,7 @@ import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LanguageProvider"
 import { Green, Red, Teal } from "./Dot"
 import { raidVersion } from "../../../util/destiny/raid"
+import { Tag } from "../../../util/raidhub/tags"
 
 export type DotTooltipProps = {
     offset: {
@@ -15,6 +16,7 @@ export type DotTooltipProps = {
     isShowing: boolean
     activityCompleted: boolean
     flawless: boolean
+    lowman: Tag.SOLO | Tag.DUO | Tag.TRIO | null
     startDate: Date
     endDate: Date
     duration: string
@@ -26,6 +28,7 @@ const DotTooltip = ({
     isShowing,
     activityCompleted,
     flawless,
+    lowman,
     startDate,
     endDate,
     duration,
@@ -37,6 +40,8 @@ const DotTooltip = ({
         () => raidVersion(details, startDate, endDate, strings),
         [details, endDate, startDate, strings]
     )
+
+    console.log(flawless)
 
     return (
         <div
@@ -51,8 +56,11 @@ const DotTooltip = ({
             <div>{duration}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
-            {/* <div>{strings.raidNames[raid]}</div> */}
-            <div>{difficultyString}</div>
+            <div className={styles["dot-tooltip-tags"]}>
+                <span>{lowman && strings.tags[lowman]}</span>
+                <span>{flawless && strings.tags[Tag.FLAWLESS]}</span>
+                <span>{difficultyString}</span>
+            </div>
         </div>
     )
 }

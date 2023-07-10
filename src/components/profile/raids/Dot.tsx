@@ -5,6 +5,7 @@ import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty, ValidRaidHash } from "../../../types/raids"
 import { Icons } from "../../../util/presentation/icons"
 import { isContest, raidTupleFromHash } from "../../../util/destiny/raid"
+import { Tag } from "../../../util/raidhub/tags"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -22,8 +23,8 @@ type DotProps = {
     duration: string
     centerY: number
     targetted: boolean
-    tooltipData: DotTooltipProps
-    setTooltip(data: DotTooltipProps): void
+    tooltipData: DotTooltipProps | null
+    setTooltip(data: DotTooltipProps | null): void
 }
 
 const Dot = ({
@@ -55,6 +56,14 @@ const Dot = ({
             activityCompleted: completed,
             details,
             flawless,
+            lowman:
+                playerCount === 1
+                    ? Tag.SOLO
+                    : playerCount === 2
+                    ? Tag.DUO
+                    : playerCount === 3
+                    ? Tag.TRIO
+                    : null,
             endDate,
             startDate,
             duration,
@@ -67,10 +76,11 @@ const Dot = ({
 
     const handleMouseLeave = useCallback(
         ({}: MouseEvent) => {
-            setTooltip({
-                ...tooltipData,
-                isShowing: false
-            })
+            tooltipData &&
+                setTooltip({
+                    ...tooltipData,
+                    isShowing: false
+                })
         },
         [tooltipData, setTooltip]
     )
