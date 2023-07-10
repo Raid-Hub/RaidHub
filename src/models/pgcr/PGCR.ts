@@ -16,6 +16,7 @@ import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
 import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
+import { Collection } from "@discordjs/collection"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -153,7 +154,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return addModifiers(this.raid, this.tags, strings)
     }
 
-    hydrate(data: Map<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {
+    hydrate(data: Collection<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {
         data.forEach((components, characterId) => {
             this.entries.find(entry => entry.characterId === characterId)?.hydrate(components)
         })

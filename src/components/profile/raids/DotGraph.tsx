@@ -5,7 +5,7 @@ import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../types/raids"
-import RaidReportData from "../../../models/profile/RaidReportData"
+import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import Loading from "../../global/Loading"
 
 // constants used to manage the height of the graph
@@ -40,7 +40,7 @@ export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
     dots: DestinyHistoricalStatsPeriodGroup[]
-    report: RaidReportData | undefined
+    report: RaidReportDataCollection | undefined
     targetDot: string | null
     isLoading: boolean
 }

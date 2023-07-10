@@ -6,6 +6,7 @@ import { useBungieClient } from "../../components/app/TokenManager"
 import { getPGCR } from "../../services/bungie/getPGCR"
 import { findProfileWithoutPlatform } from "../../services/bungie/findProfileWithoutPlatform"
 import DestinyPGCR from "../../models/pgcr/PGCR"
+import { Collection } from "@discordjs/collection"
 
 type UsePGCRParams = {
     activityId: string | null | undefined
@@ -29,7 +30,7 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                 setPGCR(pgcr)
                 setLoading(Loading.HYDRATING)
 
-                const dataForMissingProfiles = new Map<
+                const dataForMissingProfiles = new Collection<
                     string,
                     [DestinyProfileComponent, DestinyCharacterComponent]
                 >()

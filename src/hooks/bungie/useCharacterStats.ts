@@ -4,7 +4,7 @@ import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
 import { AllRaidStats, MembershipWithCharacters } from "../../types/profile"
-import { raidStatsMap } from "../../util/destiny/raidStatsMap"
+import RaidStatsCollection from "../../models/profile/RaidStatsCollection"
 
 type UseCharacterStats = (params: {
     characterMemberships: MembershipWithCharacters[] | null
@@ -37,7 +37,11 @@ export const useCharacterStats: UseCharacterStats = ({ characterMemberships, err
                         )
                     )
                 )
-                setStats(raidStatsMap(characterStats.flat().flatMap(stats => stats.activities)))
+                setStats(
+                    RaidStatsCollection.mergeActivities(
+                        characterStats.flat().flatMap(stats => stats.activities)
+                    )
+                )
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.CharacterStats)
             } finally {

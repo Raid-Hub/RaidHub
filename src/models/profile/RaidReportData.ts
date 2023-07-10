@@ -1,155 +1,170 @@
+import { Collection } from "@discordjs/collection"
 import {
     IRaidReportActivity,
     IRaidReportData,
     LowManActivity,
-    RaidTag,
     SetOfLowmans
 } from "../../types/profile"
 import { RaidReportPlayerValues } from "../../types/raidreport"
 import { Difficulty, Raid } from "../../types/raids"
-import { isBestTag } from "../../util/raidhub/tags"
-import RaidReportDataForDifficulty from "./RaidReportDataForDifficulty"
+import RaidData from "./abstract/AbstractRaidData"
 
 export default class RaidReportData
-    extends Map<Difficulty, RaidReportDataForDifficulty>
+    extends RaidData<RaidReportPlayerValues>
     implements IRaidReportData
 {
-    raid: Raid
-    constructor(raid: Raid) {
-        super()
-        this.raid = raid
-    }
-    add(difficulty: Difficulty, values: RaidReportPlayerValues[]) {
-        this.set(difficulty, new RaidReportDataForDifficulty(values, difficulty))
-    }
+    fastestFullClear: { instanceId: string; value: number } | null
+    flawlessTriumphActivity: IRaidReportActivity | null
+    clears: number
+    flawlessActivities: Collection<string, IRaidReportActivity>
+    lowmanActivities: Collection<string, IRaidReportActivity>
+    fullClears: number
+    sherpaCount: number
+    worldFirstPlacement: number | null
+    constructor(data: RaidReportPlayerValues[], raid: Raid, difficulty: Difficulty) {
+        super(data, raid, difficulty)
+        this.fastestFullClear = null
+        this.flawlessTriumphActivity = null
+        this.clears = 0
+        this.flawlessActivities = new Collection()
+        this.lowmanActivities = new Collection()
+        this.fullClears = 0
+        this.sherpaCount = 0
+        this.worldFirstPlacement = null
 
-    get fastestFullClear(): { instanceId: string; value: number } | null {
-        return Array.from(this.values()).reduce((prev, { fastestFullClear }) => {
-            if (fastestFullClear && prev) {
-                if (fastestFullClear.value < prev.value) {
-                    return fastestFullClear
+        data.forEach(
+            ({
+                fastestFullClear,
+                flawlessDetails,
+                clears,
+                flawlessActivities,
+                lowAccountCountActivities,
+                fullClears,
+                sherpaCount,
+                worldFirstDetails
+            }) => {
+                if (fastestFullClear) {
+                    if (
+                        fastestFullClear.value <
+                        (this.fastestFullClear?.value ?? Number.MAX_SAFE_INTEGER)
+                    ) {
+                        this.fastestFullClear = fastestFullClear
+                    }
                 }
-            } else if (fastestFullClear) {
-                return fastestFullClear
-            }
-            return prev
-        }, null as { instanceId: string; value: number } | null)
-    }
 
-    get flawlessTriumphActivity(): IRaidReportActivity | null {
-        return Array.from(this.values()).reduce((prev, { flawlessTriumphActivity }) => {
-            if (flawlessTriumphActivity && prev) {
-                if (parseInt(flawlessTriumphActivity.instanceId) < parseInt(prev.instanceId)) {
-                    return flawlessTriumphActivity
+                if (
+                    flawlessDetails &&
+                    parseInt(flawlessDetails.instanceId) <
+                        (this.flawlessTriumphActivity
+                            ? parseInt(this.flawlessTriumphActivity.instanceId)
+                            : Number.MAX_SAFE_INTEGER)
+                ) {
+                    this.flawlessTriumphActivity = {
+                        instanceId: flawlessDetails.instanceId,
+                        playerCount: flawlessDetails.accountCount,
+                        fresh: flawlessDetails.fresh,
+                        difficulty: this.difficulty
+                    }
                 }
-            } else if (flawlessTriumphActivity) {
-                return flawlessTriumphActivity
+
+                this.clears += clears
+
+                flawlessActivities?.forEach(fa => {
+                    this.flawlessActivities.set(fa.instanceId, {
+                        instanceId: fa.instanceId,
+                        playerCount: fa.accountCount,
+                        fresh: fa.fresh,
+                        difficulty: this.difficulty
+                    })
+                })
+
+                lowAccountCountActivities?.forEach(la => {
+                    this.lowmanActivities.set(la.instanceId, {
+                        instanceId: la.instanceId,
+                        playerCount: la.accountCount,
+                        fresh: la.fresh,
+                        difficulty: this.difficulty
+                    })
+                })
+
+                this.fullClears += fullClears
+
+                this.sherpaCount += sherpaCount
+
+                if (
+                    worldFirstDetails &&
+                    worldFirstDetails.rank < (this.worldFirstPlacement ?? Number.MAX_SAFE_INTEGER)
+                ) {
+                    this.worldFirstPlacement = worldFirstDetails.rank
+                }
             }
-            return prev
-        }, null as IRaidReportActivity | null)
-    }
-    get clears(): number {
-        return Array.from(this.values()).reduce((prev, { clears }) => clears + prev, 0)
-    }
-    get flawlessActivities(): Map<string, IRaidReportActivity> {
-        const map = new Map<string, IRaidReportActivity>()
-        this.forEach(val => {
-            val.flawlessActivities.forEach(a => {
-                map.set(a.instanceId, a)
-            })
-        })
-        return map
-    }
-    get lowmanActivities(): Map<string, IRaidReportActivity> {
-        const map = new Map<string, IRaidReportActivity>()
-        this.forEach(val => {
-            val.lowmanActivities.forEach(a => {
-                map.set(a.instanceId, a)
-            })
-        })
-        return map
-    }
-    get fullClears(): number {
-        return Array.from(this.values()).reduce((prev, { fullClears }) => fullClears + prev, 0)
-    }
-    get sherpaCount(): number {
-        return Array.from(this.values()).reduce((prev, { sherpaCount }) => sherpaCount + prev, 0)
-    }
-    get worldFirstPlacement(): number | null {
-        return Array.from(this.values()).reduce((prev, { worldFirstPlacement }) => {
-            if (worldFirstPlacement && prev) {
-                return Math.min(worldFirstPlacement, prev)
-            } else {
-                return worldFirstPlacement ?? prev
-            }
-        }, null as null | number)
+        )
     }
 
-    tags(): RaidTag[] {
-        const contest = this.get(Difficulty.CONTEST)?.lowmans
-        const master = this.get(Difficulty.MASTER)?.lowmans
-        const normal = this.get(Difficulty.NORMAL)?.lowmans
+    get firstFlawless(): IRaidReportActivity | undefined {
+        return this.flawlessActivities.size
+            ? this.flawlessActivities.reduce((prev, current) => {
+                  if (current.fresh && prev.fresh === null) {
+                      return current
+                  } else if (current.fresh) {
+                      return parseInt(current.instanceId) < parseInt(prev.instanceId)
+                          ? current
+                          : prev
+                  } else {
+                      return prev
+                  }
+              }, this.flawlessActivities.first())
+            : undefined
+    }
 
-        const compare = (
-            currentLowest: LowManActivity | null,
-            comparison: SetOfLowmans | undefined,
-            key: keyof SetOfLowmans
-        ) => {
-            if (
-                currentLowest &&
-                comparison?.[key] &&
-                comparison[key]!.playerCount <= currentLowest?.playerCount
+    get lowmans(): SetOfLowmans {
+        let lowest: LowManActivity | null = null
+        let lowestFresh: LowManActivity | null = null
+        let lowestFlawless: LowManActivity | null = null
+
+        this.lowmanActivities.forEach((activity, id) => {
+            const isFlawless = !!this.flawlessActivities.get(id)
+            const activitWithFlawlessKey = { ...activity, flawless: isFlawless }
+
+            if (!lowestFresh && activity.fresh) {
+                lowestFresh = activitWithFlawlessKey
+            } else if (activity.fresh && lowestFresh && moreRelevantLowMan(activity, lowestFresh)) {
+                lowestFresh = activitWithFlawlessKey
+            }
+
+            if (!lowestFlawless && isFlawless) {
+                lowestFlawless = activitWithFlawlessKey
+            } else if (
+                isFlawless &&
+                lowestFlawless &&
+                moreRelevantLowMan(activity, lowestFlawless)
             ) {
-                return comparison.lowest
-            } else {
-                return currentLowest ?? comparison?.[key]
+                lowestFlawless = activitWithFlawlessKey
             }
-        }
 
-        // find the lowest-low man, prioritizing higher difficulties
-        const [lowest, lowestFresh, lowestFlawless] = (
-            ["lowest", "lowestFresh", "lowestFlawless"] as const
-        ).map(key => {
-            let lowest = compare(normal?.[key] ?? null, master, key)
-            lowest = compare(lowest ?? null, contest, key)
-            return lowest
+            if (!lowest) {
+                lowest = activitWithFlawlessKey
+            } else if (moreRelevantLowMan(activity, lowest)) {
+                lowest = activitWithFlawlessKey
+            }
         })
 
-        const [lowestMaster, lowestFreshMaster, lowestFlawlessMaster] = (
-            ["lowest", "lowestFresh", "lowestFlawless"] as const
-        ).map(key => compare(master?.[key] ?? null, contest, key))
-
-        // put them into buckets by size
-        const buckets = new Map<number, LowManActivity[]>()
-        const all = [
+        return {
             lowest,
             lowestFresh,
-            lowestFlawless,
-            lowestMaster,
-            lowestFreshMaster,
-            lowestFlawlessMaster
-        ]
-        all.forEach(a => {
-            if (a) {
-                if (buckets.has(a.playerCount)) {
-                    buckets.get(a.playerCount)!.push(a)
-                } else {
-                    buckets.set(a.playerCount, [a])
-                }
-            }
-        })
-
-        const tags: RaidTag[] = []
-        const getScore = (a: LowManActivity) =>
-            (a.flawless ? 3 : 0) + (a.fresh ? 2 : a.fresh === null ? 1 : 0)
-        buckets.forEach(bucket => {
-            const tag = bucket.reduce((base, current) =>
-                getScore(current) > getScore(base) ? current : base
-            )
-
-            tags.push({ ...tag, raid: this.raid, bestPossible: isBestTag(tag, this.raid) })
-        })
-
-        return tags.sort((t1, t2) => t1.playerCount - t2.playerCount)
+            lowestFlawless:
+                lowestFlawless ??
+                (this.firstFlawless ? { ...this.firstFlawless!, flawless: true } : null)
+        }
     }
+}
+
+function moreRelevantLowMan(a: IRaidReportActivity, b: IRaidReportActivity) {
+    const score = (x: boolean | null) => (x === null ? 0 : x ? 2 : 1)
+    return (
+        a.playerCount < b.playerCount ||
+        (a.playerCount === b.playerCount &&
+            score(a.fresh) <= score(b.fresh) &&
+            parseInt(a.instanceId) < parseInt(b.instanceId))
+    )
 }

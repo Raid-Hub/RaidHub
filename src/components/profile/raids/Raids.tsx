@@ -11,7 +11,7 @@ import { Prefs } from "../../../util/profile/preferences"
 import { AllRaidStats, MembershipWithCharacters } from "../../../types/profile"
 import { ErrorHandler } from "../../../types/generic"
 import { useLocale } from "../../app/LanguageProvider"
-import RaidReportData from "../../../models/profile/RaidReportData"
+import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { Layout } from "../Profile"
 import { raidTupleFromHash } from "../../../util/destiny/raid"
 
@@ -22,7 +22,7 @@ type RaidsProps = {
     characterMemberships: MembershipWithCharacters[] | null
     layout: Layout
     raidMetrics: AllRaidStats | null
-    raidReport: Map<Raid, RaidReportData> | null
+    raidReport: Map<Raid, RaidReportDataCollection> | null
     isLoadingRaidMetrics: boolean
     isLoadingRaidReport: boolean
     isLoadingCharacters: boolean

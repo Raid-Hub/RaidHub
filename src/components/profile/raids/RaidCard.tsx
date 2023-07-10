@@ -9,11 +9,11 @@ import {
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import RaidStats from "../../../models/profile/RaidStats"
+import RaidStatsCollection from "../../../models/profile/RaidStatsCollection"
 import { useLocale } from "../../app/LanguageProvider"
 import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
-import RaidReportData from "../../../models/profile/RaidReportData"
+import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
 import { isContest, isDayOne, isWeekOne, raidTupleFromHash } from "../../../util/destiny/raid"
@@ -21,8 +21,8 @@ import { isContest, isDayOne, isWeekOne, raidTupleFromHash } from "../../../util
 type RaidModalProps = {
     raid: AvailableRaid
     activities: DestinyHistoricalStatsPeriodGroup[]
-    stats: RaidStats | undefined
-    report: RaidReportData | undefined
+    stats: RaidStatsCollection | undefined
+    report: RaidReportDataCollection | undefined
     isLoadingDots: boolean
     isLoadingStats: boolean
     isLoadingReport: boolean
