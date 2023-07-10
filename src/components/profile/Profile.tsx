@@ -106,7 +106,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                 <Banners
                     banners={raidReportData?.rankings ?? null}
                     destinyMembershipId={destinyMembershipId}
-                    isLoading={isLoadingRaidReportData}
+                    isLoading={isLoadingRaidReportData || isLoadingMemberships}
                 />
                 <ClanCard
                     membershipId={destinyMembershipId}

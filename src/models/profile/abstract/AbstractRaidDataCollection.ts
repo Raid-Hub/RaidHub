@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../../types/raids"
 import { encoders } from "../../../util/encode"
-import { raidTupleFromHash } from "../../../util/destiny/raid"
+import { AllValidHashes, raidTupleFromHash } from "../../../util/destiny/raid"
 import RaidData from "./AbstractRaidData"
 
 /**
@@ -30,16 +30,19 @@ export default abstract class AbstractRaidDataCollection<
         const buckets = new Map<string, R[]>()
         const [encode, decode] = encoders<RaidDifficultyTuple>()
         activities.forEach(({ activityHash, values }) => {
-            try {
-                // getting this key can throw an error if the activityHash is invalid
-                const key = encode(raidTupleFromHash(activityHash.toString()))
-                if (buckets.has(key)) {
-                    buckets.get(key)!.push(values)
-                } else {
-                    buckets.set(key, [values])
+            const hash = activityHash.toString()
+            if (AllValidHashes.includes(hash as ValidRaidHash)) {
+                try {
+                    // getting this key can throw an error if the activityHash is invalid
+                    const key = encode(raidTupleFromHash(hash))
+                    if (buckets.has(key)) {
+                        buckets.get(key)!.push(values)
+                    } else {
+                        buckets.set(key, [values])
+                    }
+                } catch (e) {
+                    console.error(e)
                 }
-            } catch (e) {
-                console.error(e)
             }
         })
 
