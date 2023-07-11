@@ -1,6 +1,5 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useMemo } from "react"
-import { RaidDifficultyTuple } from "../../../types/raids"
 import { getRelativeTime } from "../../../util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LanguageProvider"

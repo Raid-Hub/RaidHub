@@ -1,10 +1,10 @@
-import { Collection, Keep } from "@discordjs/collection"
+import { Collection } from "@discordjs/collection"
 import {
     DestinyHistoricalStatsActivity,
     DestinyHistoricalStatsPeriodGroup,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/lib/models"
-import { AvailableRaid, Difficulty, Raid, RaidDifficultyTuple } from "../../types/raids"
+import { AvailableRaid, Difficulty } from "../../types/raids"
 import { raidTupleFromHash } from "../../util/destiny/raid"
 
 export default class Activity implements DestinyHistoricalStatsPeriodGroup {

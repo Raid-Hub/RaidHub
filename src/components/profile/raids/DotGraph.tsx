@@ -1,13 +1,10 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { median } from "../../../util/math"
 import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
-import { ValidRaidHash } from "../../../types/raids"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import Loading from "../../global/Loading"
-import ActivityCollection from "../../../models/profile/ActivityCollection"
 import Activity from "../../../models/profile/Activity"
 import { Collection } from "@discordjs/collection"
 

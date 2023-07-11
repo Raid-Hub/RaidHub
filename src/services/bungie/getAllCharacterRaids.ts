@@ -1,8 +1,6 @@
 import { BungieClientProtocol } from "bungie-net-core/lib/client"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "./getRaidHistoryPage"
-import { raidTupleFromHash } from "../../util/destiny/raid"
-import { ValidRaidHash } from "../../types/raids"
 import { Collection } from "@discordjs/collection"
 import Activity from "../../models/profile/Activity"
 

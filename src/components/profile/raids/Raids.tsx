@@ -1,5 +1,4 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
 import { AvailableRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
@@ -13,9 +12,6 @@ import { ErrorHandler } from "../../../types/generic"
 import { useLocale } from "../../app/LanguageProvider"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { Layout } from "../Profile"
-import { raidTupleFromHash } from "../../../util/destiny/raid"
-import { Collection } from "@discordjs/collection"
-import ActivityCollection from "../../../models/profile/ActivityCollection"
 
 const CARDS_PER_PAGE = 60
 
@@ -57,11 +53,6 @@ const Raids = ({
         errorHandler
     })
     const [pages, setPages] = useState<number>(1)
-
-    useEffect(() => {
-        console.log(allActivities)
-        console.log(activitiesByRaid)
-    }, [allActivities, activitiesByRaid])
 
     useEffect(() => {
         if (allActivities) {

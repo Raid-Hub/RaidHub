@@ -1,7 +1,6 @@
 import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
-import { Raid, ValidRaidHash } from "../../types/raids"
+import { Raid } from "../../types/raids"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { ErrorHandler } from "../../types/generic"
