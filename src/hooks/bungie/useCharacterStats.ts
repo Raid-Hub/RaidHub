@@ -38,7 +38,7 @@ export const useCharacterStats: UseCharacterStats = ({ characterMemberships, err
                     )
                 )
                 setStats(
-                    RaidStatsCollection.mergeActivities(
+                    RaidStatsCollection.groupActivities(
                         characterStats.flat().flatMap(stats => stats.activities)
                     )
                 )

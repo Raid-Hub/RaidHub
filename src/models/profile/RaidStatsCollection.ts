@@ -1,7 +1,7 @@
 import { Difficulty } from "../../types/raids"
 import RaidStats from "./RaidStats"
 import { DestinyHistoricalStatsDictionary, IRaidStats } from "../../types/profile"
-import AbstractRaidDataCollection from "./abstract/AbstractRaidDataCollection"
+import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
 
 export default class RaidStatsCollection
     extends AbstractRaidDataCollection<RaidStats, DestinyHistoricalStatsDictionary>

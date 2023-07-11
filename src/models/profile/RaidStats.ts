@@ -1,11 +1,10 @@
-import { DestinyHistoricalStatsDictionary, IRaidStats } from "../../types/profile"
+import { DestinyHistoricalStatsDictionary, IRaidStats, RaidData } from "../../types/profile"
 import { Difficulty, Raid } from "../../types/raids"
-import RaidData from "./abstract/AbstractRaidData"
 
-export default class RaidStats
-    extends RaidData<DestinyHistoricalStatsDictionary>
-    implements IRaidStats
-{
+export default class RaidStats implements RaidData<DestinyHistoricalStatsDictionary>, IRaidStats {
+    raid: Raid
+    difficulty: Difficulty
+    raw: DestinyHistoricalStatsDictionary[]
     assists: number
     totalClears: number
     deaths: number
@@ -14,7 +13,9 @@ export default class RaidStats
     secondsPlayed: number
 
     constructor(data: DestinyHistoricalStatsDictionary[], raid: Raid, difficulty: Difficulty) {
-        super(data, raid, difficulty)
+        this.raw = data
+        this.raid = raid
+        this.difficulty = difficulty
 
         const values = data.reduce(
             (base, current) => {

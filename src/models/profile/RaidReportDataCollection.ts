@@ -10,7 +10,7 @@ import { RaidReportPlayerValues } from "../../types/raidreport"
 import { Difficulty } from "../../types/raids"
 import { isBestTag } from "../../util/raidhub/tags"
 import RaidReportData from "./RaidReportData"
-import AbstractRaidDataCollection from "./abstract/AbstractRaidDataCollection"
+import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
 
 export default class RaidReportDataCollection
     extends AbstractRaidDataCollection<RaidReportData, RaidReportPlayerValues>

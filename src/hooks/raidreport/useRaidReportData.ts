@@ -57,7 +57,7 @@ export const useRaidReport: UseRaidReport = ({
                             value: speedRank.value
                         }
                     ],
-                    activities: RaidReportDataCollection.mergeActivities(
+                    activities: RaidReportDataCollection.groupActivities(
                         players.map(player => player.activities).flat()
                     )
                 }

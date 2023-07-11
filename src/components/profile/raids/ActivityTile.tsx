@@ -3,37 +3,33 @@ import { RaidCardBackground, RaidDifficultyTuple } from "../../../types/raids"
 import Link from "next/link"
 import { useLocale } from "../../app/LanguageProvider"
 import { raidVersion } from "../../../util/destiny/raid"
+import Activity from "../../../models/profile/Activity"
 
-type ActivityTileProps = {
-    info: RaidDifficultyTuple
-    completed: boolean
-    activityId: any
-    startDate: Date
-    completionDate: Date
-}
+type ActivityTileProps = Activity
 
 const ActivityTile = ({
-    info,
-    completed,
-    activityId,
     startDate,
-    completionDate
+    raid,
+    difficulty,
+    endDate,
+    instanceId,
+    completed
 }: ActivityTileProps) => {
     const { strings } = useLocale()
-    const difficultyString = raidVersion(info, startDate, completionDate, strings)
+    const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings)
     return (
         <Link
-            href={`/pgcr/${activityId}`}
+            href={`/pgcr/${instanceId}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles["activity"]}>
             <img
-                src={RaidCardBackground[info[0]]}
-                alt={`Raid card for ${strings.raidNames[info[0]]}`}
+                src={RaidCardBackground[raid]}
+                alt={`Raid card for ${strings.raidNames[raid]}`}
                 className={styles["activity-content-img"]}
             />
             <p className={styles["activity-title"]}>
-                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[info[0]]}`}
+                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[raid]}`}
             </p>
 
             <div className={styles["success-layer"]}>

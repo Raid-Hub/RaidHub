@@ -7,6 +7,9 @@ import { useMemo, useState } from "react"
 import { ValidRaidHash } from "../../../types/raids"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import Loading from "../../global/Loading"
+import ActivityCollection from "../../../models/profile/ActivityCollection"
+import Activity from "../../../models/profile/Activity"
+import { Collection } from "@discordjs/collection"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -39,7 +42,7 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
-    dots: DestinyHistoricalStatsPeriodGroup[]
+    dots: Collection<string, Activity>
     report: RaidReportDataCollection | undefined
     targetDot: string | null
     isLoading: boolean
@@ -55,25 +58,21 @@ const baseStats: Statistics = {
 const DotGraphWrapper = (props: DotGraphWrapperProps) => {
     const getHeight = useMemo(() => {
         let { min, max, total } = props.dots.reduce((ac, cv) => {
-            const cvTime = cv.values.activityDurationSeconds.basic.value
+            const cvTime = cv.durationSeconds
             return {
                 min: Math.min(ac.min, cvTime),
                 max: Math.max(ac.max, cvTime),
                 total: ac.total + cvTime
             }
         }, baseStats)
-        if (props.dots.length === 1) {
+        if (props.dots.size === 1) {
             min -= 1
             max += 1
         }
 
-        const orderedByDuration = props.dots
-            .map(({ values }) => values.activityDurationSeconds.basic.value)
-            .sort((a, b) => a - b)
+        const orderedByDuration = props.dots.map(dot => dot.durationSeconds).sort((a, b) => a - b)
         const avg = median(orderedByDuration)
-        const getHeight = findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
-
-        return getHeight
+        return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     }, [props.dots])
 
     return <DotGraph getHeight={getHeight} {...props} />
@@ -87,7 +86,7 @@ type DotGraphProps = DotGraphWrapperProps & {
 
 function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
-
+    let index = 0
     return (
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
             {dotTooltipData && <DotTooltip {...dotTooltipData} />}
@@ -96,7 +95,7 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
             ) : (
                 <svg
                     style={{
-                        width: SPACING * dots.length + "px",
+                        width: SPACING * dots.size + "px",
                         height: FULL_HEIGHT,
                         minWidth: "100%"
                     }}>
@@ -107,32 +106,19 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
                         y2={LINE_Y}
                         style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                     />
-                    {dots.map(({ period, activityDetails, values }, idx) => (
+                    {dots.map((dot, key) => (
                         <Dot
-                            key={idx}
-                            index={idx}
-                            instanceId={activityDetails.instanceId}
-                            raidHash={
-                                activityDetails.directorActivityHash.toString() as ValidRaidHash
-                            }
-                            completed={!!values.completed.basic.value}
-                            flawless={!!report?.flawlessActivities.get(activityDetails.instanceId)}
+                            key={key}
+                            index={index++}
+                            activity={dot}
+                            flawless={!!report?.flawlessActivities.get(dot.instanceId)}
                             playerCount={
-                                report?.lowmanActivities.get(activityDetails.instanceId)
-                                    ?.playerCount ?? 6
+                                report?.lowmanActivities.get(dot.instanceId)?.playerCount ?? 6
                             }
-                            duration={values.activityDurationSeconds.basic.displayValue}
-                            startDate={new Date(period)}
-                            endDate={
-                                new Date(
-                                    new Date(period).getTime() +
-                                        values.activityDurationSeconds.basic.value * 1000
-                                )
-                            }
-                            centerY={getHeight(values.activityDurationSeconds.basic.value)}
+                            centerY={getHeight(dot.durationSeconds)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            targetted={targetDot === activityDetails.instanceId}
+                            targetted={targetDot === dot.instanceId}
                         />
                     ))}
                 </svg>

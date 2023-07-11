@@ -6,6 +6,7 @@ import { Difficulty, ValidRaidHash } from "../../../types/raids"
 import { Icons } from "../../../util/presentation/icons"
 import { isContest, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
+import Activity from "../../../models/profile/Activity"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -13,14 +14,9 @@ export const Teal = "#36c9bd"
 
 type DotProps = {
     index: number
-    instanceId: string
-    raidHash: ValidRaidHash
-    completed: boolean
+    activity: Activity
     flawless: boolean
     playerCount: number
-    startDate: Date
-    endDate: Date
-    duration: string
     centerY: number
     targetted: boolean
     tooltipData: DotTooltipProps | null
@@ -29,22 +25,17 @@ type DotProps = {
 
 const Dot = ({
     index,
-    instanceId,
-    completed,
+    activity,
     flawless,
     playerCount,
     centerY,
+    targetted,
     setTooltip,
-    tooltipData,
-    duration,
-    startDate,
-    endDate,
-    raidHash,
-    targetted
+    tooltipData
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
-    const details = useMemo(() => raidTupleFromHash(raidHash), [raidHash])
+    const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
     const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
         const containerToEdge =
@@ -53,8 +44,7 @@ const Dot = ({
 
         setTooltip({
             isShowing: true,
-            activityCompleted: completed,
-            details,
+            activity,
             flawless,
             lowman:
                 playerCount === 1
@@ -64,9 +54,6 @@ const Dot = ({
                     : playerCount === 3
                     ? Tag.TRIO
                     : null,
-            endDate,
-            startDate,
-            duration,
             offset: {
                 x: xOffset,
                 y: centerY
@@ -111,7 +98,7 @@ const Dot = ({
     return (
         <a
             ref={ref}
-            href={`/pgcr/${instanceId}`}
+            href={`/pgcr/${activity.instanceId}`}
             className={[
                 styles["dot"],
                 styles["dot-hover"],
@@ -121,7 +108,7 @@ const Dot = ({
             onMouseLeave={handleMouseLeave}>
             {
                 <circle
-                    fill={completed ? (flawless ? Teal : Green) : Red}
+                    fill={activity.completed ? (flawless ? Teal : Green) : Red}
                     fillOpacity={0.978}
                     r={RADIUS}
                     cx={centerX}
@@ -131,7 +118,7 @@ const Dot = ({
             {playerCount <= 3 ? (
                 <Star x={centerX} y={centerY} spinning={playerCount === 1} />
             ) : (
-                isContest(details[0], startDate) && (
+                isContest(details[0], activity.startDate) && (
                     <image
                         width={2 * SKULL_FACTOR * RADIUS}
                         height={2 * SKULL_FACTOR * RADIUS}

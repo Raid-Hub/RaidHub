@@ -1,8 +1,8 @@
 import { Collection } from "@discordjs/collection"
-import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../../types/raids"
-import { encoders } from "../../../util/encode"
-import { AllValidHashes, raidTupleFromHash } from "../../../util/destiny/raid"
-import RaidData from "./AbstractRaidData"
+import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../types/raids"
+import { encoders } from "../../util/encode"
+import { AllValidHashes, raidTupleFromHash } from "../../util/destiny/raid"
+import { RaidData } from "../../types/profile"
 
 /**
  * Represents a collection of raid data keyed by difficulty. T represents the
@@ -20,13 +20,13 @@ export default abstract class AbstractRaidDataCollection<
 
     abstract add(difficulty: Difficulty, values: R[]): void
 
-    static mergeActivities<T extends RaidData<R>, R, C extends AbstractRaidDataCollection<T, R>>(
+    static groupActivities<T extends RaidData<R>, R, C extends AbstractRaidDataCollection<T, R>>(
         this: new (raid: Raid) => C,
         activities: {
             activityHash: ValidRaidHash | number
             values: R
         }[]
-    ): Map<Raid, C> {
+    ): Collection<Raid, C> {
         const buckets = new Map<string, R[]>()
         const [encode, decode] = encoders<RaidDifficultyTuple>()
         activities.forEach(({ activityHash, values }) => {
@@ -46,7 +46,7 @@ export default abstract class AbstractRaidDataCollection<
             }
         })
 
-        const result = new Map<Raid, C>()
+        const result = new Collection<Raid, C>()
         buckets.forEach((values, key) => {
             const [raid, difficulty] = decode(key)
             if (result.has(raid)) {

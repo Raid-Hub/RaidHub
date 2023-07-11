@@ -8,7 +8,6 @@ import {
 } from "../../../types/raids"
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import RaidStatsCollection from "../../../models/profile/RaidStatsCollection"
 import { useLocale } from "../../app/LanguageProvider"
 import { useEffect, useMemo, useState } from "react"
@@ -16,11 +15,16 @@ import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
-import { isContest, isDayOne, isWeekOne, raidTupleFromHash } from "../../../util/destiny/raid"
+import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raid"
+import { Collection } from "@discordjs/collection"
+import ActivityCollection from "../../../models/profile/ActivityCollection"
+import { FilterCallback } from "../../../types/generic"
+import Activity from "../../../models/profile/Activity"
 
 type RaidModalProps = {
     raid: AvailableRaid
-    activities: DestinyHistoricalStatsPeriodGroup[]
+    allActivities: ActivityCollection | null
+    filter: FilterCallback<Activity> | null
     stats: RaidStatsCollection | undefined
     report: RaidReportDataCollection | undefined
     isLoadingDots: boolean
@@ -28,9 +32,10 @@ type RaidModalProps = {
     isLoadingReport: boolean
 }
 
-const RaidModal = ({
+const RaidCard = ({
     raid,
-    activities,
+    allActivities,
+    filter,
     stats,
     report,
     isLoadingDots,
@@ -40,25 +45,24 @@ const RaidModal = ({
     const { strings } = useLocale()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
+    const activitiesFiltered = useMemo(() => {
+        if (filter && allActivities) {
+            return allActivities.filtered(filter)
+        } else {
+            return null
+        }
+    }, [filter, allActivities])
+
     const averageClear = useMemo(() => {
-        if (report?.fastestFullClear?.value) {
-            const completions = activities
-                .filter(
-                    a =>
-                        a.values.completed.basic.value &&
-                        a.values.activityDurationSeconds.basic.value >=
-                            report.fastestFullClear!.value
-                )
-                .sort(
-                    (a, b) =>
-                        a.values.activityDurationSeconds.basic.value -
-                        b.values.activityDurationSeconds.basic.value
-                )
+        if (report?.fastestFullClear?.value && allActivities) {
+            const completions = allActivities.all
+                .filter(a => a.completed && a.durationSeconds >= report.fastestFullClear!.value)
+                .sort((a, b) => a.durationSeconds - b.durationSeconds)
             return medianElement(completions)
         } else {
             return undefined
         }
-    }, [activities, report])
+    }, [allActivities, report])
 
     const contestFirstClear: (RaceTag & { instanceId?: string }) | null = useMemo(() => {
         const contestDifficulty:
@@ -66,12 +70,7 @@ const RaidModal = ({
             | Difficulty.NORMAL =
             // @ts-ignore
             ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
-        const first = activities.find(
-            a =>
-                !!a.values.completed.basic.value &&
-                raidTupleFromHash(a.activityDetails.directorActivityHash.toString())[1] ===
-                    contestDifficulty
-        )
+        const first = allActivities?.get(contestDifficulty)?.raw.find(a => !!a.completed)
         const isChallenge = contestDifficulty !== Difficulty.NORMAL
         if (!first) {
             return report?.worldFirstPlacement
@@ -84,11 +83,8 @@ const RaidModal = ({
                   }
                 : null
         }
-        const end = new Date(
-            new Date(first.period).getTime() +
-                first.values.activityDurationSeconds.basic.value * 1000
-        )
-        const start = new Date(first.period)
+        const end = first.endDate
+        const start = first.startDate
         const contest = isContest(raid, start)
         const weekOne = isWeekOne(raid, end)
         if (!contest && !weekOne) {
@@ -101,10 +97,10 @@ const RaidModal = ({
                 contest,
                 weekOne,
                 asterisk: contest && !isContest(raid, end), // completed after contest was over
-                instanceId: first.activityDetails.instanceId
+                instanceId: first.instanceId
             } as RaceTag & { instanceId: string }
         }
-    }, [activities, raid, report?.worldFirstPlacement])
+    }, [allActivities, raid, report?.worldFirstPlacement])
 
     useEffect(() => {
         // Set a new timeout
@@ -152,7 +148,7 @@ const RaidModal = ({
                     <DotGraphWrapper
                         isLoading={isLoadingDots}
                         report={report}
-                        dots={activities}
+                        dots={activitiesFiltered?.all ?? new Collection()}
                         targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>
@@ -207,4 +203,4 @@ const RaidModal = ({
     )
 }
 
-export default RaidModal
+export default RaidCard

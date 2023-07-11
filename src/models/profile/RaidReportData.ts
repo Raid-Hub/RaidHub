@@ -3,16 +3,16 @@ import {
     IRaidReportActivity,
     IRaidReportData,
     LowManActivity,
+    RaidData,
     SetOfLowmans
 } from "../../types/profile"
 import { RaidReportPlayerValues } from "../../types/raidreport"
 import { Difficulty, Raid } from "../../types/raids"
-import RaidData from "./abstract/AbstractRaidData"
 
-export default class RaidReportData
-    extends RaidData<RaidReportPlayerValues>
-    implements IRaidReportData
-{
+export default class RaidReportData implements RaidData<RaidReportPlayerValues>, IRaidReportData {
+    raid: Raid
+    difficulty: Difficulty
+    raw: RaidReportPlayerValues[]
     fastestFullClear: { instanceId: string; value: number } | null
     flawlessTriumphActivity: IRaidReportActivity | null
     clears: number
@@ -22,7 +22,9 @@ export default class RaidReportData
     sherpaCount: number
     worldFirstPlacement: number | null
     constructor(data: RaidReportPlayerValues[], raid: Raid, difficulty: Difficulty) {
-        super(data, raid, difficulty)
+        this.raw = data
+        this.raid = raid
+        this.difficulty = difficulty
         this.fastestFullClear = null
         this.flawlessTriumphActivity = null
         this.clears = 0

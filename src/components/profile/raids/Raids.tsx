@@ -14,6 +14,8 @@ import { useLocale } from "../../app/LanguageProvider"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { Layout } from "../Profile"
 import { raidTupleFromHash } from "../../../util/destiny/raid"
+import { Collection } from "@discordjs/collection"
+import ActivityCollection from "../../../models/profile/ActivityCollection"
 
 const CARDS_PER_PAGE = 60
 
@@ -57,10 +59,14 @@ const Raids = ({
     const [pages, setPages] = useState<number>(1)
 
     useEffect(() => {
+        console.log(allActivities)
+        console.log(activitiesByRaid)
+    }, [allActivities, activitiesByRaid])
+
+    useEffect(() => {
         if (allActivities) {
             setMostRecentActivity(
-                allActivities.find(a => !!a.values.completed.basic.value)?.activityDetails
-                    .instanceId ?? null
+                allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
             )
         }
     }, [allActivities, setMostRecentActivity])
@@ -73,18 +79,6 @@ const Raids = ({
         }
     }, [prefs, allActivities])
 
-    const activitiesByRaidFiltered = useMemo(() => {
-        if (prefs && activitiesByRaid) {
-            const filtered = new Map<Raid, DestinyHistoricalStatsPeriodGroup[]>()
-            for (const [raid, collection] of Object.entries(activitiesByRaid)) {
-                filtered.set(parseInt(raid), collection.filter(prefs[Prefs.FILTER]).toJSON())
-            }
-            return filtered
-        } else {
-            return null
-        }
-    }, [prefs, activitiesByRaid])
-
     switch (layout) {
         case Layout.DotCharts:
             return (
@@ -93,10 +87,11 @@ const Raids = ({
                         <RaidCard
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}
+                            allActivities={activitiesByRaid?.get(raid) ?? null}
+                            filter={prefs?.[Prefs.FILTER] ?? null}
                             isLoadingStats={isLoadingRaidMetrics}
                             key={idx}
                             raid={raid}
-                            activities={activitiesByRaidFiltered?.get(raid) ?? []}
                             isLoadingDots={
                                 !allActivities ||
                                 isLoadingActivities ||
@@ -119,26 +114,18 @@ const Raids = ({
                               ))
                         : allActivitiesFiltered && (
                               <>
-                                  {allActivitiesFiltered
+                                  {Array.from(allActivitiesFiltered.values())
                                       .slice(0, pages * CARDS_PER_PAGE)
-                                      .map(({ activityDetails, values, period }, key) => (
+                                      .map((activity, key) => (
                                           <ActivityTile
                                               key={key}
-                                              info={raidTupleFromHash(
-                                                  activityDetails.referenceId.toString()
-                                              )}
-                                              completed={!!values.completed.basic.value}
-                                              activityId={activityDetails.instanceId}
-                                              startDate={
-                                                  new Date(
-                                                      new Date(period).getTime() +
-                                                          values.activityDurationSeconds.basic.value
-                                                  )
-                                              }
-                                              completionDate={new Date(period)}
+                                              {...activity}
+                                              completed={activity.completed}
+                                              durationSeconds={activity.durationSeconds}
+                                              instanceId={activity.instanceId}
                                           />
                                       ))}
-                                  {allActivitiesFiltered.length > pages * CARDS_PER_PAGE && (
+                                  {allActivitiesFiltered.size > pages * CARDS_PER_PAGE && (
                                       <button
                                           className={styles["load-more"]}
                                           onClick={() => setPages(pages + 1)}>

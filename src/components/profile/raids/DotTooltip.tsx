@@ -7,6 +7,7 @@ import { useLocale } from "../../app/LanguageProvider"
 import { Green, Red, Teal } from "./Dot"
 import { raidVersion } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
+import Activity from "../../../models/profile/Activity"
 
 export type DotTooltipProps = {
     offset: {
@@ -14,34 +15,24 @@ export type DotTooltipProps = {
         y: number
     }
     isShowing: boolean
-    activityCompleted: boolean
+    activity: Activity
     flawless: boolean
     lowman: Tag.SOLO | Tag.DUO | Tag.TRIO | null
-    startDate: Date
-    endDate: Date
-    duration: string
-    details: RaidDifficultyTuple
 }
 
-const DotTooltip = ({
-    offset,
-    isShowing,
-    activityCompleted,
-    flawless,
-    lowman,
-    startDate,
-    endDate,
-    duration,
-    details
-}: DotTooltipProps) => {
+const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotTooltipProps) => {
     const { strings } = useLocale()
-    const dateString = useMemo(() => getRelativeTime(endDate), [endDate])
+    const dateString = useMemo(() => getRelativeTime(activity.endDate), [activity.endDate])
     const difficultyString = useMemo(
-        () => raidVersion(details, startDate, endDate, strings),
-        [details, endDate, startDate, strings]
+        () =>
+            raidVersion(
+                [activity.raid, activity.difficulty],
+                activity.startDate,
+                activity.endDate,
+                strings
+            ),
+        [activity, strings]
     )
-
-    console.log(flawless)
 
     return (
         <div
@@ -51,9 +42,9 @@ const DotTooltip = ({
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activityCompleted ? (flawless ? Teal : Green) : Red
+                borderColor: activity.completed ? (flawless ? Teal : Green) : Red
             }}>
-            <div>{duration}</div>
+            <div>{activity.values.activityDurationSeconds.basic.displayValue}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
             <div className={styles["dot-tooltip-tags"]}>
