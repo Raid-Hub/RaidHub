@@ -94,8 +94,17 @@
     display: flex;
     text-align: center;
     text-transform: uppercase;
-    color: rgb(120, 120, 120);
+    color: var(--secondary-text);
     font-size: 0.8em;
+}
+
+.description-toggle:hover {
+    cursor: pointer;
+}
+
+.description-toggle.checked {
+    font-weight: 600;
+    color: var(--tertiary-text);
 }
 
 @media (min-width: 960px) {

@@ -70,7 +70,10 @@ const RaidCard = ({
             | Difficulty.NORMAL =
             // @ts-ignore
             ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
-        const first = allActivities?.get(contestDifficulty)?.raw.find(a => !!a.completed)
+        const first = allActivities
+            ?.get(contestDifficulty)
+            ?.collection.reverse()
+            .find(a => !!a.completed)
         const isChallenge = contestDifficulty !== Difficulty.NORMAL
         if (!first) {
             return report?.worldFirstPlacement

@@ -131,7 +131,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                         isPinned={!!raidHubProfile?.pinnedActivity}
                         errorHandler={errorHandler}
                     />
-                    <ToggleSwitch defaultState={!!layout} onToggle={handleLayoutToggle} />
+                    <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
                 </div>
                 <Raids
                     membershipId={destinyMembershipId}

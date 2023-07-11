@@ -110,10 +110,21 @@ const Raids = ({
                                       .map((activity, key) => (
                                           <ActivityTile
                                               key={key}
-                                              {...activity}
-                                              completed={activity.completed}
-                                              durationSeconds={activity.durationSeconds}
-                                              instanceId={activity.instanceId}
+                                              activity={activity}
+                                              playerCount={
+                                                  raidReport
+                                                      ?.get(activity.raid)
+                                                      ?.get(activity.difficulty)
+                                                      ?.lowmanActivities.get(activity.instanceId)
+                                                      ?.playerCount
+                                              }
+                                              flawless={
+                                                  raidReport
+                                                      ?.get(activity.raid)
+                                                      ?.get(activity.difficulty)
+                                                      ?.flawlessActivities.get(activity.instanceId)
+                                                      ?.fresh
+                                              }
                                           />
                                       ))}
                                   {allActivitiesFiltered.size > pages * CARDS_PER_PAGE && (

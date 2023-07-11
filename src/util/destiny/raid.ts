@@ -39,7 +39,8 @@ export function raidVersion(
     [raid, difficulty]: RaidDifficultyTuple,
     startDate: Date,
     endDate: Date,
-    strings: LocalStrings
+    strings: LocalStrings,
+    includeNormal: boolean = true
 ): string {
     if (
         ReprisedContestRaidDifficulties.includes(
@@ -51,8 +52,12 @@ export function raidVersion(
         return strings.tags[Tag.DAY_ONE]
     } else if (isContest(raid, startDate)) {
         return strings.difficulty[Difficulty.CONTEST]
-    } else {
+    } else if (difficulty !== Difficulty.NORMAL) {
         return strings.difficulty[difficulty]
+    } else if (includeNormal) {
+        return strings.difficulty[Difficulty.NORMAL]
+    } else {
+        return ""
     }
 }
 export function raidTupleFromHash(hash: string): RaidDifficultyTuple {

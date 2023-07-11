@@ -1,35 +1,55 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { RaidCardBackground, RaidDifficultyTuple } from "../../../types/raids"
+import { RaidCardBackground } from "../../../types/raids"
 import Link from "next/link"
 import { useLocale } from "../../app/LanguageProvider"
 import { raidVersion } from "../../../util/destiny/raid"
 import Activity from "../../../models/profile/Activity"
+import { useMemo } from "react"
+import { Tag } from "../../../util/raidhub/tags"
 
-type ActivityTileProps = Activity
+type ActivityTileProps = {
+    activity: Activity
+    playerCount: number | undefined
+    flawless: boolean | null | undefined
+}
 
 const ActivityTile = ({
-    startDate,
-    raid,
-    difficulty,
-    endDate,
-    instanceId,
-    completed
+    activity: { startDate, raid, difficulty, endDate, instanceId, completed },
+    playerCount,
+    flawless
 }: ActivityTileProps) => {
     const { strings } = useLocale()
-    const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings)
+    const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings, false)
+    const lowManString = useMemo(() => {
+        switch (playerCount) {
+            case 1:
+                return strings.tags[Tag.SOLO]
+            case 2:
+                return strings.tags[Tag.DUO]
+            case 3:
+                return strings.tags[Tag.TRIO]
+        }
+    }, [playerCount, strings])
+
+    const flawlessString = useMemo(() => {
+        if (flawless === true) {
+            return strings.tags[Tag.FLAWLESS]
+        } else if (flawless === null) {
+            return strings.tags[Tag.FLAWLESS] + "*"
+        }
+    }, [flawless, strings])
+
     return (
-        <Link
-            href={`/pgcr/${instanceId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles["activity"]}>
+        <Link href={`/pgcr/${instanceId}`} className={styles["activity"]}>
             <img
                 src={RaidCardBackground[raid]}
                 alt={`Raid card for ${strings.raidNames[raid]}`}
                 className={styles["activity-content-img"]}
             />
             <p className={styles["activity-title"]}>
-                {`${difficultyString ? difficultyString + " " : ""}${strings.raidNames[raid]}`}
+                {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
+                    .filter(Boolean) // filters out falsy values
+                    .join(" ")}
             </p>
 
             <div className={styles["success-layer"]}>

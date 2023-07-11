@@ -39,6 +39,10 @@ export interface LocalStrings {
     sherpas: string
     na: string
     checkpoints: { [key in Raid]: string }
+    toggle: {
+        charts: string
+        tiles: string
+    }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -131,6 +135,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.ROOT_OF_NIGHTMARES]: "Nezarec",
             [Raid.CROTAS_END]: "Crota",
             [Raid.NA]: ""
+        },
+        toggle: {
+            charts: "Charts",
+            tiles: "Tiles"
         }
     }
 }

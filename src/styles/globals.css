@@ -190,6 +190,10 @@ img[src=""] {
     border-radius: 34px;
 }
 
+.slider.always-on {
+    background-color: var(--brand-orange);
+}
+
 .slider:before {
     position: absolute;
     content: "";
