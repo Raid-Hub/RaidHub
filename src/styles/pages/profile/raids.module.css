@@ -364,6 +364,7 @@
 .timings-number {
     white-space: nowrap;
     font-weight: 600;
+    font-size: 1.625rem;
 }
 
 .timings-number-large {
