@@ -8,6 +8,7 @@
     margin: 0 2%;
     display: flex;
     justify-content: space-between;
+    gap: 0.5em;
 }
 
 .logo {
@@ -44,14 +45,20 @@
     align-items: center;
 }
 
-.profile-img {
+.account-link {
+    margin-left: 1em;
     width: 30px;
     height: 30px;
-    margin-left: 1em;
+
+    position: relative;
 }
 
-.profile-img:hover {
-    cursor: pointer;
+.account-img {
+    transition: transform 0.2s ease-out;
+}
+
+.account-img:hover {
+    transform: scale(1.1);
 }
 
 .search-container {
@@ -81,8 +88,8 @@
     border: 3px solid #f3f3f3;
     border-radius: 50%;
     border-top: 3px solid var(--brand-orange);
-    width: 15.5px;
-    height: 15.5px;
+    width: 85%;
+    height: 85%;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
 }

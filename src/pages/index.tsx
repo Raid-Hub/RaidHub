@@ -1,20 +1,14 @@
 import { NextPage } from "next"
-import styles from "../styles/pages/home.module.css"
-import HomeRaidCard from "../components/home/HomeRaidCard"
-import { useLocale } from "../components/app/LanguageProvider"
-import { AvailableRaids } from "../types/raids"
+import Head from "next/head"
+import Home from "../components/home/Home"
 
-export const Home: NextPage<{}> = () => {
-    const { strings } = useLocale()
-    return (
-        <main>
-            <section className={styles["raids"]}>
-                {AvailableRaids.map((raid, idx) => (
-                    <HomeRaidCard raid={raid} strings={strings} key={idx} />
-                ))}
-            </section>
-        </main>
-    )
-}
+export const HomePage: NextPage<{}> = () => (
+    <>
+        <Head>
+            <title>Raid Hub</title>
+        </Head>
+        <Home />
+    </>
+)
 
-export default Home
+export default HomePage

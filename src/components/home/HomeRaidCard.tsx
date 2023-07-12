@@ -1,4 +1,3 @@
-import React from "react"
 import styles from "../../styles/pages/home.module.css"
 import { Raid } from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"

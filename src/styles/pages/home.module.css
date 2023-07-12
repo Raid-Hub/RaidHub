@@ -38,8 +38,9 @@
 
 .card-image-header img {
     width: 100%;
+    height: auto;
     margin-top: -5%;
-    margin-bottom: -15%;
+    margin-bottom: -5%;
 
     filter: brightness(90%);
 }

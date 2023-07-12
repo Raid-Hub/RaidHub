@@ -22,17 +22,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 session={session}
                 refetchInterval={refetchInterval}
                 refetchOnWindowFocus={false}>
-                <Head>
-                    <link rel="shortcut icon" href="/favicon.ico" />
-                    <link rel="manifest" href="/manifest.json" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-                </Head>
                 <TokenManager setRefetchInterval={setRefetchInterval}>
                     <Header />
                     <Component {...pageProps} />
                     <Footer />
                 </TokenManager>
             </SessionProvider>
+            <Head>
+                <link rel="shortcut icon" href="/favicon.ico" />
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            </Head>
         </LanguageProvider>
     )
 }
