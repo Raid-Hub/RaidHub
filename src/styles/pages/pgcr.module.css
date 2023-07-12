@@ -27,7 +27,7 @@
     position: absolute;
     z-index: -1;
 
-    object-position: 20% 10%;
+    object-position: 20% -40px;
     object-fit: cover;
 }
 
@@ -193,12 +193,8 @@
 }
 
 .class-logo-container {
-    flex: 1;
-
-    height: 100%;
-    width: 200px;
-
-    background: linear-gradient(to right, #212121a5, #ffffff00);
+    height: 90%;
+    width: 80px;
 
     position: relative;
     margin-right: 1.2vw;

@@ -47,7 +47,9 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
             abilityKills: getStat("kills")! - weaponKills,
             kdr: getStat("kills")! / (getStat("deaths") || 1),
             kda: getStat("kills")! + getStat("assists")! / (getStat("deaths") || 1),
-            timePlayedSeconds: getStat("timePlayedSeconds")!
+            timePlayedSeconds: !!getStat("completed")!
+                ? getStat("activityDurationSeconds")! - getStat("startSeconds")!
+                : getStat("timePlayedSeconds")!
         }
 
         this.stats = {
