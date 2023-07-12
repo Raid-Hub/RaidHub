@@ -123,7 +123,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
-        if (AvailableRaids.includes(this.raid as AvailableRaid)) return []
+        if (!AvailableRaids.includes(this.raid as AvailableRaid)) return []
         if (isDayOne(this.raid as AvailableRaid, this.completionDate)) tags.push(Tag.DAY_ONE)
         if (isContest(this.raid as AvailableRaid, this.startDate)) {
             switch (this.difficulty) {

@@ -1,11 +1,12 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { RaidBanner } from "../../../types/raids"
 import Loading from "../../global/Loading"
-import { Icons } from "../../../util/presentation/icons"
+import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { ErrorHandler } from "../../../types/generic"
 import { useActivity } from "../../../hooks/bungie/useActivity"
 import { useLocale } from "../../app/LanguageProvider"
+import Image from "next/image"
+import RaidBanners from "../../../images/raid-banners"
 
 type PinnedActivityProps = {
     isLoading: boolean
@@ -27,16 +28,17 @@ const PinnedActivity = ({
     ) : (
         pgcr && (
             <a href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
-                <div
-                    className={["background-img", styles["pinned-background"]].join(" ")}
-                    style={{
-                        backgroundImage: `url('${RaidBanner[pgcr.raid]}')`
-                    }}
+                <Image
+                    className={styles["pinned-background"]}
+                    src={RaidBanners[pgcr.raid]}
+                    alt="Pinned activity"
+                    fill
+                    sizes="(max-width: 768px) 60vw, (max-width: 1300px) 70vw, 90vw"
                 />
                 {isPinned ? (
-                    <img className={styles["pin-icon"]} src={Icons.PIN} alt="pinned" />
+                    <Image className={styles["pin-icon"]} src={Pin} alt="pinned" />
                 ) : (
-                    <img className={styles["recent-icon"]} src={Icons.TIME} alt="pinned" />
+                    <Image className={styles["recent-icon"]} src={Time} alt="pinned" />
                 )}
 
                 <div className={styles["pinned-activity-text"]}>
@@ -46,7 +48,7 @@ const PinnedActivity = ({
                     <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
 
                     <div className={styles["pinned-activity-time"]}>
-                        <img src={Icons.SPEED} alt="" width="20px" height="20px" />
+                        <Image src={Eager} alt="" style={{ width: "20px", height: "20px" }} />
                         <span>{pgcr.speed.string(strings)}</span>
                     </div>
                 </div>

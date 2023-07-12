@@ -1,7 +1,6 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { useState } from "react"
 import { Raid } from "../../types/raids"
-import { Icons } from "../../util/presentation/icons"
 import StatCards from "./PlayerStatCells"
 import { ErrorHandler, Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
@@ -10,6 +9,9 @@ import PlayerCell from "./PlayerCell"
 import { defaultEmblem } from "../../util/destiny/emblems"
 import DestinyPGCRCharacter from "../../models/pgcr/Character"
 import { useEmblems } from "../../hooks/bungie/useEmblems"
+import Image from "next/image"
+import { External } from "../../images/icons"
+import SelectedPlayerHeader from "./SelectedPlayerHeader"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
@@ -44,15 +46,6 @@ const ParticipantsSection = ({
         characterIndex === clicked ? setCharacterIndex(-1) : setCharacterIndex(clicked)
     }
 
-    const memberProfile = () => {
-        if (!members) return `/`
-        const member = members[memberIndex]
-        const id = member.membershipId
-        const platform = member.membershipType
-        if (!id || !platform) return `/`
-        return `/profile/${platform}/${id}`
-    }
-
     const cardLayout = members
         ? members.length < 4 && memberIndex === -1
             ? styles["members-low"]
@@ -64,17 +57,18 @@ const ParticipantsSection = ({
     // standard view
     if (memberIndex === -1 || !members) {
         return (
-            <div className={[styles["members"], cardLayout].join(" ")}>
+            <div className={[styles["grid"], cardLayout].join(" ")}>
                 {members?.map((member, idx) => (
                     <PlayerCell
                         solo={members.length === 1}
-                        key={idx}
+                        key={member.membershipId}
                         member={member}
                         index={idx}
                         emblemBackground={
                             "https://bungie.net" +
                             (emblems?.[member.characterIds[0]] ?? defaultEmblem)
                         }
+                        isLoadingEmblems={isLoadingEmblems}
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}
                     />
@@ -85,52 +79,22 @@ const ParticipantsSection = ({
         // selected view
         return (
             <>
-                <div className={styles["members-header"]}>
-                    <SelectedPlayer
-                        member={members[memberIndex] ?? null}
-                        index={memberIndex}
-                        emblemBackground={
+                <SelectedPlayerHeader
+                    selected={members[memberIndex]}
+                    selectedIndex={memberIndex}
+                    emblemBackground={
+                        "https://bungie.net" +
                             emblems?.[
-                                members[memberIndex]?.characterIds[
+                                members[memberIndex].characterIds[
                                     characterIndex != -1 ? characterIndex : 0
-                                ] ?? ""
-                            ] ?? ""
-                        }
-                        memberIndex={memberIndex}
-                        updateMemberIndex={updateMemberIndex}
-                        characterIndex={characterIndex}
-                    />
-                    {members[memberIndex].characters.length > 1 && (
-                        <div className={styles["class-button-container"]}>
-                            {members[memberIndex].characters.map(({ logo, className }, idx) => (
-                                <button
-                                    key={idx}
-                                    className={[
-                                        styles["selectable"],
-                                        idx === characterIndex ? styles["selected"] : "",
-                                        styles["class-button"]
-                                    ].join(" ")}
-                                    onClick={() => updateCharacterIndex(idx)}>
-                                    <img src={logo} alt={className} />
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                    <button
-                        className={[styles["member-profile-button"], styles["selectable"]].join(
-                            " "
-                        )}>
-                        <a href={memberProfile()} className={styles["member-profile-link"]}>
-                            <img
-                                src={Icons.EXTERNAL}
-                                alt={"View profile"}
-                                className={styles["view-profile-icon"]}
-                            />
-                            <span>View Profile</span>
-                        </a>
-                    </button>
-                </div>
-                <div className={[styles["members"], cardLayout].join(" ")}>
+                                ]
+                            ] ?? defaultEmblem
+                    }
+                    characterIndex={characterIndex}
+                    updateMemberIndex={updateMemberIndex}
+                    updateCharacterIndex={updateCharacterIndex}
+                />
+                <div className={[styles["grid"], cardLayout].join(" ")}>
                     <StatCards
                         entry={
                             members[memberIndex].characters[characterIndex] ?? members[memberIndex]

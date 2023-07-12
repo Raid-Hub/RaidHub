@@ -7,17 +7,23 @@
 }
 
 .pinned-activity {
-    position: relative;
+    display: block;
+
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 0.2em 3em;
+
     position: relative;
+    overflow: hidden;
 
     color: white;
 }
 
 .pinned-background {
-    opacity: 0.6;
+    object-position: left center;
+    object-fit: cover;
+    opacity: 0.8;
+    z-index: -1;
 }
 
 .pin-icon {
@@ -26,6 +32,7 @@
     top: 0.8em;
     left: 1.5em;
     width: 20px;
+    height: auto;
 }
 
 .recent-icon {
@@ -33,6 +40,7 @@
     top: 0.8em;
     left: 0.8em;
     width: 20px;
+    height: auto;
 }
 
 .pinned-activity-text {
@@ -62,7 +70,6 @@
 
 .pinned-activity-time img {
     margin-right: 0.5em;
-    width: 20px;
 }
 
 .pinned-activity-timer > span {
@@ -144,6 +151,10 @@
     min-width: 300px;
     max-width: 100%;
     flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card-img-container {
@@ -153,8 +164,9 @@
 
 .card-background {
     width: 100%;
+    height: auto;
+    object-fit: cover;
     border-bottom: 1px solid var(--border);
-    border-radius: 20px 20px 0 0;
     opacity: 0.95;
 }
 
@@ -191,6 +203,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.35em;
 
     white-space: nowrap;
 }
@@ -217,14 +230,14 @@
 
 .card-content {
     padding: 0 1.5em;
-    border-bottom-right-radius: 18px;
-    border-bottom-left-radius: 18px;
     background-color: var(--modal-background);
+
+    height: 100%;
 }
 
 .clickable-tag img {
-    margin: 0 0.2em;
     width: 15px;
+    height: auto;
 }
 
 .graph-content {
@@ -364,7 +377,6 @@
 .timings-number {
     white-space: nowrap;
     font-weight: 600;
-    font-size: 1.625rem;
 }
 
 .timings-number-large {

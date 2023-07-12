@@ -4,6 +4,7 @@ import SocialTag from "./SocialTag"
 import { ProfileSocialData } from "../../../types/profile"
 import UserName from "./UserName"
 import Loading from "../../global/Loading"
+import Image from "next/image"
 
 type UserCardProps = {
     isLoading: boolean
@@ -30,18 +31,24 @@ const UserCard = ({
     ) : (
         <div className={styles["card"]} {...customStyling}>
             <div className={styles["banner"]}>
-                <img
-                    className={styles["image-background"]}
-                    src={emblemBackgroundPath && `https://bungie.net${emblemBackgroundPath}`}
-                    alt=""
-                />
+                {emblemBackgroundPath && (
+                    <Image
+                        className={styles["image-background"]}
+                        src={`https://bungie.net${emblemBackgroundPath}`}
+                        width={474}
+                        height={96}
+                        alt="profile banner"
+                    />
+                )}
                 <div className={styles["details"]}>
-                    <img
+                    <Image
                         src={
                             "https://bungie.net" +
                             (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                         }
-                        alt=""
+                        width={474}
+                        height={96}
+                        alt="profile picture"
                     />
 
                     <div className={styles["username"]}>
@@ -51,9 +58,7 @@ const UserCard = ({
             </div>
 
             <div className={styles["icons"]}>
-                {socials?.map((social, key) => (
-                    <SocialTag {...social} key={key} />
-                ))}
+                {socials && socials.map((social, key) => <SocialTag {...social} key={key} />)}
             </div>
         </div>
     )

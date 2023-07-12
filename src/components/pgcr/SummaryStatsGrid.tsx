@@ -1,8 +1,9 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { formattedNumber } from "../../util/presentation/formatting"
-import { Icons } from "../../util/presentation/icons"
 import { useLocale } from "../app/LanguageProvider"
+import Image, { StaticImageData } from "next/image"
+import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
 
 type SummaryStatsProps = {
     activity: DestinyPGCR | null
@@ -12,47 +13,47 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
     const { language, locale, strings } = useLocale()
     const stats = activity?.stats
     const statsData: {
-        icon: string
+        icon: StaticImageData
         name: string
         value: number | string
     }[] = [
         {
-            icon: Icons.MVP,
+            icon: MVP,
             name: strings.mvp,
             value: stats?.mvp ?? "???"
         },
         {
-            icon: Icons.KILLS,
+            icon: Kills,
             name: strings.totalKills,
             value: formattedNumber(stats?.totalKills ?? 0, locale)
         },
         {
-            icon: Icons.DEATHS,
+            icon: Deaths,
             name: strings.totalDeaths,
             value: formattedNumber(stats?.totalDeaths ?? 0, locale)
         },
         {
-            icon: Icons.ASSISTS,
+            icon: Assists,
             name: strings.totalAssists,
             value: formattedNumber(stats?.totalAssists ?? 0, locale)
         },
         {
-            icon: Icons.ABILITIES,
+            icon: Abilities,
             name: strings.abilityKillsPercentage,
             value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
         },
         {
-            icon: Icons.UNKNOWN,
+            icon: Question_Mark,
             name: strings.killsPerMinute,
             value: formattedNumber(stats?.killsPerMinute ?? 0, locale)
         },
         {
-            icon: Icons.UNKNOWN,
+            icon: Question_Mark,
             name: strings.totalCharactersUsed,
             value: stats?.totalCharactersUsed ?? 0
         },
         {
-            icon: Icons.UNKNOWN,
+            icon: Question_Mark,
             name: strings.mostUsedWeapon,
             value: stats?.mostUsedWeapon?.name[language] ?? strings.none
         }
@@ -62,7 +63,11 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
             {statsData.map(({ icon, name, value }, idx) => (
                 <div key={idx} className={styles["summary-stat"]}>
                     <div className={styles["summary-stat-content"]}>
-                        <img src={icon} alt={name + ": " + value} className={styles["stat-icon"]} />
+                        <Image
+                            src={icon}
+                            alt={name + ": " + value}
+                            className={styles["stat-icon"]}
+                        />
                         <div className={styles["summary-stat-info"]}>
                             <span
                                 className={[

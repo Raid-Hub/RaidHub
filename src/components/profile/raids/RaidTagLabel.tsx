@@ -3,10 +3,11 @@ import Link from "next/link"
 import { Difficulty, Raid } from "../../../types/raids"
 import { useLocale } from "../../app/LanguageProvider"
 import { useCallback, useState } from "react"
-import { Icons } from "../../../util/presentation/icons"
+import { Diamond2 } from "../../../images/icons"
 import { RaidTag } from "../../../types/profile"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
 import { Tag, wfRaceMode } from "../../../util/raidhub/tags"
+import Image from "next/image"
 
 export type RaceTag = {
     placement?: number
@@ -68,10 +69,10 @@ const InnerTag = (props: RaidTagLabelProps) => {
             : getRaceLabel(props, strings)
     return (
         <>
-            {label && <span>{label}</span>}
             {props.type === "challenge" && props.bestPossible && (
-                <img src={Icons.FLAWLESS_DIAMOND} alt="mastery diamond" />
+                <Image src={Diamond2} alt="mastery diamond" />
             )}
+            {label && <span>{label}</span>}
         </>
     )
 }

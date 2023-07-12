@@ -1,7 +1,9 @@
 import Link from "next/link"
 import styles from "../../styles/header.module.css"
 import SearchBar from "./SearchBar"
-import { Icons } from "../../util/presentation/icons"
+import Image from "next/image"
+import Logo from "../../../public/logo.png"
+import { Account } from "../../images/icons"
 
 type HeaderProps = {}
 
@@ -10,13 +12,13 @@ const Header = ({}: HeaderProps) => {
         <header className={styles["header"]}>
             <nav id={styles.nav}>
                 <Link href={"/"} className={styles["logo"]}>
-                    <img className={styles["logo-img"]} src="/logo.png" alt="logo" />
+                    <Image className={styles["logo-img"]} src={Logo} alt="logo" />
                     <span className={styles["logo-text"]}>RaidHub</span>
                 </Link>
                 <div className={styles["right-content"]}>
                     <SearchBar />
                     <Link href="/account">
-                        <img className={styles["profile-img"]} src={Icons.PROFILE} alt="profile" />
+                        <Image className={styles["profile-img"]} src={Account} alt="profile" />
                     </Link>
                 </div>
             </nav>

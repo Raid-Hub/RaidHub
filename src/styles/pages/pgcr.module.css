@@ -19,6 +19,16 @@
     position: relative;
 
     color: white;
+
+    overflow: hidden;
+}
+
+.summary-card-background {
+    position: absolute;
+    z-index: -1;
+
+    object-position: 20% 10%;
+    object-fit: cover;
 }
 
 .activity-tile-header-container {
@@ -121,7 +131,7 @@
     white-space: nowrap;
 }
 
-.members {
+.grid {
     margin-top: 10px;
     border-radius: 10px;
     height: auto;
@@ -143,42 +153,25 @@
     border-radius: 15px;
     border: 1px solid var(--border);
 
-    overflow: hidden;
-    position: relative;
-    padding: 0;
-}
-
-.emblem {
-    position: absolute;
-    z-index: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    background-color: var(--modal-background);
-    opacity: 0.9;
-    overflow: hidden;
-}
-
-.emblem img {
-    filter: brightness(0.9) blur(1px);
-    max-height: 100%;
-}
-
-.member-card {
-    position: absolute;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
+    background-color: var(--modal-background-opaque);
 
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: left;
 
-    font-size: larger;
     overflow: hidden;
+    position: relative;
+}
+
+.emblem {
+    z-index: -1;
+
+    transform: scale(1.02);
+    filter: brightness(0.93) blur(1px);
+
+    opacity: 0.95;
+    object-position: left;
+    object-fit: cover;
 }
 
 .color-film {
@@ -187,8 +180,6 @@
     top: 0;
     width: 100%;
     height: 100%;
-
-    border-radius: 15px;
 }
 
 /* This sets the top row to span 2 columns if odd count and landscape*/
@@ -201,22 +192,21 @@
     }
 }
 
-.class-logo {
-    padding-left: 1.2vw;
+.class-logo-container {
+    flex: 1;
+
     height: 100%;
+    width: 200px;
 
     background: linear-gradient(to right, #212121a5, #ffffff00);
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    margin-right: 1.2vw;
 }
 
-.class-logo > img {
-    max-height: 50px;
-    aspect-ratio: 1/1;
-    margin: 5px;
-    margin-left: 8px;
+.class-logo {
+    margin-left: 1.2vw;
+    object-fit: contain;
 }
 
 .centered {
@@ -331,15 +321,18 @@
     flex: 1;
     min-width: 220px;
     height: 85px;
+    padding: 0;
 
     border-radius: 15px;
     border: 1px solid var(--border);
 
     overflow: hidden;
     position: relative;
-    padding: 0;
 
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .class-button-container {
@@ -448,7 +441,7 @@
     height: 100%;
     padding: 10px;
 
-    background-color: var(--modal-background);
+    background-color: var(--modal-background-opaque);
 
     display: flex;
     align-items: center;
@@ -495,17 +488,36 @@
     line-height: 100%;
 }
 
-.dnf {
-    background-color: rgba(103, 0, 0, 0.561);
+.entry-card.dnf {
     border-color: rgb(157, 20, 10);
 }
 
-.dnf span {
+.entry-card.dnf > .color-film {
+    background-color: rgba(103, 0, 0, 0.501);
+}
+
+.entry-card.dnf > .color-film:hover {
+    background-color: rgba(155, 21, 21, 0.424);
+}
+
+.entry-card.dnf span {
     color: rgb(96, 70, 70);
 }
 
-.dnf img {
+.entry-card.dnf img {
     opacity: 0.3;
+}
+
+.selected-entry-card.dnf {
+    border-color: rgb(157, 20, 10);
+}
+
+.selected-entry-card.dnf > .color-film {
+    background-color: rgba(67, 1, 1, 0.532);
+}
+
+.selected-entry-card.dnf span {
+    color: rgb(234, 78, 78);
 }
 
 /** dynamic styling */
@@ -519,12 +531,12 @@
 }
 
 .selectable:hover {
-    transform: scale(1.015);
+    transform: scale(1.01);
     cursor: pointer;
 }
 
 .selectable:hover .color-film {
-    background-color: rgba(255, 189, 122, 0.058);
+    background-color: rgba(110, 110, 110, 0.18);
 }
 
 /* adjust entry grid for mobile */
@@ -549,7 +561,7 @@
     .member-profile-link > span {
         display: none;
     }
-    .members {
+    .grid {
         grid-template-columns: 1fr;
     }
     .summary-card {

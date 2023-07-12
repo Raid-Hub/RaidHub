@@ -3,7 +3,6 @@ import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "r
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty } from "../../../types/raids"
-import { Icons } from "../../../util/presentation/icons"
 import { isContest, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/Activity"
@@ -123,7 +122,7 @@ const Dot = ({
                         width={2 * SKULL_FACTOR * RADIUS}
                         height={2 * SKULL_FACTOR * RADIUS}
                         className={styles["contest-skull"]}
-                        href={Icons.SKULL}
+                        href={"../../../../icons/skull.png"}
                         x={centerX - SKULL_FACTOR * RADIUS}
                         y={centerY - SKULL_FACTOR * RADIUS}
                     />

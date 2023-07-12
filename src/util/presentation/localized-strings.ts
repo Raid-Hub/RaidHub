@@ -43,6 +43,7 @@ export interface LocalStrings {
         charts: string
         tiles: string
     }
+    viewProfile: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -139,7 +140,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         toggle: {
             charts: "Charts",
             tiles: "Tiles"
-        }
+        },
+        viewProfile: "View Profile"
     }
 }
 

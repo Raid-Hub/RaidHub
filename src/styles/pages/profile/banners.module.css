@@ -59,5 +59,6 @@
     object-fit: contain;
     min-width: 30px;
     max-width: 40px;
+    height: auto;
     margin: 0 1em;
 }

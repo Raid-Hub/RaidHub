@@ -2,7 +2,6 @@ import styles from "../../../styles/pages/profile/raids.module.css"
 import {
     AvailableRaid,
     Difficulty,
-    RaidCardBackground,
     ReprisedContestDifficultyDictionary,
     ReprisedContestRaidDifficulties
 } from "../../../types/raids"
@@ -20,6 +19,8 @@ import { Collection } from "@discordjs/collection"
 import ActivityCollection from "../../../models/profile/ActivityCollection"
 import { FilterCallback } from "../../../types/generic"
 import Activity from "../../../models/profile/Activity"
+import Image from "next/image"
+import RaidCardBackground from "../../../images/raid-backgrounds"
 
 type RaidModalProps = {
     raid: AvailableRaid
@@ -119,7 +120,12 @@ const RaidCard = ({
     return (
         <div className={styles["card"]}>
             <div className={styles["card-img-container"]}>
-                <img className={styles["card-background"]} src={RaidCardBackground[raid]} alt="" />
+                <Image
+                    priority
+                    className={styles["card-background"]}
+                    src={RaidCardBackground[raid]}
+                    alt={strings.raidNames[raid]}
+                />
                 <div className={styles["img-overlay"]}>
                     <div className={styles["tag-row"]}>
                         {contestFirstClear && (

@@ -52,7 +52,7 @@ const Footer = ({}: FooterProps) => {
                                         y="0"
                                         width="100%"
                                         height="100%"
-                                        xlinkHref={`/icons/${id}.png`}
+                                        xlinkHref={`/social-icons/${id}.png`}
                                     />
                                 </mask>
                             </defs>

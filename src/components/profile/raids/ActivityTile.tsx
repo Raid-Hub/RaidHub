@@ -1,11 +1,12 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { RaidCardBackground } from "../../../types/raids"
 import Link from "next/link"
 import { useLocale } from "../../app/LanguageProvider"
 import { raidVersion } from "../../../util/destiny/raid"
 import Activity from "../../../models/profile/Activity"
 import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"
+import Image from "next/image"
+import RaidCardBackground from "../../../images/raid-backgrounds"
 
 type ActivityTileProps = {
     activity: Activity
@@ -41,7 +42,7 @@ const ActivityTile = ({
 
     return (
         <Link href={`/pgcr/${instanceId}`} className={styles["activity"]}>
-            <img
+            <Image
                 src={RaidCardBackground[raid]}
                 alt={`Raid card for ${strings.raidNames[raid]}`}
                 className={styles["activity-content-img"]}
