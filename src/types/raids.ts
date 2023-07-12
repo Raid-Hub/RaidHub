@@ -1,5 +1,4 @@
 import { Flatten } from "./generic"
-import { HTMLAttributes } from "react"
 
 // add new raids here
 export const enum Raid {

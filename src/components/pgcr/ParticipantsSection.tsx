@@ -4,13 +4,10 @@ import { Raid } from "../../types/raids"
 import StatCards from "./PlayerStatCells"
 import { ErrorHandler, Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
-import SelectedPlayer from "./SelectedPlayer"
 import PlayerCell from "./PlayerCell"
 import { defaultEmblem } from "../../util/destiny/emblems"
 import DestinyPGCRCharacter from "../../models/pgcr/Character"
 import { useEmblems } from "../../hooks/bungie/useEmblems"
-import Image from "next/image"
-import { External } from "../../images/icons"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 
 type ParticipantsProps = {
