@@ -1,30 +1,36 @@
 .main {
     display: flex;
     gap: 1em;
-    flex-wrap: wrap;
     flex-direction: column;
 }
 
 .main section {
     max-width: 100%;
+    display: flex;
 }
 
 .user-info {
     flex: 1;
 
-    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1em;
 }
 
+@media only screen and (orientation: portrait) {
+    .user-info {
+        /* display: block; */
+        flex-direction: column;
+    }
+}
+
 .raids {
     flex: 5;
-    display: flex;
+
     flex-direction: column;
 }
 
-.raids-top {
+.mid {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -35,6 +41,154 @@
     gap: 1em;
 }
 
-.raids-top > a {
+@media only screen and (orientation: portrait) {
+    .mid {
+        flex-direction: column;
+    }
+}
+
+.pinned-activity-loading {
+    flex: 3;
+    width: 100%;
+    min-height: 10vh;
+
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    height: 100px;
+
+    background-color: var(--modal-background);
+}
+
+.pinned-activity {
+    flex: 3;
+    display: block;
+    width: 100%;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.2em 3em;
+
+    position: relative;
+    overflow: hidden;
+
+    color: white;
+    user-select: none;
+}
+
+.pinned-background {
+    object-position: left center;
+    object-fit: cover;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+.pin-icon {
+    z-index: -1;
+    position: absolute;
+    top: 0.8em;
+    left: 1.5em;
+    width: 20px;
+    height: auto;
+}
+
+.recent-icon {
+    position: absolute;
+    top: 0.8em;
+    left: 0.8em;
+    width: 20px;
+    height: auto;
+}
+
+.pinned-activity-text {
+    display: flex;
+    align-items: center;
+}
+
+.pinned-activity-title {
+    font-weight: 600;
+    font-size: 22px;
+    text-transform: uppercase;
+    margin-right: 0.5em;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.pinned-activity-subtext {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -2em;
+}
+
+.pinned-activity-time {
+    display: flex;
+    align-items: center;
+}
+
+.pinned-activity-time img {
+    margin-right: 0.5em;
+}
+
+.pinned-activity-timer > span {
+    white-space: nowrap;
+}
+
+.layout-toggle {
+    height: 6rem;
+    min-width: min-content;
+    width: 80%;
     flex: 1;
+
+    padding: 1em;
+
+    background-color: var(--modal-background);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    display: flex;
+    gap: 1.3rem;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+}
+
+.description-toggle {
+    min-width: 4rem;
+    text-align: center;
+    display: block;
+
+    text-transform: uppercase;
+    color: var(--secondary-text);
+    font-size: 0.8em;
+}
+
+.description-toggle:hover {
+    cursor: pointer;
+}
+
+.description-toggle.checked {
+    font-weight: 600;
+    color: var(--tertiary-text);
+}
+
+@media (min-width: 960px) {
+    .description-toggle {
+        font-size: 1em;
+    }
+}
+/* The switch - the box around the slider */
+.switch {
+    flex-shrink: 0;
+    transform: rotate(90deg);
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 60px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }

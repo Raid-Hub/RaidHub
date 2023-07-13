@@ -74,6 +74,10 @@ const SearchBar = ({}: SearchBarProps) => {
         }
     }, [searchContainerRef])
 
+    // setTimeout(() => {
+    //     setIsRedirecting(!isRedirecting)
+    // }, 200)
+
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>

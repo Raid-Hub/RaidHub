@@ -115,24 +115,25 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                 />
             </section>
 
+            <section className={styles["mid"]}>
+                <PinnedActivity
+                    isLoading={
+                        raidHubProfile?.pinnedActivity !== null
+                            ? isLoadingRaidHubProfile
+                            : mostRecentActivity === undefined
+                    }
+                    activityId={
+                        raidHubProfile?.pinnedActivity !== null
+                            ? raidHubProfile?.pinnedActivity
+                            : mostRecentActivity
+                    }
+                    isPinned={!!raidHubProfile?.pinnedActivity}
+                    errorHandler={errorHandler}
+                />
+                <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
+            </section>
+
             <section className={styles["raids"]}>
-                <div className={styles["raids-top"]}>
-                    <PinnedActivity
-                        isLoading={
-                            raidHubProfile?.pinnedActivity !== null
-                                ? isLoadingRaidHubProfile
-                                : mostRecentActivity === undefined
-                        }
-                        activityId={
-                            raidHubProfile?.pinnedActivity !== null
-                                ? raidHubProfile?.pinnedActivity
-                                : mostRecentActivity
-                        }
-                        isPinned={!!raidHubProfile?.pinnedActivity}
-                        errorHandler={errorHandler}
-                    />
-                    <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
-                </div>
                 <Raids
                     membershipId={destinyMembershipId}
                     characterMemberships={characterMemberships}

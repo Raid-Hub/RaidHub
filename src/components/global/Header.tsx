@@ -21,24 +21,22 @@ const Header = ({}: HeaderProps) => {
     }, [session])
     return (
         <header className={styles["header"]}>
-            <nav id={styles.nav}>
-                <Link href={"/"} className={styles["logo"]}>
-                    <Image className={styles["logo-img"]} src={Logo} alt="logo" sizes="40px" />
-                    <span className={styles["logo-text"]}>RaidHub</span>
+            <Link href={"/"} className={styles["logo"]}>
+                <Image className={styles["logo-img"]} src={Logo} alt="logo" sizes="40px" />
+                <span className={styles["logo-text"]}>RaidHub</span>
+            </Link>
+            <div className={styles["right-content"]}>
+                <SearchBar />
+                <Link href="/account" className={styles["account-link"]}>
+                    <Image
+                        className={styles["account-img"]}
+                        src={accountSrc}
+                        alt="profile"
+                        fill
+                        sizes="30px"
+                    />
                 </Link>
-                <div className={styles["right-content"]}>
-                    <SearchBar />
-                    <Link href="/account" className={styles["account-link"]}>
-                        <Image
-                            className={styles["account-img"]}
-                            src={accountSrc}
-                            alt="profile"
-                            fill
-                            sizes="30px"
-                        />
-                    </Link>
-                </div>
-            </nav>
+            </div>
         </header>
     )
 }

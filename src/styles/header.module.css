@@ -1,40 +1,42 @@
 .header {
+    position: fixed;
+    top: 0;
+    z-index: 999;
     width: 100%;
     padding: 0.5em 1em;
+
     background-color: var(--header-background);
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
-}
-#nav {
-    margin: 0 2%;
+
     display: flex;
+    flex-direction: row;
+    gap: 1em;
     justify-content: space-between;
-    gap: 0.5em;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    font-family: Neue;
-    font-weight: 800;
-    text-transform: uppercase;
+    gap: 0.5em;
 }
 
 .logo-img {
     width: 40px;
     height: 40px;
-    margin-right: 0.5em;
 }
 
 .logo-text {
+    text-transform: uppercase;
     color: white;
     margin-left: 5px;
     margin-right: 5px;
     letter-spacing: 1px;
     font-size: 18px;
     white-space: nowrap;
+    font-family: Neue;
+    font-weight: 800;
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 500px) {
     .logo-text {
         display: none;
     }
@@ -43,34 +45,21 @@
 .right-content {
     display: flex;
     align-items: center;
-}
 
-.account-link {
-    margin-left: 1em;
-    width: 30px;
-    height: 30px;
-
-    position: relative;
-}
-
-.account-img {
-    transition: transform 0.2s ease-out;
-}
-
-.account-img:hover {
-    transform: scale(1.1);
+    gap: 1em;
 }
 
 .search-container {
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    gap: 1em;
 }
 
 .search-icon {
     width: 25px;
     height: 25px;
-    margin-right: 1em;
 
     position: relative;
 }
@@ -82,14 +71,14 @@
 
 .loader {
     position: absolute;
-    top: 0.5px;
     left: 3px;
-    margin-right: 1em;
+
     border: 3px solid #f3f3f3;
     border-radius: 50%;
     border-top: 3px solid var(--brand-orange);
-    width: 85%;
-    height: 85%;
+    width: 88%;
+    height: 88%;
+
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
 }
@@ -110,6 +99,12 @@
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .search-icon {
+        display: none;
     }
 }
 
@@ -188,4 +183,19 @@
 /* width */
 .search-results::-webkit-scrollbar {
     width: 5px;
+}
+
+.account-link {
+    width: 30px;
+    height: 30px;
+
+    position: relative;
+}
+
+.account-img {
+    transition: transform 0.2s ease-out;
+}
+
+.account-img:hover {
+    transform: scale(1.1);
 }

@@ -1,4 +1,4 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
+import styles from "../../../styles/pages/profile/profile.module.css"
 import { ChangeEvent } from "react"
 import { useLocale } from "../../app/LanguageProvider"
 

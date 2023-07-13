@@ -8,6 +8,7 @@
 
 .card {
     flex: 1;
+    width: 100%;
 
     border: 1px solid var(--border);
     border-radius: 20px;

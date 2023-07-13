@@ -1,146 +1,7 @@
-.pinned-activity-loading {
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    height: 100px;
-
-    background-color: var(--modal-background);
-}
-
-.pinned-activity {
-    display: block;
-
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 0.2em 3em;
-
-    position: relative;
-    overflow: hidden;
-
-    color: white;
-}
-
-.pinned-background {
-    object-position: left center;
-    object-fit: cover;
-    opacity: 0.8;
-    z-index: -1;
-}
-
-.pin-icon {
-    z-index: -1;
-    position: absolute;
-    top: 0.8em;
-    left: 1.5em;
-    width: 20px;
-    height: auto;
-}
-
-.recent-icon {
-    position: absolute;
-    top: 0.8em;
-    left: 0.8em;
-    width: 20px;
-    height: auto;
-}
-
-.pinned-activity-text {
-    display: flex;
-    align-items: center;
-}
-
-.pinned-activity-title {
-    font-weight: 600;
-    font-size: 22px;
-    text-transform: uppercase;
-    margin-right: 0.5em;
-    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
-}
-
-.pinned-activity-subtext {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: -2em;
-}
-
-.pinned-activity-time {
-    display: flex;
-    align-items: center;
-}
-
-.pinned-activity-time img {
-    margin-right: 0.5em;
-}
-
-.pinned-activity-timer > span {
-    white-space: nowrap;
-}
-
-.layout-toggle {
-    height: 6rem;
-    min-width: 8rem;
-    max-width: 18rem;
-    flex: 1;
-
-    padding: 1em;
-
-    background-color: var(--modal-background);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
-    display: flex;
-    gap: 1.3rem;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-    overflow: hidden;
-}
-
-.description-toggle {
-    display: flex;
-    text-align: center;
-    text-transform: uppercase;
-    color: var(--secondary-text);
-    font-size: 0.8em;
-}
-
-.description-toggle:hover {
-    cursor: pointer;
-}
-
-.description-toggle.checked {
-    font-weight: 600;
-    color: var(--tertiary-text);
-}
-
-@media (min-width: 960px) {
-    .description-toggle {
-        font-size: 1em;
-    }
-}
-/* The switch - the box around the slider */
-.switch {
-    flex-shrink: 0;
-    transform: rotate(90deg);
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 60px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
 .cards {
     display: flex;
     flex-wrap: wrap;
     flex-direction: reverse;
-    margin-top: 1em;
     gap: 1em;
     max-width: 100%;
 }
@@ -168,6 +29,12 @@
     object-fit: cover;
     border-bottom: 1px solid var(--border);
     opacity: 0.95;
+}
+
+@media (prefers-color-scheme: light) {
+    .card-background {
+        opacity: 0.9;
+    }
 }
 
 .img-overlay {
@@ -401,7 +268,6 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    margin-top: 1em;
     gap: 1em;
     max-width: 100%;
     justify-content: stretch;
@@ -459,6 +325,7 @@
     font-size: 1.2em;
     font-weight: 600;
     text-transform: uppercase;
+    color: #ffffff;
 }
 
 .success-layer {

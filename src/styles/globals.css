@@ -17,68 +17,73 @@
     --tooltip-background: rgba(0, 0, 0, 0.9);
 }
 
-* {
-    box-sizing: border-box;
-}
-
-body,
-html {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Neue;
-}
-
-html {
-    overflow: hidden;
-    background-color: #000000;
-    background-image: linear-gradient(
-        -30deg,
-        #00000000,
-        #f8640231,
-        #620d005e,
-        #00000000,
-        #00000000
-    );
-    background-position: left;
-    background-repeat: repeat;
-    background-size: cover;
-}
-
-body {
-    overflow: auto;
-    overscroll-behavior: none;
-}
-
-#__next {
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-    z-index: 1;
-
-    display: flex;
-    flex-direction: column;
-}
-
 @media (prefers-color-scheme: light) {
-    html {
-        background-color: white;
-    }
     :root {
         color: #000000;
         --secondary-text: #4e4e4e;
         --tertiary-text: rgb(79, 79, 79);
-        --border: #5b5b5b;
+        --border: #ffffff;
         --header-background: #7f7f7f;
         --scroll-track: #434343;
         --search-background: #e9e8e8;
         --search-text: #000000;
         --search-placeholder: #848484;
-        --modal-background: rgba(255, 255, 255, 0.739);
+        --modal-background: rgba(224, 224, 224, 0.471);
         --modal-background-opaque: rgba(255, 255, 255, 0.939);
         --tooltip-background: rgba(255, 255, 255, 0.92);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: var(--header-background);
+    overflow-y: scroll;
+
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    overflow: auto;
+    overscroll-behavior: none;
+
+    font-family: Neue;
+}
+
+#__next {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+
+    /* This pushes content below the header */
+    padding-top: 3.5em;
+
+    background-color: #000000;
+    background-image: repeating-linear-gradient(
+        -30deg,
+        #00000000 0px,
+        #f8640223 300px,
+        #620d005e 800px,
+        #00000000 1200px
+    );
+}
+
+@media (prefers-color-scheme: light) {
+    #__next {
+        background-image: repeating-linear-gradient(
+            -30deg,
+            #ffffffff 0px,
+            #ffe6d5 300px,
+            #ffd9d3 800px,
+            #ffffff 1200px
+        );
     }
 }
 
@@ -86,8 +91,8 @@ main {
     width: 85vw;
     max-width: 1200px;
     min-width: 620px;
-    justify-content: center;
-    margin: 1em auto;
+    margin: 1em auto 1em auto;
+    padding: 0 0.5em;
 }
 
 @media only screen and (orientation: portrait) {
