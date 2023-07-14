@@ -21,17 +21,20 @@ export async function getDestinyProfile({
         },
         client
     )
-    const profile = res.Response.profile.data
-    const characters = res.Response.characters.data
-    if (!profile || !characters) {
+    const { data: profileData, privacy: profilePrivacy } = res.Response.profile
+    const { data: charactersData, privacy: charactersPrivacy } = res.Response.characters
+    res.Response.profileTransitoryData
+    if (profilePrivacy > 1 || charactersPrivacy > 1) {
         throw new PrivateProfileError({
             destinyMembershipId,
             membershipType,
             components: [DestinyComponentType.Profiles, DestinyComponentType.Characters]
         })
+    } else if (!profileData || !charactersData) {
+        throw new Error("Missing data")
     }
     return {
-        ...profile,
-        emblemBackgroundPath: characters[profile.characterIds[0]].emblemBackgroundPath
+        ...profileData,
+        emblemBackgroundPath: charactersData[profileData.characterIds[0]].emblemBackgroundPath
     }
 }
