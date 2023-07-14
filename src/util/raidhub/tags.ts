@@ -152,8 +152,8 @@ export function addModifiers(raid: Raid, modifiers: Tag[], strings: LocalStrings
     if (modifiers.includes(Tag.ABILITIES_ONLY)) result.push(strings.tags[Tag.ABILITIES_ONLY])
 
     if (modifiers.includes(Tag.SOLO)) result.push(strings.tags[Tag.SOLO])
-    else if (modifiers.includes(Tag.DUO)) result.push(strings.tags[Tag.SOLO])
-    else if (modifiers.includes(Tag.TRIO)) result.push(strings.tags[Tag.SOLO])
+    else if (modifiers.includes(Tag.DUO)) result.push(strings.tags[Tag.DUO])
+    else if (modifiers.includes(Tag.TRIO)) result.push(strings.tags[Tag.TRIO])
 
     if (modifiers.includes(Tag.FLAWLESS)) result.push(strings.tags[Tag.FLAWLESS])
 

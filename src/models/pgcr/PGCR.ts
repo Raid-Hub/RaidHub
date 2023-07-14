@@ -2,7 +2,6 @@ import {
     DestinyCharacterComponent,
     DestinyHistoricalStatsActivity,
     DestinyPostGameCarnageReportData,
-    DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportTeamEntry,
     DestinyProfileComponent
 } from "bungie-net-core/lib/models"
@@ -17,6 +16,7 @@ import { IPGCREntryStats } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
 import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
 import { Collection } from "@discordjs/collection"
+import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -180,19 +180,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             return !!this.activityWasStartedFromBeginning
         }
     }
-}
-
-/**
- * Determines if an entry was a non-participant in the raid
- * @param entry The entry to determine to ensure
- * @returns
- */
-function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
-    return (
-        entry.values.timePlayedSeconds?.basic.value <= 25 &&
-        entry.values.kills?.basic.value === 0 &&
-        entry.values.deaths?.basic.value === 0
-    )
 }
 
 function sortPlayers(a: PGCRPlayer, b: PGCRPlayer): number {

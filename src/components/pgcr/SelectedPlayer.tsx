@@ -36,12 +36,7 @@ const SelectedPlayer = ({
                 completionClass
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
-            <Image
-                src={emblemBackground}
-                alt={`Emblem for ${member.displayName}`}
-                fill
-                className={styles["emblem"]}
-            />
+            <Image src={emblemBackground} alt="" fill className={styles["emblem"]} />
             <div className={styles["color-film"]} />
 
             <div className={[styles["member-name"], styles["centered"]].join(" ")}>

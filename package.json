@@ -15,7 +15,7 @@
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\""
     },
     "dependencies": {
-        "@discordjs/collection": "^1.3.0",
+        "@discordjs/collection": "^1.5.1",
         "bungie-net-core": "^1.1.5",
         "eslint-plugin-unused-imports": "^2.0.0",
         "next": "^13.1.6",
