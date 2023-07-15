@@ -5,7 +5,6 @@ import StatCards from "./PlayerStatCells"
 import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
-import { defaultEmblem } from "../../util/destiny/emblems"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 
 type ParticipantsProps = {

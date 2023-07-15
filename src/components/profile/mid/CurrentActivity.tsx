@@ -44,7 +44,7 @@ const CurrentActivity = ({
         } else {
             return null
         }
-    }, [transitory.currentActivity, activityDefinition, activityModeDefinition])
+    }, [transitory.currentActivity, activityDefinition, activityModeDefinition, raidTuple, strings])
 
     return activityName ? (
         <div className={styles["current-activity"]}>

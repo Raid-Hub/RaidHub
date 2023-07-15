@@ -46,7 +46,7 @@ export const useProfileTransitory = ({
     const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
     const [isLoading, setLoading] = useState<boolean>(true)
     const [timer, setTimer] = useState<NodeJS.Timeout>()
-    const [needsRefresh, setNeedsRefresh] = useState<boolean>(false)
+    const [needsRefresh, setNeedsRefresh] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
@@ -109,17 +109,13 @@ export const useProfileTransitory = ({
 
     useEffect(() => {
         if (needsRefresh) {
+            setLoading(true)
             fetchData(destinyMembershipId, membershipType, profile)
         }
-    }, [needsRefresh, fetchData, profile])
-
-    useEffect(() => {
-        setLoading(true)
-        fetchData(destinyMembershipId, membershipType, null)
-
         return () => {
             clearTimeout(timer)
         }
-    }, [destinyMembershipId, membershipType, fetchData])
+    }, [destinyMembershipId, membershipType, fetchData, timer, needsRefresh, profile])
+
     return { profile, isLoading, lastRefresh }
 }

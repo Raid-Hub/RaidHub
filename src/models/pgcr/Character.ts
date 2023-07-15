@@ -13,8 +13,7 @@ import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
-import { ProfileComponent } from "../../types/profile"
-import { defaultEmblem, emblemFromHash } from "../../util/destiny/emblems"
+import { emblemFromHash } from "../../util/destiny/emblems"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number

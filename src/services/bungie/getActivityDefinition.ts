@@ -3,10 +3,8 @@ import { getDestinyEntityDefinition } from "bungie-net-core/lib/endpoints/Destin
 import {
     DestinyActivityDefinition,
     DestinyActivityModeDefinition,
-    DestinyComponentType,
     DestinyProfileTransitoryComponent
 } from "bungie-net-core/lib/models"
-import PrivateProfileError from "../../models/errors/PrivateProfileError"
 
 export type CurrentActivityData = DestinyProfileTransitoryComponent & {
     currentActivityHash: number | null
