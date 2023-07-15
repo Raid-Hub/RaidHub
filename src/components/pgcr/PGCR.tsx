@@ -36,9 +36,7 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                 <ParticipantsSection
                     raid={pgcr?.raid ?? Raid.NA}
                     players={pgcr?.players ?? []}
-                    characters={pgcr?.entries ?? []}
                     pgcrLoadingState={pgcrLoadingState}
-                    errorHandler={errorHandler}
                 />
             </section>
             <section className={styles["summary-stats"]}>

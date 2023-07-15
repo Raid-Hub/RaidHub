@@ -10,7 +10,6 @@ type SelectedPlayerHeaderProps = {
     selected: PGCRPlayer
     selectedIndex: number
     characterIndex: number
-    emblemBackground: string
     updateMemberIndex: (clicked: number) => void
     updateCharacterIndex: (clicked: number) => void
 }
@@ -18,7 +17,6 @@ const SelectedPlayerHeader = ({
     selected,
     selectedIndex,
     characterIndex,
-    emblemBackground,
     updateMemberIndex,
     updateCharacterIndex
 }: SelectedPlayerHeaderProps) => {
@@ -34,7 +32,6 @@ const SelectedPlayerHeader = ({
             <SelectedPlayer
                 member={selected ?? null}
                 index={selectedIndex}
-                emblemBackground={emblemBackground}
                 memberIndex={selectedIndex}
                 updateMemberIndex={updateMemberIndex}
                 characterIndex={characterIndex}

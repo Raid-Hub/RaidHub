@@ -1,4 +1,4 @@
-import styles from "../../../styles/pages/profile/profile.module.css"
+import styles from "../../../styles/pages/profile/mid.module.css"
 import Loading from "../../global/Loading"
 import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"

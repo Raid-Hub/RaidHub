@@ -17,5 +17,5 @@ export function findPrimaryCrossSave({
 
 // Finds the original membershipType of a destiny account
 export function isPrimaryCrossSave({ crossSaveOverride, membershipType }: UserInfoCard): boolean {
-    return crossSaveOverride === membershipType
+    return crossSaveOverride === 0 || crossSaveOverride === membershipType
 }

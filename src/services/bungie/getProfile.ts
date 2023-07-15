@@ -23,7 +23,6 @@ export async function getDestinyProfile({
     )
     const { data: profileData, privacy: profilePrivacy } = res.Response.profile
     const { data: charactersData, privacy: charactersPrivacy } = res.Response.characters
-    res.Response.profileTransitoryData
     if (profilePrivacy > 1 || charactersPrivacy > 1) {
         throw new PrivateProfileError({
             destinyMembershipId,

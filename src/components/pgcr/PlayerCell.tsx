@@ -7,7 +7,6 @@ import { useMemo } from "react"
 type PlayerCellProps = {
     member: PGCRPlayer
     index: number
-    emblemBackground: string
     memberIndex: number
     solo: boolean
     isLoadingEmblems: boolean
@@ -17,7 +16,6 @@ type PlayerCellProps = {
 const PlayerCell = ({
     member,
     index,
-    emblemBackground,
     memberIndex,
     solo,
     isLoadingEmblems,
@@ -27,14 +25,10 @@ const PlayerCell = ({
         () => (memberIndex === index ? styles["selected"] : ""),
         [memberIndex, index]
     )
-    const { completionClass, icon, displayName } = useMemo(
-        () => ({
-            completionClass: member.didComplete ? "" : styles["dnf"],
-            icon: member.characters[0].logo,
-            displayName: member.displayName ?? member.membershipId
-        }),
-        [member]
-    )
+
+    const completionClass = member.didComplete ? "" : styles["dnf"]
+    const icon = member.characters[0].logo
+    const displayName = member.displayName ?? member.membershipId
 
     return (
         <button
@@ -47,7 +41,7 @@ const PlayerCell = ({
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
             {!isLoadingEmblems ? (
-                <Image src={emblemBackground} alt="" fill className={styles["emblem"]} />
+                <Image src={member.banner} alt="" fill className={styles["emblem"]} />
             ) : (
                 <div className={styles["emblem"]} />
             )}
@@ -58,6 +52,7 @@ const PlayerCell = ({
                     <Image
                         src={icon}
                         alt={member.characters[0].className}
+                        sizes="80px"
                         fill
                         className={styles["class-logo"]}
                     />

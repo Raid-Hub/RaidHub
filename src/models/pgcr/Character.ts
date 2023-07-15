@@ -6,18 +6,20 @@ import {
     DestinyPlayer,
     DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportExtendedData,
-    DestinyProfileComponent
+    UserInfoCard
 } from "bungie-net-core/lib/models"
 import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny/characters"
 import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
+import { ProfileComponent } from "../../types/profile"
+import { defaultEmblem, emblemFromHash } from "../../util/destiny/emblems"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number
     readonly score: DestinyHistoricalStatsValue
-    readonly player: DestinyPlayer
+    readonly player: DestinyPlayer & Partial<DestinyCharacterComponent>
     readonly characterId: string
     readonly values: { [key: string]: DestinyHistoricalStatsValue }
     readonly extended: DestinyPostGameCarnageReportExtendedData
@@ -83,17 +85,21 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
         return CharacterLogos[CharacterType[this.className ?? ""]]
     }
 
-    hydrate([profile, character]: [
-        profile: DestinyProfileComponent,
-        character: DestinyCharacterComponent
-    ]) {
-        Object.assign(this.player, {
-            ...this.player,
-            ...character,
-            characterClass: CharacterName[character.classType],
-            destinyUserInfo: {
-                ...this.player.bungieNetUserInfo,
-                ...profile.userInfo
+    get banner(): string {
+        return "https://bungie.net" + emblemFromHash(this.player.emblemHash)
+    }
+
+    hydrate([userInfo, character]: [UserInfoCard, DestinyCharacterComponent | null]) {
+        Object.assign(this, {
+            ...this,
+            player: {
+                ...this.player,
+                ...character,
+                characterClass: CharacterName[character?.classType ?? DestinyClass.Unknown],
+                destinyUserInfo: {
+                    ...this.player.bungieNetUserInfo,
+                    ...userInfo
+                }
             }
         })
     }

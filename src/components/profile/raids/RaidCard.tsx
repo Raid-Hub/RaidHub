@@ -91,7 +91,9 @@ const RaidCard = ({
         const start = first.startDate
         const contest = isContest(raid, start)
         const weekOne = isWeekOne(raid, end)
-        if (!contest && !weekOne) {
+        const dayOne = isDayOne(raid, end)
+
+        if (!dayOne && !contest && !weekOne) {
             return null
         } else {
             return {

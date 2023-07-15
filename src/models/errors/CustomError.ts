@@ -19,7 +19,8 @@ export enum ErrorCode {
     ExactSearch = "Eggplant",
     Emblems = "Elephant",
     RaidHubProfile = "Rainbow",
-    RaidReport = "Reppo"
+    RaidReport = "Reppo",
+    Transitory = "Window"
 }
 
 export default class CustomError extends Error {

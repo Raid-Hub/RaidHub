@@ -44,6 +44,9 @@ export interface LocalStrings {
         tiles: string
     }
     viewProfile: string
+    inGame: string
+    elapsedTime: string
+    fireteam: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -141,7 +144,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             charts: "Charts",
             tiles: "Tiles"
         },
-        viewProfile: "View Profile"
+        viewProfile: "View Profile",
+        inGame: "In Game",
+        elapsedTime: "Elapsed time",
+        fireteam: "Fireteam"
     }
 }
 

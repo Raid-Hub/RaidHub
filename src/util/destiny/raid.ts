@@ -96,7 +96,7 @@ export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 // CONSTANTS
 const DayOneEnd: Record<AvailableRaid, Date> = {
     [Raid.LEVIATHAN]: new Date("September 14, 2017 10:00:00 AM PDT"),
-    [Raid.EATER_OF_WORLDS]: new Date("December 9th, 2017 10:00:00 AM PST"),
+    [Raid.EATER_OF_WORLDS]: new Date("December 9, 2017 10:00:00 AM PST"),
     [Raid.SPIRE_OF_STARS]: new Date("May 12, 2018 10:00:00 AM PDT"),
     [Raid.LAST_WISH]: new Date("September 15, 2018 10:00:00 AM PDT"),
     [Raid.SCOURGE_OF_THE_PAST]: new Date("December 8, 2018 9:00:00 AM PST"),

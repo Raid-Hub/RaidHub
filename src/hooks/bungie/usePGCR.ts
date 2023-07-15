@@ -1,12 +1,13 @@
-import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/lib/models"
+import { DestinyCharacterComponent, UserInfoCard } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
 import { ErrorHandler, Loading } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getPGCR } from "../../services/bungie/getPGCR"
-import { findProfileWithoutPlatform } from "../../services/bungie/findProfileWithoutPlatform"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Collection } from "@discordjs/collection"
+import { getLinkedDestinyProfile } from "../../services/bungie/getLinkedDestinyProfile"
+import { getDestinyCharacter } from "../../services/bungie/getDestinyCharacter"
 
 type UsePGCRParams = {
     activityId: string | null | undefined
@@ -30,27 +31,31 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                 setPGCR(pgcr)
                 setLoading(Loading.HYDRATING)
 
-                const dataForMissingProfiles = new Collection<
+                const hydrationData = new Collection<
                     string,
-                    [DestinyProfileComponent, DestinyCharacterComponent]
+                    [UserInfoCard, DestinyCharacterComponent | null]
                 >()
                 await Promise.all(
                     pgcr.entries.map(async entry => {
+                        let destinyUserInfo = entry.player.destinyUserInfo
                         if (!entry.player.destinyUserInfo.membershipType) {
-                            const res = await findProfileWithoutPlatform({
-                                destinyMembershipId: entry.player.destinyUserInfo.membershipId,
+                            destinyUserInfo = await getLinkedDestinyProfile({
+                                membershipId: entry.player.destinyUserInfo.membershipId,
                                 client
                             })
-                            if (res.profile.data && res.characters.data?.[entry.characterId]) {
-                                dataForMissingProfiles.set(entry.characterId, [
-                                    res.profile.data,
-                                    res.characters.data[entry.characterId]
-                                ])
-                            }
                         }
+
+                        const character = await getDestinyCharacter({
+                            destinyMembershipId: destinyUserInfo.membershipId,
+                            membershipType: destinyUserInfo.membershipType,
+                            characterId: entry.characterId,
+                            client
+                        }).catch(deleted => null)
+
+                        hydrationData.set(entry.characterId, [destinyUserInfo, character])
                     })
                 )
-                pgcr.hydrate(dataForMissingProfiles)
+                pgcr.hydrate(hydrationData)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
             } finally {

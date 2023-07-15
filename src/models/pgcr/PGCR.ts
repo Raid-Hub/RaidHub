@@ -3,7 +3,7 @@ import {
     DestinyHistoricalStatsActivity,
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportTeamEntry,
-    DestinyProfileComponent
+    UserInfoCard
 } from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
@@ -154,7 +154,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return addModifiers(this.raid, this.tags, strings)
     }
 
-    hydrate(data: Collection<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {
+    hydrate(data: Collection<string, [UserInfoCard, DestinyCharacterComponent | null]>) {
         data.forEach((components, characterId) => {
             this.entries.find(entry => entry.characterId === characterId)?.hydrate(components)
         })

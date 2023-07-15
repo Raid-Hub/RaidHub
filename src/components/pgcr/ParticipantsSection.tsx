@@ -2,34 +2,19 @@ import styles from "../../styles/pages/pgcr.module.css"
 import { useState } from "react"
 import { Raid } from "../../types/raids"
 import StatCards from "./PlayerStatCells"
-import { ErrorHandler, Loading } from "../../types/generic"
+import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
 import { defaultEmblem } from "../../util/destiny/emblems"
-import DestinyPGCRCharacter from "../../models/pgcr/Character"
-import { useEmblems } from "../../hooks/bungie/useEmblems"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
-    characters: DestinyPGCRCharacter[]
     raid: Raid
     pgcrLoadingState: Loading
-    errorHandler: ErrorHandler
 }
 
-const ParticipantsSection = ({
-    players: members,
-    pgcrLoadingState,
-    characters,
-    errorHandler
-}: ParticipantsProps) => {
-    const { emblems, isLoading: isLoadingEmblems } = useEmblems({
-        characters,
-        pgcrLoadingState,
-        errorHandler
-    })
-
+const ParticipantsSection = ({ players: members, pgcrLoadingState }: ParticipantsProps) => {
     const [memberIndex, setMemberIndex] = useState(-1)
     const [characterIndex, setCharacterIndex] = useState(-1)
 
@@ -61,11 +46,7 @@ const ParticipantsSection = ({
                         key={member.membershipId}
                         member={member}
                         index={idx}
-                        emblemBackground={
-                            "https://bungie.net" +
-                            (emblems?.[member.characterIds[0]] ?? defaultEmblem)
-                        }
-                        isLoadingEmblems={isLoadingEmblems}
+                        isLoadingEmblems={pgcrLoadingState === Loading.HYDRATING}
                         memberIndex={-1}
                         updateMemberIndex={updateMemberIndex}
                     />
@@ -79,14 +60,6 @@ const ParticipantsSection = ({
                 <SelectedPlayerHeader
                     selected={members[memberIndex]}
                     selectedIndex={memberIndex}
-                    emblemBackground={
-                        "https://bungie.net" +
-                            emblems?.[
-                                members[memberIndex].characterIds[
-                                    characterIndex != -1 ? characterIndex : 0
-                                ]
-                            ] ?? defaultEmblem
-                    }
                     characterIndex={characterIndex}
                     updateMemberIndex={updateMemberIndex}
                     updateCharacterIndex={updateCharacterIndex}

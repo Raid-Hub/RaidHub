@@ -3,7 +3,7 @@ import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "r
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty } from "../../../types/raids"
-import { isContest, raidTupleFromHash } from "../../../util/destiny/raid"
+import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/Activity"
 
@@ -117,7 +117,8 @@ const Dot = ({
             {playerCount <= 3 ? (
                 <Star x={centerX} y={centerY} spinning={playerCount === 1} />
             ) : (
-                isContest(details[0], activity.startDate) && (
+                (isContest(details[0], activity.startDate) ||
+                    isDayOne(details[0], activity.endDate)) && (
                     <image
                         width={2 * SKULL_FACTOR * RADIUS}
                         height={2 * SKULL_FACTOR * RADIUS}

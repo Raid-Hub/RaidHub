@@ -3,8 +3,8 @@ import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
-import PinnedActivity from "./raids/PinnedActivity"
-import ToggleSwitch from "./raids/ToggleSwitch"
+import PinnedActivity from "./mid/PinnedActivity"
+import ToggleSwitch from "./mid/ToggleSwitch"
 import { useState } from "react"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
@@ -15,6 +15,8 @@ import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "../../hooks/raidreport/useRaidReportData"
 import Banners from "./banners/Banners"
 import Raids from "./raids/Raids"
+import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
+import CurrentActivity from "./mid/CurrentActivity"
 
 export enum Layout {
     DotCharts,
@@ -68,6 +70,16 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         errorHandler
     })
 
+    const {
+        profile: transitoryProfile,
+        isLoading: isLoadingTransitoryProfile,
+        lastRefresh: lastTransitoryRefresh
+    } = useProfileTransitory({
+        destinyMembershipId,
+        membershipType,
+        errorHandler
+    })
+
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(
         undefined
     )
@@ -116,6 +128,9 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
             </section>
 
             <section className={styles["mid"]}>
+                {transitoryProfile && (
+                    <CurrentActivity data={transitoryProfile} lastRefresh={lastTransitoryRefresh} />
+                )}
                 <PinnedActivity
                     isLoading={
                         raidHubProfile?.pinnedActivity !== null

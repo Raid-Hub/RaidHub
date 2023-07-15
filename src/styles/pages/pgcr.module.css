@@ -424,7 +424,7 @@
     min-height: 50px;
     padding: 10px 15px;
 
-    background-color: rgba(26, 0, 0, 0.689);
+    background-color: var(--modal-background);
 
     border-radius: 15px;
     border: 1px solid var(--border);
