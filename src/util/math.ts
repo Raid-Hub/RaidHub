@@ -1,3 +1,5 @@
+import { Collection } from "@discordjs/collection"
+
 export function round(val: number, places: number): number {
     const factor = Math.pow(10, places)
     return Math.round(val * factor) / factor
@@ -12,11 +14,11 @@ export function median(sortedArr: number[]): number {
     }
 }
 
-export function medianElement<E>(sortedArr: E[]): E {
-    const mid = (sortedArr.length - 1) / 2
+export function medianElement<E>(sortedCollection: Collection<any, E>): E {
+    const mid = (sortedCollection.size - 1) / 2
     if (mid % 1 === 0) {
-        return sortedArr[mid]
+        return sortedCollection.at(mid)!
     } else {
-        return sortedArr[Math.ceil(mid)]
+        return sortedCollection.at(Math.ceil(mid))!
     }
 }

@@ -48,10 +48,10 @@ const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
     return (
         <LanguageContext.Provider value={value}>
+            {children}
             <Head>
                 <meta httpEquiv="Content-Language" content={value.language} />
             </Head>
-            {children}
         </LanguageContext.Provider>
     )
 }

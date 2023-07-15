@@ -27,51 +27,71 @@ const Footer = ({}: FooterProps) => {
     const { version } = manifest
     return (
         <footer id={styles["footer"]}>
-            <div className={styles["footer-left"]}>
-                <p>
-                    Data Courtesy of <a href="https://raid.report">Raid Report</a> and{" "}
-                    <a href="https://bungie.net/7">Bungie</a>
-                </p>
-                <p>Copyright © 2023 RaidHub. All rights reserved.</p>
-                <p>RaidHub v{version}</p>
-            </div>
-            <div className={styles["footer-mid"]}>
-                <div className={styles["contact-text"]}>Contact us</div>
-                {contactIcons.map(({ url, id }, key) => (
-                    <Link
-                        key={key}
-                        className={styles["img-social"]}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer">
-                        <svg>
-                            <defs>
-                                <mask id={id}>
-                                    <image
-                                        x="0"
-                                        y="0"
-                                        width="100%"
-                                        height="100%"
-                                        xlinkHref={`/icons/${id}.png`}
-                                    />
-                                </mask>
-                            </defs>
-                            <rect
-                                className={styles[`${id}-logo`]}
-                                x="0"
-                                y="0"
-                                width="100%"
-                                height="100%"
-                                mask={`url(#${id})`}
-                            />
-                        </svg>
-                    </Link>
-                ))}
-            </div>
-            <div className={styles["footer-right"]}>
-                <div>
+            <div className={styles["top"]}>
+                <div className={styles["left"]}>
                     <div>Developed by</div>
-                    <div className={styles["developers"]}>{developers.join(", ")} </div>
+                    <div className={styles["developers"]}>
+                        {developers.map((dev, idx) => (
+                            <React.Fragment key={idx}>
+                                <a className={styles["developer"]} href={`/${dev.toLowerCase()}`}>
+                                    {dev}
+                                </a>
+                                {idx !== developers.length - 1 && <span>{", "}</span>}
+                            </React.Fragment>
+                        ))}{" "}
+                    </div>
+                </div>
+                <div className={styles["right"]}>
+                    {contactIcons.map(({ url, id }, key) => (
+                        <Link
+                            key={key}
+                            className={styles["img-social"]}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            <svg width="100%" height="100%">
+                                <defs>
+                                    <mask id={id}>
+                                        <image
+                                            x="0"
+                                            y="0"
+                                            width="100%"
+                                            height="100%"
+                                            xlinkHref={`/social-icons/${id}.png`}
+                                        />
+                                    </mask>
+                                </defs>
+                                <rect
+                                    className={styles[`${id}-logo`]}
+                                    x="0"
+                                    y="0"
+                                    width="100%"
+                                    height="100%"
+                                    mask={`url(#${id})`}
+                                />
+                            </svg>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            <div className={styles["bottom"]}>
+                <div className={styles["left"]}>
+                    <p>
+                        RaidHub <span className={styles["version"]}>v{version}</span>
+                    </p>
+                </div>
+                <div className={styles["right"]}>
+                    <p>
+                        <span>Data from </span>
+                        <a className={styles["url"]} href="https://raid.report">
+                            Raid Report
+                        </a>{" "}
+                        and{" "}
+                        <a className={styles["url"]} href="https://bungie.net/7">
+                            Bungie
+                        </a>
+                    </p>
                 </div>
             </div>
         </footer>

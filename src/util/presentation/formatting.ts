@@ -12,13 +12,13 @@ export function toCustomDateString(date: Date, locale: string): string {
     })
 }
 
-export function secondsToHMS(seconds: number): string {
+export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean = false): string {
     let time = Math.round(seconds)
     const hours = Math.floor(time / 3600)
     time -= hours * 3600
     const minutes = Math.floor(time / 60)
     time -= minutes * 60
     return `${hours ? hours + "h" : ""} ${hours || minutes ? minutes + "m" : ""}${
-        !hours ? ` ${time + "s"}` : ""
+        !hours || alwaysIncludeSeconds ? ` ${time + "s"}` : ""
     }`
 }

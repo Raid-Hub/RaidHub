@@ -1,130 +1,7 @@
-.pinned-activity-loading {
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    height: 100px;
-
-    background-color: var(--modal-background);
-}
-
-.pinned-activity {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 0.2em 3em;
-    position: relative;
-
-    color: white;
-}
-
-.pinned-background {
-    opacity: 0.6;
-}
-
-.pin-icon {
-    z-index: -1;
-    position: absolute;
-    top: 0.8em;
-    left: 1.5em;
-    width: 20px;
-}
-
-.recent-icon {
-    position: absolute;
-    top: 0.8em;
-    left: 0.8em;
-    width: 20px;
-}
-
-.pinned-activity-text {
-    display: flex;
-    align-items: center;
-}
-
-.pinned-activity-title {
-    font-weight: 600;
-    font-size: 22px;
-    text-transform: uppercase;
-    margin-right: 0.5em;
-    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
-}
-
-.pinned-activity-subtext {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: -2em;
-}
-
-.pinned-activity-time {
-    display: flex;
-    align-items: center;
-}
-
-.pinned-activity-time img {
-    margin-right: 0.5em;
-    width: 20px;
-}
-
-.pinned-activity-timer > span {
-    white-space: nowrap;
-}
-
-.layout-toggle {
-    height: 6rem;
-    min-width: 8rem;
-    max-width: 18rem;
-    flex: 1;
-
-    padding: 1em;
-
-    background-color: var(--modal-background);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
-    display: flex;
-    gap: 1.3rem;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-    overflow: hidden;
-}
-
-.description-toggle {
-    display: flex;
-    text-align: center;
-    text-transform: uppercase;
-    color: rgb(120, 120, 120);
-    font-size: 0.8em;
-}
-
-@media (min-width: 960px) {
-    .description-toggle {
-        font-size: 1em;
-    }
-}
-/* The switch - the box around the slider */
-.switch {
-    flex-shrink: 0;
-    transform: rotate(90deg);
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 60px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
 .cards {
     display: flex;
     flex-wrap: wrap;
     flex-direction: reverse;
-    margin-top: 1em;
     gap: 1em;
     max-width: 100%;
 }
@@ -135,6 +12,10 @@
     min-width: 300px;
     max-width: 100%;
     flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card-img-container {
@@ -144,9 +25,16 @@
 
 .card-background {
     width: 100%;
+    height: auto;
+    object-fit: cover;
     border-bottom: 1px solid var(--border);
-    border-radius: 20px 20px 0 0;
     opacity: 0.95;
+}
+
+@media (prefers-color-scheme: light) {
+    .card-background {
+        opacity: 0.9;
+    }
 }
 
 .img-overlay {
@@ -182,6 +70,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.35em;
 
     white-space: nowrap;
 }
@@ -208,14 +97,14 @@
 
 .card-content {
     padding: 0 1.5em;
-    border-bottom-right-radius: 18px;
-    border-bottom-left-radius: 18px;
     background-color: var(--modal-background);
+
+    height: 100%;
 }
 
 .clickable-tag img {
-    margin: 0 0.2em;
     width: 15px;
+    height: auto;
 }
 
 .graph-content {
@@ -239,7 +128,7 @@
     min-width: 200px;
     max-height: 100%;
     overflow-y: hidden;
-    overflow-x: auto;
+    overflow-x: scroll;
     direction: rtl;
     /* initially set direction to right-to-left */
 }
@@ -293,19 +182,20 @@
     border-style: solid;
     border-width: 1px;
 
+    opacity: 1;
     transition: opacity 0.2s ease-in-out;
 
-    user-select: none;
     font-size: 0.7rem;
+    text-align: center;
+    white-space: nowrap;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex-wrap: nowrap;
 
-    overflow: visible;
-    white-space: nowrap;
-    text-align: center;
+    user-select: none;
+    pointer-events: none;
 }
 
 .dot-tooltip:hover {
@@ -322,6 +212,11 @@
     opacity: 0.4;
 
     margin: 0.3em 0;
+}
+
+.dot-tooltip-tags {
+    display: flex;
+    flex-direction: column;
 }
 
 .timings {
@@ -373,7 +268,6 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    margin-top: 1em;
     gap: 1em;
     max-width: 100%;
     justify-content: stretch;
@@ -431,6 +325,7 @@
     font-size: 1.2em;
     font-weight: 600;
     text-transform: uppercase;
+    color: #ffffff;
 }
 
 .success-layer {

@@ -1,13 +1,12 @@
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
-import { FilterCallbackType } from "../../types/generic"
+import { FilterCallback } from "../../types/generic"
+import Activity from "../../models/profile/Activity"
 
 export enum Prefs {
     FILTER
 }
 
-export type PrefType<T extends Prefs> = T extends Prefs.FILTER
-    ? FilterCallbackType<DestinyHistoricalStatsPeriodGroup>
-    : never
+export type PrefType<T extends Prefs> = T extends Prefs.FILTER ? FilterCallback<Activity> : never
 
 export enum FilterOptions {
     SUCCESS_ONLY,

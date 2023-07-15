@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
-import { Icons } from "../../util/presentation/icons"
+import { Search } from "../../images/icons"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
+import Image from "next/image"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -73,13 +74,17 @@ const SearchBar = ({}: SearchBarProps) => {
         }
     }, [searchContainerRef])
 
+    // setTimeout(() => {
+    //     setIsRedirecting(!isRedirecting)
+    // }, 200)
+
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
                 {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
                     <div className={styles["loader"]} />
                 ) : (
-                    <img className={styles["search-img"]} src={Icons.SEARCH} alt="search" />
+                    <Image className={styles["search-img"]} src={Search} alt="search" />
                 )}
             </div>
             <form onSubmit={handleFormEnter}>

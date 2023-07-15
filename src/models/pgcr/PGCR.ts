@@ -2,9 +2,8 @@ import {
     DestinyCharacterComponent,
     DestinyHistoricalStatsActivity,
     DestinyPostGameCarnageReportData,
-    DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportTeamEntry,
-    DestinyProfileComponent
+    UserInfoCard
 } from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
@@ -16,6 +15,8 @@ import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
 import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
+import { Collection } from "@discordjs/collection"
+import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -122,7 +123,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
-        if (AvailableRaids.includes(this.raid as AvailableRaid)) return []
+        if (!AvailableRaids.includes(this.raid as AvailableRaid)) return []
         if (isDayOne(this.raid as AvailableRaid, this.completionDate)) tags.push(Tag.DAY_ONE)
         if (isContest(this.raid as AvailableRaid, this.startDate)) {
             switch (this.difficulty) {
@@ -153,7 +154,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return addModifiers(this.raid, this.tags, strings)
     }
 
-    hydrate(data: Map<string, [DestinyProfileComponent, DestinyCharacterComponent]>) {
+    hydrate(data: Collection<string, [UserInfoCard, DestinyCharacterComponent | null]>) {
         data.forEach((components, characterId) => {
             this.entries.find(entry => entry.characterId === characterId)?.hydrate(components)
         })
@@ -179,19 +180,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             return !!this.activityWasStartedFromBeginning
         }
     }
-}
-
-/**
- * Determines if an entry was a non-participant in the raid
- * @param entry The entry to determine to ensure
- * @returns
- */
-function nonParticipant(entry: DestinyPostGameCarnageReportEntry): boolean {
-    return (
-        entry.values.timePlayedSeconds?.basic.value <= 25 &&
-        entry.values.kills?.basic.value === 0 &&
-        entry.values.deaths?.basic.value === 0
-    )
 }
 
 function sortPlayers(a: PGCRPlayer, b: PGCRPlayer): number {

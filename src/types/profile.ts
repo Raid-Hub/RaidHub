@@ -1,14 +1,12 @@
-import { Collection } from "@discordjs/collection"
-import { AvailableRaid, Difficulty, Raid } from "./raids"
-import RaidStats from "../models/profile/RaidStats"
+import { Difficulty, Raid } from "./raids"
+import RaidStatsCollection from "../models/profile/RaidStatsCollection"
 import { Socials } from "../util/profile/socials"
-import { Tag } from "../util/raidhub/tags"
 import {
     BungieMembershipType,
-    DestinyHistoricalStatsPeriodGroup,
+    DestinyHistoricalStatsValue,
     DestinyProfileComponent
 } from "bungie-net-core/lib/models"
-import RaidReportData from "../models/profile/RaidReportData"
+import RaidReportDataCollection from "../models/profile/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
 
 export type ProfileComponent = DestinyProfileComponent & {
@@ -24,7 +22,7 @@ export type MembershipWithCharacters = {
     membershipType: BungieMembershipType
     characterIds: string[]
 }
-export type AllRaidStats = Map<Raid, RaidStats>
+export type AllRaidStats = Map<Raid, RaidStatsCollection>
 export interface IRaidStats {
     assists: number
     totalClears: number
@@ -45,9 +43,17 @@ export type RankingBannerData = {
     value: number
 }
 export type AllRaidReportData = {
-    activities: Map<Raid, RaidReportData>
+    activities: Map<Raid, RaidReportDataCollection>
     rankings: RankingBannerData[]
 }
+export interface RaidData<R> {
+    readonly raid: Raid
+    readonly difficulty: Difficulty
+    readonly raw: R[]
+}
+
+export type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
+
 export interface IRaidReportData {
     fastestFullClear: {
         instanceId: string
@@ -96,9 +102,4 @@ export type ProfileSocialData = {
     id: Socials
     displayName: string
     url: string
-}
-export type ActivityPlacements = Partial<Record<Tag, number>>
-export type ActivityCollection = Collection<string, DestinyHistoricalStatsPeriodGroup>
-export type ActivityCollectionDictionary = {
-    [key in AvailableRaid]: ActivityCollection
 }

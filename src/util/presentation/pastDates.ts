@@ -23,5 +23,10 @@ export function getRelativeTime(date: Date) {
     }
 
     const weeks = Math.floor(diff / (1000 * 60 * 60 * 24 * 7))
-    return weeks + "w ago"
+    const years = Math.floor(weeks / 52)
+    if (years > 0) {
+        return years + "y " + (weeks - years * 52) + "w ago"
+    } else {
+        return weeks + "w ago"
+    }
 }

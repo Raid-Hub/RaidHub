@@ -1,10 +1,11 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
+import Image from "next/image"
+import { useMemo } from "react"
 
 type SelectedPlayerProps = {
     member: PGCRPlayer
     index: number
-    emblemBackground: string
     memberIndex: number
     updateMemberIndex: (clicked: number) => void
     characterIndex: number
@@ -13,18 +14,24 @@ type SelectedPlayerProps = {
 const SelectedPlayer = ({
     member,
     index,
-    emblemBackground,
     memberIndex,
     updateMemberIndex,
     characterIndex
 }: SelectedPlayerProps) => {
-    const classString =
-        characterIndex != -1
-            ? member.characterClass[characterIndex]
-            : member.characterClass.join(" | ")
     const displayName = member.displayName ?? member.membershipId
     const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member.didComplete ? "" : styles["dnf"]
+
+    const character = useMemo(
+        () => member.characters[characterIndex == -1 ? 0 : characterIndex],
+        [member, characterIndex]
+    )
+
+    const classString =
+        characterIndex != -1
+            ? character.className
+            : member.characters.map(c => c.className).join(" | ")
+
     return (
         <button
             key={index}
@@ -35,21 +42,14 @@ const SelectedPlayer = ({
                 completionClass
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
-            <div className={styles["emblem"]}>
-                <img
-                    src={`https://bungie.net${emblemBackground}`}
-                    alt={`Emblem for ${member.displayName}`}
-                />
-            </div>
+            <Image src={character.banner} alt="" fill className={styles["emblem"]} />
             <div className={styles["color-film"]} />
 
-            <div className={styles["member-card"]}>
-                <div className={[styles["member-name"], styles["centered"]].join(" ")}>
-                    <span className={styles["contained-span"]}>{displayName}</span>
-                    <span className={[styles["class-name"], styles["contained-span"]].join(" ")}>
-                        {classString}
-                    </span>
-                </div>
+            <div className={[styles["member-name"], styles["centered"]].join(" ")}>
+                <span className={styles["contained-span"]}>{displayName}</span>
+                <span className={[styles["class-name"], styles["contained-span"]].join(" ")}>
+                    {classString}
+                </span>
             </div>
         </button>
     )

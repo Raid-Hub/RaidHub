@@ -2,11 +2,13 @@ import styles from "../../../styles/pages/profile/banners.module.css"
 import { RankingBannerData, RankingBannerType } from "../../../types/profile"
 import { RaidReportBannerTier } from "../../../types/raidreport"
 import { formattedNumber, secondsToHMS } from "../../../util/presentation/formatting"
-import { Icons } from "../../../util/presentation/icons"
 import { Founders } from "../../../util/raidhub/special"
 import { useLocale } from "../../app/LanguageProvider"
 import Loading from "../../global/Loading"
 import RankingBanner from "./RankingBanner"
+import Logo from "../../../../public/logo.png"
+import Image, { StaticImageData } from "next/image"
+import { Eager, Skull } from "../../../images/icons"
 
 type BannerProps = {
     banners: RankingBannerData[] | null
@@ -41,7 +43,7 @@ const Banners = ({ destinyMembershipId, isLoading, banners }: BannerProps) => {
                 ))}
                 {Object.keys(Founders).includes(destinyMembershipId) && (
                     <div className={styles["ranking-banner"]}>
-                        <img className={styles["ranking-banner-icon"]} src="/logo.png" alt="" />
+                        <Image className={styles["ranking-banner-icon"]} src={Logo} alt="" />
 
                         <div className={styles["banner-text"]}>
                             <p className={styles["banner-bold"]}>RaidHub Founder</p>
@@ -68,7 +70,7 @@ const BannerColors: { [key in RaidReportBannerTier]: string } = {
     [RaidReportBannerTier.Challenger]: "#ff63c999"
 }
 
-const BannerIcons: { [key in RankingBannerType]: Icons } = {
-    [RankingBannerType.Speed]: Icons.SPEED,
-    [RankingBannerType.FullClears]: Icons.SKULL
+const BannerIcons: { [key in RankingBannerType]: StaticImageData } = {
+    [RankingBannerType.Speed]: Eager,
+    [RankingBannerType.FullClears]: Skull
 }

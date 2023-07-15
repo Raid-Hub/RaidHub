@@ -1,24 +1,22 @@
 import { BungieClientProtocol } from "bungie-net-core/lib/client"
-import { ActivityCollectionDictionary } from "../../types/profile"
-import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "./getRaidHistoryPage"
-import { raidTupleFromHash } from "../../util/destiny/raid"
+import { Collection } from "@discordjs/collection"
+import Activity from "../../models/profile/Activity"
 
 /** Adds all raids into the dictionary */
 export async function getAllCharacterRaids({
     destinyMembershipId,
     characterId,
     membershipType,
-    client,
-    dict
+    client
 }: {
     destinyMembershipId: string
     characterId: string
     membershipType: BungieMembershipType
     client: BungieClientProtocol
-    dict: ActivityCollectionDictionary
-}): Promise<DestinyHistoricalStatsPeriodGroup[]> {
-    const allActivities: DestinyHistoricalStatsPeriodGroup[] = []
+}): Promise<Collection<string, Activity>> {
+    let allActivities = new Collection<string, Activity>()
     let pages = [0]
     let hasMore = true
     while (hasMore) {
@@ -32,26 +30,21 @@ export async function getAllCharacterRaids({
                     client
                 })
             )
-        ).then(all => all.flat())
+        ).then(
+            all =>
+                new Collection(all.flat().map(a => [a.activityDetails.instanceId, new Activity(a)]))
+        )
 
-        if (!newActivities.length) break
+        if (!newActivities.size) break
 
-        newActivities.forEach(activity => {
-            const [raid] = raidTupleFromHash(activity.activityDetails.referenceId.toString())
-            if (
-                !dict[raid].has(activity.activityDetails.instanceId) ||
-                !!activity.values.completed.basic.value
-            ) {
-                allActivities.push(activity)
-                dict[raid].set(activity.activityDetails.instanceId, activity)
-            }
-        })
-        hasMore = newActivities.length == ACTIVITIES_PER_PAGE * pages.length
+        allActivities = Activity.combineCollections(newActivities, allActivities)
+
+        hasMore = newActivities.size == ACTIVITIES_PER_PAGE * pages.length
         if (hasMore) {
             const raidsPerDay =
                 (ACTIVITIES_PER_PAGE * pages.length) /
-                ((new Date(newActivities[0].period).getTime() -
-                    new Date(newActivities[newActivities.length - 1].period).getTime()) /
+                ((newActivities.first()!.endDate.getTime() -
+                    newActivities.last()!.startDate.getTime()) /
                     86_400_000) /** ms per day*/
 
             const estimate = Math.ceil(Math.sqrt(raidsPerDay))

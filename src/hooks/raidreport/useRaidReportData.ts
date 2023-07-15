@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { ErrorHandler } from "../../types/generic"
-import { mergeActivities } from "../../util/raidreport/mergeActivitiesArray"
 import { getPlayer } from "../../services/raidreport/getPlayer"
 import { AllRaidReportData, RankingBannerType } from "../../types/profile"
 import { RaidReportPlayer } from "../../types/raidreport"
+import { Collection } from "@discordjs/collection"
+import RaidReportDataCollection from "../../models/profile/RaidReportDataCollection"
 
 type UseRaidReport = (params: {
     destinyMembershipIds: { destinyMembershipId: string }[] | null
@@ -38,7 +39,7 @@ export const useRaidReport: UseRaidReport = ({
 
                 if (!goodPlayers.length) return
 
-                const players = new Map(goodPlayers)
+                const players = new Collection(goodPlayers)
                 const { clearsRank, speedRank } = players.get(primaryMembershipId)!
                 players.get(primaryMembershipId)
                 const _data: AllRaidReportData = {
@@ -56,8 +57,8 @@ export const useRaidReport: UseRaidReport = ({
                             value: speedRank.value
                         }
                     ],
-                    activities: mergeActivities(
-                        Array.from(players.values()).flatMap(player => player.activities)
+                    activities: RaidReportDataCollection.groupActivities(
+                        players.map(player => player.activities).flat()
                     )
                 }
                 setData(_data)

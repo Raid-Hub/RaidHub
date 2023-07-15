@@ -1,11 +1,13 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import Head from "next/head"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
-import { Backdrop, Raid, Short } from "../../types/raids"
+import { BackdropOpacity, Raid, Short } from "../../types/raids"
 import { ErrorHandler } from "../../types/generic"
 import ActivityHeader from "./ActivityHeader"
 import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
+import RaidCardBackground from "../../images/raid-backgrounds"
+import Image from "next/image"
 
 export type PGCRProps = {
     activityId: string
@@ -22,14 +24,19 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                 </title>
             </Head>
             <section className={styles["summary-card"]}>
-                <div className="background-img" style={Backdrop[pgcr?.raid ?? Raid.NA]} />
+                <Image
+                    priority
+                    className={styles["summary-card-background"]}
+                    src={RaidCardBackground[pgcr?.raid ?? Raid.NA]}
+                    alt="background image"
+                    fill
+                    style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                />
                 <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                 <ParticipantsSection
                     raid={pgcr?.raid ?? Raid.NA}
                     players={pgcr?.players ?? []}
-                    characters={pgcr?.entries ?? []}
                     pgcrLoadingState={pgcrLoadingState}
-                    errorHandler={errorHandler}
                 />
             </section>
             <section className={styles["summary-stats"]}>

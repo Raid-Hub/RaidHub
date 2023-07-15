@@ -1,11 +1,12 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useMemo } from "react"
-import { RaidDifficultyTuple } from "../../../types/raids"
 import { getRelativeTime } from "../../../util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LanguageProvider"
 import { Green, Red, Teal } from "./Dot"
 import { raidVersion } from "../../../util/destiny/raid"
+import { Tag } from "../../../util/raidhub/tags"
+import Activity from "../../../models/profile/Activity"
 
 export type DotTooltipProps = {
     offset: {
@@ -13,29 +14,23 @@ export type DotTooltipProps = {
         y: number
     }
     isShowing: boolean
-    activityCompleted: boolean
+    activity: Activity
     flawless: boolean
-    startDate: Date
-    endDate: Date
-    duration: string
-    details: RaidDifficultyTuple
+    lowman: Tag.SOLO | Tag.DUO | Tag.TRIO | null
 }
 
-const DotTooltip = ({
-    offset,
-    isShowing,
-    activityCompleted,
-    flawless,
-    startDate,
-    endDate,
-    duration,
-    details
-}: DotTooltipProps) => {
+const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotTooltipProps) => {
     const { strings } = useLocale()
-    const dateString = useMemo(() => getRelativeTime(endDate), [endDate])
+    const dateString = useMemo(() => getRelativeTime(activity.endDate), [activity.endDate])
     const difficultyString = useMemo(
-        () => raidVersion(details, startDate, endDate, strings),
-        [details, endDate, startDate, strings]
+        () =>
+            raidVersion(
+                [activity.raid, activity.difficulty],
+                activity.startDate,
+                activity.endDate,
+                strings
+            ),
+        [activity, strings]
     )
 
     return (
@@ -46,13 +41,16 @@ const DotTooltip = ({
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activityCompleted ? (flawless ? Teal : Green) : Red
+                borderColor: activity.completed ? (flawless ? Teal : Green) : Red
             }}>
-            <div>{duration}</div>
+            <div>{activity.values.activityDurationSeconds.basic.displayValue}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
-            {/* <div>{strings.raidNames[raid]}</div> */}
-            <div>{difficultyString}</div>
+            <div className={styles["dot-tooltip-tags"]}>
+                <span>{lowman && strings.tags[lowman]}</span>
+                <span>{flawless && strings.tags[Tag.FLAWLESS]}</span>
+                <span>{difficultyString}</span>
+            </div>
         </div>
     )
 }

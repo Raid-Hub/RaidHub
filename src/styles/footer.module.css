@@ -1,13 +1,10 @@
 #footer {
     margin-top: auto;
     width: 100%;
-    padding: 0.5em 1em;
+    padding: 1em 1em;
     background-color: var(--header-background);
-    box-shadow: rgba(0, 0, 0, 0.3) 0 -19px 38px, rgba(0, 0, 0, 0.22) 0 -15px 12px;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
     gap: 1em;
 
     --footer-fill: #646464;
@@ -22,42 +19,53 @@
     }
 }
 
-.footer-left {
+#footer > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.top {
+    align-self: flex-end;
+}
+
+.left {
+    justify-content: left;
+    text-align: left;
+}
+
+.right {
+    justify-content: right;
+    text-align: right;
+}
+
+.top .left {
+    flex: 2;
+}
+
+.top .right {
     flex: 1;
 
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 1em;
 }
 
-.footer-left a {
-    font-style: italic;
-}
-.footer-mid {
+.bottom .left {
     flex: 1;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75em;
 }
 
-.footer-right {
-    flex: 1;
-
-    display: flex;
-    justify-content: flex-end;
+.bottom .right {
+    flex: 2;
 }
 
-.contact-text {
-    font-weight: 800;
-    text-transform: uppercase;
+.version {
+    color: var(--secondary-text);
 }
 
 .img-social {
-    height: 30px;
-    width: 30px;
+    height: 25px;
+    width: 25px;
 }
 
 .img-social svg {
@@ -81,4 +89,8 @@
 .developers {
     font-weight: 600;
     text-transform: uppercase;
+}
+
+.url {
+    font-style: italic;
 }

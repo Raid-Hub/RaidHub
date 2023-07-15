@@ -1,5 +1,6 @@
 import { DestinyClass } from "bungie-net-core/lib/models"
-import { Icons } from "../presentation/icons"
+import { StaticImageData } from "next/image"
+import { Hunter, Question_Mark, Titan, Warlock } from "../../images/icons"
 
 export const CharacterType: { [key: string]: DestinyClass } = {
     Hunter: DestinyClass.Hunter,
@@ -16,9 +17,9 @@ export const CharacterName: { [key in DestinyClass]: string } = {
     [DestinyClass.Unknown]: "Unknown"
 }
 
-export const CharacterLogos: { [key in DestinyClass]: string } = {
-    [DestinyClass.Hunter]: Icons.HUNTER,
-    [DestinyClass.Titan]: Icons.TITAN,
-    [DestinyClass.Warlock]: Icons.WARLOCK,
-    [DestinyClass.Unknown]: Icons.UNKNOWN
+export const CharacterLogos: { [key in DestinyClass]: StaticImageData } = {
+    [DestinyClass.Hunter]: Hunter,
+    [DestinyClass.Titan]: Titan,
+    [DestinyClass.Warlock]: Warlock,
+    [DestinyClass.Unknown]: Question_Mark
 }

@@ -1,9 +1,8 @@
 import PGCRCharacter from "./Character"
-import { CharacterName } from "../../util/destiny/characters"
 import { mergeWeaponCollections } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
-import { BungieMembershipType, DestinyClass } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 
 export default class PGCRPlayer implements IPGCREntry {
     readonly characters: PGCRCharacter[]
@@ -52,12 +51,6 @@ export default class PGCRPlayer implements IPGCREntry {
         return this.characters[0].displayName
     }
 
-    get characterClass(): string[] {
-        return this.characters.map(
-            ({ className }) => className ?? CharacterName[DestinyClass.Unknown]
-        )
-    }
-
     get flawless(): boolean {
         return this.deathless && this.didComplete
     }
@@ -68,5 +61,9 @@ export default class PGCRPlayer implements IPGCREntry {
 
     get didComplete(): boolean {
         return this.characters.some(({ didComplete }) => didComplete)
+    }
+
+    get banner(): string {
+        return this.characters[0].banner
     }
 }

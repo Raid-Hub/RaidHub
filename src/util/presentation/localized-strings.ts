@@ -39,6 +39,14 @@ export interface LocalStrings {
     sherpas: string
     na: string
     checkpoints: { [key in Raid]: string }
+    toggle: {
+        charts: string
+        tiles: string
+    }
+    viewProfile: string
+    inGame: string
+    elapsedTime: string
+    fireteam: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -131,7 +139,15 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.ROOT_OF_NIGHTMARES]: "Nezarec",
             [Raid.CROTAS_END]: "Crota",
             [Raid.NA]: ""
-        }
+        },
+        toggle: {
+            charts: "Charts",
+            tiles: "Tiles"
+        },
+        viewProfile: "View Profile",
+        inGame: "In Game",
+        elapsedTime: "Elapsed time",
+        fireteam: "Fireteam"
     }
 }
 
