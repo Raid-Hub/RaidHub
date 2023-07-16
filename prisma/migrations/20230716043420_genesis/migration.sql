@@ -22,7 +22,7 @@ CREATE TABLE `Session` (
     `id` VARCHAR(191) NOT NULL,
     `sessionToken` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
-    `expires` DATETIME(3) NOT NULL,
+    `expires` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Session_sessionToken_key`(`sessionToken`),
     PRIMARY KEY (`id`)
@@ -31,13 +31,19 @@ CREATE TABLE `Session` (
 -- CreateTable
 CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
+    `destinyMembershipId` VARCHAR(191) NOT NULL,
+    `destinyMembershipType` INTEGER NOT NULL,
     `name` VARCHAR(191) NULL,
-    `membershipType` INTEGER NOT NULL,
+    `image` VARCHAR(191) NULL,
+    `bungie_access_token` TEXT NOT NULL,
+    `bungie_access_expires_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `bungie_refresh_token` TEXT NOT NULL,
+    `bungie_refresh_expires_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `email` VARCHAR(191) NULL,
     `emailVerified` DATETIME(3) NULL,
-    `image` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_destinyMembershipId_destinyMembershipType_key`(`destinyMembershipId`, `destinyMembershipType`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

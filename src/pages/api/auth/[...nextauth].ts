@@ -7,20 +7,23 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import { User as PrismaUser, Account as PrismaAccount } from "@prisma/client"
 import NextAuth from "next-auth/next"
-import { DefaultSession } from "next-auth"
+import { DefaultSession, Profile, TokenSet } from "next-auth"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
 declare module "next-auth" {
     interface Session extends DefaultSession {
         error?: AuthError
-        token?: BungieToken & { type: "access" }
+        token?: {
+            value: string
+            expires: number
+        }
     }
     interface User extends PrismaUser {}
 }
 
 declare module "next-auth" {
-    interface Profile extends BungieUser, GroupUserInfoCard {}
+    interface Profile extends BungieUser, GroupUserInfoCard, TokenSet {}
 }
 
 const prismaClient = new PrismaClient()
@@ -61,16 +64,19 @@ const BungieProvider: OAuthProvider = options => {
                 ...(await getBungieMembershipData(tokens.access_token!))
             })
         },
-        profile(profile) {
+        profile(profile: Profile) {
             return {
                 id: profile.membershipId,
-                name: profile.displayName,
+                name: profile.bungieGlobalDisplayName ?? profile.displayName,
+                destinyMembershipId: profile.membershipId,
                 destinyMembershipType: profile.membershipType,
                 image: `https://www.bungie.net${
                     profile.profilePicturePath.startsWith("/") ? "" : "/"
                 }${profile.profilePicturePath}`,
-                refresh_token: profile.refresh_token,
-                refresh_expires_at: new Date(Date.now() + 7_776_000_000),
+                bungie_access_token: profile.access_token!,
+                bungie_access_expires_at: new Date(Date.now() + 3_600_000),
+                bungie_refresh_token: profile.refresh_token!,
+                bungie_refresh_expires_at: new Date(Date.now() + 7_776_000_000),
                 email: null,
                 emailVerified: null
             } satisfies PrismaUser
@@ -116,20 +122,31 @@ export default NextAuth({
                 session.token.expires &&
                 Date.now() < session.token.expires
             ) {
-                // If the access token has not expired yet
+                // The session access token has not expired yet
                 return session
-            } else if (Date.now() < user.refresh_expires_at.getTime()) {
+            } else if (Date.now() < user.bungie_access_expires_at.getTime()) {
+                // If user access token has not expired yet
+                return {
+                    ...session,
+                    token: {
+                        value: user.bungie_access_token,
+                        expires: user.bungie_access_expires_at.getTime()
+                    }
+                }
+            } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
                 console.log("refreshing token")
                 try {
-                    const tokens = await getAccessTokenFromRefreshToken(user.refresh_token)
+                    const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
 
                     await prismaClient.user.update({
                         where: {
                             id: user.id
                         },
                         data: {
-                            refresh_token: tokens.refresh.value,
-                            refresh_expires_at: new Date(tokens.refresh.expires)
+                            bungie_access_token: tokens.access.value,
+                            bungie_access_expires_at: new Date(tokens.access.expires),
+                            bungie_refresh_token: tokens.refresh.value,
+                            bungie_refresh_expires_at: new Date(tokens.refresh.expires)
                         }
                     })
 
