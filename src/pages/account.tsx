@@ -1,6 +1,7 @@
 import { NextPage } from "next"
 import { signIn, signOut, useSession } from "next-auth/react"
 import styles from "../styles/pages/account.module.css"
+import { deleteCurrentUser } from "../services/app/deleteCurrentUser"
 
 const Account: NextPage = () => {
     const { status, data: sesssionData } = useSession({
@@ -22,6 +23,9 @@ const Account: NextPage = () => {
                 <button onClick={() => console.log(sesssionData)}>Print Session Data</button>
                 <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                     Sign in with different account
+                </button>
+                <button onClick={() => deleteCurrentUser({ callbackUrl: "/" })}>
+                    Delete Account
                 </button>
                 <a
                     href={`/profile/${sesssionData.user.destinyMembershipType}/${sesssionData.user.destinyMembershipId}`}>

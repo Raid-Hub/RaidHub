@@ -8,14 +8,15 @@ import {
 import { OAuthConfig, OAuthProvider } from "next-auth/providers/oauth"
 import BungieClient from "../../../services/bungie/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
 import { User as PrismaUser, Account as PrismaAccount } from "@prisma/client"
 import NextAuth from "next-auth/next"
 import { DefaultSession, Profile, Session, TokenSet } from "next-auth"
+import prisma from "../../../util/server/prisma"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
 type SessionUser = {
+    id: string
     destinyMembershipId: string
     destinyMembershipType: BungieMembershipType
     name: string | null
@@ -28,6 +29,7 @@ type SessionUser = {
 
 function sessionUser(user: PrismaUser): SessionUser {
     return {
+        id: user.id,
         destinyMembershipId: user.destinyMembershipId,
         destinyMembershipType: user.destinyMembershipType,
         image: user.image,
@@ -54,8 +56,7 @@ declare module "next-auth" {
     interface Profile extends BungieUser, GroupUserInfoCard, TokenSet {}
 }
 
-const prismaClient = new PrismaClient()
-const prismaAdapter = PrismaAdapter(prismaClient)
+const prismaAdapter = PrismaAdapter(prisma)
 const _link = prismaAdapter.linkAccount
 prismaAdapter.linkAccount = data => {
     // cleans properties that shouldnt be here
@@ -157,7 +158,7 @@ export default NextAuth({
                 try {
                     const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
 
-                    const updatedUser = await prismaClient.user.update({
+                    const updatedUser = await prisma.user.update({
                         where: {
                             id: user.id
                         },
