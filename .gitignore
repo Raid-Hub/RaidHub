@@ -37,3 +37,6 @@ yarn-error.log*
 
 # JetBrains IDE specific
 /.idea/
+
+# docker
+raidhub-app-db/

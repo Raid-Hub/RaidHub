@@ -2,14 +2,10 @@
 
 To init the project, `yarn install`
 
-Create a `.env.local` file in the root dir with contents:
+Create a `.env.local` file in the root dir with contents matching `example.env`
 
 ```shell
-BUNGIE_API_KEY="KEY"
-BUNGIE_CLIENT_ID="ID"
-BUNGIE_CLIENT_SECRET="SECRET"
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET="generate this using 'openssl rand -base64 32' "
+
 ```
 
 To run the server, `yarn dev`

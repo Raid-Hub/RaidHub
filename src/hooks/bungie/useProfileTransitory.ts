@@ -68,6 +68,7 @@ export const useProfileTransitory = ({
                     transitory.data.currentActivity.startTime !==
                     cached?.transitory.currentActivity.startTime
                 ) {
+                    console.log(transitory)
                     const [activityDefinition, activityModeDefinition, partyMembers] =
                         await Promise.all([
                             getActivityDefiniton({
@@ -79,11 +80,9 @@ export const useProfileTransitory = ({
                                 client
                             }),
                             Promise.all(
-                                transitory.data.partyMembers
-                                    .filter(member => member.membershipId == destinyMembershipId)
-                                    .map(({ membershipId }) =>
-                                        getLinkedDestinyProfile({ membershipId, client })
-                                    )
+                                transitory.data.partyMembers.map(({ membershipId }) =>
+                                    getLinkedDestinyProfile({ membershipId, client })
+                                )
                             )
                         ])
                     setProfile({
