@@ -23,7 +23,8 @@ const Account: NextPage = () => {
                 <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                     Sign in with different account
                 </button>
-                <a href={`/profile/${sesssionData.user.membershipType}/${sesssionData.user.id}`}>
+                <a
+                    href={`/profile/${sesssionData.user.destinyMembershipType}/${sesssionData.user.destinyMembershipId}`}>
                     <button>Take me home</button>
                 </a>
             </div>

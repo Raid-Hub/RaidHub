@@ -1,25 +1,53 @@
-import { BungieToken, getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
+import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
-import { GeneralUser as BungieUser, GroupUserInfoCard } from "bungie-net-core/lib/models"
+import {
+    BungieMembershipType,
+    GeneralUser as BungieUser,
+    GroupUserInfoCard
+} from "bungie-net-core/lib/models"
 import { OAuthConfig, OAuthProvider } from "next-auth/providers/oauth"
 import BungieClient from "../../../services/bungie/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import { User as PrismaUser, Account as PrismaAccount } from "@prisma/client"
 import NextAuth from "next-auth/next"
-import { DefaultSession, Profile, TokenSet } from "next-auth"
+import { DefaultSession, Profile, Session, TokenSet } from "next-auth"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
+
+type SessionUser = {
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+    name: string | null
+    image: string | null
+    bungieAccessToken: {
+        value: string
+        expires: number
+    }
+}
+
+function sessionUser(user: PrismaUser): SessionUser {
+    return {
+        destinyMembershipId: user.destinyMembershipId,
+        destinyMembershipType: user.destinyMembershipType,
+        image: user.image,
+        name: user.name,
+        bungieAccessToken: {
+            value: user.bungie_access_token,
+            expires: user.bungie_access_expires_at.getTime()
+        }
+    }
+}
 
 declare module "next-auth" {
     interface Session extends DefaultSession {
         error?: AuthError
-        token?: {
-            value: string
-            expires: number
-        }
+        user: SessionUser
     }
-    interface User extends PrismaUser {}
+}
+
+declare module "next-auth/adapters" {
+    interface AdapterUser extends PrismaUser {}
 }
 
 declare module "next-auth" {
@@ -117,28 +145,19 @@ export default NextAuth({
     },
     callbacks: {
         async session({ session, user }) {
-            if (
-                session.token?.value &&
-                session.token.expires &&
-                Date.now() < session.token.expires
-            ) {
-                // The session access token has not expired yet
-                return session
-            } else if (Date.now() < user.bungie_access_expires_at.getTime()) {
+            const newUser = sessionUser(user as PrismaUser)
+            if (Date.now() < user.bungie_access_expires_at.getTime()) {
                 // If user access token has not expired yet
                 return {
                     ...session,
-                    token: {
-                        value: user.bungie_access_token,
-                        expires: user.bungie_access_expires_at.getTime()
-                    }
-                }
+                    user: newUser
+                } satisfies Session
             } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
                 console.log("refreshing token")
                 try {
                     const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
 
-                    await prismaClient.user.update({
+                    const updatedUser = await prismaClient.user.update({
                         where: {
                             id: user.id
                         },
@@ -152,14 +171,28 @@ export default NextAuth({
 
                     return {
                         ...session,
-                        token: tokens.access
-                    }
+                        user: {
+                            ...sessionUser(updatedUser),
+                            bungieAccessToken: {
+                                value: tokens.access.value,
+                                expires: tokens.access.expires
+                            }
+                        }
+                    } satisfies Session
                 } catch (e) {
                     console.error(e)
-                    return { ...session, error: "RefreshAccessTokenError" as const }
+                    return {
+                        ...session,
+                        user: newUser,
+                        error: "RefreshAccessTokenError" as const
+                    } satisfies Session
                 }
             } else {
-                return { ...session, error: "ExpiredRefreshTokenError" as const }
+                return {
+                    ...session,
+                    user: newUser,
+                    error: "ExpiredRefreshTokenError" as const
+                } satisfies Session
             }
         }
     }
