@@ -6,8 +6,8 @@ if [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then
   # start the database on a docker image
   yarn db:start
   # push the prisma schema to the new database and seed
-  yarn db:update && yarn seed
-  next build
+  yarn db:update && yarn db:seed
+  yarn next build
 else 
     echo "Deploying to staging..."
     # Set the name of the branches
@@ -36,5 +36,5 @@ else
 
     # apply the new prisma schema
     yarn db:update
-    next build
+    yarn next build
 fi
