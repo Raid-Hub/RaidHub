@@ -1,6 +1,5 @@
 import Image from "next/image"
 import styles from "../../styles/header.module.css"
-import Link from "next/link"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useMemo } from "react"
 import { Account } from "../../images/icons"
@@ -24,19 +23,22 @@ const AccountIcon = ({}: AccountIconProps) => {
                     {sessionData ? (
                         <>
                             <li>
-                                <Link href="/account">{strings.manageAccount}</Link>
+                                <a href="/account">{strings.manageAccount}</a>
                             </li>
-                            <li>
-                                <a
-                                    href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
-                                    className={styles["account-link"]}>
-                                    {strings.viewProfile}
-                                </a>
-                            </li>
+                            {sessionData.user.destinyMembershipType &&
+                                sessionData.user.destinyMembershipId && (
+                                    <li>
+                                        <a
+                                            href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
+                                            className={styles["account-link"]}>
+                                            {strings.viewProfile}
+                                        </a>
+                                    </li>
+                                )}
                             <li onClick={() => signOut({ callbackUrl: "/" })}>{strings.logOut}</li>
                         </>
                     ) : (
-                        <li onClick={() => signIn("bungie")}>{strings.logInWithBungie}</li>
+                        <li onClick={() => signIn()}>{strings.logIn}</li>
                     )}
                 </ul>
             </div>

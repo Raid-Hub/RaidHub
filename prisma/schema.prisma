@@ -39,20 +39,28 @@ model Session {
 
 model User {
   id                        String    @id @default(cuid())
-  destinyMembershipId       String
-  destinyMembershipType     Int
+  destinyMembershipId       String?
+  destinyMembershipType     Int?
   name                      String?
   image                     String?
-  bungie_access_token       String    @db.Text
-  bungie_access_expires_at  DateTime  @default(now())
-  bungie_refresh_token      String    @db.Text
-  bungie_refresh_expires_at DateTime  @default(now())
+  bungie_access_token       String?   @db.Text
+  bungie_access_expires_at  DateTime? @default(now())
+  bungie_refresh_token      String?   @db.Text
+  bungie_refresh_expires_at DateTime? @default(now())
   email                     String?   @unique
   emailVerified             DateTime?
   accounts                  Account[]
   sessions                  Session[]
+  vanity                    Vanity?
 
   @@unique([destinyMembershipId, destinyMembershipType])
+}
+
+model Vanity {
+  id     String @id @default(cuid())
+  string String @unique
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {

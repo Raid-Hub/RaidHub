@@ -4,14 +4,14 @@ import styles from "../styles/pages/account.module.css"
 import { deleteCurrentUser } from "../services/app/deleteCurrentUser"
 
 const Account: NextPage = () => {
-    const { status, data: sesssionData } = useSession({
+    const { status, data: sessionData } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn("bungie")
+            signIn()
         }
     })
 
-    if (status !== "authenticated" || !sesssionData?.user) {
+    if (status !== "authenticated" || !sessionData?.user) {
         return <main>Loading...</main>
     }
 
@@ -20,17 +20,19 @@ const Account: NextPage = () => {
             <h1>You are authenticated</h1>
             <div className={styles["buttons"]}>
                 <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
-                <button onClick={() => console.log(sesssionData)}>Print Session Data</button>
+                <button onClick={() => console.log(sessionData)}>Print Session Data</button>
                 <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                     Sign in with different account
                 </button>
                 <button onClick={() => deleteCurrentUser({ callbackUrl: "/" })}>
                     Delete Account
                 </button>
-                <a
-                    href={`/profile/${sesssionData.user.destinyMembershipType}/${sesssionData.user.destinyMembershipId}`}>
-                    <button>Take me home</button>
-                </a>
+                {sessionData.user.destinyMembershipType && sessionData.user.destinyMembershipId && (
+                    <a
+                        href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}>
+                        <button>Take me home</button>
+                    </a>
+                )}
             </div>
         </main>
     )

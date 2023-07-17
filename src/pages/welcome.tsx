@@ -1,12 +1,11 @@
 import { NextPage } from "next"
-import { signIn, signOut, useSession } from "next-auth/react"
-import styles from "../styles/pages/account.module.css"
+import { signIn, useSession } from "next-auth/react"
 
 const Welcome: NextPage = () => {
     const { status, data: sesssionData } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn("bungie")
+            signIn()
         }
     })
 

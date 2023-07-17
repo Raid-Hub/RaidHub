@@ -1,4 +1,4 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
+import { NextApiRequest, NextApiResponse } from "next"
 
 export type ApiMethod = "GET" | "POST" | "UPDATE" | "DELETE"
 export type ApiRequest<M extends ApiMethod> = NextApiRequest & { method: M }

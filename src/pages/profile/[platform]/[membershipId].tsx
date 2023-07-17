@@ -1,22 +1,25 @@
 import { GetStaticPropsResult } from "next"
 import { InitialProfileProps } from "../../../types/profile"
-import { Vanity } from "../../../util/raidhub/special"
-import ProfileWrapper from "../../[vanity]"
-
+import ProfileWrapper from "../../../components/profile/ProfileWrapper"
+import prisma from "../../../util/server/prisma"
 export async function getServerSideProps({
     params
 }: {
     params: { platform: string; membershipId: string }
 }): Promise<GetStaticPropsResult<InitialProfileProps>> {
-    const vanity = Object.entries(Vanity).find(
-        ([_, { destinyMembershipId }]) => destinyMembershipId === params.membershipId
-    )?.[0]
+    const vanity = await prisma.vanity.findFirst({
+        where: {
+            user: {
+                destinyMembershipId: params.membershipId
+            }
+        }
+    })
 
-    if (vanity) {
+    if (vanity?.string) {
         return {
             redirect: {
                 permanent: true,
-                destination: `/${vanity}`
+                destination: `/${vanity.string}`
             }
         }
     } else {

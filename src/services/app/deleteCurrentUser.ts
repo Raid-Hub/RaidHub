@@ -1,5 +1,4 @@
 import { getCsrfToken, getSession } from "next-auth/react"
-import { redirect } from "next/dist/server/api-utils"
 
 type DeleteCurrentUserParams<R extends boolean = true> = {
     callbackUrl?: string
@@ -26,7 +25,6 @@ export async function deleteCurrentUser<R extends boolean = true>(
         },
         // @ts-expect-error
         body: new URLSearchParams({
-            userId: session.user.id,
             csrfToken: await getCsrfToken(),
             callbackUrl,
             json: true

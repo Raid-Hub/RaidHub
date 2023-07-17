@@ -48,8 +48,9 @@ export interface LocalStrings {
     elapsedTime: string
     fireteam: string
     manageAccount: string
-    logInWithBungie: string
+    logIn: string
     logOut: string
+    logInWith: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -152,8 +153,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         elapsedTime: "Elapsed time",
         fireteam: "Fireteam",
         manageAccount: "Manage Account",
-        logInWithBungie: "Log In with Bungie",
-        logOut: "Log Out"
+        logIn: "Log In",
+        logOut: "Log Out",
+        logInWith: "Log In with"
     }
 }
 
