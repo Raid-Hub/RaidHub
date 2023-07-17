@@ -3,8 +3,8 @@
 if [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
   echo "Deploying to preview..."
 
-  # start the database on a docker image
-  yarn db:start
+  echo $DATABASE_URL
+  # start the database
   # push the prisma schema to the new database and seed
   yarn db:update && yarn db:seed
   yarn next build
