@@ -4,19 +4,19 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "dev+": "yarn db:start && cross-env NEXTAUTH_URL=https://127.0.0.1:3000 node proxy/server.js",
-        "seed": "prisma db seed",
+        "dev+": "cross-env NEXTAUTH_URL=https://127.0.0.1:3000 node proxy/server.js",
         "db:start": "docker-compose -f docker-compose.yml up -d",
+        "db:seed": "prisma db seed",
+        "db:update": "prisma db push",
         "db:stop": "docker-compose -f docker-compose.yml down",
-        "migrate": "prisma migrate dev",
-        "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "test": "jest",
         "destiny": "./update-manifest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-        "sign": "mkdir proxy/certs ; cd proxy/certs ; mkcert localhost"
+        "sign": "mkdir proxy/certs ; cd proxy/certs ; mkcert localhost",
+        "build": "./vercel.sh"
     },
     "prisma": {
         "seed": "ts-node prisma/seed.ts"
