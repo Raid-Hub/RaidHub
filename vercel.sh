@@ -1,15 +1,19 @@
 #!/bin/bash
  
 if [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
+
   echo "Deploying to preview..."
 
   if [[  $DATABASE_URL ]] ; then
-    echo "Please set the DATABASE_URL for this deployment"
-  else
-    # start the database
     # push the prisma schema to the new database and seed
     yarn db:update && yarn db:seed
+    
     yarn next build
+
+  else
+    echo "Please set the DATABASE_URL for this deployment"
+    exit 1
+  fi
 else 
     echo "Deploying to staging..."
     # Set the name of the branches
