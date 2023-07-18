@@ -52,7 +52,7 @@ export default NextAuth({
         signIn: "/login",
         signOut: "/logout",
         error: "/auth/error", // Error code passed in query string as ?error=
-        newUser: "/welcome" // New users will be directed here on first sign in
+        newUser: "/account" // New users will be directed here on first sign in
     },
     callbacks: {
         session: sessionCallback

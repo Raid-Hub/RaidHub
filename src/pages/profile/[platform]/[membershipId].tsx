@@ -15,13 +15,11 @@ export async function getServerSideProps({
         }
     })
 
-    console.log(destinyMembershipType, vanity)
-
     if (vanity?.string) {
         return {
             redirect: {
                 permanent: true,
-                destination: `/${vanity.string}`
+                destination: `/${vanity.string.toLowerCase()}`
             }
         }
     } else {

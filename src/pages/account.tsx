@@ -2,17 +2,23 @@ import { NextPage } from "next"
 import { signIn, signOut, useSession } from "next-auth/react"
 import styles from "../styles/pages/account.module.css"
 import { deleteCurrentUser } from "../services/app/deleteCurrentUser"
+import { useLocale } from "../components/app/LanguageProvider"
 
 const Account: NextPage = () => {
     const { status, data: sessionData } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn()
+            signIn(undefined, { callbackUrl: "/account" })
         }
     })
+    const { strings } = useLocale()
 
-    if (status !== "authenticated" || !sessionData?.user) {
-        return <main>Loading...</main>
+    if (status === "loading") {
+        return (
+            <main>
+                <h2>{strings.loading}</h2>
+            </main>
+        )
     }
 
     return (
