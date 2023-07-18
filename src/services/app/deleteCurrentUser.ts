@@ -1,16 +1,14 @@
 import { getCsrfToken, getSession } from "next-auth/react"
+import { UserDeleteResponse } from "../../types/api"
+import AppError from "../../models/errors/AppError"
 
-type DeleteCurrentUserParams<R extends boolean = true> = {
-    callbackUrl?: string
-    redirect?: R
-}
-
-type DeleteCurrentUserResponse = {
-    url: string
-}
-export async function deleteCurrentUser<R extends boolean = true>(
-    options: DeleteCurrentUserParams<R>
-): Promise<R extends true ? undefined : DeleteCurrentUserResponse> {
+type DeleteCurrentUser = (options: { callbackUrl?: string; redirect?: boolean }) => Promise<
+    | {
+          url: string
+      }
+    | undefined
+>
+export const deleteCurrentUser: DeleteCurrentUser = async options => {
     const { callbackUrl = window.location.href } = options ?? {}
 
     const session = await getSession()
@@ -23,28 +21,29 @@ export async function deleteCurrentUser<R extends boolean = true>(
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        // @ts-expect-error
         body: new URLSearchParams({
-            csrfToken: await getCsrfToken(),
-            callbackUrl,
-            json: true
+            csrfToken: (await getCsrfToken()) ?? "null",
+            callbackUrl
         })
     }
 
     const res = await fetch(`/api/user/${session.user.id}`, fetchOptions)
-    if (!res.ok) {
-        throw new Error("Unauthorized")
+    const responseJson = (await res.json()) as UserDeleteResponse
+    if (!res.ok || responseJson.success === false) {
+        if (responseJson.success === false) {
+            throw new AppError(responseJson.error, responseJson.data)
+        } else {
+            throw new Error("Invalid server response")
+        }
     }
-    const data = await res.json()
 
     if (options?.redirect ?? true) {
-        const url = data.url ?? callbackUrl
+        const url = responseJson.data?.url ?? callbackUrl
         window.location.href = url
         // If url contains a hash, the browser does not reload the page. We reload manually
         if (url.includes("#")) window.location.reload()
-        // @ts-expect-error
         return
+    } else {
+        return responseJson.data
     }
-
-    return data
 }
