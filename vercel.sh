@@ -1,7 +1,11 @@
 #!/bin/bash
- 
-if [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
 
+if [[ $VERCEL_ENV == "production" ]] ; then 
+  echo "Deploying to beta production..."
+
+  yarn db:update
+  yarn next build
+elif [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
   echo "Deploying to preview..."
 
   if [[  $DATABASE_URL ]] ; then
