@@ -1,4 +1,5 @@
 import { PrismaClient, User } from "@prisma/client"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 
 const prisma = new PrismaClient()
 
@@ -13,10 +14,11 @@ main()
 
 async function main() {
     // create fake users
-    await seedUsers()
+    await seedFakeUsers()
+    await addStaticVanity()
 }
 
-async function seedUsers() {
+async function seedFakeUsers() {
     const users = createFakeUsers()
     const { count } = await prisma.user.deleteMany().then(() =>
         prisma.user.createMany({
@@ -78,7 +80,7 @@ async function seedUsers() {
         })
     }
 
-    async function createVanity({ id, name }: User) {
+    async function createVanity({ id, name, destinyMembershipId, destinyMembershipType }: User) {
         return await prisma.vanity.create({
             data: {
                 user: {
@@ -86,6 +88,8 @@ async function seedUsers() {
                         id
                     }
                 },
+                destinyMembershipId: destinyMembershipId!,
+                destinyMembershipType: destinyMembershipType!,
                 string: name!.substring(0, 5)
             }
         })
@@ -105,6 +109,48 @@ async function seedUsers() {
         })
     }
     console.log(`Seeded ${count} users.`)
+}
+
+async function addStaticVanity() {
+    await prisma.vanity.createMany({
+        data: [
+            {
+                string: "Newo",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018488107374"
+            },
+            {
+                string: "Bruce",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018493378282"
+            },
+            {
+                string: "Theos",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018493378282"
+            },
+            {
+                string: "MJ",
+                destinyMembershipType: BungieMembershipType.TigerPsn,
+                destinyMembershipId: "4611686018478899141"
+            },
+            {
+                string: "Whiz",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018470577804"
+            },
+            {
+                string: "Saltagreppo",
+                destinyMembershipType: BungieMembershipType.TigerXbox,
+                destinyMembershipId: "4611686018432786508"
+            },
+            {
+                string: "retard",
+                destinyMembershipId: "4611686018467192472",
+                destinyMembershipType: BungieMembershipType.TigerSteam
+            }
+        ]
+    })
 }
 
 function genRandomString(length: number) {

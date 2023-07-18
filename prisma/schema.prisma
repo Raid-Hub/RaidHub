@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -61,10 +61,12 @@ model User {
 }
 
 model Vanity {
-  id     String @id @default(cuid())
-  string String @unique
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                    String  @id @default(cuid())
+  string                String  @unique
+  destinyMembershipId   String
+  destinyMembershipType Int
+  userId                String? @unique
+  user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {

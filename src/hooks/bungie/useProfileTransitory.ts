@@ -18,7 +18,7 @@ import { getLinkedDestinyProfile } from "../../services/bungie/getLinkedDestinyP
 
 type UseProfileTransitoryParams = {
     destinyMembershipId: string
-    membershipType: BungieMembershipType
+    destinyMembershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }
 
@@ -39,7 +39,7 @@ const REFRESH_INTERVAL = 60 * 1000
 
 export const useProfileTransitory = ({
     destinyMembershipId,
-    membershipType,
+    destinyMembershipType,
     errorHandler
 }: UseProfileTransitoryParams): UseProfileTransitory => {
     const [profile, setProfile] = useState<TransitoryActivity | null>(null)
@@ -109,12 +109,12 @@ export const useProfileTransitory = ({
     useEffect(() => {
         if (needsRefresh) {
             setLoading(true)
-            fetchData(destinyMembershipId, membershipType, profile)
+            fetchData(destinyMembershipId, destinyMembershipType, profile)
         }
         return () => {
             clearTimeout(timer)
         }
-    }, [destinyMembershipId, membershipType, fetchData, timer, needsRefresh, profile])
+    }, [destinyMembershipId, destinyMembershipType, fetchData, timer, needsRefresh, profile])
 
     return { profile, isLoading, lastRefresh }
 }

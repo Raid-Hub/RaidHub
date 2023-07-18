@@ -17,24 +17,23 @@ import Banners from "./banners/Banners"
 import Raids from "./raids/Raids"
 import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
+import { InitialProfileProps } from "../../types/profile"
 
 export enum Layout {
     DotCharts,
     RecentActivities
 }
 
-type ProfileProps = {
-    destinyMembershipId: string
-    membershipType: BungieMembershipType
+type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
 }
 
-const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileProps) => {
+const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
     // DATA HOOKS
     const { profile: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
         useDestinyProfile({
             destinyMembershipId,
-            membershipType,
+            destinyMembershipType,
             errorHandler
         })
 
@@ -49,7 +48,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         isLoading: isLoadingMemberships
     } = useBungieMemberships({
         destinyMembershipId,
-        membershipType,
+        destinyMembershipType,
         errorHandler
     })
 
@@ -76,7 +75,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
         lastRefresh: lastTransitoryRefresh
     } = useProfileTransitory({
         destinyMembershipId,
-        membershipType,
+        destinyMembershipType,
         errorHandler
     })
 
@@ -122,7 +121,7 @@ const Profile = ({ destinyMembershipId, membershipType, errorHandler }: ProfileP
                 />
                 <ClanCard
                     membershipId={destinyMembershipId}
-                    membershipType={membershipType}
+                    membershipType={destinyMembershipType}
                     errorHandler={errorHandler}
                 />
             </section>

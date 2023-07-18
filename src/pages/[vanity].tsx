@@ -8,26 +8,22 @@ export async function getServerSideProps({
 }: {
     params: { vanity: string }
 }): Promise<GetStaticPropsResult<InitialProfileProps>> {
-    const user = await prisma.user.findFirst({
+    const details = await prisma.vanity.findFirst({
         where: {
-            vanity: {
-                string: params.vanity
-            }
+            string: params.vanity
         },
-        include: {
-            vanity: true
+        select: {
+            destinyMembershipId: true,
+            destinyMembershipType: true
         }
     })
 
-    if (!user?.destinyMembershipId || !user.destinyMembershipType) {
+    if (!details?.destinyMembershipId || !details.destinyMembershipType) {
         return { notFound: true }
     }
 
     return {
-        props: {
-            destinyMembershipId: user.destinyMembershipId,
-            membershipType: user.destinyMembershipType
-        }
+        props: details
     }
 }
 

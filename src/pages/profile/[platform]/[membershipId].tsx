@@ -7,13 +7,15 @@ export async function getServerSideProps({
 }: {
     params: { platform: string; membershipId: string }
 }): Promise<GetStaticPropsResult<InitialProfileProps>> {
+    const destinyMembershipType = Number(params.platform)
     const vanity = await prisma.vanity.findFirst({
         where: {
-            user: {
-                destinyMembershipId: params.membershipId
-            }
+            destinyMembershipId: params.membershipId,
+            destinyMembershipType
         }
     })
+
+    console.log(destinyMembershipType, vanity)
 
     if (vanity?.string) {
         return {
@@ -26,7 +28,7 @@ export async function getServerSideProps({
         return {
             props: {
                 destinyMembershipId: params.membershipId,
-                membershipType: parseInt(params.platform)
+                destinyMembershipType
             }
         }
     }
