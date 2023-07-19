@@ -25,6 +25,7 @@ export function CustomBungieProvider<P extends BungieNetResponse<UserMembershipD
                     membership => membership.membershipId === primaryMembershipId
                 ) ?? destinyMemberships[0]
 
+            console.log("testing 123")
             return {
                 id: primaryDestinyMembership.membershipId,
                 name:
