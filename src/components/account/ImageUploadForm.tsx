@@ -3,7 +3,13 @@ import { SessionUser } from "../../util/server/auth/sessionCallback"
 import Image from "next/image"
 import { UserImageCreateResponse } from "../../types/api"
 
-const ImageUploadForm = ({ user }: { user: SessionUser }) => {
+const ImageUploadForm = ({
+    user,
+    refreshSession
+}: {
+    user: SessionUser
+    refreshSession(): void
+}) => {
     const [image, setImage] = useState<string | null>(null)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
@@ -20,7 +26,7 @@ const ImageUploadForm = ({ user }: { user: SessionUser }) => {
 
             try {
                 const response = await fetch(`/api/user/${user.id}/image`, {
-                    method: "POST",
+                    method: "PUT",
                     body: formData
                 })
 
@@ -30,6 +36,7 @@ const ImageUploadForm = ({ user }: { user: SessionUser }) => {
                     if (res.success) {
                         console.log("Image uploaded:", res.data)
                         setImage(res.data.imageUrl)
+                        refreshSession()
                     }
                 } else {
                     console.error("Upload failed:", response.statusText)
@@ -43,10 +50,10 @@ const ImageUploadForm = ({ user }: { user: SessionUser }) => {
     return (
         <div>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
-                <input type="file" name="file" onChange={handleFileChange} accept="image/*" />
+                <input type="file" onChange={handleFileChange} accept="image/*" />
                 <button type="submit">Upload</button>
             </form>
-            {image && <Image src={image} width={50} height={50} />}
+            {image && <Image src={image} width={50} height={50} alt={"profile-picture"} />}
         </div>
     )
 }

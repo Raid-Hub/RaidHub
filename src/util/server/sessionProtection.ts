@@ -1,18 +1,17 @@
-import { NextApiResponse } from "next"
-import { ApiMethod, ApiRequest } from "../../types/api"
+import { NextApiRequest, NextApiResponse } from "next"
 import prisma from "./prisma"
 
-type SessionProtectionParams<T extends ApiMethod> = {
-    req: ApiRequest<T>
+type SessionProtectionParams = {
+    req: NextApiRequest
     res: NextApiResponse
     userId: string | undefined
 }
 
-export async function protectSession<T extends ApiMethod>({
+export async function protectSession({
     req,
     res,
     userId
-}: SessionProtectionParams<T>): Promise<boolean> {
+}: SessionProtectionParams): Promise<boolean> {
     const sessionToken = req.cookies["__Secure-next-auth.session-token"]
     if (!userId || !sessionToken) {
         res.status(401).json({ error: "Unauthorized request" })
