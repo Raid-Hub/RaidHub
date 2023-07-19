@@ -128,42 +128,40 @@ async function addStaticVanity() {
             }
         })
         .then(data => data.map(v => v.string))
-    await prisma.vanity.deleteMany().then(() =>
-        prisma.vanity.createMany({
-            data: [
-                {
-                    string: "Newo",
-                    destinyMembershipType: BungieMembershipType.TigerSteam,
-                    destinyMembershipId: "4611686018488107374"
-                },
-                {
-                    string: "Bruce",
-                    destinyMembershipType: BungieMembershipType.TigerSteam,
-                    destinyMembershipId: "4611686018493378282"
-                },
-                {
-                    string: "Theos",
-                    destinyMembershipType: BungieMembershipType.TigerSteam,
-                    destinyMembershipId: "4611686018493378282"
-                },
-                {
-                    string: "MJ",
-                    destinyMembershipType: BungieMembershipType.TigerPsn,
-                    destinyMembershipId: "4611686018478899141"
-                },
-                {
-                    string: "Whiz",
-                    destinyMembershipType: BungieMembershipType.TigerSteam,
-                    destinyMembershipId: "4611686018470577804"
-                },
-                {
-                    string: "Saltagreppo",
-                    destinyMembershipType: BungieMembershipType.TigerXbox,
-                    destinyMembershipId: "4611686018432786508"
-                }
-            ].filter(v => !existing.includes(v.string))
-        })
-    )
+    await prisma.vanity.createMany({
+        data: [
+            {
+                string: "Newo",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018488107374"
+            },
+            {
+                string: "Bruce",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018493378282"
+            },
+            {
+                string: "Theos",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018493378282"
+            },
+            {
+                string: "MJ",
+                destinyMembershipType: BungieMembershipType.TigerPsn,
+                destinyMembershipId: "4611686018478899141"
+            },
+            {
+                string: "Whiz",
+                destinyMembershipType: BungieMembershipType.TigerSteam,
+                destinyMembershipId: "4611686018470577804"
+            },
+            {
+                string: "Saltagreppo",
+                destinyMembershipType: BungieMembershipType.TigerXbox,
+                destinyMembershipId: "4611686018432786508"
+            }
+        ].filter(v => !existing.includes(v.string))
+    })
 }
 
 function genRandomString(length: number) {

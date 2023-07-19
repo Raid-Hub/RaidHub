@@ -3,7 +3,8 @@
 if [[ $VERCEL_ENV == "production" ]] ; then 
   echo "Deploying to beta production..."
 
-  echo y | yarn db:update
+  yarn db:update
+
   yarn next build
 elif [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
   echo "Deploying to preview..."
@@ -45,6 +46,7 @@ else
     "
 
     # apply the new prisma schema
-    echo y | yarn db:update
+    yarn db:update
+    
     yarn next build
 fi
