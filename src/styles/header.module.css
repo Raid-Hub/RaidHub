@@ -241,6 +241,10 @@
 
 .account-dropdown-content > li {
     border-radius: inherit;
+}
+
+.account-dropdown-content > li > * {
+    display: block;
     padding: 0.5em;
 }
 

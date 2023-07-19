@@ -33,6 +33,7 @@ const PinnedActivity = ({
                     src={RaidBanners[pgcr.raid]}
                     alt="Pinned activity"
                     fill
+                    priority
                     sizes="(max-width: 768px) 60vw, (max-width: 1300px) 70vw, 90vw"
                 />
                 {isPinned ? (

@@ -19,7 +19,7 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     return (
         <main className={styles["main"]}>
             <Head>
-                <title>
+                <title key="title">
                     {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>

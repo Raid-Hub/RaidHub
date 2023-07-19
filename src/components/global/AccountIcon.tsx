@@ -35,10 +35,14 @@ const AccountIcon = ({}: AccountIconProps) => {
                                         </a>
                                     </li>
                                 )}
-                            <li onClick={() => signOut({ callbackUrl: "/" })}>{strings.logOut}</li>
+                            <li onClick={() => signOut({ callbackUrl: "/" })}>
+                                <span>{strings.logOut}</span>
+                            </li>
                         </>
                     ) : (
-                        <li onClick={() => signIn()}>{strings.logIn}</li>
+                        <li onClick={() => signIn()}>
+                            <span>{strings.logIn}</span>
+                        </li>
                     )}
                 </ul>
             </div>

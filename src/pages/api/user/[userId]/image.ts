@@ -123,11 +123,12 @@ async function uploadImage(req: NextApiRequest, userId: string) {
 
 // this is only used in local dev environments
 async function saveLocally({ file, userId }: { file: formidable.File; userId: string }) {
+    const uuid = uuidv4()
     const uploadFolder = path.join(__dirname, "../../../../../../public")
-    const fileName = `/profile-${userId}-${uuidv4()}-icon.png`
+    const fileName = `/profile-${userId}-${uuid}-icon.png`
     const destination = join(uploadFolder, fileName)
 
-    return new Promise<string>((resolve, reject) => {
+    const filePath = await new Promise<string>((resolve, reject) => {
         fs.rename(file.filepath, destination, err => {
             if (err) {
                 reject(err)
@@ -136,6 +137,28 @@ async function saveLocally({ file, userId }: { file: formidable.File; userId: st
             }
         })
     })
+
+    fs.readdir(uploadFolder, (err, files) => {
+        if (err) {
+            console.error("Error reading directory:", err)
+            return
+        }
+
+        files.forEach(file => {
+            if (file.includes(`profile-${userId}-`) && !file.includes(uuid)) {
+                const fileToDelete = path.join(uploadFolder, file)
+                fs.unlink(fileToDelete, err => {
+                    if (err) {
+                        console.error("Error deleting file:", fileToDelete, err)
+                    } else {
+                        console.log("Deleted file:", fileToDelete)
+                    }
+                })
+            }
+        })
+    })
+
+    return filePath
 }
 
 async function uploadToS3({ file, userId }: { file: formidable.File; userId: string }) {
