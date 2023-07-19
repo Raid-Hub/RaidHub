@@ -145,7 +145,11 @@ async function uploadToS3({ file, userId }: { file: formidable.File; userId: str
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
             Key: `profile/${userId}/${uuid}.png`,
             ContentType: file.mimetype!,
-            Body: fs.createReadStream(file.filepath)
+            Body: fs.createReadStream(file.filepath),
+            Expires:
+                process.env.APP_ENV === "preview"
+                    ? new Date(Date.now() + 30 * 24 * 3600 * 1000)
+                    : undefined
         })
         .promise()
         .then(res => res.Location)
