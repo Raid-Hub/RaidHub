@@ -2,7 +2,6 @@ import styles from "../../styles/pages/account.module.css"
 import { signIn, signOut } from "next-auth/react"
 import { Session } from "next-auth"
 import { deleteCurrentUser } from "../../services/app/deleteCurrentUser"
-import { updateCurrentUser } from "../../services/app/updateCurrentUser"
 import UpdateUserInfo from "./UpdateUserInfo"
 import ImageUploadForm from "./ImageUploadForm"
 

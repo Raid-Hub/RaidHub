@@ -1,7 +1,6 @@
 import { User } from "@prisma/client"
 import { NextApiRequest, NextApiResponse } from "next"
 import { ZodError } from "zod"
-import { zUser } from "../util/server/zod"
 
 export type ApiMethod = "GET" | "POST" | "PUT" | "DELETE"
 export type ApiRequest<M extends ApiMethod> = NextApiRequest & { method: M }
