@@ -10,7 +10,7 @@ elif [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then
 
   if [[  $DATABASE_URL ]] ; then
     # push the prisma schema to the new database and seed
-    echo y | yarn db:update && yarn db:seed
+    yarn prisma db push --force-reset && yarn db:seed
     
     yarn next build
 
