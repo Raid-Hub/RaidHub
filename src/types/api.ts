@@ -34,3 +34,8 @@ export type UserUpdateResponse =
     | ProtectedSessionError
     | ApiResponse<true, Partial<User>>
     | ApiResponse<false, undefined>
+
+export type UserImageCreateResponse =
+    | ProtectedSessionError
+    | ApiResponse<true, { imageUrl: string }>
+    | ApiResponse<false, unknown>

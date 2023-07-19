@@ -4,6 +4,7 @@ import { Session } from "next-auth"
 import { deleteCurrentUser } from "../../services/app/deleteCurrentUser"
 import { updateCurrentUser } from "../../services/app/updateCurrentUser"
 import UpdateUserInfo from "./UpdateUserInfo"
+import ImageUploadForm from "./ImageUploadForm"
 
 type AccountProps = {
     session: Session
@@ -31,6 +32,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                 )}
             </div>
             <UpdateUserInfo user={session.user} refreshSession={refreshSession} />
+            <ImageUploadForm user={session.user} />
         </main>
     )
 }

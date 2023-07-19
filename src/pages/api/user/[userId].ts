@@ -4,7 +4,8 @@ import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
 import { zUser } from "../../../util/server/zod"
 
-const userId = (req: NextApiRequest): string | undefined => req.url?.split("/")[3]?.toString()
+export const userId = (req: NextApiRequest): string | undefined =>
+    req.url?.split("/")[3]?.toString()
 
 const handler: NextApiHandler = async (req, res) => {
     switch (req.method) {
@@ -14,6 +15,8 @@ const handler: NextApiHandler = async (req, res) => {
         case "PUT":
             await handleUpdate(req as ApiRequest<"PUT">, res)
             break
+        default:
+            res.status(405).send("Method not allowed")
     }
 }
 
