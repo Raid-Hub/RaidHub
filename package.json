@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "dev+": "cross-env NEXTAUTH_URL=https://127.0.0.1:3000 node proxy/server.js",
+        "dev+": "node proxy/server.js",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:seed": "prisma db seed",
         "db:update": "prisma db push",
@@ -12,10 +12,9 @@
         "start": "next start",
         "lint": "next lint",
         "test": "jest",
-        "destiny": "./update-manifest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-        "sign": "mkdir proxy/certs ; cd proxy/certs ; mkcert localhost",
+        "sign": "cd proxy ; mkcert localhost",
         "build": "./vercel.sh"
     },
     "prisma": {
@@ -48,7 +47,6 @@
         "@types/react": "^18.0.33",
         "@types/react-dom": "18.0.5",
         "@types/uuid": "^9.0.2",
-        "cross-env": "^7.0.3",
         "dotenv": "^16.0.3",
         "eslint": "8.40.0",
         "eslint-config-next": "13.4.2",
