@@ -139,13 +139,47 @@ async function saveLocally({ file, userId }: { file: formidable.File; userId: st
 }
 
 async function uploadToS3({ file, userId }: { file: formidable.File; userId: string }) {
-    return s3
+    const uuid = uuidv4()
+    const newLocation = await s3
         .upload({
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Key: `profile/${userId}/${uuidv4()}.png`,
+            Key: `profile/${userId}/${uuid}.png`,
             ContentType: file.mimetype!,
             Body: fs.createReadStream(file.filepath)
         })
         .promise()
         .then(res => res.Location)
+
+    try {
+        s3.listObjectsV2({
+            Bucket: process.env.AWS_S3_BUCKET_NAME!,
+            Prefix: `profile/${userId}/`
+        })
+            .promise()
+            .then(data => {
+                const Objects =
+                    (data.Contents?.filter(({ Key }) => !Key?.includes(uuid)).map(({ Key }) => ({
+                        Key
+                    })) as {
+                        Key: string
+                    }[]) ?? []
+
+                if (Objects.length === 0) {
+                    return
+                }
+
+                s3.deleteObjects({
+                    Bucket: process.env.AWS_S3_BUCKET_NAME!,
+                    Delete: {
+                        Objects
+                    }
+                })
+                    .promise()
+                    .then(() => console.log(`Deleted ${Objects.length} images for user: ${userId}`))
+            })
+    } catch (err) {
+        console.error("Error deleting objects:", err)
+    }
+
+    return newLocation
 }
