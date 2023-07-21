@@ -5,7 +5,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    Deploy to Production:
+    Deploy-to-Production:
         runs-on: ubuntu-latest
         # if: |
         #     startsWith(github.ref, 'refs/heads/main')
