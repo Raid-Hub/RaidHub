@@ -1,0 +1,116 @@
+.darken-background {
+    position: absolute;
+    z-index: 90;
+    background-color: rgba(0, 0, 0, 0.836);
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+}
+
+.search-div {
+    z-index: 999;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    -webkit-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
+
+    min-width: 50%;
+    min-height: 60%;
+    background-color: var(--search-background);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+
+}
+
+.search-result {
+    list-style-type: none;
+}
+
+.individual-result {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.individual-result img {
+    width: 45px;
+    height: 45px;
+    border-radius: 3px;
+}
+
+.individual-result:hover {
+    background-color: rgba(46, 46, 46, 0.5);
+}
+
+.search-top {
+    display: flex;
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+
+    color: var(--secondary-text)
+}
+
+.search-top input {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.search-div .search-content {
+    padding-top: 15px;
+}
+.search-div .search-content span {
+    padding-left: 35px; /* ?!/1? Literally doing nothing :c */
+}
+
+.search-content span{
+    font-size: 15px;
+    color: var(--secondary-text)
+}
+
+#search-bar {
+    background-color: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+#search-bar:focus {
+    outline: none;
+}
+
+/* search bar */
+#search-bar::placeholder {
+    color: var(--search-placeholder);
+}
+
+.search-top-right {
+    margin-left: auto;
+    padding-right: 15px;
+}
+
+.search-top-right img {
+    width: 15px;
+    height: 15px;
+}
+
+.search-div hr {
+    height: 1px;
+    background-color: var(--border);
+    border: none;
+}
+
+@media (max-width: 700px) {
+    .search-div {
+        position: fixed;
+        top: 6%;
+        left: 0%;
+        -webkit-transform: translate(0%, 0%);
+        transform: translate(0%, 0%);
+        min-width: 100%;
+        min-height: 100%;
+        border-radius: 0;
+    }
+}
