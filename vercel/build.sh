@@ -2,7 +2,7 @@
 if [[ -n $NAMESPACE ]] ; then 
   echo "Deploying local build to preview: $namespace.raidhub.app..."
 
-  yarn db:update
+  yarn prisma db push --accept-data-loss && yarn db:seed
   yarn next build
 
 elif [[ $VERCEL_ENV == "production" ]] ; then 
@@ -11,20 +11,6 @@ elif [[ $VERCEL_ENV == "production" ]] ; then
   yarn db:update
   yarn next build
 
-elif [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
-  echo "Deploying to preview..."
-
-  if [[ -n $DATABASE_URL ]] ; then
-    # push the prisma schema to the new database and seed
-    yarn prisma db push --accept-data-loss && yarn db:seed
-    
-    echo "Test_var:" $TEST_VAR
-    yarn next build
-
-  else
-    echo "Please set the DATABASE_URL for this deployment"
-    exit 1
-  fi
 else 
     echo "Deploying to staging..."
     # Set the name of the branches
