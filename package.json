@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "next dev",
         "dev+": "node proxy/server.js",
+        "dev++": "./dev-deploy.sh",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:seed": "prisma db seed",
         "db:update": "prisma db push",

@@ -1,18 +1,25 @@
 #!/bin/bash
 
-if [[ $VERCEL_ENV == "production" ]] ; then 
+if [[ $LOCAL_DEPLOY == true ]] ; then 
+  echo "Deploying local build to preview.."
+
+  yarn db:update
+  yarn next build
+
+elif [[ $VERCEL_ENV == "production" ]] ; then 
   echo "Deploying to beta production..."
 
   yarn db:update
-
   yarn next build
+
 elif [[ $VERCEL_GIT_COMMIT_REF != "develop"  ]] ; then 
   echo "Deploying to preview..."
 
-  if [[  $DATABASE_URL ]] ; then
+  if [[ -n $DATABASE_URL ]] ; then
     # push the prisma schema to the new database and seed
     yarn prisma db push --accept-data-loss && yarn db:seed
     
+    echo "Test_var:" $TEST_VAR
     yarn next build
 
   else
@@ -47,6 +54,6 @@ else
 
     # apply the new prisma schema
     yarn db:update
-    
+
     yarn next build
 fi
