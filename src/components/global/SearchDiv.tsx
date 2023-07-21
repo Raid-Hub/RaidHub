@@ -5,7 +5,6 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
-import { wrap } from "module"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100

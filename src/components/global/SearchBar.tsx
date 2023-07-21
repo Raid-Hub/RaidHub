@@ -5,7 +5,6 @@ import { Search } from "../../images/icons"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
 import Image from "next/image"
-import { browser } from "process"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
