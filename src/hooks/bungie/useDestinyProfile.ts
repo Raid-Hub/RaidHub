@@ -8,7 +8,7 @@ import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 
 type UseDestinyProfileParams = {
     destinyMembershipId: string
-    membershipType: BungieMembershipType
+    destinyMembershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }
 
@@ -19,7 +19,7 @@ type UseDestinyProfile = {
 
 export const useDestinyProfile = ({
     destinyMembershipId,
-    membershipType,
+    destinyMembershipType,
     errorHandler
 }: UseDestinyProfileParams): UseDestinyProfile => {
     const [profile, setProfile] = useState<ProfileComponent | null>(null)
@@ -47,7 +47,7 @@ export const useDestinyProfile = ({
 
     useEffect(() => {
         setLoading(true)
-        fetchData(destinyMembershipId, membershipType)
-    }, [destinyMembershipId, membershipType, fetchData])
+        fetchData(destinyMembershipId, destinyMembershipType)
+    }, [destinyMembershipId, destinyMembershipType, fetchData])
     return { profile, isLoading }
 }

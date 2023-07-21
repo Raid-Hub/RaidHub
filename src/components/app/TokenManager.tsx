@@ -15,7 +15,6 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
     useEffect(() => {
-        client.clearToken()
         if (sessionData?.error == "RefreshAccessTokenError") {
             setRefetchInterval(0)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
@@ -24,9 +23,12 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
             signOut()
         } else if (status == "unauthenticated") {
             setRefetchInterval(0)
-        } else if (sessionData?.token) {
-            client.setToken(sessionData.token.value)
-            const timeRemaining = sessionData.token.expires - Date.now()
+        } else if (
+            sessionData?.user.bungieAccessToken?.value &&
+            sessionData.user.bungieAccessToken.expires
+        ) {
+            client.setToken(sessionData.user.bungieAccessToken.value)
+            const timeRemaining = sessionData.user.bungieAccessToken.expires - Date.now()
             setRefetchInterval(timeRemaining > 0 ? timeRemaining / 1000 : 0)
         }
     }, [sessionData, status, setRefetchInterval])

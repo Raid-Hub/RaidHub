@@ -8,7 +8,7 @@ import { ProfileDetails } from "../../types/profile"
 
 type UseBungieProfile = (params: {
     destinyMembershipId: string
-    membershipType: BungieMembershipType
+    destinyMembershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }) => {
     bungieMemberhip: UserInfoCard | null
@@ -18,7 +18,7 @@ type UseBungieProfile = (params: {
 
 export const useBungieMemberships: UseBungieProfile = ({
     destinyMembershipId,
-    membershipType,
+    destinyMembershipType,
     errorHandler
 }) => {
     const [bungieMemberhip, setBungieMembership] = useState<UserInfoCard | null>(null)
@@ -55,7 +55,7 @@ export const useBungieMemberships: UseBungieProfile = ({
     )
     useEffect(() => {
         setLoading(true)
-        fetchData(destinyMembershipId, membershipType)
-    }, [destinyMembershipId, membershipType, fetchData])
+        fetchData(destinyMembershipId, destinyMembershipType)
+    }, [destinyMembershipId, destinyMembershipType, fetchData])
     return { bungieMemberhip, destinyMemberships, isLoading }
 }

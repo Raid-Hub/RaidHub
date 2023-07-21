@@ -195,17 +195,69 @@
     width: 5px;
 }
 
-.account-link {
+.account-dropdown {
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.account-button {
+    border: none;
     width: 30px;
     height: 30px;
-
     position: relative;
+
+    cursor: pointer;
+
+    transition: width 0.1s ease-out, height 0.1s ease-out;
 }
 
-.account-img {
-    transition: transform 0.2s ease-out;
+.account-dropdown:hover .account-button {
+    width: 35px;
+    height: 35px;
 }
 
-.account-img:hover {
-    transform: scale(1.1);
+.account-dropdown-content-container {
+    position: absolute;
+    right: 0.5em;
+    z-index: 1;
+
+    min-width: 100px;
+
+    border-radius: 6px;
+
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    background-color: var(--modal-background);
+
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.account-dropdown:hover .account-dropdown-content-container {
+    grid-template-rows: 1fr;
+}
+
+.account-dropdown-content {
+    overflow: hidden;
+    border-radius: inherit;
+
+    width: 100%;
+
+    margin-block: 0;
+    padding-inline-start: 0;
+
+    text-align: center;
+}
+
+.account-dropdown-content > li {
+    border-radius: inherit;
+}
+
+.account-dropdown-content > li > * {
+    display: block;
+    padding: 0.5em;
+}
+
+.account-dropdown-content > li:hover {
+    background-color: var(--brand-orange);
 }

@@ -25,9 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env.local
-.env
+# env files
+.env*
 
 # vercel
 .vercel
@@ -37,3 +36,9 @@ yarn-error.log*
 
 # JetBrains IDE specific
 /.idea/
+
+# docker
+raidhub-app-db/
+
+# artifacts
+public/profile-*

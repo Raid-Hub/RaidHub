@@ -15,7 +15,7 @@ const ErrorComponent = ({ error, title }: ErrorProps) => {
 
     return (
         <div className={styles["modal"]}>
-            <Head>{title && <title>title</title>}</Head>
+            <Head>{title && <title key="title">{title}</title>}</Head>
             <div className={styles["modal-content"]}>
                 <p>{"Error: " + error.message}</p>
                 <p>{"Code: " + error.code}</p>

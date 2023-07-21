@@ -32,6 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title key="title">Raid Hub</title>
             </Head>
         </LanguageProvider>
     )

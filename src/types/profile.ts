@@ -14,7 +14,7 @@ export type ProfileComponent = DestinyProfileComponent & {
 }
 export type InitialProfileProps = {
     destinyMembershipId: string
-    membershipType: BungieMembershipType
+    destinyMembershipType: BungieMembershipType
 }
 export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
 export type MembershipWithCharacters = {

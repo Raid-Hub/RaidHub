@@ -1,34 +1,30 @@
 import { NextPage } from "next"
-import { signIn, signOut, useSession } from "next-auth/react"
-import styles from "../styles/pages/account.module.css"
+import { signIn, useSession } from "next-auth/react"
+import { useLocale } from "../components/app/LanguageProvider"
+import Account from "../components/account/Account"
 
-const Account: NextPage = () => {
-    const { status, data: sesssionData } = useSession({
+const AccountPage: NextPage = () => {
+    const {
+        status,
+        data: sessionData,
+        update: updateSession
+    } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn("bungie")
+            signIn(undefined, { callbackUrl: "/account" })
         }
     })
+    const { strings } = useLocale()
 
-    if (status !== "authenticated" || !sesssionData?.user) {
-        return <main>Loading...</main>
+    if (status === "loading") {
+        return (
+            <main>
+                <h2>{strings.loading}</h2>
+            </main>
+        )
     }
 
-    return (
-        <main>
-            <h1>You are authenticated</h1>
-            <div className={styles["buttons"]}>
-                <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
-                <button onClick={() => console.log(sesssionData)}>Print Session Data</button>
-                <button onClick={() => signIn("bungie", {}, "reauth=true")}>
-                    Sign in with different account
-                </button>
-                <a href={`/profile/${sesssionData.user.membershipType}/${sesssionData.user.id}`}>
-                    <button>Take me home</button>
-                </a>
-            </div>
-        </main>
-    )
+    return <Account session={sessionData} refreshSession={updateSession} />
 }
 
-export default Account
+export default AccountPage

@@ -47,6 +47,10 @@ export interface LocalStrings {
     inGame: string
     elapsedTime: string
     fireteam: string
+    manageAccount: string
+    logIn: string
+    logOut: string
+    logInWith: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -147,7 +151,11 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         viewProfile: "View Profile",
         inGame: "In Game",
         elapsedTime: "Elapsed time",
-        fireteam: "Fireteam"
+        fireteam: "Fireteam",
+        manageAccount: "Manage Account",
+        logIn: "Log In",
+        logOut: "Log Out",
+        logInWith: "Log In with"
     }
 }
 
