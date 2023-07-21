@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/searchdiv.module.css"
-import { Search } from "../../images/icons";
-import Image from "next/image";
+import { Search } from "../../images/icons"
+import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
@@ -77,99 +77,99 @@ const SearchDiv = ({}: SearchDivProps) => {
     // setTimeout(() => {
     //     setIsRedirecting(!isRedirecting)
     // }, 200)
-    const [isDivDisplayed, setIsDivDisplayed] = useState(false);
+    const [isDivDisplayed, setIsDivDisplayed] = useState(false)
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'k') {
-        console.log("Pressed")
-        setIsDivDisplayed(!isDivDisplayed);
-        if (isDivDisplayed == true) {
-            document.getElementById("searchdiv")?.remove();
+        if (event.ctrlKey && event.key === "k") {
+            console.log("Pressed")
+            setIsDivDisplayed(!isDivDisplayed)
+            if (isDivDisplayed == true) {
+                document.getElementById("searchdiv")?.remove()
+            }
+            event.preventDefault()
         }
-        event.preventDefault();
-      }
-    };
-  
+    }
+
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('mousedown', (event: MouseEvent) => {
-            const target = event.target;
+        document.addEventListener("keydown", handleKeyDown)
+        document.addEventListener("mousedown", (event: MouseEvent) => {
+            const target = event.target
             if (!document.querySelector("searchdiv")?.contains(event.target as Node)) {
-                console.log("Clicked Outside / Elsewhere");
+                console.log("Clicked Outside / Elsewhere")
             }
         })
         return () => {
-          document.removeEventListener('keydown', handleKeyDown);
-        };
-      }, []);
-  
-      return (
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [])
+
+    return (
         <div>
-          {isDivDisplayed && (
-            <div className={styles["search-div"]} id="searchdiv">
-                <div className={styles["search-top"]}>
-                <form onSubmit={handleFormEnter}>
-                    <input
-                        id={styles["search-bar"]}
-                        type="text"
-                        name="search"
-                        autoComplete="off"
-                        placeholder="Search for a Guardian..."
-                        value={enteredText}
-                        onChange={handleInputChange}
-                    />
-                </form>
-                    <div className={styles["search-top-right"]}>
-                        <Image src={Search} alt="search" />
+            {isDivDisplayed && (
+                <div className={styles["search-div"]} id="searchdiv">
+                    <div className={styles["search-top"]}>
+                        <form onSubmit={handleFormEnter}>
+                            <input
+                                id={styles["search-bar"]}
+                                type="text"
+                                name="search"
+                                autoComplete="off"
+                                placeholder="Search for a Guardian..."
+                                value={enteredText}
+                                onChange={handleInputChange}
+                            />
+                        </form>
+                        <div className={styles["search-top-right"]}>
+                            <Image src={Search} alt="search" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div className={styles["search-content"]}>
+                        <span>Search Results</span>
+                        {showingResults && (
+                            <ul className={styles["search-results"]}>
+                                {results
+                                    .map(result => {
+                                        let name = result.displayName
+                                        if (
+                                            result.bungieGlobalDisplayName &&
+                                            result.bungieGlobalDisplayNameCode
+                                        )
+                                            try {
+                                                name = new BungieName(
+                                                    result.bungieGlobalDisplayName,
+                                                    result.bungieGlobalDisplayNameCode
+                                                ).toString()
+                                            } catch {}
+                                        return {
+                                            ...result,
+                                            name
+                                        }
+                                    })
+                                    .filter(({ name }) => name.startsWith(enteredText))
+                                    .map(({ name, membershipId, membershipType }, idx) => (
+                                        <a
+                                            className={styles["search-result"]}
+                                            key={idx}
+                                            href={`/profile/${membershipType}/${membershipId}`}
+                                            onClick={handleSelect}>
+                                            <li>
+                                                <div className={styles["individual-result"]}>
+                                                    <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
+                                                    <p>{name}</p>
+                                                </div>
+                                            </li>
+                                        </a>
+                                    ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
-                <hr />
-                <div className={styles["search-content"]}>
-                    <span>Search Results</span>
-                    {showingResults && (
-                        <ul className={styles["search-results"]}>
-                            {results
-                                .map(result => {
-                                    let name = result.displayName
-                                    if (
-                                        result.bungieGlobalDisplayName &&
-                                        result.bungieGlobalDisplayNameCode
-                                    )
-                                        try {
-                                            name = new BungieName(
-                                                result.bungieGlobalDisplayName,
-                                                result.bungieGlobalDisplayNameCode
-                                            ).toString()
-                                        } catch {}
-                                    return {
-                                        ...result,
-                                        name
-                                    }
-                                })
-                                .filter(({ name }) => name.startsWith(enteredText))
-                                .map(({ name, membershipId, membershipType }, idx) => (
-                                    <a
-                                        className={styles["search-result"]}
-                                        key={idx}
-                                        href={`/profile/${membershipType}/${membershipId}`}
-                                        onClick={handleSelect}>
-                                        <li>
-                                            <div className={styles["individual-result"]}>
-                                                <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
-                                                <p>{name}</p>
-                                            </div>
-                                        </li>
-                                    </a>
-                                ))}
-                        </ul>
-                    )}
-                </div>
-            </div>
-          )}
+            )}
 
-          {isDivDisplayed && <div className={styles["darken-background"]}></div>}
+            {isDivDisplayed && <div className={styles["darken-background"]}></div>}
         </div>
-      );
+    )
 }
 
 export default SearchDiv
