@@ -5,6 +5,7 @@ import { Search } from "../../images/icons"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
 import Image from "next/image"
+import { browser } from "process"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -16,6 +17,8 @@ const SearchBar = ({}: SearchBarProps) => {
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
+    let OSKey = "Ctrl";
+
     const {
         results,
         isLoading: isLoadingResults,
@@ -60,6 +63,11 @@ const SearchBar = ({}: SearchBarProps) => {
     }
 
     useEffect(() => {
+        // Surely this detects if the user is on Mac :pleading:
+        if (navigator.userAgent.includes("Mac")) {
+            OSKey = "⌘"
+        }
+
         const handleClick = (event: MouseEvent) => {
             setShowingResults(
                 !searchContainerRef.current ||
@@ -97,7 +105,7 @@ const SearchBar = ({}: SearchBarProps) => {
                     value={enteredText}
                     onChange={handleInputChange}
                 />
-                <kbd>Ctrl</kbd> + <kbd>K</kbd>
+                <kbd>{OSKey}</kbd> + <kbd>K</kbd>
                 {showingResults && (
                     <ul className={styles["search-results"]}>
                         {results
