@@ -5,6 +5,7 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
+import { wrap } from "module"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -12,6 +13,8 @@ const HIDE_AFTER_CLICK = 100
 type SearchDivProps = {}
 
 const SearchDiv = ({}: SearchDivProps) => {
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [isDivDisplayed, setIsDivDisplayed] = useState(false);
     const [isRedirecting, setIsRedirecting] = useState(false)
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
@@ -59,6 +62,7 @@ const SearchDiv = ({}: SearchDivProps) => {
         }
     }
 
+    /* Need to make Escape/Ctrl K Work Again*/
     useEffect(() => {
         const handleClick = (event: MouseEvent) => {
             setShowingResults(
@@ -67,46 +71,56 @@ const SearchDiv = ({}: SearchDivProps) => {
             )
         }
 
-        document.addEventListener("mousedown", handleClick)
-
-        return () => {
-            document.removeEventListener("mousedown", handleClick)
-        }
-    }, [searchContainerRef])
-
-    // setTimeout(() => {
-    //     setIsRedirecting(!isRedirecting)
-    // }, 200)
-    const [isDivDisplayed, setIsDivDisplayed] = useState(false)
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.ctrlKey && event.key === "k") {
-            console.log("Pressed")
-            setIsDivDisplayed(!isDivDisplayed)
-            if (isDivDisplayed == true) {
-                document.getElementById("searchdiv")?.remove()
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.metaKey && event.key === "k" || event.ctrlKey && event.key === "k" ) {
+                console.log("Pressed")
+                event.preventDefault()
+    
+                if (isDivDisplayed == true) {
+                    setIsDivDisplayed(false)
+                    console.log("disabled");
+                    document.body.style.overflow = ""
+                    return;
+                }
+    
+                setIsDivDisplayed(true);
+                console.log("enabled")
+                document.body.style.overflow = "hidden"
             }
-            event.preventDefault()
+    
+            if (event.key === "Escape") {
+                console.log("Escape pressed");
+                console.log(isDivDisplayed)
+                if (isDivDisplayed == true) {
+                    setIsDivDisplayed(false)
+                    console.log("disabled");
+                    document.body.style.overflow = ""
+                    return;
+                }
+            }
         }
-    }
 
-    useEffect(() => {
         document.addEventListener("keydown", handleKeyDown)
+        document.addEventListener("mousedown", handleClick)
         document.addEventListener("mousedown", (event: MouseEvent) => {
-            const target = event.target
-            if (!document.querySelector("searchdiv")?.contains(event.target as Node)) {
-                console.log("Clicked Outside / Elsewhere")
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                console.log("Clicked Outside");
+                setIsDivDisplayed(false);
+                document.body.style.overflow = ""
             }
         })
         return () => {
+            document.removeEventListener("mousedown", handleClick)
             document.removeEventListener("keydown", handleKeyDown)
         }
-    }, [])
+    }, [searchContainerRef])
+
+
 
     return (
         <div>
             {isDivDisplayed && (
-                <div className={styles["search-div"]} id="searchdiv">
+                <div className={styles["search-div"]} id="searchdiv" ref={wrapperRef}>
                     <div className={styles["search-top"]}>
                         <form onSubmit={handleFormEnter}>
                             <input
