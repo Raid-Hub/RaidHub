@@ -7,11 +7,18 @@ if [ ! -f .env.deployment ]; then
 fi
 
 namespace=""
-if [ -n "$NAMESPACE" ]; then
-    echo x
-     namespace="$NAMESPACE"
+if [ -n "$1" ]; then
+    namespace="$1"
+elif [ -n "$NAMESPACE" ]; then
+    namespace="$NAMESPACE"
 else 
-    namespace="$USER"
+    echo "No namespace provided. Use 'yarn deploy [namespace]'"
+    exit 1
+fi
+
+read -p "Deploy to $namespace.raidhub.app (y/n)? " CONT
+if [ "$CONT" != "y" ]; then
+  exit 1
 fi
 
 # Run the vercel command with environment variables

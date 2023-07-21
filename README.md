@@ -4,11 +4,11 @@ To init the project, `yarn install`
 
 Create a `.env.local` file in the root dir with contents matching `example.env`
 
-```shell
-
-```
-
 To run the server, `yarn dev`
+
+# Deployments
+
+To deploy to your name space, you will need to install the vercel cli, login, and run `yarn deploy [name]`
 
 # Tech Stack
 
