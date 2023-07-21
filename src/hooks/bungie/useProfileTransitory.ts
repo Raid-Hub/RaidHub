@@ -68,7 +68,6 @@ export const useProfileTransitory = ({
                     transitory.data.currentActivity.startTime !==
                     cached?.transitory.currentActivity.startTime
                 ) {
-                    console.log(transitory)
                     const [activityDefinition, activityModeDefinition, partyMembers] =
                         await Promise.all([
                             getActivityDefiniton({

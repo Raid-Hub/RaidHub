@@ -53,7 +53,6 @@ export async function sessionCallback({ session, user }: { session: Session; use
             user: newUser
         } satisfies Session
     } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
-        console.log("refreshing token")
         try {
             const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
 

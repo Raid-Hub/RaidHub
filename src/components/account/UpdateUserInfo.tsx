@@ -25,7 +25,6 @@ const UpdateUserInfo = ({ user, refreshSession }: UpdateUserInfoProps) => {
     })
 
     const onSubmit = (values: FormInputs) => {
-        console.log(values)
         updateCurrentUser(values).then(refreshSession)
     }
 
