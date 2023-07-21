@@ -6,11 +6,13 @@
     padding: 0.5em 1em;
 
     background-color: var(--header-background);
+    border-bottom: 1px solid var(--border);
 
     display: flex;
     flex-direction: row;
     gap: 1em;
     justify-content: space-between;
+    backdrop-filter: blur(10px);
 }
 
 .logo {
@@ -55,11 +57,19 @@
     align-items: center;
 
     gap: 1em;
+    height: 35px;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background-color: var(--search-background);
+
 }
 
 .search-icon {
-    width: 25px;
-    height: 25px;
+    width: 15px;
+    height: 15px;
 
     position: relative;
 }
@@ -116,15 +126,15 @@
     max-width: 260px;
     min-width: 140px;
     height: 35px;
-    padding-left: 1em;
 
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background-color: var(--search-background);
+    /* Removing Form Styling*/
+    border: none;
+    outline: none;
+    background: none;
 
-    color: var(--search-text);
+    color: white;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 11px;
     font-style: italic;
 }
 

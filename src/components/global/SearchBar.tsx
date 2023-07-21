@@ -93,10 +93,11 @@ const SearchBar = ({}: SearchBarProps) => {
                     type="text"
                     name="search"
                     autoComplete="off"
-                    placeholder="Search for a Guardian"
+                    placeholder="Search for a Guardian..."
                     value={enteredText}
                     onChange={handleInputChange}
                 />
+                 <kbd>Ctrl</kbd> + <kbd>K</kbd>
                 {showingResults && (
                     <ul className={styles["search-results"]}>
                         {results

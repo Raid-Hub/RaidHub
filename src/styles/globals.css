@@ -3,15 +3,15 @@
     --brand-orange: #ee7b29;
     --bungie-blue: #13e6ff;
     color: #ffffff;
-    --secondary-text: #808080;
+    --secondary-text: #e4e4e4b4;
     --tertiary-text: rgb(183, 183, 183);
-    --border: #5b5b5b;
-    --header-background: #1a171791;
+    --border: #e0e0e049;
+    --header-background: #44444470;
     --scroll-track: #7f7f7f;
     --search-background: #2b2b2b6b;
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
-    --modal-background: rgba(15, 14, 14, 0.253);
+    --modal-background: rgba(48, 48, 48, 0.253);
 }
 
 @media (prefers-color-scheme: light) {
@@ -66,6 +66,20 @@ body {
 
     background-color: #000000;
     background: linear-gradient(90deg, rgba(1,0,17,1) 0%, rgba(1,0,17,1) 25%, rgba(23,1,13,1) 48%, rgba(1,0,17,1) 91%, rgba(19,3,1,1) 100%);
+}
+
+kbd {
+    background-color: #5252527a;
+    border-radius: 3px;
+    border: 1px solid #a1a1a17a;
+    color: white;
+    display: inline-block;
+    font-family: Neue;
+    font-size: 0.85em;
+    font-weight: 400;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
 }
 
 @media (prefers-color-scheme: light) {
