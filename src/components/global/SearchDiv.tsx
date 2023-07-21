@@ -14,7 +14,7 @@ type SearchDivProps = {}
 
 const SearchDiv = ({}: SearchDivProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null)
-    const [isDivDisplayed, setIsDivDisplayed] = useState(false);
+    const [isDivDisplayed, setIsDivDisplayed] = useState(false)
     const [isRedirecting, setIsRedirecting] = useState(false)
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
@@ -72,30 +72,30 @@ const SearchDiv = ({}: SearchDivProps) => {
         }
 
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.metaKey && event.key === "k" || event.ctrlKey && event.key === "k" ) {
+            if ((event.metaKey && event.key === "k") || (event.ctrlKey && event.key === "k")) {
                 console.log("Pressed")
                 event.preventDefault()
-    
+
                 if (isDivDisplayed == true) {
                     setIsDivDisplayed(false)
-                    console.log("disabled");
+                    console.log("disabled")
                     document.body.style.overflow = ""
-                    return;
+                    return
                 }
-    
-                setIsDivDisplayed(true);
+
+                setIsDivDisplayed(true)
                 console.log("enabled")
                 document.body.style.overflow = "hidden"
             }
-    
+
             if (event.key === "Escape") {
-                console.log("Escape pressed");
+                console.log("Escape pressed")
                 console.log(isDivDisplayed)
                 if (isDivDisplayed == true) {
                     setIsDivDisplayed(false)
-                    console.log("disabled");
+                    console.log("disabled")
                     document.body.style.overflow = ""
-                    return;
+                    return
                 }
             }
         }
@@ -104,8 +104,8 @@ const SearchDiv = ({}: SearchDivProps) => {
         document.addEventListener("mousedown", handleClick)
         document.addEventListener("mousedown", (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-                console.log("Clicked Outside");
-                setIsDivDisplayed(false);
+                console.log("Clicked Outside")
+                setIsDivDisplayed(false)
                 document.body.style.overflow = ""
             }
         })
@@ -114,8 +114,6 @@ const SearchDiv = ({}: SearchDivProps) => {
             document.removeEventListener("keydown", handleKeyDown)
         }
     }, [searchContainerRef])
-
-
 
     return (
         <div>

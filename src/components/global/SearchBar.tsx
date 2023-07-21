@@ -17,7 +17,7 @@ const SearchBar = ({}: SearchBarProps) => {
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
-    let OSKey = "Ctrl";
+    let OSKey = "Ctrl"
 
     const {
         results,
