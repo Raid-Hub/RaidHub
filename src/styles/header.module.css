@@ -8,6 +8,8 @@
     background-color: var(--header-background);
     border-bottom: 1px solid var(--border);
 
+    font-family: Neue;
+
     display: flex;
     flex-direction: row;
     gap: 1em;
@@ -22,8 +24,8 @@
 }
 
 .logo-img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 }
 
 .logo-text {
@@ -31,7 +33,7 @@
     color: white;
     margin-left: 5px;
     margin-right: 5px;
-    letter-spacing: 1px;
+    letter-spacing: 3px;
     font-size: 18px;
     white-space: nowrap;
     font-family: Neue;
@@ -149,14 +151,16 @@
 
 .search-results {
     position: absolute;
-    left: 0;
+
     right: 0;
+    left: -130px;
+    width: 350px;
     z-index: 999;
     overflow-x: hidden;
 
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 8px;
 
     display: flex;
     flex-direction: column;
@@ -164,8 +168,17 @@
     overflow-y: scroll;
 
     border-radius: 5px;
-    background-color: #161616d2;
+    background-color: var(--search-background);
     border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.397) black;
+}
+
+
+.search-results::-webkit-scrollbar-thumb {
+    border-radius: 100px;
 }
 
 .search-results:empty {
@@ -177,6 +190,12 @@
     padding: 0.3em;
     padding-left: 0.9em;
     transition: transform 0.2s ease-out;
+}
+
+.search-result {
+    font-size: 15px;
+    font-weight: 400;
+    font-family: Neue;
 }
 
 .search-result p {
@@ -260,4 +279,52 @@
 
 .account-dropdown-content > li:hover {
     background-color: var(--brand-orange);
+}
+
+
+.search-div {
+    z-index: 999;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    min-width: 600px;
+    min-height: 700px;
+    background-color: rgba(0, 0, 0, 0.534);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+
+    border: 1px solid var(--border)
+}
+
+.search-div .search-content {
+    display: flex;
+    position: relative;
+}
+
+.search-top {
+    display: flex;
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+
+    color: var(--secondary-text)
+}
+
+.search-top-right {
+    margin-left: auto;
+    padding-right: 15px;
+}
+
+.search-top-right img {
+    width: 15px;
+    height: 15px;
+}
+
+.search-div hr {
+    height: 1px;
+    background-color: var(--border);
+    border: none;
 }
