@@ -5,18 +5,20 @@ env:
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-    push:
     workflow_dispatch:
 
 jobs:
     Deploy-to-Production:
         runs-on: ubuntu-latest
-        # if: |
-        #     startsWith(github.ref, 'refs/heads/main')
         defaults:
             run:
                 working-directory: ./${{ github.event.repository.name }}
         steps:
+            - name: Fail if branch is not main
+              if: github.ref != 'refs/heads/main'
+              run: |
+                  echo "This workflow should not be triggered on a branch other than main"
+                  exit 1
             - name: Check if user is a repo admin
               working-directory: ./
               run: |

@@ -5,6 +5,11 @@ if [[ -n $NAMESPACE ]] ; then
   yarn prisma db push --accept-data-loss && yarn db:seed
   yarn next build
 
+elif [[ -z $VERCEL_ENV ]] ; then 
+  echo "Building local..."
+
+  yarn next build
+
 elif [[ $VERCEL_ENV == "production" ]] ; then 
   echo "Deploying to beta production..."
 
