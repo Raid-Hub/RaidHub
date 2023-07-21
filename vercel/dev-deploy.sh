@@ -6,8 +6,16 @@ if [ ! -f .env.deployment ]; then
     exit 1
 fi
 
+namespace=""
+if [ -n "$NAMESPACE" ]; then
+    echo x
+     namespace="$NAMESPACE"
+else 
+    namespace="$USER"
+fi
+
 # Run the vercel command with environment variables
-vercel_command="vercel -b LOCAL_DEPLOY=true"
+vercel_command="vercel -b NAMESPACE=$namespace"
 while IFS= read -r line; do
     trimmed_line=$(echo "$line" | awk '{$1=$1};1')  # Remove leading/trailing spaces
     if [ -n "$trimmed_line" ] && [ "${trimmed_line:0:1}" != "#" ]; then
@@ -20,4 +28,5 @@ while IFS= read -r line; do
     fi
 done < .env.deployment
 
-eval "$vercel_command"
+url="$(eval "$vercel_command")"
+vercel alias set $url $namespace.raidhub.app

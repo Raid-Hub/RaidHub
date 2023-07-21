@@ -1,7 +1,6 @@
 #!/bin/bash
-
-if [[ $LOCAL_DEPLOY == true ]] ; then 
-  echo "Deploying local build to preview.."
+if [[ -n $NAMESPACE ]] ; then 
+  echo "Deploying local build to preview: $namespace.raidhub.app..."
 
   yarn db:update
   yarn next build

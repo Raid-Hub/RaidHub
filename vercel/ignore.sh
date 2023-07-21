@@ -11,6 +11,6 @@ if [[ -n $VERCEL_GIT_PULL_REQUEST_ID || $VERCEL_GIT_COMMIT_REF == "develop" || $
 
 else
   # Don't build
-  echo "🛑 - Build cancelled - open up a pull request or deploy manually to your namespace with vercel CLI"
+  echo "🛑 - Build cancelled - open up a pull request or deploy manually to your namespace with yarn deploy"
   exit 0;
 fi
