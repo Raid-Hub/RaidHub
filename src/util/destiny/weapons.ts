@@ -1,26 +1,14 @@
 import { Collection } from "@discordjs/collection"
 import { DestinyHistoricalWeaponStats } from "bungie-net-core/lib/models"
 import { PlayerWeapons } from "../../types/pgcr"
-import WeaponsJson from "../../util/destiny-definitions/weapons.json" assert { type: "json" }
-
-const weaponsDefs: {
-    [hash: string]: {
-        name?: { [language: string]: string }
-        icon?: string
-        type?: string
-    }
-} = WeaponsJson
 
 export function parseWeapons(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
     return new Collection(
         weapons.map(({ referenceId, values }) => {
-            const def = weaponsDefs[referenceId]
             return [
                 referenceId,
                 {
-                    name: def?.name ?? {},
-                    icon: "https://bungie.net" + (def?.icon ?? "/img/misc/missing_icon_d2.png"),
-                    type: def?.type ?? "Unknown",
+                    hash: referenceId,
                     kills: values.uniqueWeaponKills.basic.value,
                     precision: values.uniqueWeaponPrecisionKills.basic.value
                 }

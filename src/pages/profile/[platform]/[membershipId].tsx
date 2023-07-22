@@ -7,27 +7,29 @@ export async function getServerSideProps({
 }: {
     params: { platform: string; membershipId: string }
 }): Promise<GetStaticPropsResult<InitialProfileProps>> {
-    const destinyMembershipType = Number(params.platform)
-    const vanity = await prisma.vanity.findFirst({
-        where: {
-            destinyMembershipId: params.membershipId,
-            destinyMembershipType
-        }
-    })
-
-    if (vanity?.string) {
-        return {
-            redirect: {
-                permanent: true,
-                destination: `/${vanity.string.toLowerCase()}`
-            }
-        }
-    } else {
-        return {
-            props: {
+    try {
+        const destinyMembershipType = Number(params.platform)
+        const vanity = await prisma.vanity.findFirst({
+            where: {
                 destinyMembershipId: params.membershipId,
                 destinyMembershipType
             }
+        })
+
+        if (vanity?.string) {
+            return {
+                redirect: {
+                    permanent: true,
+                    destination: `/${vanity.string.toLowerCase()}`
+                }
+            }
+        }
+    } catch {}
+
+    return {
+        props: {
+            destinyMembershipId: params.membershipId,
+            destinyMembershipType: Number(params.platform)
         }
     }
 }

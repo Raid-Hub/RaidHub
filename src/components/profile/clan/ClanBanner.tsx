@@ -20,22 +20,24 @@ const ClanBanner = ({
     return (
         <svg className={styles["clan-img"]}>
             <defs>
-                <mask id="gonfalcons">
-                    <image
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        xlinkHref={`https://bungie.net${gonfalcons}`}
-                    />
-                </mask>
+                {gonfalcons && (
+                    <mask id="gonfalcons">
+                        <image
+                            x="0"
+                            y="0"
+                            width="100%"
+                            height="100%"
+                            xlinkHref={gonfalcons ? `https://bungie.net${gonfalcons}` : ""}
+                        />
+                    </mask>
+                )}
                 <mask id="topDecal">
                     <image
                         x="0"
                         y={topDecalY}
                         width="100%"
                         height={decalTopHeight}
-                        xlinkHref={`https://bungie.net${decalTop}`}
+                        xlinkHref={decalTop ? `https://bungie.net${decalTop}` : ""}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -45,7 +47,7 @@ const ClanBanner = ({
                         y={decalYPos}
                         width="100%"
                         height={decalHeight}
-                        xlinkHref={`https://bungie.net${decalSecondary}`}
+                        xlinkHref={decalSecondary ? `https://bungie.net${decalSecondary}` : ""}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -55,7 +57,7 @@ const ClanBanner = ({
                         y={decalYPos}
                         width="100%"
                         height={decalHeight}
-                        xlinkHref={`https://bungie.net${decalPrimary}`}
+                        xlinkHref={decalPrimary ? `https://bungie.net${decalPrimary}` : ""}
                         mask="url(#gonfalcons)"
                     />
                 </mask>

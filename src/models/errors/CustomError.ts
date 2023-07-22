@@ -20,7 +20,8 @@ export enum ErrorCode {
     Emblems = "Elephant",
     RaidHubProfile = "Rainbow",
     RaidReport = "Reppo",
-    Transitory = "Window"
+    Transitory = "Window",
+    Manifest = "Mountain"
 }
 
 export default class CustomError extends Error {

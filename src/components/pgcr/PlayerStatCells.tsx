@@ -4,6 +4,7 @@ import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LanguageProvider"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, Question_Mark, Time } from "../../images/icons"
+import { useWeapons } from "../app/DestinyManifestManager"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
@@ -11,6 +12,7 @@ type PlayerStatCellProps = {
 
 const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
     const { language, locale, strings } = useLocale()
+    const weapons = useWeapons()
     const statsData: {
         icon: StaticImageData
         name: string
@@ -44,7 +46,7 @@ const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: entry.weapons.first()?.name[language] ?? strings.none
+            value: entry.weapons.first() ? weapons[entry.weapons.first()!.hash].name : strings.none
         }
     ]
     return (

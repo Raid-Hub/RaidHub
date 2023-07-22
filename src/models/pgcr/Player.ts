@@ -63,7 +63,7 @@ export default class PGCRPlayer implements IPGCREntry {
         return this.characters.some(({ didComplete }) => didComplete)
     }
 
-    get banner(): string {
+    get banner(): number {
         return this.characters[0].banner
     }
 }

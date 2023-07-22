@@ -4,10 +4,12 @@ import { Socials } from "../util/profile/socials"
 import {
     BungieMembershipType,
     DestinyHistoricalStatsValue,
-    DestinyProfileComponent
+    DestinyProfileComponent,
+    GroupV2
 } from "bungie-net-core/lib/models"
 import RaidReportDataCollection from "../models/profile/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
+import { ClanBannerData } from "../util/destiny/clanBanner"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -16,6 +18,7 @@ export type InitialProfileProps = {
     destinyMembershipId: string
     destinyMembershipType: BungieMembershipType
 }
+export type Clan = GroupV2 & { clanBanner: ClanBannerData }
 export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
 export type MembershipWithCharacters = {
     destinyMembershipId: string

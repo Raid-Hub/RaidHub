@@ -1,5 +1,7 @@
 import { BungieClientProtocol, BungieNetResponse } from "bungie-net-core/lib/api"
 import { getDestinyEntityDefinition } from "bungie-net-core/lib/endpoints/Destiny2"
+import { DestinyManifestComponent, DestinyManifestDefinition } from "bungie-net-core/lib/manifest"
+import { AllManifestComponents } from "bungie-net-core/lib/manifest/manifest-types"
 import {
     DestinyActivityDefinition,
     DestinyActivityModeDefinition,
@@ -19,13 +21,13 @@ export async function getActivityDefiniton({
     hashIdentifier: number
     client: BungieClientProtocol
 }) {
-    const { Response } = (await getDestinyEntityDefinition(
+    const { Response } = await getDestinyEntityDefinition(
         {
             hashIdentifier,
-            entityType: "DestinyActivityDefinition"
+            entityType: DestinyManifestDefinition.DestinyActivityDefinition
         },
         client
-    )) as BungieNetResponse<DestinyActivityDefinition>
+    )
 
     return Response
 }
@@ -37,13 +39,12 @@ export async function getActivityModeDefiniton({
     hashIdentifier: number
     client: BungieClientProtocol
 }) {
-    const { Response } = (await getDestinyEntityDefinition(
+    const { Response } = await getDestinyEntityDefinition(
         {
             hashIdentifier,
-            entityType: "DestinyActivityModeDefinition"
+            entityType: DestinyManifestDefinition.DestinyActivityModeDefinition
         },
         client
-    )) as BungieNetResponse<DestinyActivityModeDefinition>
-
+    )
     return Response
 }

@@ -3,6 +3,8 @@ import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
 import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
 import { useMemo } from "react"
+import { bannerEmblemFromHash } from "../../util/destiny/emblems"
+import { useEmblems } from "../app/DestinyManifestManager"
 
 type PlayerCellProps = {
     member: PGCRPlayer
@@ -21,6 +23,7 @@ const PlayerCell = ({
     isLoadingEmblems,
     updateMemberIndex
 }: PlayerCellProps) => {
+    const emblemsDict = useEmblems()
     const dynamicCssClass = useMemo(
         () => (memberIndex === index ? styles["selected"] : ""),
         [memberIndex, index]
@@ -41,7 +44,12 @@ const PlayerCell = ({
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
             {!isLoadingEmblems ? (
-                <Image src={member.banner} alt="" fill className={styles["emblem"]} />
+                <Image
+                    src={bannerEmblemFromHash(member.banner, emblemsDict)}
+                    alt=""
+                    fill
+                    className={styles["emblem"]}
+                />
             ) : (
                 <div className={styles["emblem"]} />
             )}

@@ -1,5 +1,5 @@
-import BannersJson from "../../util/destiny-definitions/clanBanner.json" assert { type: "json" }
 import { ClanBanner } from "bungie-net-core/lib/models"
+import { RGBA, RawClanBannerData } from "./manifest"
 
 export type ClanBannerData = {
     decalPrimary: string
@@ -11,36 +11,11 @@ export type ClanBannerData = {
     decalTop: string
     decalTopColor: string
 }
-type RGBA = {
-    blue: number
-    green: number
-    red: number
-    alpha: number
-}
-type RawClanBannerData = {
-    clanBannerDecals: {
-        [hash: string]: {
-            foregroundPath: string
-            backgroundPath: string
-        }
-    }
-    clanBannerDecalPrimaryColors: { [hash: string]: RGBA }
-    clanBannerDecalSecondaryColors: { [hash: string]: RGBA }
-    clanBannerGonfalons: { [hash: string]: string }
-    clanBannerGonfalonColors: { [hash: string]: RGBA }
-    clanBannerGonfalonDetails: { [hash: string]: string }
-    clanBannerGonfalonDetailColors: { [hash: string]: RGBA }
-    clanBannerDecalsSquare: {
-        [hash: string]: {
-            foregroundPath: string
-            backgroundPath: string
-        }
-    }
-    clanBannerGonfalonDetailsSquare: { [hash: string]: string }
-}
-const clanBanners: RawClanBannerData = BannersJson
 
-export function resolveClanBanner(clanBanner: ClanBanner): ClanBannerData {
+export function resolveClanBanner(
+    clanBanner: ClanBanner,
+    clanBanners: RawClanBannerData
+): ClanBannerData {
     return {
         decalPrimaryColor: RGBAToHex(
             clanBanners.clanBannerDecalPrimaryColors[clanBanner.decalColorId]
@@ -48,8 +23,8 @@ export function resolveClanBanner(clanBanner: ClanBanner): ClanBannerData {
         decalSecondaryColor: RGBAToHex(
             clanBanners.clanBannerDecalSecondaryColors[clanBanner.decalBackgroundColorId]
         ),
-        decalPrimary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId].foregroundPath,
-        decalSecondary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId].backgroundPath,
+        decalPrimary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.foregroundPath,
+        decalSecondary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.backgroundPath,
         gonfalcons: clanBanners.clanBannerGonfalons[clanBanner.gonfalonId],
         gonfalconsColor: RGBAToHex(
             clanBanners.clanBannerGonfalonColors[clanBanner.gonfalonColorId]
@@ -66,7 +41,8 @@ export function resolveClanBanner(clanBanner: ClanBanner): ClanBannerData {
  * @param rgba a list of the rgba values
  * @returns a hex string with #
  */
-function RGBAToHex(rgba: RGBA): string {
+function RGBAToHex(rgba: RGBA | undefined): string {
+    if (!rgba) return `#00000000`
     const hex = Object.fromEntries(
         Object.entries(rgba).map(([channel, value]) => {
             const str = value.toString(16)

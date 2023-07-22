@@ -37,6 +37,7 @@ const UserCard = ({
                         src={`https://bungie.net${emblemBackgroundPath}`}
                         width={474}
                         height={96}
+                        priority
                         alt="profile banner"
                     />
                 )}

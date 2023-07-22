@@ -24,10 +24,8 @@ export interface IPGCREntryStats {
 }
 
 export type WeaponStatsValues = {
+    hash: number
     kills: number
     precision: number
-    name: { [language: string]: string }
-    type: string
-    icon: string
 }
 export type PlayerWeapons = Collection<number, WeaponStatsValues>
