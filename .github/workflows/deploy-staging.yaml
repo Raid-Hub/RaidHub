@@ -5,17 +5,17 @@ env:
 on:
     push:
         branches:
-            - main
+            - api-keys-for-staging
 jobs:
     Deploy-Staging:
         runs-on: ubuntu-latest
         env:
-            DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
             BUNGIE_API_KEY: ${{ secrets.STAGING_BUNGIE_API_KEY }}
             BUNGIE_CLIENT_ID: ${{ secrets.STAGING_BUNGIE_CLIENT_ID }}
             BUNGIE_CLIENT_SECRET: ${{ secrets.STAGING_BUNGIE_CLIENT_SECRET }}
-            APP_ENV: "staging"
+            DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
             NEXTAUTH_URL: "https://staging.raidhub.app"
+            APP_ENV: "staging"
         steps:
             - uses: actions/checkout@v2
             - name: Install Vercel CLI
@@ -27,6 +27,6 @@ jobs:
                   PLANETSCALE_TOKEN: "${{ secrets.PLANETSCALE_TOKEN }}"
               run: vercel build  --token=${{ secrets.VERCEL_TOKEN }}
             - name: Deploy Project Artifacts to Vercel
-              run: echo "URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+              run: echo "URL=$(vercel deploy -e BUNGIE_API_KEY=$BUNGIE_API_KEY -e BUNGIE_CLIENT_ID=$BUNGIE_CLIENT_ID -e BUNGIE_CLIENT_SECRET=$BUNGIE_CLIENT_SECRET -e DATABASE_URL=$DATABASE_URL -e NEXTAUTH_URL=$NEXTAUTH_URL -e APP_ENV=$APP_ENV --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
             - name: Set Alias
               run: vercel alias set $URL staging.raidhub.app --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }}
