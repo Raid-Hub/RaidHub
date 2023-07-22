@@ -46,9 +46,10 @@ const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: entry.weapons.first() ? weapons[entry.weapons.first()!.hash].name : strings.none
+            value: weapons[entry.weapons.first()?.hash ?? ""]?.name ?? strings.none
         }
     ]
+
     return (
         <>
             {statsData.map(({ value, name, icon }, key) => (

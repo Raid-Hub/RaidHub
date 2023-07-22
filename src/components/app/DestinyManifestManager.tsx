@@ -27,10 +27,12 @@ const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
     const { language } = useLocale()
 
     useEffect(() => {
+        const oldVersion = localStorage.getItem(KEY_MANIFEST_VERSION)
+        if (oldVersion) setManifestVersion(oldVersion)
         getDestinyManifest(client)
             .then(async ({ Response: manifest }) => {
                 const currentVersion = manifest.version + "-" + language
-                if (localStorage.getItem(KEY_MANIFEST_VERSION) !== currentVersion) {
+                if (oldVersion !== currentVersion) {
                     await updateCachedManifest({ client, manifest, language }).then(() =>
                         localStorage.setItem(KEY_MANIFEST_VERSION, currentVersion)
                     )
