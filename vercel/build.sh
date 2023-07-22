@@ -7,24 +7,7 @@ if [[ -n $NAMESPACE ]] ; then
   yarn db:seed
   yarn next build
 
-elif [[ -z $VERCEL_ENV ]] ; then 
-  echo "Building local..."
-  yarn next build
-
-elif [[ $VERCEL_ENV == "preview" ]] ; then 
-  echo "Deploying to preview..."
-
-  yarn db:update
-  yarn next build
-
-elif [[ $VERCEL_ENV == "production" ]] ; then 
-  echo "Deploying to production..."
-
-  yarn prisma generate
-  yarn db:update
-  yarn next build
-
-else 
+elif [[ -n $STAGING ]] ; then
     echo "Deploying to staging..."
     # Set the name of the branches
     organization="raidhub"
@@ -55,4 +38,21 @@ else
     yarn db:update
 
     yarn next build
+
+elif [[ $VERCEL_ENV == "production" ]] ; then 
+  echo "Deploying to production..."
+
+  yarn prisma generate
+  yarn db:update
+  yarn next build
+  
+elif [[ $VERCEL_ENV == "preview" ]] ; then 
+  echo "Deploying to preview..."
+
+  yarn db:update
+  yarn next build
+
+else
+  echo "Building local..."
+  yarn next build
 fi

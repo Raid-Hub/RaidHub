@@ -1,0 +1,26 @@
+name: Deploy to Staging
+env:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+on:
+    push:
+        branches:
+            - fix-api-key
+jobs:
+    Deploy-Preview:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Install Vercel CLI
+              run: npm install --global vercel@latest
+            - name: Pull Vercel Environment Information
+              run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+            - name: Build Project Artifacts
+              env:
+                  STAGING: true
+                  PLANETSCALE_TOKEN: "${{ secrets.PLANETSCALE_TOKEN }}"
+              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+            - name: Deploy Project Artifacts to Vercel
+              run: URL=($vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            - name: Set Alias
+              run: vercel alias set $URL staging.raidhub.app --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }})
