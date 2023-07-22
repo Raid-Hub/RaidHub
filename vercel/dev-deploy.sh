@@ -1,6 +1,5 @@
 #!/bin/bash
 
-namespace=""
 if [ -n "$1" ]; then
     namespace="$1"
 
@@ -22,7 +21,8 @@ if [ -f .env.preview ]; then
             value=$(echo $trimmed_line | cut -d'=' -f2- | sed 's/^"\(.*\)"$/\1/')
             if [ $key == "VERCEL_ACCESS_TOKEN" ]; then
                 token=$value
-            elif [ $key == "DATABASE_URL" ]; then
+            elif [[ $key == "DATABASE_URL" || $key == "BUNGIE_API_KEY" ]]; then
+                # these values need to be inserted at build time and run time
                 vercel_command+=" -b $key=$value"
                 vercel_command+=" -e $key=$value"
             else
@@ -33,14 +33,13 @@ if [ -f .env.preview ]; then
     vercel_command+=" --token=$token"
 fi
 
-if [ -n $namespace ]; then
+if [ -z $namespace ]; then
+    vercel $vercel_command
+else 
     vercel_command+=" -b NAMESPACE=$namespace"
     vercel_command+=" -e NEXTAUTH_URL=https://$namespace.raidhub.app"
 
     url="$(vercel $vercel_command)"
 
     vercel alias set $url $namespace.raidhub.app --scope "raid-hub" --token=$token
-else 
-    vercel $vercel_command
-    echo $url
 fi
