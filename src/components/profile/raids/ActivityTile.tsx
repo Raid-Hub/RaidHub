@@ -7,6 +7,7 @@ import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
+import { motion } from "framer-motion"
 
 type ActivityTileProps = {
     activity: Activity
@@ -41,24 +42,39 @@ const ActivityTile = ({
     }, [flawless, strings])
 
     return (
-        <Link href={`/pgcr/${instanceId}`} className={styles["activity"]}>
-            <Image
-                src={RaidCardBackground[raid]}
-                alt={`Raid card for ${strings.raidNames[raid]}`}
-                className={styles["activity-content-img"]}
-            />
-            <p className={styles["activity-title"]}>
-                {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
-                    .filter(Boolean) // filters out falsy values
-                    .join(" ")}
-            </p>
-
-            <div className={styles["success-layer"]}>
-                <p style={{ color: completed ? "#98e07b" : "#FF0000" }}>
-                    {completed ? strings.success : strings.incompleteRaid}
+        <motion.div
+            initial={{
+                y: 50,
+                opacity: 0
+            }}
+            whileInView={{
+                y: 0,
+                opacity: 1
+            }}
+            viewport={{ once: true }}
+            transition={{
+                duration: 0.6
+            }}
+            className={styles["activity"]}>
+            <Link href={`/pgcr/${instanceId}`} className={styles["activity-link"]}>
+                <Image
+                    src={RaidCardBackground[raid]}
+                    alt={`Raid card for ${strings.raidNames[raid]}`}
+                    className={styles["activity-content-img"]}
+                />
+                <p className={styles["activity-title"]}>
+                    {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
+                        .filter(Boolean) // filters out falsy values
+                        .join(" ")}
                 </p>
-            </div>
-        </Link>
+
+                <div className={styles["success-layer"]}>
+                    <p style={{ color: completed ? "#98e07b" : "#FF0000" }}>
+                        {completed ? strings.success : strings.incompleteRaid}
+                    </p>
+                </div>
+            </Link>
+        </motion.div>
     )
 }
 

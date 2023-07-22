@@ -2,7 +2,7 @@
 
 To init the project, `yarn install`
 
-Create a `.env.local` file in the root dir with contents matching `example.env`
+Create a `.env` file in the root dir with contents matching `example.env`
 
 To run the server, `yarn dev`
 
