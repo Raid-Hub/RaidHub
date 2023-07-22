@@ -7,7 +7,7 @@ if [[ -n $NAMESPACE ]] ; then
   yarn db:seed
   yarn next build
 
-elif [[ -n $STAGING ]] ; then
+elif [[ $APP_ENV == "staging" ]] ; then
     echo "Deploying to staging..."
     # TODO: flow to pull main db to staging db
     # organization="raidhub"
