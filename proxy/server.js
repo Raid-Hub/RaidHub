@@ -3,12 +3,9 @@ const { parse } = require("url")
 const next = require("next")
 const fs = require("fs")
 
-require("dotenv").config({
-    path: "./.env.local"
-})
+require("dotenv").config()
 
-const dev = process.env.NODE_ENV !== "production"
-const app = next({ dev })
+const app = next({ dev: true })
 const handle = app.getRequestHandler()
 
 const httpsOptions = {
