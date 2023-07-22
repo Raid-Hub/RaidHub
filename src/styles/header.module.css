@@ -328,3 +328,9 @@
     background-color: var(--border);
     border: none;
 }
+
+@media (max-width: 890px) {
+    .keys {
+        display: none;
+    }
+}
