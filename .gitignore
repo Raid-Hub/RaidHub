@@ -42,7 +42,6 @@ raidhub-app-db/
 
 # artifacts
 public/profile-*
-.env*.local
 
 # test page
 src/pages/test.tsx

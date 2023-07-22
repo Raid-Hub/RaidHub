@@ -35,7 +35,7 @@ const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
                         localStorage.setItem(KEY_MANIFEST_VERSION, currentVersion)
                     )
                 }
-                setManifestVersion(manifest.version)
+                setManifestVersion(currentVersion)
             })
             .catch(e =>
                 CustomError.handle(
