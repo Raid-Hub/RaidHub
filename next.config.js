@@ -2,7 +2,6 @@
 const nextConfig = {
     reactStrictMode: false,
     env: {
-        TEST_VAR: process.env.TEST_VAR,
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY
     },
     images: {
