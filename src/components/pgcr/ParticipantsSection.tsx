@@ -6,7 +6,6 @@ import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
-import { useEmblems } from "../app/DestinyManifestManager"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null

@@ -1,12 +1,7 @@
-import { BungieClientProtocol, BungieNetResponse } from "bungie-net-core/lib/api"
+import { BungieClientProtocol } from "bungie-net-core/lib/api"
 import { getDestinyEntityDefinition } from "bungie-net-core/lib/endpoints/Destiny2"
-import { DestinyManifestComponent, DestinyManifestDefinition } from "bungie-net-core/lib/manifest"
-import { AllManifestComponents } from "bungie-net-core/lib/manifest/manifest-types"
-import {
-    DestinyActivityDefinition,
-    DestinyActivityModeDefinition,
-    DestinyProfileTransitoryComponent
-} from "bungie-net-core/lib/models"
+import { DestinyManifestDefinition } from "bungie-net-core/lib/manifest"
+import { DestinyProfileTransitoryComponent } from "bungie-net-core/lib/models"
 
 export type CurrentActivityData = DestinyProfileTransitoryComponent & {
     currentActivityHash: number | null

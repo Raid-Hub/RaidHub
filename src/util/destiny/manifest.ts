@@ -1,8 +1,4 @@
-import {
-    getClanBannerSource,
-    getDestinyManifest,
-    getItem
-} from "bungie-net-core/lib/endpoints/Destiny2"
+import { getClanBannerSource } from "bungie-net-core/lib/endpoints/Destiny2"
 import { BungieClientProtocol } from "bungie-net-core/lib/client"
 import { getDestinyInventoryItems } from "../../services/bungie/getDestinyInventoryItems"
 import {
