@@ -7,8 +7,11 @@ on:
         branches:
             - fix-api-key
 jobs:
-    Deploy-Preview:
+    Deploy-Staging:
         runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+            BUNGIE_API_KEY: ${{ secrets.STAGING_BUNGIE_API_KEY }}
         steps:
             - uses: actions/checkout@v2
             - name: Install Vercel CLI
@@ -19,7 +22,7 @@ jobs:
               env:
                   STAGING: true
                   PLANETSCALE_TOKEN: "${{ secrets.PLANETSCALE_TOKEN }}"
-              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+              run: vercel build  --token=${{ secrets.VERCEL_TOKEN }}
             - name: Deploy Project Artifacts to Vercel
               run: URL=($vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
             - name: Set Alias
