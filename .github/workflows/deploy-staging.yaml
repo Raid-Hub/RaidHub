@@ -22,6 +22,7 @@ jobs:
               env:
                   STAGING: true
                   PLANETSCALE_TOKEN: "${{ secrets.PLANETSCALE_TOKEN }}"
+                  NEXTAUTH_URL: "https://staging.raidhub.app"
               run: vercel build  --token=${{ secrets.VERCEL_TOKEN }}
             - name: Deploy Project Artifacts to Vercel
               run: URL=($vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
