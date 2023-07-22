@@ -21,6 +21,7 @@ import { FilterCallback } from "../../../types/generic"
 import Activity from "../../../models/profile/Activity"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
+import { motion } from "framer-motion"
 
 type RaidModalProps = {
     raid: AvailableRaid
@@ -120,7 +121,20 @@ const RaidCard = ({
     }, [hoveredTag])
 
     return (
-        <div className={styles["card"]}>
+        <motion.div
+            initial={{
+                y: 50,
+                opacity: 0
+            }}
+            whileInView={{
+                y: 0,
+                opacity: 1
+            }}
+            viewport={{ once: true }}
+            transition={{
+                duration: 0.6
+            }}
+            className={styles["card"]}>
             <div className={styles["card-img-container"]}>
                 <Image
                     priority
@@ -210,7 +224,7 @@ const RaidCard = ({
                     />
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
