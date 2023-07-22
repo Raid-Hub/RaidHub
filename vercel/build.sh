@@ -1,18 +1,26 @@
 #!/bin/bash
 if [[ -n $NAMESPACE ]] ; then 
-  echo "Deploying local build to preview: $namespace.raidhub.app..."
+  echo "Deploying local build to preview: $NAMESPACE.raidhub.app..."
 
-  yarn prisma db push --accept-data-loss && yarn db:seed
+  yarn prisma generate
+  yarn prisma db push --accept-data-loss
+  yarn db:seed
   yarn next build
 
 elif [[ -z $VERCEL_ENV ]] ; then 
   echo "Building local..."
+  yarn next build
 
+elif [[ $VERCEL_ENV == "preview" ]] ; then 
+  echo "Deploying to preview..."
+
+  yarn db:update
   yarn next build
 
 elif [[ $VERCEL_ENV == "production" ]] ; then 
-  echo "Deploying to beta production..."
+  echo "Deploying to production..."
 
+  yarn prisma generate
   yarn db:update
   yarn next build
 
@@ -43,6 +51,7 @@ else
     "
 
     # apply the new prisma schema
+    yarn prisma generate
     yarn db:update
 
     yarn next build

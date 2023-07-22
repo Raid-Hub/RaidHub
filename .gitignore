@@ -42,3 +42,4 @@ raidhub-app-db/
 
 # artifacts
 public/profile-*
+.env*.local

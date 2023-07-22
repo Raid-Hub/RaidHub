@@ -8,7 +8,9 @@ To run the server, `yarn dev`
 
 # Deployments
 
-To deploy to your name space, you will need to install the vercel cli, login, and run `yarn deploy [name]`
+To deploy to your name space, you will need to install the vercel cli, login, and run `yarn deploy [name]`. DM Newo on discord for the access token.
+
+You must set up a `.env.preview` file for important environment vars for your preview branch including: VERCEL_ACCESS_TOKEN (required), BUNGIE_API_KEY (required), DATABASE_URL (required), bungie API OAuth credentials (if auth is needed), custom AWS credentials (if needed), other oauth provider details (twitter, discord, twitch) if preffered.
 
 # Tech Stack
 
@@ -49,5 +51,3 @@ CSS files for pages or components.
 ## Types
 
 Global TypeScript types that may not belong to a specific file.
-
-TBD - Contact Newo#0001 on Discord
