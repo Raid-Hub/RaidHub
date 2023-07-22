@@ -7,6 +7,7 @@ import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
+import {motion} from 'framer-motion';
 
 type ActivityTileProps = {
     activity: Activity
@@ -41,7 +42,22 @@ const ActivityTile = ({
     }, [flawless, strings])
 
     return (
-        <Link href={`/pgcr/${instanceId}`} className={styles["activity"]}>
+        <motion.div
+                    initial={{
+                        y: 100,
+                        opacity: 0
+                    }}
+                    whileInView={{
+                        y: 0,
+                        opacity: 1
+                    }}
+                    viewport={{ once: true }}
+                    transition={{
+                        duration: 0.6
+                    }}
+                    className={styles["activity"]}
+        >
+        <Link href={`/pgcr/${instanceId}`} className={styles["activity-link"]}>
             <Image
                 src={RaidCardBackground[raid]}
                 alt={`Raid card for ${strings.raidNames[raid]}`}
@@ -59,6 +75,7 @@ const ActivityTile = ({
                 </p>
             </div>
         </Link>
+        </motion.div>
     )
 }
 

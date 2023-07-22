@@ -312,6 +312,10 @@
     border-radius: inherit;
 }
 
+.activity-link {
+    border-radius: inherit;
+}
+
 .activity-title {
     position: absolute;
     bottom: 15%;
