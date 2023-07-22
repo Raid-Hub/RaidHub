@@ -286,7 +286,6 @@
     flex: 1;
     min-width: 180px;
     flex-basis: 250px;
-    transition: transform 0.1s ease-in-out;
     border: 1px solid var(--border);
     border-radius: 12px;
 
@@ -309,6 +308,10 @@
     height: 100%;
     opacity: 0.8;
 
+    border-radius: inherit;
+}
+
+.activity-link {
     border-radius: inherit;
 }
 
