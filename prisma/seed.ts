@@ -124,10 +124,13 @@ async function addStaticVanity() {
     const existing = await prisma.vanity
         .findMany({
             select: {
-                string: true
+                string: true,
+                destinyMembershipId: true,
+                destinyMembershipType: true
             }
         })
         .then(data => data.map(v => v.string))
+
     await prisma.vanity.createMany({
         data: [
             {
@@ -143,7 +146,7 @@ async function addStaticVanity() {
             {
                 string: "Theos",
                 destinyMembershipType: BungieMembershipType.TigerSteam,
-                destinyMembershipId: "4611686018493378282"
+                destinyMembershipId: "4611686018474149055"
             },
             {
                 string: "MJ",

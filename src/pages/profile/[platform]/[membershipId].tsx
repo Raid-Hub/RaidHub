@@ -1,22 +1,38 @@
-import { GetStaticPropsResult } from "next"
+import { GetServerSideProps } from "next"
 import { InitialProfileProps } from "../../../types/profile"
 import ProfileWrapper from "../../../components/profile/ProfileWrapper"
 import prisma from "../../../util/server/prisma"
-export async function getServerSideProps({
-    params
-}: {
-    params: { platform: string; membershipId: string }
-}): Promise<GetStaticPropsResult<InitialProfileProps>> {
+import Cookies from "cookies"
+
+export type VanityCookie = {
+    destinyMembershipId: string
+    destinyMembershipType: number
+    userId: string | null
+    string: string
+}
+
+export const getServerSideProps: GetServerSideProps<
+    InitialProfileProps,
+    { platform: string; membershipId: string }
+> = async ({ params, res, req }) => {
     try {
-        const destinyMembershipType = Number(params.platform)
+        const destinyMembershipType = Number(params!.platform)
         const vanity = await prisma.vanity.findFirst({
             where: {
-                destinyMembershipId: params.membershipId,
+                destinyMembershipId: params!.membershipId,
                 destinyMembershipType
+            },
+            select: {
+                destinyMembershipId: true,
+                destinyMembershipType: true,
+                userId: true,
+                string: true
             }
         })
 
         if (vanity?.string) {
+            const cookies = new Cookies(req, res)
+            cookies.set("vanity", JSON.stringify(vanity))
             return {
                 redirect: {
                     permanent: true,
@@ -28,8 +44,8 @@ export async function getServerSideProps({
 
     return {
         props: {
-            destinyMembershipId: params.membershipId,
-            destinyMembershipType: Number(params.platform)
+            destinyMembershipId: params!.membershipId,
+            destinyMembershipType: Number(params!.platform)
         }
     }
 }

@@ -1,17 +1,32 @@
 import ProfileWrapper from "../components/profile/ProfileWrapper"
 import { InitialProfileProps } from "../types/profile"
-import { GetStaticPropsResult } from "next"
+import { GetServerSideProps } from "next"
 import prisma from "../util/server/prisma"
+import Cookies from "cookies"
+import { VanityCookie } from "./profile/[platform]/[membershipId]"
 
-export async function getServerSideProps({
-    params
-}: {
-    params: { vanity: string }
-}): Promise<GetStaticPropsResult<InitialProfileProps>> {
+export const getServerSideProps: GetServerSideProps<
+    InitialProfileProps,
+    { vanity: string }
+> = async ({ params, res, req }) => {
     try {
+        if (req.cookies["vanity"]) {
+            const { destinyMembershipId, destinyMembershipType } = JSON.parse(
+                req.cookies.vanity
+            ) as VanityCookie
+            const cookies = new Cookies(req, res)
+            cookies.set("vanity")
+            return {
+                props: {
+                    destinyMembershipId,
+                    destinyMembershipType
+                }
+            }
+        }
+
         const details = await prisma.vanity.findFirst({
             where: {
-                string: params.vanity
+                string: params!.vanity
             },
             select: {
                 destinyMembershipId: true,
