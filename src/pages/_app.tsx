@@ -8,6 +8,7 @@ import TokenManager from "../components/app/TokenManager"
 import { useState } from "react"
 import { Session } from "next-auth"
 import LanguageProvider from "../components/app/LanguageProvider"
+import DestinyManifestManager from "../components/app/DestinyManifestManager"
 
 type PageProps = {
     session: Session
@@ -23,9 +24,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 refetchInterval={refetchInterval}
                 refetchOnWindowFocus={false}>
                 <TokenManager setRefetchInterval={setRefetchInterval}>
-                    <Header />
-                    <Component {...pageProps} />
-                    <Footer />
+                    <DestinyManifestManager>
+                        <Header />
+                        <Component {...pageProps} />
+                        <Footer />
+                    </DestinyManifestManager>
                 </TokenManager>
             </SessionProvider>
             <Head>

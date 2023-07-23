@@ -2,6 +2,8 @@ import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
 import { useMemo } from "react"
+import { useEmblems } from "../app/DestinyManifestManager"
+import { bannerEmblemFromHash } from "../../util/destiny/emblems"
 
 type SelectedPlayerProps = {
     member: PGCRPlayer
@@ -21,6 +23,7 @@ const SelectedPlayer = ({
     const displayName = member.displayName ?? member.membershipId
     const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member.didComplete ? "" : styles["dnf"]
+    const emblemsDictionary = useEmblems()
 
     const character = useMemo(
         () => member.characters[characterIndex == -1 ? 0 : characterIndex],
@@ -42,7 +45,12 @@ const SelectedPlayer = ({
                 completionClass
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
-            <Image src={character.banner} alt="" fill className={styles["emblem"]} />
+            <Image
+                src={bannerEmblemFromHash(character.banner, emblemsDictionary)}
+                alt=""
+                fill
+                className={styles["emblem"]}
+            />
             <div className={styles["color-film"]} />
 
             <div className={[styles["member-name"], styles["centered"]].join(" ")}>

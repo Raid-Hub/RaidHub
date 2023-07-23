@@ -13,7 +13,6 @@ import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
-import { emblemFromHash } from "../../util/destiny/emblems"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number
@@ -84,8 +83,8 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
         return CharacterLogos[CharacterType[this.className ?? ""]]
     }
 
-    get banner(): string {
-        return "https://bungie.net" + emblemFromHash(this.player.emblemHash)
+    get banner(): number {
+        return this.player.emblemHash
     }
 
     hydrate([userInfo, character]: [UserInfoCard, DestinyCharacterComponent | null]) {

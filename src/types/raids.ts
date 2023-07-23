@@ -180,7 +180,7 @@ export const BackdropOpacity: {
     [Raid.CROWN_OF_SORROW]: 0.4,
     [Raid.GARDEN_OF_SALVATION]: 0.4,
     [Raid.DEEP_STONE_CRYPT]: 0.8,
-    [Raid.VAULT_OF_GLASS]: 0.4,
+    [Raid.VAULT_OF_GLASS]: 0.7,
     [Raid.VOW_OF_THE_DISCIPLE]: 0.4,
     [Raid.KINGS_FALL]: 0.4,
     [Raid.ROOT_OF_NIGHTMARES]: 0.6,

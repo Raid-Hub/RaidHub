@@ -8,23 +8,22 @@ export async function getServerSideProps({
 }: {
     params: { vanity: string }
 }): Promise<GetStaticPropsResult<InitialProfileProps>> {
-    const details = await prisma.vanity.findFirst({
-        where: {
-            string: params.vanity
-        },
-        select: {
-            destinyMembershipId: true,
-            destinyMembershipType: true
+    try {
+        const details = await prisma.vanity.findFirst({
+            where: {
+                string: params.vanity
+            },
+            select: {
+                destinyMembershipId: true,
+                destinyMembershipType: true
+            }
+        })
+
+        if (details?.destinyMembershipId && details.destinyMembershipType) {
+            return { props: details }
         }
-    })
-
-    if (!details?.destinyMembershipId || !details.destinyMembershipType) {
-        return { notFound: true }
-    }
-
-    return {
-        props: details
-    }
+    } catch {}
+    return { notFound: true }
 }
 
 export default ProfileWrapper
