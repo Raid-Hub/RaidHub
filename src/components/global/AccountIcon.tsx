@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styles from "../../styles/header.module.css"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useMemo } from "react"
 import { Account } from "../../images/icons"
 import { useLocale } from "../app/LanguageProvider"
@@ -40,7 +40,10 @@ const AccountIcon = ({}: AccountIconProps) => {
                             </li>
                         </>
                     ) : (
-                        <li onClick={() => signIn()}>
+                        <li
+                            onClick={() => {
+                                window.location.href = `/login?callbackUrl=${window.location.href}`
+                            }}>
                             <span>{strings.logIn}</span>
                         </li>
                     )}
