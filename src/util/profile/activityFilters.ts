@@ -12,17 +12,17 @@ export type ExtendedActivity = {
 }
 
 export enum FilterOptions {
-    SUCCESS,
-    FLAWLESS,
-    LOWMAN,
-    SOLO,
-    DIFFICULTY,
-    MIN_SECS_PLAYED
+    SUCCESS = "Success",
+    FLAWLESS = "Flawless",
+    LOWMAN = "Lowman",
+    SOLO = "Solo",
+    DIFFICULTY = "Difficulty",
+    MIN_SECS_PLAYED = "Min Secs Played"
 }
 
 export const AvailableFilterOptions = {
     [FilterOptions.SUCCESS]: ({ activity }: ExtendedActivity) => !!activity.completed,
-    [FilterOptions.FLAWLESS]: ({ extended }: ExtendedActivity) => extended.flawless,
+    [FilterOptions.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless,
     [FilterOptions.LOWMAN]: ({ activity }: ExtendedActivity) => activity.playerCount <= 3,
     [FilterOptions.SOLO]: ({ activity }: ExtendedActivity) => activity.playerCount === 1,
     [FilterOptions.DIFFICULTY]:

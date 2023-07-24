@@ -19,7 +19,12 @@ import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import Activity from "../../models/profile/Activity"
-import { DefaultActivityFilters, ExtendedActivity } from "../../util/profile/activityFilters"
+import {
+    DefaultActivityFilters,
+    ExtendedActivity,
+    FilterOptions
+} from "../../util/profile/activityFilters"
+import { Collection } from "@discordjs/collection"
 
 export enum Layout {
     DotCharts,
@@ -93,8 +98,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         setLayout(newState)
     }
 
-    const [activeFilters, setActiveFilters] =
-        useState<FilterCallback<ExtendedActivity>[]>(DefaultActivityFilters)
+    const [activeFilters, setActiveFilters] = useState<
+        Collection<string, FilterCallback<ExtendedActivity>>
+    >(new Collection())
 
     const name =
         primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
@@ -149,7 +155,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
-                <FilterSelector activeFilters={activeFilters} setActiveFilters={setActiveFilters} />
+                <FilterSelector
+                    initialActiveFilters={activeFilters}
+                    setActiveFilters={setActiveFilters}
+                />
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 

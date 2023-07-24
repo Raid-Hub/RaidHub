@@ -139,6 +139,9 @@
 
 .filter-selector {
     flex: 1;
+    background-color: var(--modal-background);
+    border: 1px solid var(--border);
+    border-radius: 20px;
 }
 
 .layout-toggle {
