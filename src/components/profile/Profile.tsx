@@ -1,5 +1,5 @@
 import styles from "../../styles/pages/profile/profile.module.css"
-import { ErrorHandler, FilterCallback } from "../../types/generic"
+import { ErrorHandler } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
@@ -18,8 +18,7 @@ import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
-import { ExtendedActivity } from "../../util/profile/activityFilters"
-import { Collection } from "@discordjs/collection"
+import { useActivityFilters } from "../../hooks/util/useActivityFilters"
 
 export enum Layout {
     DotCharts,
@@ -93,9 +92,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         setLayout(newState)
     }
 
-    const [activeFilters, setActiveFilters] = useState<
-        Collection<string, FilterCallback<ExtendedActivity>>
-    >(new Collection())
+    const [activeFilter, setActiveFilter] = useActivityFilters()
 
     const name =
         primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
@@ -150,10 +147,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
-                <FilterSelector
-                    initialActiveFilters={activeFilters}
-                    setActiveFilters={setActiveFilters}
-                />
+                {activeFilter && (
+                    <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+                )}
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 
@@ -162,9 +158,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     membershipId={destinyMembershipId}
                     characterMemberships={characterMemberships}
                     layout={layout}
-                    filter={activity =>
-                        activeFilters.reduce((base, predicate) => base && predicate(activity), true)
-                    }
+                    filter={activity => activeFilter?.predicate(activity) ?? true}
                     raidMetrics={raidMetrics}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}

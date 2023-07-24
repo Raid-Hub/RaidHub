@@ -1,127 +1,54 @@
-import { Dispatch, FormEventHandler, SetStateAction, useState } from "react"
+import { FormEventHandler, useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
-import { FilterCallback } from "../../../types/generic"
-import {
-    AvailableFilterOptions,
-    ExtendedActivity,
-    FilterOptions
-} from "../../../util/profile/activityFilters"
-import { useLocale } from "../../app/LanguageProvider"
-import { Collection } from "@discordjs/collection"
+import { DefaultActivityFilters } from "../../../util/profile/activityFilters"
+import { ActivityFilter } from "../../../types/profile"
+import ActivityFilterBuilder from "../../../models/profile/ActivityFilterBuilder"
+import NotActivityFilter from "../../../models/profile/NotActivityFilter"
+import HighOrderActivityFilter from "../../../models/profile/HighOrderActivityFilter"
+import SingleActivityFilter from "../../../models/profile/SingleActivityFilter"
 
 type FilterSelectorProps = {
-    initialActiveFilters: Collection<string, FilterCallback<ExtendedActivity>>
-    setActiveFilters: Dispatch<SetStateAction<Collection<string, FilterCallback<ExtendedActivity>>>>
+    activeFilter: ActivityFilter
+    setActiveFilter: (filter: ActivityFilter) => void
 }
 
-const FilterSelector = ({ initialActiveFilters, setActiveFilters }: FilterSelectorProps) => {
-    const [selectedFilters, setSelectedFilters] =
-        useState<Collection<string, FilterCallback<ExtendedActivity>>>(initialActiveFilters)
-    const handleInputChange = (
-        key: string,
-        filter: FilterCallback<ExtendedActivity>,
-        selected: boolean
-    ) => {
-        setSelectedFilters(old => {
-            if (selected) {
-                old.set(key, filter)
-            } else {
-                old.delete(key)
-            }
-            return old
-        })
-    }
-
+const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) => {
+    const [selectedFilter, setSelectedFilter] = useState<ActivityFilter>(activeFilter)
     const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
         e.preventDefault()
-        setActiveFilters(selectedFilters.clone())
+        setActiveFilter(selectedFilter)
     }
 
     return (
-        <div className={styles["filter-selector"]}>
-            <form onSubmit={handleSubmit}>
-                <Checkbox
-                    initialValue={false}
-                    id={FilterOptions.SUCCESS}
-                    onChange={selected =>
-                        handleInputChange(
-                            "success",
-                            AvailableFilterOptions[FilterOptions.SUCCESS],
-                            selected
-                        )
-                    }
-                />
-                <Checkbox
-                    initialValue={false}
-                    id={FilterOptions.FLAWLESS}
-                    onChange={selected =>
-                        handleInputChange(
-                            "flawless",
-                            AvailableFilterOptions[FilterOptions.FLAWLESS],
-                            selected
-                        )
-                    }
-                />
-                <Checkbox
-                    initialValue={false}
-                    id={FilterOptions.LOWMAN}
-                    onChange={selected =>
-                        handleInputChange(
-                            "lowman",
-                            AvailableFilterOptions[FilterOptions.LOWMAN],
-                            selected
-                        )
-                    }
-                />
-                <Checkbox
-                    initialValue={false}
-                    id={FilterOptions.SOLO}
-                    onChange={selected =>
-                        handleInputChange(
-                            "solo",
-                            AvailableFilterOptions[FilterOptions.SOLO],
-                            selected
-                        )
-                    }
-                />
-
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit} className={styles["filter-selector"]}>
+            <FilterBuilderComponent filter={selectedFilter} />
+            <button type="submit">Submit</button>
+        </form>
     )
 }
 
-const Checkbox = ({
-    initialValue,
-    id,
-    onChange
-}: {
-    initialValue: boolean
-    id: FilterOptions
-    onChange: (selected: boolean) => void
-}) => {
-    const { strings } = useLocale()
-    const [value, setValue] = useState(initialValue)
-    return (
-        <div>
-            <input
-                type="checkbox"
-                id={id}
-                name={id}
-                checked={value}
-                onChange={e => {
-                    setValue(val => {
-                        const newVal = !val
-                        onChange(newVal)
-                        return newVal
-                    })
-                }}
-            />
-            <label htmlFor={id}>{strings.activityFilters[id]}</label>
-        </div>
-    )
+const FilterBuilderComponent = ({ filter }: { filter: ActivityFilter }) => {
+    if (filter instanceof ActivityFilterBuilder) {
+        return (
+            <div>
+                {filter.children.map((childFilter, idx) => (
+                    <FilterBuilderComponent key={idx} filter={childFilter} />
+                ))}
+            </div>
+        )
+    } else if (filter instanceof NotActivityFilter) {
+        return (
+            <div>
+                <FilterBuilderComponent filter={filter.child} />
+            </div>
+        )
+    } else if (filter instanceof HighOrderActivityFilter) {
+        return <div>{filter.key}</div>
+    } else if (filter instanceof SingleActivityFilter) {
+        return <div>{filter.key}</div>
+    } else {
+        return null
+    }
 }
 
 export default FilterSelector

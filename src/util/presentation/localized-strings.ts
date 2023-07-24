@@ -1,7 +1,7 @@
 import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../../types/raids"
 import { RankingBannerType } from "../../types/profile"
-import { FilterOptions } from "../profile/activityFilters"
+import { FilterOption } from "../profile/activityFilters"
 export enum SupportedLanguage {
     ENGLISH = "en"
 }
@@ -52,7 +52,7 @@ export interface LocalStrings {
     logIn: string
     logOut: string
     logInWith: string
-    activityFilters: { [key in FilterOptions]: string }
+    activityFilters: { [key in FilterOption]: string }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -159,12 +159,14 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         logOut: "Log Out",
         logInWith: "Log In with",
         activityFilters: {
-            [FilterOptions.SUCCESS]: "Success",
-            [FilterOptions.FLAWLESS]: "Flawless",
-            [FilterOptions.LOWMAN]: "Lowman",
-            [FilterOptions.SOLO]: "Solo",
-            [FilterOptions.DIFFICULTY]: "Difficulty",
-            [FilterOptions.MIN_SECS_PLAYED]: "Min. sec played"
+            [FilterOption.SUCCESS]: "Success",
+            [FilterOption.FLAWLESS]: "Flawless",
+            [FilterOption.LOWMAN]: "Lowman",
+            [FilterOption.TRIO]: "Trio",
+            [FilterOption.DUO]: "Duo",
+            [FilterOption.SOLO]: "Solo",
+            [FilterOption.DIFFICULTY]: "Difficulty",
+            [FilterOption.MIN_SECS_PLAYED]: "Min. sec played"
         }
     }
 }

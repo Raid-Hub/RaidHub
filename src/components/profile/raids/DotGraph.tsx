@@ -172,13 +172,13 @@ function findCurve(min: Point, avg: Point, max: Point): (duration: number) => nu
     const [s3, y3] = max
 
     const lower = (speed: number): number => {
-        const slope = (y2 - y1) / (s2 - s1)
+        const slope = (y2 - y1) / (s2 - s1 || 1)
         const b = y1 - slope * s1
         return slope * speed + b
     }
 
     const upper = (speed: number): number => {
-        const slope = (y3 - y2) / (s3 - s2)
+        const slope = (y3 - y2) / (s3 - s2 || 1)
         const b = y2 - slope * s2
         return slope * speed + b
     }

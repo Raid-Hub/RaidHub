@@ -3,12 +3,11 @@ import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
 import { AvailableRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
-import { AllRaidStats, MembershipWithCharacters } from "../../../types/profile"
+import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
 import { ErrorHandler, FilterCallback } from "../../../types/generic"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { Layout } from "../Profile"
 import RecentRaids from "./RecentRaids"
-import { ExtendedActivity } from "../../../util/profile/activityFilters"
 
 type RaidsProps = {
     membershipId: string
@@ -61,9 +60,11 @@ const Raids = ({
                     a =>
                         ({
                             activity: a,
-                            extended: raidReport.get(a.raid)?.eveythingFor(a.instanceId) ?? {
-                                playerCount: 6,
-                                fresh: null,
+                            extended: raidReport
+                                .get(a.raid)
+                                ?.eveythingFor(a.instanceId.toString()) ?? {
+                                playerCount: a.playerCount,
+                                fresh: false,
                                 flawless: false
                             }
                         } satisfies ExtendedActivity)

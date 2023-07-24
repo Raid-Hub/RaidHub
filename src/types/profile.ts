@@ -10,6 +10,8 @@ import {
 import RaidReportDataCollection from "../models/profile/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/clanBanner"
+import Activity from "../models/profile/Activity"
+import { FilterCallback } from "./generic"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -105,4 +107,18 @@ export type ProfileSocialData = {
     id: Socials
     displayName: string
     url: string
+}
+
+export type ExtendedActivity = {
+    activity: Activity
+    extended: {
+        fresh: boolean | null
+        playerCount: number
+        flawless: boolean | null
+    }
+}
+
+export interface ActivityFilter {
+    predicate: FilterCallback<ExtendedActivity>
+    encode(): string
 }

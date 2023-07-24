@@ -24,7 +24,7 @@ export default class RaidReportDataCollection
         return {
             playerCount: 6,
             fresh: false,
-            flawless: false,
+            flawless: this.flawlessActivities.has(activityId),
             ...(this.flawlessActivities.get(activityId) ?? {}),
             ...(this.lowmanActivities.get(activityId) ?? {})
         }
