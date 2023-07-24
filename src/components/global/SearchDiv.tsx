@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
-import { animate } from "framer-motion"
+import {animate} from "framer-motion"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -27,6 +27,26 @@ const SearchDiv = ({}: SearchDivProps) => {
     } = useSearch({ query, errorHandler: () => {} /** TODO: Handle search bar errors */ })
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
+
+    const animateModalIn = () => {
+        animate("#animate-modal", { opacity: [0, 1] }, { type: "spring", duration: 1.5})
+        setIsDivDisplayed(true)
+        console.log("enabled")
+        document.body.style.overflow = "hidden"
+    }
+
+    const animateModalOut = async () => {
+        const sequence = [
+            ["#animate-modal", { opacity: [1, 0] }, { type: "spring", duration: 0.2}],
+            ["#darken-background", { opacity: [1, 0] }, { type: "spring", duration: 0.6}]
+        ]
+        // @ts-ignore
+        animate(sequence).then(() => {
+            setIsDivDisplayed(false)
+            console.log("disabled")
+            document.body.style.overflow = ""
+        })
+    }
 
     const debounceQuery = async (potentialQuery: string) => {
         await wait(DEBOUNCE)
@@ -77,26 +97,21 @@ const SearchDiv = ({}: SearchDivProps) => {
                 event.preventDefault()
 
                 if (isDivDisplayed == true) {
-                    setIsDivDisplayed(false)
-                    console.log("disabled")
-                    document.body.style.overflow = ""
-                    return
+                    animateModalOut().then(()=> {
+                        return
+                    })
                 }
 
-                setIsDivDisplayed(true)
-                console.log("enabled")
-                document.body.style.overflow = "hidden"
-                animate("#animate-modal", { y: [0, 100] }, { type: "spring" })
+                animateModalIn()
             }
 
             if (event.key === "Escape") {
                 console.log("Escape pressed")
                 console.log(isDivDisplayed)
                 if (isDivDisplayed == true) {
-                    setIsDivDisplayed(false)
-                    console.log("disabled")
-                    document.body.style.overflow = ""
-                    return
+                    animateModalOut().then(()=> {
+                        return
+                    })
                 }
             }
         }
@@ -105,9 +120,9 @@ const SearchDiv = ({}: SearchDivProps) => {
         document.addEventListener("mousedown", handleClick)
         document.addEventListener("mousedown", (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-                console.log("Clicked Outside")
-                setIsDivDisplayed(false)
-                document.body.style.overflow = ""
+                animateModalOut().then(()=> {
+                    return
+                })
             }
         })
         return () => {
@@ -181,7 +196,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                 </div>
             )}
             </div>
-            {isDivDisplayed && <div className={styles["darken-background"]}></div>}
+            {isDivDisplayed && <div className={styles["darken-background"]} id={"darken-background"}></div>}
         </div>
     )
 }

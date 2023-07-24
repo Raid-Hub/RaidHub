@@ -11,10 +11,7 @@
     z-index: 999;
     position: fixed;
     top: 20%;
-    left: 50%;
-    -webkit-transform: translate(-50%, 0%);
-    transform: translate(-50%, 0%);
-
+    left: 25%;
     min-width: 50%;
     min-height: 60%;
     background-color: var(--search-background);
