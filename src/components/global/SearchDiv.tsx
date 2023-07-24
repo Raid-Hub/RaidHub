@@ -5,7 +5,8 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
-import {animate} from "framer-motion"
+import {animate, AnimationSequence} from "framer-motion"
+import {useTypewriter} from "react-simple-typewriter";
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -28,6 +29,14 @@ const SearchDiv = ({}: SearchDivProps) => {
     const [showingResults, setShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
 
+    const [typeWriterText, count] = useTypewriter({
+        words: [
+            "Search for a Guardian..."
+        ],
+        loop: false,
+        delaySpeed: 2000
+    })
+
     const animateModalIn = () => {
         animate("#animate-modal", { opacity: [0, 1] }, { type: "spring", duration: 1.5})
         setIsDivDisplayed(true)
@@ -36,11 +45,10 @@ const SearchDiv = ({}: SearchDivProps) => {
     }
 
     const animateModalOut = async () => {
-        const sequence = [
+        const sequence: AnimationSequence = [
             ["#animate-modal", { opacity: [1, 0] }, { type: "spring", duration: 0.2}],
             ["#darken-background", { opacity: [1, 0] }, { type: "spring", duration: 0.6}]
         ]
-        // @ts-ignore
         animate(sequence).then(() => {
             setIsDivDisplayed(false)
             console.log("disabled")
@@ -143,7 +151,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                                 type="text"
                                 name="search"
                                 autoComplete="off"
-                                placeholder="Search for a Guardian..."
+                                placeholder={typeWriterText}
                                 value={enteredText}
                                 onChange={handleInputChange}
                             />
