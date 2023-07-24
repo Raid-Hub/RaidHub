@@ -31,14 +31,13 @@ const SearchDiv = ({}: SearchDivProps) => {
 
     const [typeWriterText, count] = useTypewriter({
         words: ["Search for a Guardian..."],
-        loop: false,
+        loop: true,
         delaySpeed: 2000
     })
 
     const animateModalIn = () => {
         animate("#animate-modal", { opacity: [0, 1] }, { type: "spring", duration: 1.5 })
         setIsDivDisplayed(true)
-        console.log("enabled")
         document.body.style.overflow = "hidden"
     }
 
@@ -49,7 +48,6 @@ const SearchDiv = ({}: SearchDivProps) => {
         ]
         animate(sequence).then(() => {
             setIsDivDisplayed(false)
-            console.log("disabled")
             document.body.style.overflow = ""
         })
     }
