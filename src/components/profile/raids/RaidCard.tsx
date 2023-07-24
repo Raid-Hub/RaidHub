@@ -18,15 +18,15 @@ import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raid"
 import { Collection } from "@discordjs/collection"
 import ActivityCollection from "../../../models/profile/ActivityCollection"
 import { FilterCallback } from "../../../types/generic"
-import Activity from "../../../models/profile/Activity"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
+import { ExtendedActivity } from "../../../util/profile/activityFilters"
 
 type RaidModalProps = {
     raid: AvailableRaid
     allActivities: ActivityCollection | null
-    filter: FilterCallback<Activity> | null
+    filter: FilterCallback<ExtendedActivity>
     stats: RaidStatsCollection | undefined
     report: RaidReportDataCollection | undefined
     isLoadingDots: boolean
@@ -46,14 +46,6 @@ const RaidCard = ({
 }: RaidModalProps) => {
     const { strings } = useLocale()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-
-    const activitiesFiltered = useMemo(() => {
-        if (filter && allActivities) {
-            return allActivities.filtered(filter)
-        } else {
-            return null
-        }
-    }, [filter, allActivities])
 
     const averageClear = useMemo(() => {
         if (report?.fastestFullClear?.value && allActivities) {
@@ -172,8 +164,9 @@ const RaidCard = ({
                 <div className={styles["graph-content"]}>
                     <DotGraphWrapper
                         isLoading={isLoadingDots}
+                        filter={filter}
                         report={report}
-                        dots={activitiesFiltered?.all ?? new Collection()}
+                        activities={allActivities?.all ?? new Collection()}
                         targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>

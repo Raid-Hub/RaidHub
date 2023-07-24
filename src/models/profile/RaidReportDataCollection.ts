@@ -20,6 +20,16 @@ export default class RaidReportDataCollection
         this.set(difficulty, new RaidReportData(values, this.raid, difficulty))
     }
 
+    eveythingFor(activityId: string) {
+        return {
+            playerCount: 6,
+            fresh: false,
+            flawless: false,
+            ...(this.flawlessActivities.get(activityId) ?? {}),
+            ...(this.lowmanActivities.get(activityId) ?? {})
+        }
+    }
+
     get fastestFullClear(): { instanceId: string; value: number } | null {
         return this.reduce((prev, { fastestFullClear }) => {
             if (fastestFullClear && prev) {

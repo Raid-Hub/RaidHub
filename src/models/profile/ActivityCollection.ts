@@ -19,12 +19,4 @@ export default class ActivityCollection extends AbstractRaidDataCollection<
             new Collection<string, Activity>()
         ).sort((a, b) => a.endDate.getTime() - b.endDate.getTime())
     }
-
-    filtered(filter: FilterCallback<Activity>): ActivityCollection {
-        const newCollection = new ActivityCollection(this.raid)
-        for (const [key, value] of this.map((a, d) => [d, a.filter(filter)] as const)) {
-            newCollection.set(key, value)
-        }
-        return newCollection
-    }
 }

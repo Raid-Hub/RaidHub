@@ -2,23 +2,19 @@ import styles from "../../../styles/pages/profile/raids.module.css"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
 import { AvailableRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
-import ActivityTile from "./ActivityTile"
-import { useEffect, useMemo, useState } from "react"
-import Loading from "../../global/Loading"
-import { usePrefs } from "../../../hooks/util/usePrefs"
-import { Prefs } from "../../../util/profile/preferences"
+import { useEffect, useMemo } from "react"
 import { AllRaidStats, MembershipWithCharacters } from "../../../types/profile"
-import { ErrorHandler } from "../../../types/generic"
-import { useLocale } from "../../app/LanguageProvider"
+import { ErrorHandler, FilterCallback } from "../../../types/generic"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { Layout } from "../Profile"
-
-const CARDS_PER_PAGE = 60
+import RecentRaids from "./RecentRaids"
+import { ExtendedActivity } from "../../../util/profile/activityFilters"
 
 type RaidsProps = {
     membershipId: string
     characterMemberships: MembershipWithCharacters[] | null
     layout: Layout
+    filter: FilterCallback<ExtendedActivity>
     raidMetrics: AllRaidStats | null
     raidReport: Map<Raid, RaidReportDataCollection> | null
     isLoadingRaidMetrics: boolean
@@ -28,12 +24,11 @@ type RaidsProps = {
     errorHandler: ErrorHandler
 }
 
-const prefOptions = [Prefs.FILTER] as const
-
 const Raids = ({
     membershipId: destinyMembershipId,
     characterMemberships,
     layout,
+    filter,
     raidMetrics,
     raidReport,
     isLoadingRaidMetrics,
@@ -42,8 +37,6 @@ const Raids = ({
     setMostRecentActivity,
     errorHandler
 }: RaidsProps) => {
-    const { strings } = useLocale()
-    const { prefs, isLoading: isLoadingPrefs } = usePrefs(destinyMembershipId, prefOptions)
     const {
         allActivities,
         activitiesByRaid,
@@ -52,7 +45,6 @@ const Raids = ({
         characterMemberships,
         errorHandler
     })
-    const [pages, setPages] = useState<number>(1)
 
     useEffect(() => {
         if (allActivities) {
@@ -63,12 +55,24 @@ const Raids = ({
     }, [allActivities, setMostRecentActivity])
 
     const allActivitiesFiltered = useMemo(() => {
-        if (prefs && allActivities) {
-            return allActivities.filter(prefs[Prefs.FILTER])
+        if (allActivities && raidReport) {
+            return allActivities
+                .map(
+                    a =>
+                        ({
+                            activity: a,
+                            extended: raidReport.get(a.raid)?.eveythingFor(a.instanceId) ?? {
+                                playerCount: 6,
+                                fresh: null,
+                                flawless: false
+                            }
+                        } satisfies ExtendedActivity)
+                )
+                .filter(filter)
         } else {
             return null
         }
-    }, [prefs, allActivities])
+    }, [filter, allActivities])
 
     switch (layout) {
         case Layout.DotCharts:
@@ -79,15 +83,12 @@ const Raids = ({
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}
                             allActivities={activitiesByRaid?.get(raid) ?? null}
-                            filter={prefs?.[Prefs.FILTER] ?? null}
+                            filter={filter}
                             isLoadingStats={isLoadingRaidMetrics}
                             key={idx}
                             raid={raid}
                             isLoadingDots={
-                                !allActivities ||
-                                isLoadingActivities ||
-                                isLoadingPrefs ||
-                                isLoadingCharacters
+                                !allActivities || isLoadingActivities || isLoadingCharacters
                             }
                             isLoadingReport={isLoadingRaidReport}
                         />
@@ -96,47 +97,11 @@ const Raids = ({
             )
         case Layout.RecentActivities:
             return (
-                <div className={styles["recent"]}>
-                    {isLoadingActivities || isLoadingCharacters || isLoadingPrefs
-                        ? Array(CARDS_PER_PAGE)
-                              .fill(null)
-                              .map((_, key) => (
-                                  <Loading key={key} wrapperClass={styles["placeholder"]} />
-                              ))
-                        : allActivitiesFiltered && (
-                              <>
-                                  {Array.from(allActivitiesFiltered.values())
-                                      .slice(0, pages * CARDS_PER_PAGE)
-                                      .map((activity, key) => (
-                                          <ActivityTile
-                                              key={key}
-                                              activity={activity}
-                                              playerCount={
-                                                  raidReport
-                                                      ?.get(activity.raid)
-                                                      ?.get(activity.difficulty)
-                                                      ?.lowmanActivities.get(activity.instanceId)
-                                                      ?.playerCount
-                                              }
-                                              flawless={
-                                                  raidReport
-                                                      ?.get(activity.raid)
-                                                      ?.get(activity.difficulty)
-                                                      ?.flawlessActivities.get(activity.instanceId)
-                                                      ?.fresh
-                                              }
-                                          />
-                                      ))}
-                                  {allActivitiesFiltered.size > pages * CARDS_PER_PAGE && (
-                                      <button
-                                          className={styles["load-more"]}
-                                          onClick={() => setPages(pages + 1)}>
-                                          <span>{strings.loadMore}</span>
-                                      </button>
-                                  )}
-                              </>
-                          )}
-                </div>
+                <RecentRaids
+                    isLoading={isLoadingActivities || isLoadingCharacters}
+                    allActivitiesFiltered={allActivitiesFiltered}
+                    raidReport={raidReport}
+                />
             )
     }
 }

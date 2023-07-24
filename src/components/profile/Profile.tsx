@@ -1,5 +1,5 @@
 import styles from "../../styles/pages/profile/profile.module.css"
-import { ErrorHandler } from "../../types/generic"
+import { ErrorHandler, FilterCallback } from "../../types/generic"
 import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
@@ -17,6 +17,9 @@ import Raids from "./raids/Raids"
 import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
+import FilterSelector from "./mid/FilterSelector"
+import Activity from "../../models/profile/Activity"
+import { DefaultActivityFilters, ExtendedActivity } from "../../util/profile/activityFilters"
 
 export enum Layout {
     DotCharts,
@@ -90,6 +93,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         setLayout(newState)
     }
 
+    const [activeFilters, setActiveFilters] =
+        useState<FilterCallback<ExtendedActivity>[]>(DefaultActivityFilters)
+
     const name =
         primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
         primaryDestinyProfile?.userInfo.displayName
@@ -143,6 +149,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
+                <FilterSelector activeFilters={activeFilters} setActiveFilters={setActiveFilters} />
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 
@@ -151,6 +158,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     membershipId={destinyMembershipId}
                     characterMemberships={characterMemberships}
                     layout={layout}
+                    filter={activity =>
+                        activeFilters.reduce((base, predicate) => base && predicate(activity), true)
+                    }
                     raidMetrics={raidMetrics}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}

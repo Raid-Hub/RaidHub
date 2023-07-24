@@ -31,12 +31,17 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     get completed() {
         return !!this.values.completed.basic.value
     }
+
     get durationSeconds() {
         return this.values.activityDurationSeconds.basic.value
     }
 
     get instanceId() {
         return this.activityDetails.instanceId
+    }
+
+    get playerCount() {
+        return this.values.playerCount.basic.value
     }
 
     static collection(array: DestinyHistoricalStatsPeriodGroup[]): Collection<string, Activity> {

@@ -137,6 +137,10 @@
     white-space: nowrap;
 }
 
+.filter-selector {
+    flex: 1;
+}
+
 .layout-toggle {
     height: 6rem;
     min-width: min-content;

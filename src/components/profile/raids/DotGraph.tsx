@@ -7,6 +7,8 @@ import RaidReportDataCollection from "../../../models/profile/RaidReportDataColl
 import Loading from "../../global/Loading"
 import Activity from "../../../models/profile/Activity"
 import { Collection } from "@discordjs/collection"
+import { FilterCallback } from "../../../types/generic"
+import { ExtendedActivity } from "../../../util/profile/activityFilters"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -39,10 +41,11 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
-    dots: Collection<string, Activity>
+    activities: Collection<string, Activity>
     report: RaidReportDataCollection | undefined
     targetDot: string | null
     isLoading: boolean
+    filter: FilterCallback<ExtendedActivity>
 }
 
 type Statistics = { min: number; max: number; total: number }
@@ -52,36 +55,71 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraphWrapper = (props: DotGraphWrapperProps) => {
+const DotGraphWrapper = ({
+    activities,
+    report,
+    targetDot,
+    isLoading,
+    filter
+}: DotGraphWrapperProps) => {
+    const activitiesFiltered = useMemo(() => {
+        if (activities && report) {
+            return activities
+                .map(
+                    a =>
+                        ({
+                            activity: a,
+                            extended: report.eveythingFor(a.instanceId)
+                        } satisfies ExtendedActivity)
+                )
+                .filter(filter)
+        } else {
+            return null
+        }
+    }, [filter, activities])
+
     const getHeight = useMemo(() => {
-        let { min, max, total } = props.dots.reduce((ac, cv) => {
-            const cvTime = cv.durationSeconds
+        let { min, max, total } = activitiesFiltered?.reduce((soFar, { activity }) => {
+            const cvTime = activity.durationSeconds
             return {
-                min: Math.min(ac.min, cvTime),
-                max: Math.max(ac.max, cvTime),
-                total: ac.total + cvTime
+                min: Math.min(soFar.min, cvTime),
+                max: Math.max(soFar.max, cvTime),
+                total: soFar.total + cvTime
             }
-        }, baseStats)
-        if (props.dots.size === 1) {
+        }, baseStats) ?? {
+            min: 0,
+            max: 1,
+            total: 0
+        }
+        if (activities.size === 1) {
             min -= 1
             max += 1
         }
 
-        const orderedByDuration = props.dots.map(dot => dot.durationSeconds).sort((a, b) => a - b)
+        const orderedByDuration = activities.map(dot => dot.durationSeconds).sort((a, b) => a - b)
         const avg = median(orderedByDuration)
         return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
-    }, [props.dots])
+    }, [activitiesFiltered])
 
-    return <DotGraph getHeight={getHeight} {...props} />
+    return (
+        <DotGraph
+            getHeight={getHeight}
+            {...{ dots: activitiesFiltered, targetDot, isLoading, filter }}
+        />
+    )
 }
 
 export default DotGraphWrapper
 
-type DotGraphProps = DotGraphWrapperProps & {
+type DotGraphProps = {
     getHeight: (duration: number) => number
+    dots: ExtendedActivity[] | null
+    targetDot: string | null
+    isLoading: boolean
+    filter: FilterCallback<ExtendedActivity>
 }
 
-function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphProps) {
+function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
     let index = 0
     return (
@@ -92,7 +130,7 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
             ) : (
                 <svg
                     style={{
-                        width: SPACING * dots.size + "px",
+                        width: SPACING * (dots?.length ?? 200) + "px",
                         height: FULL_HEIGHT,
                         minWidth: "100%"
                     }}>
@@ -103,19 +141,17 @@ function DotGraph({ dots, getHeight, report, targetDot, isLoading }: DotGraphPro
                         y2={LINE_Y}
                         style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                     />
-                    {dots.map((dot, key) => (
+                    {dots?.map(({ activity, extended }, key) => (
                         <Dot
                             key={key}
                             index={index++}
-                            activity={dot}
-                            flawless={!!report?.flawlessActivities.get(dot.instanceId)}
-                            playerCount={
-                                report?.lowmanActivities.get(dot.instanceId)?.playerCount ?? 6
-                            }
-                            centerY={getHeight(dot.durationSeconds)}
+                            activity={activity}
+                            flawless={extended.flawless ?? false}
+                            playerCount={extended.playerCount}
+                            centerY={getHeight(activity.durationSeconds)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            targetted={targetDot === dot.instanceId}
+                            targetted={targetDot === activity.instanceId}
                         />
                     ))}
                 </svg>
