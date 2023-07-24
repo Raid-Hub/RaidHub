@@ -5,8 +5,8 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
-import {animate, AnimationSequence} from "framer-motion"
-import {useTypewriter} from "react-simple-typewriter";
+import { animate, AnimationSequence } from "framer-motion"
+import { useTypewriter } from "react-simple-typewriter"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -30,15 +30,13 @@ const SearchDiv = ({}: SearchDivProps) => {
     const searchContainerRef = useRef<HTMLDivElement>(null)
 
     const [typeWriterText, count] = useTypewriter({
-        words: [
-            "Search for a Guardian..."
-        ],
+        words: ["Search for a Guardian..."],
         loop: false,
         delaySpeed: 2000
     })
 
     const animateModalIn = () => {
-        animate("#animate-modal", { opacity: [0, 1] }, { type: "spring", duration: 1.5})
+        animate("#animate-modal", { opacity: [0, 1] }, { type: "spring", duration: 1.5 })
         setIsDivDisplayed(true)
         console.log("enabled")
         document.body.style.overflow = "hidden"
@@ -46,8 +44,8 @@ const SearchDiv = ({}: SearchDivProps) => {
 
     const animateModalOut = async () => {
         const sequence: AnimationSequence = [
-            ["#animate-modal", { opacity: [1, 0] }, { type: "spring", duration: 0.2}],
-            ["#darken-background", { opacity: [1, 0] }, { type: "spring", duration: 0.6}]
+            ["#animate-modal", { opacity: [1, 0] }, { type: "spring", duration: 0.2 }],
+            ["#darken-background", { opacity: [1, 0] }, { type: "spring", duration: 0.6 }]
         ]
         animate(sequence).then(() => {
             setIsDivDisplayed(false)
@@ -105,7 +103,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                 event.preventDefault()
 
                 if (isDivDisplayed == true) {
-                    animateModalOut().then(()=> {
+                    animateModalOut().then(() => {
                         return
                     })
                 }
@@ -117,7 +115,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                 console.log("Escape pressed")
                 console.log(isDivDisplayed)
                 if (isDivDisplayed == true) {
-                    animateModalOut().then(()=> {
+                    animateModalOut().then(() => {
                         return
                     })
                 }
@@ -128,7 +126,7 @@ const SearchDiv = ({}: SearchDivProps) => {
         document.addEventListener("mousedown", handleClick)
         document.addEventListener("mousedown", (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-                animateModalOut().then(()=> {
+                animateModalOut().then(() => {
                     return
                 })
             }
@@ -142,69 +140,71 @@ const SearchDiv = ({}: SearchDivProps) => {
     return (
         <div>
             <div className={styles["animate-modal"]} id={"animate-modal"}>
-            {isDivDisplayed && (
-                <div className={styles["search-div"]} id="searchdiv" ref={wrapperRef}>
-                    <div className={styles["search-top"]}>
-                        <form onSubmit={handleFormEnter}>
-                            <input
-                                id={styles["search-bar"]}
-                                type="text"
-                                name="search"
-                                autoComplete="off"
-                                placeholder={typeWriterText}
-                                value={enteredText}
-                                onChange={handleInputChange}
-                            />
-                        </form>
-                        <div className={styles["search-top-right"]}>
-                            <Image src={Search} alt="search" />
+                {isDivDisplayed && (
+                    <div className={styles["search-div"]} id="searchdiv" ref={wrapperRef}>
+                        <div className={styles["search-top"]}>
+                            <form onSubmit={handleFormEnter}>
+                                <input
+                                    id={styles["search-bar"]}
+                                    type="text"
+                                    name="search"
+                                    autoComplete="off"
+                                    placeholder={typeWriterText}
+                                    value={enteredText}
+                                    onChange={handleInputChange}
+                                />
+                            </form>
+                            <div className={styles["search-top-right"]}>
+                                <Image src={Search} alt="search" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div className={styles["search-content"]}>
+                            <span>Search Results</span>
+                            {showingResults && (
+                                <ul className={styles["search-results"]}>
+                                    {results
+                                        .map(result => {
+                                            let name = result.displayName
+                                            if (
+                                                result.bungieGlobalDisplayName &&
+                                                result.bungieGlobalDisplayNameCode
+                                            )
+                                                try {
+                                                    name = new BungieName(
+                                                        result.bungieGlobalDisplayName,
+                                                        result.bungieGlobalDisplayNameCode
+                                                    ).toString()
+                                                } catch {}
+                                            return {
+                                                ...result,
+                                                name
+                                            }
+                                        })
+                                        .filter(({ name }) => name.startsWith(enteredText))
+                                        .map(({ name, membershipId, membershipType }, idx) => (
+                                            <a
+                                                className={styles["search-result"]}
+                                                key={idx}
+                                                href={`/profile/${membershipType}/${membershipId}`}
+                                                onClick={handleSelect}>
+                                                <li>
+                                                    <div className={styles["individual-result"]}>
+                                                        <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
+                                                        <p>{name}</p>
+                                                    </div>
+                                                </li>
+                                            </a>
+                                        ))}
+                                </ul>
+                            )}
                         </div>
                     </div>
-                    <hr />
-                    <div className={styles["search-content"]}>
-                        <span>Search Results</span>
-                        {showingResults && (
-                            <ul className={styles["search-results"]}>
-                                {results
-                                    .map(result => {
-                                        let name = result.displayName
-                                        if (
-                                            result.bungieGlobalDisplayName &&
-                                            result.bungieGlobalDisplayNameCode
-                                        )
-                                            try {
-                                                name = new BungieName(
-                                                    result.bungieGlobalDisplayName,
-                                                    result.bungieGlobalDisplayNameCode
-                                                ).toString()
-                                            } catch {}
-                                        return {
-                                            ...result,
-                                            name
-                                        }
-                                    })
-                                    .filter(({ name }) => name.startsWith(enteredText))
-                                    .map(({ name, membershipId, membershipType }, idx) => (
-                                        <a
-                                            className={styles["search-result"]}
-                                            key={idx}
-                                            href={`/profile/${membershipType}/${membershipId}`}
-                                            onClick={handleSelect}>
-                                            <li>
-                                                <div className={styles["individual-result"]}>
-                                                    <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
-                                                    <p>{name}</p>
-                                                </div>
-                                            </li>
-                                        </a>
-                                    ))}
-                            </ul>
-                        )}
-                    </div>
-                </div>
-            )}
+                )}
             </div>
-            {isDivDisplayed && <div className={styles["darken-background"]} id={"darken-background"}></div>}
+            {isDivDisplayed && (
+                <div className={styles["darken-background"]} id={"darken-background"}></div>
+            )}
         </div>
     )
 }
