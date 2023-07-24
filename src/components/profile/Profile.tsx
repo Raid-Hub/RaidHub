@@ -18,12 +18,7 @@ import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
-import Activity from "../../models/profile/Activity"
-import {
-    DefaultActivityFilters,
-    ExtendedActivity,
-    FilterOptions
-} from "../../util/profile/activityFilters"
+import { ExtendedActivity } from "../../util/profile/activityFilters"
 import { Collection } from "@discordjs/collection"
 
 export enum Layout {

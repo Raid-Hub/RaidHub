@@ -76,7 +76,7 @@ const DotGraphWrapper = ({
         } else {
             return null
         }
-    }, [filter, activities])
+    }, [filter, activities, report])
 
     const getHeight = useMemo(() => {
         let { min, max, total } = activitiesFiltered?.reduce((soFar, { activity }) => {
@@ -96,10 +96,13 @@ const DotGraphWrapper = ({
             max += 1
         }
 
-        const orderedByDuration = activities.map(dot => dot.durationSeconds).sort((a, b) => a - b)
+        const orderedByDuration =
+            activitiesFiltered
+                ?.map(({ activity }) => activity.durationSeconds)
+                .sort((a, b) => a - b) ?? []
         const avg = median(orderedByDuration)
         return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
-    }, [activitiesFiltered])
+    }, [activitiesFiltered, activities])
 
     return (
         <DotGraph

@@ -72,7 +72,7 @@ const Raids = ({
         } else {
             return null
         }
-    }, [filter, allActivities])
+    }, [filter, allActivities, raidReport])
 
     switch (layout) {
         case Layout.DotCharts:

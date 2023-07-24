@@ -3,7 +3,6 @@ import ActivityDifficultyCollection from "./ActivityDifficultyCollection"
 import { Difficulty } from "../../types/raids"
 import Activity from "./Activity"
 import { Collection } from "@discordjs/collection"
-import { FilterCallback } from "../../types/generic"
 
 export default class ActivityCollection extends AbstractRaidDataCollection<
     ActivityDifficultyCollection,

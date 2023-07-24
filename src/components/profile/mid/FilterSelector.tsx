@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, FormEventHandler, SetStateAction, useState } from "react"
+import { Dispatch, FormEventHandler, SetStateAction, useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { FilterCallback } from "../../../types/generic"
 import {
