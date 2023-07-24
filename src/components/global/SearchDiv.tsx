@@ -5,6 +5,7 @@ import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
+import { animate } from "framer-motion"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -85,6 +86,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                 setIsDivDisplayed(true)
                 console.log("enabled")
                 document.body.style.overflow = "hidden"
+                animate("#animate-modal", { y: [0, 100] }, { type: "spring" })
             }
 
             if (event.key === "Escape") {
@@ -116,6 +118,7 @@ const SearchDiv = ({}: SearchDivProps) => {
 
     return (
         <div>
+            <div className={styles["animate-modal"]} id={"animate-modal"}>
             {isDivDisplayed && (
                 <div className={styles["search-div"]} id="searchdiv" ref={wrapperRef}>
                     <div className={styles["search-top"]}>
@@ -177,7 +180,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                     </div>
                 </div>
             )}
-
+            </div>
             {isDivDisplayed && <div className={styles["darken-background"]}></div>}
         </div>
     )

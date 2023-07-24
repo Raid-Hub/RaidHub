@@ -129,3 +129,8 @@
         border-radius: 0;
     }
 }
+
+.animate-modal {
+    position: relative;
+    z-index: 91;
+}
