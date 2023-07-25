@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react"
-import {
-    DefaultActivityFilters,
-    FilterOption,
-    decodeFilters
-} from "../../util/profile/activityFilters"
-import { Collection } from "@discordjs/collection"
+import { DefaultActivityFilters, decodeFilters } from "../../util/profile/activityFilters"
 import { ActivityFilter } from "../../types/profile"
 
 export const KEY_ACTIVITY_FILTER = "profile_activity_filter"
 
-export const useActivityFilters = (): [ActivityFilter | null, (filter: ActivityFilter) => void] => {
+export const useActivityFilters = (): [
+    ActivityFilter | null,
+    (filter: ActivityFilter | null) => void
+] => {
     const [activeFilter, setActiveFilter] = useState<ActivityFilter | null>(null)
 
     useEffect(() => {
@@ -22,8 +20,10 @@ export const useActivityFilters = (): [ActivityFilter | null, (filter: ActivityF
         }
     }, [])
 
-    const saveFilter = (filter: ActivityFilter) => {
-        localStorage.setItem(KEY_ACTIVITY_FILTER, filter.encode())
+    const saveFilter = (filter: ActivityFilter | null) => {
+        filter
+            ? localStorage.setItem(KEY_ACTIVITY_FILTER, filter.encode())
+            : localStorage.removeItem(KEY_ACTIVITY_FILTER)
     }
 
     return [

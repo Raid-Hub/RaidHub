@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Raid } from "../../../types/raids"
 import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
 import { useLocale } from "../../app/LanguageProvider"
-import { ExtendedActivity } from "../../../util/profile/activityFilters"
+import { ExtendedActivity } from "../../../types/profile"
 
 const CARDS_PER_PAGE = 60
 

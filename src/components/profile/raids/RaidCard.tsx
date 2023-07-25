@@ -21,7 +21,7 @@ import { FilterCallback } from "../../../types/generic"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
-import { ExtendedActivity } from "../../../util/profile/activityFilters"
+import { ExtendedActivity } from "../../../types/profile"
 
 type RaidModalProps = {
     raid: AvailableRaid

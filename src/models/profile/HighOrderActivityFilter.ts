@@ -1,16 +1,20 @@
+import { v4 } from "uuid"
 import { FilterCallback } from "../../types/generic"
 import { ActivityFilter, ExtendedActivity } from "../../types/profile"
 import { HighOrderActivityFilters } from "../../util/profile/activityFilters"
 
 export default class HighOrderActivityFilter<T = any> implements ActivityFilter {
-    key: string
+    key: keyof typeof HighOrderActivityFilters
     value: T
     highOrderFunc: (arg: T) => FilterCallback<ExtendedActivity>
+    id: string
 
-    constructor(key: string, value: T) {
+    constructor(key: keyof typeof HighOrderActivityFilters, value: T) {
         this.key = key
         this.value = value
+        // @ts-expect-error
         this.highOrderFunc = HighOrderActivityFilters[key]
+        this.id = v4()
     }
 
     predicate(a: ExtendedActivity) {
@@ -19,5 +23,9 @@ export default class HighOrderActivityFilter<T = any> implements ActivityFilter 
 
     encode(): string {
         return `{${this.key}:${JSON.stringify(this.value)}}`
+    }
+
+    deepClone(): ActivityFilter {
+        return new HighOrderActivityFilter(this.key, this.value)
     }
 }

@@ -1,3 +1,4 @@
+import { Collection } from "@discordjs/collection"
 import ActivityFilterBuilder, {
     ActivityFilterCombinator
 } from "../../models/profile/ActivityFilterBuilder"
@@ -19,40 +20,60 @@ export enum FilterOption {
     MIN_SECS_PLAYED = "Min Secs Played"
 }
 
-export const HighOrderActivityFilters: Record<
-    string,
-    (arg: any) => FilterCallback<ExtendedActivity>
-> = {
+export const HighOrderActivityFilters = {
     [FilterOption.DIFFICULTY]:
-        (difficulties: Difficulty[]) =>
+        (difficulty: Difficulty) =>
         ({ activity }: ExtendedActivity) =>
-            difficulties.includes(activity.difficulty),
+            difficulty === activity.difficulty,
     [FilterOption.MIN_SECS_PLAYED]:
         (seconds: number) =>
         ({ activity }: ExtendedActivity) =>
-            activity.durationSeconds >= seconds
-}
+            activity.durationSeconds >= seconds,
+    [FilterOption.LOWMAN]:
+        (playerCount: number) =>
+        ({ extended }: ExtendedActivity) =>
+            extended.playerCount === playerCount
+} satisfies Record<string, (arg: any) => FilterCallback<ExtendedActivity>>
 
-export const SingleActivityFilters: Record<string, FilterCallback<ExtendedActivity>> = {
+export const SingleActivityFilters = {
     [FilterOption.SUCCESS]: ({ activity }: ExtendedActivity) => !!activity.completed,
-    [FilterOption.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless,
-    [FilterOption.LOWMAN]: ({ extended }: ExtendedActivity) => extended.playerCount <= 3,
-    [FilterOption.TRIO]: ({ extended }: ExtendedActivity) => extended.playerCount === 3,
-    [FilterOption.DUO]: ({ extended }: ExtendedActivity) => extended.playerCount === 2,
-    [FilterOption.SOLO]: ({ extended }: ExtendedActivity) => extended.playerCount === 1
-}
+    [FilterOption.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless
+} satisfies Record<string, FilterCallback<ExtendedActivity>>
 
+export const FiltersToSelectFrom = new Collection<string, () => ActivityFilter>([
+    ["success", () => new SingleActivityFilter(FilterOption.SUCCESS)],
+    ["flawless", () => new SingleActivityFilter(FilterOption.FLAWLESS)],
+    [
+        "any lowman",
+        () =>
+            new ActivityFilterBuilder("|", [
+                new HighOrderActivityFilter(FilterOption.LOWMAN, 3),
+                new HighOrderActivityFilter(FilterOption.LOWMAN, 2),
+                new HighOrderActivityFilter(FilterOption.LOWMAN, 1)
+            ])
+    ],
+    ["solo", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 1)],
+    ["duo", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 2)],
+    ["trio", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 3)],
+    ["min time", () => new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300)],
+    ["master", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER)],
+    ["prestige", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE)],
+    ["or", () => new ActivityFilterBuilder("|", [])],
+    ["and", () => new ActivityFilterBuilder("&", [])],
+    ["not", () => new NotActivityFilter(null)]
+])
+
+// min 5 mins played or lowman
 export const DefaultActivityFilters: ActivityFilter = new ActivityFilterBuilder("|", [
     new ActivityFilterBuilder("&", [
-        new SingleActivityFilter(FilterOption.LOWMAN),
+        FiltersToSelectFrom.get("any lowman")!(),
         new SingleActivityFilter(FilterOption.SUCCESS)
     ]),
     new ActivityFilterBuilder("&", [
         new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300),
-        new NotActivityFilter(new SingleActivityFilter(FilterOption.LOWMAN))
+        new NotActivityFilter(FiltersToSelectFrom.get("any lowman")!())
     ])
 ])
-// min 5 mins played or lowman
 
 const brackets = ["<", ">", "[", "]", "{", "}", "(", ")"]
 const bracketInverse = {
@@ -63,14 +84,16 @@ const bracketInverse = {
 } as Record<string, string>
 
 export function decodeFilters(from: string): ActivityFilter {
-    if (from.startsWith("!")) {
+    if (from.startsWith("<")) {
         return new NotActivityFilter(decodeFilters(from.substring(1, from.length - 1)))
     } else if (from.startsWith("(")) {
-        return new SingleActivityFilter(from.substring(1, from.length - 1))
+        return new SingleActivityFilter(
+            from.substring(1, from.length - 1) as keyof typeof SingleActivityFilters
+        )
     } else if (from.startsWith("{")) {
         const splitter = from.indexOf(":")
         return new HighOrderActivityFilter(
-            from.substring(1, splitter),
+            from.substring(1, splitter) as keyof typeof HighOrderActivityFilters,
             JSON.parse(from.substring(splitter + 1, from.length - 1))
         )
     } else if (from.startsWith("[")) {
@@ -98,11 +121,10 @@ export function decodeFilters(from: string): ActivityFilter {
             }
             i++
         }
-        if (!combinator) throw new Error("Error decoding ActivityFilterBuilder: no combinator")
         return new ActivityFilterBuilder(
-            combinator,
+            combinator ?? "&",
             elements.map(e => decodeFilters(e))
         )
     }
-    throw new Error("Error decoding filter: no braces")
+    throw new Error("Error decoding filter: no braces " + from)
 }

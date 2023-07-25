@@ -139,9 +139,65 @@
 
 .filter-selector {
     flex: 1;
-    background-color: var(--modal-background);
-    border: 1px solid var(--border);
     border-radius: 20px;
+}
+
+.filter-item {
+    border: 1px solid var(--border);
+    background-color: #ffffff33;
+    padding: 4px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em;
+
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+.filter-combinator {
+    padding: 4px;
+}
+
+.filter-not {
+    background-color: #c02c2c33;
+}
+
+.filter-remove-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+
+    width: min-content;
+    height: min-content;
+    border-radius: 10px;
+
+    background-color: #ffffffae;
+}
+
+.filter-selector button:hover {
+    background-color: #f6ad6cb9;
+    cursor: pointer;
+}
+
+.filter-selector-menu {
+    position: absolute;
+    z-index: 3;
+
+    background-color: var(--modal-background-opaque);
+    border-radius: 5px;
+
+    display: grid;
+    gap: 0.2em;
+    padding: 0.2em;
+}
+
+.filter-selector-menu > *:hover {
+    cursor: pointer;
+    background-color: aqua;
 }
 
 .layout-toggle {

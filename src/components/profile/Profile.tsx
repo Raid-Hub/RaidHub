@@ -147,9 +147,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
-                {activeFilter && (
-                    <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-                )}
+                <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 
@@ -158,7 +156,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     membershipId={destinyMembershipId}
                     characterMemberships={characterMemberships}
                     layout={layout}
-                    filter={activity => activeFilter?.predicate(activity) ?? true}
+                    filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={raidMetrics}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}

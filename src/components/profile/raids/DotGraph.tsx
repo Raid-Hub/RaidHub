@@ -8,7 +8,7 @@ import Loading from "../../global/Loading"
 import Activity from "../../../models/profile/Activity"
 import { Collection } from "@discordjs/collection"
 import { FilterCallback } from "../../../types/generic"
-import { ExtendedActivity } from "../../../util/profile/activityFilters"
+import { ExtendedActivity } from "../../../types/profile"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60

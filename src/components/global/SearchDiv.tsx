@@ -166,7 +166,10 @@ const SearchDiv = ({}: SearchDivProps) => {
                                             onClick={handleSelect}>
                                             <li>
                                                 <div className={styles["individual-result"]}>
-                                                    <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
+                                                    <img
+                                                        src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg"
+                                                        alt="placeholder"
+                                                    />
                                                     <p>{name}</p>
                                                 </div>
                                             </li>

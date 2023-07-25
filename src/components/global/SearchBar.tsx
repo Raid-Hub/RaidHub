@@ -16,7 +16,7 @@ const SearchBar = ({}: SearchBarProps) => {
     const [query, setQuery] = useState("")
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
-    let OSKey = "Ctrl"
+    const [OSKey, setOSKey] = useState("Ctrl")
 
     const {
         results,
@@ -64,7 +64,7 @@ const SearchBar = ({}: SearchBarProps) => {
     useEffect(() => {
         // Surely this detects if the user is on Mac :pleading:
         if (navigator.userAgent.includes("Mac")) {
-            OSKey = "⌘"
+            setOSKey("⌘")
         }
 
         const handleClick = (event: MouseEvent) => {
