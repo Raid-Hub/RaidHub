@@ -92,7 +92,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         setLayout(newState)
     }
 
-    const [activeFilter, setActiveFilter] = useActivityFilters()
+    const [activeFilter, setActiveFilter, isLoadingFilters] = useActivityFilters()
 
     const name =
         primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
@@ -147,7 +147,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
-                <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+                {!isLoadingFilters && (
+                    <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+                )}
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 
