@@ -5,10 +5,10 @@ import {
     LowManActivity,
     RaidTag,
     SetOfLowmans
-} from "../../types/profile"
-import { RaidReportPlayerValues } from "../../types/raidreport"
-import { Difficulty } from "../../types/raids"
-import { isBestTag } from "../../util/raidhub/tags"
+} from "../../../types/profile"
+import { RaidReportPlayerValues } from "../../../types/raidreport"
+import { Difficulty } from "../../../types/raids"
+import { isBestTag } from "../../../util/raidhub/tags"
 import RaidReportData from "./RaidReportData"
 import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
 

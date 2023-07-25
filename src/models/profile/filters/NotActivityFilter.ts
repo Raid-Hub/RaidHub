@@ -1,5 +1,5 @@
 import { v4 } from "uuid"
-import { ActivityFilter, ExtendedActivity } from "../../types/profile"
+import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
 
 export default class NotActivityFilter implements ActivityFilter {
     child: ActivityFilter | null

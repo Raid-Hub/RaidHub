@@ -5,7 +5,7 @@ import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
 import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
 import { ErrorHandler, FilterCallback } from "../../../types/generic"
-import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { Layout } from "../Profile"
 import RecentRaids from "./RecentRaids"
 

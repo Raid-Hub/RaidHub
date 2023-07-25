@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
-import ActivityFilterBuilder from "../../../models/profile/ActivityFilterBuilder"
-import NotActivityFilter from "../../../models/profile/NotActivityFilter"
-import HighOrderActivityFilter from "../../../models/profile/HighOrderActivityFilter"
-import SingleActivityFilter from "../../../models/profile/SingleActivityFilter"
+import GroupActivityFilter from "../../../models/profile/filters/GroupActivityFilter"
+import NotActivityFilter from "../../../models/profile/filters/NotActivityFilter"
+import HighOrderActivityFilter from "../../../models/profile/filters/HighOrderActivityFilter"
+import SingleActivityFilter from "../../../models/profile/filters/SingleActivityFilter"
 import FilterSelectorMenu from "./FilterSelectorMenu"
 
 type FilterSelectorProps = {
@@ -80,8 +80,8 @@ type GenericFilterComponentProps<F extends ActivityFilter = ActivityFilter> = {
 }
 
 const GenericFilterComponent = (props: GenericFilterComponentProps) => {
-    if (props.filter instanceof ActivityFilterBuilder) {
-        return <BuilderFilterComponent {...props} filter={props.filter} />
+    if (props.filter instanceof GroupActivityFilter) {
+        return <GroupFilterComponent {...props} filter={props.filter} />
     } else if (props.filter instanceof NotActivityFilter) {
         return <NotFilterComponent {...props} filter={props.filter} />
     } else if (props.filter instanceof HighOrderActivityFilter) {
@@ -93,14 +93,14 @@ const GenericFilterComponent = (props: GenericFilterComponentProps) => {
     }
 }
 
-const BuilderFilterComponent = ({
+const GroupFilterComponent = ({
     isEditing,
     canRemove,
     filter,
     depth,
     removeFromParent,
     refreshCurrentFilter
-}: GenericFilterComponentProps<ActivityFilterBuilder>) => {
+}: GenericFilterComponentProps<GroupActivityFilter>) => {
     const [isShowingSelect, setIsShowingSelect] = useState(false)
     const removeChild = (id: string) => {
         filter.children.delete(id)

@@ -1,7 +1,7 @@
 import { v4 } from "uuid"
-import { FilterCallback } from "../../types/generic"
-import { ActivityFilter, ExtendedActivity } from "../../types/profile"
-import { SingleActivityFilters } from "../../util/profile/activityFilters"
+import { FilterCallback } from "../../../types/generic"
+import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
+import { SingleActivityFilters } from "../../../util/profile/activityFilters"
 
 export default class SingleActivityFilter implements ActivityFilter {
     key: keyof typeof SingleActivityFilters

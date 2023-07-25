@@ -1,6 +1,6 @@
 import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
 import ActivityDifficultyCollection from "./ActivityDifficultyCollection"
-import { Difficulty } from "../../types/raids"
+import { Difficulty } from "../../../types/raids"
 import Activity from "./Activity"
 import { Collection } from "@discordjs/collection"
 

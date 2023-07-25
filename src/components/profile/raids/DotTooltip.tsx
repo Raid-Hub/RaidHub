@@ -6,7 +6,7 @@ import { useLocale } from "../../app/LanguageProvider"
 import { Green, Red, Teal } from "./Dot"
 import { raidVersion } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
-import Activity from "../../../models/profile/Activity"
+import Activity from "../../../models/profile/data/Activity"
 
 export type DotTooltipProps = {
     offset: {

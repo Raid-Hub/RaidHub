@@ -1,10 +1,10 @@
 import { Collection } from "@discordjs/collection"
-import ActivityFilterBuilder, {
+import GroupActivityFilter, {
     ActivityFilterCombinator
-} from "../../models/profile/ActivityFilterBuilder"
-import HighOrderActivityFilter from "../../models/profile/HighOrderActivityFilter"
-import NotActivityFilter from "../../models/profile/NotActivityFilter"
-import SingleActivityFilter from "../../models/profile/SingleActivityFilter"
+} from "../../models/profile/filters/GroupActivityFilter"
+import HighOrderActivityFilter from "../../models/profile/filters/HighOrderActivityFilter"
+import NotActivityFilter from "../../models/profile/filters/NotActivityFilter"
+import SingleActivityFilter from "../../models/profile/filters/SingleActivityFilter"
 import { FilterCallback } from "../../types/generic"
 import { ActivityFilter, ExtendedActivity } from "../../types/profile"
 import { Difficulty } from "../../types/raids"
@@ -46,7 +46,7 @@ export const FiltersToSelectFrom = new Collection<string, () => ActivityFilter>(
     [
         "any lowman",
         () =>
-            new ActivityFilterBuilder("|", [
+            new GroupActivityFilter("|", [
                 new HighOrderActivityFilter(FilterOption.LOWMAN, 3),
                 new HighOrderActivityFilter(FilterOption.LOWMAN, 2),
                 new HighOrderActivityFilter(FilterOption.LOWMAN, 1)
@@ -58,18 +58,18 @@ export const FiltersToSelectFrom = new Collection<string, () => ActivityFilter>(
     ["min time", () => new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300)],
     ["master", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER)],
     ["prestige", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE)],
-    ["or", () => new ActivityFilterBuilder("|", [])],
-    ["and", () => new ActivityFilterBuilder("&", [])],
+    ["or", () => new GroupActivityFilter("|", [])],
+    ["and", () => new GroupActivityFilter("&", [])],
     ["not", () => new NotActivityFilter(null)]
 ])
 
 // min 5 mins played or lowman
-export const DefaultActivityFilters: ActivityFilter = new ActivityFilterBuilder("|", [
-    new ActivityFilterBuilder("&", [
+export const DefaultActivityFilters: ActivityFilter = new GroupActivityFilter("|", [
+    new GroupActivityFilter("&", [
         FiltersToSelectFrom.get("any lowman")!(),
         new SingleActivityFilter(FilterOption.SUCCESS)
     ]),
-    new ActivityFilterBuilder("&", [
+    new GroupActivityFilter("&", [
         new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300),
         new NotActivityFilter(FiltersToSelectFrom.get("any lowman")!())
     ])
@@ -121,7 +121,7 @@ export function decodeFilters(from: string): ActivityFilter {
             }
             i++
         }
-        return new ActivityFilterBuilder(
+        return new GroupActivityFilter(
             combinator ?? "&",
             elements.map(e => decodeFilters(e))
         )

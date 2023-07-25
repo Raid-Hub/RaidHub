@@ -1,10 +1,10 @@
 import { v4 } from "uuid"
-import { ActivityFilter, ExtendedActivity } from "../../types/profile"
+import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
 import { Collection } from "@discordjs/collection"
 
 export type ActivityFilterCombinator = "|" | "&"
 
-export default class ActivityFilterBuilder implements ActivityFilter {
+export default class GroupActivityFilter implements ActivityFilter {
     combinator: ActivityFilterCombinator
     children: Collection<string, ActivityFilter>
     id: string
@@ -47,7 +47,7 @@ export default class ActivityFilterBuilder implements ActivityFilter {
     }
 
     deepClone(): ActivityFilter {
-        return new ActivityFilterBuilder(
+        return new GroupActivityFilter(
             this.combinator,
             this.children.map(c => c.deepClone())
         )

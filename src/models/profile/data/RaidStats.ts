@@ -1,5 +1,5 @@
-import { DestinyHistoricalStatsDictionary, IRaidStats, RaidData } from "../../types/profile"
-import { Difficulty, Raid } from "../../types/raids"
+import { DestinyHistoricalStatsDictionary, IRaidStats, RaidData } from "../../../types/profile"
+import { Difficulty, Raid } from "../../../types/raids"
 
 export default class RaidStats implements RaidData<DestinyHistoricalStatsDictionary>, IRaidStats {
     raid: Raid

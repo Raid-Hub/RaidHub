@@ -3,7 +3,7 @@ import Loading from "../../global/Loading"
 import ActivityTile from "./ActivityTile"
 import { useState } from "react"
 import { Raid } from "../../../types/raids"
-import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { useLocale } from "../../app/LanguageProvider"
 import { ExtendedActivity } from "../../../types/profile"
 

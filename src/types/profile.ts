@@ -1,5 +1,5 @@
 import { Difficulty, Raid } from "./raids"
-import RaidStatsCollection from "../models/profile/RaidStatsCollection"
+import RaidStatsCollection from "../models/profile/data/RaidStatsCollection"
 import { Socials } from "../util/profile/socials"
 import {
     BungieMembershipType,
@@ -7,10 +7,10 @@ import {
     DestinyProfileComponent,
     GroupV2
 } from "bungie-net-core/lib/models"
-import RaidReportDataCollection from "../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../models/profile/data/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/clanBanner"
-import Activity from "../models/profile/Activity"
+import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
 
 export type ProfileComponent = DestinyProfileComponent & {
