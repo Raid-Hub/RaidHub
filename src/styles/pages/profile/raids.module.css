@@ -156,17 +156,22 @@
 }
 
 .blinking-dot circle {
-    transition: r 0.5s ease-in-out;
-    animation: blink 0.5s alternate infinite ease-in-out;
-    r: 10;
+    animation: blink 1s infinite ease-in-out;
 }
 
 @keyframes blink {
     0% {
-        fill: #ffffff;
+        r: 6.5;
+        opacity: 1;
+    }
+    50% {
+        r: 9;
+        opacity: 0.7;
+        fill: rgba(255,255,255, 0.7);
     }
     100% {
-        fill: #bdf4ff;
+        r: 6.5;
+        opacity: 1;
     }
 }
 
