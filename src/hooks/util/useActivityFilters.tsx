@@ -14,8 +14,8 @@ export const useActivityFilters = (): [
 
     useEffect(() => {
         const allFilters = localStorage.getItem(KEY_ACTIVITY_FILTER)
-        if (allFilters) {
-            const cached = decodeFilters(allFilters)
+        if (allFilters !== null) {
+            const cached = decodeFilters(JSON.parse(allFilters))
             setActiveFilter(cached)
         } else {
             setActiveFilter(DefaultActivityFilters)
@@ -25,8 +25,8 @@ export const useActivityFilters = (): [
 
     const saveFilter = (filter: ActivityFilter | null) => {
         filter
-            ? localStorage.setItem(KEY_ACTIVITY_FILTER, filter.encode())
-            : localStorage.removeItem(KEY_ACTIVITY_FILTER)
+            ? localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter.encode()))
+            : localStorage.setItem(KEY_ACTIVITY_FILTER, "")
     }
 
     return [

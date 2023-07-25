@@ -65,13 +65,8 @@ const DotGraphWrapper = ({
     const activitiesFiltered = useMemo(() => {
         if (activities && report) {
             return activities
-                .map(
-                    a =>
-                        ({
-                            activity: a,
-                            extended: report.eveythingFor(a.instanceId)
-                        } satisfies ExtendedActivity)
-                )
+                .map(a => report.eveythingFor(a))
+
                 .filter(filter)
         } else {
             return null

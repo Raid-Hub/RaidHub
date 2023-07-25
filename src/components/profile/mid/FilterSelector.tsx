@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
 import GroupActivityFilter from "../../../models/profile/filters/GroupActivityFilter"
@@ -6,6 +6,9 @@ import NotActivityFilter from "../../../models/profile/filters/NotActivityFilter
 import HighOrderActivityFilter from "../../../models/profile/filters/HighOrderActivityFilter"
 import SingleActivityFilter from "../../../models/profile/filters/SingleActivityFilter"
 import FilterSelectorMenu from "./FilterSelectorMenu"
+import { useLocale } from "../../app/LanguageProvider"
+import { DefaultActivityFilters } from "../../../util/profile/activityFilters"
+import { useForm } from "react-hook-form"
 
 type FilterSelectorProps = {
     activeFilter: ActivityFilter | null
@@ -13,58 +16,89 @@ type FilterSelectorProps = {
 }
 
 const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) => {
+    const { strings } = useLocale()
     const [currentFilter, setCurrentFilter] = useState(activeFilter?.deepClone() ?? null)
-    const [isShowingSelect, setIsShowingSelect] = useState(false)
-    const handleButtonPress = (save?: boolean) => {
+    const [handleSelect, _setHandleSelect] = useState<((newFilter: ActivityFilter) => void) | null>(
+        null
+    )
+    // have to do this because state handlers cant directly accept a function
+    const setHandleSelect = (handler: ((newFilter: ActivityFilter) => void) | null): void => {
+        _setHandleSelect((_: any) => handler)
+    }
+
+    const handleCloseEditModal = (save: boolean) => {
         if (save) {
             setActiveFilter(currentFilter?.deepClone() ?? null)
-        } else if (isEditing) {
+        } else {
             setCurrentFilter(activeFilter?.deepClone() ?? null)
         }
-        setIsEditing(old => !old)
+        setIsEditing(false)
     }
 
     const refreshCurrentFilter = () => setCurrentFilter(old => old?.deepClone() ?? null)
 
     const [isEditing, setIsEditing] = useState(false)
 
-    const removeFilter = () => {
-        setCurrentFilter(null)
-    }
+    const removeFilter = () => setCurrentFilter(null)
+
+    const activeFilterStr = useMemo(() => {
+        const str = activeFilter?.stringify() ?? strings.none
+        if (str.length > 20) {
+            return strings.clickToView
+        } else {
+            return str
+        }
+    }, [activeFilter, strings])
+
     return (
-        <div className={styles["filter-selector"]}>
-            {isEditing && <button onClick={() => setIsShowingSelect(true)}>New</button>}
-            {currentFilter ? (
-                <GenericFilterComponent
-                    filter={currentFilter}
-                    isEditing={isEditing}
-                    depth={0}
-                    canRemove={true}
-                    removeFromParent={removeFilter}
-                    refreshCurrentFilter={refreshCurrentFilter}
-                />
-            ) : (
-                <div>No Filter</div>
-            )}
-            {isEditing ? (
-                <>
-                    <button onClick={() => handleButtonPress(true)}>Save</button>
-                    {/* <button onClick={() => handleButtonPress(true)}>Save New</button> */}
-                    <button onClick={() => handleButtonPress(false)}>Cancel</button>
-                </>
-            ) : (
-                <button type="button" onClick={() => handleButtonPress(false)}>
-                    Edit
-                </button>
-            )}
-            {isShowingSelect && (
-                <FilterSelectorMenu
-                    handleSelect={newFilter => {
-                        setIsShowingSelect(false)
-                        setCurrentFilter(newFilter)
-                    }}
-                    handleClickAway={() => setIsShowingSelect(false)}
-                />
+        <div className={styles["filter-view"]} onClick={() => !isEditing && setIsEditing(true)}>
+            <div className={styles["filter-view-content"]}>
+                <h3>{strings.activeFilters}</h3>
+                <div className={styles["filter-view-desc"]}>{activeFilterStr}</div>
+            </div>
+
+            {isEditing && (
+                <div className={styles["filter-selector"]}>
+                    <div className={styles["filter-selector-buttons"]}>
+                        <button onClick={() => handleCloseEditModal(true)}>Save</button>
+                        <button onClick={() => handleCloseEditModal(false)}>Cancel</button>
+                        <button onClick={() => removeFilter()}>Clear</button>
+                        <button onClick={() => setCurrentFilter(DefaultActivityFilters)}>
+                            Reset to Default
+                        </button>
+                    </div>
+                    {currentFilter ? (
+                        <GenericFilterComponent
+                            filter={currentFilter}
+                            depth={0}
+                            canRemove={true}
+                            removeFromParent={removeFilter}
+                            refreshCurrentFilter={refreshCurrentFilter}
+                            setHandleSelect={setHandleSelect}
+                        />
+                    ) : (
+                        <div className={styles["no-filter"]}>
+                            <div>No Filter</div>
+                            <button
+                                onClick={() => {
+                                    setHandleSelect((newFilter: ActivityFilter) => {
+                                        setCurrentFilter(newFilter)
+                                    })
+                                }}>
+                                +
+                            </button>
+                        </div>
+                    )}
+                    {handleSelect && (
+                        <FilterSelectorMenu
+                            handleSelect={e => {
+                                handleSelect?.(e)
+                                setHandleSelect(null)
+                            }}
+                            handleClickAway={() => setHandleSelect(null)}
+                        />
+                    )}
+                </div>
             )}
         </div>
     )
@@ -72,11 +106,11 @@ const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) 
 
 type GenericFilterComponentProps<F extends ActivityFilter = ActivityFilter> = {
     filter: F
-    isEditing: boolean
     depth: number
     canRemove: boolean
     removeFromParent?(): void
     refreshCurrentFilter(): void
+    setHandleSelect(handler: (newFilter: ActivityFilter) => void): void
 }
 
 const GenericFilterComponent = (props: GenericFilterComponentProps) => {
@@ -94,74 +128,72 @@ const GenericFilterComponent = (props: GenericFilterComponentProps) => {
 }
 
 const GroupFilterComponent = ({
-    isEditing,
     canRemove,
     filter,
     depth,
     removeFromParent,
-    refreshCurrentFilter
+    refreshCurrentFilter,
+    setHandleSelect
 }: GenericFilterComponentProps<GroupActivityFilter>) => {
-    const [isShowingSelect, setIsShowingSelect] = useState(false)
     const removeChild = (id: string) => {
         filter.children.delete(id)
         refreshCurrentFilter()
     }
     return (
         <div className={styles["filter-item"]}>
-            {canRemove && isEditing && (
+            {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
                 </button>
+            )}
+            {filter.children.size === 0 && (
+                <div className={styles["filter-combinator"]}>
+                    {filter.combinator == "|" ? "OR" : "AND"}
+                </div>
             )}
             {Array.from(filter.children).map(([id, childFilter], idx) => (
                 <React.Fragment key={id}>
                     <GenericFilterComponent
                         filter={childFilter}
-                        isEditing={isEditing}
                         depth={depth + 1}
                         canRemove={true}
                         removeFromParent={() => removeChild(id)}
                         refreshCurrentFilter={refreshCurrentFilter}
+                        setHandleSelect={setHandleSelect}
                     />
-                    {(isEditing || idx < filter.children.size - 1) && (
-                        <div className={styles["filter-combinator"]}>
-                            {filter.combinator == "|" ? "OR" : "AND"}
-                        </div>
-                    )}
+                    <div className={styles["filter-combinator"]}>
+                        {filter.combinator == "|" ? "OR" : "AND"}
+                    </div>
                 </React.Fragment>
             ))}
-            {isEditing && <button onClick={() => setIsShowingSelect(true)}>+</button>}
-            {isShowingSelect && (
-                <FilterSelectorMenu
-                    handleSelect={newFilter => {
-                        setIsShowingSelect(false)
+            <button
+                onClick={() => {
+                    setHandleSelect(newFilter => {
                         filter.children.set(newFilter.id, newFilter)
                         refreshCurrentFilter()
-                    }}
-                    handleClickAway={() => setIsShowingSelect(false)}
-                />
-            )}
+                    })
+                }}>
+                +
+            </button>
         </div>
     )
 }
 
 const NotFilterComponent = ({
     canRemove,
-    isEditing,
     filter,
     depth,
     removeFromParent,
-    refreshCurrentFilter
+    refreshCurrentFilter,
+    setHandleSelect
 }: GenericFilterComponentProps<NotActivityFilter>) => {
-    const [isShowingSelect, setIsShowingSelect] = useState(false)
-
     const removeChild = () => {
         filter.child = null
         refreshCurrentFilter()
     }
     return (
         <div className={[styles["filter-item"], styles["filter-not"]].join(" ")}>
-            {canRemove && isEditing && (
+            {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
                 </button>
@@ -170,24 +202,21 @@ const NotFilterComponent = ({
             {filter.child ? (
                 <GenericFilterComponent
                     filter={filter.child}
-                    isEditing={isEditing}
                     depth={depth + 1}
                     canRemove={true}
                     removeFromParent={removeChild}
                     refreshCurrentFilter={refreshCurrentFilter}
+                    setHandleSelect={setHandleSelect}
                 />
             ) : (
-                isEditing && <button onClick={() => setIsShowingSelect(true)}>+</button>
-            )}
-            {isShowingSelect && (
-                <FilterSelectorMenu
-                    handleSelect={newFilter => {
-                        setIsShowingSelect(false)
-                        filter.child = newFilter
-                        refreshCurrentFilter()
-                    }}
-                    handleClickAway={() => setIsShowingSelect(false)}
-                />
+                <button
+                    onClick={() =>
+                        setHandleSelect(newFilter => {
+                            filter.child = newFilter
+                        })
+                    }>
+                    +
+                </button>
             )}
         </div>
     )
@@ -195,21 +224,31 @@ const NotFilterComponent = ({
 
 const HighOrderFilterComponent = ({
     canRemove,
-    isEditing,
     filter,
     removeFromParent
 }: GenericFilterComponentProps<HighOrderActivityFilter>) => {
+    const { strings } = useLocale()
+    const { handleSubmit, register } = useForm({
+        defaultValues: {
+            value: filter.value
+        }
+    })
+    const enteredValue = async ({ value }: { value: any }) => {
+        filter.value = Number(value)
+    }
+
     return (
         <div className={styles["filter-item"]}>
-            {canRemove && isEditing && (
+            {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
                 </button>
             )}
-            <p>{filter.key}</p>
-            <p>
-                <b>{filter.value}</b>
-            </p>
+            <p>{strings.activityFilters[filter.key]}</p>
+            <form onSubmit={handleSubmit(enteredValue)}>
+                <input type="number" id="value" inputMode="numeric" {...register("value")} />
+                <button type="submit">save</button>
+            </form>
         </div>
     )
 }
@@ -217,12 +256,11 @@ const HighOrderFilterComponent = ({
 const SingleFilterComponent = ({
     canRemove,
     filter,
-    isEditing,
     removeFromParent
 }: GenericFilterComponentProps<SingleActivityFilter>) => {
     return (
         <div className={styles["filter-item"]}>
-            {canRemove && isEditing && (
+            {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
                 </button>

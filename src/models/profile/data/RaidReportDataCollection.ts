@@ -1,5 +1,6 @@
 import { Collection } from "@discordjs/collection"
 import {
+    ExtendedActivity,
     IRaidReportActivity,
     IRaidReportData,
     LowManActivity,
@@ -11,6 +12,7 @@ import { Difficulty } from "../../../types/raids"
 import { isBestTag } from "../../../util/raidhub/tags"
 import RaidReportData from "./RaidReportData"
 import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
+import Activity from "./Activity"
 
 export default class RaidReportDataCollection
     extends AbstractRaidDataCollection<RaidReportData, RaidReportPlayerValues>
@@ -20,13 +22,16 @@ export default class RaidReportDataCollection
         this.set(difficulty, new RaidReportData(values, this.raid, difficulty))
     }
 
-    eveythingFor(activityId: string) {
+    eveythingFor(activity: Activity): ExtendedActivity {
         return {
-            playerCount: 6,
-            fresh: false,
-            flawless: this.flawlessActivities.has(activityId),
-            ...(this.flawlessActivities.get(activityId) ?? {}),
-            ...(this.lowmanActivities.get(activityId) ?? {})
+            activity,
+            extended: {
+                playerCount: activity.playerCount,
+                fresh: false,
+                flawless: this.flawlessActivities.has(activity.instanceId),
+                ...(this.flawlessActivities.get(activity.instanceId) ?? {}),
+                ...(this.lowmanActivities.get(activity.instanceId) ?? {})
+            }
         }
     }
 

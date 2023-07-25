@@ -21,11 +21,15 @@ export default class HighOrderActivityFilter<T = any> implements ActivityFilter 
         return this.highOrderFunc(this.value)(a)
     }
 
-    encode(): string {
-        return `{${this.key}:${JSON.stringify(this.value)}}`
+    encode() {
+        return [this.key, JSON.stringify(this.value)]
     }
 
     deepClone(): ActivityFilter {
         return new HighOrderActivityFilter(this.key, this.value)
+    }
+
+    stringify(): string {
+        return `{${this.key}: ${JSON.stringify(this.value)}}`
     }
 }

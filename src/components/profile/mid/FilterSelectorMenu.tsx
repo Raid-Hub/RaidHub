@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useRef } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
-import { FiltersToSelectFrom } from "../../../util/profile/activityFilters"
+import { FilterListName, FiltersToSelectFrom } from "../../../util/profile/activityFilters"
+import { useLocale } from "../../app/LanguageProvider"
 
 type FilterSelectorMenuProps = {
     handleSelect(element: ActivityFilter): void
     handleClickAway(): void
 }
 const FilterSelectorMenu = ({ handleSelect, handleClickAway }: FilterSelectorMenuProps) => {
-    const divRef = useRef<HTMLDivElement | null>(null)
+    const { strings } = useLocale()
+    const listRef = useRef<HTMLUListElement | null>(null)
 
     const handleClickOutside = useCallback(
         (event: MouseEvent) => {
-            if (divRef.current && !divRef.current.contains(event.target as Node)) {
+            if (listRef.current && !listRef.current.contains(event.target as Node)) {
                 handleClickAway()
             }
         },
@@ -29,13 +31,13 @@ const FilterSelectorMenu = ({ handleSelect, handleClickAway }: FilterSelectorMen
     }, [handleClickOutside])
 
     return (
-        <div ref={divRef} className={styles["filter-selector-menu"]}>
-            {FiltersToSelectFrom.map((selection, key) => (
-                <div key={key} onClick={() => handleSelect(selection())}>
-                    {key}
-                </div>
+        <ul ref={listRef} className={styles["filter-selector-menu"]}>
+            {Object.entries(FiltersToSelectFrom).map(([key, selection]) => (
+                <li key={key} onClick={() => handleSelect(selection())}>
+                    {strings.filterNames[Number(key) as FilterListName]}
+                </li>
             ))}
-        </div>
+        </ul>
     )
 }
 

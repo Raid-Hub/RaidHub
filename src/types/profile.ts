@@ -121,6 +121,7 @@ export type ExtendedActivity = {
 export interface ActivityFilter {
     id: string
     predicate: FilterCallback<ExtendedActivity>
-    encode(): string
+    stringify(): string
+    encode(): Object
     deepClone(): ActivityFilter
 }

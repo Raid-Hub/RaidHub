@@ -12,12 +12,11 @@ import { Difficulty } from "../../types/raids"
 export enum FilterOption {
     SUCCESS = "Success",
     FLAWLESS = "Flawless",
-    LOWMAN = "Lowman",
     TRIO = "Trio",
     DUO = "Duo",
     SOLO = "Solo",
     DIFFICULTY = "Difficulty",
-    MIN_SECS_PLAYED = "Min Secs Played"
+    MIN_MINS_PLAYED = "MinMins"
 }
 
 export const HighOrderActivityFilters = {
@@ -25,53 +24,68 @@ export const HighOrderActivityFilters = {
         (difficulty: Difficulty) =>
         ({ activity }: ExtendedActivity) =>
             difficulty === activity.difficulty,
-    [FilterOption.MIN_SECS_PLAYED]:
-        (seconds: number) =>
+    [FilterOption.MIN_MINS_PLAYED]:
+        (minutes: number) =>
         ({ activity }: ExtendedActivity) =>
-            activity.durationSeconds >= seconds,
-    [FilterOption.LOWMAN]:
-        (playerCount: number) =>
-        ({ extended }: ExtendedActivity) =>
-            extended.playerCount === playerCount
+            activity.durationSeconds >= minutes / 60
 } satisfies Record<string, (arg: any) => FilterCallback<ExtendedActivity>>
 
 export const SingleActivityFilters = {
     [FilterOption.SUCCESS]: ({ activity }: ExtendedActivity) => !!activity.completed,
-    [FilterOption.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless
+    [FilterOption.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless,
+    [FilterOption.TRIO]: ({ extended }: ExtendedActivity) => extended.playerCount === 3,
+    [FilterOption.DUO]: ({ extended }: ExtendedActivity) => extended.playerCount === 2,
+    [FilterOption.SOLO]: ({ extended }: ExtendedActivity) => extended.playerCount === 1
 } satisfies Record<string, FilterCallback<ExtendedActivity>>
 
-export const FiltersToSelectFrom = new Collection<string, () => ActivityFilter>([
-    ["success", () => new SingleActivityFilter(FilterOption.SUCCESS)],
-    ["flawless", () => new SingleActivityFilter(FilterOption.FLAWLESS)],
-    [
-        "any lowman",
-        () =>
-            new GroupActivityFilter("|", [
-                new HighOrderActivityFilter(FilterOption.LOWMAN, 3),
-                new HighOrderActivityFilter(FilterOption.LOWMAN, 2),
-                new HighOrderActivityFilter(FilterOption.LOWMAN, 1)
-            ])
-    ],
-    ["solo", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 1)],
-    ["duo", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 2)],
-    ["trio", () => new HighOrderActivityFilter(FilterOption.LOWMAN, 3)],
-    ["min time", () => new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300)],
-    ["master", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER)],
-    ["prestige", () => new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE)],
-    ["or", () => new GroupActivityFilter("|", [])],
-    ["and", () => new GroupActivityFilter("&", [])],
-    ["not", () => new NotActivityFilter(null)]
-])
+export enum FilterListName {
+    Or,
+    And,
+    Not,
+    Success,
+    Incomplete,
+    Flawless,
+    AnyLowman,
+    Solo,
+    Duo,
+    Trio,
+    MinMinutes,
+    Master,
+    Prestige
+}
+export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> = {
+    [FilterListName.Success]: () => new SingleActivityFilter(FilterOption.SUCCESS),
+    [FilterListName.Incomplete]: () =>
+        new NotActivityFilter(new SingleActivityFilter(FilterOption.SUCCESS)),
+    [FilterListName.Flawless]: () => new SingleActivityFilter(FilterOption.FLAWLESS),
+    [FilterListName.AnyLowman]: () =>
+        new GroupActivityFilter("|", [
+            new SingleActivityFilter(FilterOption.SOLO),
+            new SingleActivityFilter(FilterOption.DUO),
+            new SingleActivityFilter(FilterOption.TRIO)
+        ]),
+    [FilterListName.Solo]: () => new SingleActivityFilter(FilterOption.SOLO),
+    [FilterListName.Duo]: () => new SingleActivityFilter(FilterOption.DUO),
+    [FilterListName.Trio]: () => new SingleActivityFilter(FilterOption.TRIO),
+    [FilterListName.MinMinutes]: () => new HighOrderActivityFilter(FilterOption.MIN_MINS_PLAYED, 5),
+    [FilterListName.Master]: () =>
+        new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER),
+    [FilterListName.Prestige]: () =>
+        new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE),
+    [FilterListName.Or]: () => new GroupActivityFilter("|", []),
+    [FilterListName.And]: () => new GroupActivityFilter("&", []),
+    [FilterListName.Not]: () => new NotActivityFilter(null)
+}
 
 // min 5 mins played or lowman
-export const DefaultActivityFilters: ActivityFilter = new GroupActivityFilter("|", [
+export const DefaultActivityFilters = new GroupActivityFilter("|", [
     new GroupActivityFilter("&", [
-        FiltersToSelectFrom.get("any lowman")!(),
-        new SingleActivityFilter(FilterOption.SUCCESS)
+        FiltersToSelectFrom[FilterListName.AnyLowman](),
+        FiltersToSelectFrom[FilterListName.Success]()
     ]),
     new GroupActivityFilter("&", [
-        new HighOrderActivityFilter(FilterOption.MIN_SECS_PLAYED, 300),
-        new NotActivityFilter(FiltersToSelectFrom.get("any lowman")!())
+        FiltersToSelectFrom[FilterListName.MinMinutes](),
+        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]())
     ])
 ])
 
@@ -83,48 +97,32 @@ const bracketInverse = {
     ")": "("
 } as Record<string, string>
 
-export function decodeFilters(from: string): ActivityFilter {
-    if (from.startsWith("<")) {
-        return new NotActivityFilter(decodeFilters(from.substring(1, from.length - 1)))
-    } else if (from.startsWith("(")) {
-        return new SingleActivityFilter(
-            from.substring(1, from.length - 1) as keyof typeof SingleActivityFilters
-        )
-    } else if (from.startsWith("{")) {
-        const splitter = from.indexOf(":")
-        return new HighOrderActivityFilter(
-            from.substring(1, splitter) as keyof typeof HighOrderActivityFilters,
-            JSON.parse(from.substring(splitter + 1, from.length - 1))
-        )
-    } else if (from.startsWith("[")) {
-        let i = 1
-        let combinator: ActivityFilterCombinator | undefined = undefined
-        const elements = []
-        while (i < from.length - 1) {
-            const start = i
-            let stack = new Array<string>(from[i])
-            i++
-            while (stack.length && i < from.length - 1) {
-                if (
-                    bracketInverse[from[i]] !== undefined &&
-                    bracketInverse[from[i]] === stack[stack.length - 1]
-                ) {
-                    stack.pop()
-                } else if (brackets.includes(from[i])) {
-                    stack.push(from[i])
+export function decodeFilters(json: any): ActivityFilter | null {
+    if (!json) return null
+    try {
+        switch (typeof json) {
+            case "object":
+                if (json["|"] && Array.isArray(json["|"])) {
+                    return new GroupActivityFilter("|", json["|"].map(decodeFilters))
+                } else if (json["&"] && Array.isArray(json["&"])) {
+                    return new GroupActivityFilter("&", json["&"].map(decodeFilters))
+                } else if (json["not"]) {
+                    return new NotActivityFilter(decodeFilters(json["not"]))
+                } else if (Array.isArray(json)) {
+                    const [key, value] = json
+                    return new HighOrderActivityFilter(
+                        key as unknown as keyof typeof HighOrderActivityFilters,
+                        value
+                    )
                 }
-                i++
-            }
-            elements.push(from.substring(start, i))
-            if (i < from.length - 1) {
-                combinator = from[i] as ActivityFilterCombinator
-            }
-            i++
+            case "string":
+                return new SingleActivityFilter(
+                    json as unknown as keyof typeof SingleActivityFilters
+                )
         }
-        return new GroupActivityFilter(
-            combinator ?? "&",
-            elements.map(e => decodeFilters(e))
-        )
+        return null
+    } catch (e) {
+        console.error(e)
+        return DefaultActivityFilters
     }
-    throw new Error("Error decoding filter: no braces " + from)
 }

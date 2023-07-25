@@ -12,7 +12,7 @@
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
     --modal-background: rgba(48, 48, 48, 0.253);
-    --modal-background-opaque: rgba(48, 48, 48, 0.738);
+    --modal-background-opaque: rgba(48, 48, 48, 0.929);
 }
 
 @media (prefers-color-scheme: light) {

@@ -14,11 +14,17 @@ export default class NotActivityFilter implements ActivityFilter {
         return !(this.child?.predicate(a) ?? false)
     }
 
-    encode(): string {
-        return `<${this.child?.encode() ?? ""}>`
+    encode() {
+        return {
+            not: this.child?.encode() ?? null
+        }
     }
 
     deepClone(): ActivityFilter {
         return new NotActivityFilter(this.child?.deepClone() ?? null)
+    }
+
+    stringify(): string {
+        return `(not ${this.child?.stringify() ?? ""})`
     }
 }

@@ -9,14 +9,12 @@ export default class GroupActivityFilter implements ActivityFilter {
     children: Collection<string, ActivityFilter>
     id: string
 
-    constructor(combinator: ActivityFilterCombinator, children: ActivityFilter[]) {
+    constructor(combinator: ActivityFilterCombinator, children: (ActivityFilter | null)[]) {
         this.combinator = combinator
-        this.children = new Collection(children.map(c => [c.id, c]))
+        this.children = new Collection(
+            (children.filter(c => Boolean(c)) as ActivityFilter[]).map(c => [c.id, c])
+        )
         this.id = v4()
-    }
-
-    apply(arr: ExtendedActivity[]) {
-        return arr.filter(this.predicate)
     }
 
     predicate(a: ExtendedActivity) {
@@ -40,10 +38,10 @@ export default class GroupActivityFilter implements ActivityFilter {
         }
     }
 
-    encode(): string {
-        return `[${Array.from(this.children.values())
-            .map(c => c.encode())
-            .join(this.combinator)}]`
+    encode() {
+        return {
+            [this.combinator]: Array.from(this.children.values()).map(c => c.encode())
+        }
     }
 
     deepClone(): ActivityFilter {
@@ -51,5 +49,11 @@ export default class GroupActivityFilter implements ActivityFilter {
             this.combinator,
             this.children.map(c => c.deepClone())
         )
+    }
+
+    stringify(): string {
+        return `(${Array.from(this.children.values())
+            .map(c => c.stringify())
+            .join(` ${this.combinator === "&" ? "and" : "or"} `)})`
     }
 }

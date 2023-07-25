@@ -147,10 +147,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     isPinned={!!raidHubProfile?.pinnedActivity}
                     errorHandler={errorHandler}
                 />
+                <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
                 {!isLoadingFilters && (
                     <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
                 )}
-                <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
             </section>
 
             <section className={styles["raids"]}>

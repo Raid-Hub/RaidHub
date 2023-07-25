@@ -14,11 +14,15 @@ export default class SingleActivityFilter implements ActivityFilter {
         this.id = v4()
     }
 
-    encode(): string {
-        return `(${this.key})`
+    encode() {
+        return this.key
     }
 
     deepClone(): ActivityFilter {
         return new SingleActivityFilter(this.key)
+    }
+
+    stringify(): string {
+        return this.key
     }
 }
