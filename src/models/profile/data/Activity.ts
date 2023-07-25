@@ -41,7 +41,8 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     }
 
     get playerCount() {
-        return this.values.playerCount.basic.value
+        const count = this.values.playerCount.basic.value
+        return count < 0 ? Infinity : count
     }
 
     static collection(array: DestinyHistoricalStatsPeriodGroup[]): Collection<string, Activity> {
