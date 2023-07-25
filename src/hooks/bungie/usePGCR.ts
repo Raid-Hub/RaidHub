@@ -35,7 +35,6 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                     string,
                     [UserInfoCard, DestinyCharacterComponent | null]
                 >()
-                console.log(pgcr.entries.length)
                 if (pgcr.entries.length < 50) {
                     await Promise.all(
                         pgcr.entries.map(async entry => {

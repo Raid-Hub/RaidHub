@@ -1,7 +1,4 @@
-import { Collection } from "@discordjs/collection"
-import GroupActivityFilter, {
-    ActivityFilterCombinator
-} from "../../models/profile/filters/GroupActivityFilter"
+import GroupActivityFilter from "../../models/profile/filters/GroupActivityFilter"
 import HighOrderActivityFilter from "../../models/profile/filters/HighOrderActivityFilter"
 import NotActivityFilter from "../../models/profile/filters/NotActivityFilter"
 import SingleActivityFilter from "../../models/profile/filters/SingleActivityFilter"
