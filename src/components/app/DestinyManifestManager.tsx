@@ -42,7 +42,13 @@ const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
             .catch(e =>
                 CustomError.handle(
                     () =>
-                        console.error("Failed to download Destiny 2 manifest. Reload to try again"),
+                        console.error(
+                            `Failed to download Destiny 2 manifest: ${e.message} ${
+                                oldVersion
+                                    ? "Using cached version."
+                                    : "No cached version available."
+                            }`
+                        ),
                     e,
                     ErrorCode.Manifest
                 )

@@ -4,8 +4,8 @@ import {
     DestinyHistoricalStatsPeriodGroup,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/lib/models"
-import { AvailableRaid, Difficulty } from "../../types/raids"
-import { raidTupleFromHash } from "../../util/destiny/raid"
+import { AvailableRaid, Difficulty } from "../../../types/raids"
+import { raidTupleFromHash } from "../../../util/destiny/raid"
 
 export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     readonly period: string
@@ -31,12 +31,18 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     get completed() {
         return !!this.values.completed.basic.value
     }
+
     get durationSeconds() {
         return this.values.activityDurationSeconds.basic.value
     }
 
     get instanceId() {
         return this.activityDetails.instanceId
+    }
+
+    get playerCount() {
+        const count = this.values.playerCount.basic.value
+        return count < 0 ? Infinity : count
     }
 
     static collection(array: DestinyHistoricalStatsPeriodGroup[]): Collection<string, Activity> {

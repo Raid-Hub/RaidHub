@@ -17,6 +17,8 @@ import Raids from "./raids/Raids"
 import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
+import FilterSelector from "./mid/FilterSelector"
+import { useActivityFilters } from "../../hooks/util/useActivityFilters"
 
 export enum Layout {
     DotCharts,
@@ -90,6 +92,8 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         setLayout(newState)
     }
 
+    const [activeFilter, setActiveFilter, isLoadingFilters] = useActivityFilters()
+
     const name =
         primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
         primaryDestinyProfile?.userInfo.displayName
@@ -144,6 +148,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     errorHandler={errorHandler}
                 />
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
+                {!isLoadingFilters && (
+                    <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+                )}
             </section>
 
             <section className={styles["raids"]}>
@@ -151,6 +158,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     membershipId={destinyMembershipId}
                     characterMemberships={characterMemberships}
                     layout={layout}
+                    filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={raidMetrics}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}

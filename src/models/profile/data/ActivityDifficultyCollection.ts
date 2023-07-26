@@ -1,9 +1,9 @@
-import { RaidData } from "../../types/profile"
-import { Difficulty, Raid } from "../../types/raids"
+import { RaidData } from "../../../types/profile"
+import { Difficulty, Raid } from "../../../types/raids"
 import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
 import Activity from "./Activity"
 import { Collection } from "@discordjs/collection"
-import { FilterCallback } from "../../types/generic"
+import { FilterCallback } from "../../../types/generic"
 
 export default class ActivityDifficultyCollection
     implements RaidData<DestinyHistoricalStatsPeriodGroup>

@@ -5,9 +5,9 @@ import {
     LowManActivity,
     RaidData,
     SetOfLowmans
-} from "../../types/profile"
-import { RaidReportPlayerValues } from "../../types/raidreport"
-import { Difficulty, Raid } from "../../types/raids"
+} from "../../../types/profile"
+import { RaidReportPlayerValues } from "../../../types/raidreport"
+import { Difficulty, Raid } from "../../../types/raids"
 
 export default class RaidReportData implements RaidData<RaidReportPlayerValues>, IRaidReportData {
     raid: Raid

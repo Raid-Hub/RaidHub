@@ -5,7 +5,7 @@ import { getPlayer } from "../../services/raidreport/getPlayer"
 import { AllRaidReportData, RankingBannerType } from "../../types/profile"
 import { RaidReportPlayer } from "../../types/raidreport"
 import { Collection } from "@discordjs/collection"
-import RaidReportDataCollection from "../../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../../models/profile/data/RaidReportDataCollection"
 
 type UseRaidReport = (params: {
     destinyMembershipIds: { destinyMembershipId: string }[] | null

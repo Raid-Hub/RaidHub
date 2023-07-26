@@ -7,26 +7,26 @@ import {
 } from "../../../types/raids"
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
-import RaidStatsCollection from "../../../models/profile/RaidStatsCollection"
+import RaidStatsCollection from "../../../models/profile/data/RaidStatsCollection"
 import { useLocale } from "../../app/LanguageProvider"
 import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
-import RaidReportDataCollection from "../../../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
 import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raid"
 import { Collection } from "@discordjs/collection"
-import ActivityCollection from "../../../models/profile/ActivityCollection"
+import ActivityCollection from "../../../models/profile/data/ActivityCollection"
 import { FilterCallback } from "../../../types/generic"
-import Activity from "../../../models/profile/Activity"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
+import { ExtendedActivity } from "../../../types/profile"
 
 type RaidModalProps = {
     raid: AvailableRaid
     allActivities: ActivityCollection | null
-    filter: FilterCallback<Activity> | null
+    filter: FilterCallback<ExtendedActivity>
     stats: RaidStatsCollection | undefined
     report: RaidReportDataCollection | undefined
     isLoadingDots: boolean
@@ -46,14 +46,6 @@ const RaidCard = ({
 }: RaidModalProps) => {
     const { strings } = useLocale()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-
-    const activitiesFiltered = useMemo(() => {
-        if (filter && allActivities) {
-            return allActivities.filtered(filter)
-        } else {
-            return null
-        }
-    }, [filter, allActivities])
 
     const averageClear = useMemo(() => {
         if (report?.fastestFullClear?.value && allActivities) {
@@ -172,8 +164,9 @@ const RaidCard = ({
                 <div className={styles["graph-content"]}>
                     <DotGraphWrapper
                         isLoading={isLoadingDots}
+                        filter={filter}
                         report={report}
-                        dots={activitiesFiltered?.all ?? new Collection()}
+                        activities={allActivities?.all ?? new Collection()}
                         targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>
