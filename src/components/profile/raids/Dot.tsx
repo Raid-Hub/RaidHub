@@ -90,7 +90,7 @@ const Dot = ({
                 setAnimationIsRunning(true)
                 setTimeout(() => {
                     setAnimationIsRunning(false)
-                }, 5000)
+                }, 5000) // Add timeout of 5s to finish animation + some spare time
             }
         }
     }, [isTargeted])
