@@ -55,7 +55,19 @@ const Raids = ({
 
     const allActivitiesFiltered = useMemo(() => {
         if (allActivities && raidReport) {
-            return allActivities.map(a => raidReport.get(a.raid)!.eveythingFor(a)).filter(filter)
+            return allActivities
+                .map(
+                    a =>
+                        raidReport.get(a.raid)?.eveythingFor(a) ?? {
+                            activity: a,
+                            extended: {
+                                fresh: false,
+                                playerCount: a.playerCount,
+                                flawless: false
+                            }
+                        }
+                )
+                .filter(filter)
         } else {
             return null
         }
