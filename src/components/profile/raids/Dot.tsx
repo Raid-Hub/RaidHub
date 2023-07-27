@@ -24,20 +24,20 @@ type DotProps = {
 }
 
 const Dot = ({
-                 index,
-                 activity,
-                 flawless,
-                 playerCount,
-                 centerY,
-                 isTargeted,
-                 setTooltip,
-                 tooltipData
-             }: DotProps) => {
+    index,
+    activity,
+    flawless,
+    playerCount,
+    centerY,
+    isTargeted,
+    setTooltip,
+    tooltipData
+}: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
     const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
-    const [animationIsRunning, setAnimationIsRunning] =useState(false)
+    const [animationIsRunning, setAnimationIsRunning] = useState(false)
     const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
         const containerToEdge =
             currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
@@ -51,10 +51,10 @@ const Dot = ({
                 playerCount === 1
                     ? Tag.SOLO
                     : playerCount === 2
-                        ? Tag.DUO
-                        : playerCount === 3
-                            ? Tag.TRIO
-                            : null,
+                    ? Tag.DUO
+                    : playerCount === 3
+                    ? Tag.TRIO
+                    : null,
             offset: {
                 x: xOffset,
                 y: centerY
@@ -81,16 +81,14 @@ const Dot = ({
                 behavior: "smooth"
             })
 
-            if (!animationIsRunning){
-                console.log(ref.current)
-                console.log(isTargeted)
-                const animation = animate(
+            if (!animationIsRunning) {
+                animate(
                     ref.current,
                     { opacity: [1, 0, 1] },
                     { repeat: 3, duration: 1, type: "tween" }
                 )
                 setAnimationIsRunning(true)
-                setTimeout(()=>{
+                setTimeout(() => {
                     setAnimationIsRunning(false)
                 }, 5000)
             }
