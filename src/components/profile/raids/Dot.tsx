@@ -5,8 +5,8 @@ import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty } from "../../../types/raids"
 import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
-import Activity from "../../../models/profile/Activity"
 import { animate } from "framer-motion"
+import Activity from "../../../models/profile/data/Activity"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -128,7 +128,7 @@ const Dot = ({
                     />
                 )
             )}
-            {details[1] === Difficulty.MASTER && (
+            {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
                 <circle
                     fill="none"
                     stroke="white"

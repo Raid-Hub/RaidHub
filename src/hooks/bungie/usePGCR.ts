@@ -35,26 +35,28 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                     string,
                     [UserInfoCard, DestinyCharacterComponent | null]
                 >()
-                await Promise.all(
-                    pgcr.entries.map(async entry => {
-                        let destinyUserInfo = entry.player.destinyUserInfo
-                        if (!entry.player.destinyUserInfo.membershipType) {
-                            destinyUserInfo = await getLinkedDestinyProfile({
-                                membershipId: entry.player.destinyUserInfo.membershipId,
+                if (pgcr.entries.length < 50) {
+                    await Promise.all(
+                        pgcr.entries.map(async entry => {
+                            let destinyUserInfo = entry.player.destinyUserInfo
+                            if (!entry.player.destinyUserInfo.membershipType) {
+                                destinyUserInfo = await getLinkedDestinyProfile({
+                                    membershipId: entry.player.destinyUserInfo.membershipId,
+                                    client
+                                })
+                            }
+
+                            const character = await getDestinyCharacter({
+                                destinyMembershipId: destinyUserInfo.membershipId,
+                                membershipType: destinyUserInfo.membershipType,
+                                characterId: entry.characterId,
                                 client
-                            })
-                        }
+                            }).catch(deleted => null)
 
-                        const character = await getDestinyCharacter({
-                            destinyMembershipId: destinyUserInfo.membershipId,
-                            membershipType: destinyUserInfo.membershipType,
-                            characterId: entry.characterId,
-                            client
-                        }).catch(deleted => null)
-
-                        hydrationData.set(entry.characterId, [destinyUserInfo, character])
-                    })
-                )
+                            hydrationData.set(entry.characterId, [destinyUserInfo, character])
+                        })
+                    )
+                }
                 pgcr.hydrate(hydrationData)
             } catch (e) {
                 CustomError.handle(errorHandler, e, ErrorCode.PGCRError)

@@ -1,16 +1,18 @@
 import { Collection } from "@discordjs/collection"
 import {
+    ExtendedActivity,
     IRaidReportActivity,
     IRaidReportData,
     LowManActivity,
     RaidTag,
     SetOfLowmans
-} from "../../types/profile"
-import { RaidReportPlayerValues } from "../../types/raidreport"
-import { Difficulty } from "../../types/raids"
-import { isBestTag } from "../../util/raidhub/tags"
+} from "../../../types/profile"
+import { RaidReportPlayerValues } from "../../../types/raidreport"
+import { Difficulty } from "../../../types/raids"
+import { isBestTag } from "../../../util/raidhub/tags"
 import RaidReportData from "./RaidReportData"
 import AbstractRaidDataCollection from "./AbstractRaidDataCollection"
+import Activity from "./Activity"
 
 export default class RaidReportDataCollection
     extends AbstractRaidDataCollection<RaidReportData, RaidReportPlayerValues>
@@ -18,6 +20,19 @@ export default class RaidReportDataCollection
 {
     add(difficulty: Difficulty, values: RaidReportPlayerValues[]) {
         this.set(difficulty, new RaidReportData(values, this.raid, difficulty))
+    }
+
+    eveythingFor(activity: Activity): ExtendedActivity {
+        return {
+            activity,
+            extended: {
+                playerCount: activity.playerCount,
+                fresh: false,
+                flawless: this.flawlessActivities.has(activity.instanceId),
+                ...(this.flawlessActivities.get(activity.instanceId) ?? {}),
+                ...(this.lowmanActivities.get(activity.instanceId) ?? {})
+            }
+        }
     }
 
     get fastestFullClear(): { instanceId: string; value: number } | null {

@@ -1,8 +1,8 @@
 import { Collection } from "@discordjs/collection"
-import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../types/raids"
-import { encoders } from "../../util/encode"
-import { AllValidHashes, raidTupleFromHash } from "../../util/destiny/raid"
-import { RaidData } from "../../types/profile"
+import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../../types/raids"
+import { encoders } from "../../../util/encode"
+import { AllValidHashes, raidTupleFromHash } from "../../../util/destiny/raid"
+import { RaidData } from "../../../types/profile"
 
 /**
  * Represents a collection of raid data keyed by difficulty. T represents the

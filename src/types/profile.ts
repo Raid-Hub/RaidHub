@@ -1,5 +1,5 @@
 import { Difficulty, Raid } from "./raids"
-import RaidStatsCollection from "../models/profile/RaidStatsCollection"
+import RaidStatsCollection from "../models/profile/data/RaidStatsCollection"
 import { Socials } from "../util/profile/socials"
 import {
     BungieMembershipType,
@@ -7,9 +7,11 @@ import {
     DestinyProfileComponent,
     GroupV2
 } from "bungie-net-core/lib/models"
-import RaidReportDataCollection from "../models/profile/RaidReportDataCollection"
+import RaidReportDataCollection from "../models/profile/data/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/clanBanner"
+import Activity from "../models/profile/data/Activity"
+import { FilterCallback } from "./generic"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -105,4 +107,21 @@ export type ProfileSocialData = {
     id: Socials
     displayName: string
     url: string
+}
+
+export type ExtendedActivity = {
+    activity: Activity
+    extended: {
+        fresh: boolean | null
+        playerCount: number
+        flawless: boolean | null
+    }
+}
+
+export interface ActivityFilter {
+    id: string
+    predicate: FilterCallback<ExtendedActivity>
+    stringify(): string
+    encode(): Object
+    deepClone(): ActivityFilter
 }

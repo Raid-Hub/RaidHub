@@ -4,7 +4,7 @@ import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
 import { AllRaidStats, MembershipWithCharacters } from "../../types/profile"
-import RaidStatsCollection from "../../models/profile/RaidStatsCollection"
+import RaidStatsCollection from "../../models/profile/data/RaidStatsCollection"
 
 type UseCharacterStats = (params: {
     characterMemberships: MembershipWithCharacters[] | null

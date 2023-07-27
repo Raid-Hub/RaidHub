@@ -6,8 +6,8 @@ import { useBungieClient } from "../../components/app/TokenManager"
 import { ErrorHandler } from "../../types/generic"
 import { getAllCharacterRaids } from "../../services/bungie/getAllCharacterRaids"
 import { MembershipWithCharacters } from "../../types/profile"
-import ActivityCollection from "../../models/profile/ActivityCollection"
-import Activity from "../../models/profile/Activity"
+import ActivityCollection from "../../models/profile/data/ActivityCollection"
+import Activity from "../../models/profile/data/Activity"
 
 type UseActivityHistory = (params: {
     characterMemberships: MembershipWithCharacters[] | null

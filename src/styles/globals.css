@@ -12,6 +12,7 @@
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
     --modal-background: rgba(48, 48, 48, 0.253);
+    --modal-background-opaque: rgba(48, 48, 48, 0.929);
 }
 
 @media (prefers-color-scheme: light) {
@@ -27,7 +28,6 @@
         --search-placeholder: #848484;
         --modal-background: rgba(224, 224, 224, 0.471);
         --modal-background-opaque: rgba(255, 255, 255, 0.939);
-        --tooltip-background: rgba(255, 255, 255, 0.92);
     }
 }
 
@@ -36,7 +36,14 @@
 }
 
 html {
-    background: linear-gradient(90deg, rgba(1,0,17,1) 0%, rgba(1,0,17,1) 25%, rgba(23,1,13,1) 48%, rgba(1,0,17,1) 91%, rgba(19,3,1,1) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(1, 0, 17, 1) 0%,
+        rgba(1, 0, 17, 1) 25%,
+        rgba(23, 1, 13, 1) 48%,
+        rgba(1, 0, 17, 1) 91%,
+        rgba(19, 3, 1, 1) 100%
+    );
     /* overflow-y: scroll; */
 
     height: 100%;
@@ -65,7 +72,14 @@ body {
     padding-top: 3.5em;
 
     background-color: #000000;
-    background: linear-gradient(90deg, rgba(1,0,17,1) 0%, rgba(1,0,17,1) 25%, rgba(23,1,13,1) 48%, rgba(1,0,17,1) 91%, rgba(19,3,1,1) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(1, 0, 17, 1) 0%,
+        rgba(1, 0, 17, 1) 25%,
+        rgba(23, 1, 13, 1) 48%,
+        rgba(1, 0, 17, 1) 91%,
+        rgba(19, 3, 1, 1) 100%
+    );
 }
 
 kbd {
