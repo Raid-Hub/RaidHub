@@ -82,9 +82,15 @@ const Dot = ({
                 behavior: "smooth"
             })
 
-            let targetedDot = document.querySelector(`.raids_dot__sHc7e[href='/pgcr/${activity.instanceId}']`)
-            if(targetedDot != undefined) {
-                animate(targetedDot, { opacity: [1, 0, 1] }, { repeat: 3, duration: 1, type: "tween"})
+            let targetedDot = document.querySelector(
+                `.raids_dot__sHc7e[href='/pgcr/${activity.instanceId}']`
+            )
+            if (targetedDot != undefined) {
+                animate(
+                    targetedDot,
+                    { opacity: [1, 0, 1] },
+                    { repeat: 3, duration: 1, type: "tween" }
+                )
                 targetedDot = null
             }
         }
@@ -95,10 +101,7 @@ const Dot = ({
         <a
             ref={ref}
             href={`/pgcr/${activity.instanceId}`}
-            className={[
-                styles["dot"],
-                styles["dot-hover"],
-            ].join(" ")}
+            className={[styles["dot"], styles["dot-hover"]].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
             {
