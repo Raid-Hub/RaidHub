@@ -6,7 +6,7 @@ import { Difficulty } from "../../../types/raids"
 import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/Activity"
-import { animate, AnimationPlaybackControls } from "framer-motion"
+import { animate } from "framer-motion"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -72,21 +72,19 @@ const Dot = ({
         [tooltipData, setTooltip]
     )
 
-    const [blinking, setBlinking] = useState<boolean>(false)
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
     useEffect(() => {
         if (targetted && ref.current) {
+            console.log("scroll")
             ref.current.scrollIntoView({
                 block: "nearest",
                 inline: "center",
                 behavior: "smooth"
             })
 
-            let dotAnimation: AnimationPlaybackControls
             let targetedDot = document.querySelector(`.raids_dot__sHc7e[href='/pgcr/${activity.instanceId}']`)
             if(targetedDot != undefined) {
-                const repeatAmount = 3
-                console.log("startAnim")
-                dotAnimation = animate(targetedDot, { opacity: [1, 0, 1] }, { repeat: repeatAmount, duration: 1, type: "tween"})
+                animate(targetedDot, { opacity: [1, 0, 1] }, { repeat: 3, duration: 1, type: "tween"})
                 targetedDot = null
             }
         }
@@ -100,7 +98,6 @@ const Dot = ({
             className={[
                 styles["dot"],
                 styles["dot-hover"],
-                blinking ? styles["blinking-dot"] : ""
             ].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>

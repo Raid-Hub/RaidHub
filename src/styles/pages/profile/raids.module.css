@@ -146,33 +146,8 @@
     cursor: pointer;
 }
 
-.dot circle {
-    transition: r 0.1s ease-in-out;
-    transition: fill 0.2 ease-in-out;
-}
-
 .dot:hover circle {
     r: 8;
-}
-
-.blinking-dot circle {
-    animation: blink 1s infinite ease-in-out;
-}
-
-@keyframes blink {
-    0% {
-        r: 6.5;
-        opacity: 1;
-    }
-    50% {
-        r: 9;
-        opacity: 0.7;
-        fill: rgba(255,255,255, 0.7);
-    }
-    100% {
-        r: 6.5;
-        opacity: 1;
-    }
 }
 
 .dot-tooltip {
