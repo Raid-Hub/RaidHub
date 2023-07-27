@@ -82,7 +82,7 @@ export const config = {
 
 export default handler
 
-const supportedFileTypes = ["image/jpeg", "image/png", "image/gif"]
+const supportedFileTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"]
 
 async function uploadImage(req: NextApiRequest, userId: string) {
     return new Promise<string>((resolve, reject) => {

@@ -24,6 +24,8 @@
     border-top-right-radius: inherit;
     overflow: hidden;
     position: relative;
+
+    color: white;
 }
 
 .card-image-header h3 {
