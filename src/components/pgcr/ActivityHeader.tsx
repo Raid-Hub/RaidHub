@@ -2,6 +2,7 @@ import styles from "../../styles/pages/pgcr.module.css"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
+import html2canvas from "html2canvas"
 import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
 
@@ -14,6 +15,20 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
     const { strings, locale } = useLocale()
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
+
+   const handleScreenshot = async () => {
+        const element: HTMLElement = document.getElementById("screenshot-container")!
+        const canvas = await html2canvas(element, {backgroundColor: null, scale: 5}  )
+        const data = canvas.toDataURL('image/jpg', 1)
+        const link = document.createElement('a')
+
+        link.href = data;
+        link.download = 'image.jpg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     return (
         <div className={styles["activity-tile-header-container"]}>
             <div className={styles["activity-tile-header-top"]}>
@@ -67,6 +82,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         <p>{checkpointDisclaimer}</p>
                     </div>
                 )}
+                <button className={styles["screenshot-button"]} onClick={handleScreenshot}>Screenshot</button>
             </div>
         </div>
     )

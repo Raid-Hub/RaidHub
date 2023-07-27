@@ -24,7 +24,7 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                     {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
-            <main className={styles["main"]}>
+            <main className={styles["main"]} id={"screenshot-container"}>
                 <section className={styles["summary-card"]}>
                     {typeof pgcr?.raid === "number" && (
                         <Image

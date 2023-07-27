@@ -607,3 +607,14 @@
         max-height: 35px;
     }
 }
+
+.screenshot-button {
+    width: 10%;
+    height: auto;
+    margin: 0.3em;
+    background: var(--modal-background);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-weight: bold;
+    color: white;
+}
