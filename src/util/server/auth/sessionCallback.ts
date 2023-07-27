@@ -10,6 +10,10 @@ export type SessionUser = {
     destinyMembershipId: string | null
     destinyMembershipType: BungieMembershipType | null
     name: string | null
+    bungie: string | null
+    twitch: string | null
+    discord: string | null
+    twitter: string | null
     image: string | null
     bungieAccessToken?: {
         value: string
@@ -20,10 +24,14 @@ export type SessionUser = {
 function sessionUser(user: User): SessionUser {
     return {
         id: user.id,
-        destinyMembershipId: user.destinyMembershipId,
-        destinyMembershipType: user.destinyMembershipType,
+        destinyMembershipId: user.destiny_membership_id,
+        destinyMembershipType: user.destiny_membership_type,
         image: user.image,
         name: user.name,
+        bungie: user.bungie_username,
+        twitch: user.twitch_username,
+        twitter: user.twitter_username,
+        discord: user.discord_username,
         bungieAccessToken:
             user.bungie_access_token && user.bungie_access_expires_at
                 ? {

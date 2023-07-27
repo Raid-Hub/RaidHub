@@ -4,7 +4,7 @@ import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
 import { zUser } from "../../../util/server/zod"
 
-export const userId = (req: NextApiRequest): string | undefined =>
+export const getUserId = (req: NextApiRequest): string | undefined =>
     req.url?.split("/")[3]?.toString()
 
 const handler: NextApiHandler = async (req, res) => {
@@ -27,7 +27,7 @@ const handleDelete: ApiHandler<"DELETE"> = async (req, res) => {
         (await protectSession({
             req,
             res,
-            userId: userId(req)
+            userId: getUserId(req)
         })) === false
     ) {
         return
@@ -37,7 +37,7 @@ const handleDelete: ApiHandler<"DELETE"> = async (req, res) => {
         await prisma.user
             .delete({
                 where: {
-                    id: userId(req)
+                    id: getUserId(req)
                 }
             })
             .then(() =>
@@ -80,7 +80,7 @@ const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
         (await protectSession({
             req,
             res,
-            userId: userId(req)
+            userId: getUserId(req)
         })) === false
     ) {
         return
@@ -100,7 +100,7 @@ const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
     await prisma.user
         .update({
             where: {
-                id: userId(req)
+                id: getUserId(req)
             },
             data: user.data
         })

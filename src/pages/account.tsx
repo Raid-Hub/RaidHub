@@ -11,7 +11,7 @@ const AccountPage: NextPage = () => {
     } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn(undefined, { callbackUrl: "/account" })
+            signIn("bungie", { callbackUrl: "/account" }, "reauth=false")
         }
     })
     const { strings } = useLocale()

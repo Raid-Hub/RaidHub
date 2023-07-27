@@ -42,9 +42,13 @@ const AccountIcon = ({}: AccountIconProps) => {
                     ) : (
                         <li
                             onClick={() => {
-                                signIn("bungie", {
-                                    callbackUrl: window.location.href
-                                })
+                                signIn(
+                                    "bungie",
+                                    {
+                                        callbackUrl: window.location.href
+                                    },
+                                    "reauth=false"
+                                )
                             }}>
                             <span>{strings.logIn}</span>
                         </li>

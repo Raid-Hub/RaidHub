@@ -1,8 +1,8 @@
 import { S3 } from "aws-sdk"
 import { protectSession } from "../../../../util/server/sessionProtection"
 import { NextApiHandler, NextApiRequest } from "next"
-import { UserImageCreateResponse } from "../../../../types/api"
-import { userId } from "../[userId]"
+import { ApiHandler, ApiRequest, UserImageCreateResponse } from "../../../../types/api"
+import { getUserId } from "../[userId]"
 import formidable from "formidable"
 import fs from "fs"
 import prisma from "../../../../util/server/prisma"
@@ -17,50 +17,7 @@ const s3 = new S3({
 
 const handler: NextApiHandler = async (req, res) => {
     if (req.method === "PUT") {
-        const _userId = userId(req)
-        const validSession = await protectSession({
-            req,
-            res,
-            userId: _userId
-        })
-        if (_userId && validSession) {
-            await uploadImage(req, _userId)
-                .then(imageUrl =>
-                    prisma.user.update({
-                        where: {
-                            id: _userId
-                        },
-                        data: {
-                            image: imageUrl
-                        },
-                        select: {
-                            image: true
-                        }
-                    })
-                )
-                .then(result =>
-                    res.status(201).json({
-                        success: true,
-                        error: undefined,
-                        data: {
-                            imageUrl: result.image!
-                        }
-                    } satisfies UserImageCreateResponse)
-                )
-                .catch(err =>
-                    res.status(500).json({
-                        success: false,
-                        error: "Failed to edit profile picture",
-                        data: err
-                    } satisfies UserImageCreateResponse)
-                )
-        } else {
-            return res.status(401).json({
-                success: false,
-                error: "Unauthorized",
-                data: null
-            } satisfies UserImageCreateResponse)
-        }
+        await handleUpdate(req as ApiRequest<"PUT">, res)
     } else {
         res.status(405).json({
             success: false,
@@ -68,6 +25,53 @@ const handler: NextApiHandler = async (req, res) => {
             data: null
         } satisfies UserImageCreateResponse)
     }
+}
+
+const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
+    const userId = getUserId(req)
+    const validSession = await protectSession({
+        req,
+        res,
+        userId
+    })
+    if (!userId || !validSession) {
+        return res.status(401).json({
+            success: false,
+            error: "Unauthorized",
+            data: null
+        } satisfies UserImageCreateResponse)
+    }
+
+    return await uploadImage(req, userId)
+        .then(imageUrl =>
+            prisma.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    image: imageUrl
+                },
+                select: {
+                    image: true
+                }
+            })
+        )
+        .then(result =>
+            res.status(201).json({
+                success: true,
+                error: undefined,
+                data: {
+                    imageUrl: result.image!
+                }
+            } satisfies UserImageCreateResponse)
+        )
+        .catch(err =>
+            res.status(500).json({
+                success: false,
+                error: "Failed to edit profile picture",
+                data: err
+            } satisfies UserImageCreateResponse)
+        )
 }
 
 export const config = {
@@ -96,7 +100,6 @@ async function uploadImage(req: NextApiRequest, userId: string) {
                     let url: Promise<string>
                     switch (process.env.APP_ENV) {
                         case "production":
-                        case "beta":
                         case "staging":
                         case "preview":
                             url = uploadToS3({
