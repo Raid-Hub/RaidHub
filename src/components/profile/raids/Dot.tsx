@@ -5,8 +5,8 @@ import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty } from "../../../types/raids"
 import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
-import { animate } from "framer-motion"
 import Activity from "../../../models/profile/data/Activity"
+import { animate } from "framer-motion"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -18,25 +18,26 @@ type DotProps = {
     flawless: boolean
     playerCount: number
     centerY: number
-    targetted: boolean
+    isTargeted: boolean
     tooltipData: DotTooltipProps | null
     setTooltip(data: DotTooltipProps | null): void
 }
 
 const Dot = ({
-    index,
-    activity,
-    flawless,
-    playerCount,
-    centerY,
-    targetted,
-    setTooltip,
-    tooltipData
-}: DotProps) => {
+                 index,
+                 activity,
+                 flawless,
+                 playerCount,
+                 centerY,
+                 isTargeted,
+                 setTooltip,
+                 tooltipData
+             }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
     const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
+    const [animationIsRunning, setAnimationIsRunning] =useState(false)
     const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
         const containerToEdge =
             currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
@@ -50,10 +51,10 @@ const Dot = ({
                 playerCount === 1
                     ? Tag.SOLO
                     : playerCount === 2
-                    ? Tag.DUO
-                    : playerCount === 3
-                    ? Tag.TRIO
-                    : null,
+                        ? Tag.DUO
+                        : playerCount === 3
+                            ? Tag.TRIO
+                            : null,
             offset: {
                 x: xOffset,
                 y: centerY
@@ -72,29 +73,29 @@ const Dot = ({
         [tooltipData, setTooltip]
     )
 
-    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
     useEffect(() => {
-        if (targetted && ref.current) {
-            console.log("scroll")
+        if (isTargeted && ref.current) {
             ref.current.scrollIntoView({
                 block: "nearest",
                 inline: "center",
                 behavior: "smooth"
             })
 
-            let targetedDot = document.querySelector(
-                `.raids_dot__sHc7e[href='/pgcr/${activity.instanceId}']`
-            )
-            if (targetedDot != undefined) {
-                animate(
-                    targetedDot,
+            if (!animationIsRunning){
+                console.log(ref.current)
+                console.log(isTargeted)
+                const animation = animate(
+                    ref.current,
                     { opacity: [1, 0, 1] },
                     { repeat: 3, duration: 1, type: "tween" }
                 )
-                targetedDot = null
+                setAnimationIsRunning(true)
+                setTimeout(()=>{
+                    setAnimationIsRunning(false)
+                }, animation.duration * 3 * 1000)
             }
         }
-    }, [targetted])
+    }, [isTargeted])
 
     const centerX = SPACING / 2 + SPACING * index
     return (
@@ -128,7 +129,7 @@ const Dot = ({
                     />
                 )
             )}
-            {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
+            {details[1] === Difficulty.MASTER && (
                 <circle
                     fill="none"
                     stroke="white"
