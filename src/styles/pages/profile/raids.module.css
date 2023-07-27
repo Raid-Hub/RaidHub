@@ -174,7 +174,7 @@
     position: absolute;
     transform: translateY(-50%);
 
-    background-color: var(--tooltip-background);
+    background-color: rgba(0,0,0,0.65);
     color: #fff;
     padding: 6px;
     border-radius: 6px;
