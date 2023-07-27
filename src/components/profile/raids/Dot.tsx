@@ -127,7 +127,7 @@ const Dot = ({
                     />
                 )
             )}
-            {details[1] === Difficulty.MASTER && (
+            {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
                 <circle
                     fill="none"
                     stroke="white"
