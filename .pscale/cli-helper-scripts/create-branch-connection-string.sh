@@ -45,6 +45,7 @@ EOF
         echo "In the next lines, you will see your secret, branch connection information: " 
         echo "$SECRET_TEXT"
         echo "CONNECTION_STRING_LINK=${link}" >> $GITHUB_STATE
+        echo "DATABASE_URL=$GENERAL_CONNECTION_STRING" >> $GITHUB_ENV
     fi
     echo
     echo "Alternatively, you can connect to your new branch like this:"
@@ -52,6 +53,5 @@ EOF
     echo "or, to create a local tunnel to the database:"
     echo "pscale connect \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
     export MY_DB_URL=$DB_URL
-    echo "DATABASE_URL=$DB_URL" >> $GITHUB_ENV
     
 }

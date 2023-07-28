@@ -3,14 +3,13 @@ if [[ -n $NAMESPACE ]] ; then
   echo "Deploying local build to preview: $NAMESPACE.raidhub.app..."
 
   yarn prisma generate
-  yarn prisma db push --accept-data-loss
+  yarn prisma db push --accept-data-loss --skip-generate
   yarn db:seed
   yarn next build
 
 elif [[ $APP_ENV == "staging" ]] ; then
     echo "Deploying to staging..."
-    echo $DATABASE_URL
-    
+
     yarn db:update
 
     yarn next build
