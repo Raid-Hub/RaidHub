@@ -10,7 +10,8 @@ if [[ -n $NAMESPACE ]] ; then
 elif [[ $APP_ENV == "staging" ]] ; then
     echo "Deploying to staging..."
 
-    yarn db:update
+    yarn prisma generate
+    yarn db:update --skip-generate
 
     yarn next build
 
