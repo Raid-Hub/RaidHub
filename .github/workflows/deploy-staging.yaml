@@ -46,7 +46,7 @@ jobs:
                   ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
-                  HAS_SCHEMA_CHANGES: ${needs.paths-filter.outputs.prismaChanges == 'true'}
+                  HAS_SCHEMA_CHANGES: $(needs.paths-filter.outputs.prismaChanges == 'true')
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
               run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
 

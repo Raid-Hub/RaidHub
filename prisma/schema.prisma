@@ -73,3 +73,7 @@ model Vanity {
   userId                String? @unique
   user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model lol {
+  id                    String  @id @default(cuid())
+}
