@@ -67,7 +67,9 @@ jobs:
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: ./merge-latest-open-deploy-request.sh
+              run: |
+                  git switch planetscale-stuff
+                  ./merge-latest-open-deploy-request.sh
 
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
