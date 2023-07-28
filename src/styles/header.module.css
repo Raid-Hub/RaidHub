@@ -327,17 +327,25 @@
 }
 
 .keys {
-    background-color: #5252527a;
-    border-radius: 3px;
-    border: 1px solid #a1a1a17a;
-    color: white;
     display: inline-block;
-    font-family: Neue;
-    font-size: 0.85em;
+    font-size: 0.85rem;
     font-weight: 400;
     line-height: 1;
-    padding: 2px 4px;
     white-space: nowrap;
+    color: white;
+}
+
+.keys > span {
+    margin: 0 0.2em;
+}
+
+.keys kbd {
+    padding: 2px 4px;
+    border-radius: 3px;
+    border: 1px solid #a1a1a17a;
+    background-color: #5252527a;
+
+    font-family: Neue;
 }
 
 @media (max-width: 890px) {

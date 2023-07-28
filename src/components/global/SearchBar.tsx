@@ -104,9 +104,11 @@ const SearchBar = ({}: SearchBarProps) => {
                     value={enteredText}
                     onChange={handleInputChange}
                 />
-                <kbd className={styles["keys"]}>{OSKey}</kbd>{" "}
-                <span className={styles["keys"]}>+</span>
-                <kbd className={styles["keys"]}>K</kbd>
+                <div className={styles["keys"]}>
+                    <kbd>{OSKey}</kbd>
+                    <span>+</span>
+                    <kbd>K</kbd>
+                </div>
                 {showingResults && (
                     <ul className={styles["search-results"]}>
                         {results
