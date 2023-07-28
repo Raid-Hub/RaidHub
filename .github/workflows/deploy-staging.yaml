@@ -34,9 +34,7 @@ jobs:
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: |
-                  ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
-                  echo ${{ env.DATABASE_URL }}
+              run: ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
 
             - name: Install Vercel CLI
               run: npm install --global vercel@latest

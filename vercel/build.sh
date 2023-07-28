@@ -9,6 +9,7 @@ if [[ -n $NAMESPACE ]] ; then
 
 elif [[ $APP_ENV == "staging" ]] ; then
     echo "Deploying to staging..."
+    echo $DATABASE_URL
     
     yarn db:update
 
