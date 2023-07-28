@@ -3,6 +3,7 @@ name: Deploy to Production
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    pscale_base_directory: .pscale
 
 on:
     workflow_dispatch:
@@ -57,12 +58,6 @@ jobs:
             #       git add public/manifest.json
             #       git commit -m "Bump $VERSION"
 
-            - name: Install Vercel CLI
-              run: npm install --global vercel@latest
-
-            - name: Pull Vercel Environment Information
-              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
             - name: Merge latest PlanetScale deployment request
               timeout-minutes: 2
               env:
@@ -73,6 +68,12 @@ jobs:
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
               run: ./merge-latest-open-deploy-request.sh
+
+            - name: Install Vercel CLI
+              run: npm install --global vercel@latest
+
+            - name: Pull Vercel Environment Information
+              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Build Project Artifacts
               run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
