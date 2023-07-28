@@ -36,11 +36,6 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Was there schema changes?
-              env:
-                  HAS_SCHEMA_CHANGES: ${{needs.paths-filter.outputs.prismaChanges}}
-              run: echo $HAS_SCHEMA_CHANGES
-
             - name: Connect to database branch
               id: create-db-branch-and-connection
               timeout-minutes: 3
