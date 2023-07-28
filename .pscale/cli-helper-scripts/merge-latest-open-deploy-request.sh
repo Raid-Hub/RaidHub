@@ -20,5 +20,5 @@ if [[ $output =~ ^[0-9]+$ ]]; then
     create-deployment "$DB_NAME" "$ORG_NAME" "$output"
 else
     echo "No open deployment request found: $raw_output"
-    exit 3
+    exit 0
 fi
