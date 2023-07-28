@@ -6,6 +6,7 @@ import { Difficulty } from "../../../types/raids"
 import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raid"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
+import { animate } from "framer-motion"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -17,7 +18,7 @@ type DotProps = {
     flawless: boolean
     playerCount: number
     centerY: number
-    targetted: boolean
+    isTargeted: boolean
     tooltipData: DotTooltipProps | null
     setTooltip(data: DotTooltipProps | null): void
 }
@@ -28,7 +29,7 @@ const Dot = ({
     flawless,
     playerCount,
     centerY,
-    targetted,
+    isTargeted,
     setTooltip,
     tooltipData
 }: DotProps) => {
@@ -36,6 +37,7 @@ const Dot = ({
 
     const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
+    const [animationIsRunning, setAnimationIsRunning] = useState(false)
     const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
         const containerToEdge =
             currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
@@ -71,38 +73,34 @@ const Dot = ({
         [tooltipData, setTooltip]
     )
 
-    const [blinking, setBlinking] = useState<boolean>(false)
     useEffect(() => {
-        if (targetted && ref.current) {
+        if (isTargeted && ref.current) {
             ref.current.scrollIntoView({
                 block: "nearest",
                 inline: "center",
                 behavior: "smooth"
             })
 
-            // wait until the scroll "finishes" (estimation)
-            const timer = setTimeout(() => {
-                setBlinking(true)
-            }, Math.abs(window.innerWidth / 2 - ref.current.getBoundingClientRect().left) ** 0.9 + 150)
-
-            return () => {
-                clearTimeout(timer)
+            if (!animationIsRunning) {
+                animate(
+                    ref.current,
+                    { opacity: [1, 0, 1] },
+                    { repeat: 3, duration: 1, type: "tween" }
+                )
+                setAnimationIsRunning(true)
+                setTimeout(() => {
+                    setAnimationIsRunning(false)
+                }, 5000) // Add timeout of 5s to finish animation + some spare time
             }
-        } else {
-            setBlinking(false)
         }
-    }, [targetted])
+    }, [isTargeted])
 
     const centerX = SPACING / 2 + SPACING * index
     return (
         <a
             ref={ref}
             href={`/pgcr/${activity.instanceId}`}
-            className={[
-                styles["dot"],
-                styles["dot-hover"],
-                blinking ? styles["blinking-dot"] : ""
-            ].join(" ")}
+            className={[styles["dot"], styles["dot-hover"]].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
             {

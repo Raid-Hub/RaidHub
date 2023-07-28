@@ -149,7 +149,7 @@ function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
                             centerY={getHeight(activity.durationSeconds)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            targetted={targetDot === activity.instanceId}
+                            isTargeted={targetDot === activity.instanceId}
                         />
                     ))}
                 </svg>
