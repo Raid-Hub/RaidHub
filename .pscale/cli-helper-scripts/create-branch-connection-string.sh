@@ -2,7 +2,7 @@ function create-branch-connection-string {
     local DB_NAME=$1
     local BRANCH_NAME=$2
     local ORG_NAME=$3
-    local $REG="gha-${BRANCH_NAME}-"
+    local REG="gha-${BRANCH_NAME}-"
     local PW_NAME="$REG$(openssl rand -hex 12)"
 
     # delete password if it already existed
