@@ -14,7 +14,7 @@ function create-branch-connection-string {
         exit 1
     fi
 
-    local output=`echo $raw_output | jq -r '.[0].id'
+    local output="$(echo $raw_output | jq -r ".[0].id")"
     # if output is not "null", then password exists, delete it
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
@@ -34,7 +34,7 @@ function create-branch-connection-string {
     fi
 
     local DB_URL=`echo "$raw_output" |  jq -r ". | \"mysql://\" + .username +  \":\" + .plain_text +  \"@\" + .database_branch.access_host_url + \"/$DB_NAME\""`
-    local GENERAL_CONNECTION_STRING=`echo "$raw_output" |  jq -r ". | .connection_strings.general"
+    local GENERAL_CONNECTION_STRING=`echo "$raw_output" |  jq -r ". | .connection_strings.general"`
 
 read -r -d '' SECRET_TEXT <<EOF
 DATABASE_URL: $DB_URL
