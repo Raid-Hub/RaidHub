@@ -4,6 +4,7 @@ import { secondsToHMS } from "../../../util/presentation/formatting"
 import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"
 import { TransitoryActivity } from "../../../hooks/bungie/useProfileTransitory"
+import Link from "next/link"
 
 type CurrentActivityParams = {
     data: TransitoryActivity
@@ -62,11 +63,11 @@ const CurrentActivity = ({
                             membershipId,
                             membershipType
                         }) => (
-                            <a
+                            <Link
                                 href={`/profile/${membershipType}/${membershipId}`}
                                 key={membershipId}>
                                 {bungieGlobalDisplayName ?? displayName}
-                            </a>
+                            </Link>
                         )
                     )}
                 </div>

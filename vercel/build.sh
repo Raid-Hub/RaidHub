@@ -32,7 +32,7 @@ elif [[ $APP_ENV == "staging" ]] ; then
     # "
 
     # apply the new prisma schema
-    yarn db:update
+    yarn db:update --accept-data-loss
 
     yarn next build
 

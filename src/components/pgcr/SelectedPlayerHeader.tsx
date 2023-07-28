@@ -5,6 +5,7 @@ import Image from "next/image"
 import { useMemo } from "react"
 import { External } from "../../images/icons"
 import { useLocale } from "../app/LanguageProvider"
+import Link from "next/link"
 
 type SelectedPlayerHeaderProps = {
     selected: PGCRPlayer
@@ -53,14 +54,14 @@ const SelectedPlayerHeader = ({
                 </div>
             )}
             <button className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
-                <a href={memberProfileURL} className={styles["member-profile-link"]}>
+                <Link href={memberProfileURL} className={styles["member-profile-link"]}>
                     <Image
                         src={External}
                         alt={"View profile"}
                         className={styles["view-profile-icon"]}
                     />
                     <span>{strings.viewProfile}</span>
-                </a>
+                </Link>
             </button>
         </div>
     )

@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import { useMemo } from "react"
 import { Account } from "../../images/icons"
 import { useLocale } from "../app/LanguageProvider"
+import Link from "next/link"
 
 type AccountIconProps = {}
 
@@ -23,16 +24,16 @@ const AccountIcon = ({}: AccountIconProps) => {
                     {sessionData ? (
                         <>
                             <li>
-                                <a href="/account">{strings.manageAccount}</a>
+                                <Link href="/account">{strings.manageAccount}</Link>
                             </li>
                             {sessionData.user.destinyMembershipType &&
                                 sessionData.user.destinyMembershipId && (
                                     <li>
-                                        <a
+                                        <Link
                                             href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
                                             className={styles["account-link"]}>
                                             {strings.viewProfile}
-                                        </a>
+                                        </Link>
                                     </li>
                                 )}
                             <li onClick={() => signOut({ callbackUrl: "/" })}>

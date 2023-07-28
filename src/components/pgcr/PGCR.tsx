@@ -10,7 +10,7 @@ import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
 
 export type PGCRProps = {
-    activityId: string
+    activityId: string | undefined
     errorHandler: ErrorHandler
 }
 

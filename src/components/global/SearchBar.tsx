@@ -5,6 +5,7 @@ import { Search } from "../../images/icons"
 import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
 import Image from "next/image"
+import Link from "next/link"
 
 const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
@@ -131,7 +132,7 @@ const SearchBar = ({}: SearchBarProps) => {
                             })
                             .filter(({ name }) => name.startsWith(enteredText))
                             .map(({ name, membershipId, membershipType }, idx) => (
-                                <a
+                                <Link
                                     className={styles["search-result"]}
                                     key={idx}
                                     href={`/profile/${membershipType}/${membershipId}`}
@@ -139,7 +140,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                     <li>
                                         <p>{name}</p>
                                     </li>
-                                </a>
+                                </Link>
                             ))}
                     </ul>
                 )}
