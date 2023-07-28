@@ -21,32 +21,32 @@ jobs:
             #       echo "This workflow should not be triggered on a branch other than main"
             #       exit 1
 
-            - name: Check if user is a repo admin
-              working-directory: ./
-              run: |
-                  if [[ $(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r '.permission') != "admin" ]]; then
-                    echo "Only repo admins can run this action."
-                    exit 1
-                  fi
-            - name: Set up SSH
-              working-directory: ./
-              run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-                  chmod 600 ~/.ssh/id_ed25519
-                  eval "$(ssh-agent -s)"
-                  ssh-add ~/.ssh/id_ed25519
+            # - name: Check if user is a repo admin
+            #   working-directory: ./
+            #   run: |
+            #       if [[ $(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r '.permission') != "admin" ]]; then
+            #         echo "Only repo admins can run this action."
+            #         exit 1
+            #       fi
+            # - name: Set up SSH
+            #   working-directory: ./
+            #   run: |
+            #       mkdir -p ~/.ssh
+            #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+            #       chmod 600 ~/.ssh/id_ed25519
+            #       eval "$(ssh-agent -s)"
+            #       ssh-add ~/.ssh/id_ed25519
 
-            - name: Config
-              working-directory: ./
-              run: |
-                  git config --global credential.helper store
-                  git config --global user.email "github-actions@raidhub.app"
-                  git config --global user.name "GitHub Actions"
+            # - name: Config
+            #   working-directory: ./
+            #   run: |
+            #       git config --global credential.helper store
+            #       git config --global user.email "github-actions@raidhub.app"
+            #       git config --global user.name "GitHub Actions"
 
-            - name: Clone Repo
-              working-directory: ./
-              run: git clone git@github.com:Raid-Hub/RaidHub-Website.git
+            # - name: Clone Repo
+            #   working-directory: ./
+            #   run: git clone git@github.com:Raid-Hub/RaidHub-Website.git
 
             # - name: Bump Version
             #   run: |
@@ -58,6 +58,9 @@ jobs:
             #       git add public/manifest.json
             #       git commit -m "Bump $VERSION"
 
+            - name: Checkout
+              uses: actions/checkout@v2
+
             - name: Merge latest PlanetScale deployment request
               timeout-minutes: 2
               env:
@@ -67,9 +70,7 @@ jobs:
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: |
-                  git switch planetscale-stuff
-                  ./merge-latest-open-deploy-request.sh
+              run: ./merge-latest-open-deploy-request.sh
 
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
