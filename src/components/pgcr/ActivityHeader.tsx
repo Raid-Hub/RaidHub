@@ -3,6 +3,7 @@ import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
 import html2canvas from "html2canvas"
+import { useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
 
@@ -15,18 +16,25 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
     const { strings, locale } = useLocale()
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
+    const [copied, setCopied] = useState(false)
 
-   const handleScreenshot = async () => {
+    const handleScreenshot = async () => {
         const element: HTMLElement = document.getElementById("screenshot-container")!
-        const canvas = await html2canvas(element, {backgroundColor: null, scale: 5}  )
-        const data = canvas.toDataURL('image/jpg', 1)
-        const link = document.createElement('a')
+        const canvas = await html2canvas(element, { backgroundColor: null, scale: 5 })
 
-        link.href = data;
-        link.download = 'image.jpg';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        canvas.toBlob(async function (blob) {
+            if (blob) {
+                try {
+                    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
+                    setCopied(true)
+                    setTimeout(() => {
+                        setCopied(false)
+                    }, 3000)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        })
     }
 
     return (
