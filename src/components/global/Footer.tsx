@@ -78,7 +78,7 @@ const Footer = ({}: FooterProps) => {
             <div className={styles["bottom"]}>
                 <div className={styles["left"]}>
                     <p>
-                        RaidHub <span className={styles["version"]}>v{version}</span>
+                        RaidHub <span className={styles["version"]}>alpha-{version}</span>
                     </p>
                 </div>
                 <div className={styles["right"]}>

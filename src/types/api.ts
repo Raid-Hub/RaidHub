@@ -38,3 +38,8 @@ export type UserImageCreateResponse =
     | ProtectedSessionError
     | ApiResponse<true, { imageUrl: string }>
     | ApiResponse<false, unknown>
+
+export type UserAccountDeleteResponse =
+    | ProtectedSessionError
+    | ApiResponse<true, { message: string }>
+    | ApiResponse<false, unknown>
