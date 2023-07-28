@@ -6,6 +6,7 @@ import html2canvas from "html2canvas"
 import { useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
+import {motion} from "framer-motion"
 
 type ActivityHeaderProps = {
     activity: DestinyPGCR | undefined | null
