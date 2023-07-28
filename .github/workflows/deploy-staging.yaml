@@ -56,7 +56,7 @@ jobs:
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
+              run: ./create-deploy-request.sh
 
             - name: Deploy Project Artifacts to Vercel
               run: echo "URL=$(vercel deploy -e BUNGIE_API_KEY=$BUNGIE_API_KEY -e BUNGIE_CLIENT_ID=$BUNGIE_CLIENT_ID -e BUNGIE_CLIENT_SECRET=$BUNGIE_CLIENT_SECRET -e DATABASE_URL=${{ env.DATABASE_URL }} -e NEXTAUTH_URL=$NEXTAUTH_URL -e APP_ENV=$APP_ENV --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
