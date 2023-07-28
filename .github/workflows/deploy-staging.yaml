@@ -6,11 +6,25 @@ env:
 on:
     push:
         branches:
-            - main
+            - planetscale-stuff
 jobs:
-    Deploy-Staging:
+    paths-filter:
+        runs-on: ubuntu-latest
+        outputs:
+            prismaChanges: ${{ steps.filter.outputs.prisma }}
+        steps:
+            - uses: actions/checkout@v2
+            - uses: dorny/paths-filter@v2
+              id: filter
+              with:
+                  filters: |
+                      prisma:
+                        - 'prisma/**'
+
+    deploy-staging:
         name: Deploy staging
         runs-on: ubuntu-latest
+        needs: paths-filter
         env:
             BUNGIE_API_KEY: ${{ secrets.STAGING_BUNGIE_API_KEY }}
             BUNGIE_CLIENT_ID: ${{ secrets.STAGING_BUNGIE_CLIENT_ID }}
@@ -31,6 +45,7 @@ jobs:
                   ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
+                  NEEDS_DR: ${needs.paths-filter.outputs.prismaChanges == 'true'}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
               run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
 
