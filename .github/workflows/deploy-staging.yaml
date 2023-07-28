@@ -24,7 +24,7 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Recreate database branch
-              id: create-db-branch-and-dr
+              id: create-db-branch-and-connection
               timeout-minutes: 3
               env:
                   PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
@@ -34,7 +34,7 @@ jobs:
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
+              run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
 
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
@@ -44,6 +44,19 @@ jobs:
 
             - name: Build Project Artifacts
               run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: Create deploy request
+              id: create-db-deploy-request
+              timeout-minutes: 3
+              env:
+                  PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+                  PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+                  BRANCH_NAME: ${{secrets.PLANETSCALE_STAGING_BRANCH}}
+                  ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
+                  DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
+                  GITHUB_USER: ${{github.actor}}
+              working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
+              run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
 
             - name: Deploy Project Artifacts to Vercel
               run: echo "URL=$(vercel deploy -e BUNGIE_API_KEY=$BUNGIE_API_KEY -e BUNGIE_CLIENT_ID=$BUNGIE_CLIENT_ID -e BUNGIE_CLIENT_SECRET=$BUNGIE_CLIENT_SECRET -e DATABASE_URL=${{ env.DATABASE_URL }} -e NEXTAUTH_URL=$NEXTAUTH_URL -e APP_ENV=$APP_ENV --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
