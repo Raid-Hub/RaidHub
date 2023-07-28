@@ -15,3 +15,5 @@ create-db-branch "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "recreate"
 
 . create-branch-connection-string.sh
 create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "creds-${BRANCH_NAME}"
+. ps-create-helper-functions.sh
+create-deploy-request "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
