@@ -16,7 +16,7 @@ fi
 
 
 . create-branch-connection-string.sh
-create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME" "${BRANCH_NAME}-$(openssl rand -hex 12)"
+create-branch-connection-string "$DB_NAME" "$BRANCH_NAME" "$ORG_NAME"
 . ps-create-helper-functions.sh
 
 if [[ $HAS_SCHEMA_CHANGES == true ]] ; then

@@ -2,7 +2,8 @@ function create-branch-connection-string {
     local DB_NAME=$1
     local BRANCH_NAME=$2
     local ORG_NAME=$3
-    local CREDS=${4,,}
+    local $REG="gha-${BRANCH_NAME}-"
+    local PW_NAME="$REG$(openssl rand -hex 12)"
 
     # delete password if it already existed
     # first, list password if it exists
@@ -13,7 +14,7 @@ function create-branch-connection-string {
         exit 1
     fi
 
-    local output=`echo $raw_output | jq -r "[.[] | select(.display_name == \"$CREDS\") ] | .[0].id "`
+    local output=`echo $raw_output | jq -r "[.[] | select(.display_name | test(\"$REG\") ] | .[0].id "`
     # if output is not "null", then password exists, delete it
     if [ "$output" != "null" ]; then
         echo "Deleting existing password $output"
@@ -25,7 +26,7 @@ function create-branch-connection-string {
         fi
     fi
     
-    local raw_output=`pscale password create "$DB_NAME" "$BRANCH_NAME" "$CREDS" --org "$ORG_NAME" --format json`
+    local raw_output=`pscale password create "$DB_NAME" "$BRANCH_NAME" "$PW_NAME" --org "$ORG_NAME" --format json`
     
     if [ $? -ne 0 ]; then
         echo "Failed to create credentials for database $DB_NAME branch $BRANCH_NAME: $raw_output"

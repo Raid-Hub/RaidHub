@@ -36,7 +36,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Recreate database branch
+            - name: Connect to database branch
               id: create-db-branch-and-connection
               timeout-minutes: 3
               env:
