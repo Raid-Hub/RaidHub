@@ -7,8 +7,8 @@ on:
     push:
         branches:
             - planetscale-stuff
-        paths:
-            - "prisma/**"
+        # paths:
+        #     - "prisma/**"
 jobs:
     Deploy-Staging:
         name: Deploy staging
