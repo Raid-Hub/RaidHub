@@ -52,7 +52,7 @@ EOF
     echo "or, to create a local tunnel to the database:"
     echo "pscale connect \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
     echo "pscale connect \"$DB_NAME\" \"$BRANCH_NAME\" --org \"$ORG_NAME\""
-    echo "DATABASE_URL=$DB_URL?sslmode=REQUIRED" >> $GITHUB_ENV
+    echo "DATABASE_URL=$DB_URL?sslaccept=strict" >> $GITHUB_ENV
     export MY_DB_URL=$DB_URL
     
 }
