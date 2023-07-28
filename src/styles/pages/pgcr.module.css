@@ -110,7 +110,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
+    align-items: center;
     gap: 1em;
 }
 
@@ -609,12 +609,19 @@
 }
 
 .screenshot-button {
-    width: 10%;
-    height: auto;
-    margin: 0.3em;
+    width: min-content;
+    height: min-content;
+    padding: 0.5em 1.5em;
+    margin-right: 0.89em;  /* ~15px */
     background: var(--modal-background);
     border-radius: 10px;
     border: 1px solid var(--border);
     font-weight: bold;
     color: white;
+    display: grid;
+}
+
+.screenshot-button * {
+    grid-column: 1;
+    grid-row: 1;
 }
