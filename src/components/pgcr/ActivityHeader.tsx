@@ -91,6 +91,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         <p>{checkpointDisclaimer}</p>
                     </div>
                 )}
+                {/* TODO disable initial page load animations for button & SVGs*/}
                 <motion.button
                     className={styles["screenshot-button"]}
                     onClick={handleScreenshot}
