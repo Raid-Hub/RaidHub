@@ -44,7 +44,7 @@ EOF
     if [ -z "$CI" ]; then
         echo "In the next lines, you will see your secret, branch connection information: " 
         echo "$SECRET_TEXT"
-        echo "::set-output name=CONNECTION_STRING_LINK::${link}"
+        echo "CONNECTION_STRING_LINK=${link}" >> $GITHUB_STATE
     fi
     echo
     echo "Alternatively, you can connect to your new branch like this:"
