@@ -41,6 +41,7 @@ function wait_for_branch_readiness {
             sleep $wait
         elif [ "$output" == "true" ]; then
             echo "Branch $branch is ready for use."
+            sleep 120
             return 0
         else
             echo "Branch $branch in unknown status: $raw_output"

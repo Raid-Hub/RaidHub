@@ -12,6 +12,7 @@ elif [[ $APP_ENV == "staging" ]] ; then
 
     yarn prisma generate
     yarn db:update --skip-generate
+    yarn db:seed
 
     yarn next build
 
