@@ -36,7 +36,7 @@ jobs:
               working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
               run: |
                   ./create-db-branch-dr-and-connection.sh "$BRANCH_NAME"
-                  echo {{ env.DATABASE_URL }}
+                  echo ${{ env.DATABASE_URL }}
 
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
@@ -48,7 +48,7 @@ jobs:
               run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
-              run: echo "URL=$(vercel deploy -e BUNGIE_API_KEY=$BUNGIE_API_KEY -e BUNGIE_CLIENT_ID=$BUNGIE_CLIENT_ID -e BUNGIE_CLIENT_SECRET=$BUNGIE_CLIENT_SECRET -e DATABASE_URL={{ env.DATABASE_URL }} -e NEXTAUTH_URL=$NEXTAUTH_URL -e APP_ENV=$APP_ENV --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+              run: echo "URL=$(vercel deploy -e BUNGIE_API_KEY=$BUNGIE_API_KEY -e BUNGIE_CLIENT_ID=$BUNGIE_CLIENT_ID -e BUNGIE_CLIENT_SECRET=$BUNGIE_CLIENT_SECRET -e DATABASE_URL=${{ env.DATABASE_URL }} -e NEXTAUTH_URL=$NEXTAUTH_URL -e APP_ENV=$APP_ENV --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $URL staging.raidhub.app --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }}
