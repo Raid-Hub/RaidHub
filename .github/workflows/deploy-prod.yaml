@@ -70,6 +70,6 @@ jobs:
 
             - name: Create Tag
               run: |
-                  git tag -a v$VERSION main -m "$(git log --pretty=format:"%s" main..HEAD)"
+                  git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
                   git push origin
                   git push --tags

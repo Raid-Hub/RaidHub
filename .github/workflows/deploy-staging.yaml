@@ -17,7 +17,6 @@ jobs:
             BUNGIE_API_KEY: ${{ secrets.STAGING_BUNGIE_API_KEY }}
             BUNGIE_CLIENT_ID: ${{ secrets.STAGING_BUNGIE_CLIENT_ID }}
             BUNGIE_CLIENT_SECRET: ${{ secrets.STAGING_BUNGIE_CLIENT_SECRET }}
-            DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
             NEXTAUTH_URL: "https://staging.raidhub.app"
             APP_ENV: "staging"
         steps:
