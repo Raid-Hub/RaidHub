@@ -99,3 +99,48 @@ function create-diff-for-ci {
         echo "::set-output name=BRANCH_DIFF::$BRANCH_DIFF"
     fi
 }
+
+function create-deployment {
+    local DB_NAME=$1
+    local ORG_NAME=$2
+    local deploy_request_number=$3
+
+    local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
+    # if CI variable is set, export the deploy request parameters
+    if [ -n "$CI" ]; then
+        echo "::set-output name=DEPLOY_REQUEST_URL::$deploy_request"
+        echo "::set-output name=DEPLOY_REQUEST_NUMBER::$deploy_request_number"
+    fi
+
+    echo "Going to deploy deployment request $deploy_request with the following changes: "
+
+    pscale deploy-request diff "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
+    # only ask for user input if CI variabe is not set
+    if [ -z "$CI" ]; then
+        read -p "Do you want to deploy this deployment request? [y/N] " -n 1 -r
+        echo
+        if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "Deployment request $deploy_request_number was not deployed."
+            exit 1
+        fi
+    else
+        create-diff-for-ci "$DB_NAME" "$ORG_NAME" "$deploy_request_number" "$BRANCH_NAME"
+    fi
+
+    pscale deploy-request deploy "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME"
+    # check return code, if not 0 then error
+    if [ $? -ne 0 ]; then
+        echo "Error: pscale deploy-request deploy returned non-zero exit code"
+        exit 1
+    fi
+
+    wait_for_deploy_request_merged 9 "$DB_NAME" "$deploy_request_number" "$ORG_NAME" 60
+    if [ $? -ne 0 ]; then
+        echo "Error: wait-for-deploy-request-merged returned non-zero exit code"
+        echo "Check out the deploy request status at $deploy_request"
+        exit 5
+    else
+        echo "Check out the deploy request at $deploy_request"
+    fi
+
+}

@@ -6,9 +6,7 @@ env:
 on:
     push:
         branches:
-            - planetscale-stuff
-        # paths:
-        #     - "prisma/**"
+            - main
 jobs:
     Deploy-Staging:
         name: Deploy staging
