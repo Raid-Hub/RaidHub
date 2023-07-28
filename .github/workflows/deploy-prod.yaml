@@ -3,6 +3,7 @@ name: Deploy to Production
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    pscale_base_directory: .pscale
 
 on:
     workflow_dispatch:
@@ -19,6 +20,7 @@ jobs:
               run: |
                   echo "This workflow should not be triggered on a branch other than main"
                   exit 1
+
             - name: Check if user is a repo admin
               working-directory: ./
               run: |
@@ -26,6 +28,7 @@ jobs:
                     echo "Only repo admins can run this action."
                     exit 1
                   fi
+
             - name: Set up SSH
               working-directory: ./
               run: |
@@ -56,6 +59,17 @@ jobs:
                   git add public/manifest.json
                   git commit -m "Bump $VERSION"
 
+            - name: Merge latest PlanetScale deployment request
+              timeout-minutes: 2
+              env:
+                  PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
+                  PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
+                  ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
+                  DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
+                  GITHUB_USER: ${{github.actor}}
+              working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
+              run: ./merge-latest-open-deploy-request.sh
+
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
 
@@ -68,8 +82,8 @@ jobs:
             - name: Deploy Project Artifacts to Vercel
               run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-            - name: Create Tag
-              run: |
-                  git tag -a v$VERSION main -m "$(git log --pretty=format:"%s" main..HEAD)"
-                  git push origin
-                  git push --tags
+            # - name: Create Tag
+            #   run: |
+            #       git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
+            #       git push origin
+            #       git push --tags
