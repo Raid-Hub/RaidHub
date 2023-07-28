@@ -77,5 +77,4 @@ model Vanity {
 model lol {
   id                    String  @id @default(cuid())
   name String
-  numb Int
 }
