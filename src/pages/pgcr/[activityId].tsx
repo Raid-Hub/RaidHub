@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { GetServerSideProps, GetStaticPropsResult, NextPage } from "next"
+import { NextPage } from "next"
 import ErrorComponent from "../../components/global/Error"
 import CustomError from "../../models/errors/CustomError"
 import PGCR from "../../components/pgcr/PGCR"
