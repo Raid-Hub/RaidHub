@@ -25,7 +25,7 @@ type UseProfileTransitoryParams = {
 export type TransitoryActivity = {
     transitory: DestinyProfileTransitoryComponent
     activityDefinition: DestinyActivityDefinition
-    activityModeDefinition: DestinyActivityModeDefinition
+    activityModeDefinition: DestinyActivityModeDefinition | null
     partyMembers: DestinyProfileUserInfoCard[]
 }
 
@@ -35,7 +35,7 @@ type UseProfileTransitory = {
     isLoading: boolean
 }
 
-const REFRESH_INTERVAL = 60 * 1000
+const REFRESH_INTERVAL = 15 * 1000
 
 export const useProfileTransitory = ({
     destinyMembershipId,
@@ -64,26 +64,36 @@ export const useProfileTransitory = ({
                 })
                 if (!transitory) {
                     setProfile(null)
-                } else if (
-                    transitory.data.currentActivity.startTime !==
-                    cached?.transitory.currentActivity.startTime
-                ) {
+                } else {
                     const [activityDefinition, activityModeDefinition, partyMembers] =
                         await Promise.all([
-                            getActivityDefiniton({
-                                hashIdentifier: transitory.current.currentActivityHash,
-                                client
-                            }),
-                            getActivityModeDefiniton({
-                                hashIdentifier: transitory.current.currentActivityModeHash,
-                                client
-                            }),
+                            transitory.current.currentActivityHash !==
+                            cached?.activityDefinition.hash
+                                ? getActivityDefiniton({
+                                      hashIdentifier: transitory.current.currentActivityHash,
+                                      client
+                                  })
+                                : cached.activityDefinition,
+
+                            transitory.current.currentActivityModeHash !==
+                                cached?.activityModeDefinition?.hash &&
+                            cached?.activityModeDefinition !== null
+                                ? getActivityModeDefiniton({
+                                      hashIdentifier: transitory.current.currentActivityModeHash,
+                                      client
+                                  })
+                                : cached.activityModeDefinition,
+
                             Promise.all(
-                                transitory.data.partyMembers.map(({ membershipId }) =>
-                                    getLinkedDestinyProfile({ membershipId, client })
+                                transitory.data.partyMembers.map(
+                                    ({ membershipId }) =>
+                                        cached?.partyMembers.find(
+                                            pm => pm.membershipId === membershipId
+                                        ) ?? getLinkedDestinyProfile({ membershipId, client })
                                 )
                             )
                         ])
+
                     setProfile({
                         transitory: transitory.data,
                         activityDefinition,

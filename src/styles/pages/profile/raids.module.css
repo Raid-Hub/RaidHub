@@ -124,7 +124,6 @@
 .dots-container {
     flex: 1;
     margin: 1em 0;
-    border-radius: 5px;
     min-width: 200px;
     max-height: 100%;
     overflow-y: hidden;
@@ -154,7 +153,7 @@
     position: absolute;
     transform: translateY(-50%);
 
-    background-color: rgba(0,0,0,0.65);
+    background-color: rgba(0, 0, 0, 0.65);
     color: #fff;
     padding: 6px;
     border-radius: 6px;

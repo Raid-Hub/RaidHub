@@ -42,6 +42,8 @@ const CurrentActivity = ({
                 ": " +
                 activityDefinition.displayProperties.name
             )
+        } else if (activityDefinition) {
+            return activityDefinition.displayProperties.name
         } else {
             return null
         }
