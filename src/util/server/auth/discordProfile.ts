@@ -3,7 +3,6 @@ import { Awaitable } from "next-auth"
 import { DiscordProfile } from "next-auth/providers/discord"
 
 export function discordProfile(profile: DiscordProfile): Awaitable<User> {
-    console.log(profile)
     if (profile.avatar === null) {
         const defaultAvatarNumber = parseInt(profile.discriminator) % 5
         profile.image_url = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`

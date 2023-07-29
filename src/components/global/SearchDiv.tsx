@@ -42,7 +42,6 @@ const SearchDiv = ({}: SearchDivProps) => {
                 [backgroundDiv.current, { opacity: [1, 0] }, { type: "spring", duration: 0.6 }]
             ]
             await animate(sequence).then(() => {
-                console.log("out")
                 setIsDivDisplayed(false)
                 document.body.style.overflow = ""
             })
