@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react"
 import styles from "../../styles/searchdiv.module.css"
-import { Search } from "../../images/icons"
+import { Question_Mark, Search } from "../../images/icons"
 import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
@@ -98,7 +98,12 @@ const SearchDiv = ({}: SearchDivProps) => {
                                             href={`/profile/${membershipType}/${membershipId}`}>
                                             <li>
                                                 <div className={styles["individual-result"]}>
-                                                    <img src="https://media.discordapp.net/attachments/1119296539085520926/1132024697794592859/83cf97527216f53220933f08a85499f2.jpg" />
+                                                    <Image
+                                                        width={45}
+                                                        height={45}
+                                                        alt={name}
+                                                        src={Question_Mark}
+                                                    />
                                                     <p>{name}</p>
                                                 </div>
                                             </li>
