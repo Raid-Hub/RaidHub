@@ -4,23 +4,14 @@ import { Difficulty, Raid } from "../../../types/raids"
 import { useLocale } from "../../app/LanguageProvider"
 import { useCallback, useState } from "react"
 import { Diamond2 } from "../../../images/icons"
-import { RaidTag } from "../../../types/profile"
+import { RaceTag, RaidTag } from "../../../types/profile"
 import { LocalStrings } from "../../../util/presentation/localized-strings"
 import { Tag, wfRaceMode } from "../../../util/raidhub/tags"
 import Image from "next/image"
 
-export type RaceTag = {
-    placement?: number
-    asterisk?: boolean
-    raid: Raid
-    challenge: boolean
-    dayOne: boolean
-    contest: boolean
-    weekOne: boolean
-}
 type RaidTagLabelProps = {
     instanceId?: string
-    scrollToDot: (instanceId: string) => void
+    setActiveId: (instanceId: string) => void
 } & (
     | ({
           type: "challenge"
@@ -33,12 +24,10 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     const { strings } = useLocale()
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
 
-    const scroll = () => {
-        props.instanceId && props.scrollToDot(props.instanceId)
-    }
-
     const handleHover = () => {
-        const timeout = setTimeout(scroll, 750)
+        const timeout = setTimeout(() => {
+            props.instanceId && props.setActiveId(props.instanceId)
+        }, 750)
         setTimer(timeout)
     }
 
