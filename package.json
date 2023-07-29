@@ -5,18 +5,17 @@
     "scripts": {
         "dev": "next dev",
         "dev+": "node proxy/server.js",
-        "deploy": "bash ./vercel/dev-deploy.sh",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:seed": "prisma db seed",
         "db:update": "prisma db push",
         "db:stop": "docker-compose -f docker-compose.yml down",
-        "start": "next start",
         "lint": "next lint",
         "test": "jest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-        "sign": "cd proxy && mkcert localhost",
-        "build": "bash ./vercel/build.sh"
+        "sign": "bash ./proxy/sign.sh",
+        "build": "bash ./vercel/build.sh",
+        "deploy": "bash ./vercel/dev-deploy.sh"
     },
     "prisma": {
         "seed": "ts-node prisma/seed.ts"
