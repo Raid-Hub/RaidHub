@@ -1,30 +1,21 @@
 import { Collection } from "@discordjs/collection"
 import { NextComponentType, NextPageContext } from "next"
 import { useRouter } from "next/router"
-import React, {
-    MemoExoticComponent,
-    ReactElement,
-    ReactNode,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from "react"
-import Profile from "../profile/Profile"
+import React, { useEffect, useRef } from "react"
 
-const MAX_CACHE_COUNT = 5
+const MAX_CACHE_COUNT = 3
 
 type ComponentCache = Collection<
     string,
     {
-        created: Date
-        expires: Date
+        created: number
+        expires: number
         scrollPos: number
         component: JSX.Element
     }
 >
+
+const ROUTES_TO_RETAIN = ["/pgcr/[activityId]", "/[vanity]", "/profile/[platform]/[membershipId]"]
 
 const ComponentCacheManager = ({
     Component,
@@ -34,68 +25,71 @@ const ComponentCacheManager = ({
     componentProps: Object
 }) => {
     const router = useRouter()
-    const { current: cachedComponents } = useRef<ComponentCache>(new Collection())
+    const { current: retainedComponents } = useRef<ComponentCache>(new Collection())
 
-    const componentKey = router.asPath
+    const key = router.asPath
+    const isRetainableRoute = ROUTES_TO_RETAIN.includes(router.route)
 
-    if (
-        router.isReady &&
-        (!cachedComponents.has(componentKey) ||
-            cachedComponents.get(componentKey)!.expires.getTime() < Date.now())
-    ) {
-        const Memo = React.memo(Component)
-        cachedComponents.set(componentKey, {
-            created: new Date(),
-            expires: new Date(Date.now() + 3 * 60000),
-            scrollPos: 0,
-            component: <Memo {...componentProps} />
-        })
+    // Add Component to retainedComponents if we haven't got it already
 
-        console.log("adding to cache")
-
-        if (cachedComponents.size >= MAX_CACHE_COUNT) {
-            const toRemove = cachedComponents.reduce(
-                (prevKey, current, currentKey) =>
-                    current.expires < cachedComponents.get(prevKey)!.expires ? currentKey : prevKey,
-                cachedComponents.firstKey()
-            )
-            cachedComponents.delete(toRemove)
+    if (!retainedComponents.has(key) || retainedComponents.get(key)!.expires < Date.now()) {
+        if (isRetainableRoute) {
+            const MemoComponent = React.memo(Component)
+            retainedComponents.set(key, {
+                component: <MemoComponent {...componentProps} />,
+                created: Date.now(),
+                expires: Date.now() + 3 * 60 * 1000, // 3 minutes
+                scrollPos: 0
+            })
         }
-    } else {
-        console.log("hitting cache")
-    }
 
-    // Save the scroll position of current page before leaving
-    const handleRouteChangeStart = () => {
-        if (cachedComponents.has(componentKey)) {
-            cachedComponents.get(componentKey)!.scrollPos = window.scrollY
+        if (retainedComponents.size + (isRetainableRoute ? 0 : 1) > MAX_CACHE_COUNT) {
+            retainedComponents.delete(
+                retainedComponents.sorted((a, b) => b.expires - a.expires).lastKey()!
+            )
         }
     }
 
     // Save scroll position - requires an up-to-date router.asPath
     useEffect(() => {
+        // Save the scroll position of current page before leaving
+        const handleRouteChangeStart = () => {
+            if (isRetainableRoute) {
+                if (retainedComponents.has(key)) {
+                    retainedComponents.get(key)!.scrollPos = window.scrollY
+                }
+            }
+        }
         router.events.on("routeChangeStart", handleRouteChangeStart)
         return () => {
             router.events.off("routeChangeStart", handleRouteChangeStart)
         }
-    }, [router.asPath])
+    }, [key, router.events, isRetainableRoute, retainedComponents])
 
-    // Scroll to the saved position when we load a cached component
+    // Scroll to the saved position when we load a retained component
     useEffect(() => {
-        if (cachedComponents.has(componentKey)) {
-            window.scrollTo(0, cachedComponents.get(componentKey)!.scrollPos)
+        if (isRetainableRoute && retainedComponents.has(key)) {
+            window.scrollTo(0, retainedComponents.get(key)!.scrollPos)
         }
-    }, [Component, componentProps])
+    }, [Component, componentProps, key, retainedComponents, isRetainableRoute])
 
     return (
-        <>
-            {cachedComponents.get(componentKey)?.component ?? null}
-            <div style={{ display: "none" }}>
-                {cachedComponents.map((c, cacheKey) => (
-                    <React.Fragment key={cacheKey}>{c.component}</React.Fragment>
-                ))}
-            </div>
-        </>
+        <article>
+            {!isRetainableRoute && (
+                <div key={key} id="content">
+                    <Component {...componentProps} />
+                </div>
+            )}
+            {retainedComponents.map((c, path) => (
+                <div
+                    key={path}
+                    {...(key !== path
+                        ? { style: { display: "none" }, "data-component-cache": path }
+                        : { id: "content" })}>
+                    {c.component}
+                </div>
+            ))}
+        </article>
     )
 }
 

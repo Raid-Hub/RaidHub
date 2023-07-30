@@ -47,7 +47,9 @@ const CurrentActivity = ({
                     new Date(),
                     strings,
                     false
-                ) + strings.raidNames[raidTuple[0]]
+                ) +
+                " " +
+                strings.raidNames[raidTuple[0]]
             )
         } else if (profile?.activityDefinition && profile.activityModeDefinition) {
             return (

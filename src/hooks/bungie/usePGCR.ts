@@ -10,7 +10,7 @@ import { getLinkedDestinyProfile } from "../../services/bungie/getLinkedDestinyP
 import { getDestinyCharacter } from "../../services/bungie/getDestinyCharacter"
 
 type UsePGCRParams = {
-    activityId: string | null | undefined
+    activityId: string
     errorHandler: ErrorHandler
 }
 type UsePGCR = {
@@ -23,58 +23,51 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
     const client = useBungieClient()
 
-    const fetchData = useCallback(
-        async (activityId: string) => {
-            try {
-                setPGCR(null)
-                const pgcr = await getPGCR({ activityId, client })
-                setPGCR(pgcr)
-                setLoading(Loading.HYDRATING)
+    const fetchData = useCallback(async () => {
+        try {
+            setPGCR(null)
+            const pgcr = await getPGCR({ activityId, client })
+            setPGCR(pgcr)
+            setLoading(Loading.HYDRATING)
 
-                const hydrationData = new Collection<
-                    string,
-                    [UserInfoCard, DestinyCharacterComponent | null]
-                >()
-                if (pgcr.entries.length < 50) {
-                    await Promise.all(
-                        pgcr.entries.map(async entry => {
-                            let destinyUserInfo = entry.player.destinyUserInfo
-                            if (!entry.player.destinyUserInfo.membershipType) {
-                                destinyUserInfo = await getLinkedDestinyProfile({
-                                    membershipId: entry.player.destinyUserInfo.membershipId,
-                                    client
-                                })
-                            }
-
-                            const character = await getDestinyCharacter({
-                                destinyMembershipId: destinyUserInfo.membershipId,
-                                membershipType: destinyUserInfo.membershipType,
-                                characterId: entry.characterId,
+            const hydrationData = new Collection<
+                string,
+                [UserInfoCard, DestinyCharacterComponent | null]
+            >()
+            if (pgcr.entries.length < 50) {
+                await Promise.all(
+                    pgcr.entries.map(async entry => {
+                        let destinyUserInfo = entry.player.destinyUserInfo
+                        if (!entry.player.destinyUserInfo.membershipType) {
+                            destinyUserInfo = await getLinkedDestinyProfile({
+                                membershipId: entry.player.destinyUserInfo.membershipId,
                                 client
-                            }).catch(deleted => null)
+                            })
+                        }
 
-                            hydrationData.set(entry.characterId, [destinyUserInfo, character])
-                        })
-                    )
-                }
-                pgcr.hydrate(hydrationData)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
-            } finally {
-                setLoading(Loading.FALSE)
+                        const character = await getDestinyCharacter({
+                            destinyMembershipId: destinyUserInfo.membershipId,
+                            membershipType: destinyUserInfo.membershipType,
+                            characterId: entry.characterId,
+                            client
+                        }).catch(deleted => null)
+
+                        hydrationData.set(entry.characterId, [destinyUserInfo, character])
+                    })
+                )
             }
-        },
-        [client, errorHandler]
-    )
+            pgcr.hydrate(hydrationData)
+        } catch (e) {
+            CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
+        } finally {
+            setLoading(Loading.FALSE)
+        }
+    }, [client, errorHandler, activityId])
 
     useEffect(() => {
         setLoading(Loading.LOADING)
 
-        if (activityId) {
-            fetchData(activityId)
-        } else if (activityId === null) {
-            setLoading(Loading.FALSE)
-        }
+        fetchData()
     }, [activityId, errorHandler, fetchData])
 
     return { pgcr, loadingState }

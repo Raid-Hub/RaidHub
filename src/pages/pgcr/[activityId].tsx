@@ -1,15 +1,14 @@
 import { useState } from "react"
-import { NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
 import ErrorComponent from "../../components/global/Error"
 import CustomError from "../../models/errors/CustomError"
 import PGCR from "../../components/pgcr/PGCR"
-import { useRouter } from "next/router"
 import Custom404 from "../404"
 
-const PGCRPage: NextPage = () => {
+type ActivityProps = { activityId: string }
+
+const PGCRPage: NextPage<ActivityProps> = ({ activityId }) => {
     const [error, setError] = useState<CustomError | null>(null)
-    const { query } = useRouter()
-    const { activityId } = query
 
     if (error) {
         return <ErrorComponent error={error} />
@@ -20,3 +19,17 @@ const PGCRPage: NextPage = () => {
     }
 }
 export default PGCRPage
+
+export const getServerSideProps: GetServerSideProps<ActivityProps, ActivityProps> = async ({
+    params
+}) => {
+    if (params?.activityId) {
+        return {
+            props: {
+                activityId: params.activityId
+            }
+        }
+    } else {
+        return { notFound: true }
+    }
+}

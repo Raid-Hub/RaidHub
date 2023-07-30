@@ -7,7 +7,6 @@ import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/ra
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
 import { animate } from "framer-motion"
-import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -22,6 +21,7 @@ type DotProps = {
     isTargeted: boolean
     tooltipData: DotTooltipProps | null
     setTooltip(data: DotTooltipProps | null): void
+    goTo(instanceId: string): void
 }
 
 const Dot = ({
@@ -32,7 +32,8 @@ const Dot = ({
     centerY,
     isTargeted,
     setTooltip,
-    tooltipData
+    tooltipData,
+    goTo
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
@@ -90,9 +91,8 @@ const Dot = ({
 
     const centerX = SPACING / 2 + SPACING * index
     return (
-        <Link
-            href={`/pgcr/${activity.instanceId}`}
-            replace={false}
+        <g
+            onClick={() => goTo(activity.instanceId)}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
@@ -130,7 +130,7 @@ const Dot = ({
                     cy={centerY}
                 />
             )}
-        </Link>
+        </g>
     )
 }
 

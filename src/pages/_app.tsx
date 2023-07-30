@@ -5,7 +5,7 @@ import Footer from "../components/global/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import TokenManager from "../components/app/TokenManager"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
@@ -17,11 +17,6 @@ type PageProps = {
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [refetchInterval, setRefetchInterval] = useState(0)
-
-    useEffect(() => {
-        console.log("mount")
-        return () => console.log("unmount")
-    }, [])
 
     return (
         <LocaleManager>
