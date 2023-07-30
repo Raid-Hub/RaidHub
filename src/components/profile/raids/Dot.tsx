@@ -1,5 +1,5 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { MouseEvent, useCallback, useEffect, useMemo, useRef } from "react"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { Difficulty } from "../../../types/raids"
@@ -37,30 +37,32 @@ const Dot = ({
 
     const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
-    const [animationIsRunning, setAnimationIsRunning] = useState(false)
-    const handleHover = ({ clientX, currentTarget }: MouseEvent) => {
-        const containerToEdge =
-            currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
-        const xOffset = clientX - containerToEdge + SPACING
+    const handleHover = useCallback(
+        ({ clientX, currentTarget }: MouseEvent) => {
+            const containerToEdge =
+                currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
+            const xOffset = clientX - containerToEdge + SPACING
 
-        setTooltip({
-            isShowing: true,
-            activity,
-            flawless,
-            lowman:
-                playerCount === 1
-                    ? Tag.SOLO
-                    : playerCount === 2
-                    ? Tag.DUO
-                    : playerCount === 3
-                    ? Tag.TRIO
-                    : null,
-            offset: {
-                x: xOffset,
-                y: centerY
-            }
-        })
-    }
+            setTooltip({
+                isShowing: true,
+                activity,
+                flawless,
+                lowman:
+                    playerCount === 1
+                        ? Tag.SOLO
+                        : playerCount === 2
+                        ? Tag.DUO
+                        : playerCount === 3
+                        ? Tag.TRIO
+                        : null,
+                offset: {
+                    x: xOffset,
+                    y: centerY
+                }
+            })
+        },
+        [activity, centerY, flawless, playerCount, setTooltip]
+    )
 
     const handleMouseLeave = useCallback(
         ({}: MouseEvent) => {
@@ -81,17 +83,7 @@ const Dot = ({
                 behavior: "smooth"
             })
 
-            if (!animationIsRunning) {
-                animate(
-                    ref.current,
-                    { opacity: [1, 0, 1] },
-                    { repeat: 3, duration: 1, type: "tween" }
-                )
-                setAnimationIsRunning(true)
-                setTimeout(() => {
-                    setAnimationIsRunning(false)
-                }, 5000) // Add timeout of 5s to finish animation + some spare time
-            }
+            animate(ref.current, { opacity: [1, 0, 1] }, { repeat: 3, duration: 1, type: "tween" })
         }
     }, [isTargeted])
 

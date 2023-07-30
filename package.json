@@ -11,8 +11,8 @@
         "db:stop": "docker-compose -f docker-compose.yml down",
         "lint": "next lint",
         "test": "jest",
-        "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
-        "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
+        "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\" && prisma format",
+        "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
         "sign": "bash ./proxy/sign.sh",
         "build": "bash ./vercel/build.sh",
         "deploy": "bash ./vercel/dev-deploy.sh"

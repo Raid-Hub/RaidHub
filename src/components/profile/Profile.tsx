@@ -14,7 +14,6 @@ import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "../../hooks/raidreport/useRaidReportData"
 import Banners from "./banners/Banners"
 import Raids from "./raids/Raids"
-import { useProfileTransitory } from "../../hooks/bungie/useProfileTransitory"
 import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
@@ -70,16 +69,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         errorHandler
     })
 
-    const {
-        profile: transitoryProfile,
-        isLoading: isLoadingTransitoryProfile,
-        lastRefresh: lastTransitoryRefresh
-    } = useProfileTransitory({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler
-    })
-
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(
         undefined
     )
@@ -130,9 +119,11 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             </section>
 
             <section className={styles["mid"]}>
-                {transitoryProfile && (
-                    <CurrentActivity data={transitoryProfile} lastRefresh={lastTransitoryRefresh} />
-                )}
+                <CurrentActivity
+                    destinyMembershipId={destinyMembershipId}
+                    destinyMembershipType={destinyMembershipType}
+                    errorHandler={errorHandler}
+                />
                 <PinnedActivity
                     isLoading={
                         raidHubProfile?.pinnedActivity !== null
