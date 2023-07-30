@@ -5,10 +5,11 @@ import Footer from "../components/global/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import TokenManager from "../components/app/TokenManager"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Session } from "next-auth"
-import LanguageProvider from "../components/app/LanguageProvider"
+import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
+import ComponentCacheManager from "../components/app/ComponentCacheManager"
 
 type PageProps = {
     session: Session
@@ -17,8 +18,13 @@ type PageProps = {
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [refetchInterval, setRefetchInterval] = useState(0)
 
+    useEffect(() => {
+        console.log("mount")
+        return () => console.log("unmount")
+    }, [])
+
     return (
-        <LanguageProvider>
+        <LocaleManager>
             <SessionProvider
                 session={session}
                 refetchInterval={refetchInterval}
@@ -26,7 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 <TokenManager setRefetchInterval={setRefetchInterval}>
                     <DestinyManifestManager>
                         <Header />
-                        <Component {...pageProps} />
+                        <ComponentCacheManager Component={Component} componentProps={pageProps} />
                         <Footer />
                     </DestinyManifestManager>
                 </TokenManager>
@@ -46,7 +52,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                         : {})}
                 />
             </Head>
-        </LanguageProvider>
+        </LocaleManager>
     )
 }
 

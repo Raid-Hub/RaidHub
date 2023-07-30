@@ -3,7 +3,7 @@ import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useMemo } from "react"
 import { Account } from "../../images/icons"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 
 type AccountIconProps = {}

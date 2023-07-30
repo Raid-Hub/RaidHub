@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { Difficulty, Raid } from "../../../types/raids"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import { useCallback, useState } from "react"
 import { Diamond2 } from "../../../images/icons"
 import { RaceTag, RaidTag } from "../../../types/profile"

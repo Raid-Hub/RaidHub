@@ -7,6 +7,7 @@ import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/ra
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
 import { animate } from "framer-motion"
+import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -89,9 +90,9 @@ const Dot = ({
 
     const centerX = SPACING / 2 + SPACING * index
     return (
-        <a
-            ref={ref}
+        <Link
             href={`/pgcr/${activity.instanceId}`}
+            replace={false}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
@@ -129,7 +130,7 @@ const Dot = ({
                     cy={centerY}
                 />
             )}
-        </a>
+        </Link>
     )
 }
 

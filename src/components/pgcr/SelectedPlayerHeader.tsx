@@ -4,7 +4,7 @@ import SelectedPlayer from "./SelectedPlayer"
 import Image from "next/image"
 import { useMemo } from "react"
 import { External } from "../../images/icons"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 
 type SelectedPlayerHeaderProps = {

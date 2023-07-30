@@ -1,7 +1,7 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { formattedNumber } from "../../util/presentation/formatting"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
 import { useWeapons } from "../app/DestinyManifestManager"
