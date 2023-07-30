@@ -35,7 +35,7 @@ type UseProfileTransitory = {
     isLoading: boolean
 }
 
-const REFRESH_INTERVAL = 15 * 1000
+const REFRESH_INTERVAL = 30 * 1000
 
 export const useProfileTransitory = ({
     destinyMembershipId,

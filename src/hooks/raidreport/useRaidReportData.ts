@@ -40,21 +40,24 @@ export const useRaidReport: UseRaidReport = ({
                 if (!goodPlayers.length) return
 
                 const players = new Collection(goodPlayers)
-                const { clearsRank, speedRank } = players.get(primaryMembershipId)!
-                players.get(primaryMembershipId)
+                const report = players.get(primaryMembershipId)
+                if (!report) {
+                    setData(null)
+                    return
+                }
                 const _data: AllRaidReportData = {
                     rankings: [
                         {
                             type: RankingBannerType.FullClears,
-                            tier: clearsRank.tier,
-                            secondary: clearsRank.subtier ?? clearsRank.rank!,
-                            value: clearsRank.value
+                            tier: report.clearsRank.tier,
+                            secondary: report.clearsRank.subtier ?? report.clearsRank.rank!,
+                            value: report.clearsRank.value
                         },
                         {
                             type: RankingBannerType.Speed,
-                            tier: speedRank.tier,
-                            secondary: speedRank.subtier ?? speedRank.rank!,
-                            value: speedRank.value
+                            tier: report.speedRank.tier,
+                            secondary: report.speedRank.subtier ?? report.speedRank.rank!,
+                            value: report.speedRank.value
                         }
                     ],
                     activities: RaidReportDataCollection.groupActivities(
