@@ -13,8 +13,8 @@
         "start": "next start",
         "lint": "next lint",
         "test": "jest",
-        "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
-        "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
+        "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\" && prisma format",
+        "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
         "sign": "cd proxy && mkcert localhost",
         "build": "bash ./vercel/build.sh"
     },

@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { medianElement } from "../../../util/math"
-import RaidTagLabel, { RaceTag } from "./RaidTagLabel"
+import RaidTagLabel from "./RaidTagLabel"
 import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raid"
 import { Collection } from "@discordjs/collection"
 import ActivityCollection from "../../../models/profile/data/ActivityCollection"
@@ -21,7 +21,7 @@ import { FilterCallback } from "../../../types/generic"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
-import { ExtendedActivity } from "../../../types/profile"
+import { ExtendedActivity, RaceTag } from "../../../types/profile"
 
 type RaidModalProps = {
     raid: AvailableRaid
@@ -141,7 +141,7 @@ const RaidCard = ({
                                 type="race"
                                 {...contestFirstClear}
                                 placement={report?.worldFirstPlacement ?? undefined}
-                                scrollToDot={setHoveredTag}
+                                setActiveId={setHoveredTag}
                             />
                         )}
                     </div>
@@ -152,7 +152,7 @@ const RaidCard = ({
                                     type="challenge"
                                     {...tag}
                                     key={key}
-                                    scrollToDot={setHoveredTag}
+                                    setActiveId={setHoveredTag}
                                 />
                             ))}
                         </div>

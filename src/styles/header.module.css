@@ -66,6 +66,8 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     background-color: var(--search-background);
+
+    position: relative;
 }
 
 .search-icon {
@@ -119,10 +121,6 @@
     }
 }
 
-.search-container form {
-    position: relative;
-}
-
 #search-bar {
     max-width: 260px;
     min-width: 140px;
@@ -152,8 +150,7 @@
     position: absolute;
 
     right: 0;
-    left: -130px;
-    width: 350px;
+    left: 0;
     z-index: 999;
     overflow-x: hidden;
 

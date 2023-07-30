@@ -2,88 +2,73 @@ import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { Search } from "../../images/icons"
-import { wait } from "../../util/wait"
 import BungieName from "../../models/BungieName"
 import Image from "next/image"
+import { useRouter } from "next/router"
 
-const DEBOUNCE = 250
 const HIDE_AFTER_CLICK = 100
 
 type SearchBarProps = {}
 
 const SearchBar = ({}: SearchBarProps) => {
     const [isRedirecting, setIsRedirecting] = useState(false)
-    const [query, setQuery] = useState("")
-    const [enteredText, setEnteredText] = useState("")
-    const nextQuery = useRef("")
     const [OSKey, setOSKey] = useState("Ctrl")
 
+    const router = useRouter()
+
     const {
+        enteredText,
         results,
         isLoading: isLoadingResults,
-        doExactSearch,
-        isPerformingExactSearch
-    } = useSearch({ query, errorHandler: () => {} /** TODO: Handle search bar errors */ })
-    const [showingResults, setShowingResults] = useState(false)
+        isPerformingExactSearch,
+        handleFormEnter,
+        handleInputChange,
+        clearQuery
+    } = useSearch({ errorHandler: () => {} /** TODO: Handle search bar errors */ })
+    const [isShowingResults, setIsShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
-
-    const debounceQuery = async (potentialQuery: string) => {
-        await wait(DEBOUNCE)
-        if (!isPerformingExactSearch && potentialQuery === nextQuery.current) {
-            setQuery(potentialQuery)
-        }
-    }
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newQuery = event.target.value
-        setEnteredText(newQuery)
-        nextQuery.current = newQuery
-        debounceQuery(newQuery)
-    }
 
     const handleSelect = (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setIsRedirecting(true)
-        setQuery("")
+        clearQuery()
         setTimeout(() => {
-            setShowingResults(false)
+            setIsShowingResults(false)
         }, HIDE_AFTER_CLICK)
     }
 
-    const handleFormEnter = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        try {
-            setShowingResults(false)
-            await doExactSearch(enteredText)
-        } catch (e: any) {
-            setShowingResults(true)
-            nextQuery.current = enteredText
-            setQuery(enteredText)
+    useEffect(() => {
+        const eventName = "routeChangeComplete"
+        const removeRedirecting = () => setIsRedirecting(false)
+        router.events.on(eventName, removeRedirecting)
+        return () => {
+            router.events.off(eventName, removeRedirecting)
         }
-    }
+    })
 
     useEffect(() => {
         // Surely this detects if the user is on Mac :pleading:
         if (navigator.userAgent.includes("Mac")) {
             setOSKey("⌘")
         }
-
-        const handleClick = (event: MouseEvent) => {
-            setShowingResults(
-                !searchContainerRef.current ||
-                    searchContainerRef.current.contains(event.target as Node)
-            )
-        }
-
-        document.addEventListener("mousedown", handleClick)
-
-        return () => {
-            document.removeEventListener("mousedown", handleClick)
-        }
     }, [searchContainerRef])
 
-    // setTimeout(() => {
-    //     setIsRedirecting(!isRedirecting)
-    // }, 200)
+    useEffect(() => {
+        if (isShowingResults) {
+            const handleClick = (event: MouseEvent) => {
+                setIsShowingResults(
+                    !searchContainerRef.current ||
+                        searchContainerRef.current.contains(event.target as Node)
+                )
+            }
+
+            if (isShowingResults) {
+            }
+            document.addEventListener("click", handleClick)
+            return () => {
+                document.removeEventListener("click", handleClick)
+            }
+        }
+    }, [isShowingResults])
 
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
@@ -102,6 +87,7 @@ const SearchBar = ({}: SearchBarProps) => {
                     autoComplete="off"
                     placeholder="Search for a Guardian..."
                     value={enteredText}
+                    onClick={() => setIsShowingResults(true)}
                     onChange={handleInputChange}
                 />
                 <div className={styles["keys"]}>
@@ -109,7 +95,7 @@ const SearchBar = ({}: SearchBarProps) => {
                     <span>+</span>
                     <kbd>K</kbd>
                 </div>
-                {showingResults && (
+                {isShowingResults && (
                     <ul className={styles["search-results"]}>
                         {results
                             .map(result => {

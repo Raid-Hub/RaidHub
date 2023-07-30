@@ -17,7 +17,6 @@
     background-color: var(--search-background);
     border-radius: 15px;
     border: 1px solid var(--border);
-
 }
 
 .search-result {
@@ -31,8 +30,6 @@
 }
 
 .individual-result img {
-    width: 45px;
-    height: 45px;
     border-radius: 3px;
 }
 
@@ -46,7 +43,7 @@
     padding-top: 15px;
     padding-bottom: 5px;
 
-    color: var(--secondary-text)
+    color: var(--secondary-text);
 }
 
 .search-top input {
@@ -62,9 +59,9 @@
     padding-left: 35px; /* ?!/1? Literally doing nothing :c */
 }
 
-.search-content span{
+.search-content span {
     font-size: 15px;
-    color: var(--secondary-text)
+    color: var(--secondary-text);
 }
 
 #search-bar {

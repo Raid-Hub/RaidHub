@@ -109,6 +109,16 @@ export type ProfileSocialData = {
     url: string
 }
 
+export type RaceTag = {
+    placement?: number
+    asterisk?: boolean
+    raid: Raid
+    challenge: boolean
+    dayOne: boolean
+    contest: boolean
+    weekOne: boolean
+}
+
 export type ExtendedActivity = {
     activity: Activity
     extended: {

@@ -3,50 +3,63 @@ import { useEffect, useMemo, useState } from "react"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LanguageProvider"
-import { TransitoryActivity } from "../../../hooks/bungie/useProfileTransitory"
+import { useProfileTransitory } from "../../../hooks/bungie/useProfileTransitory"
+import { ErrorHandler } from "../../../types/generic"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 
 type CurrentActivityParams = {
-    data: TransitoryActivity
-    lastRefresh: Date
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+    errorHandler: ErrorHandler
 }
 
 const CurrentActivity = ({
-    data: { transitory, activityDefinition, activityModeDefinition, partyMembers },
-    lastRefresh
+    destinyMembershipId,
+    destinyMembershipType,
+    errorHandler
 }: CurrentActivityParams) => {
     const { strings } = useLocale()
+    const {
+        profile,
+        isLoading: isLoadingTransitoryProfile,
+        lastRefresh: lastTransitoryRefresh
+    } = useProfileTransitory({
+        destinyMembershipId,
+        destinyMembershipType,
+        errorHandler
+    })
 
     const raidTuple = useMemo(() => {
         try {
-            return raidTupleFromHash(activityDefinition.hash?.toString() ?? "")
+            return raidTupleFromHash(profile?.activityDefinition.hash?.toString() ?? "")
         } catch {
             return null
         }
-    }, [activityDefinition.hash])
+    }, [profile?.activityDefinition.hash])
 
     const activityName = useMemo(() => {
-        if (raidTuple && transitory.currentActivity.startTime) {
+        if (raidTuple && profile?.transitory.currentActivity.startTime) {
             return (
                 raidVersion(
                     raidTuple,
-                    new Date(transitory.currentActivity.startTime),
+                    new Date(profile.transitory.currentActivity.startTime),
                     new Date(),
                     strings,
                     false
                 ) + strings.raidNames[raidTuple[0]]
             )
-        } else if (activityDefinition && activityModeDefinition) {
+        } else if (profile?.activityDefinition && profile.activityModeDefinition) {
             return (
-                activityModeDefinition.displayProperties.name +
+                profile.activityModeDefinition.displayProperties.name +
                 ": " +
-                activityDefinition.displayProperties.name
+                profile.activityDefinition.displayProperties.name
             )
         } else {
             return null
         }
-    }, [transitory.currentActivity, activityDefinition, activityModeDefinition, raidTuple, strings])
+    }, [profile, raidTuple, strings])
 
-    return activityName ? (
+    return profile ? (
         <div className={styles["current-activity"]}>
             <div>
                 <span className={styles["current-activity-label"]}>{strings.inGame}</span>
@@ -55,7 +68,7 @@ const CurrentActivity = ({
             <div>
                 <span className={styles["current-activity-label"]}>{strings.fireteam}</span>
                 <div className={styles["fireteam-members"]}>
-                    {partyMembers.map(
+                    {profile.partyMembers.map(
                         ({
                             bungieGlobalDisplayName,
                             displayName,
@@ -71,12 +84,12 @@ const CurrentActivity = ({
                     )}
                 </div>
             </div>
-            {transitory.currentActivity.startTime && (
+            {profile.transitory.currentActivity.startTime && (
                 <div className={styles["timer-container"]}>
                     <span className={styles["current-activity-label"]}>{strings.elapsedTime}</span>
                     <Timer
-                        lastRefresh={lastRefresh}
-                        startTime={new Date(transitory.currentActivity.startTime)}
+                        lastRefresh={lastTransitoryRefresh}
+                        startTime={new Date(profile.transitory.currentActivity.startTime)}
                     />
                 </div>
             )}
