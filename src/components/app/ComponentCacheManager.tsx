@@ -8,7 +8,7 @@ const MAX_CACHE_COUNT = 3
 type ComponentCache = Collection<
     string,
     {
-        created: number
+        lastAccessed: number
         expires: number
         scrollPos: number
         component: JSX.Element
@@ -37,7 +37,7 @@ const ComponentCacheManager = ({
             const MemoComponent = React.memo(Component)
             retainedComponents.set(key, {
                 component: <MemoComponent {...componentProps} />,
-                created: Date.now(),
+                lastAccessed: Date.now(),
                 expires: Date.now() + 3 * 60 * 1000, // 3 minutes
                 scrollPos: 0
             })
@@ -45,9 +45,12 @@ const ComponentCacheManager = ({
 
         if (retainedComponents.size + (isRetainableRoute ? 0 : 1) > MAX_CACHE_COUNT) {
             retainedComponents.delete(
-                retainedComponents.sorted((a, b) => b.expires - a.expires).lastKey()!
+                retainedComponents.findKey(c => c.expires <= Date.now()) ??
+                    retainedComponents.sorted((a, b) => b.lastAccessed - a.lastAccessed).lastKey()!
             )
         }
+    } else {
+        retainedComponents.get(key)!.lastAccessed = Date.now()
     }
 
     // Save scroll position - requires an up-to-date router.asPath
@@ -74,7 +77,7 @@ const ComponentCacheManager = ({
     }, [Component, componentProps, key, retainedComponents, isRetainableRoute])
 
     return (
-        <article>
+        <>
             {!isRetainableRoute && (
                 <div key={key} id="content">
                     <Component {...componentProps} />
@@ -89,7 +92,7 @@ const ComponentCacheManager = ({
                     {c.component}
                 </div>
             ))}
-        </article>
+        </>
     )
 }
 
