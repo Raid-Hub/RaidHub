@@ -2,7 +2,6 @@ import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
 import { useLocale } from "../components/app/LocaleManager"
 import Account from "../components/account/Account"
-import { useEffect } from "react"
 
 const AccountPage: NextPage = () => {
     const {
@@ -16,11 +15,6 @@ const AccountPage: NextPage = () => {
         }
     })
     const { strings } = useLocale()
-
-    useEffect(() => {
-        console.log("mount account")
-        return () => console.log("unmount account")
-    }, [])
 
     if (status === "loading") {
         return (
