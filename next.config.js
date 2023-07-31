@@ -2,7 +2,8 @@
 const nextConfig = {
     reactStrictMode: false,
     env: {
-        BUNGIE_API_KEY: process.env.BUNGIE_API_KEY
+        BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
+        APP_ENV: process.env.APP_ENV
     },
     images: {
         domains: [
