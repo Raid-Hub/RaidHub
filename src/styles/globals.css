@@ -61,8 +61,6 @@ body {
 
     display: flex;
     flex-direction: column;
-    /* This pushes content below the header */
-    padding-top: 3.5em;
 
     background: linear-gradient(
         90deg,

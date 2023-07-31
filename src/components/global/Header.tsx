@@ -10,20 +10,16 @@ type HeaderProps = {}
 
 const Header = ({}: HeaderProps) => {
     return (
-        <>
-            <header className={styles["header"]}>
-                <Link href={"/"} className={styles["logo"]}>
-                    <Image className={styles["logo-img"]} src={Logo} alt="logo" sizes="40px" />
-                    <span className={styles["logo-text"]}>RaidHub</span>
-                </Link>
-                <div className={styles["right-content"]}>
-                    <SearchBar />
-                    <AccountIcon />
-                </div>
-            </header>
-
-            <SearchDiv />
-        </>
+        <header id="header" className={styles["header"]}>
+            <Link href={"/"} className={styles["logo"]}>
+                <Image className={styles["logo-img"]} src={Logo} alt="logo" sizes="40px" />
+                <span className={styles["logo-text"]}>RaidHub</span>
+            </Link>
+            <div className={styles["right-content"]}>
+                <SearchBar />
+                <AccountIcon />
+            </div>
+        </header>
     )
 }
 

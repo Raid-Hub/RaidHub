@@ -19,12 +19,10 @@ const ROUTES_TO_RETAIN = ["/pgcr/[activityId]", "/[vanity]", "/profile/[platform
 
 const ComponentCacheManager = ({
     Component,
-    componentProps,
-    isLoading
+    componentProps
 }: {
     Component: NextComponentType<NextPageContext, any, any>
     componentProps: Object
-    isLoading: boolean
 }) => {
     const router = useRouter()
     const { current: retainedComponents } = useRef<ComponentCache>(new Collection())
@@ -81,7 +79,7 @@ const ComponentCacheManager = ({
     return (
         <>
             {!isRetainableRoute && (
-                <div key={key} id="content" style={isLoading ? { display: "none" } : {}}>
+                <div key={key} id="content">
                     <Component {...componentProps} />
                 </div>
             )}
@@ -90,7 +88,7 @@ const ComponentCacheManager = ({
                     key={path}
                     {...(key !== path
                         ? { style: { display: "none" }, "data-component-cache": path }
-                        : { style: isLoading ? { display: "none" } : {}, id: "content" })}>
+                        : { id: "content" })}>
                     {c.component}
                 </div>
             ))}
