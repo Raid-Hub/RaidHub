@@ -36,6 +36,11 @@ export const useSearch = ({
 
     const client = useBungieClient()
 
+    const clearQuery = useCallback(() => {
+        setQuery("")
+        setTimeout(() => setEnteredText(""), 200)
+    }, [])
+
     const doExactSearch = useCallback(
         async (query: string): Promise<void> => {
             setIsPerformingExactSearch(true)
@@ -47,7 +52,7 @@ export const useSearch = ({
                         displayNameCode: bungieName.code,
                         client
                     })
-                    setTimeout(clearQuery, 200)
+                    clearQuery()
                     onSuccessfulExactSearch()
 
                     router.push(
@@ -55,7 +60,6 @@ export const useSearch = ({
                         `/profile/${membershipType}/${membershipId}`
                     )
                 } catch (e) {
-                    console.error(e)
                     throw Error(`Unable to perform exact search with ${query}`)
                 }
             } catch (e) {
@@ -64,7 +68,7 @@ export const useSearch = ({
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, errorHandler, onSuccessfulExactSearch]
+        [client, errorHandler, onSuccessfulExactSearch, clearQuery, router]
     )
 
     const fetchUsers = useCallback(async () => {
@@ -141,11 +145,6 @@ export const useSearch = ({
         },
         [doExactSearch, enteredText]
     )
-
-    const clearQuery = useCallback(() => {
-        setQuery("")
-        setTimeout(() => setEnteredText(""), 200)
-    }, [])
 
     useEffect(() => {
         setLoading(!!query)

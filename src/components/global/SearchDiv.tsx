@@ -48,7 +48,7 @@ const SearchDiv = ({}: SearchDivProps) => {
         handleInputChange,
         clearQuery
     } = useSearch({
-        errorHandler: () => {}, // todo
+        errorHandler: console.error, // todo
         onSuccessfulExactSearch: animateModalOut
     })
 

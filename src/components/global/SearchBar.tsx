@@ -26,7 +26,7 @@ const SearchBar = ({}: SearchBarProps) => {
         handleInputChange,
         clearQuery
     } = useSearch({
-        errorHandler: () => {} /** TODO: Handle search bar errors */,
+        errorHandler: console.error /** TODO: Handle search bar errors */,
         onSuccessfulExactSearch: () => setIsRedirecting(true)
     })
     const [isShowingResults, setIsShowingResults] = useState(false)
