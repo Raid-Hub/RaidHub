@@ -19,10 +19,12 @@ const ROUTES_TO_RETAIN = ["/pgcr/[activityId]", "/[vanity]", "/profile/[platform
 
 const ComponentCacheManager = ({
     Component,
-    componentProps
+    componentProps,
+    isLoading
 }: {
     Component: NextComponentType<NextPageContext, any, any>
     componentProps: Object
+    isLoading: boolean
 }) => {
     const router = useRouter()
     const { current: retainedComponents } = useRef<ComponentCache>(new Collection())
@@ -53,16 +55,16 @@ const ComponentCacheManager = ({
         retainedComponents.get(key)!.lastAccessed = Date.now()
     }
 
-    // Save scroll position - requires an up-to-date router.asPath
     useEffect(() => {
         // Save the scroll position of current page before leaving
-        const handleRouteChangeStart = () => {
+        const handleRouteChangeStart = (...evts: any[]) => {
             if (isRetainableRoute) {
                 if (retainedComponents.has(key)) {
                     retainedComponents.get(key)!.scrollPos = window.scrollY
                 }
             }
         }
+
         router.events.on("routeChangeStart", handleRouteChangeStart)
         return () => {
             router.events.off("routeChangeStart", handleRouteChangeStart)
@@ -79,7 +81,7 @@ const ComponentCacheManager = ({
     return (
         <>
             {!isRetainableRoute && (
-                <div key={key} id="content">
+                <div key={key} id="content" style={isLoading ? { display: "none" } : {}}>
                     <Component {...componentProps} />
                 </div>
             )}
@@ -88,7 +90,7 @@ const ComponentCacheManager = ({
                     key={path}
                     {...(key !== path
                         ? { style: { display: "none" }, "data-component-cache": path }
-                        : { id: "content" })}>
+                        : { style: isLoading ? { display: "none" } : {}, id: "content" })}>
                     {c.component}
                 </div>
             ))}
