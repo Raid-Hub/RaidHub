@@ -1,6 +1,6 @@
 import styles from "../../styles/pages/home.module.css"
 import { AvailableRaids } from "../../types/raids"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
 import HomeRaidCard from "./HomeRaidCard"
 
 const Home = () => {

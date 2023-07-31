@@ -1,6 +1,6 @@
 import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
-import { useLocale } from "../components/app/LanguageProvider"
+import { useLocale } from "../components/app/LocaleManager"
 import Account from "../components/account/Account"
 
 const AccountPage: NextPage = () => {

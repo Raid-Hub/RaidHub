@@ -37,8 +37,6 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     return <BungieClientContext.Provider value={client}>{children}</BungieClientContext.Provider>
 }
 
-export function useBungieClient(): BungieClient {
-    return useContext(BungieClientContext)
-}
+export const useBungieClient = () => useContext(BungieClientContext)
 
 export default TokenManager

@@ -1,7 +1,7 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { formattedNumber, secondsToHMS } from "../../util/presentation/formatting"
 import { IPGCREntry } from "../../types/pgcr"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, Question_Mark, Time } from "../../images/icons"
 import { useWeapons } from "../app/DestinyManifestManager"

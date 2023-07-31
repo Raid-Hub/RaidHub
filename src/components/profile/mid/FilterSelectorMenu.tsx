@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
 import { FilterListName, FiltersToSelectFrom } from "../../../util/profile/activityFilters"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 
 type FilterSelectorMenuProps = {
     handleSelect(element: ActivityFilter): void

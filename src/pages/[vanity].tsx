@@ -9,6 +9,8 @@ export const getServerSideProps: GetServerSideProps<
     InitialProfileProps,
     { vanity: string }
 > = async ({ params, res, req }) => {
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=59")
+
     try {
         if (req.cookies["vanity"]) {
             const { destinyMembershipId, destinyMembershipType } = JSON.parse(

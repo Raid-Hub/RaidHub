@@ -1,6 +1,6 @@
 import { NextPage } from "next"
 import { signIn } from "next-auth/react"
-import { useLocale } from "../components/app/LanguageProvider"
+import { useLocale } from "../components/app/LocaleManager"
 import { useRouter } from "next/router"
 
 const Login: NextPage = () => {

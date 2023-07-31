@@ -6,21 +6,13 @@ import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
 import { useTypewriter } from "react-simple-typewriter"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
+import Link from "next/link"
 
 type SearchDivProps = {}
 
 const SearchDiv = ({}: SearchDivProps) => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)
-    const {
-        enteredText,
-        results,
-        isLoading: isLoadingResults,
-        handleFormEnter,
-        handleInputChange,
-        clearQuery
-    } = useSearch({
-        errorHandler: () => {} // todo
-    })
+
     const [showingResults, setShowingResults] = useState(false)
 
     const backgroundDiv = useRef<HTMLDivElement>(null)
@@ -47,6 +39,18 @@ const SearchDiv = ({}: SearchDivProps) => {
             })
         }
     }
+
+    const {
+        enteredText,
+        results,
+        isLoading: isLoadingResults,
+        handleFormEnter,
+        handleInputChange,
+        clearQuery
+    } = useSearch({
+        errorHandler: console.error, // todo
+        onSuccessfulExactSearch: animateModalOut
+    })
 
     const handleK = useCallback(async () => {
         if (isDivDisplayed == true) {
@@ -91,10 +95,14 @@ const SearchDiv = ({}: SearchDivProps) => {
                             {showingResults && (
                                 <ul className={styles["search-results"]}>
                                     {results.map(({ name, membershipId, membershipType }, idx) => (
-                                        <a
+                                        <Link
                                             className={styles["search-result"]}
                                             key={idx}
-                                            href={`/profile/${membershipType}/${membershipId}`}>
+                                            href={`/profile/${membershipType}/${membershipId}`}
+                                            onClick={() => {
+                                                animateModalOut()
+                                                clearQuery()
+                                            }}>
                                             <li>
                                                 <div className={styles["individual-result"]}>
                                                     <Image
@@ -106,7 +114,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                                                     <p>{name}</p>
                                                 </div>
                                             </li>
-                                        </a>
+                                        </Link>
                                     ))}
                                 </ul>
                             )}

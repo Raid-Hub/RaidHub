@@ -124,7 +124,6 @@
 .dots-container {
     flex: 1;
     margin: 1em 0;
-    border-radius: 5px;
     min-width: 200px;
     max-height: 100%;
     overflow-y: hidden;
