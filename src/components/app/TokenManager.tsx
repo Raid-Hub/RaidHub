@@ -1,7 +1,6 @@
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect } from "react"
 import BungieClient from "../../services/bungie/client"
-import AppError from "../../models/errors/AppError"
 
 const client = new BungieClient()
 const BungieClientContext = createContext<BungieClient>(client)
