@@ -27,8 +27,7 @@ const SelectedPlayerHeader = ({
     const navigateToProfile = useCallback(() => {
         router.push(
             "/profile/[platform]/[membershipId]",
-            `/profile/${selected.membershipType}/${selected.membershipId}`,
-            { shallow: true }
+            `/profile/${selected.membershipType}/${selected.membershipId}`
         )
     }, [router, selected])
 

@@ -6,13 +6,17 @@ import { searchForBungieName } from "../../services/bungie/searchForBungieName"
 import BungieName from "../../models/BungieName"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
+import { useRouter } from "next/router"
 
 const DEBOUNCE = 250
 
-type UseSearchParams = {
+export const useSearch = ({
+    errorHandler,
+    onSuccessfulExactSearch
+}: {
     errorHandler: ErrorHandler
-}
-type UseSearch = {
+    onSuccessfulExactSearch(): void
+}): {
     enteredText: string
     results: (CustomBungieSearchResult & { name: string })[]
     isLoading: boolean
@@ -20,9 +24,7 @@ type UseSearch = {
     handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void
     handleFormEnter(event: React.FormEvent<HTMLFormElement>): void
     clearQuery(): void
-}
-
-export function useSearch({ errorHandler }: UseSearchParams): UseSearch {
+} => {
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isPerformingExactSearch, setIsPerformingExactSearch] = useState<boolean>(false)
     const [enteredText, setEnteredText] = useState("")
@@ -30,6 +32,7 @@ export function useSearch({ errorHandler }: UseSearchParams): UseSearch {
     const [query, setQuery] = useState("")
     const lastSearch = useRef<number>(Date.now())
     const [results, setResults] = useState<(CustomBungieSearchResult & { name: string })[]>([])
+    const router = useRouter()
 
     const client = useBungieClient()
 
@@ -44,9 +47,15 @@ export function useSearch({ errorHandler }: UseSearchParams): UseSearch {
                         displayNameCode: bungieName.code,
                         client
                     })
+                    setTimeout(clearQuery, 200)
+                    onSuccessfulExactSearch()
 
-                    window.location.href = `/profile/${membershipType}/${membershipId}`
-                } catch {
+                    router.push(
+                        "/profile/[platform]/[membershipId]",
+                        `/profile/${membershipType}/${membershipId}`
+                    )
+                } catch (e) {
+                    console.error(e)
                     throw Error(`Unable to perform exact search with ${query}`)
                 }
             } catch (e) {
@@ -55,7 +64,7 @@ export function useSearch({ errorHandler }: UseSearchParams): UseSearch {
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, errorHandler]
+        [client, errorHandler, onSuccessfulExactSearch]
     )
 
     const fetchUsers = useCallback(async () => {

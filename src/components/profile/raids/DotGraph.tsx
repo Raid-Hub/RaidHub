@@ -122,7 +122,7 @@ function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
     const router = useRouter()
     const goToActivity = useCallback(
         (instanceId: string) => {
-            router.push(`/pgcr/[activityId]`, `/pgcr/${instanceId}`, { shallow: true })
+            router.push(`/pgcr/[activityId]`, `/pgcr/${instanceId}`)
         },
         [router]
     )
