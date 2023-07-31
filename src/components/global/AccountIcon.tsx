@@ -15,7 +15,7 @@ const AccountIcon = ({}: AccountIconProps) => {
     // todo: replace question mark with loading
     const image = useMemo(
         () => (status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account),
-        [sessionData]
+        [sessionData, status]
     )
 
     return (

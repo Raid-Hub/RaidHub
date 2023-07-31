@@ -12,7 +12,6 @@ import { twitterProfile } from "../../../util/server/auth/twitterProfile"
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
-import { signIn } from "next-auth/react"
 import { signInCallback } from "../../../util/server/auth/signInCallback"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
