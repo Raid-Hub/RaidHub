@@ -12,6 +12,8 @@ import { twitterProfile } from "../../../util/server/auth/twitterProfile"
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
+import { signIn } from "next-auth/react"
+import { signInCallback } from "../../../util/server/auth/signInCallback"
 
 type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -32,11 +34,12 @@ export default NextAuth({
     pages: {
         signIn: "/login",
         signOut: "/logout",
-        error: "/auth/error", // Error code passed in query string as ?error=
+        error: "/error", // Error code passed in query string as ?error=
         newUser: "/account" // New users will be directed here on first sign in
     },
     callbacks: {
-        session: sessionCallback
+        session: sessionCallback,
+        signIn: signInCallback
     }
 })
 

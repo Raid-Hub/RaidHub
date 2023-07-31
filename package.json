@@ -10,6 +10,7 @@
         "db:seed": "prisma db seed",
         "db:update": "prisma db push",
         "db:stop": "docker-compose -f docker-compose.yml down",
+        "studio": "prisma studio",
         "start": "next start",
         "lint": "next lint",
         "test": "jest",

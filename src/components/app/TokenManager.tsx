@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect } from "react"
 import BungieClient from "../../services/bungie/client"
+import AppError from "../../models/errors/AppError"
 
 const client = new BungieClient()
 const BungieClientContext = createContext<BungieClient>(client)
@@ -18,7 +19,7 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
         if (sessionData?.error == "RefreshAccessTokenError") {
             setRefetchInterval(0)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
-            console.error(sessionData)
+            console.error(new AppError("ExpiredRefreshTokenError", sessionData))
             setRefetchInterval(0)
             signOut()
         } else if (status == "unauthenticated") {

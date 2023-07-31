@@ -1,9 +1,10 @@
 import { User } from "@prisma/client"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { Session } from "next-auth/core/types"
+import { CallbacksOptions, Session } from "next-auth/core/types"
 import prisma from "../prisma"
 import { AdapterUser } from "next-auth/adapters"
+import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export type SessionUser = {
     id: string
@@ -42,13 +43,15 @@ function sessionUser(user: User): SessionUser {
     }
 }
 
-export async function sessionCallback({ session, user }: { session: Session; user: AdapterUser }) {
+export const sessionCallback: CallbacksOptions["session"] = async ({ session, user }) => {
     const newUser = sessionUser(user as User)
+
     if (
         !user.bungie_access_expires_at ||
         !user.bungie_refresh_expires_at ||
         !user.bungie_refresh_token
     ) {
+        console.log("a")
         // If user is not authenticated with Bungie
         return {
             ...session,
@@ -56,25 +59,18 @@ export async function sessionCallback({ session, user }: { session: Session; use
         } satisfies Session
     } else if (Date.now() < user.bungie_access_expires_at.getTime()) {
         // If user access token has not expired yet
+        console.log("b")
         return {
             ...session,
             user: newUser
         } satisfies Session
-    } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
+    } else if (
+        Date.now() < 0 //user.bungie_refresh_expires_at.getTime()) {
+    ) {
+        console.log("c")
         try {
             const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
-
-            const updatedUser = await prisma.user.update({
-                where: {
-                    id: user.id
-                },
-                data: {
-                    bungie_access_token: tokens.access.value,
-                    bungie_access_expires_at: new Date(tokens.access.expires),
-                    bungie_refresh_token: tokens.refresh.value,
-                    bungie_refresh_expires_at: new Date(tokens.refresh.expires)
-                }
-            })
+            const updatedUser = await updateBungieAccessTokens(user.id, tokens)
 
             return {
                 ...session,
