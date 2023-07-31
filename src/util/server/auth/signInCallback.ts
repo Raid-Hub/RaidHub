@@ -15,7 +15,7 @@ export const signInCallback: CallbacksOptions["signIn"] = async ({ user, account
                     created: now
                 },
                 refresh: {
-                    value: account.access_token!,
+                    value: account.refresh_token!,
                     expires: now + 7_775_995_000,
                     type: "refresh",
                     created: now
