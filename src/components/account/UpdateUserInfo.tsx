@@ -21,11 +21,11 @@ const UpdateUserInfo = ({ user, refreshSession }: UpdateUserInfoProps) => {
         defaultValues: {
             name: user.name
         },
-        resolver: zodResolver(zUser)
+        resolver: zodResolver(zUser.partial())
     })
 
     const onSubmit = (values: FormInputs) => {
-        updateCurrentUser(values).then(refreshSession)
+        updateCurrentUser(values).then(refreshSession).catch(console.error)
     }
 
     return (
@@ -34,6 +34,7 @@ const UpdateUserInfo = ({ user, refreshSession }: UpdateUserInfoProps) => {
             <input {...register("name", { required: true })} />
 
             <input type="submit" />
+            {errors && <span>{errors.name?.message}</span>}
         </form>
     )
 }

@@ -7,7 +7,7 @@ export type PartialStruct<T extends { id: any }> = Partial<T> & Pick<T, "id">
 export const zUser = z.object({
     destiny_membership_type: z.nullable(z.nativeEnum(BungieMembershipType)),
     destiny_membership_id: z.nullable(z.string()),
-    name: z.nullable(z.string()),
+    name: z.string(),
     image: z.nullable(z.string().url()),
     bungie_username: z.nullable(z.string()),
     discord_username: z.nullable(z.string()),
