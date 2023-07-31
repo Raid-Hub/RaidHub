@@ -67,7 +67,7 @@ export const useSearch = ({
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, errorHandler, onSuccessfulExactSearch, clearQuery, router]
+        [client, errorHandler, router]
     )
 
     const fetchUsers = useCallback(async () => {
@@ -145,7 +145,7 @@ export const useSearch = ({
                 setQuery(enteredText)
             }
         },
-        [doExactSearch, enteredText]
+        [doExactSearch, enteredText, clearQuery, onSuccessfulExactSearch]
     )
 
     useEffect(() => {
