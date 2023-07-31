@@ -1,12 +1,13 @@
 import styles from "../../styles/pages/pgcr.module.css"
-import { useState } from "react"
+import { useCallback } from "react"
 import { Raid } from "../../types/raids"
 import StatCards from "./PlayerStatCells"
 import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
-import DestinyPGCRCharacter from "../../models/pgcr/Character"
+import { useRouter } from "next/router"
+import { IPGCREntry } from "../../types/pgcr"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
@@ -15,17 +16,69 @@ type ParticipantsProps = {
 }
 
 const ParticipantsSection = ({ players: members, pgcrLoadingState }: ParticipantsProps) => {
-    const [memberIndex, setMemberIndex] = useState(-1)
-    const [characterIndex, setCharacterIndex] = useState(-1)
+    const router = useRouter()
+
+    const getQueryValue = useCallback(
+        (key: string, maxValue: number) => {
+            const index = Number(router.query[key])
+            if (!isNaN(index) && index <= maxValue) {
+                return index
+            } else {
+                return -1
+            }
+        },
+        [router]
+    )
+
+    const setQueryValues = useCallback(
+        (values: Partial<Record<"player" | "character", number>>) => {
+            const query: typeof values = {}
+            const player = values.player ?? Number(router.query.player)
+            if (player >= 0) {
+                query.player = player
+            }
+            const character = values.character ?? Number(router.query.character)
+            if (character >= 0) {
+                query.character = character
+            }
+            router.push(
+                {
+                    query: {
+                        ...query,
+                        activityId: router.query.activityId
+                    }
+                },
+                undefined,
+                {
+                    shallow: true
+                }
+            )
+        },
+        [router]
+    )
+
+    const memberIndex = getQueryValue("player", members?.length ?? 0)
+    const selected: PGCRPlayer | null = members?.[memberIndex] ?? null
+
+    const characterIndex = getQueryValue(
+        "character",
+        members?.[memberIndex]?.characterIds.length ?? 0
+    )
+    const entry: IPGCREntry | null = selected?.characters[characterIndex] ?? selected ?? null
 
     const updateMemberIndex = (clicked: number) => {
         memberIndex === clicked
-            ? [setMemberIndex(-1), setCharacterIndex(-1)]
-            : setMemberIndex(clicked)
+            ? setQueryValues({
+                  player: -1,
+                  character: -1
+              })
+            : setQueryValues({ player: clicked })
     }
 
     const updateCharacterIndex = (clicked: number) => {
-        characterIndex === clicked ? setCharacterIndex(-1) : setCharacterIndex(clicked)
+        characterIndex === clicked
+            ? setQueryValues({ character: -1 })
+            : setQueryValues({ character: clicked })
     }
 
     const cardLayout = members
@@ -55,26 +108,19 @@ const ParticipantsSection = ({ players: members, pgcrLoadingState }: Participant
         )
     } else {
         // selected view
-        const entry: DestinyPGCRCharacter | null =
-            members[memberIndex]?.characters[characterIndex] ?? members[memberIndex] ?? null
         return (
             <>
-                <SelectedPlayerHeader
-                    selected={members[memberIndex]}
-                    selectedIndex={memberIndex}
-                    characterIndex={characterIndex}
-                    updateMemberIndex={updateMemberIndex}
-                    updateCharacterIndex={updateCharacterIndex}
-                />
+                {selected && (
+                    <SelectedPlayerHeader
+                        selected={selected}
+                        selectedIndex={memberIndex}
+                        characterIndex={characterIndex}
+                        updateMemberIndex={updateMemberIndex}
+                        updateCharacterIndex={updateCharacterIndex}
+                    />
+                )}
                 <div className={[styles["grid"], cardLayout].join(" ")}>
-                    {entry && (
-                        <StatCards
-                            entry={
-                                members[memberIndex]?.characters[characterIndex] ??
-                                members[memberIndex]
-                            }
-                        />
-                    )}
+                    {entry && <StatCards entry={entry} />}
                 </div>
             </>
         )
