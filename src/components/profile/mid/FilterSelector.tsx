@@ -6,7 +6,7 @@ import NotActivityFilter from "../../../models/profile/filters/NotActivityFilter
 import HighOrderActivityFilter from "../../../models/profile/filters/HighOrderActivityFilter"
 import SingleActivityFilter from "../../../models/profile/filters/SingleActivityFilter"
 import FilterSelectorMenu from "./FilterSelectorMenu"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import { DefaultActivityFilters } from "../../../util/profile/activityFilters"
 import { useForm } from "react-hook-form"
 

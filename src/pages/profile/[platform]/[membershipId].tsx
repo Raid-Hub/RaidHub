@@ -15,6 +15,8 @@ export const getServerSideProps: GetServerSideProps<
     InitialProfileProps,
     { platform: string; membershipId: string }
 > = async ({ params, res, req }) => {
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=59")
+
     try {
         const destinyMembershipType = Number(params!.platform)
         const vanity = await prisma.vanity.findFirst({

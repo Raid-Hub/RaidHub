@@ -1,3 +1,4 @@
+import Link from "next/link"
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Loading from "../../global/Loading"
 
@@ -25,7 +26,7 @@ const BigNumberStatItem = ({
                     className={
                         extraLarge ? styles["timings-number-large"] : styles["timings-number"]
                     }>
-                    {href ? <a href={href}>{displayValue}</a> : displayValue}
+                    {href ? <Link href={href}>{displayValue}</Link> : displayValue}
                 </p>
             )}
             <p className={styles["timings-subtitle"]}>{name}</p>

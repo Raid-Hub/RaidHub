@@ -2,7 +2,8 @@ import styles from "../../../styles/pages/profile/mid.module.css"
 import { useEffect, useMemo, useState } from "react"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
+import Link from "next/link"
 import { useProfileTransitory } from "../../../hooks/bungie/useProfileTransitory"
 import { ErrorHandler } from "../../../types/generic"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
@@ -46,7 +47,9 @@ const CurrentActivity = ({
                     new Date(),
                     strings,
                     false
-                ) + strings.raidNames[raidTuple[0]]
+                ) +
+                " " +
+                strings.raidNames[raidTuple[0]]
             )
         } else if (profile?.activityDefinition && profile.activityModeDefinition) {
             return (
@@ -54,6 +57,8 @@ const CurrentActivity = ({
                 ": " +
                 profile.activityDefinition.displayProperties.name
             )
+        } else if (profile?.activityDefinition) {
+            return profile?.activityDefinition.displayProperties.name
         } else {
             return null
         }
@@ -75,11 +80,11 @@ const CurrentActivity = ({
                             membershipId,
                             membershipType
                         }) => (
-                            <a
+                            <Link
                                 href={`/profile/${membershipType}/${membershipId}`}
                                 key={membershipId}>
                                 {bungieGlobalDisplayName ?? displayName}
-                            </a>
+                            </Link>
                         )
                     )}
                 </div>

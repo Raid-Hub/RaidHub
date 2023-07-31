@@ -33,9 +33,11 @@ const Footer = ({}: FooterProps) => {
                     <div className={styles["developers"]}>
                         {developers.map((dev, idx) => (
                             <React.Fragment key={idx}>
-                                <a className={styles["developer"]} href={`/${dev.toLowerCase()}`}>
+                                <Link
+                                    className={styles["developer"]}
+                                    href={`/${dev.toLowerCase()}`}>
                                     {dev}
-                                </a>
+                                </Link>
                                 {idx !== developers.length - 1 && <span>{", "}</span>}
                             </React.Fragment>
                         ))}{" "}

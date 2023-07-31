@@ -7,8 +7,9 @@ import Head from "next/head"
 import TokenManager from "../components/app/TokenManager"
 import { useState } from "react"
 import { Session } from "next-auth"
-import LanguageProvider from "../components/app/LanguageProvider"
+import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
+import ComponentCacheManager from "../components/app/ComponentCacheManager"
 
 type PageProps = {
     session: Session
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
     const [refetchInterval, setRefetchInterval] = useState(0)
 
     return (
-        <LanguageProvider>
+        <LocaleManager>
             <SessionProvider
                 session={session}
                 refetchInterval={refetchInterval}
@@ -26,7 +27,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 <TokenManager setRefetchInterval={setRefetchInterval}>
                     <DestinyManifestManager>
                         <Header />
-                        <Component {...pageProps} />
+                        <ComponentCacheManager Component={Component} componentProps={pageProps} />
                         <Footer />
                     </DestinyManifestManager>
                 </TokenManager>
@@ -35,7 +36,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title key="title">Raid Hub</title>
+                <title key="title">RaidHub</title>
                 <link
                     rel="manifest"
                     href="/manifest.json"
@@ -46,7 +47,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                         : {})}
                 />
             </Head>
-        </LanguageProvider>
+        </LocaleManager>
     )
 }
 
