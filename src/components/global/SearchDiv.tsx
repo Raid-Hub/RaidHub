@@ -74,7 +74,7 @@ const SearchDiv = ({}: SearchDivProps) => {
     })
 
     return (
-        <div className={"container"}>
+        <div className={styles["container"]}>
             <div className={styles["animate-modal"]} ref={animateModal}>
                 {isDivDisplayed && (
                     <div className={styles["search-div"]} id="searchdiv">
