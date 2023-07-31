@@ -10,12 +10,14 @@ import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ComponentCacheManager from "../components/app/ComponentCacheManager"
+import ProgressBar from "nextjs-progressbar"
+import SearchDiv from "../components/global/SearchDiv"
 
 type PageProps = {
     session: Session
 }
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
+function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [refetchInterval, setRefetchInterval] = useState(0)
 
     return (
@@ -26,7 +28,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
                 refetchOnWindowFocus={false}>
                 <TokenManager setRefetchInterval={setRefetchInterval}>
                     <DestinyManifestManager>
+                        <SearchDiv />
                         <Header />
+                        <ProgressBar
+                            options={{
+                                showSpinner: false,
+                                parent: "#content"
+                            }}
+                            height={4}
+                            showOnShallow={false}
+                            color={"orange"}
+                        />
                         <ComponentCacheManager Component={Component} componentProps={pageProps} />
                         <Footer />
                     </DestinyManifestManager>
@@ -35,12 +47,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <link rel="manifest" href="/manifest.json" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0, maximum-scale=1"
+                />
                 <title key="title">RaidHub</title>
                 <link
                     rel="manifest"
                     href="/manifest.json"
-                    {...(process.env.APP_ENV === "preview"
+                    {...(process.env.APP_ENV === "preview" || process.env.APP_ENV === "staging"
                         ? {
                               crossOrigin: "use-credentials"
                           }
@@ -51,4 +66,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps<Pag
     )
 }
 
-export default MyApp
+export default App

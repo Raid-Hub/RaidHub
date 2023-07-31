@@ -74,12 +74,12 @@ const SearchDiv = ({}: SearchDivProps) => {
     })
 
     return (
-        <>
+        <div className={styles["container"]}>
             <div className={styles["animate-modal"]} ref={animateModal}>
                 {isDivDisplayed && (
                     <div className={styles["search-div"]} id="searchdiv">
                         <div className={styles["search-top"]}>
-                            <form onSubmit={handleFormEnter}>
+                            <form className={styles["search-form"]} onSubmit={handleFormEnter}>
                                 <Input
                                     enteredText={enteredText}
                                     handleInputChange={handleInputChange}
@@ -131,7 +131,7 @@ const SearchDiv = ({}: SearchDivProps) => {
                     }}
                 />
             )}
-        </>
+        </div>
     )
 }
 

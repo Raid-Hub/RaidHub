@@ -38,6 +38,7 @@ export const useSearch = ({
 
     const clearQuery = useCallback(() => {
         setQuery("")
+        nextQuery.current = ""
         setTimeout(() => setEnteredText(""), 200)
     }, [])
 
@@ -52,8 +53,6 @@ export const useSearch = ({
                         displayNameCode: bungieName.code,
                         client
                     })
-                    clearQuery()
-                    onSuccessfulExactSearch()
 
                     router.push(
                         "/profile/[platform]/[membershipId]",
@@ -68,7 +67,7 @@ export const useSearch = ({
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, errorHandler, onSuccessfulExactSearch, clearQuery, router]
+        [client, errorHandler, router]
     )
 
     const fetchUsers = useCallback(async () => {
@@ -138,12 +137,15 @@ export const useSearch = ({
             event.preventDefault()
             try {
                 await doExactSearch(enteredText)
+
+                clearQuery()
+                onSuccessfulExactSearch()
             } catch (e: any) {
                 nextQuery.current = enteredText
                 setQuery(enteredText)
             }
         },
-        [doExactSearch, enteredText]
+        [doExactSearch, enteredText, clearQuery, onSuccessfulExactSearch]
     )
 
     useEffect(() => {

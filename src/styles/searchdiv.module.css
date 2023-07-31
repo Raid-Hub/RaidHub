@@ -64,6 +64,10 @@
     color: var(--secondary-text);
 }
 
+.search-form {
+    width: 100%;
+}
+
 #search-bar {
     background-color: none;
     border: none;
@@ -114,8 +118,8 @@
 @media (max-width: 700px) {
     .search-div {
         position: fixed;
-        top: 6%;
         left: 0%;
+        top: 0;
         -webkit-transform: translate(0%, 0%);
         transform: translate(0%, 0%);
         min-width: 100%;

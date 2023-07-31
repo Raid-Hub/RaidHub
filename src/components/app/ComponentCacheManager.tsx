@@ -53,16 +53,16 @@ const ComponentCacheManager = ({
         retainedComponents.get(key)!.lastAccessed = Date.now()
     }
 
-    // Save scroll position - requires an up-to-date router.asPath
     useEffect(() => {
         // Save the scroll position of current page before leaving
-        const handleRouteChangeStart = () => {
+        const handleRouteChangeStart = (...evts: any[]) => {
             if (isRetainableRoute) {
                 if (retainedComponents.has(key)) {
                     retainedComponents.get(key)!.scrollPos = window.scrollY
                 }
             }
         }
+
         router.events.on("routeChangeStart", handleRouteChangeStart)
         return () => {
             router.events.off("routeChangeStart", handleRouteChangeStart)

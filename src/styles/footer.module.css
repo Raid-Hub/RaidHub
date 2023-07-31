@@ -1,4 +1,4 @@
-#footer {
+.footer {
     margin-top: auto;
     width: 100%;
     padding: 1em 1em;
@@ -15,12 +15,12 @@
 }
 
 @media only screen and (max-width: 600px) {
-    #footer {
+    .footer {
         font-size: 0.75rem;
     }
 }
 
-#footer > div {
+.footer > div {
     display: flex;
     justify-content: space-between;
     gap: 1em;

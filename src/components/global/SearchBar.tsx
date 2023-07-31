@@ -27,7 +27,10 @@ const SearchBar = ({}: SearchBarProps) => {
         clearQuery
     } = useSearch({
         errorHandler: console.error /** TODO: Handle search bar errors */,
-        onSuccessfulExactSearch: () => setIsRedirecting(true)
+        onSuccessfulExactSearch: () => {
+            setIsShowingResults(false)
+            setIsRedirecting(true)
+        }
     })
     const [isShowingResults, setIsShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)

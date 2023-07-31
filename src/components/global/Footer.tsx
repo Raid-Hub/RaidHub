@@ -26,7 +26,7 @@ const contactIcons: { url: string; id: Socials }[] = [
 const Footer = ({}: FooterProps) => {
     const { version } = manifest
     return (
-        <footer id={styles["footer"]}>
+        <footer id="footer" className={styles["footer"]}>
             <div className={styles["top"]}>
                 <div className={styles["left"]}>
                     <div>Developed by</div>
