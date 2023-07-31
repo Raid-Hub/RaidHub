@@ -2,9 +2,10 @@ import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
 import Image from "next/image"
-import { useMemo } from "react"
+import { useCallback } from "react"
 import { External } from "../../images/icons"
-import { useLocale } from "../app/LanguageProvider"
+import { useLocale } from "../app/LocaleManager"
+import { useRouter } from "next/router"
 
 type SelectedPlayerHeaderProps = {
     selected: PGCRPlayer
@@ -21,11 +22,14 @@ const SelectedPlayerHeader = ({
     updateCharacterIndex
 }: SelectedPlayerHeaderProps) => {
     const { strings } = useLocale()
-    const memberProfileURL = useMemo(() => {
-        const { membershipId, membershipType } = selected
-        if (!membershipId || !membershipType) return `/`
-        return `/profile/${membershipType}/${membershipId}`
-    }, [selected])
+    const router = useRouter()
+
+    const navigateToProfile = useCallback(() => {
+        router.push(
+            "/profile/[platform]/[membershipId]",
+            `/profile/${selected.membershipType}/${selected.membershipId}`
+        )
+    }, [router, selected])
 
     return (
         <div className={styles["members-header"]}>
@@ -52,15 +56,15 @@ const SelectedPlayerHeader = ({
                     ))}
                 </div>
             )}
-            <button className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
-                <a href={memberProfileURL} className={styles["member-profile-link"]}>
-                    <Image
-                        src={External}
-                        alt={"View profile"}
-                        className={styles["view-profile-icon"]}
-                    />
-                    <span>{strings.viewProfile}</span>
-                </a>
+            <button
+                className={[styles["member-profile-button"], styles["selectable"]].join(" ")}
+                onClick={navigateToProfile}>
+                <Image
+                    src={External}
+                    alt={"View profile"}
+                    className={styles["view-profile-icon"]}
+                />
+                <span>{strings.viewProfile}</span>
             </button>
         </div>
     )

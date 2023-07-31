@@ -12,8 +12,12 @@ else
 fi
 
 # Run the vercel command with environment variables
-vercel_command="deploy --force -e APP_ENV=preview"
+export APP_ENV=preview
+vercel_build_command="vercel build"
+vercel_deploy_command="vercel deploy --prebuilt -e APP_ENV=preview"
 if [ -f .env.preview ]; then
+    cp ./.env.preview .vercel/.env.preview.local
+    
     while IFS= read -r line; do
         trimmed_line=$(echo "$line" | awk '{$1=$1};1')  # Remove leading/trailing spaces
         if [ -n "$trimmed_line" ] && [ "${trimmed_line:0:1}" != "#" ]; then
@@ -21,25 +25,23 @@ if [ -f .env.preview ]; then
             value=$(echo $trimmed_line | cut -d'=' -f2- | sed 's/^"\(.*\)"$/\1/')
             if [ $key == "VERCEL_ACCESS_TOKEN" ]; then
                 token=$value
-            elif [[ $key == "DATABASE_URL" || $key == "BUNGIE_API_KEY" ]]; then
-                # these values need to be inserted at build time and run time
-                vercel_command+=" -b $key=$value"
-                vercel_command+=" -e $key=$value"
             else
-                vercel_command+=" -e $key=$value"
+                vercel_deploy_command+=" -e $key=$value"
             fi
         fi
     done < .env.preview
-    vercel_command+=" --token=$token"
+    vercel_deploy_command+=" --token=$token"
 fi
 
 if [ -z $namespace ]; then
-    vercel $vercel_command
+    eval $vercel_build_command
+    eval $vercel_deploy_command
 else 
-    vercel_command+=" -b NAMESPACE=$namespace"
-    vercel_command+=" -e NEXTAUTH_URL=https://$namespace.raidhub.app"
+    export NAMESPACE=$namespace
+    vercel_deploy_command+=" -e NEXTAUTH_URL=https://$namespace.raidhub.app"
 
-    url="$(vercel $vercel_command)"
+    eval $vercel_build_command
+    url="$(eval $vercel_deploy_command)"
 
     vercel alias set $url $namespace.raidhub.app --scope "raid-hub" --token=$token
 fi

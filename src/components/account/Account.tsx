@@ -6,6 +6,7 @@ import UpdateUserInfo from "./UpdateUserInfo"
 import ImageUploadForm from "./ImageUploadForm"
 import { useProviders } from "../../hooks/app/useProviders"
 import { unlinkAccountFromUser } from "../../services/app/deleteAccountFromUser"
+import Link from "next/link"
 
 type AccountProps = {
     session: Session
@@ -57,10 +58,10 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                         Unlink Twitter
                     </button>
                     {session.user.destinyMembershipType && session.user.destinyMembershipId && (
-                        <a
+                        <Link
                             href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
                             <button>Take me home</button>
-                        </a>
+                        </Link>
                     )}
                 </div>
                 <UpdateUserInfo user={session.user} refreshSession={refreshSession} />

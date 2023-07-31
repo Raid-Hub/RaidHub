@@ -6,6 +6,7 @@ import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
+import DestinyPGCRCharacter from "../../models/pgcr/Character"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
@@ -54,6 +55,8 @@ const ParticipantsSection = ({ players: members, pgcrLoadingState }: Participant
         )
     } else {
         // selected view
+        const entry: DestinyPGCRCharacter | null =
+            members[memberIndex]?.characters[characterIndex] ?? members[memberIndex] ?? null
         return (
             <>
                 <SelectedPlayerHeader
@@ -64,11 +67,14 @@ const ParticipantsSection = ({ players: members, pgcrLoadingState }: Participant
                     updateCharacterIndex={updateCharacterIndex}
                 />
                 <div className={[styles["grid"], cardLayout].join(" ")}>
-                    <StatCards
-                        entry={
-                            members[memberIndex].characters[characterIndex] ?? members[memberIndex]
-                        }
-                    />
+                    {entry && (
+                        <StatCards
+                            entry={
+                                members[memberIndex]?.characters[characterIndex] ??
+                                members[memberIndex]
+                            }
+                        />
+                    )}
                 </div>
             </>
         )

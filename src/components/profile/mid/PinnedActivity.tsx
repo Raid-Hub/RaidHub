@@ -4,9 +4,10 @@ import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { ErrorHandler } from "../../../types/generic"
 import { useActivity } from "../../../hooks/bungie/useActivity"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
+import Link from "next/link"
 
 type PinnedActivityProps = {
     isLoading: boolean
@@ -27,7 +28,7 @@ const PinnedActivity = ({
         <Loading wrapperClass={styles["pinned-activity-loading"]} />
     ) : (
         pgcr && (
-            <a href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
+            <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
                 <Image
                     className={styles["pinned-background"]}
                     src={RaidBanners[pgcr.raid]}
@@ -53,7 +54,7 @@ const PinnedActivity = ({
                         <span>{pgcr.speed.string(strings)}</span>
                     </div>
                 </div>
-            </a>
+            </Link>
         )
     )
 }

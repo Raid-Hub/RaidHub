@@ -4,6 +4,7 @@ import { useSearch } from "../../hooks/bungie/useSearch"
 import { Search } from "../../images/icons"
 import BungieName from "../../models/BungieName"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/router"
 
 const HIDE_AFTER_CLICK = 100
@@ -24,7 +25,10 @@ const SearchBar = ({}: SearchBarProps) => {
         handleFormEnter,
         handleInputChange,
         clearQuery
-    } = useSearch({ errorHandler: () => {} /** TODO: Handle search bar errors */ })
+    } = useSearch({
+        errorHandler: console.error /** TODO: Handle search bar errors */,
+        onSuccessfulExactSearch: () => setIsRedirecting(true)
+    })
     const [isShowingResults, setIsShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLDivElement>(null)
 
@@ -117,7 +121,7 @@ const SearchBar = ({}: SearchBarProps) => {
                             })
                             .filter(({ name }) => name.startsWith(enteredText))
                             .map(({ name, membershipId, membershipType }, idx) => (
-                                <a
+                                <Link
                                     className={styles["search-result"]}
                                     key={idx}
                                     href={`/profile/${membershipType}/${membershipId}`}
@@ -125,7 +129,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                     <li>
                                         <p>{name}</p>
                                     </li>
-                                </a>
+                                </Link>
                             ))}
                     </ul>
                 )}

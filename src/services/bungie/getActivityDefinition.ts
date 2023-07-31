@@ -1,7 +1,7 @@
 import { BungieClientProtocol } from "bungie-net-core/lib/api"
 import { getDestinyEntityDefinition } from "bungie-net-core/lib/endpoints/Destiny2"
 import { DestinyManifestDefinition } from "bungie-net-core/lib/manifest"
-import { DestinyProfileTransitoryComponent } from "bungie-net-core/lib/models"
+import { DestinyDefinition, DestinyProfileTransitoryComponent } from "bungie-net-core/lib/models"
 
 export type CurrentActivityData = DestinyProfileTransitoryComponent & {
     currentActivityHash: number | null
@@ -33,7 +33,7 @@ export async function getActivityModeDefiniton({
 }: {
     hashIdentifier: number
     client: BungieClientProtocol
-}) {
+}): Promise<DestinyDefinition<DestinyManifestDefinition.DestinyActivityModeDefinition> | null> {
     const { Response } = await getDestinyEntityDefinition(
         {
             hashIdentifier,
@@ -41,5 +41,5 @@ export async function getActivityModeDefiniton({
         },
         client
     )
-    return Response
+    return Response ?? null
 }

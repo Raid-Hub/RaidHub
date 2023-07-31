@@ -1,6 +1,6 @@
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ChangeEvent } from "react"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 
 type ToggleProps = {
     checked: boolean

@@ -23,7 +23,7 @@ type LanguageProviderProps = {
     children: ReactNode
 }
 
-const LanguageProvider = ({ children }: LanguageProviderProps) => {
+const LocaleManager = ({ children }: LanguageProviderProps) => {
     const [language, setLanguage] = useState<SupportedLanguage | null>(null)
     const [locale, setLocale] = useState<string | null>(null)
 
@@ -60,4 +60,4 @@ export function useLocale(): UseLanguage {
     return useContext(LanguageContext)
 }
 
-export default LanguageProvider
+export default LocaleManager

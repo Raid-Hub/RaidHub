@@ -21,6 +21,7 @@ type DotProps = {
     isTargeted: boolean
     tooltipData: DotTooltipProps | null
     setTooltip(data: DotTooltipProps | null): void
+    goTo(instanceId: string): void
 }
 
 const Dot = ({
@@ -31,7 +32,8 @@ const Dot = ({
     centerY,
     isTargeted,
     setTooltip,
-    tooltipData
+    tooltipData,
+    goTo
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
@@ -89,9 +91,8 @@ const Dot = ({
 
     const centerX = SPACING / 2 + SPACING * index
     return (
-        <a
-            ref={ref}
-            href={`/pgcr/${activity.instanceId}`}
+        <g
+            onClick={() => goTo(activity.instanceId)}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}>
@@ -129,7 +130,7 @@ const Dot = ({
                     cy={centerY}
                 />
             )}
-        </a>
+        </g>
     )
 }
 

@@ -30,7 +30,9 @@ const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps)
                     <span className={styles["desc-title"]}>
                         {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
                     </span>
-                    <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
+                    <span className={styles["desc-subtitle"]}>
+                        {clan?.motto.replace("&#8217;", "'")}
+                    </span>
                     <div className={styles["desc-text-wrapper"]}>
                         <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
                     </div>

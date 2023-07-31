@@ -8,7 +8,7 @@ import {
 import DotGraphWrapper from "./DotGraph"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import RaidStatsCollection from "../../../models/profile/data/RaidStatsCollection"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"

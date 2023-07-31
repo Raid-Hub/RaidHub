@@ -10,7 +10,7 @@ import {
 } from "../../util/destiny/manifest"
 import { useBungieClient } from "./TokenManager"
 import { getDestinyManifest } from "bungie-net-core/lib/endpoints/Destiny2"
-import { useLocale } from "./LanguageProvider"
+import { useLocale } from "./LocaleManager"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 
 const KEY_MANIFEST_VERSION = "manifest_version"

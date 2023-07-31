@@ -2,13 +2,14 @@ import styles from "../../../styles/pages/profile/raids.module.css"
 import { median } from "../../../util/math"
 import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import Loading from "../../global/Loading"
 import Activity from "../../../models/profile/data/Activity"
 import { Collection } from "@discordjs/collection"
 import { FilterCallback } from "../../../types/generic"
 import { ExtendedActivity } from "../../../types/profile"
+import { useRouter } from "next/router"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -118,6 +119,14 @@ type DotGraphProps = {
 }
 
 function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
+    const router = useRouter()
+    const goToActivity = useCallback(
+        (instanceId: string) => {
+            router.push(`/pgcr/[activityId]`, `/pgcr/${instanceId}`)
+        },
+        [router]
+    )
+
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
     let index = 0
     return (
@@ -141,6 +150,7 @@ function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
                     />
                     {dots?.map(({ activity, extended }, key) => (
                         <Dot
+                            goTo={goToActivity}
                             key={key}
                             index={index++}
                             activity={activity}

@@ -1,6 +1,6 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import { raidVersion } from "../../../util/destiny/raid"
 import Activity from "../../../models/profile/data/Activity"
 import { useMemo } from "react"

@@ -4,7 +4,7 @@ import ActivityTile from "./ActivityTile"
 import { useState } from "react"
 import { Raid } from "../../../types/raids"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
-import { useLocale } from "../../app/LanguageProvider"
+import { useLocale } from "../../app/LocaleManager"
 import { ExtendedActivity } from "../../../types/profile"
 
 const CARDS_PER_PAGE = 60
