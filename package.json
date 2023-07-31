@@ -9,6 +9,7 @@
         "db:seed": "prisma db seed",
         "db:update": "prisma db push",
         "db:stop": "docker-compose -f docker-compose.yml down",
+        "studio": "prisma studio",
         "lint": "next lint",
         "test": "jest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\" && prisma format",

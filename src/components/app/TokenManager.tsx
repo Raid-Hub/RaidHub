@@ -16,9 +16,8 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
     useEffect(() => {
         if (sessionData?.error == "RefreshAccessTokenError") {
-            setRefetchInterval(0)
+            setRefetchInterval(60)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
-            console.error(sessionData)
             setRefetchInterval(0)
             signOut()
         } else if (status == "unauthenticated") {

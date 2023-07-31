@@ -86,7 +86,7 @@ const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
         return
     }
 
-    const user = zUser.safeParse(req.body)
+    const user = zUser.partial().safeParse(req.body)
 
     if (!user.success) {
         console.error(user.error)

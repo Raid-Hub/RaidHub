@@ -1,9 +1,8 @@
 import { User } from "@prisma/client"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { Session } from "next-auth/core/types"
-import prisma from "../prisma"
-import { AdapterUser } from "next-auth/adapters"
+import { CallbacksOptions, Session } from "next-auth/core/types"
+import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export type SessionUser = {
     id: string
@@ -42,8 +41,9 @@ function sessionUser(user: User): SessionUser {
     }
 }
 
-export async function sessionCallback({ session, user }: { session: Session; user: AdapterUser }) {
+export const sessionCallback: CallbacksOptions["session"] = async ({ session, user }) => {
     const newUser = sessionUser(user as User)
+
     if (
         !user.bungie_access_expires_at ||
         !user.bungie_refresh_expires_at ||
@@ -63,18 +63,7 @@ export async function sessionCallback({ session, user }: { session: Session; use
     } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
         try {
             const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
-
-            const updatedUser = await prisma.user.update({
-                where: {
-                    id: user.id
-                },
-                data: {
-                    bungie_access_token: tokens.access.value,
-                    bungie_access_expires_at: new Date(tokens.access.expires),
-                    bungie_refresh_token: tokens.refresh.value,
-                    bungie_refresh_expires_at: new Date(tokens.refresh.expires)
-                }
-            })
+            const updatedUser = await updateBungieAccessTokens(user.id, tokens)
 
             return {
                 ...session,
