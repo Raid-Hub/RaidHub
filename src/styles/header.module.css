@@ -346,6 +346,9 @@
 }
 
 @media (max-width: 890px) {
+    .header {
+        position: unset;
+    }
     .keys {
         display: none;
     }

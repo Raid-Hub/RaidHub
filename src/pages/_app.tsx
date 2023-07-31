@@ -47,12 +47,15 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
                 <link rel="manifest" href="/manifest.json" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0, maximum-scale=1"
+                />
                 <title key="title">RaidHub</title>
                 <link
                     rel="manifest"
                     href="/manifest.json"
-                    {...(process.env.APP_ENV === "preview"
+                    {...(process.env.APP_ENV === "preview" || process.env.APP_ENV === "staging"
                         ? {
                               crossOrigin: "use-credentials"
                           }
