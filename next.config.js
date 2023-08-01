@@ -1,3 +1,6 @@
+/** @type {import('./src/util/presentation/localized-strings').SupportedLanguage[]} */
+const locales = ["en"]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
@@ -12,6 +15,10 @@ const nextConfig = {
             "cdn.discordapp.com",
             "raidhub-app.s3.amazonaws.com"
         ]
+    },
+    i18n: {
+        locales,
+        defaultLocale: "en"
     }
 }
 

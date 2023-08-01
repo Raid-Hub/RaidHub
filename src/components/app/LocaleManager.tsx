@@ -2,18 +2,12 @@ import { ReactNode, createContext, useContext, useEffect, useState } from "react
 import {
     LocalStrings,
     LocalizedStrings,
-    SupportedLanguage,
-    isSupported
+    SupportedLanguage
 } from "../../util/presentation/localized-strings"
 import Head from "next/head"
+import { useRouter } from "next/router"
 
-type UseLanguage = {
-    language: SupportedLanguage
-    locale: string
-    strings: LocalStrings
-}
-
-const LanguageContext = createContext<UseLanguage>({
+const LanguageContext = createContext({
     language: SupportedLanguage.ENGLISH,
     locale: "en-US",
     strings: LocalizedStrings[SupportedLanguage.ENGLISH]
@@ -24,23 +18,16 @@ type LanguageProviderProps = {
 }
 
 const LocaleManager = ({ children }: LanguageProviderProps) => {
-    const [language, setLanguage] = useState<SupportedLanguage | null>(null)
-    const [locale, setLocale] = useState<string | null>(null)
+    const [locale, setLocale] = useState<string>("en-US")
+    const { locale: language } = useRouter()
 
     useEffect(() => {
-        const navLocale = navigator.language
-        const lang = new Intl.DisplayNames([navLocale], {
-            type: "language"
-        }).of(navLocale)
-        if (lang && isSupported(lang)) {
-            setLanguage(lang as SupportedLanguage)
-        }
-        setLocale(navLocale)
+        setLocale(navigator.language)
     }, [])
 
     const value = {
-        language: language ?? SupportedLanguage.ENGLISH,
-        locale: locale ?? "en-US",
+        language: (language as SupportedLanguage) ?? SupportedLanguage.ENGLISH,
+        locale,
         get strings() {
             return LocalizedStrings[this.language]
         }
@@ -56,8 +43,6 @@ const LocaleManager = ({ children }: LanguageProviderProps) => {
     )
 }
 
-export function useLocale(): UseLanguage {
-    return useContext(LanguageContext)
-}
+export const useLocale = () => useContext(LanguageContext)
 
 export default LocaleManager

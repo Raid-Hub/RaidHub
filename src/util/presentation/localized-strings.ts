@@ -2,6 +2,7 @@ import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../../types/raids"
 import { RankingBannerType } from "../../types/profile"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
+
 export enum SupportedLanguage {
     ENGLISH = "en"
 }
@@ -188,8 +189,4 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         clickToView: "Click to View"
     }
-}
-
-export function isSupported(language: string) {
-    return language in LocalizedStrings
 }
