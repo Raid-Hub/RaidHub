@@ -22,6 +22,15 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
 
     return (
         <LocaleManager>
+            <Head>
+                <link rel="shortcut icon" href="/favicon.ico" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0, maximum-scale=1"
+                />
+                <title key="title">RaidHub</title>
+                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+            </Head>
             <SessionProvider
                 session={session}
                 refetchInterval={refetchInterval}
@@ -44,23 +53,6 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                     </DestinyManifestManager>
                 </TokenManager>
             </SessionProvider>
-            <Head>
-                <link rel="shortcut icon" href="/favicon.ico" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0, maximum-scale=1"
-                />
-                <title key="title">RaidHub</title>
-                <link
-                    rel="manifest"
-                    href="/manifest.json"
-                    {...(process.env.APP_ENV === "preview" || process.env.APP_ENV === "staging"
-                        ? {
-                              crossOrigin: "use-credentials"
-                          }
-                        : {})}
-                />
-            </Head>
         </LocaleManager>
     )
 }
