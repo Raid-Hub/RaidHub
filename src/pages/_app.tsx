@@ -11,6 +11,7 @@ import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ComponentCacheManager from "../components/app/ComponentCacheManager"
 import ProgressBar from "nextjs-progressbar"
+import SearchDiv from "../components/global/SearchDiv"
 
 type PageProps = {
     session: Session
@@ -40,7 +41,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                         <ProgressBar
                             options={{
                                 showSpinner: false,
-                                parent: "#content",
+                                parent: "#header",
                                 trickle: false,
                                 speed: 700
                             }}
@@ -49,7 +50,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                             showOnShallow={false}
                             color={"orange"}
                         />
-                        <ComponentCacheManager Component={Component} componentProps={pageProps} />
+                        <ComponentCacheManager Component={Component} componentProps={pageProps}>
+                            <SearchDiv />
+                        </ComponentCacheManager>
                         <Footer />
                     </DestinyManifestManager>
                 </TokenManager>

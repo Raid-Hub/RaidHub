@@ -6,6 +6,8 @@
     padding: 0.5em 1em;
 
     background-color: var(--header-background);
+
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
 
     font-family: Neue;
@@ -198,7 +200,7 @@
 }
 
 .search-result:hover {
-    background: var(--brand-orange);
+    background: var(--brand-orange-light);
     cursor: pointer;
     transform: scale(1.1);
     transition: transform 0.02s ease-in-out;
@@ -273,7 +275,7 @@
 }
 
 .account-dropdown-content > li:hover {
-    background-color: var(--brand-orange);
+    background-color: var(--brand-orange-light);
 }
 
 .search-div {
