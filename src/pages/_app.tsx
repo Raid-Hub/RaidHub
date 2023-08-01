@@ -18,7 +18,7 @@ type PageProps = {
 }
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
-    const [refetchInterval, setRefetchInterval] = useState(0)
+    const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
 
     return (
         <LocaleManager>
@@ -33,9 +33,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
             </Head>
             <SessionProvider
                 session={session}
-                refetchInterval={refetchInterval}
+                refetchInterval={sessionRefetchInterval}
                 refetchOnWindowFocus={false}>
-                <TokenManager setRefetchInterval={setRefetchInterval}>
+                <TokenManager setRefetchInterval={setSessionRefetchInterval}>
                     <DestinyManifestManager>
                         <SearchDiv />
                         <Header />
