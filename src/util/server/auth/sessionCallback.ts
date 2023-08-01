@@ -75,19 +75,26 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     }
                 }
             } satisfies Session
-        } catch (e) {
-            console.error(e)
-            return {
-                ...session,
-                user: newUser,
-                error: "RefreshAccessTokenError" as const
-            } satisfies Session
+        } catch (e: any) {
+            if (e.response?.error_description === "SystemDisabled") {
+                return {
+                    ...session,
+                    user: newUser,
+                    error: "BungieAPIOffline"
+                } satisfies Session
+            } else {
+                return {
+                    ...session,
+                    user: newUser,
+                    error: "AccessTokenError"
+                } satisfies Session
+            }
         }
     } else {
         return {
             ...session,
             user: newUser,
-            error: "ExpiredRefreshTokenError" as const
+            error: "ExpiredRefreshTokenError"
         } satisfies Session
     }
 }

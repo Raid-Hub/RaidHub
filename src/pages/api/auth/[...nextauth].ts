@@ -14,7 +14,7 @@ import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
 import { signInCallback } from "../../../util/server/auth/signInCallback"
 
-type AuthError = "RefreshAccessTokenError" | "ExpiredRefreshTokenError"
+type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
 declare module "next-auth" {
     interface Session extends DefaultSession {
