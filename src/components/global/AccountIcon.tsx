@@ -2,17 +2,21 @@ import Image from "next/image"
 import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useMemo } from "react"
-import { Account } from "../../images/icons"
+import { Account, Question_Mark } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 
 type AccountIconProps = {}
 
 const AccountIcon = ({}: AccountIconProps) => {
-    const { data: sessionData } = useSession()
+    const { data: sessionData, status } = useSession()
     const { strings } = useLocale()
 
-    const image = useMemo(() => sessionData?.user?.image ?? Account, [sessionData])
+    // todo: replace question mark with loading
+    const image = useMemo(
+        () => (status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account),
+        [sessionData, status]
+    )
 
     return (
         <div className={styles["account-dropdown"]}>
