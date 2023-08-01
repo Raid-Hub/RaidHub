@@ -3,20 +3,18 @@ import { useClan } from "../../../hooks/bungie/useClan"
 import Loading from "../../global/Loading"
 import ClanBanner from "./ClanBanner"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { ErrorHandler } from "../../../types/generic"
 import { fixClanName } from "../../../util/destiny/fixClanName"
 
 type ClanCardProps = {
     membershipId: string
     membershipType: BungieMembershipType
-    errorHandler: ErrorHandler
 }
 
-const ClanCard = ({ membershipId, membershipType, errorHandler }: ClanCardProps) => {
+const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
     const { clan, isLoading } = useClan({
         membershipId,
         membershipType,
-        errorHandler
+        errorHandler: console.error
     })
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />

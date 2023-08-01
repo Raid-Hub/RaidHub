@@ -24,6 +24,7 @@ export const useDestinyProfile = ({
 }: UseDestinyProfileParams): UseDestinyProfile => {
     const [profile, setProfile] = useState<ProfileComponent | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<Error | null>(null)
     const client = useBungieClient()
 
     const fetchData = useCallback(
@@ -36,14 +37,18 @@ export const useDestinyProfile = ({
                     client
                 })
                 setProfile(profile)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.Clan)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setLoading(false)
             }
         },
-        [client, errorHandler]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.Clan)
+    }, [error, errorHandler])
 
     useEffect(() => {
         setLoading(true)

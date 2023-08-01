@@ -114,7 +114,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                 <ClanCard
                     membershipId={destinyMembershipId}
                     membershipType={destinyMembershipType}
-                    errorHandler={errorHandler}
                 />
             </section>
 

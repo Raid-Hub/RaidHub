@@ -24,6 +24,7 @@ export const useBungieMemberships: UseBungieProfile = ({
     const [bungieMemberhip, setBungieMembership] = useState<UserInfoCard | null>(null)
     const [destinyMemberships, setDestinyMemberships] = useState<ProfileDetails[] | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<Error | null>(null)
     const client = useBungieClient()
 
     const fetchData = useCallback(
@@ -45,14 +46,19 @@ export const useBungieMemberships: UseBungieProfile = ({
                             destinyMembershipId: membershipId
                         }))
                 )
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.BungieNextMembership)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setLoading(false)
             }
         },
-        [client, errorHandler]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.BungieNextMembership)
+    }, [error, errorHandler])
+
     useEffect(() => {
         setLoading(true)
         fetchData(destinyMembershipId, destinyMembershipType)

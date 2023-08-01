@@ -2,6 +2,7 @@ import { Collection } from "@discordjs/collection"
 import { NextComponentType, NextPageContext } from "next"
 import { useRouter } from "next/router"
 import React, { useEffect, useRef } from "react"
+import SearchDiv from "../global/SearchDiv"
 
 const MAX_CACHE_COUNT = 3
 
@@ -80,6 +81,7 @@ const ComponentCacheManager = ({
         <>
             {!isRetainableRoute && (
                 <div key={key} id="content">
+                    <SearchDiv />
                     <Component {...componentProps} />
                 </div>
             )}
@@ -89,6 +91,7 @@ const ComponentCacheManager = ({
                     {...(key !== path
                         ? { style: { display: "none" }, "data-component-cache": path }
                         : { id: "content" })}>
+                    {key === path && <SearchDiv />}
                     {c.component}
                 </div>
             ))}

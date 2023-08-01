@@ -5,9 +5,7 @@ import Image from "next/image"
 import Logo from "../../../public/logo.png"
 import AccountIcon from "./AccountIcon"
 
-type HeaderProps = {}
-
-const Header = ({}: HeaderProps) => {
+const Header = () => {
     return (
         <header id="header" className={styles["header"]}>
             <Link href={"/"} className={styles["logo"]}>

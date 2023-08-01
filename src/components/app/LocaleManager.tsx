@@ -1,9 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import {
-    LocalStrings,
-    LocalizedStrings,
-    SupportedLanguage
-} from "../../util/presentation/localized-strings"
+import { LocalizedStrings, SupportedLanguage } from "../../util/presentation/localized-strings"
 import Head from "next/head"
 import { useRouter } from "next/router"
 

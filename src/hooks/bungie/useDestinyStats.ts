@@ -24,6 +24,7 @@ export const useDestinyStats: UseDestinyStats = ({ destinyMemberships, errorHand
         MembershipWithCharacters[] | null
     >(null)
     const [isLoading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<Error | null>(null)
     const client = useBungieClient()
 
     const fetchData = useCallback(
@@ -54,14 +55,18 @@ export const useDestinyStats: UseDestinyStats = ({ destinyMemberships, errorHand
                     }))
                 )
                 setStats(profileStats.flatMap(([id, type, stats]) => stats.characters))
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.ProfileStats)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setLoading(false)
             }
         },
-        [client, errorHandler]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.ProfileStats)
+    }, [error, errorHandler])
 
     useEffect(() => {
         setLoading(true)

@@ -23,10 +23,12 @@ export const useRaidReport: UseRaidReport = ({
 }) => {
     const [data, setData] = useState<AllRaidReportData | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<Error | null>(null)
 
     const fetchData = useCallback(
         async (ids: string[]) => {
             setData(null)
+            setIsLoading(true)
             try {
                 const promise = await Promise.allSettled(
                     ids.map(async id => [id, await getPlayer(id)] as const)
@@ -65,22 +67,22 @@ export const useRaidReport: UseRaidReport = ({
                     )
                 }
                 setData(_data)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.RaidReport)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setIsLoading(false)
             }
         },
-        [primaryMembershipId, errorHandler]
+        [primaryMembershipId]
     )
 
     useEffect(() => {
-        setIsLoading(true)
+        error && CustomError.handle(errorHandler, error, ErrorCode.RaidReport)
+    }, [error, errorHandler])
 
+    useEffect(() => {
         if (destinyMembershipIds) {
             fetchData(destinyMembershipIds.map(obj => obj.destinyMembershipId))
-        } else {
-            setIsLoading(false)
         }
     }, [destinyMembershipIds, fetchData])
 

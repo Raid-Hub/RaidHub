@@ -11,7 +11,6 @@ import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ComponentCacheManager from "../components/app/ComponentCacheManager"
 import ProgressBar from "nextjs-progressbar"
-import SearchDiv from "../components/global/SearchDiv"
 
 type PageProps = {
     session: Session
@@ -37,13 +36,15 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 refetchOnWindowFocus={false}>
                 <TokenManager setRefetchInterval={setSessionRefetchInterval}>
                     <DestinyManifestManager>
-                        <SearchDiv />
                         <Header />
                         <ProgressBar
                             options={{
                                 showSpinner: false,
-                                parent: "#content"
+                                parent: "#content",
+                                trickle: false,
+                                speed: 700
                             }}
+                            stopDelayMs={100}
                             height={4}
                             showOnShallow={false}
                             color={"orange"}

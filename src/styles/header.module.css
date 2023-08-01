@@ -345,7 +345,7 @@
     font-family: Neue;
 }
 
-@media (max-width: 890px) {
+@media (max-width: 550px) {
     .header {
         position: unset;
     }

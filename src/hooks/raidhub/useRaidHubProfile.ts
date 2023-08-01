@@ -20,24 +20,26 @@ export function useRaidHubProfile({
 }: UseRaidHubProfileParams): UseRaidHubProfile {
     const [profile, setProfile] = useState<RaidHubProfile | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [error, setError] = useState<Error | null>(null)
 
-    const fetchData = useCallback(
-        async (id: string) => {
-            try {
-                const profile = await getRaidHubProfile(id)
-                setProfile(profile)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.RaidHubProfile)
-            } finally {
-                setIsLoading(false)
-            }
-        },
-        [errorHandler]
-    )
+    const fetchData = useCallback(async () => {
+        try {
+            const profile = await getRaidHubProfile(destinyMembershipId)
+            setProfile(profile)
+        } catch (e: any) {
+            setError(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [destinyMembershipId])
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.RaidHubProfile)
+    }, [error, errorHandler])
 
     useEffect(() => {
         setIsLoading(true)
-        fetchData(destinyMembershipId)
-    }, [destinyMembershipId, fetchData])
+        fetchData()
+    }, [fetchData])
     return { profile, isLoading }
 }

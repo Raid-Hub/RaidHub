@@ -21,6 +21,7 @@ type UsePGCR = {
 export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
     const [pgcr, setPGCR] = useState<DestinyPGCR | null>(null)
     const [loadingState, setLoading] = useState<Loading>(Loading.LOADING)
+    const [error, setError] = useState<Error | null>(null)
     const client = useBungieClient()
 
     const fetchData = useCallback(async () => {
@@ -57,12 +58,16 @@ export function usePGCR({ activityId, errorHandler }: UsePGCRParams): UsePGCR {
                 )
             }
             pgcr.hydrate(hydrationData)
-        } catch (e) {
-            CustomError.handle(errorHandler, e, ErrorCode.PGCRError)
+        } catch (e: any) {
+            setError(e)
         } finally {
             setLoading(Loading.FALSE)
         }
-    }, [client, errorHandler, activityId])
+    }, [client, activityId])
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.PGCR)
+    }, [error, errorHandler])
 
     useEffect(() => {
         setLoading(Loading.LOADING)
