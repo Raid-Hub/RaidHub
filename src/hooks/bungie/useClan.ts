@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType, GroupV2 } from "bungie-net-core/lib/models"
 import { useCallback, useEffect, useState } from "react"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
@@ -20,39 +20,40 @@ type UseClan = {
 }
 
 export function useClan({ membershipId, membershipType, errorHandler }: UseClanParams): UseClan {
-    const [clan, setClan] = useState<Clan | null>(null)
+    const [group, setGroup] = useState<GroupV2 | null>(null)
+    const [error, setError] = useState<any>()
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
     const bannerDefs = useClanBanners()
 
-    const fetchData = useCallback(
-        async (membershipId: string, membershipType: BungieMembershipType) => {
-            try {
-                setClan(null)
-                const group = await getClan({ membershipId, membershipType, client })
-                setClan(
-                    group
-                        ? {
-                              ...group,
-                              clanBanner: resolveClanBanner(
-                                  group.clanInfo.clanBannerData,
-                                  bannerDefs
-                              )
-                          }
-                        : null
-                )
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.Clan)
-            } finally {
-                setLoading(false)
-            }
-        },
-        [client, errorHandler, bannerDefs]
-    )
+    const fetchData = useCallback(async () => {
+        setLoading(true)
+        try {
+            setGroup(null)
+            const group = await getClan({ membershipId, membershipType, client })
+            setGroup(group)
+        } catch (e) {
+            setError(e)
+        } finally {
+            setLoading(false)
+        }
+    }, [client, membershipId, membershipType])
 
     useEffect(() => {
-        setLoading(true)
-        fetchData(membershipId, membershipType)
-    }, [membershipId, membershipType, fetchData])
-    return { clan, isLoading }
+        error && CustomError.handle(errorHandler, error, ErrorCode.Clan)
+    }, [errorHandler, error])
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    return {
+        clan: group
+            ? {
+                  ...group,
+                  clanBanner: resolveClanBanner(group.clanInfo.clanBannerData, bannerDefs)
+              }
+            : null,
+        isLoading
+    }
 }

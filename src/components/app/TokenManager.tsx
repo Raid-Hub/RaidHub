@@ -15,8 +15,11 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
     useEffect(() => {
-        if (sessionData?.error == "RefreshAccessTokenError") {
-            setRefetchInterval(60)
+        if (sessionData?.error == "BungieAPIOffline") {
+            setRefetchInterval(120)
+        } else if (sessionData?.error == "AccessTokenError") {
+            console.error(sessionData.error)
+            setRefetchInterval(5)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             setRefetchInterval(0)
             signOut()
@@ -28,7 +31,7 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
         ) {
             client.setToken(sessionData.user.bungieAccessToken.value)
             const timeRemaining = sessionData.user.bungieAccessToken.expires - Date.now()
-            setRefetchInterval(timeRemaining > 0 ? timeRemaining / 1000 : 0)
+            setRefetchInterval(timeRemaining >= 0 ? Math.ceil((timeRemaining + 1) / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
 

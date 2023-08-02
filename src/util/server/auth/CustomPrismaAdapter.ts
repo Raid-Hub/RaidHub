@@ -122,7 +122,11 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             data: {
                 destiny_membership_id: profile.destiny_membership_id!,
                 destiny_membership_type: profile.destiny_membership_type!,
-                bungie_username: profile.bungie_username ?? null
+                bungie_username: profile.bungie_username ?? null,
+                bungie_access_token: account.access_token,
+                bungie_access_expires_at: new Date(account.expires_at!),
+                bungie_refresh_token: account.refresh_token,
+                bungie_refresh_expires_at: new Date(Date.now() + 7_775_777_777)
             }
         })
     }

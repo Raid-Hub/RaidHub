@@ -1,5 +1,5 @@
 import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { UserSearchResponseDetail } from "bungie-net-core/lib/models"
+import { PlatformErrorCodes, UserSearchResponseDetail } from "bungie-net-core/lib/models"
 import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
 
 export async function searchForUsername({
@@ -20,16 +20,27 @@ export async function searchForUsername({
                 displayNamePrefix
             },
             client
-        ).then(res => res.Response.searchResults)
+        )
+            .then(res => res.Response)
+            .catch(error => {
+                if (error.ErrorCode === PlatformErrorCodes.UserCannotResolveCentralAccount) {
+                    return {
+                        searchResults: new Array<UserSearchResponseDetail>(),
+                        hasMore: false
+                    }
+                } else {
+                    throw error
+                }
+            })
+    const results = new Array<UserSearchResponseDetail[]>()
+    let page = 0
+    let keepSearching = true
+    while (keepSearching && page < pages) {
+        const { hasMore, searchResults } = await search(page)
+        results.push(searchResults)
+        keepSearching = hasMore
+        page++
+    }
 
-    const results = await Promise.allSettled(
-        new Array(pages).fill(null).map(async (_, pageNumber) => search(pageNumber))
-    )
-
-    const successes = results.filter(
-        r =>
-            r.status === "fulfilled" &&
-            (r as PromiseFulfilledResult<UserSearchResponseDetail[]>).value
-    ) as PromiseFulfilledResult<UserSearchResponseDetail[]>[]
-    return successes.map(s => s.value).flat() ?? []
+    return results.flat()
 }

@@ -45,6 +45,7 @@ export const useProfileTransitory = ({
     const [profile, setProfile] = useState<TransitoryActivity | null>(null)
     const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
     const [isLoading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<Error | null>(null)
     const [timer, setTimer] = useState<NodeJS.Timeout>()
     const [needsRefresh, setNeedsRefresh] = useState<boolean>(true)
     const client = useBungieClient()
@@ -101,8 +102,8 @@ export const useProfileTransitory = ({
                         partyMembers
                     })
                 }
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.Transitory)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setLastRefresh(new Date())
                 setLoading(false)
@@ -112,8 +113,12 @@ export const useProfileTransitory = ({
                 setTimer(timeout)
             }
         },
-        [client, errorHandler, setTimer]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.Transitory)
+    }, [error, errorHandler])
 
     useEffect(() => {
         if (needsRefresh) {

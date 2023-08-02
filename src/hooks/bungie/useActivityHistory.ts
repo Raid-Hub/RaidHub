@@ -24,6 +24,7 @@ export const useActivityHistory: UseActivityHistory = ({ characterMemberships, e
         ActivityCollection
     > | null>(null)
     const [allActivities, setAllActivities] = useState<Collection<string, Activity> | null>(null)
+    const [error, setError] = useState<Error | null>(null)
     const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
@@ -62,14 +63,18 @@ export const useActivityHistory: UseActivityHistory = ({ characterMemberships, e
                         }))
                     )
                 )
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setLoading(false)
             }
         },
-        [client, errorHandler]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.ActivityHistory)
+    }, [error, errorHandler])
 
     useEffect(() => {
         if (characterMemberships) {

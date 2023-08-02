@@ -1,6 +1,7 @@
 /* COLORS */
 :root {
     --brand-orange: #ff8c3980;
+    --brand-orange-light: #f0802ffa;
     --bungie-blue: #13e6ff;
     --primary-text: #ffffff;
     --secondary-text: #e4e4e4b4;
@@ -37,30 +38,15 @@
 }
 
 html {
-    height: 100%;
-    width: 100%;
+    overscroll-behavior-y: contain;
+    overflow-y: auto;
+    background-color: rgba(1, 0, 17, 1);
 }
 
 body {
-    margin: 0;
-    padding: 0;
-
-    background-color: black;
-
-    overflow: auto;
-    overscroll-behavior: none;
-
     font-family: Neue;
-}
-
-#__next {
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    z-index: 0;
-
-    display: flex;
-    flex-direction: column;
+    padding: 0;
+    margin: 0;
 
     background: linear-gradient(
         90deg,
@@ -72,11 +58,18 @@ body {
     );
 }
 
+#__next {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    z-index: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
 @media (prefers-color-scheme: light) {
     body {
-        background-color: white;
-    }
-    #__next {
         background: repeating-linear-gradient(
             -30deg,
             #ffffffff 0px,
@@ -85,6 +78,28 @@ body {
             #ffffff 1200px
         );
     }
+}
+
+/** Adjust the nprogress bar */
+#header.nprogress-custom-parent {
+    position: sticky;
+}
+
+#nprogress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+}
+#nprogress .bar {
+    bottom: 0 !important;
+    top: unset !important;
+}
+
+#nprogress .peg {
+    display: none !important;
 }
 
 main {
@@ -210,24 +225,24 @@ input:checked + .slider:before {
 }
 
 /* width */
-::-webkit-scrollbar {
+#content ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
     background-color: transparent;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+#content ::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+#content ::-webkit-scrollbar-thumb {
     background: var(--scroll-track);
     border-radius: 7px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-orange);
+#content ::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-orange-light);
 }

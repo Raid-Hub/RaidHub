@@ -15,16 +15,16 @@ const SearchDiv = ({}: SearchDivProps) => {
 
     const [showingResults, setShowingResults] = useState(false)
 
+    const containerDiv = useRef<HTMLDivElement>(null)
     const backgroundDiv = useRef<HTMLDivElement>(null)
     const animateModal = useRef<HTMLDivElement>(null)
 
     const animateModalIn = () => {
         setShowingResults(true)
-        if (animateModal.current) {
-            animate(animateModal.current, { opacity: [0, 1] }, { type: "spring", duration: 1.5 })
+        if (containerDiv.current) {
+            animate(containerDiv.current, { opacity: [0, 1] }, { type: "spring", duration: 1.1 })
         }
         setIsDivDisplayed(true)
-        document.body.style.overflow = "hidden"
     }
 
     const animateModalOut = async () => {
@@ -35,7 +35,6 @@ const SearchDiv = ({}: SearchDivProps) => {
             ]
             await animate(sequence).then(() => {
                 setIsDivDisplayed(false)
-                document.body.style.overflow = ""
             })
         }
     }
@@ -74,54 +73,55 @@ const SearchDiv = ({}: SearchDivProps) => {
     })
 
     return (
-        <div className={styles["container"]}>
-            <div className={styles["animate-modal"]} ref={animateModal}>
-                {isDivDisplayed && (
-                    <div className={styles["search-div"]} id="searchdiv">
-                        <div className={styles["search-top"]}>
-                            <form className={styles["search-form"]} onSubmit={handleFormEnter}>
-                                <Input
-                                    enteredText={enteredText}
-                                    handleInputChange={handleInputChange}
-                                />
-                            </form>
-                            <div className={styles["search-top-right"]}>
-                                <Image src={Search} alt="search" />
-                            </div>
-                        </div>
-                        <hr />
-                        <div className={styles["search-content"]}>
-                            <span>Search Results</span>
-                            {showingResults && (
-                                <ul className={styles["search-results"]}>
-                                    {results.map(({ name, membershipId, membershipType }, idx) => (
-                                        <Link
-                                            className={styles["search-result"]}
-                                            key={idx}
-                                            href={`/profile/${membershipType}/${membershipId}`}
-                                            onClick={() => {
-                                                animateModalOut()
-                                                clearQuery()
-                                            }}>
-                                            <li>
-                                                <div className={styles["individual-result"]}>
-                                                    <Image
-                                                        width={45}
-                                                        height={45}
-                                                        alt={name}
-                                                        src={Question_Mark}
-                                                    />
-                                                    <p>{name}</p>
-                                                </div>
-                                            </li>
-                                        </Link>
-                                    ))}
-                                </ul>
-                            )}
+        <div
+            ref={containerDiv}
+            className={styles["container"]}
+            style={{ display: isDivDisplayed ? "block" : "none" }}>
+            {isDivDisplayed && (
+                <div ref={animateModal} className={styles["search-div"]} id="searchdiv">
+                    <div className={styles["search-top"]}>
+                        <form className={styles["search-form"]} onSubmit={handleFormEnter}>
+                            <Input
+                                enteredText={enteredText}
+                                handleInputChange={handleInputChange}
+                            />
+                        </form>
+                        <div className={styles["search-top-right"]}>
+                            <Image src={Search} alt="search" />
                         </div>
                     </div>
-                )}
-            </div>
+                    <hr />
+                    <div className={styles["search-content"]}>
+                        <span>Search Results</span>
+                        {showingResults && (
+                            <ul className={styles["search-results"]}>
+                                {results.map(({ name, membershipId, membershipType }, idx) => (
+                                    <Link
+                                        className={styles["search-result"]}
+                                        key={idx}
+                                        href={`/profile/${membershipType}/${membershipId}`}
+                                        onClick={() => {
+                                            animateModalOut()
+                                            clearQuery()
+                                        }}>
+                                        <li>
+                                            <div className={styles["individual-result"]}>
+                                                <Image
+                                                    width={45}
+                                                    height={45}
+                                                    alt={name}
+                                                    src={Question_Mark}
+                                                />
+                                                <p>{name}</p>
+                                            </div>
+                                        </li>
+                                    </Link>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
+            )}
             {isDivDisplayed && (
                 <div
                     ref={backgroundDiv}

@@ -8,7 +8,7 @@ export enum ErrorCode {
     BungieAPIOffline = "Bungo",
     ProfileNotFound = "Pinecone",
     PrivateProfile = "Pineapple",
-    PGCRError = "Pig",
+    PGCR = "Pig",
     ActivityError = "Applesauce",
     ActivityHistory = "Apricot",
     CharacterStats = "Cactus",
@@ -16,12 +16,12 @@ export enum ErrorCode {
     BungieNextMembership = "Banana",
     Clan = "Clam",
     Placements = "Pigeon",
-    ExactSearch = "Eggplant",
     Emblems = "Elephant",
     RaidHubProfile = "Rainbow",
     RaidReport = "Reppo",
     Transitory = "Window",
-    Manifest = "Mountain"
+    Manifest = "Mountain",
+    Search = "Sapphire"
 }
 
 export default class CustomError extends Error {
@@ -29,30 +29,29 @@ export default class CustomError extends Error {
     bungieCode?: PlatformErrorCodes
     data?: any
 
-    constructor(message: string, code?: ErrorCode) {
+    constructor(message: string, code: ErrorCode, stack: string | undefined) {
         super(message)
         this.code = code ?? ErrorCode.Default
+        this.stack = stack
     }
 
     static handle(errorHandler: ErrorHandler, e: any, code: ErrorCode) {
         let newErr: CustomError
         if (e instanceof CustomError) {
-            e.code = code
             newErr = e
+            newErr.code = code
         } else if (e instanceof BungieAPIError) {
             if (e.ErrorCode === PlatformErrorCodes.SystemDisabled) {
-                newErr = new CustomError(e.Message, ErrorCode.BungieAPIOffline)
+                newErr = new CustomError(e.Message, ErrorCode.BungieAPIOffline, e.stack)
             } else {
-                newErr = new CustomError(e.Message, code)
+                newErr = new CustomError(e.Message, code, e.stack)
             }
             newErr.bungieCode = e.ErrorCode
-            newErr.stack = e.stack
         } else if (e instanceof Error) {
-            newErr = new CustomError(e.message, code)
-            newErr.stack = e.stack
+            newErr = new CustomError(e.message, code, e.stack)
         } else {
-            newErr = new CustomError(String(e), code)
-            newErr.data = e
+            newErr = new CustomError(JSON.stringify(e), code, undefined)
+            Error.captureStackTrace(newErr, errorHandler)
         }
         errorHandler(newErr)
     }

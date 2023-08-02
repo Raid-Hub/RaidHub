@@ -1,3 +1,10 @@
+.container {
+    z-index: 89;
+    min-height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
 .darken-background {
     position: absolute;
     z-index: 90;
@@ -115,20 +122,11 @@
     scrollbar-color: rgba(255, 116, 24, 0.397) rgba(0, 0, 0, 0.082);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 550px) {
     .search-div {
-        position: fixed;
-        left: 0%;
-        top: 0;
-        -webkit-transform: translate(0%, 0%);
-        transform: translate(0%, 0%);
-        min-width: 100%;
-        min-height: 100%;
-        border-radius: 0;
+        top: 10%;
+        left: 5%;
+        min-height: 80%;
+        min-width: 90%;
     }
-}
-
-.animate-modal {
-    position: relative;
-    z-index: 91;
 }

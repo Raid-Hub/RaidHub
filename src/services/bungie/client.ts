@@ -7,6 +7,11 @@ import {
 } from "bungie-net-core/lib/api"
 import { PlatformErrorCodes } from "bungie-net-core/lib/models"
 
+const DONT_RETRY_CODES = [
+    PlatformErrorCodes.UserCannotResolveCentralAccount,
+    PlatformErrorCodes.SystemDisabled
+]
+
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
     async fetch<T>(config: BungieFetchConfig): Promise<BungieNetResponse<T>> {
@@ -52,8 +57,12 @@ export default class BungieClient implements BungieClientProtocol {
 
         try {
             return await request()
-        } catch {
-            return await request(true)
+        } catch (e: any) {
+            if (DONT_RETRY_CODES.includes(e.ErrorCode)) {
+                throw e
+            } else {
+                return await request(true)
+            }
         }
     }
 

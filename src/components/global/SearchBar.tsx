@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { Search } from "../../images/icons"
-import BungieName from "../../models/BungieName"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -104,36 +103,17 @@ const SearchBar = ({}: SearchBarProps) => {
                 </div>
                 {isShowingResults && (
                     <ul className={styles["search-results"]}>
-                        {results
-                            .map(result => {
-                                let name = result.displayName
-                                if (
-                                    result.bungieGlobalDisplayName &&
-                                    result.bungieGlobalDisplayNameCode
-                                )
-                                    try {
-                                        name = new BungieName(
-                                            result.bungieGlobalDisplayName,
-                                            result.bungieGlobalDisplayNameCode
-                                        ).toString()
-                                    } catch {}
-                                return {
-                                    ...result,
-                                    name
-                                }
-                            })
-                            .filter(({ name }) => name.startsWith(enteredText))
-                            .map(({ name, membershipId, membershipType }, idx) => (
-                                <Link
-                                    className={styles["search-result"]}
-                                    key={idx}
-                                    href={`/profile/${membershipType}/${membershipId}`}
-                                    onClick={handleSelect}>
-                                    <li>
-                                        <p>{name}</p>
-                                    </li>
-                                </Link>
-                            ))}
+                        {results.map(({ name, membershipId, membershipType }, idx) => (
+                            <Link
+                                className={styles["search-result"]}
+                                key={idx}
+                                href={`/profile/${membershipType}/${membershipId}`}
+                                onClick={handleSelect}>
+                                <li>
+                                    <p>{name}</p>
+                                </li>
+                            </Link>
+                        ))}
                     </ul>
                 )}
             </form>

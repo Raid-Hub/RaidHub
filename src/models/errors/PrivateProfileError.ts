@@ -14,7 +14,7 @@ export default class PrivateProfileError extends CustomError {
         membershipType: BungieMembershipType
         components: DestinyComponentType[]
     }) {
-        super("Private Profile", ErrorCode.PrivateProfile)
+        super("Private Profile", ErrorCode.PrivateProfile, undefined)
         this.membershipId = destinyMembershipId
         this.membershipType = membershipType
         this.components = components

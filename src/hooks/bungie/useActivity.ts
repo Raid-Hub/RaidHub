@@ -16,6 +16,7 @@ type UseActivity = {
 
 export function useActivity({ activityId, errorHandler }: useActivityParams): UseActivity {
     const [pgcr, setPGCR] = useState<DestinyPGCR | null>(null)
+    const [error, setError] = useState<Error | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const client = useBungieClient()
 
@@ -25,14 +26,18 @@ export function useActivity({ activityId, errorHandler }: useActivityParams): Us
             try {
                 const pgcr = await getPGCR({ activityId, client })
                 setPGCR(pgcr)
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.ActivityError)
+            } catch (e: any) {
+                setError(e)
             } finally {
                 setIsLoading(false)
             }
         },
-        [client, errorHandler]
+        [client]
     )
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.ActivityError)
+    }, [error, errorHandler])
 
     useEffect(() => {
         setIsLoading(true)

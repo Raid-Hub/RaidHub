@@ -50,7 +50,7 @@ const AccountIcon = ({}: AccountIconProps) => {
                                 signIn(
                                     "bungie",
                                     {
-                                        callbackUrl: window.location.href
+                                        callbackUrl: encodeURI(window.location.href)
                                     },
                                     "reauth=false"
                                 )

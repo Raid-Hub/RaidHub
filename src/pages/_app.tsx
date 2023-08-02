@@ -18,50 +18,45 @@ type PageProps = {
 }
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
-    const [refetchInterval, setRefetchInterval] = useState(0)
+    const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
 
     return (
         <LocaleManager>
-            <SessionProvider
-                session={session}
-                refetchInterval={refetchInterval}
-                refetchOnWindowFocus={false}>
-                <TokenManager setRefetchInterval={setRefetchInterval}>
-                    <DestinyManifestManager>
-                        <SearchDiv />
-                        <Header />
-                        <ProgressBar
-                            options={{
-                                showSpinner: false,
-                                parent: "#content"
-                            }}
-                            height={4}
-                            showOnShallow={false}
-                            color={"orange"}
-                        />
-                        <ComponentCacheManager Component={Component} componentProps={pageProps} />
-                        <Footer />
-                    </DestinyManifestManager>
-                </TokenManager>
-            </SessionProvider>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
-                <link rel="manifest" href="/manifest.json" />
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
                 />
                 <title key="title">RaidHub</title>
-                <link
-                    rel="manifest"
-                    href="/manifest.json"
-                    {...(process.env.APP_ENV === "preview" || process.env.APP_ENV === "staging"
-                        ? {
-                              crossOrigin: "use-credentials"
-                          }
-                        : {})}
-                />
+                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
             </Head>
+            <SessionProvider
+                session={session}
+                refetchInterval={sessionRefetchInterval}
+                refetchOnWindowFocus={false}>
+                <TokenManager setRefetchInterval={setSessionRefetchInterval}>
+                    <DestinyManifestManager>
+                        <Header />
+                        <ProgressBar
+                            options={{
+                                showSpinner: false,
+                                parent: "#header",
+                                trickle: true,
+                                speed: 700
+                            }}
+                            stopDelayMs={100}
+                            height={4}
+                            showOnShallow={false}
+                            color={"orange"}
+                        />
+                        <ComponentCacheManager Component={Component} componentProps={pageProps}>
+                            <SearchDiv />
+                        </ComponentCacheManager>
+                        <Footer />
+                    </DestinyManifestManager>
+                </TokenManager>
+            </SessionProvider>
         </LocaleManager>
     )
 }

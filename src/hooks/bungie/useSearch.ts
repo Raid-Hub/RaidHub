@@ -7,6 +7,8 @@ import BungieName from "../../models/BungieName"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
 import { useRouter } from "next/router"
+import { isPrimaryCrossSave } from "../../util/destiny/crossSave"
+import { PlatformErrorCodes } from "bungie-net-core/lib/models"
 
 const DEBOUNCE = 250
 
@@ -25,19 +27,21 @@ export const useSearch = ({
     handleFormEnter(event: React.FormEvent<HTMLFormElement>): void
     clearQuery(): void
 } => {
-    const [isLoading, setLoading] = useState<boolean>(false)
-    const [isPerformingExactSearch, setIsPerformingExactSearch] = useState<boolean>(false)
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
-    const [query, setQuery] = useState("")
+    const [activeQuery, setActiveQuery] = useState("")
     const lastSearch = useRef<number>(Date.now())
-    const [results, setResults] = useState<(CustomBungieSearchResult & { name: string })[]>([])
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [isPerformingExactSearch, setIsPerformingExactSearch] = useState<boolean>(false)
+    const [results, setResults] = useState<CustomBungieSearchResult[]>([])
+    const [error, setError] = useState<Error | null>(null)
+
     const router = useRouter()
 
     const client = useBungieClient()
 
     const clearQuery = useCallback(() => {
-        setQuery("")
+        setActiveQuery("")
         nextQuery.current = ""
         setTimeout(() => setEnteredText(""), 200)
     }, [])
@@ -45,29 +49,28 @@ export const useSearch = ({
     const doExactSearch = useCallback(
         async (query: string): Promise<void> => {
             setIsPerformingExactSearch(true)
-            try {
-                try {
-                    const bungieName = BungieName.parse(query)
-                    const { membershipType, membershipId } = await searchForBungieName({
-                        displayName: bungieName.name,
-                        displayNameCode: bungieName.code,
-                        client
-                    })
 
-                    router.push(
-                        "/profile/[platform]/[membershipId]",
-                        `/profile/${membershipType}/${membershipId}`
-                    )
-                } catch (e) {
-                    throw Error(`Unable to perform exact search with ${query}`)
+            try {
+                const bungieName = BungieName.parse(query)
+                const { membershipType, membershipId } = await searchForBungieName({
+                    displayName: bungieName.name,
+                    displayNameCode: bungieName.code,
+                    client
+                })
+
+                router.push(
+                    "/profile/[platform]/[membershipId]",
+                    `/profile/${membershipType}/${membershipId}`
+                )
+            } catch (e: any) {
+                if (e.ErrorCode !== PlatformErrorCodes.UserCannotResolveCentralAccount) {
+                    throw e
                 }
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.ExactSearch)
             } finally {
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, errorHandler, router]
+        [client, router]
     )
 
     const fetchUsers = useCallback(async () => {
@@ -76,47 +79,62 @@ export const useSearch = ({
 
         let bungieName: BungieName | undefined
         try {
-            bungieName = BungieName.parse(query)
+            bungieName = BungieName.parse(activeQuery)
         } catch {
             bungieName = undefined
         }
-        const searches: [
-            general: Promise<CustomBungieSearchResult[]>,
-            exact: Promise<CustomBungieSearchResult | undefined> | null
-        ] = [
-            searchForUsername({ displayNamePrefix: query.split("#")[0], pages: 1, client }).then(
-                response =>
-                    response
-                        .map(user => ({
-                            ...user,
-                            ...user.destinyMemberships[0]
-                        }))
-                        .filter(user => user.membershipId && user.membershipType)
-            ),
-            bungieName
-                ? searchForBungieName({
-                      displayName: bungieName.name,
-                      displayNameCode: bungieName.code,
-                      client
-                  })
-                : null
-        ]
 
-        const [general, exact] = await Promise.all(searches)
+        try {
+            const searches: [
+                general: Promise<CustomBungieSearchResult[]>,
+                exact: Promise<CustomBungieSearchResult | undefined> | null
+            ] = [
+                searchForUsername({
+                    displayNamePrefix: activeQuery.split("#")[0],
+                    pages: 4,
+                    client
+                }).then(
+                    response =>
+                        response
+                            .map(({ destinyMemberships }) =>
+                                destinyMemberships.find(d2m => isPrimaryCrossSave(d2m))
+                            )
+                            .filter(
+                                user => user && user.membershipId && user.membershipType
+                            ) as CustomBungieSearchResult[]
+                ),
+                bungieName
+                    ? searchForBungieName({
+                          displayName: bungieName.name,
+                          displayNameCode: bungieName.code,
+                          client
+                      })
+                    : null
+            ]
 
-        const rawResults = bungieName !== undefined ? (exact ? [exact] : general) : general
+            const [general, exact] = await Promise.all(searches)
 
-        if (lastSearch.current === currentSearch) {
-            setResults(() => filterResults(rawResults, enteredText))
+            const rawResults = bungieName !== undefined ? (exact ? [exact] : general) : general
+
+            if (lastSearch.current === currentSearch) {
+                setResults(rawResults)
+                setLoading(false)
+            }
+        } catch (e: any) {
+            setError(e)
             setLoading(false)
         }
-    }, [enteredText, client, query])
+    }, [client, activeQuery])
+
+    useEffect(() => {
+        error && CustomError.handle(errorHandler, error, ErrorCode.Search)
+    }, [error, errorHandler])
 
     const debounceQuery = useCallback(
         async (potentialQuery: string) => {
             await wait(DEBOUNCE)
             if (!isPerformingExactSearch && potentialQuery === nextQuery.current) {
-                setQuery(potentialQuery)
+                setActiveQuery(potentialQuery)
             }
         },
         [isPerformingExactSearch]
@@ -142,24 +160,24 @@ export const useSearch = ({
                 onSuccessfulExactSearch()
             } catch (e: any) {
                 nextQuery.current = enteredText
-                setQuery(enteredText)
+                setActiveQuery(enteredText)
             }
         },
         [doExactSearch, enteredText, clearQuery, onSuccessfulExactSearch]
     )
 
     useEffect(() => {
-        setLoading(!!query)
-        if (query) {
+        setLoading(!!activeQuery)
+        if (activeQuery) {
             fetchUsers()
         } else {
             setResults([])
         }
-    }, [query, fetchUsers])
+    }, [activeQuery, fetchUsers])
 
     return {
         enteredText,
-        results,
+        results: filterResults(results, enteredText),
         isLoading,
         isPerformingExactSearch,
         handleInputChange,
