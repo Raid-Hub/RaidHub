@@ -24,9 +24,7 @@ export const useActivityFilters = (): [
     }, [])
 
     const saveFilter = (filter: ActivityFilter | null) => {
-        filter
-            ? localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter.encode()))
-            : localStorage.setItem(KEY_ACTIVITY_FILTER, "")
+        localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter ? filter.encode() : null))
     }
 
     return [
