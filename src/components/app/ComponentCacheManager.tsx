@@ -28,11 +28,10 @@ const ComponentCacheManager = ({
     const router = useRouter()
     const { current: retainedComponents } = React.useRef<ComponentCache>(new Collection())
 
-    const key = router.asPath
+    const key = new URL(router.asPath, "https://base.url").pathname
     const isRetainableRoute = ROUTES_TO_RETAIN.includes(router.route)
 
     // Add Component to retainedComponents if we haven't got it already
-
     if (!retainedComponents.has(key) || retainedComponents.get(key)!.expires < Date.now()) {
         if (isRetainableRoute) {
             const MemoComponent = React.memo(Component)

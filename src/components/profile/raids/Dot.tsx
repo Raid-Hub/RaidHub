@@ -7,6 +7,7 @@ import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/ra
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
 import { animate } from "framer-motion"
+import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -21,7 +22,6 @@ type DotProps = {
     isTargeted: boolean
     tooltipData: DotTooltipProps | null
     setTooltip(data: DotTooltipProps | null): void
-    goTo(instanceId: string): void
 }
 
 const Dot = ({
@@ -32,8 +32,7 @@ const Dot = ({
     centerY,
     isTargeted,
     setTooltip,
-    tooltipData,
-    goTo
+    tooltipData
 }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
@@ -91,12 +90,16 @@ const Dot = ({
 
     const centerX = SPACING / 2 + SPACING * index
     return (
-        <g
-            onClick={() => goTo(activity.instanceId)}
-            className={[styles["dot"], styles["dot-hover"]].join(" ")}
-            onMouseEnter={handleHover}
-            onMouseLeave={handleMouseLeave}>
-            {
+        <Link
+            href={{
+                pathname: "/pgcr/[activityId]",
+                query: { activityId: activity.instanceId }
+            }}
+            legacyBehavior={true}>
+            <g
+                onMouseEnter={handleHover}
+                onMouseLeave={handleMouseLeave}
+                className={[styles["dot"], styles["dot-hover"]].join(" ")}>
                 <circle
                     fill={activity.completed ? (flawless ? Teal : Green) : Red}
                     fillOpacity={0.978}
@@ -104,33 +107,34 @@ const Dot = ({
                     cx={centerX}
                     cy={centerY}
                 />
-            }
-            {playerCount <= 3 ? (
-                <Star x={centerX} y={centerY} spinning={playerCount === 1} />
-            ) : (
-                (isContest(details[0], activity.startDate) ||
-                    isDayOne(details[0], activity.endDate)) && (
-                    <image
-                        width={2 * SKULL_FACTOR * RADIUS}
-                        height={2 * SKULL_FACTOR * RADIUS}
-                        className={styles["contest-skull"]}
-                        href={"../../../../icons/skull.png"}
-                        x={centerX - SKULL_FACTOR * RADIUS}
-                        y={centerY - SKULL_FACTOR * RADIUS}
+
+                {playerCount <= 3 ? (
+                    <Star x={centerX} y={centerY} spinning={playerCount === 1} />
+                ) : (
+                    (isContest(details[0], activity.startDate) ||
+                        isDayOne(details[0], activity.endDate)) && (
+                        <image
+                            width={2 * SKULL_FACTOR * RADIUS}
+                            height={2 * SKULL_FACTOR * RADIUS}
+                            className={styles["contest-skull"]}
+                            href={"../../../../icons/skull.png"}
+                            x={centerX - SKULL_FACTOR * RADIUS}
+                            y={centerY - SKULL_FACTOR * RADIUS}
+                        />
+                    )
+                )}
+                {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
+                    <circle
+                        fill="none"
+                        stroke="white"
+                        strokeWidth={RADIUS / 10}
+                        r={RADIUS * 0.95}
+                        cx={centerX}
+                        cy={centerY}
                     />
-                )
-            )}
-            {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
-                <circle
-                    fill="none"
-                    stroke="white"
-                    strokeWidth={RADIUS / 10}
-                    r={RADIUS * 0.95}
-                    cx={centerX}
-                    cy={centerY}
-                />
-            )}
-        </g>
+                )}
+            </g>
+        </Link>
     )
 }
 

@@ -42,7 +42,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                             options={{
                                 showSpinner: false,
                                 parent: "#header",
-                                trickle: false,
+                                trickle: true,
                                 speed: 700
                             }}
                             stopDelayMs={100}
