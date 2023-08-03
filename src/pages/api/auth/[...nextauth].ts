@@ -5,10 +5,7 @@ import prisma from "../../../util/server/prisma"
 import DiscordProvider from "next-auth/providers/discord"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
-import { discordProfile } from "../../../util/server/auth/discordProfile"
 import { SessionUser, sessionCallback } from "../../../util/server/auth/sessionCallback"
-import { twitchProfile } from "../../../util/server/auth/twitchProfile"
-import { twitterProfile } from "../../../util/server/auth/twitterProfile"
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
@@ -57,8 +54,7 @@ function getProviders(): Provider[] {
         providers.push(
             DiscordProvider({
                 clientId: process.env.DISCORD_CLIENT_ID,
-                clientSecret: process.env.DISCORD_CLIENT_SECRET,
-                profile: discordProfile
+                clientSecret: process.env.DISCORD_CLIENT_SECRET
             })
         )
     }
@@ -67,8 +63,7 @@ function getProviders(): Provider[] {
         providers.push(
             TwitchProvider({
                 clientId: process.env.TWITCH_CLIENT_ID,
-                clientSecret: process.env.TWITCH_CLIENT_SECRET,
-                profile: twitchProfile
+                clientSecret: process.env.TWITCH_CLIENT_SECRET
             })
         )
     }
@@ -78,8 +73,7 @@ function getProviders(): Provider[] {
             TwitterProvider({
                 version: "2.0",
                 clientId: process.env.TWITTER_CLIENT_ID,
-                clientSecret: process.env.TWITTER_CLIENT_SECRET,
-                profile: twitterProfile
+                clientSecret: process.env.TWITTER_CLIENT_SECRET
             })
         )
     }
