@@ -15,7 +15,9 @@ export const zUser = z.object({
     bungie_access_expires_at: z.nullable(z.date()),
     bungie_refresh_token: z.nullable(z.string()),
     bungie_refresh_expires_at: z.nullable(z.date()),
-    email: z.nullable(z.string())
+    email: z.nullable(z.string()),
+    pinned_activity_id: z.nullable(z.string()),
+    profile_decoration: z.nullable(z.string())
 }) satisfies {
     _output: Omit<PrismaUser, "id">
 }

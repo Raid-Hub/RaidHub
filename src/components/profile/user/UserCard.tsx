@@ -9,6 +9,7 @@ import Image from "next/image"
 type UserCardProps = {
     isLoading: boolean
     userInfo: UserInfoCard | undefined
+    icon: string | null
     emblemBackgroundPath?: string
     background: string | null
     socials: ProfileSocialData[] | null
@@ -17,6 +18,7 @@ type UserCardProps = {
 const UserCard = ({
     isLoading,
     userInfo,
+    icon,
     emblemBackgroundPath,
     background,
     socials
@@ -44,10 +46,11 @@ const UserCard = ({
                 <div className={styles["details"]}>
                     <Image
                         src={
+                            icon ??
                             "https://bungie.net" +
-                            (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
+                                (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                         }
-                        width={474}
+                        width={96}
                         height={96}
                         alt="profile picture"
                     />

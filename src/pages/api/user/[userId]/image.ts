@@ -1,7 +1,12 @@
 import { S3 } from "aws-sdk"
 import { protectSession } from "../../../../util/server/sessionProtection"
 import { NextApiHandler, NextApiRequest } from "next"
-import { ApiHandler, ApiRequest, UserImageCreateResponse } from "../../../../types/api"
+import {
+    ApiHandler,
+    ApiRequest,
+    BadMethodResponse,
+    UserImageCreateResponse
+} from "../../../../types/api"
 import { getUserId } from "../[userId]"
 import formidable from "formidable"
 import fs from "fs"
@@ -20,10 +25,10 @@ const handler: NextApiHandler = async (req, res) => {
         await handleUpdate(req as ApiRequest<"PUT">, res)
     } else {
         res.status(405).json({
+            data: { method: req.method! },
             success: false,
-            error: "Method not allowed",
-            data: null
-        } satisfies UserImageCreateResponse)
+            error: "Method not allowed"
+        } satisfies BadMethodResponse)
     }
 }
 

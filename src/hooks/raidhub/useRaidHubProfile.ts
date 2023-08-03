@@ -1,8 +1,8 @@
 import { RaidHubProfile } from "../../types/profile"
-import { getRaidHubProfile } from "../../services/raidhub/getProfile"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { ErrorHandler } from "../../types/generic"
 import { useCallback, useEffect, useState } from "react"
+import { getRaidHubProfile } from "../../services/app/getProfile"
 
 type UseRaidHubProfileParams = {
     destinyMembershipId: string

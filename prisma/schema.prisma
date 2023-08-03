@@ -36,7 +36,7 @@ model Account {
 model User {
   id                        String    @id @default(cuid())
   name                      String
-  destiny_membership_id     String
+  destiny_membership_id     String    @unique
   destiny_membership_type   Int
   bungie_username           String?
   discord_username          String?
@@ -49,10 +49,12 @@ model User {
   bungie_refresh_expires_at DateTime? @default(now())
   email                     String?   @unique
   vanity                    Vanity?
+  pinned_activity_id        String?
+  profile_decoration        String?   @db.Text
   accounts                  Account[]
   sessions                  Session[]
 
-  @@unique(destiny_membership_id)
+  @@index([destiny_membership_id])
 }
 
 model Session {

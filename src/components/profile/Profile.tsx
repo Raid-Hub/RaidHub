@@ -102,6 +102,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                             ? { ...bungieMemberhip, ...primaryDestinyProfile?.userInfo }
                             : undefined
                     }
+                    icon={raidHubProfile?.icon ?? null}
                     socials={raidHubProfile?.socials ?? null}
                     emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
                     background={raidHubProfile?.background ?? null}
