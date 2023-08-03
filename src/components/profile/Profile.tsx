@@ -39,7 +39,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
 
     const { profile: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
         destinyMembershipId,
-        errorHandler
+        errorHandler: () => null
     })
 
     const {

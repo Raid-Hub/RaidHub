@@ -24,9 +24,7 @@ export async function getRaidHubProfile(destinyMembershipId: string): Promise<Ra
         socials.push({
             id: Socials.Bungie,
             displayName: profile.bungie_username,
-            url: `https://www.bungie.net/7/${/** en */ ""}/User/Profile/${
-                profile.destiny_membership_type
-            }/${profile.destiny_membership_id}`
+            url: `https://www.bungie.net/7/en/User/Profile/${profile.destiny_membership_type}/${profile.destiny_membership_id}`
         })
     }
     if (profile.discord_username) {

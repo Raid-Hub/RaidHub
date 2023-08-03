@@ -9,7 +9,7 @@ import { SessionUser, sessionCallback } from "../../../util/server/auth/sessionC
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
-import { signInCallback } from "../../../util/server/auth/signInCallback"
+import { AdapterUser } from "next-auth/adapters"
 
 type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -34,8 +34,7 @@ export default NextAuth({
         newUser: "/account" // New users will be directed here on first sign in
     },
     callbacks: {
-        session: sessionCallback,
-        signIn: signInCallback
+        session: sessionCallback
     }
 })
 

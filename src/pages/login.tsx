@@ -12,8 +12,11 @@ const Login: NextPage = () => {
     const callbackUrl =
         __callbackUrl === "/login" || __callbackUrl === undefined ? "" : __callbackUrl
 
+    const error = query["error"]
+
     return (
         <main>
+            {error && <h2>{`Error: ${error}`}</h2>}
             <button
                 onClick={() =>
                     signIn("bungie", {

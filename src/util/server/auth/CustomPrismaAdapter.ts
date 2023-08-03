@@ -1,12 +1,13 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { AdapterAccount, AdapterSession, AdapterUser, DefaultAdapter } from "next-auth/adapters"
 import { Awaitable } from "next-auth"
-import { Account, PrismaClient } from "@prisma/client"
+import { Account, PrismaClient, User } from "@prisma/client"
 import BungieClient from "../../../services/bungie/client"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { bungieProfile } from "./bungieProfile"
 import { DiscordProfile } from "next-auth/providers/discord"
 import { TwitterProfile } from "next-auth/providers/twitter"
+import { zUser } from "../zod"
 
 export default class CustomPrismaAdapter implements DefaultAdapter {
     private prisma: PrismaClient
@@ -40,10 +41,14 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
     }
 
     createUser = async (user: Omit<AdapterUser, "id">): Promise<AdapterUser> => {
-        // @ts-expect-error
-        delete user.emailVerified
-        // @ts-expect-error
-        return this.prisma.user.create({ data: user })
+        const parsed = zUser.parse({ ...user, email: user.email ?? null })
+        return {
+            ...(await this.prisma.user.create({
+                data: parsed
+            })),
+            email: user.email,
+            emailVerified: user.emailVerified
+        }
     }
 
     linkAccount = async (account: AdapterAccount): Promise<void> => {
@@ -55,7 +60,6 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             await this.addTwitchAccountToUser(account)
         } else if (account.provider === "twitter") {
             await this.addTwitterAccountToUser(account)
-            null // todo
         }
 
         // cleans properties that shouldnt be here
@@ -183,16 +187,14 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             headers: {
                 Authorization: `Bearer ${account.access_token}`
             }
+        }).then(async res => {
+            const data = await res.json()
+            if (res.ok) {
+                return (data as TwitterProfile).data
+            } else {
+                throw data
+            }
         })
-            .then(async res => {
-                const data = await res.json()
-                if (res.ok) {
-                    return data as TwitterProfile
-                } else {
-                    throw data
-                }
-            })
-            .then(twitterProfile => twitterProfile.data)
 
         return this.prisma.user.update({
             where: {

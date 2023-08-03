@@ -1,5 +1,4 @@
 import styles from "../../../styles/pages/profile/user.module.css"
-import Link from "next/link"
 import { ProfileSocialData } from "../../../types/profile"
 
 type SocialTagProps = ProfileSocialData
