@@ -1,7 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { AdapterAccount, AdapterSession, AdapterUser, DefaultAdapter } from "next-auth/adapters"
 import { Awaitable } from "next-auth"
-import { Account, PrismaClient, User } from "@prisma/client"
+import { Account, PrismaClient } from "@prisma/client"
 import BungieClient from "../../../services/bungie/client"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { bungieProfile } from "./bungieProfile"

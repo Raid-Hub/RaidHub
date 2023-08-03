@@ -74,7 +74,7 @@ const UserCard = ({
         updateProfileDecoration({
             decoration: inputStyling
         }).then(revalidateRaidHubProfile)
-    }, [inputStyling])
+    }, [inputStyling, revalidateRaidHubProfile])
 
     return isLoading || !userInfo ? (
         <Loading wrapperClass={styles["card-loading"]} />
