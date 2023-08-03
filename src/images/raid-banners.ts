@@ -3,7 +3,7 @@ import { StaticImageData } from "next/image"
 
 const RaidBanners: { [key in AvailableRaid]: StaticImageData | string } = {
     [Raid.LEVIATHAN]:
-        "https://media.discordapp.net/attachments/1136751502912934060/1136768967977996439/levi.jpg?width=2160&height=338",
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136768967977996439/levi.jpg",
     [Raid.EATER_OF_WORLDS]:
         "https://cdn.discordapp.com/attachments/1136751502912934060/1136767516400697435/eow.jpg",
     [Raid.SPIRE_OF_STARS]:
