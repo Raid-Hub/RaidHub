@@ -3,6 +3,7 @@ import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
+import { Raid } from "../../types/raids"
 
 type ActivityHeaderProps = {
     activity: DestinyPGCR | null
@@ -30,7 +31,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                         {pgcrLoadingState === Loading.LOADING || !activity ? (
                             <span>{strings.loading}</span>
                         ) : (
-                            <span>{strings.raidNames[activity.raid]}</span>
+                            <span>{strings.raidNames[activity.raid ?? Raid.NA]}</span>
                         )}
                     </div>
                 </div>

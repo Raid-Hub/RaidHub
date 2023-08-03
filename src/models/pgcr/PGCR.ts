@@ -9,7 +9,7 @@ import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
-import { AvailableRaid, AvailableRaids, Difficulty, Raid } from "../../types/raids"
+import { AvailableRaid, AvailableRaids, Difficulty } from "../../types/raids"
 import { Tag, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
@@ -32,7 +32,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     readonly players: PGCRPlayer[]
     readonly startDate: Date
     readonly completionDate: Date
-    readonly raid: Raid
+    readonly raid: AvailableRaid | null
     readonly difficulty: Difficulty
 
     constructor(data: DestinyPostGameCarnageReportData, options: PostGameCarnageReportOptions) {
@@ -68,7 +68,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         try {
             ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
         } catch {
-            this.raid = Raid.NA
+            this.raid = null
             this.difficulty = Difficulty.NORMAL
         }
     }
@@ -123,9 +123,10 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
     get tags(): Tag[] {
         const tags = new Array<Tag>()
-        if (!AvailableRaids.includes(this.raid as AvailableRaid)) return []
-        if (isDayOne(this.raid as AvailableRaid, this.completionDate)) tags.push(Tag.DAY_ONE)
-        if (isContest(this.raid as AvailableRaid, this.startDate)) {
+        if (!this.raid) return tags
+        if (!AvailableRaids.includes(this.raid)) return []
+        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
+        if (isContest(this.raid, this.startDate)) {
             switch (this.difficulty) {
                 case Difficulty.CHALLENGEKF:
                     tags.push(Tag.CHALLENGE_KF)
@@ -151,7 +152,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     }
 
     title(strings: LocalStrings): string {
-        return addModifiers(this.raid, this.tags, strings)
+        return this.raid ? addModifiers(this.raid, this.tags, strings) : ""
     }
 
     hydrate(data: Collection<string, [UserInfoCard, DestinyCharacterComponent | null]>) {

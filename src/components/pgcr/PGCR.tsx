@@ -24,14 +24,16 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                 </title>
             </Head>
             <section className={styles["summary-card"]}>
-                <Image
-                    priority
-                    className={styles["summary-card-background"]}
-                    src={RaidCardBackground[pgcr?.raid ?? Raid.NA]}
-                    alt="background image"
-                    fill
-                    style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
-                />
+                {pgcr?.raid && (
+                    <Image
+                        priority
+                        className={styles["summary-card-background"]}
+                        src={RaidCardBackground[pgcr.raid]}
+                        alt="background image"
+                        fill
+                        style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                    />
+                )}
                 <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                 <ParticipantsSection
                     raid={pgcr?.raid ?? Raid.NA}

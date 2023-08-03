@@ -1,34 +1,31 @@
-import { Raid } from "../types/raids"
+import { AvailableRaid, Raid } from "../types/raids"
 import { StaticImageData } from "next/image"
-import levi from "../../public/banners/levi.png"
-import eow from "../../public/banners/eow.png"
-import spire from "../../public/banners/spire.png"
-import wish from "../../public/banners/wish.png"
-import sotp from "../../public/banners/sotp.png"
-import crown from "../../public/banners/crown.png"
-import gos from "../../public/banners/gos.png"
-import dsc from "../../public/banners/dsc.png"
-import vog from "../../public/banners/vog.png"
-import vow from "../../public/banners/vow.png"
-import kf from "../../public/banners/kf.png"
-import ron from "../../public/banners/ron.png"
-import dne from "../../public/banners/dne.png"
 
-const RaidBanners: { [key in Raid]: StaticImageData } = {
-    [Raid.LEVIATHAN]: levi,
-    [Raid.EATER_OF_WORLDS]: eow,
-    [Raid.SPIRE_OF_STARS]: spire,
-    [Raid.LAST_WISH]: wish,
-    [Raid.SCOURGE_OF_THE_PAST]: sotp,
-    [Raid.CROWN_OF_SORROW]: crown,
-    [Raid.GARDEN_OF_SALVATION]: gos,
-    [Raid.DEEP_STONE_CRYPT]: dsc,
-    [Raid.VAULT_OF_GLASS]: vog,
-    [Raid.VOW_OF_THE_DISCIPLE]: vow,
-    [Raid.KINGS_FALL]: kf,
-    [Raid.ROOT_OF_NIGHTMARES]: ron,
-    [Raid.CROTAS_END]: dne,
-    [Raid.NA]: dne
+const RaidBanners: { [key in AvailableRaid]: StaticImageData | string } = {
+    [Raid.LEVIATHAN]:
+        "https://media.discordapp.net/attachments/1136751502912934060/1136768967977996439/levi.jpg?width=2160&height=338",
+    [Raid.EATER_OF_WORLDS]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136767516400697435/eow.jpg",
+    [Raid.SPIRE_OF_STARS]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136771008439779389/spire.jpg",
+    [Raid.LAST_WISH]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136772097167863888/wish.jpg",
+    [Raid.SCOURGE_OF_THE_PAST]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136772993771655270/scourge.jpg",
+    [Raid.CROWN_OF_SORROW]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136773497343987764/crown.jpg",
+    [Raid.GARDEN_OF_SALVATION]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136764593658675281/gos.jpg",
+    [Raid.DEEP_STONE_CRYPT]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136773960193814579/dsc.jpg",
+    [Raid.VAULT_OF_GLASS]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136774324280365166/vog.jpg",
+    [Raid.VOW_OF_THE_DISCIPLE]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136775741346951318/vow.jpg",
+    [Raid.KINGS_FALL]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136776084487159878/kf.jpg",
+    [Raid.ROOT_OF_NIGHTMARES]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136764576491380746/ron.jpg"
 }
 
 export default RaidBanners
