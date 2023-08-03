@@ -37,7 +37,11 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             errorHandler
         })
 
-    const { profile: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
+    const {
+        profile: raidHubProfile,
+        isLoading: isLoadingRaidHubProfile,
+        revalidate: revalidateRaidHubProfile
+    } = useRaidHubProfile({
         destinyMembershipId,
         errorHandler: () => null
     })
@@ -106,6 +110,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     socials={raidHubProfile?.socials ?? null}
                     emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
                     background={raidHubProfile?.background ?? null}
+                    revalidateRaidHubProfile={revalidateRaidHubProfile}
                 />
                 <Banners
                     banners={raidReportData?.rankings ?? null}

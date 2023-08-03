@@ -17,7 +17,7 @@ export const zUser = z.object({
     bungie_refresh_expires_at: z.nullable(z.date()),
     email: z.nullable(z.string()),
     pinned_activity_id: z.nullable(z.string()),
-    profile_decoration: z.nullable(z.string())
+    profile_decoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
 }) satisfies {
     _output: Omit<PrismaUser, "id">
 }

@@ -50,7 +50,7 @@ model User {
   email                     String?   @unique
   vanity                    Vanity?
   pinned_activity_id        String?
-  profile_decoration        String?   @db.Text
+  profile_decoration        String?   @db.VarChar(512)
   accounts                  Account[]
   sessions                  Session[]
 

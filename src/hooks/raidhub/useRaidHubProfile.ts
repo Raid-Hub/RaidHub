@@ -12,6 +12,7 @@ type UseRaidHubProfileParams = {
 type UseRaidHubProfile = {
     profile: RaidHubProfile | null
     isLoading: boolean
+    revalidate(): void
 }
 
 export function useRaidHubProfile({
@@ -41,5 +42,5 @@ export function useRaidHubProfile({
         setIsLoading(true)
         fetchData()
     }, [fetchData])
-    return { profile, isLoading }
+    return { profile, isLoading, revalidate: fetchData }
 }

@@ -58,6 +58,10 @@ export interface LocalStrings {
     filterNames: { [key in FilterListName]: string }
     clickToView: string
     loginToAccess: string
+    reset: string
+    edit: string
+    save: string
+    cancel: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -189,6 +193,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.Not]: "Not Element"
         },
         clickToView: "Click to View",
-        loginToAccess: "If this profile belongs to you, please Login to Access"
+        loginToAccess: "If this profile belongs to you, please Login to Access",
+        reset: "Reset",
+        edit: "Edit",
+        save: "Save",
+        cancel: "Cancel"
     }
 }
