@@ -12,9 +12,12 @@ const nextConfig = {
         domains: [
             "bungie.net",
             "www.bungie.net",
-            "cdn.discordapp.com",
-            "raidhub-app.s3.amazonaws.com"
-        ]
+            "raidhub.s3.amazonaws.com",
+            "raidhub-staging.s3.amazonaws.com",
+            "raidhub-app.s3.amazonaws.com",
+            "cdn.discordapp.com/attachments/1136751502912934060"
+        ],
+        unoptimized: true
     },
     i18n: {
         locales,

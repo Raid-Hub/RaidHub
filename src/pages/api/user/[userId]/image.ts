@@ -88,7 +88,7 @@ async function uploadImage(req: NextApiRequest, userId: string) {
     return new Promise<string>((resolve, reject) => {
         const form = new IncomingForm({
             maxFiles: 1,
-            maxFileSize: 2 * 1024 * 1024 // 2 mb
+            maxFileSize: 0.5 * 1024 * 1024 // 0.5 mb
         })
         form.parse(req, async (error, _, { file: files }) => {
             if (error) {

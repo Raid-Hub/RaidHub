@@ -1,11 +1,11 @@
 import styles from "../../styles/pages/home.module.css"
-import { Raid } from "../../types/raids"
+import { AvailableRaid } from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
 
 type HomeRaidCardProps = {
-    raid: Raid
+    raid: AvailableRaid
     strings: LocalStrings
 }
 
@@ -15,6 +15,8 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-image-header"]}>
                 <Image
                     priority
+                    width={640}
+                    height={360}
                     src={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
