@@ -2,7 +2,6 @@ import { LocalStrings } from "../presentation/localized-strings"
 import {
     Difficulty,
     Raid,
-    RaidsWithReprisedContest,
     ReprisedContestDifficultyDictionary,
     ReprisedContestRaidDifficulties,
     ReprisedRaid

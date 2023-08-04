@@ -1,6 +1,5 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { useCallback } from "react"
-import { Raid } from "../../types/raids"
 import StatCards from "./PlayerStatCells"
 import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"

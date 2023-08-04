@@ -9,11 +9,10 @@ import { discordProfile } from "../../../util/server/auth/discordProfile"
 import { SessionUser, sessionCallback } from "../../../util/server/auth/sessionCallback"
 import { twitchProfile } from "../../../util/server/auth/twitchProfile"
 import { twitterProfile } from "../../../util/server/auth/twitterProfile"
-import { OAuthConfig, OAuthUserConfig, Provider } from "next-auth/providers"
+import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
 import { signInCallback } from "../../../util/server/auth/signInCallback"
-import { UserMembershipData } from "bungie-net-core/lib/models"
 
 type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
