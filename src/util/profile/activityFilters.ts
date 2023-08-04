@@ -109,7 +109,7 @@ export function decodeFilters(json: any): ActivityFilter | null {
                     const [key, value] = json
                     return new HighOrderActivityFilter(
                         key as unknown as keyof typeof HighOrderActivityFilters,
-                        value
+                        JSON.parse(value)
                     )
                 }
             case "string":

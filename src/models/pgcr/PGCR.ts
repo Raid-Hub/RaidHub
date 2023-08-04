@@ -9,8 +9,14 @@ import PGCRCharacter from "./Character"
 import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
-import { AvailableRaid, AvailableRaids, Difficulty } from "../../types/raids"
-import { Tag, addModifiers } from "../../util/raidhub/tags"
+import {
+    AvailableRaid,
+    AvailableRaids,
+    Difficulty,
+    ReprisedContestRaidDifficulties,
+    ReprisedRaidCallengeMode
+} from "../../types/raids"
+import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
@@ -127,20 +133,19 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         if (!AvailableRaids.includes(this.raid)) return []
         if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
         if (isContest(this.raid, this.startDate)) {
-            switch (this.difficulty) {
-                case Difficulty.CHALLENGEKF:
-                    tags.push(Tag.CHALLENGE_KF)
-                    break
-                case Difficulty.CHALLENGEVOG:
-                    tags.push(Tag.CHALLENGE_VOG)
-                    break
-                default:
-                    tags.push(Tag.CONTEST)
+            if (
+                ReprisedContestRaidDifficulties.includes(
+                    this.difficulty as ReprisedRaidCallengeMode
+                )
+            ) {
+                tags.push(TagForReprisedContest[this.difficulty as ReprisedRaidCallengeMode])
             }
+            tags.push(Tag.CONTEST)
         }
         if (this.wasFresh() === false) tags.push(Tag.CHECKPOINT)
         if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
         if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
+        if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push(Tag.GUIDEDGAMES)
         if (this.playerCount === 1) tags.push(Tag.SOLO)
         else if (this.playerCount === 2) tags.push(Tag.DUO)
         else if (this.playerCount === 3) tags.push(Tag.TRIO)

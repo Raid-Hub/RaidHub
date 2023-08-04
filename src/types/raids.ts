@@ -2,20 +2,33 @@ import { Flatten } from "./generic"
 
 // add new raids here
 export const enum Raid {
-    NA,
-    LEVIATHAN,
-    EATER_OF_WORLDS,
-    SPIRE_OF_STARS,
-    LAST_WISH,
-    SCOURGE_OF_THE_PAST,
-    CROWN_OF_SORROW,
-    GARDEN_OF_SALVATION,
-    DEEP_STONE_CRYPT,
-    VAULT_OF_GLASS,
-    VOW_OF_THE_DISCIPLE,
-    KINGS_FALL,
-    ROOT_OF_NIGHTMARES,
-    CROTAS_END
+    NA = -1,
+    LEVIATHAN = 0,
+    EATER_OF_WORLDS = 1,
+    SPIRE_OF_STARS = 2,
+    LAST_WISH = 3,
+    SCOURGE_OF_THE_PAST = 4,
+    CROWN_OF_SORROW = 5,
+    GARDEN_OF_SALVATION = 6,
+    DEEP_STONE_CRYPT = 7,
+    VAULT_OF_GLASS = 8,
+    VOW_OF_THE_DISCIPLE = 9,
+    KINGS_FALL = 10,
+    ROOT_OF_NIGHTMARES = 11,
+    CROTAS_END = 12
+}
+
+// add new difficulties here
+export const enum Difficulty {
+    NA = -1,
+    NORMAL = 0,
+    GUIDEDGAMES = 1,
+    PRESTIGE = 2,
+    MASTER = 3,
+    CHALLENGE_VOG = 64,
+    CHALLENGE_KF = 65,
+    CHALLENGE_CROTA = 66,
+    CONTEST = 128
 }
 
 export type AvailableRaid = Exclude<(typeof AvailableRaids)[number], Raid.NA>
@@ -35,16 +48,6 @@ export const AvailableRaids = [
     Raid.LEVIATHAN
 ] as const
 
-// add new difficulties here
-export const enum Difficulty {
-    NORMAL,
-    PRESTIGE,
-    MASTER,
-    CONTEST,
-    CHALLENGEVOG,
-    CHALLENGEKF
-}
-
 export type DifficultyForRaidType<R extends keyof typeof RaidHashes> =
     keyof (typeof RaidHashes)[R] extends Difficulty ? keyof (typeof RaidHashes)[R] : never
 
@@ -57,6 +60,7 @@ export type RaidDifficultyTuple = readonly [name: AvailableRaid, difficulty: Dif
 
 export const CommonRaidDifficulties = [
     Difficulty.NORMAL,
+    Difficulty.GUIDEDGAMES,
     Difficulty.PRESTIGE,
     Difficulty.MASTER
 ] as const
@@ -72,19 +76,27 @@ export const NoContestRaids = [
 export type ContestRaid = Exclude<AvailableRaid, (typeof NoContestRaids)[number]>
 export type NoContestRaid = (typeof NoContestRaids)[number]
 
-export const RaidsWithReprisedContest = [Raid.VAULT_OF_GLASS, Raid.KINGS_FALL] as const
+export const RaidsWithReprisedContest = [
+    Raid.VAULT_OF_GLASS,
+    Raid.KINGS_FALL,
+    Raid.CROTAS_END
+] as const
+export type ReprisedRaid = (typeof RaidsWithReprisedContest)[number]
 
 export const ReprisedContestRaidDifficulties = [
-    Difficulty.CHALLENGEVOG,
-    Difficulty.CHALLENGEKF
+    Difficulty.CHALLENGE_VOG,
+    Difficulty.CHALLENGE_KF,
+    Difficulty.CHALLENGE_CROTA
 ] as const
+export type ReprisedRaidCallengeMode = (typeof ReprisedContestRaidDifficulties)[number]
 
 export const ReprisedContestDifficultyDictionary: Record<
     (typeof RaidsWithReprisedContest)[number],
     (typeof ReprisedContestRaidDifficulties)[number]
 > = {
-    [Raid.VAULT_OF_GLASS]: Difficulty.CHALLENGEVOG,
-    [Raid.KINGS_FALL]: Difficulty.CHALLENGEKF
+    [Raid.VAULT_OF_GLASS]: Difficulty.CHALLENGE_VOG,
+    [Raid.KINGS_FALL]: Difficulty.CHALLENGE_KF,
+    [Raid.CROTAS_END]: Difficulty.CHALLENGE_CROTA
 }
 
 /**
@@ -94,16 +106,18 @@ export const ReprisedContestDifficultyDictionary: Record<
 export const RaidHashes = {
     [Raid.LEVIATHAN]: {
         [Difficulty.NORMAL]: [
-            "89727599",
-            "287649202",
-            "1699948563",
-            "1875726950",
             "2693136600",
             "2693136601",
             "2693136602",
             "2693136603",
             "2693136604",
-            "2693136605",
+            "2693136605"
+        ] as const,
+        [Difficulty.GUIDEDGAMES]: [
+            "89727599",
+            "287649202",
+            "1699948563",
+            "1875726950",
             "3916343513",
             "4039317196"
         ] as const,
@@ -123,44 +137,59 @@ export const RaidHashes = {
         ] as const
     },
     [Raid.EATER_OF_WORLDS]: {
-        [Difficulty.NORMAL]: ["2164432138", "3089205900"] as const,
+        [Difficulty.NORMAL]: ["3089205900"] as const,
+        [Difficulty.GUIDEDGAMES]: ["2164432138"] as const,
         [Difficulty.PRESTIGE]: ["809170886"] as const
     },
     [Raid.SPIRE_OF_STARS]: {
-        [Difficulty.NORMAL]: ["119944200", "3004605630"] as const,
+        [Difficulty.NORMAL]: ["119944200"] as const,
+        [Difficulty.GUIDEDGAMES]: ["3004605630"] as const,
         [Difficulty.PRESTIGE]: ["3213556450"] as const
     },
-    [Raid.LAST_WISH]: { [Difficulty.NORMAL]: ["1661734046", "2122313384", "2214608157"] as const },
-    [Raid.SCOURGE_OF_THE_PAST]: { [Difficulty.NORMAL]: ["2812525063", "548750096"] as const },
+    [Raid.LAST_WISH]: {
+        [Difficulty.NORMAL]: ["2122313384", "2214608157"] as const,
+        [Difficulty.GUIDEDGAMES]: ["1661734046"] as const
+    },
+    [Raid.SCOURGE_OF_THE_PAST]: {
+        [Difficulty.NORMAL]: ["548750096"] as const,
+        [Difficulty.GUIDEDGAMES]: ["2812525063"] as const
+    },
     [Raid.CROWN_OF_SORROW]: {
-        [Difficulty.NORMAL]: ["960175301", "3333172150"] as const
+        [Difficulty.NORMAL]: ["3333172150"] as const,
+        [Difficulty.GUIDEDGAMES]: ["960175301"] as const
     },
     [Raid.GARDEN_OF_SALVATION]: {
-        [Difficulty.NORMAL]: ["2497200493", "2659723068", "3458480158", "3845997235"] as const
+        [Difficulty.NORMAL]: ["2659723068", "3458480158"] as const,
+        [Difficulty.GUIDEDGAMES]: ["2497200493", "3845997235"] as const
     },
     [Raid.DEEP_STONE_CRYPT]: {
-        [Difficulty.NORMAL]: ["910380154", "3976949817"] as const
+        [Difficulty.NORMAL]: ["910380154"] as const,
+        [Difficulty.GUIDEDGAMES]: ["3976949817"] as const
     },
     [Raid.VAULT_OF_GLASS]: {
-        [Difficulty.NORMAL]: ["3711931140", "3881495763"] as const,
-        [Difficulty.CHALLENGEVOG]: ["1485585878"] as const,
+        [Difficulty.NORMAL]: ["3881495763"] as const,
+        [Difficulty.GUIDEDGAMES]: ["3711931140"] as const,
+        [Difficulty.CHALLENGE_VOG]: ["1485585878"] as const,
         [Difficulty.MASTER]: ["1681562271", "3022541210"] as const
     },
     [Raid.VOW_OF_THE_DISCIPLE]: {
-        [Difficulty.NORMAL]: ["1441982566", "2906950631", "4156879541"] as const,
+        [Difficulty.NORMAL]: ["1441982566", "2906950631"] as const,
+        [Difficulty.GUIDEDGAMES]: ["4156879541"] as const,
         [Difficulty.MASTER]: ["4217492330", "3889634515"] as const
     },
     [Raid.KINGS_FALL]: {
-        [Difficulty.NORMAL]: ["1374392663", "2897223272"] as const,
-        [Difficulty.CHALLENGEKF]: ["1063970578"] as const,
+        [Difficulty.NORMAL]: ["1374392663"] as const,
+        [Difficulty.GUIDEDGAMES]: ["2897223272"] as const,
+        [Difficulty.CHALLENGE_KF]: ["1063970578"] as const,
         [Difficulty.MASTER]: ["2964135793", "3257594522"] as const
     },
     [Raid.ROOT_OF_NIGHTMARES]: {
-        [Difficulty.NORMAL]: ["1191701339", "2381413764"] as const,
+        [Difficulty.NORMAL]: ["2381413764"] as const,
+        [Difficulty.GUIDEDGAMES]: ["1191701339"] as const,
         [Difficulty.MASTER]: ["2918919505"] as const
-    },
-    [Raid.NA]: { [Difficulty.NORMAL]: [] as const }
-}
+    }
+} satisfies Record<AvailableRaid, Partial<Record<Difficulty, readonly string[]>>>
+
 export type AllRaidHashesForRaid<R extends AvailableRaid> = Flatten<
     (typeof RaidHashes)[R][Extract<Difficulty, keyof (typeof RaidHashes)[R]>]
 >

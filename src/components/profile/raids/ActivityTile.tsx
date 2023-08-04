@@ -42,24 +42,25 @@ const ActivityTile = ({
     }, [flawless, strings])
 
     return (
-        <motion.div
-            initial={{
-                y: 50,
-                opacity: 0
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1
-            }}
-            viewport={{ once: true }}
-            transition={{
-                duration: 0.6
-            }}
-            className={styles["activity"]}>
-            <Link href={`/pgcr/${instanceId}`} className={styles["activity-link"]}>
+        <Link href={`/pgcr/${instanceId}`} className={styles["activity"]} legacyBehavior>
+            <motion.a
+                initial={{
+                    y: 50,
+                    opacity: 0
+                }}
+                whileInView={{
+                    y: 0,
+                    opacity: 1
+                }}
+                viewport={{ once: true }}
+                transition={{
+                    duration: 0.6
+                }}
+                className={styles["activity"]}>
                 <Image
                     src={RaidCardBackground[raid]}
                     alt={`Raid card for ${strings.raidNames[raid]}`}
+                    fill
                     className={styles["activity-content-img"]}
                 />
                 <p className={styles["activity-title"]}>
@@ -73,8 +74,8 @@ const ActivityTile = ({
                         {completed ? strings.success : strings.incompleteRaid}
                     </p>
                 </div>
-            </Link>
-        </motion.div>
+            </motion.a>
+        </Link>
     )
 }
 
