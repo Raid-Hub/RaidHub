@@ -30,6 +30,10 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 />
                 <title key="title">RaidHub</title>
                 <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+                <link
+                    href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro?styles=82961,82967,82968,82965,82966,82963,82964,82959,82960,82957"
+                    rel="stylesheet"
+                />
             </Head>
             <SessionProvider
                 session={session}
