@@ -10,8 +10,6 @@
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
 
-    font-family: Neue;
-
     display: flex;
     flex-direction: row;
     gap: 1em;
@@ -38,7 +36,6 @@
     letter-spacing: 3px;
     font-size: 18px;
     white-space: nowrap;
-    font-family: Neue;
     font-weight: 800;
 }
 
@@ -192,7 +189,6 @@
 .search-result {
     font-size: 15px;
     font-weight: 400;
-    font-family: Neue;
 }
 
 .search-result p {
@@ -343,8 +339,6 @@
     border-radius: 3px;
     border: 1px solid #a1a1a17a;
     background-color: #5252527a;
-
-    font-family: Neue;
 }
 
 @media (max-width: 550px) {
