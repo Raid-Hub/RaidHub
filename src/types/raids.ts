@@ -88,7 +88,7 @@ export const ReprisedContestRaidDifficulties = [
     Difficulty.CHALLENGE_KF,
     Difficulty.CHALLENGE_CROTA
 ] as const
-export type ReprisedRaidCallengeMode = (typeof ReprisedContestRaidDifficulties)[number]
+export type ReprisedRaidChallengeMode = (typeof ReprisedContestRaidDifficulties)[number]
 
 export const ReprisedContestDifficultyDictionary: Record<
     (typeof RaidsWithReprisedContest)[number],

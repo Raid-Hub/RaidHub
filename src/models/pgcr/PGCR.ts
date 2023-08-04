@@ -14,7 +14,7 @@ import {
     AvailableRaids,
     Difficulty,
     ReprisedContestRaidDifficulties,
-    ReprisedRaidCallengeMode
+    ReprisedRaidChallengeMode
 } from "../../types/raids"
 import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
@@ -135,10 +135,10 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         if (isContest(this.raid, this.startDate)) {
             if (
                 ReprisedContestRaidDifficulties.includes(
-                    this.difficulty as ReprisedRaidCallengeMode
+                    this.difficulty as ReprisedRaidChallengeMode
                 )
             ) {
-                tags.push(TagForReprisedContest[this.difficulty as ReprisedRaidCallengeMode])
+                tags.push(TagForReprisedContest[this.difficulty as ReprisedRaidChallengeMode])
             }
             tags.push(Tag.CONTEST)
         }
