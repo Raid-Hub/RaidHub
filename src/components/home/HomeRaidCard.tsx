@@ -1,8 +1,9 @@
 import styles from "../../styles/pages/home.module.css"
-import { AvailableRaid } from "../../types/raids"
+import { AvailableRaid, RaidToUrlPaths } from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
+import Link from "next/link"
 
 type HomeRaidCardProps = {
     raid: AvailableRaid
@@ -25,7 +26,9 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
                     <h4>{strings.worldsFirstLeaderboards}</h4>
-                    <p>{strings.comingSoon}</p>
+                    <Link href={`/leaderboards/worldfirst/${RaidToUrlPaths[raid]}`}>
+                        <p>{strings.clickToView}</p>
+                    </Link>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.speedrunLeaderboards}</h4>
