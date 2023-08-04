@@ -11,11 +11,15 @@ import { IPGCREntry } from "../../types/pgcr"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
-    raid: Raid
+    completed: boolean
     pgcrLoadingState: Loading
 }
 
-const ParticipantsSection = ({ players: members, pgcrLoadingState }: ParticipantsProps) => {
+const ParticipantsSection = ({
+    players: members,
+    pgcrLoadingState,
+    completed
+}: ParticipantsProps) => {
     const router = useRouter()
 
     const getQueryValue = useCallback(
@@ -101,6 +105,7 @@ const ParticipantsSection = ({ players: members, pgcrLoadingState }: Participant
                         index={idx}
                         isLoadingEmblems={pgcrLoadingState === Loading.HYDRATING}
                         memberIndex={-1}
+                        dnf={completed && !member.didComplete}
                         updateMemberIndex={updateMemberIndex}
                     />
                 ))}

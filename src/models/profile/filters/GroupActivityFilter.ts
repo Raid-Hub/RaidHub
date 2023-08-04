@@ -12,7 +12,7 @@ export default class GroupActivityFilter implements ActivityFilter {
     constructor(combinator: ActivityFilterCombinator, children: (ActivityFilter | null)[]) {
         this.combinator = combinator
         this.children = new Collection(
-            (children.filter(c => Boolean(c)) as ActivityFilter[]).map(c => [c.id, c])
+            (children.filter(Boolean) as ActivityFilter[]).map(c => [c.id, c])
         )
         this.id = v4()
     }

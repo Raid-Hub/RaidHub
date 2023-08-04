@@ -19,11 +19,15 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
         name: string
         value: number | string
     }[] = [
-        {
-            icon: MVP,
-            name: strings.mvp,
-            value: stats?.mvp ?? "???"
-        },
+        ...(activity?.completed
+            ? [
+                  {
+                      icon: MVP,
+                      name: strings.mvp,
+                      value: stats?.mvp ?? "???"
+                  }
+              ]
+            : []),
         {
             icon: Kills,
             name: strings.totalKills,
@@ -57,7 +61,7 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: stats?.mostUsedWeapon ? weapons[stats.mostUsedWeapon.hash].name : strings.none
+            value: stats?.mostUsedWeapon ? weapons[stats.mostUsedWeapon.hash]?.name : strings.none
         }
     ]
     return (

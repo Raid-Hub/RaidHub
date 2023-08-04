@@ -69,7 +69,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.startDate = new Date(this.period)
         this.completionDate = new Date(
             this.startDate.getTime() +
-                this.entries[0].values.activityDurationSeconds.basic.value * 1000
+                this.entries[0]?.values.activityDurationSeconds.basic.value * 1000
         )
         try {
             ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)

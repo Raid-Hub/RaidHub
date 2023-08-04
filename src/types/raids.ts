@@ -212,7 +212,7 @@ export const BackdropOpacity: {
     [Raid.VAULT_OF_GLASS]: 0.7,
     [Raid.VOW_OF_THE_DISCIPLE]: 0.4,
     [Raid.KINGS_FALL]: 0.4,
-    [Raid.ROOT_OF_NIGHTMARES]: 0.6,
+    [Raid.ROOT_OF_NIGHTMARES]: 0.75,
     [Raid.CROTAS_END]: 0.6,
     [Raid.NA]: 0.4
 }
