@@ -10,6 +10,7 @@ export type VanityCookie = {
     userId: string | null
     string: string
 }
+const page = ProfileWrapper
 
 export const getServerSideProps: GetServerSideProps<
     InitialProfileProps,
@@ -52,4 +53,4 @@ export const getServerSideProps: GetServerSideProps<
     }
 }
 
-export default ProfileWrapper
+export default page
