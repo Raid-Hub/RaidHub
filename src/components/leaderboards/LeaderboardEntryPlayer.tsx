@@ -16,7 +16,7 @@ const LeaderboardEntryUser = ({ user }: { user: RRLeaderboardEntryUser }) => {
             <Link
                 href={`/profile/${user.membershipType}/${user.membershipId}`}
                 className={styles["username"]}>
-                <p>{user.bungieGlobalDisplayName}</p>
+                <p>{user.bungieGlobalDisplayName ?? user.displayName ?? user.membershipId}</p>
             </Link>
         </div>
     )
