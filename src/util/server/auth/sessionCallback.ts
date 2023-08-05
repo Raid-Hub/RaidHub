@@ -8,7 +8,7 @@ export type SessionUser = {
     id: string
     destinyMembershipId: string | null
     destinyMembershipType: BungieMembershipType | null
-    name: string | null
+    name: string
     bungie: string | null
     twitch: string | null
     discord: string | null

@@ -98,15 +98,18 @@ export type RaidTag = {
     bestPossible: boolean
 }
 export type RaidHubProfile = {
-    pinnedActivity: string | null
+    displayName: string
+    icon: string
+    vanityString: string | null
     socials: ProfileSocialData[]
+    pinnedActivity: string | null
     background: string | null
 }
 
 export type ProfileSocialData = {
     id: Socials
     displayName: string
-    url: string
+    url?: string
 }
 
 export type RaceTag = {

@@ -1,4 +1,5 @@
 import { User } from "@prisma/client"
+import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { NextApiRequest, NextApiResponse } from "next"
 import { ZodError } from "zod"
 
@@ -15,12 +16,20 @@ interface ApiResponse<S extends boolean, D = unknown> {
     data: D
 }
 
-export type ProtectedSessionError = ApiResponse<false, null>
+type ProtectedSessionErrorResponse = ApiResponse<false, null>
 
-export type ZodBadRequest<T> = ApiResponse<false, ZodError<T>>
+type ZodBadRequest<T> = ApiResponse<false, ZodError<T>>
+
+export type BadMethodResponse = ApiResponse<
+    false,
+    {
+        method: string
+    }
+>
 
 export type UserDeleteResponse =
-    | ProtectedSessionError
+    | BadMethodResponse
+    | ProtectedSessionErrorResponse
     | ApiResponse<
           true,
           {
@@ -29,17 +38,46 @@ export type UserDeleteResponse =
       >
 
 export type UserUpdateResponse =
+    | BadMethodResponse
     | ZodBadRequest<User>
-    | ProtectedSessionError
+    | ProtectedSessionErrorResponse
     | ApiResponse<true, Partial<User>>
     | ApiResponse<false, undefined>
 
 export type UserImageCreateResponse =
-    | ProtectedSessionError
+    | BadMethodResponse
+    | ProtectedSessionErrorResponse
     | ApiResponse<true, { imageUrl: string }>
     | ApiResponse<false, unknown>
 
 export type UserAccountDeleteResponse =
-    | ProtectedSessionError
+    | BadMethodResponse
+    | ProtectedSessionErrorResponse
     | ApiResponse<true, { message: string }>
     | ApiResponse<false, unknown>
+
+export type Profile = {
+    name: string
+    image: string
+    destiny_membership_id: string
+    destiny_membership_type: BungieMembershipType
+    bungie_username: string | null
+    discord_username: string | null
+    twitch_username: string | null
+    twitter_username: string | null
+    pinned_activity_id: string | null
+    profile_decoration: string | null
+    vanity: {
+        string: string | null
+    } | null
+}
+
+export type ProfileGetResponse =
+    | BadMethodResponse
+    | ApiResponse<true, Profile>
+    | ApiResponse<
+          false,
+          {
+              destinyMembershipId: any
+          }
+      >

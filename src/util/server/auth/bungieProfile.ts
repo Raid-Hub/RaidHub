@@ -30,6 +30,8 @@ export async function bungieProfile({
         image: `https://www.bungie.net${
             bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
         }${bungieNetUser.profilePicturePath}`,
-        email: null
+        email: null,
+        pinned_activity_id: null,
+        profile_decoration: null
     }
 }

@@ -5,12 +5,9 @@ import { Account, PrismaClient } from "@prisma/client"
 import BungieClient from "../../../services/bungie/client"
 import { getMembershipDataForCurrentUser } from "bungie-net-core/lib/endpoints/User"
 import { bungieProfile } from "./bungieProfile"
-import { discordProfile } from "./discordProfile"
 import { DiscordProfile } from "next-auth/providers/discord"
-import { TwitchProfile } from "next-auth/providers/twitch"
-import { twitchProfile } from "./twitchProfile"
 import { TwitterProfile } from "next-auth/providers/twitter"
-import { twitterProfile } from "./twitterProfile"
+import { zUser } from "../zod"
 
 export default class CustomPrismaAdapter implements DefaultAdapter {
     private prisma: PrismaClient
@@ -44,10 +41,14 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
     }
 
     createUser = async (user: Omit<AdapterUser, "id">): Promise<AdapterUser> => {
-        // @ts-expect-error
-        delete user.emailVerified
-        // @ts-expect-error
-        return this.prisma.user.create({ data: user })
+        const parsed = zUser.parse({ ...user, email: user.email ?? null })
+        return {
+            ...(await this.prisma.user.create({
+                data: parsed
+            })),
+            email: user.email,
+            emailVerified: user.emailVerified
+        }
     }
 
     linkAccount = async (account: AdapterAccount): Promise<void> => {
@@ -59,7 +60,6 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             await this.addTwitchAccountToUser(account)
         } else if (account.provider === "twitter") {
             await this.addTwitterAccountToUser(account)
-            null // todo
         }
 
         // cleans properties that shouldnt be here
@@ -136,23 +136,21 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             headers: {
                 Authorization: `Bearer ${account.access_token}`
             }
+        }).then(async res => {
+            const data = await res.json()
+            if (res.ok) {
+                return data as DiscordProfile
+            } else {
+                throw data
+            }
         })
-            .then(async res => {
-                const data = await res.json()
-                if (res.ok) {
-                    return data as DiscordProfile
-                } else {
-                    throw data
-                }
-            })
-            .then(discordProfile)
 
         return this.prisma.user.update({
             where: {
                 id: account.userId
             },
             data: {
-                discord_username: profile.discord_username
+                discord_username: profile.username
             }
         })
     }
@@ -163,28 +161,23 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
                 "Client-ID": process.env.TWITCH_CLIENT_ID!,
                 Authorization: `Bearer ${account.access_token}`
             }
-        })
-            .then(async res => {
-                const { data } = await res.json()
-                if (res.ok) {
-                    return {
-                        sub: data[0].id,
-                        preferred_username: data[0].display_name,
-                        email: data[0].email,
-                        picture: data[0].profile_image_url
-                    } as TwitchProfile
-                } else {
-                    throw data
+        }).then(async res => {
+            const { data } = await res.json()
+            if (res.ok) {
+                return data[0] as {
+                    display_name: string
                 }
-            })
-            .then(twitchProfile)
+            } else {
+                throw data
+            }
+        })
 
         return this.prisma.user.update({
             where: {
                 id: account.userId
             },
             data: {
-                twitch_username: profile.twitch_username
+                twitch_username: profile.display_name
             }
         })
     }
@@ -194,23 +187,21 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             headers: {
                 Authorization: `Bearer ${account.access_token}`
             }
+        }).then(async res => {
+            const data = await res.json()
+            if (res.ok) {
+                return (data as TwitterProfile).data
+            } else {
+                throw data
+            }
         })
-            .then(async res => {
-                const data = await res.json()
-                if (res.ok) {
-                    return data as TwitterProfile
-                } else {
-                    throw data
-                }
-            })
-            .then(twitterProfile)
 
         return this.prisma.user.update({
             where: {
                 id: account.userId
             },
             data: {
-                twitter_username: profile.twitter_username
+                twitter_username: profile.username
             }
         })
     }
