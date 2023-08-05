@@ -5,6 +5,8 @@ import prisma from "../util/server/prisma"
 import Cookies from "cookies"
 import { VanityCookie } from "./profile/[platform]/[membershipId]"
 
+const page = ProfileWrapper
+
 export const getServerSideProps: GetServerSideProps<
     InitialProfileProps,
     { vanity: string }
@@ -43,4 +45,4 @@ export const getServerSideProps: GetServerSideProps<
     return { notFound: true }
 }
 
-export default ProfileWrapper
+export default page

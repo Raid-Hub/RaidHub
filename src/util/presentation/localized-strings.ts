@@ -58,6 +58,8 @@ export interface LocalStrings {
     filterNames: { [key in FilterListName]: string }
     clickToView: string
     loginToAccess: string
+    back: string
+    next: string
     reset: string
     edit: string
     save: string
@@ -199,6 +201,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
+        back: "back",
+        next: "next",
         reset: "Reset",
         edit: "Edit",
         save: "Save",
