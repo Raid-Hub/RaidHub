@@ -43,17 +43,9 @@ const Leaderboard = ({ title, subtitle, raid, path }: LeaderboardProps) => {
     }
     return (
         <main className={styles["main"]}>
-            <div className={styles["leaderboard-header"]}>
+            <section className={styles["leaderboard-header"]}>
                 <h1>{title}</h1>
                 <h3>{subtitle}</h3>
-                <div className={styles["leaderboard-controls"]}>
-                    <StyledButton onClick={handleBackwards} disabled={page <= 0}>
-                        {strings.back}
-                    </StyledButton>
-                    <StyledButton onClick={handleForwards} disabled={!hasMorePages}>
-                        {strings.next}
-                    </StyledButton>
-                </div>
                 <Image
                     priority
                     src={RaidBanners[raid]}
@@ -66,7 +58,15 @@ const Leaderboard = ({ title, subtitle, raid, path }: LeaderboardProps) => {
                         objectFit: "cover"
                     }}
                 />
-            </div>
+            </section>
+            <section className={styles["leaderboard-controls"]}>
+                <StyledButton onClick={handleBackwards} disabled={page <= 0}>
+                    {strings.back}
+                </StyledButton>
+                <StyledButton onClick={handleForwards} disabled={!hasMorePages}>
+                    {strings.next}
+                </StyledButton>
+            </section>
             <section className={styles["leaderboard-container"]}>
                 {(!isLoading &&
                     data?.entries.map((e, idx) => (

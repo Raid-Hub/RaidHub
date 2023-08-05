@@ -10,7 +10,7 @@
     border-radius: 15px;
     overflow: hidden;
 
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
 
     position: relative;
 }
@@ -34,13 +34,13 @@
     .leaderboard-header h1 {
         font-size: 2rem;
     }
+    .leaderboard-header h3 {
+        font-size: 1.5rem;
+    }
 }
 .leaderboard-controls {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
-
     display: flex;
+    justify-content: right;
     gap: 0.4em;
 }
 .leaderboard-container {
@@ -64,6 +64,8 @@
     display: flex;
     flex-direction: row;
 
+    padding: 0.5em;
+
     gap: 1em;
     align-items: center;
     justify-content: space-between;
@@ -75,12 +77,16 @@
     font-size: larger;
     text-align: center;
     min-width: 5ch;
+    flex: 1;
+    font-size: 2rem;
+    margin: 0.2em 0;
 }
 .leaderboard-entry-users {
     flex-basis: 75ch;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: 0.3em;
 }
 .leaderboard-entry-user {
     flex: 3;
@@ -102,12 +108,44 @@
 }
 .username {
     display: block;
-    margin: 0;
     min-width: 15ch;
+}
+.username p {
+    margin: 0;
 }
 
 .entry-time {
     flex: 1;
-    justify-content: center;
     white-space: nowrap;
+    color: var(--secondary-text);
+}
+
+@media (max-width: 450px) {
+    .leaderboard-container {
+        font-size: small;
+    }
+    .leaderboard-entry {
+        padding: 0;
+    }
+    .leaderboard-entry-rank {
+        min-width: 3ch;
+        font-size: 1rem;
+    }
+    .leaderboard-entry-users {
+        flex: 5;
+    }
+    .leaderboard-entry-user {
+        flex-basis: unset;
+    }
+    .username {
+        max-width: 10ch;
+        font-size: x-small;
+        min-width: 10ch;
+    }
+    .user-icon-container {
+        border-radius: 3px;
+        width: 20px;
+        height: 20px;
+        aspect-ratio: 1/1;
+    }
 }

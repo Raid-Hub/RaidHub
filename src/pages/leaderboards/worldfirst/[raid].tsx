@@ -1,16 +1,25 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
-import { AvailableRaid, RaidToUrlPaths, UrlPathsToRaid } from "../../../types/raids"
+import {
+    AvailableRaid,
+    Difficulty,
+    NoContestRaid,
+    NoContestRaids,
+    RaidToUrlPaths,
+    ReprisedContestDifficultyDictionary,
+    UrlPathsToRaid
+} from "../../../types/raids"
 import { ReleaseDate } from "../../../util/destiny/raid"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 
 type WorldsFirstLeaderboadProps = {
     raid: AvailableRaid
+    difficulty: Difficulty
 }
 
-const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid }) => {
+const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, difficulty }) => {
     const { strings, locale } = useLocale()
     const raidName = strings.raidNames[raid]
     return (
@@ -45,9 +54,15 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     params
 }) => {
     if (params?.raid && UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid]) {
+        const raidValue = Number(params.raid)
         return {
             props: {
-                raid: UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid]
+                raid: UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid],
+                difficulty:
+                    ReprisedContestDifficultyDictionary[raidValue] ??
+                    NoContestRaids.includes(raidValue as NoContestRaid)
+                        ? Difficulty.NORMAL
+                        : Difficulty.CONTEST
             }
         }
     } else {
