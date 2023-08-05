@@ -4,10 +4,12 @@ import Head from "next/head"
 import {
     AvailableRaid,
     Difficulty,
+    DifficultyToUrlPaths,
     NoContestRaid,
     NoContestRaids,
     RaidToUrlPaths,
     ReprisedContestDifficultyDictionary,
+    ReprisedRaid,
     UrlPathsToRaid
 } from "../../../types/raids"
 import { ReleaseDate } from "../../../util/destiny/raid"
@@ -16,7 +18,7 @@ import { toCustomDateString } from "../../../util/presentation/formatting"
 
 type WorldsFirstLeaderboadProps = {
     raid: AvailableRaid
-    difficulty: Difficulty
+    difficulty: keyof typeof DifficultyToUrlPaths
 }
 
 const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, difficulty }) => {
@@ -25,12 +27,12 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, dif
     return (
         <>
             <Head>
-                <title>{raidName} | World First Leaderboards</title>
+                <title>{`${raidName} | World First Leaderboards`}</title>
             </Head>
             <Leaderboard
                 title={"World First " + raidName}
                 subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                path={["worldsfirst", RaidToUrlPaths[raid]]}
+                path={["worldsfirst", RaidToUrlPaths[raid], DifficultyToUrlPaths[difficulty]]}
                 raid={raid}
             />
         </>
@@ -40,6 +42,7 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, dif
 export default WorldsFirstLeaderboad
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
+    console.log(Object.keys(UrlPathsToRaid))
     return {
         paths: Object.keys(UrlPathsToRaid).map(path => ({
             params: {
@@ -53,16 +56,17 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
 export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: string }> = async ({
     params
 }) => {
-    if (params?.raid && UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid]) {
-        const raidValue = Number(params.raid)
+    if (params?.raid && UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid] !== undefined) {
+        const raidValue = Number(UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid])
+
         return {
             props: {
                 raid: UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid],
                 difficulty:
-                    ReprisedContestDifficultyDictionary[raidValue] ??
-                    NoContestRaids.includes(raidValue as NoContestRaid)
+                    ReprisedContestDifficultyDictionary[raidValue as ReprisedRaid] ??
+                    (NoContestRaids.includes(raidValue as NoContestRaid)
                         ? Difficulty.NORMAL
-                        : Difficulty.CONTEST
+                        : Difficulty.CONTEST)
             }
         }
     } else {

@@ -21,9 +21,7 @@ export type GetLeaderboardParams = string[]
 
 export async function getLeaderboard(params: GetLeaderboardParams, page: number) {
     return (await fetch(
-        `https://api.raidreport.dev/raid/leaderboard/${params.join(
-            "/"
-        )}/normal?page=${page}&pageSize=50`
+        `https://api.raidreport.dev/raid/leaderboard/${params.join("/")}?page=${page}&pageSize=50`
     )
         .then(res => res.json())
         .then(data => data.response)) as {

@@ -120,7 +120,7 @@
     color: var(--secondary-text);
 }
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
     .leaderboard-container {
         font-size: small;
     }

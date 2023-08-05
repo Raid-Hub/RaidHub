@@ -263,3 +263,14 @@ export const RaidToUrlPaths = {
     [Raid.KINGS_FALL]: "kingsfall",
     [Raid.ROOT_OF_NIGHTMARES]: "rootofnightmares"
 } satisfies Record<AvailableRaid, keyof typeof UrlPathsToRaid>
+
+// todo with our own api, we can change these
+export const DifficultyToUrlPaths = {
+    [Difficulty.NORMAL]: "normal",
+    [Difficulty.PRESTIGE]: "prestige",
+    [Difficulty.CONTEST]: "normal",
+    [Difficulty.MASTER]: "master",
+    [Difficulty.CHALLENGE_VOG]: "challenge",
+    [Difficulty.CHALLENGE_KF]: "challenge",
+    [Difficulty.CHALLENGE_CROTA]: "challenge"
+} satisfies Partial<Record<Difficulty, string>>
