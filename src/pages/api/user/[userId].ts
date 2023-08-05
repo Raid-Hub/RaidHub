@@ -1,5 +1,11 @@
 import { NextApiHandler, NextApiRequest } from "next"
-import { ApiHandler, ApiRequest, UserDeleteResponse, UserUpdateResponse } from "../../../types/api"
+import {
+    ApiHandler,
+    ApiRequest,
+    BadMethodResponse,
+    UserDeleteResponse,
+    UserUpdateResponse
+} from "../../../types/api"
 import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
 import { zUser } from "../../../util/server/zod"
@@ -16,7 +22,11 @@ const handler: NextApiHandler = async (req, res) => {
             await handleUpdate(req as ApiRequest<"PUT">, res)
             break
         default:
-            res.status(405).send("Method not allowed")
+            res.status(405).json({
+                data: { method: req.method! },
+                success: false,
+                error: "Method not allowed"
+            } satisfies BadMethodResponse)
     }
 }
 

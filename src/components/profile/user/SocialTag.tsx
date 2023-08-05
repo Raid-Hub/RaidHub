@@ -1,17 +1,11 @@
 import styles from "../../../styles/pages/profile/user.module.css"
-import Link from "next/link"
 import { ProfileSocialData } from "../../../types/profile"
 
 type SocialTagProps = ProfileSocialData
 
 const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
-    return (
-        <Link
-            id={styles[id]}
-            className={styles["social"]}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer">
+    const inner = (
+        <>
             <svg className={styles["img-social"]}>
                 <defs>
                     <mask id={id}>
@@ -37,7 +31,21 @@ const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
             <div className={styles["social-text"]}>
                 <span>{username}</span>
             </div>
-        </Link>
+        </>
+    )
+    return url ? (
+        <a
+            id={styles[id]}
+            className={styles["social"]}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer">
+            {inner}
+        </a>
+    ) : (
+        <span id={styles[id]} className={styles["social"]}>
+            {inner}
+        </span>
     )
 }
 

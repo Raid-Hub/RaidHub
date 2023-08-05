@@ -1,8 +1,8 @@
 import { RaidHubProfile } from "../../types/profile"
-import { getRaidHubProfile } from "../../services/app/getProfile"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { ErrorHandler } from "../../types/generic"
 import { useCallback, useEffect, useState } from "react"
+import { getRaidHubProfile } from "../../services/app/getProfile"
 
 type UseRaidHubProfileParams = {
     destinyMembershipId: string
@@ -12,6 +12,7 @@ type UseRaidHubProfileParams = {
 type UseRaidHubProfile = {
     profile: RaidHubProfile | null
     isLoading: boolean
+    revalidate(): void
 }
 
 export function useRaidHubProfile({
@@ -41,5 +42,5 @@ export function useRaidHubProfile({
         setIsLoading(true)
         fetchData()
     }, [fetchData])
-    return { profile, isLoading }
+    return { profile, isLoading, revalidate: fetchData }
 }

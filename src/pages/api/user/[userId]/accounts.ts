@@ -1,5 +1,10 @@
 import { NextApiHandler } from "next"
-import { ApiHandler, ApiRequest, UserAccountDeleteResponse } from "../../../../types/api"
+import {
+    ApiHandler,
+    ApiRequest,
+    BadMethodResponse,
+    UserAccountDeleteResponse
+} from "../../../../types/api"
 import { protectSession } from "../../../../util/server/sessionProtection"
 import { getUserId } from "../[userId]"
 import prisma from "../../../../util/server/prisma"
@@ -10,10 +15,10 @@ const handler: NextApiHandler = async (req, res) => {
         await handleDelete(req as ApiRequest<"DELETE">, res)
     } else {
         res.status(405).json({
+            data: { method: req.method! },
             success: false,
-            error: "Method not allowed",
-            data: null
-        } satisfies UserAccountDeleteResponse)
+            error: "Method not allowed"
+        } satisfies BadMethodResponse)
     }
 }
 

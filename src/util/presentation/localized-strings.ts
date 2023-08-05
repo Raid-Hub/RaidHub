@@ -60,6 +60,10 @@ export interface LocalStrings {
     loginToAccess: string
     back: string
     next: string
+    reset: string
+    edit: string
+    save: string
+    cancel: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -198,6 +202,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
         back: "back",
-        next: "next"
+        next: "next",
+        reset: "Reset",
+        edit: "Edit",
+        save: "Save",
+        cancel: "Cancel"
     }
 }

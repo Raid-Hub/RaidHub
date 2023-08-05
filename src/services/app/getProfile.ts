@@ -1,45 +1,58 @@
-import { RaidHubProfile } from "../../types/profile"
+import AppError from "../../models/errors/AppError"
+import { ProfileGetResponse } from "../../types/api"
+import { ProfileSocialData, RaidHubProfile } from "../../types/profile"
 import { Socials } from "../../util/profile/socials"
-import { wait } from "../../util/wait"
 
-export async function getRaidHubProfile(membershipId: string): Promise<RaidHubProfile> {
-    await wait(250)
-    if (membershipId === "4611686018488107374")
-        return {
-            pinnedActivity: "4129239230",
-            socials: [
-                {
-                    id: Socials.YouTube,
-                    displayName: "Newo1",
-                    url: "https://youtube.com/@Newo1"
-                },
-                {
-                    id: Socials.Discord,
-                    displayName: "Newo#0001",
-                    url: "https://discord.gg/aXuN3qwDRK"
-                },
-                {
-                    id: Socials.Twitter,
-                    displayName: "@kneewoah",
-                    url: "https://twitter.com/kneewoah"
-                },
-                {
-                    id: Socials.Twitch,
-                    displayName: "newoX",
-                    url: "https://twitch.tv/newox"
-                },
-                {
-                    id: Socials.Bungie,
-                    displayName: "Newo#9010",
-                    url: "https://www.bungie.net/7/en/User/Profile/3/4611686018488107374"
-                }
-            ],
-            background: "linear-gradient(25deg, #220333, #c688e6, #220333 70%);"
+export async function getRaidHubProfile(destinyMembershipId: string): Promise<RaidHubProfile> {
+    const fetchOptions = {
+        method: "GET"
+    }
+
+    const res = await fetch(`/api/profile/${destinyMembershipId}`, fetchOptions)
+    const responseJson = (await res.json()) as ProfileGetResponse
+    if (!res.ok || responseJson.success === false) {
+        if (responseJson.success === false) {
+            throw new AppError(responseJson.error, responseJson.data)
+        } else {
+            throw new Error("Invalid server response")
         }
-    else
-        return {
-            pinnedActivity: null,
-            socials: [],
-            background: null
-        }
+    }
+
+    const profile = responseJson.data
+    const socials = new Array<ProfileSocialData>()
+    if (profile.bungie_username) {
+        socials.push({
+            id: Socials.Bungie,
+            displayName: profile.bungie_username,
+            url: `https://www.bungie.net/7/en/User/Profile/${profile.destiny_membership_type}/${profile.destiny_membership_id}`
+        })
+    }
+    if (profile.discord_username) {
+        socials.push({
+            id: Socials.Discord,
+            displayName: profile.discord_username
+        })
+    }
+    if (profile.twitter_username) {
+        socials.push({
+            id: Socials.Twitter,
+            displayName: profile.twitter_username,
+            url: `https://twitter.com/${profile.twitter_username}`
+        })
+    }
+    if (profile.twitch_username) {
+        socials.push({
+            id: Socials.Twitch,
+            displayName: profile.twitch_username,
+            url: `https://twitch.tv/${profile.twitch_username}`
+        })
+    }
+    return {
+        displayName: profile.name,
+        icon: profile.image,
+        vanityString: profile.vanity?.string ?? null,
+        socials,
+        pinnedActivity: profile.pinned_activity_id,
+        background: profile.profile_decoration
+    }
 }
