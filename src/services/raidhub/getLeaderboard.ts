@@ -1,5 +1,4 @@
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { AvailableRaid } from "../../types/raids"
 
 export type RRLeaderboardEntryUser = {
     bungieGlobalDisplayName: string
