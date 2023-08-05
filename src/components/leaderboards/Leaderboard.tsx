@@ -9,23 +9,25 @@ import { useLocale } from "../app/LocaleManager"
 import { Fragment } from "react"
 import StyledButton from "../global/StyledButton"
 import Loading from "../global/Loading"
+import { AvailableRaid } from "../../types/raids"
 
 type LeaderboardProps = {
     title: string
     subtitle: string
-    params: GetLeaderboardParams
+    raid: AvailableRaid
+    path: string[]
 }
 
 const useLeaderboard = (params: GetLeaderboardParams, page: number) =>
     useQuery({
-        queryKey: ["leaderboards", params.toString(), page],
+        queryKey: ["leaderboards", params, page],
         queryFn: () => getLeaderboard(params, page)
     })
 
 const PER_PAGE = 50
-const Leaderboard = ({ title, subtitle, params }: LeaderboardProps) => {
+const Leaderboard = ({ title, subtitle, raid, path }: LeaderboardProps) => {
     const [page, setPage] = usePage()
-    const { data, isLoading } = useLeaderboard(params, page)
+    const { data, isLoading } = useLeaderboard(path, page)
     const { strings } = useLocale()
 
     const hasMorePages = true // todo
@@ -54,8 +56,8 @@ const Leaderboard = ({ title, subtitle, params }: LeaderboardProps) => {
                 </div>
                 <Image
                     priority
-                    src={RaidBanners[params.raid]}
-                    alt={strings.raidNames[params.raid]}
+                    src={RaidBanners[raid]}
+                    alt={strings.raidNames[raid]}
                     fill
                     style={{
                         zIndex: -1,

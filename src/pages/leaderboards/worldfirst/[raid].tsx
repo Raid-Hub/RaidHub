@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
-import { AvailableRaid, UrlPathsToRaid } from "../../../types/raids"
+import { AvailableRaid, RaidToUrlPaths, UrlPathsToRaid } from "../../../types/raids"
 import { ReleaseDate } from "../../../util/destiny/raid"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
@@ -12,15 +12,17 @@ type WorldsFirstLeaderboadProps = {
 
 const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid }) => {
     const { strings, locale } = useLocale()
+    const raidName = strings.raidNames[raid]
     return (
         <>
             <Head>
-                <title>World First Leaderboards</title>
+                <title>{raidName} | World First Leaderboards</title>
             </Head>
             <Leaderboard
-                title={"World First " + strings.raidNames[raid]}
+                title={"World First " + raidName}
                 subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                params={{ category: "worldsfirst", raid }}
+                path={["worldsfirst", RaidToUrlPaths[raid]]}
+                raid={raid}
             />
         </>
     )
