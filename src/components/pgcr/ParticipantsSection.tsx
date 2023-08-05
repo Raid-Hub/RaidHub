@@ -1,6 +1,5 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { useCallback } from "react"
-import { Raid } from "../../types/raids"
 import StatCards from "./PlayerStatCells"
 import { Loading } from "../../types/generic"
 import PGCRPlayer from "../../models/pgcr/Player"
@@ -11,11 +10,15 @@ import { IPGCREntry } from "../../types/pgcr"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
-    raid: Raid
+    completed: boolean
     pgcrLoadingState: Loading
 }
 
-const ParticipantsSection = ({ players: members, pgcrLoadingState }: ParticipantsProps) => {
+const ParticipantsSection = ({
+    players: members,
+    pgcrLoadingState,
+    completed
+}: ParticipantsProps) => {
     const router = useRouter()
 
     const getQueryValue = useCallback(
@@ -101,6 +104,7 @@ const ParticipantsSection = ({ players: members, pgcrLoadingState }: Participant
                         index={idx}
                         isLoadingEmblems={pgcrLoadingState === Loading.HYDRATING}
                         memberIndex={-1}
+                        dnf={completed && !member.didComplete}
                         updateMemberIndex={updateMemberIndex}
                     />
                 ))}

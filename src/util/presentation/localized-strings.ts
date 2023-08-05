@@ -109,17 +109,22 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Tag.FLAWLESS]: "Flawless",
             [Tag.CHALLENGE_VOG]: "Tempo's Edge",
             [Tag.CHALLENGE_KF]: "Regicide",
+            [Tag.CHALLENGE_CROTA]: "Unknown",
             [Tag.ABILITIES_ONLY]: "Abilities Only",
-            [Tag.FRESH]: "Full"
+            [Tag.FRESH]: "Full",
+            [Tag.GUIDEDGAMES]: "Guided Games"
         },
         loadMore: "Load more",
         difficulty: {
+            [Difficulty.NA]: "",
             [Difficulty.NORMAL]: "Normal",
+            [Difficulty.GUIDEDGAMES]: "Guided Games",
             [Difficulty.PRESTIGE]: "Prestige",
             [Difficulty.MASTER]: "Master",
             [Difficulty.CONTEST]: "Contest",
-            [Difficulty.CHALLENGEVOG]: "Tempo's Edge",
-            [Difficulty.CHALLENGEKF]: "Regicide"
+            [Difficulty.CHALLENGE_VOG]: "Tempo's Edge",
+            [Difficulty.CHALLENGE_KF]: "Regicide",
+            [Difficulty.CHALLENGE_CROTA]: "Unknown"
         },
         killsPerMinute: "Kills / Minute",
         worldsFirstLeaderboards: "World's First Leaderboards",

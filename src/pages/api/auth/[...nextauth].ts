@@ -44,11 +44,16 @@ export default NextAuth({
 
 function getProviders(): Provider[] {
     const providers = new Array<Provider>()
-    if (process.env.BUNGIE_CLIENT_ID && process.env.BUNGIE_CLIENT_SECRET) {
+    if (
+        process.env.BUNGIE_CLIENT_ID &&
+        process.env.BUNGIE_CLIENT_SECRET &&
+        process.env.BUNGIE_API_KEY
+    ) {
         providers.push(
             CustomBungieProvider({
                 clientId: process.env.BUNGIE_CLIENT_ID,
-                clientSecret: process.env.BUNGIE_CLIENT_SECRET
+                clientSecret: process.env.BUNGIE_CLIENT_SECRET,
+                apiKey: process.env.BUNGIE_API_KEY
             })
         )
     }

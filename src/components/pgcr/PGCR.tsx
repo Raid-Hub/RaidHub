@@ -27,7 +27,10 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                 {pgcr?.raid && (
                     <Image
                         priority
-                        className={styles["summary-card-background"]}
+                        className={[
+                            styles["summary-card-background"],
+                            pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
+                        ].join(" ")}
                         src={RaidCardBackground[pgcr.raid]}
                         alt="background image"
                         fill
@@ -36,7 +39,7 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                 )}
                 <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                 <ParticipantsSection
-                    raid={pgcr?.raid ?? Raid.NA}
+                    completed={pgcr?.completed ?? true}
                     players={pgcr?.players ?? []}
                     pgcrLoadingState={pgcrLoadingState}
                 />

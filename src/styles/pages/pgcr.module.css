@@ -31,6 +31,19 @@
     object-fit: cover;
 }
 
+.summary-card:has(.summary-card-dnf) {
+    background-color: rgba(255, 68, 0, 0.106);
+    color: var(--secondary-text);
+}
+
+.summary-card-dnf {
+    opacity: 0.2 !important;
+}
+
+.summary-card-dnf ~ .grid .entry-card .color-film {
+    background-color: rgba(32, 32, 32, 0.374);
+}
+
 .activity-tile-header-container {
     margin-bottom: 10px;
 }

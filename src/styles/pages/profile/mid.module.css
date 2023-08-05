@@ -81,7 +81,7 @@
 }
 
 .pinned-background {
-    object-position: left center;
+    object-position: center;
     object-fit: cover;
     opacity: 0.8;
     z-index: -1;
