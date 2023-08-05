@@ -233,3 +233,44 @@ export const Short: { [key in Raid]: string } = {
     [Raid.CROTAS_END]: "Crota",
     [Raid.NA]: "*"
 }
+
+export const UrlPathsToRaid = {
+    leviathan: Raid.LEVIATHAN,
+    eaterofworlds: Raid.EATER_OF_WORLDS,
+    spireofstars: Raid.SPIRE_OF_STARS,
+    lastwish: Raid.LAST_WISH,
+    scourgeofthepast: Raid.SCOURGE_OF_THE_PAST,
+    crownofsorrow: Raid.CROWN_OF_SORROW,
+    gardenofsalvation: Raid.GARDEN_OF_SALVATION,
+    deepstonecrypt: Raid.DEEP_STONE_CRYPT,
+    vaultofglass: Raid.VAULT_OF_GLASS,
+    vowofthedisciple: Raid.VOW_OF_THE_DISCIPLE,
+    kingsfall: Raid.KINGS_FALL,
+    rootofnightmares: Raid.ROOT_OF_NIGHTMARES
+} satisfies Record<string, AvailableRaid>
+
+export const RaidToUrlPaths = {
+    [Raid.LEVIATHAN]: "leviathan",
+    [Raid.EATER_OF_WORLDS]: "eaterofworlds",
+    [Raid.SPIRE_OF_STARS]: "spireofstars",
+    [Raid.LAST_WISH]: "lastwish",
+    [Raid.SCOURGE_OF_THE_PAST]: "scourgeofthepast",
+    [Raid.CROWN_OF_SORROW]: "crownofsorrow",
+    [Raid.GARDEN_OF_SALVATION]: "gardenofsalvation",
+    [Raid.DEEP_STONE_CRYPT]: "deepstonecrypt",
+    [Raid.VAULT_OF_GLASS]: "vaultofglass",
+    [Raid.VOW_OF_THE_DISCIPLE]: "vowofthedisciple",
+    [Raid.KINGS_FALL]: "kingsfall",
+    [Raid.ROOT_OF_NIGHTMARES]: "rootofnightmares"
+} satisfies Record<AvailableRaid, keyof typeof UrlPathsToRaid>
+
+// todo with our own api, we can change these
+export const DifficultyToUrlPaths = {
+    [Difficulty.NORMAL]: "normal",
+    [Difficulty.PRESTIGE]: "prestige",
+    [Difficulty.CONTEST]: "normal",
+    [Difficulty.MASTER]: "master",
+    [Difficulty.CHALLENGE_VOG]: "challenge",
+    [Difficulty.CHALLENGE_KF]: "challenge",
+    [Difficulty.CHALLENGE_CROTA]: "challenge"
+} satisfies Partial<Record<Difficulty, string>>

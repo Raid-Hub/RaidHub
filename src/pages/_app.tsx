@@ -12,6 +12,9 @@ import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ComponentCacheManager from "../components/app/ComponentCacheManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchDiv from "../components/global/SearchDiv"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+const reactQueryClient = new QueryClient()
 
 type PageProps = {
     session: Session
@@ -31,32 +34,34 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 <title key="title">RaidHub</title>
                 <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
             </Head>
-            <SessionProvider
-                session={session}
-                refetchInterval={sessionRefetchInterval}
-                refetchOnWindowFocus={false}>
-                <TokenManager setRefetchInterval={setSessionRefetchInterval}>
-                    <DestinyManifestManager>
-                        <Header />
-                        <ProgressBar
-                            options={{
-                                showSpinner: false,
-                                parent: "#header",
-                                trickle: true,
-                                speed: 700
-                            }}
-                            stopDelayMs={100}
-                            height={4}
-                            showOnShallow={false}
-                            color={"orange"}
-                        />
-                        <ComponentCacheManager Component={Component} componentProps={pageProps}>
-                            <SearchDiv />
-                        </ComponentCacheManager>
-                        <Footer />
-                    </DestinyManifestManager>
-                </TokenManager>
-            </SessionProvider>
+            <QueryClientProvider client={reactQueryClient}>
+                <SessionProvider
+                    session={session}
+                    refetchInterval={sessionRefetchInterval}
+                    refetchOnWindowFocus={false}>
+                    <TokenManager setRefetchInterval={setSessionRefetchInterval}>
+                        <DestinyManifestManager>
+                            <Header />
+                            <ProgressBar
+                                options={{
+                                    showSpinner: false,
+                                    parent: "#header",
+                                    trickle: true,
+                                    speed: 700
+                                }}
+                                stopDelayMs={100}
+                                height={4}
+                                showOnShallow={false}
+                                color={"orange"}
+                            />
+                            <ComponentCacheManager Component={Component} componentProps={pageProps}>
+                                <SearchDiv />
+                            </ComponentCacheManager>
+                            <Footer />
+                        </DestinyManifestManager>
+                    </TokenManager>
+                </SessionProvider>
+            </QueryClientProvider>
         </LocaleManager>
     )
 }
