@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode } from "react"
+import { ButtonHTMLAttributes, DetailedHTMLProps } from "react"
 
 const StyledButton = ({
     children,

@@ -3,11 +3,10 @@ import { useQuery } from "@tanstack/react-query"
 import { usePage } from "../../hooks/util/usePage"
 import { GetLeaderboardParams, getLeaderboard } from "../../services/raidhub/getLeaderboard"
 import LeaderboardEntry from "./LeaderboardEntry"
-import { AvailableRaid } from "../../types/raids"
 import Image from "next/image"
 import RaidBanners from "../../images/raid-banners"
 import { useLocale } from "../app/LocaleManager"
-import { useState } from "react"
+import { Fragment } from "react"
 import StyledButton from "../global/StyledButton"
 import Loading from "../global/Loading"
 
@@ -26,11 +25,10 @@ const useLeaderboard = (params: GetLeaderboardParams, page: number) =>
 const PER_PAGE = 50
 const Leaderboard = ({ title, subtitle, params }: LeaderboardProps) => {
     const [page, setPage] = usePage()
-    const [firstIndex, setFirstIndex] = useState(1)
     const { data, isLoading } = useLeaderboard(params, page)
     const { strings } = useLocale()
 
-    const hasMorePages = true
+    const hasMorePages = true // todo
 
     const handleForwards = () => {
         setPage(page + 1)
@@ -68,23 +66,20 @@ const Leaderboard = ({ title, subtitle, params }: LeaderboardProps) => {
                 />
             </div>
             <section className={styles["leaderboard-container"]}>
-                {data?.entries.map((e, idx) => (
-                    <>
-                        <LeaderboardEntry
-                            entry={e}
-                            key={e.activityDetails.instanceId}
-                            rank={idx + PER_PAGE * page + 1}
-                        />
-                        {idx < data?.entries.length - 1 && (
-                            <hr className={styles["leaderboard-divider"]} />
-                        )}
-                    </>
-                )) ??
+                {(!isLoading &&
+                    data?.entries.map((e, idx) => (
+                        <Fragment key={e.activityDetails.instanceId}>
+                            <LeaderboardEntry entry={e} rank={idx + PER_PAGE * page + 1} />
+                            {idx < data?.entries.length - 1 && (
+                                <hr className={styles["leaderboard-divider"]} />
+                            )}
+                        </Fragment>
+                    ))) ||
                     new Array(PER_PAGE).fill(null).map((_, idx) => (
-                        <>
-                            <Loading wrapperClass={styles["leaderboard-entry-loading"]} key={idx} />
+                        <Fragment key={idx}>
+                            <Loading wrapperClass={styles["leaderboard-entry-loading"]} />
                             {idx < PER_PAGE - 1 && <hr className={styles["leaderboard-divider"]} />}
-                        </>
+                        </Fragment>
                     ))}
             </section>
         </main>

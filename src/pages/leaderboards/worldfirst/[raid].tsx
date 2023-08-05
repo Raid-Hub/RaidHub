@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
 import { AvailableRaid, UrlPathsToRaid } from "../../../types/raids"
@@ -28,10 +28,20 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid }) =
 
 export default WorldsFirstLeaderboad
 
-export const getServerSideProps: GetServerSideProps<
-    WorldsFirstLeaderboadProps,
-    { raid: string }
-> = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
+    return {
+        paths: Object.keys(UrlPathsToRaid).map(path => ({
+            params: {
+                raid: path
+            }
+        })),
+        fallback: false
+    }
+}
+
+export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: string }> = async ({
+    params
+}) => {
     if (params?.raid && UrlPathsToRaid[params.raid as keyof typeof UrlPathsToRaid]) {
         return {
             props: {
