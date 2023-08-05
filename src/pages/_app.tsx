@@ -9,9 +9,8 @@ import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
-import ComponentCacheManager from "../components/app/ComponentCacheManager"
 import ProgressBar from "nextjs-progressbar"
-import SearchDiv from "../components/global/SearchDiv"
+import SearchModal from "../components/global/SearchModal"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const reactQueryClient = new QueryClient()
@@ -58,9 +57,8 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                                 showOnShallow={false}
                                 color={"orange"}
                             />
-                            <ComponentCacheManager Component={Component} componentProps={pageProps}>
-                                <SearchDiv />
-                            </ComponentCacheManager>
+                            <SearchModal />
+                            <Component {...pageProps} />
                             <Footer />
                         </DestinyManifestManager>
                     </TokenManager>

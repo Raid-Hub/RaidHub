@@ -274,7 +274,7 @@
     background-color: var(--brand-orange-light);
 }
 
-.search-div {
+.search-modal {
     z-index: 999;
     position: absolute;
     left: 50%;
@@ -291,7 +291,7 @@
     border: 1px solid var(--border);
 }
 
-.search-div .search-content {
+.search-modal .search-content {
     display: flex;
     position: relative;
 }
@@ -315,7 +315,7 @@
     height: 15px;
 }
 
-.search-div hr {
+.search-modal hr {
     height: 1px;
     background-color: var(--border);
     border: none;
