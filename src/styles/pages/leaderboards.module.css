@@ -68,6 +68,9 @@
     align-items: center;
     justify-content: space-between;
 }
+.leaderboard-entry-loading {
+    height: 120px;
+}
 .leaderboard-entry-rank {
     font-size: larger;
     text-align: center;

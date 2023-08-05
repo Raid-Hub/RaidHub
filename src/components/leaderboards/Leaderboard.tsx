@@ -9,6 +9,7 @@ import RaidBanners from "../../images/raid-banners"
 import { useLocale } from "../app/LocaleManager"
 import { useState } from "react"
 import StyledButton from "../global/StyledButton"
+import Loading from "../global/Loading"
 
 type LeaderboardProps = {
     title: string
@@ -78,7 +79,13 @@ const Leaderboard = ({ title, subtitle, params }: LeaderboardProps) => {
                             <hr className={styles["leaderboard-divider"]} />
                         )}
                     </>
-                ))}
+                )) ??
+                    new Array(PER_PAGE).fill(null).map((_, idx) => (
+                        <>
+                            <Loading wrapperClass={styles["leaderboard-entry-loading"]} key={idx} />
+                            {idx < PER_PAGE - 1 && <hr className={styles["leaderboard-divider"]} />}
+                        </>
+                    ))}
             </section>
         </main>
     )
