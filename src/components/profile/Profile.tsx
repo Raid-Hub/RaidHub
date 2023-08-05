@@ -18,6 +18,7 @@ import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import { useActivityFilters } from "../../hooks/util/useActivityFilters"
+import Loading from "../global/Loading"
 
 export enum Layout {
     DotCharts,
@@ -129,20 +130,17 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     destinyMembershipType={destinyMembershipType}
                     errorHandler={errorHandler}
                 />
-                <PinnedActivity
-                    isLoading={
-                        raidHubProfile?.pinnedActivity !== null
-                            ? isLoadingRaidHubProfile
-                            : mostRecentActivity === undefined
-                    }
-                    activityId={
-                        raidHubProfile?.pinnedActivity !== null
-                            ? raidHubProfile?.pinnedActivity
-                            : mostRecentActivity
-                    }
-                    isPinned={!!raidHubProfile?.pinnedActivity}
-                    errorHandler={errorHandler}
-                />
+                {!isLoadingRaidHubProfile ? (
+                    raidHubProfile?.pinnedActivity || mostRecentActivity ? (
+                        <PinnedActivity
+                            activityId={raidHubProfile?.pinnedActivity ?? mostRecentActivity!}
+                            isPinned={!!raidHubProfile?.pinnedActivity}
+                            errorHandler={errorHandler}
+                        />
+                    ) : null
+                ) : (
+                    <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                )}
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
                 {!isLoadingFilters && (
                     <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />

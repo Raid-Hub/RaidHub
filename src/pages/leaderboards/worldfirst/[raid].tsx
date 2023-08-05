@@ -42,7 +42,6 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, dif
 export default WorldsFirstLeaderboad
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
-    console.log(Object.keys(UrlPathsToRaid))
     return {
         paths: Object.keys(UrlPathsToRaid).map(path => ({
             params: {

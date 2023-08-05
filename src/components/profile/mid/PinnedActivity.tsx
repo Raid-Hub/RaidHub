@@ -10,54 +10,45 @@ import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 
 type PinnedActivityProps = {
-    isLoading: boolean
-    activityId: string | null | undefined
+    activityId: string
     isPinned: boolean
     errorHandler: ErrorHandler
 }
 
-const PinnedActivity = ({
-    activityId,
-    errorHandler,
-    isPinned,
-    isLoading: isLoadingData
-}: PinnedActivityProps) => {
-    const { pgcr, isLoading: isLoadingActivity } = useActivity({ activityId, errorHandler })
+const PinnedActivity = ({ activityId, errorHandler, isPinned }: PinnedActivityProps) => {
+    const { data: pgcr, isLoading } = useActivity({ activityId, errorHandler })
     const { locale, strings } = useLocale()
-    return isLoadingData || isLoadingActivity ? (
+    return isLoading ? (
         <Loading wrapperClass={styles["pinned-activity-loading"]} />
-    ) : (
-        pgcr && (
-            <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
-                {pgcr.raid !== null && (
-                    <Image
-                        className={styles["pinned-background"]}
-                        src={RaidBanners[pgcr.raid]}
-                        alt="Pinned activity"
-                        fill
-                        priority
-                    />
-                )}
-                {isPinned ? (
-                    <Image className={styles["pin-icon"]} src={Pin} alt="pinned" />
-                ) : (
-                    <Image className={styles["recent-icon"]} src={Time} alt="pinned" />
-                )}
+    ) : pgcr ? (
+        <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
+            {pgcr.raid !== null && (
+                <Image
+                    className={styles["pinned-background"]}
+                    src={RaidBanners[pgcr.raid]}
+                    alt="Pinned activity"
+                    fill
+                    priority
+                />
+            )}
+            <Image
+                className={styles[isPinned ? "pin-icon" : "recent-icon"]}
+                src={isPinned ? Pin : Time}
+                alt="pinned"
+            />
+            <div className={styles["pinned-activity-text"]}>
+                <p className={styles["pinned-activity-title"]}>{pgcr.title(strings)}</p>
+            </div>
+            <div className={styles["pinned-activity-subtext"]}>
+                <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
 
-                <div className={styles["pinned-activity-text"]}>
-                    <p className={styles["pinned-activity-title"]}>{pgcr.title(strings)}</p>
+                <div className={styles["pinned-activity-time"]}>
+                    <Image src={Eager} alt="" style={{ width: "20px", height: "20px" }} />
+                    <span>{pgcr.speed.string(strings)}</span>
                 </div>
-                <div className={styles["pinned-activity-subtext"]}>
-                    <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
-
-                    <div className={styles["pinned-activity-time"]}>
-                        <Image src={Eager} alt="" style={{ width: "20px", height: "20px" }} />
-                        <span>{pgcr.speed.string(strings)}</span>
-                    </div>
-                </div>
-            </Link>
-        )
-    )
+            </div>
+        </Link>
+    ) : null
 }
 
 export default PinnedActivity

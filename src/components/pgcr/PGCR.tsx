@@ -1,6 +1,6 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import Head from "next/head"
-import { usePGCR } from "../../hooks/bungie/usePGCR"
+// import { usePGCR } from "../../hooks/bungie/usePGCR"
 import { BackdropOpacity, Raid, Short } from "../../types/raids"
 import { ErrorHandler } from "../../types/generic"
 import ActivityHeader from "./ActivityHeader"
@@ -8,6 +8,8 @@ import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
+import { useQuery } from "@tanstack/react-query"
+import { usePGCR } from "../../hooks/bungie/usePGCR"
 
 export type PGCRProps = {
     activityId: string
