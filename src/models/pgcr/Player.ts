@@ -47,8 +47,8 @@ export default class PGCRPlayer implements IPGCREntry {
         return this.characters[0].membershipType
     }
 
-    get displayName(): string {
-        return this.characters[0].displayName
+    get displayName(): string | undefined {
+        return this.characters.find(c => c.displayName)?.displayName
     }
 
     get flawless(): boolean {

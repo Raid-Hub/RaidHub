@@ -27,7 +27,6 @@
     position: absolute;
     z-index: -1;
 
-    object-position: 20% -40px;
     object-fit: cover;
 }
 

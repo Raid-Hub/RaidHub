@@ -29,7 +29,7 @@ const PinnedActivity = ({
     ) : (
         pgcr && (
             <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
-                {pgcr.raid && (
+                {pgcr.raid !== null && (
                     <Image
                         className={styles["pinned-background"]}
                         src={RaidBanners[pgcr.raid]}

@@ -33,7 +33,7 @@ const PlayerCell = ({
 
     const completionClass = dnf ? styles["dnf"] : ""
     const icon = member.characters[0].logo
-    const displayName = member.displayName ?? member.membershipId
+    const displayName = member.displayName || member.membershipId
 
     return (
         <button

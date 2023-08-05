@@ -17,37 +17,39 @@ export type PGCRProps = {
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     const { pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
     return (
-        <main className={styles["main"]}>
+        <>
             <Head>
                 <title key="title">
                     {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
-            <section className={styles["summary-card"]}>
-                {pgcr?.raid && (
-                    <Image
-                        priority
-                        className={[
-                            styles["summary-card-background"],
-                            pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
-                        ].join(" ")}
-                        src={RaidCardBackground[pgcr.raid]}
-                        alt="background image"
-                        fill
-                        style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+            <main className={styles["main"]}>
+                <section className={styles["summary-card"]}>
+                    {typeof pgcr?.raid === "number" && (
+                        <Image
+                            priority
+                            className={[
+                                styles["summary-card-background"],
+                                pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
+                            ].join(" ")}
+                            src={RaidCardBackground[pgcr.raid]}
+                            alt="background image"
+                            fill
+                            style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                        />
+                    )}
+                    <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
+                    <ParticipantsSection
+                        completed={pgcr?.completed ?? true}
+                        players={pgcr?.players ?? []}
+                        pgcrLoadingState={pgcrLoadingState}
                     />
-                )}
-                <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
-                <ParticipantsSection
-                    completed={pgcr?.completed ?? true}
-                    players={pgcr?.players ?? []}
-                    pgcrLoadingState={pgcrLoadingState}
-                />
-            </section>
-            <section className={styles["summary-stats"]}>
-                <SummaryStatsGrid activity={pgcr} />
-            </section>
-        </main>
+                </section>
+                <section className={styles["summary-stats"]}>
+                    <SummaryStatsGrid activity={pgcr} />
+                </section>
+            </main>
+        </>
     )
 }
 

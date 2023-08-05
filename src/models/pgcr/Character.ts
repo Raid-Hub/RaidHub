@@ -60,7 +60,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
 
     get displayName(): string {
         const info = this.player.destinyUserInfo
-        return info.bungieGlobalDisplayName ?? info.displayName
+        return info.bungieGlobalDisplayName || info.displayName
     }
 
     get membershipId(): string {
