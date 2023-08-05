@@ -4,13 +4,15 @@ import { BungieNetResponse } from "bungie-net-core/lib/api"
 import { UserMembershipData } from "bungie-net-core/lib/models"
 
 export default function CustomBungieProvider<P extends BungieNetResponse<UserMembershipData>>(
-    options: OAuthUserConfig<P>
+    options: OAuthUserConfig<P> & {
+        apiKey: string
+    }
 ): OAuthConfig<P> {
     return {
         id: "bungie",
         name: "Bungie",
         type: "oauth",
-        httpOptions: { headers: { "X-API-Key": process.env.BUNGIE_API_KEY } },
+        httpOptions: { headers: { "X-API-Key": options.apiKey } },
         authorization: {
             url: "https://www.bungie.net/en/OAuth/Authorize",
             params: { scope: "" }

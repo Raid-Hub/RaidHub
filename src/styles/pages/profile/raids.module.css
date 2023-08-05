@@ -264,6 +264,7 @@
 .activity {
     flex: 1;
     min-width: 180px;
+    aspect-ratio: 16 / 9;
     flex-basis: 250px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -287,10 +288,6 @@
     height: 100%;
     opacity: 0.8;
 
-    border-radius: inherit;
-}
-
-.activity-link {
     border-radius: inherit;
 }
 

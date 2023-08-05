@@ -12,6 +12,7 @@ type PlayerCellProps = {
     memberIndex: number
     solo: boolean
     isLoadingEmblems: boolean
+    dnf: boolean
     updateMemberIndex: (clicked: number) => void
 }
 
@@ -21,6 +22,7 @@ const PlayerCell = ({
     memberIndex,
     solo,
     isLoadingEmblems,
+    dnf,
     updateMemberIndex
 }: PlayerCellProps) => {
     const emblemsDict = useEmblems()
@@ -29,7 +31,7 @@ const PlayerCell = ({
         [memberIndex, index]
     )
 
-    const completionClass = member.didComplete ? "" : styles["dnf"]
+    const completionClass = dnf ? styles["dnf"] : ""
     const icon = member.characters[0].logo
     const displayName = member.displayName ?? member.membershipId
 

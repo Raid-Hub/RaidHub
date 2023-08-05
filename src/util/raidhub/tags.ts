@@ -2,9 +2,9 @@ import { LocalStrings } from "../presentation/localized-strings"
 import {
     Difficulty,
     Raid,
-    RaidsWithReprisedContest,
     ReprisedContestDifficultyDictionary,
-    ReprisedContestRaidDifficulties
+    ReprisedContestRaidDifficulties,
+    ReprisedRaid
 } from "../../types/raids"
 import { LowManActivity } from "../../types/profile"
 
@@ -21,14 +21,17 @@ export enum Tag {
     FLAWLESS,
     CHALLENGE_VOG,
     CHALLENGE_KF,
+    CHALLENGE_CROTA,
     ABILITIES_ONLY,
-    FRESH
+    FRESH,
+    GUIDEDGAMES
 }
 
 export const TagForReprisedContest: Record<(typeof ReprisedContestRaidDifficulties)[number], Tag> =
     {
-        [Difficulty.CHALLENGEVOG]: Tag.CHALLENGE_VOG,
-        [Difficulty.CHALLENGEKF]: Tag.CHALLENGE_KF
+        [Difficulty.CHALLENGE_VOG]: Tag.CHALLENGE_VOG,
+        [Difficulty.CHALLENGE_KF]: Tag.CHALLENGE_KF,
+        [Difficulty.CHALLENGE_CROTA]: Tag.CHALLENGE_CROTA
     }
 
 export function wfRaceMode({
@@ -45,9 +48,7 @@ export function wfRaceMode({
     weekOne: boolean | undefined
 }): Tag | null {
     if (challenge) {
-        return TagForReprisedContest[
-            ReprisedContestDifficultyDictionary[raid as (typeof RaidsWithReprisedContest)[number]]
-        ]
+        return TagForReprisedContest[ReprisedContestDifficultyDictionary[raid as ReprisedRaid]]
     } else if (dayOne) {
         return Tag.DAY_ONE
     } else if (contest) {

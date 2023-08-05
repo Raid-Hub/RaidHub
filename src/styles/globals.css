@@ -45,7 +45,7 @@ html {
 }
 
 body {
-    font-family: Neue;
+    font-family: "Neue Haas Grotesk Display Pro", sans-serif;
     padding: 0;
     margin: 0;
 
@@ -119,28 +119,39 @@ main {
 }
 
 @font-face {
-    font-family: "Neue";
-    src: url("/fonts/NeueHaasDisplayBlack.ttf") format("truetype");
-    font-style: normal;
-    font-weight: 800;
-}
-@font-face {
-    font-family: "Neue";
-    src: url("/fonts/NeueHaasDisplayRoman.ttf") format("truetype");
+    font-family: "Neue Haas Grotesk Display Pro";
     font-style: normal;
     font-weight: 400;
+    src: local("Neue Haas Grotesk Display Pro"),
+        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayLight.woff") format("woff");
 }
 @font-face {
-    font-family: "Neue";
-    src: url("/fonts/NeueHaasDisplayRomanItalic.ttf") format("truetype");
+    font-family: "Neue Haas Grotesk Display Pro";
     font-style: italic;
-    font-weight: 400;
+    font-weight: 300;
+    src: local("Neue Haas Grotesk Display Pro"),
+        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayThinItalic.woff") format("woff");
 }
 @font-face {
-    font-family: "Neue";
-    src: url("/fonts/NeueHaasDisplayBold.ttf") format("truetype");
+    font-family: "Neue Haas Grotesk Display Pro";
     font-style: normal;
     font-weight: 600;
+    src: local("Neue Haas Grotesk Display Pro"),
+        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayMediu.woff") format("woff");
+}
+@font-face {
+    font-family: "Neue Haas Grotesk Display Pro";
+    font-style: italic;
+    font-weight: 600;
+    src: local("Neue Haas Grotesk Display Pro"),
+        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayMediumItalic.woff") format("woff");
+}
+@font-face {
+    font-family: "Neue Haas Grotesk Display Pro";
+    font-style: normal;
+    font-weight: 900;
+    src: local("Neue Haas Grotesk Display Pro"),
+        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayBlack.woff") format("woff");
 }
 
 a {
