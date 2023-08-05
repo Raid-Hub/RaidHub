@@ -26,7 +26,7 @@ elif [[ $APP_ENV == "staging" ]] ; then
   echo "Deploying to staging..."
 
   yarn prisma generate
-  yarn prisma db push --skip-generate
+  yarn prisma db push --accept-data-loss --skip-generate
 
   seed_and_build
 
