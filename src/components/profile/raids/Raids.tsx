@@ -36,26 +36,22 @@ const Raids = ({
     setMostRecentActivity,
     errorHandler
 }: RaidsProps) => {
-    const {
-        allActivities,
-        activitiesByRaid,
-        isLoading: isLoadingActivities
-    } = useActivityHistory({
+    const { data, isLoading: isLoadingActivities } = useActivityHistory({
         characterMemberships,
         errorHandler
     })
 
     useEffect(() => {
-        if (allActivities) {
+        if (data?.allActivities) {
             setMostRecentActivity(
-                allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
+                data.allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
             )
         }
-    }, [allActivities, setMostRecentActivity])
+    }, [data?.allActivities, setMostRecentActivity])
 
     const allActivitiesFiltered = useMemo(() => {
-        if (allActivities && raidReport) {
-            return allActivities
+        if (data?.allActivities && raidReport) {
+            return data.allActivities
                 .map(
                     a =>
                         raidReport.get(a.raid)?.eveythingFor(a) ?? {
@@ -71,7 +67,7 @@ const Raids = ({
         } else {
             return null
         }
-    }, [filter, allActivities, raidReport])
+    }, [filter, data?.allActivities, raidReport])
 
     switch (layout) {
         case Layout.DotCharts:
@@ -81,13 +77,13 @@ const Raids = ({
                         <RaidCard
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}
-                            allActivities={activitiesByRaid?.get(raid) ?? null}
+                            allActivities={data?.activitiesByRaid.get(raid) ?? null}
                             filter={filter}
                             isLoadingStats={isLoadingRaidMetrics}
                             key={idx}
                             raid={raid}
                             isLoadingDots={
-                                !allActivities || isLoadingActivities || isLoadingCharacters
+                                !data?.allActivities || isLoadingActivities || isLoadingCharacters
                             }
                             isLoadingReport={isLoadingRaidReport}
                         />

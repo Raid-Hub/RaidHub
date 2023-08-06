@@ -47,18 +47,14 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         errorHandler: () => null
     })
 
-    const {
-        bungieMemberhip,
-        destinyMemberships,
-        isLoading: isLoadingMemberships
-    } = useBungieMemberships({
+    const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
         destinyMembershipId,
         destinyMembershipType,
         errorHandler
     })
 
     const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
-        destinyMembershipIds: destinyMemberships,
+        destinyMembershipIds: membershipsData?.destinyMemberships ?? null,
         primaryMembershipId: destinyMembershipId,
         errorHandler
     })
@@ -67,7 +63,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         historicalStats,
         isLoading: isLoadingDestinyStats,
         characterMemberships
-    } = useDestinyStats({ destinyMemberships, errorHandler })
+    } = useDestinyStats({
+        destinyMemberships: membershipsData?.destinyMemberships ?? null,
+        errorHandler
+    })
 
     const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         characterMemberships,
@@ -103,8 +102,11 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         isLoadingDestinyProfile || isLoadingRaidHubProfile || isLoadingMemberships
                     }
                     userInfo={
-                        bungieMemberhip
-                            ? { ...bungieMemberhip, ...primaryDestinyProfile?.userInfo }
+                        membershipsData?.bungieMembership
+                            ? {
+                                  ...membershipsData.bungieMembership,
+                                  ...primaryDestinyProfile?.userInfo
+                              }
                             : undefined
                     }
                     icon={raidHubProfile?.icon ?? null}
