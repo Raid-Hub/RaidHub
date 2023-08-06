@@ -1,5 +1,4 @@
 import styles from "../../styles/pages/leaderboards.module.css"
-import { useQuery } from "@tanstack/react-query"
 import { usePage } from "../../hooks/util/usePage"
 import { getLeaderboard } from "../../services/raidhub/getLeaderboard"
 import LeaderboardEntry from "./LeaderboardEntry"
@@ -10,6 +9,7 @@ import { Fragment } from "react"
 import StyledButton from "../global/StyledButton"
 import Loading from "../global/Loading"
 import { AvailableRaid } from "../../types/raids"
+import { useQuery } from "@tanstack/react-query"
 
 type LeaderboardProps = {
     title: string

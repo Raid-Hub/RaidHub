@@ -85,23 +85,39 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
 
         // we prefetch the first page at build time
         const fullPath = ["worldsfirst", path, DifficultyToUrlPaths[difficulty]]
+        const staleTime = 24 * 60 * 60 * 1000 // 24 hours
         await queryClient.prefetchQuery(
             ["leaderboards", fullPath, 0],
             () => getLeaderboard(fullPath, 0),
-            { staleTime: Infinity }
+            { staleTime }
         )
 
         // clear the static query if it's not marked as complete
         const prefetched = queryClient.getQueryData(["leaderboards", fullPath, 0]) as any
         if (prefetched.incomplete) {
-            queryClient.clear()
-        }
+            return {
+                props: {
+                    raid,
+                    difficulty,
+                    dehydratedState: dehydrate(queryClient)
+                },
+                revalidate: 30000
+            }
+        } else {
+            // cache 2nd page
+            await queryClient.prefetchQuery(
+                ["leaderboards", fullPath, 1],
+                () => getLeaderboard(fullPath, 1),
+                { staleTime }
+            )
 
-        return {
-            props: {
-                raid,
-                difficulty,
-                dehydratedState: dehydrate(queryClient)
+            return {
+                props: {
+                    raid,
+                    difficulty,
+                    dehydratedState: dehydrate(queryClient)
+                },
+                revalidate: staleTime / 1000 // revalidate takes seconds
             }
         }
     } catch (e) {

@@ -1,9 +1,8 @@
 import ProfileWrapper from "../../../components/profile/ProfileWrapper"
 import { GetServerSideProps, NextPage } from "next"
-import { InitialProfileProps, VanityCookie } from "../../../types/profile"
+import { InitialProfileProps } from "../../../types/profile"
 import { zUniqueDestinyProfile } from "../../../util/server/zod"
 import prisma from "../../../util/server/prisma"
-import Cookies from "cookies"
 
 const ProfilePage: NextPage<InitialProfileProps> = props => {
     return <ProfileWrapper {...props} />
@@ -23,8 +22,6 @@ export const getServerSideProps: GetServerSideProps<InitialProfileProps> = async
         })
 
         if (vanity?.string) {
-            const cookies = new Cookies(req, res)
-            cookies.set("vanity", JSON.stringify(vanity satisfies VanityCookie))
             return {
                 redirect: {
                     permanent: true,

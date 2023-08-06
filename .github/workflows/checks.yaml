@@ -20,6 +20,6 @@ jobs:
             - name: "Typescript Types"
               run: yarn tsc
             - name: "Lint"
-              run: yarn lint
+              run: yarn lint --max-warnings=0
             - name: "Code formatting"
               run: yarn format:check
