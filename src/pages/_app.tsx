@@ -25,16 +25,10 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
     return (
         <LocaleManager>
             <Head>
-                <link rel="shortcut icon" href="/favicon.ico" />
+                <title key="title">RaidHub</title>
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
-                />
-                <title key="title">RaidHub</title>
-                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
-                <link
-                    href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro"
-                    rel="stylesheet"
                 />
             </Head>
             <QueryClientProvider client={queryClient}>

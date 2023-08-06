@@ -22,7 +22,7 @@ const CurrentActivity = ({
     const { strings } = useLocale()
     const {
         profile,
-        isLoading: isLoadingTransitoryProfile,
+        isLoading,
         lastRefresh: lastTransitoryRefresh
     } = useProfileTransitory({
         destinyMembershipId,
@@ -39,7 +39,9 @@ const CurrentActivity = ({
     }, [profile?.activityDefinition.hash])
 
     const activityName = useMemo(() => {
-        if (raidTuple && profile?.transitory.currentActivity.startTime) {
+        if (profile?.activityDefinition.orbit) {
+            return "Orbit"
+        } else if (raidTuple && profile?.transitory.currentActivity.startTime) {
             return (
                 raidVersion(
                     raidTuple,

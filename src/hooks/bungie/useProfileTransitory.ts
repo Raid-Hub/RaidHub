@@ -19,7 +19,7 @@ import { useQuery } from "@tanstack/react-query"
 
 export type TransitoryActivity = {
     transitory: DestinyProfileTransitoryComponent
-    activityDefinition: DestinyActivityDefinition
+    activityDefinition: DestinyActivityDefinition & { orbit: boolean }
     activityModeDefinition: DestinyActivityModeDefinition | null
     partyMembers: DestinyProfileUserInfoCard[]
 }
