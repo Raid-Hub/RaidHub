@@ -16,9 +16,7 @@ export type RRLeaderboardEntry = {
     destinyUserInfos: RRLeaderboardEntryUser[]
 }
 
-export type GetLeaderboardParams = string[]
-
-export async function getLeaderboard(params: GetLeaderboardParams, page: number) {
+export async function getLeaderboard(params: string[], page: number) {
     return (await fetch(
         `https://api.raidreport.dev/raid/leaderboard/${params.join("/")}?page=${page}&pageSize=50`
     )

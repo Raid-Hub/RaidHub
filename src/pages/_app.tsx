@@ -11,9 +11,8 @@ import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchModal from "../components/global/SearchModal"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-
-const reactQueryClient = new QueryClient()
+import { QueryClientProvider } from "@tanstack/react-query"
+import reactQueryClient from "../services/reactQueryClient"
 
 type PageProps = {
     session: Session
@@ -21,6 +20,7 @@ type PageProps = {
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
+    const [queryClient] = useState(reactQueryClient)
 
     return (
         <LocaleManager>
@@ -37,7 +37,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                     rel="stylesheet"
                 />
             </Head>
-            <QueryClientProvider client={reactQueryClient}>
+            <QueryClientProvider client={queryClient}>
                 <SessionProvider
                     session={session}
                     refetchInterval={sessionRefetchInterval}
