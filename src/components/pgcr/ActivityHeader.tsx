@@ -6,7 +6,7 @@ import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
 
 type ActivityHeaderProps = {
-    activity: DestinyPGCR | null
+    activity: DestinyPGCR | undefined | null
     pgcrLoadingState: Loading
 }
 

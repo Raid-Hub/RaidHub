@@ -7,7 +7,7 @@ import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../ima
 import { useWeapons } from "../app/DestinyManifestManager"
 
 type SummaryStatsProps = {
-    activity: DestinyPGCR | null
+    activity: DestinyPGCR | undefined | null
 }
 
 const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {

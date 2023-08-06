@@ -3,7 +3,9 @@ import { ProfileGetResponse } from "../../types/api"
 import { ProfileSocialData, RaidHubProfile } from "../../types/profile"
 import { Socials } from "../../util/profile/socials"
 
-export async function getRaidHubProfile(destinyMembershipId: string): Promise<RaidHubProfile> {
+export async function getRaidHubProfile(
+    destinyMembershipId: string
+): Promise<RaidHubProfile | null> {
     const fetchOptions = {
         method: "GET"
     }
@@ -19,6 +21,8 @@ export async function getRaidHubProfile(destinyMembershipId: string): Promise<Ra
     }
 
     const profile = responseJson.data
+
+    if (!profile) return null
     const socials = new Array<ProfileSocialData>()
     if (profile.bungie_username) {
         socials.push({

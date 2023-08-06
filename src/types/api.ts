@@ -1,14 +1,8 @@
 import { User } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
-import { NextApiRequest, NextApiResponse } from "next"
 import { ZodError } from "zod"
 
 export type ApiMethod = "GET" | "POST" | "PUT" | "DELETE"
-export type ApiRequest<M extends ApiMethod> = NextApiRequest & { method: M }
-export type ApiHandler<M extends ApiMethod, R = any> = (
-    req: ApiRequest<M>,
-    res: NextApiResponse<R>
-) => unknown | Promise<unknown>
 
 interface ApiResponse<S extends boolean, D = unknown> {
     success: S
@@ -74,10 +68,15 @@ export type Profile = {
 
 export type ProfileGetResponse =
     | BadMethodResponse
-    | ApiResponse<true, Profile>
+    | ApiResponse<true, Profile | null>
     | ApiResponse<
           false,
           {
               destinyMembershipId: any
           }
       >
+
+export type ProfileVanityGetResponse =
+    | BadMethodResponse
+    | ApiResponse<true, { string: string } | null>
+    | ApiResponse<false, any>

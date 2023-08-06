@@ -102,6 +102,10 @@
     margin: 0.2rem;
 }
 
+.duration b {
+    font-weight: 500;
+}
+
 .activity-tile-header-attributes {
     display: flex;
     flex-direction: row;
@@ -404,7 +408,7 @@
     margin: 10px;
 }
 
-.member-profile-link > span {
+.member-profile-button > span {
     flex: 1;
     margin-right: 0.7em;
 

@@ -138,3 +138,10 @@ export interface ActivityFilter {
     encode(): Object
     deepClone(): ActivityFilter
 }
+
+export type VanityCookie = {
+    destinyMembershipId: string
+    destinyMembershipType: number
+    userId: string | null
+    string: string
+}

@@ -15,6 +15,7 @@ export function useActivity({
     return useQuery({
         queryKey: ["activity", activityId],
         onError: e => CustomError.handle(errorHandler, e, ErrorCode.ActivityError),
-        queryFn: () => getPGCR({ activityId, client })
+        queryFn: () => getPGCR({ activityId, client }),
+        staleTime: Infinity // pgcr's should never change once we get their id
     })
 }

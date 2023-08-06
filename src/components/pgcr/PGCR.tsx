@@ -8,7 +8,6 @@ import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
-import { useQuery } from "@tanstack/react-query"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
 
 export type PGCRProps = {
@@ -17,7 +16,7 @@ export type PGCRProps = {
 }
 
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
-    const { pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+    const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
     return (
         <>
             <Head>
