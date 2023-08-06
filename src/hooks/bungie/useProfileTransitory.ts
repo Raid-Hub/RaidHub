@@ -15,12 +15,7 @@ import {
     getActivityModeDefiniton
 } from "../../services/bungie/getActivityDefinition"
 import { getLinkedDestinyProfile } from "../../services/bungie/getLinkedDestinyProfile"
-
-type UseProfileTransitoryParams = {
-    destinyMembershipId: string
-    destinyMembershipType: BungieMembershipType
-    errorHandler: ErrorHandler
-}
+import { useQuery } from "@tanstack/react-query"
 
 export type TransitoryActivity = {
     transitory: DestinyProfileTransitoryComponent
@@ -41,94 +36,84 @@ export const useProfileTransitory = ({
     destinyMembershipId,
     destinyMembershipType,
     errorHandler
-}: UseProfileTransitoryParams): UseProfileTransitory => {
-    const [profile, setProfile] = useState<TransitoryActivity | null>(null)
-    const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
-    const [isLoading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<Error | null>(null)
-    const [timer, setTimer] = useState<NodeJS.Timeout>()
-    const [needsRefresh, setNeedsRefresh] = useState<boolean>(true)
+}: {
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+    errorHandler: ErrorHandler
+}): UseProfileTransitory => {
     const client = useBungieClient()
 
-    const fetchData = useCallback(
-        async (
-            destinyMembershipId: string,
-            membershipType: BungieMembershipType,
-            cached: TransitoryActivity | null
-        ) => {
-            try {
-                setNeedsRefresh(false)
-                const transitory = await getProfileTransitory({
-                    destinyMembershipId,
-                    membershipType,
-                    client
-                })
-                if (!transitory) {
-                    setProfile(null)
-                } else {
-                    const [activityDefinition, activityModeDefinition, partyMembers] =
-                        await Promise.all([
-                            transitory.current.currentActivityHash !==
-                            cached?.activityDefinition.hash
-                                ? getActivityDefiniton({
-                                      hashIdentifier: transitory.current.currentActivityHash,
-                                      client
-                                  })
-                                : cached.activityDefinition,
+    const transitoryQuery = useQuery({
+        queryKey: ["profileTransitory", destinyMembershipId, destinyMembershipType],
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Transitory),
+        queryFn: () =>
+            getProfileTransitory({
+                destinyMembershipId,
+                membershipType: destinyMembershipType,
+                client
+            }),
+        staleTime: 5000,
+        refetchInterval: REFRESH_INTERVAL
+    })
 
-                            transitory.current.currentActivityModeHash !==
-                                cached?.activityModeDefinition?.hash &&
-                            cached?.activityModeDefinition !== null
-                                ? getActivityModeDefiniton({
-                                      hashIdentifier: transitory.current.currentActivityModeHash,
-                                      client
-                                  })
-                                : cached.activityModeDefinition,
+    const activityDefinitionQuery = useQuery({
+        queryKey: ["activityDefinition", transitoryQuery.data?.current.currentActivityHash],
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Transitory),
+        queryFn: () =>
+            transitoryQuery.data
+                ? getActivityDefiniton({
+                      hashIdentifier: transitoryQuery.data.current.currentActivityHash,
+                      client
+                  })
+                : null,
+        staleTime: Infinity
+    })
 
-                            Promise.all(
-                                transitory.data.partyMembers.map(
-                                    ({ membershipId }) =>
-                                        cached?.partyMembers.find(
-                                            pm => pm.membershipId === membershipId
-                                        ) ?? getLinkedDestinyProfile({ membershipId, client })
-                                )
-                            )
-                        ])
+    const activityModeDefinitionQuery = useQuery({
+        queryKey: ["activityModeDefinition", transitoryQuery.data?.current.currentActivityModeHash],
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Transitory),
+        queryFn: () =>
+            transitoryQuery.data
+                ? getActivityModeDefiniton({
+                      hashIdentifier: transitoryQuery.data.current.currentActivityModeHash,
+                      client
+                  })
+                : null,
+        staleTime: Infinity
+    })
 
-                    setProfile({
-                        transitory: transitory.data,
-                        activityDefinition,
-                        activityModeDefinition,
-                        partyMembers
-                    })
-                }
-            } catch (e: any) {
-                setError(e)
-            } finally {
-                setLastRefresh(new Date())
-                setLoading(false)
-                const timeout = setTimeout(() => {
-                    setNeedsRefresh(true)
-                }, REFRESH_INTERVAL)
-                setTimer(timeout)
-            }
-        },
-        [client]
-    )
+    const transitoryPartyMembersQuery = useQuery({
+        queryKey: [
+            "profileTransitoryPartyMembers",
+            transitoryQuery.data?.current.currentActivityModeHash
+        ],
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Transitory),
+        queryFn: async () =>
+            transitoryQuery.data
+                ? Promise.all(
+                      transitoryQuery.data.data.partyMembers.map(({ membershipId }) =>
+                          getLinkedDestinyProfile({ membershipId, client })
+                      )
+                  )
+                : null,
+        staleTime: Infinity
+    })
 
-    useEffect(() => {
-        error && CustomError.handle(errorHandler, error, ErrorCode.Transitory)
-    }, [error, errorHandler])
-
-    useEffect(() => {
-        if (needsRefresh) {
-            setLoading(true)
-            fetchData(destinyMembershipId, destinyMembershipType, profile)
-        }
-        return () => {
-            clearTimeout(timer)
-        }
-    }, [destinyMembershipId, destinyMembershipType, fetchData, timer, needsRefresh, profile])
-
-    return { profile, isLoading, lastRefresh }
+    return {
+        profile:
+            transitoryQuery.data && activityDefinitionQuery.data && transitoryPartyMembersQuery.data
+                ? ({
+                      transitory: transitoryQuery.data.data,
+                      activityDefinition: activityDefinitionQuery.data,
+                      activityModeDefinition: activityModeDefinitionQuery.data ?? null,
+                      partyMembers: transitoryPartyMembersQuery.data
+                  } satisfies TransitoryActivity)
+                : null,
+        lastRefresh: new Date(),
+        isLoading:
+            transitoryQuery.isLoading ||
+            activityDefinitionQuery.isLoading ||
+            activityModeDefinitionQuery.isLoading ||
+            transitoryPartyMembersQuery.isLoading
+    }
 }
