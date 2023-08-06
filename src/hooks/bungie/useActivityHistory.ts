@@ -18,10 +18,7 @@ export function useActivityHistory({
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (memberships: MembershipWithCharacters[] | null) => {
-            if (!memberships) {
-                return null
-            }
+        async (memberships: MembershipWithCharacters[]) => {
             const activities = await Promise.all(
                 memberships.map(({ destinyMembershipId, membershipType, characterIds }) =>
                     Promise.all(
@@ -59,7 +56,7 @@ export function useActivityHistory({
     return useQuery({
         queryKey: ["activityHistory", characterMemberships],
         onError: e => CustomError.handle(errorHandler, e, ErrorCode.ActivityHistory),
-        queryFn: () => fetchData(characterMemberships),
+        queryFn: () => (characterMemberships ? fetchData(characterMemberships) : null),
         staleTime: 2 * 60000 // activity history changes every few mins
     })
 }

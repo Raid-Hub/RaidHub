@@ -68,7 +68,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         errorHandler
     })
 
-    const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
+    const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         characterMemberships,
         errorHandler
     })
@@ -155,7 +155,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     characterMemberships={characterMemberships}
                     layout={layout}
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
-                    raidMetrics={raidMetrics}
+                    raidMetrics={characterStats ?? null}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}
                     isLoadingCharacters={isLoadingDestinyStats}

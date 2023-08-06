@@ -11,33 +11,31 @@ type ClanCardProps = {
 }
 
 const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
-    const { clan, isLoading } = useClan({
+    const { data: clan, isLoading } = useClan({
         membershipId,
         membershipType,
         errorHandler: console.error
     })
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />
-    ) : (
-        clan && (
-            <div className={styles["clan"]}>
-                <div className={styles["clan-banner-container"]}>
-                    <ClanBanner {...clan.clanBanner} />
-                </div>
-                <div className={styles["desc"]}>
-                    <span className={styles["desc-title"]}>
-                        {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
-                    </span>
-                    <span className={styles["desc-subtitle"]}>
-                        {clan?.motto.replace("&#8217;", "'")}
-                    </span>
-                    <div className={styles["desc-text-wrapper"]}>
-                        <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
-                    </div>
+    ) : clan ? (
+        <div className={styles["clan"]}>
+            <div className={styles["clan-banner-container"]}>
+                <ClanBanner {...clan.clanBanner} />
+            </div>
+            <div className={styles["desc"]}>
+                <span className={styles["desc-title"]}>
+                    {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
+                </span>
+                <span className={styles["desc-subtitle"]}>
+                    {clan?.motto.replace("&#8217;", "'")}
+                </span>
+                <div className={styles["desc-text-wrapper"]}>
+                    <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
                 </div>
             </div>
-        )
-    )
+        </div>
+    ) : null
 }
 
 const urlRegex =
