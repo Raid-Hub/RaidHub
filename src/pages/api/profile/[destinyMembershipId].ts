@@ -1,5 +1,5 @@
 import { NextApiHandler, NextApiRequest } from "next"
-import { ApiHandler, ApiRequest, BadMethodResponse, ProfileGetResponse } from "../../../types/api"
+import { BadMethodResponse, ProfileGetResponse } from "../../../types/api"
 import prisma from "../../../util/server/prisma"
 
 const getDestinyMembershipId = (req: NextApiRequest): string | undefined =>
@@ -7,7 +7,7 @@ const getDestinyMembershipId = (req: NextApiRequest): string | undefined =>
 
 const handler: NextApiHandler = async (req, res) => {
     if (req.method === "GET") {
-        await handleGet(req as ApiRequest<"GET">, res)
+        await handleGet(req, res)
     } else {
         res.status(405).json({
             data: { method: req.method! },
@@ -19,7 +19,7 @@ const handler: NextApiHandler = async (req, res) => {
 
 export default handler
 
-const handleGet: ApiHandler<"GET"> = async (req, res) => {
+const handleGet: NextApiHandler = async (req, res) => {
     const destinyMembershipId = getDestinyMembershipId(req)
     if (!destinyMembershipId) {
         return res.status(400).json({
@@ -54,15 +54,7 @@ const handleGet: ApiHandler<"GET"> = async (req, res) => {
             }
         })
 
-        if (!profile) {
-            return res.status(404).json({
-                data: { destinyMembershipId },
-                success: false,
-                error: "Profile not found"
-            } satisfies ProfileGetResponse)
-        }
-
-        return res.status(200).json({
+        res.status(200).json({
             data: profile,
             success: true,
             error: undefined
