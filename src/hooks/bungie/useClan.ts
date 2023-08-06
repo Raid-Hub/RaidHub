@@ -21,9 +21,9 @@ export function useClan({
 
     const { data, ...query } = useQuery({
         queryKey: ["clan", membershipId, membershipType],
-        onError: e => CustomError.handle(errorHandler, e, ErrorCode.CharacterStats),
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Clan),
         queryFn: () => getClan({ membershipId, membershipType, client }),
-        staleTime: 2 * 60000 // character stats change often
+        staleTime: 10 * 60000 // clan does not update very often
     })
 
     return {

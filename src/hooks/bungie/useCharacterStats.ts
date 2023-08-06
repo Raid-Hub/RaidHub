@@ -19,7 +19,7 @@ export const useCharacterStats = ({
     const fetchData = useCallback(
         async (arr: MembershipWithCharacters[]) => {
             const characterStats = await Promise.all(
-                arr!.map(({ destinyMembershipId, membershipType, characterIds }) =>
+                arr.map(({ destinyMembershipId, membershipType, characterIds }) =>
                     Promise.all(
                         characterIds.map(characterId =>
                             getDestinyStatsForCharacter({
@@ -40,7 +40,7 @@ export const useCharacterStats = ({
     )
 
     return useQuery({
-        queryKey: ["bungieMemberships", characterMemberships],
+        queryKey: ["characterStats", characterMemberships],
         onError: e => CustomError.handle(errorHandler, e, ErrorCode.CharacterStats),
         queryFn: () => (characterMemberships ? fetchData(characterMemberships) : null),
         staleTime: 2 * 60000 // character stats change often

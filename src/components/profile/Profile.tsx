@@ -31,12 +31,11 @@ type ProfileProps = InitialProfileProps & {
 
 const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
     // DATA HOOKS
-    const { profile: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
-        useDestinyProfile({
-            destinyMembershipId,
-            destinyMembershipType,
-            errorHandler
-        })
+    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } = useDestinyProfile({
+        destinyMembershipId,
+        destinyMembershipType,
+        errorHandler
+    })
 
     const {
         profile: raidHubProfile,
@@ -59,17 +58,13 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         errorHandler
     })
 
-    const {
-        historicalStats,
-        isLoading: isLoadingDestinyStats,
-        characterMemberships
-    } = useDestinyStats({
+    const { data: destinyStats, isLoading: isLoadingDestinyStats } = useDestinyStats({
         destinyMemberships: membershipsData?.destinyMemberships ?? null,
         errorHandler
     })
 
     const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        characterMemberships,
+        characterMemberships: destinyStats?.characterMemberships ?? null,
         errorHandler
     })
 
@@ -152,7 +147,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             <section className={styles["raids"]}>
                 <Raids
                     membershipId={destinyMembershipId}
-                    characterMemberships={characterMemberships}
+                    characterMemberships={destinyStats?.characterMemberships ?? null}
                     layout={layout}
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={characterStats ?? null}
