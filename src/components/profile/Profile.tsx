@@ -119,7 +119,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                 <CurrentActivity
                     destinyMembershipId={destinyMembershipId}
                     destinyMembershipType={destinyMembershipType}
-                    errorHandler={errorHandler}
                 />
                 {!isLoadingRaidHubProfile ? (
                     raidHubProfile?.pinned_activity_id || mostRecentActivity ? (
