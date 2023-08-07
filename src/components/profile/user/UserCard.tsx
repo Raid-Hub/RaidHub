@@ -55,10 +55,6 @@ const UserCard = ({
         setInputStyling(raidHubProfile?.profile_decoration ?? defaultEditInput)
     }, [raidHubProfile?.profile_decoration])
 
-    const handleEditorInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        setInputStyling(e.target.value)
-    }, [])
-    // //@ts-ignore
     const handleEditorInputSave = useCallback(() => {
         mutateProfile({
             profile_decoration: inputStyling
@@ -169,7 +165,7 @@ const UserCard = ({
                     <textarea
                         className={styles["edit-background-input"]}
                         name={"background-editor"}
-                        onChange={handleEditorInputChange}
+                        onChange={e => setInputStyling(e.target.value)}
                         value={inputStyling}
                     />
                 </div>
