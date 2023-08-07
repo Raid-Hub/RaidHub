@@ -7,7 +7,7 @@ import manifest from "../../../public/manifest.json"
 type FooterProps = {}
 
 const developers = ["Newo", "Bruce", "Theos"]
-const raidHubMailAddress = "raidhub@support.com"
+const raidHubMailAddress = "admin@raidhub.app"
 const contactIcons: { url: string; id: Socials }[] = [
     {
         url: `https://discord.gg/`,
