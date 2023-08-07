@@ -82,8 +82,8 @@ const Footer = ({}: FooterProps) => {
                     RaidHub <span className={styles["version"]}>alpha-{version}</span>
                 </div>
                 <div className={[styles["right"], styles["legal"]].join(" ")}>
-                    <a href="/privacy">Privacy</a>
-                    <a href="/terms">Terms</a>
+                    <Link href="/privacy">Privacy</Link>
+                    <Link href="/terms">Terms</Link>
                 </div>
             </div>
         </footer>

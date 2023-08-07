@@ -22,9 +22,9 @@ const TosPage: NextPage = () => {
                 </h4>
                 <section className={styles["section"]}>
                     <p>
-                        These terms and conditions (the "Terms and Conditions") govern the use of
-                        raidhub.app (the "Site"). This Site is owned and operated by RaidHub. This
-                        Site is a data compilation service.
+                        These terms and conditions (the &quot;Terms and Conditions&quot;) govern the
+                        use of raidhub.app (the &quot;Site&quot;). This Site is owned and operated
+                        by RaidHub. This Site is a data compilation service.
                     </p>
                     <p>
                         By using this Site, you indicate that you have read and understand these
@@ -37,7 +37,7 @@ const TosPage: NextPage = () => {
                     <h2>Intellectual Property</h2>
                     <p>
                         All content published and made available on our Site is the property of
-                        RaidHub and the Site's creators. This includes, but is not limited to
+                        RaidHub and the Site&apos;s creators. This includes, but is not limited to
                         images, text, logos, documents, downloadable files and anything that
                         contributes to the composition of our Site.
                     </p>
