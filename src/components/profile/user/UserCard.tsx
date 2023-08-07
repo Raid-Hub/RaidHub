@@ -49,7 +49,7 @@ const UserCard = ({
                             "".replace("\n: ", "").replace(/;$/, "")
                     )[0]
         }
-    }, [inputStyling, ref])
+    }, [inputStyling, isLoading])
 
     useEffect(() => {
         setInputStyling(raidHubProfile?.profile_decoration ?? defaultEditInput)
@@ -99,7 +99,7 @@ const UserCard = ({
         return socials
     }, [raidHubProfile])
 
-    return isLoading || !userInfo ? (
+    return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />
     ) : (
         <div ref={ref} className={styles["card"]}>
@@ -127,14 +127,16 @@ const UserCard = ({
                     />
 
                     <div className={styles["username"]}>
-                        <UserName {...userInfo} />
+                        {userInfo && <UserName {...userInfo} />}
                     </div>
                 </div>
-                {userInfo.membershipId === data?.user.destinyMembershipId && !isEditing && (
-                    <button className={styles["edit-btn"]} onClick={() => setIsEditing(true)}>
-                        {strings.edit}
-                    </button>
-                )}
+                {userInfo &&
+                    userInfo.membershipId === data?.user.destinyMembershipId &&
+                    !isEditing && (
+                        <button className={styles["edit-btn"]} onClick={() => setIsEditing(true)}>
+                            {strings.edit}
+                        </button>
+                    )}
             </div>
 
             <div className={styles["icons"]}>
