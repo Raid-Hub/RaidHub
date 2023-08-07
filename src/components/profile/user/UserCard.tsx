@@ -49,7 +49,7 @@ const UserCard = ({
                             "".replace("\n: ", "").replace(/;$/, "")
                     )[0]
         }
-    }, [inputStyling, ref.current])
+    }, [inputStyling, ref])
 
     useEffect(() => {
         setInputStyling(raidHubProfile?.profile_decoration ?? defaultEditInput)
