@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react"
-import styles from "../../styles/searchdiv.module.css"
+import styles from "../../styles/searchmodal.module.css"
 import { Question_Mark, Search } from "../../images/icons"
 import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
@@ -8,9 +8,9 @@ import { useTypewriter } from "react-simple-typewriter"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
 import Link from "next/link"
 
-type SearchDivProps = {}
+type SearchModalProps = {}
 
-const SearchDiv = ({}: SearchDivProps) => {
+const SearchModal = ({}: SearchModalProps) => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)
 
     const [showingResults, setShowingResults] = useState(false)
@@ -78,7 +78,7 @@ const SearchDiv = ({}: SearchDivProps) => {
             className={styles["container"]}
             style={{ display: isDivDisplayed ? "block" : "none" }}>
             {isDivDisplayed && (
-                <div ref={animateModal} className={styles["search-div"]} id="searchdiv">
+                <div ref={animateModal} className={styles["search-modal"]} id="searchmodal">
                     <div className={styles["search-top"]}>
                         <form className={styles["search-form"]} onSubmit={handleFormEnter}>
                             <Input
@@ -162,4 +162,4 @@ function Input({
     )
 }
 
-export default SearchDiv
+export default SearchModal

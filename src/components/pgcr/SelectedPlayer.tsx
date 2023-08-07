@@ -20,7 +20,7 @@ const SelectedPlayer = ({
     updateMemberIndex,
     characterIndex
 }: SelectedPlayerProps) => {
-    const displayName = member.displayName ?? member.membershipId
+    const displayName = member.displayName || member.membershipId
     const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
     const completionClass = member.didComplete ? "" : styles["dnf"]
     const emblemsDictionary = useEmblems()

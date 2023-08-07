@@ -118,7 +118,7 @@ main {
     }
 }
 
-@font-face {
+/* @font-face {
     font-family: "Neue Haas Grotesk Display Pro";
     font-style: normal;
     font-weight: 400;
@@ -152,7 +152,7 @@ main {
     font-weight: 900;
     src: local("Neue Haas Grotesk Display Pro"),
         url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayBlack.woff") format("woff");
-}
+} */
 
 a {
     text-decoration: none;

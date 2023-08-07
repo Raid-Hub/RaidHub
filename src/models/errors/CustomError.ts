@@ -8,6 +8,7 @@ export enum ErrorCode {
     BungieAPIOffline = "Bungo",
     ProfileNotFound = "Pinecone",
     PrivateProfile = "Pineapple",
+    DestinyProfile = "Deathstar",
     PGCR = "Pig",
     ActivityError = "Applesauce",
     ActivityHistory = "Apricot",

@@ -1,61 +1,48 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback } from "react"
 import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
-import { AllRaidStats, MembershipWithCharacters } from "../../types/profile"
+import { MembershipWithCharacters } from "../../types/profile"
 import RaidStatsCollection from "../../models/profile/data/RaidStatsCollection"
+import { useQuery } from "@tanstack/react-query"
 
-type UseCharacterStats = (params: {
+export const useCharacterStats = ({
+    characterMemberships,
+    errorHandler
+}: {
     characterMemberships: MembershipWithCharacters[] | null
     errorHandler: ErrorHandler
 }) => {
-    stats: AllRaidStats | null
-    isLoading: boolean
-}
-
-export const useCharacterStats: UseCharacterStats = ({ characterMemberships, errorHandler }) => {
-    const [stats, setStats] = useState<AllRaidStats | null>(null)
-    const [isLoading, setLoading] = useState<boolean>(true)
     const client = useBungieClient()
 
     const fetchData = useCallback(
         async (arr: MembershipWithCharacters[]) => {
-            try {
-                setStats(null)
-                const characterStats = await Promise.all(
-                    arr!.map(({ destinyMembershipId, membershipType, characterIds }) =>
-                        Promise.all(
-                            characterIds.map(characterId =>
-                                getDestinyStatsForCharacter({
-                                    destinyMembershipId,
-                                    membershipType,
-                                    characterId,
-                                    client
-                                })
-                            )
+            const characterStats = await Promise.all(
+                arr.map(({ destinyMembershipId, membershipType, characterIds }) =>
+                    Promise.all(
+                        characterIds.map(characterId =>
+                            getDestinyStatsForCharacter({
+                                destinyMembershipId,
+                                membershipType,
+                                characterId,
+                                client
+                            })
                         )
                     )
                 )
-                setStats(
-                    RaidStatsCollection.groupActivities(
-                        characterStats.flat().flatMap(stats => stats.activities)
-                    )
-                )
-            } catch (e) {
-                CustomError.handle(errorHandler, e, ErrorCode.CharacterStats)
-            } finally {
-                setLoading(false)
-            }
+            )
+            return RaidStatsCollection.groupActivities(
+                characterStats.flat().flatMap(stats => stats.activities)
+            )
         },
-        [client, errorHandler]
+        [client]
     )
 
-    useEffect(() => {
-        if (characterMemberships) {
-            setLoading(true)
-            fetchData(characterMemberships)
-        }
-    }, [characterMemberships, fetchData])
-    return { stats, isLoading }
+    return useQuery({
+        queryKey: ["characterStats", characterMemberships],
+        onError: e => CustomError.handle(errorHandler, e, ErrorCode.CharacterStats),
+        queryFn: () => (characterMemberships ? fetchData(characterMemberships) : null),
+        staleTime: 2 * 60000 // character stats change often
+    })
 }

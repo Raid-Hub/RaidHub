@@ -2,10 +2,10 @@ import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
 import Image from "next/image"
-import { useCallback } from "react"
 import { External } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
 import { useRouter } from "next/router"
+import Link from "next/link"
 
 type SelectedPlayerHeaderProps = {
     selected: PGCRPlayer
@@ -23,13 +23,6 @@ const SelectedPlayerHeader = ({
 }: SelectedPlayerHeaderProps) => {
     const { strings } = useLocale()
     const router = useRouter()
-
-    const navigateToProfile = useCallback(() => {
-        router.push(
-            "/profile/[platform]/[membershipId]",
-            `/profile/${selected.membershipType}/${selected.membershipId}`
-        )
-    }, [router, selected])
 
     return (
         <div className={styles["members-header"]}>
@@ -56,16 +49,16 @@ const SelectedPlayerHeader = ({
                     ))}
                 </div>
             )}
-            <button
-                className={[styles["member-profile-button"], styles["selectable"]].join(" ")}
-                onClick={navigateToProfile}>
+            <Link
+                href={`/profile/${selected.membershipType}/${selected.membershipId}`}
+                className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
                 <Image
                     src={External}
                     alt={"View profile"}
                     className={styles["view-profile-icon"]}
                 />
                 <span>{strings.viewProfile}</span>
-            </button>
+            </Link>
         </div>
     )
 }

@@ -44,9 +44,7 @@ async function seedFakeUsers() {
 
     const sessions = Promise.all(users.map(user => createSession(user)))
 
-    const vanities = Promise.all(users.map(user => createVanity(user)))
-
-    await Promise.all([accounts, sessions, vanities])
+    await Promise.all([accounts, sessions])
 
     function createFakeUsers() {
         return Array.from(gamertags())
@@ -91,26 +89,6 @@ async function seedFakeUsers() {
                 expires_at: Date.now() / 1000 + randomNumber(-10000000, 100000000),
                 refresh_token: genRandomString(40),
                 token_type: "Bearer"
-            }
-        })
-    }
-
-    async function createVanity({
-        id,
-        name,
-        destiny_membership_id,
-        destiny_membership_type
-    }: User) {
-        return await prisma.vanity.create({
-            data: {
-                user: {
-                    connect: {
-                        id
-                    }
-                },
-                destinyMembershipId: destiny_membership_id!,
-                destinyMembershipType: destiny_membership_type!,
-                string: name!.substring(0, 5)
             }
         })
     }

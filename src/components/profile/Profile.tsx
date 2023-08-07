@@ -18,6 +18,7 @@ import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import { useActivityFilters } from "../../hooks/util/useActivityFilters"
+import Loading from "../global/Loading"
 
 export enum Layout {
     DotCharts,
@@ -30,46 +31,36 @@ type ProfileProps = InitialProfileProps & {
 
 const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
     // DATA HOOKS
-    const { profile: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
-        useDestinyProfile({
-            destinyMembershipId,
-            destinyMembershipType,
-            errorHandler
-        })
+    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } = useDestinyProfile({
+        destinyMembershipId,
+        destinyMembershipType,
+        errorHandler
+    })
 
-    const {
-        profile: raidHubProfile,
-        isLoading: isLoadingRaidHubProfile,
-        revalidate: revalidateRaidHubProfile
-    } = useRaidHubProfile({
+    const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
         destinyMembershipId,
         errorHandler: () => null
     })
 
-    const {
-        bungieMemberhip,
-        destinyMemberships,
-        isLoading: isLoadingMemberships
-    } = useBungieMemberships({
+    const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
         destinyMembershipId,
         destinyMembershipType,
         errorHandler
     })
 
     const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
-        destinyMembershipIds: destinyMemberships,
+        destinyMembershipIds: membershipsData?.destinyMemberships ?? null,
         primaryMembershipId: destinyMembershipId,
         errorHandler
     })
 
-    const {
-        historicalStats,
-        isLoading: isLoadingDestinyStats,
-        characterMemberships
-    } = useDestinyStats({ destinyMemberships, errorHandler })
+    const { data: destinyStats, isLoading: isLoadingDestinyStats } = useDestinyStats({
+        destinyMemberships: membershipsData?.destinyMemberships ?? null,
+        errorHandler
+    })
 
-    const { stats: raidMetrics, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        characterMemberships,
+    const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
+        characterMemberships: destinyStats?.characterMemberships ?? null,
         errorHandler
     })
 
@@ -102,15 +93,16 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         isLoadingDestinyProfile || isLoadingRaidHubProfile || isLoadingMemberships
                     }
                     userInfo={
-                        bungieMemberhip
-                            ? { ...bungieMemberhip, ...primaryDestinyProfile?.userInfo }
+                        membershipsData?.bungieMembership
+                            ? {
+                                  ...membershipsData.bungieMembership,
+                                  ...primaryDestinyProfile?.userInfo
+                              }
                             : undefined
                     }
-                    icon={raidHubProfile?.icon ?? null}
-                    socials={raidHubProfile?.socials ?? null}
+                    raidHubProfile={raidHubProfile ?? null}
+                    destinyMembershipId={destinyMembershipId}
                     emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
-                    background={raidHubProfile?.background ?? null}
-                    revalidateRaidHubProfile={revalidateRaidHubProfile}
                 />
                 <Banners
                     banners={raidReportData?.rankings ?? null}
@@ -127,22 +119,18 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                 <CurrentActivity
                     destinyMembershipId={destinyMembershipId}
                     destinyMembershipType={destinyMembershipType}
-                    errorHandler={errorHandler}
                 />
-                <PinnedActivity
-                    isLoading={
-                        raidHubProfile?.pinnedActivity !== null
-                            ? isLoadingRaidHubProfile
-                            : mostRecentActivity === undefined
-                    }
-                    activityId={
-                        raidHubProfile?.pinnedActivity !== null
-                            ? raidHubProfile?.pinnedActivity
-                            : mostRecentActivity
-                    }
-                    isPinned={!!raidHubProfile?.pinnedActivity}
-                    errorHandler={errorHandler}
-                />
+                {!isLoadingRaidHubProfile ? (
+                    raidHubProfile?.pinned_activity_id || mostRecentActivity ? (
+                        <PinnedActivity
+                            activityId={raidHubProfile?.pinned_activity_id ?? mostRecentActivity!}
+                            isPinned={!!raidHubProfile?.pinned_activity_id}
+                            errorHandler={errorHandler}
+                        />
+                    ) : null
+                ) : (
+                    <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                )}
                 <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
                 {!isLoadingFilters && (
                     <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
@@ -152,10 +140,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             <section className={styles["raids"]}>
                 <Raids
                     membershipId={destinyMembershipId}
-                    characterMemberships={characterMemberships}
+                    characterMemberships={destinyStats?.characterMemberships ?? null}
                     layout={layout}
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
-                    raidMetrics={raidMetrics}
+                    raidMetrics={characterStats ?? null}
                     raidReport={raidReportData?.activities || null}
                     isLoadingRaidMetrics={isLoadingRaidMetrics}
                     isLoadingCharacters={isLoadingDestinyStats}

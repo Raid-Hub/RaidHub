@@ -1,11 +1,5 @@
 import { NextApiHandler, NextApiRequest } from "next"
-import {
-    ApiHandler,
-    ApiRequest,
-    BadMethodResponse,
-    UserDeleteResponse,
-    UserUpdateResponse
-} from "../../../types/api"
+import { BadMethodResponse, UserDeleteResponse, UserUpdateResponse } from "../../../types/api"
 import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
 import { zUser } from "../../../util/server/zod"
@@ -16,10 +10,10 @@ export const getUserId = (req: NextApiRequest): string | undefined =>
 const handler: NextApiHandler = async (req, res) => {
     switch (req.method) {
         case "DELETE":
-            await handleDelete(req as ApiRequest<"DELETE">, res)
+            await handleDelete(req, res)
             break
         case "PUT":
-            await handleUpdate(req as ApiRequest<"PUT">, res)
+            await handleUpdate(req, res)
             break
         default:
             res.status(405).json({
@@ -32,17 +26,7 @@ const handler: NextApiHandler = async (req, res) => {
 
 export default handler
 
-const handleDelete: ApiHandler<"DELETE"> = async (req, res) => {
-    if (
-        (await protectSession({
-            req,
-            res,
-            userId: getUserId(req)
-        })) === false
-    ) {
-        return
-    }
-
+const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => {
     const ok = async () => {
         await prisma.user
             .delete({
@@ -83,49 +67,38 @@ const handleDelete: ApiHandler<"DELETE"> = async (req, res) => {
             error: "Invalid CSFR token"
         } satisfies UserDeleteResponse)
     }
-}
+})
 
-const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
-    if (
-        (await protectSession({
-            req,
-            res,
-            userId: getUserId(req)
-        })) === false
-    ) {
-        return
-    }
+const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => {
+    try {
+        const user = zUser.partial().parse(req.body)
 
-    const user = zUser.partial().safeParse(req.body)
-
-    if (!user.success) {
-        console.error(user.error)
-        return res.status(400).json({
+        await prisma.user
+            .update({
+                where: {
+                    id: getUserId(req)
+                },
+                data: user
+            })
+            .then(updated =>
+                res.status(200).json({
+                    success: true,
+                    data: updated,
+                    error: undefined
+                } satisfies UserUpdateResponse)
+            )
+            .catch(err =>
+                res.status(500).json({
+                    success: false,
+                    data: err,
+                    error: err.message
+                } satisfies UserUpdateResponse)
+            )
+    } catch (e: any) {
+        res.status(400).json({
             success: false,
             error: "Bad request",
-            data: user.error
+            data: e
         } satisfies UserUpdateResponse)
     }
-
-    await prisma.user
-        .update({
-            where: {
-                id: getUserId(req)
-            },
-            data: user.data
-        })
-        .then(() =>
-            res.status(200).json({
-                success: true,
-                data: user.data,
-                error: undefined
-            } satisfies UserUpdateResponse)
-        )
-        .catch(err =>
-            res.status(500).json({
-                success: false,
-                data: err,
-                error: err.message
-            } satisfies UserUpdateResponse)
-        )
-}
+})

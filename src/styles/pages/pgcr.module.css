@@ -27,7 +27,6 @@
     position: absolute;
     z-index: -1;
 
-    object-position: 20% -40px;
     object-fit: cover;
 }
 
@@ -101,6 +100,10 @@
     font-style: oblique;
     font-size: x-large;
     margin: 0.2rem;
+}
+
+.duration b {
+    font-weight: 500;
 }
 
 .activity-tile-header-attributes {
@@ -405,7 +408,7 @@
     margin: 10px;
 }
 
-.member-profile-link > span {
+.member-profile-button > span {
     flex: 1;
     margin-right: 0.7em;
 

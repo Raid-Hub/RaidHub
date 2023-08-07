@@ -1,6 +1,6 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import Head from "next/head"
-import { usePGCR } from "../../hooks/bungie/usePGCR"
+// import { usePGCR } from "../../hooks/bungie/usePGCR"
 import { BackdropOpacity, Raid, Short } from "../../types/raids"
 import { ErrorHandler } from "../../types/generic"
 import ActivityHeader from "./ActivityHeader"
@@ -8,6 +8,7 @@ import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
+import { usePGCR } from "../../hooks/bungie/usePGCR"
 
 export type PGCRProps = {
     activityId: string
@@ -15,39 +16,41 @@ export type PGCRProps = {
 }
 
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
-    const { pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+    const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
     return (
-        <main className={styles["main"]}>
+        <>
             <Head>
                 <title key="title">
                     {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
                 </title>
             </Head>
-            <section className={styles["summary-card"]}>
-                {pgcr?.raid && (
-                    <Image
-                        priority
-                        className={[
-                            styles["summary-card-background"],
-                            pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
-                        ].join(" ")}
-                        src={RaidCardBackground[pgcr.raid]}
-                        alt="background image"
-                        fill
-                        style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+            <main className={styles["main"]}>
+                <section className={styles["summary-card"]}>
+                    {typeof pgcr?.raid === "number" && (
+                        <Image
+                            priority
+                            className={[
+                                styles["summary-card-background"],
+                                pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
+                            ].join(" ")}
+                            src={RaidCardBackground[pgcr.raid]}
+                            alt="background image"
+                            fill
+                            style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                        />
+                    )}
+                    <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
+                    <ParticipantsSection
+                        completed={pgcr?.completed ?? true}
+                        players={pgcr?.players ?? []}
+                        pgcrLoadingState={pgcrLoadingState}
                     />
-                )}
-                <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
-                <ParticipantsSection
-                    completed={pgcr?.completed ?? true}
-                    players={pgcr?.players ?? []}
-                    pgcrLoadingState={pgcrLoadingState}
-                />
-            </section>
-            <section className={styles["summary-stats"]}>
-                <SummaryStatsGrid activity={pgcr} />
-            </section>
-        </main>
+                </section>
+                <section className={styles["summary-stats"]}>
+                    <SummaryStatsGrid activity={pgcr} />
+                </section>
+            </main>
+        </>
     )
 }
 

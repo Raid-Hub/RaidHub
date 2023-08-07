@@ -1,7 +1,6 @@
 import styles from "../../styles/pages/leaderboards.module.css"
-import { useQuery } from "@tanstack/react-query"
 import { usePage } from "../../hooks/util/usePage"
-import { GetLeaderboardParams, getLeaderboard } from "../../services/raidhub/getLeaderboard"
+import { getLeaderboard } from "../../services/raidhub/getLeaderboard"
 import LeaderboardEntry from "./LeaderboardEntry"
 import Image from "next/image"
 import RaidBanners from "../../images/raid-banners"
@@ -10,6 +9,7 @@ import { Fragment } from "react"
 import StyledButton from "../global/StyledButton"
 import Loading from "../global/Loading"
 import { AvailableRaid } from "../../types/raids"
+import { useQuery } from "@tanstack/react-query"
 
 type LeaderboardProps = {
     title: string
@@ -18,13 +18,14 @@ type LeaderboardProps = {
     path: string[]
 }
 
-const useLeaderboard = (params: GetLeaderboardParams, page: number) =>
+const useLeaderboard = (params: string[], page: number) =>
     useQuery({
         queryKey: ["leaderboards", params, page],
         queryFn: () => getLeaderboard(params, page)
     })
 
 const PER_PAGE = 50
+
 const Leaderboard = ({ title, subtitle, raid, path }: LeaderboardProps) => {
     const [page, setPage] = usePage()
     const { data, isLoading } = useLeaderboard(path, page)

@@ -4,7 +4,7 @@ import { Collection } from "@discordjs/collection"
 export interface IPGCREntry {
     readonly membershipId: string
     readonly membershipType: BungieMembershipType
-    readonly displayName: string
+    readonly displayName: string | undefined
     readonly stats: IPGCREntryStats
     readonly didComplete: boolean
     readonly weapons: PlayerWeapons

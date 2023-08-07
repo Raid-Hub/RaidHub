@@ -1,13 +1,7 @@
 import { S3 } from "aws-sdk"
 import { protectSession } from "../../../../util/server/sessionProtection"
 import { NextApiHandler, NextApiRequest } from "next"
-import {
-    ApiHandler,
-    ApiRequest,
-    BadMethodResponse,
-    UserImageCreateResponse
-} from "../../../../types/api"
-import { getUserId } from "../[userId]"
+import { BadMethodResponse, UserImageCreateResponse } from "../../../../types/api"
 import formidable from "formidable"
 import fs from "fs"
 import prisma from "../../../../util/server/prisma"
@@ -22,7 +16,7 @@ const s3 = new S3({
 
 const handler: NextApiHandler = async (req, res) => {
     if (req.method === "PUT") {
-        await handleUpdate(req as ApiRequest<"PUT">, res)
+        await handleUpdate(req, res)
     } else {
         res.status(405).json({
             data: { method: req.method! },
@@ -32,22 +26,8 @@ const handler: NextApiHandler = async (req, res) => {
     }
 }
 
-const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
-    const userId = getUserId(req)
-    const validSession = await protectSession({
-        req,
-        res,
-        userId
-    })
-    if (!userId || !validSession) {
-        return res.status(401).json({
-            success: false,
-            error: "Unauthorized",
-            data: null
-        } satisfies UserImageCreateResponse)
-    }
-
-    return await uploadImage(req, userId)
+const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => {
+    await uploadImage(req, userId)
         .then(imageUrl =>
             prisma.user.update({
                 where: {
@@ -77,7 +57,7 @@ const handleUpdate: ApiHandler<"PUT"> = async (req, res) => {
                 data: err
             } satisfies UserImageCreateResponse)
         )
-}
+})
 
 export const config = {
     api: {

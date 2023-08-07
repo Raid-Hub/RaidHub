@@ -9,7 +9,6 @@ export type CurrentActivityData = DestinyProfileTransitoryComponent & {
 
 export async function getActivityDefiniton({
     hashIdentifier,
-    mode,
     client
 }: {
     mode?: boolean
@@ -24,7 +23,10 @@ export async function getActivityDefiniton({
         client
     )
 
-    return Response
+    return {
+        ...Response,
+        orbit: hashIdentifier === 82913930
+    }
 }
 
 export async function getActivityModeDefiniton({

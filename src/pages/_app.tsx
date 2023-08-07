@@ -9,12 +9,10 @@ import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import DestinyManifestManager from "../components/app/DestinyManifestManager"
-import ComponentCacheManager from "../components/app/ComponentCacheManager"
 import ProgressBar from "nextjs-progressbar"
-import SearchDiv from "../components/global/SearchDiv"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-
-const reactQueryClient = new QueryClient()
+import SearchModal from "../components/global/SearchModal"
+import { QueryClientProvider } from "@tanstack/react-query"
+import reactQueryClient from "../services/reactQueryClient"
 
 type PageProps = {
     session: Session
@@ -22,19 +20,18 @@ type PageProps = {
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
+    const [queryClient] = useState(reactQueryClient)
 
     return (
         <LocaleManager>
             <Head>
-                <link rel="shortcut icon" href="/favicon.ico" />
+                <title key="title">RaidHub</title>
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
                 />
-                <title key="title">RaidHub</title>
-                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
             </Head>
-            <QueryClientProvider client={reactQueryClient}>
+            <QueryClientProvider client={queryClient}>
                 <SessionProvider
                     session={session}
                     refetchInterval={sessionRefetchInterval}
@@ -50,13 +47,12 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                                     speed: 700
                                 }}
                                 stopDelayMs={100}
-                                height={4}
+                                height={3}
                                 showOnShallow={false}
                                 color={"orange"}
                             />
-                            <ComponentCacheManager Component={Component} componentProps={pageProps}>
-                                <SearchDiv />
-                            </ComponentCacheManager>
+                            <SearchModal />
+                            <Component {...pageProps} />
                             <Footer />
                         </DestinyManifestManager>
                     </TokenManager>

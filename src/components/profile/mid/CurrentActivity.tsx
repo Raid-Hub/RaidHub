@@ -5,29 +5,23 @@ import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import { useProfileTransitory } from "../../../hooks/bungie/useProfileTransitory"
-import { ErrorHandler } from "../../../types/generic"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 
 type CurrentActivityParams = {
     destinyMembershipId: string
     destinyMembershipType: BungieMembershipType
-    errorHandler: ErrorHandler
 }
 
-const CurrentActivity = ({
-    destinyMembershipId,
-    destinyMembershipType,
-    errorHandler
-}: CurrentActivityParams) => {
+const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: CurrentActivityParams) => {
     const { strings } = useLocale()
     const {
         profile,
-        isLoading: isLoadingTransitoryProfile,
+        isLoading,
         lastRefresh: lastTransitoryRefresh
     } = useProfileTransitory({
         destinyMembershipId,
         destinyMembershipType,
-        errorHandler
+        errorHandler: console.error
     })
 
     const raidTuple = useMemo(() => {
@@ -39,7 +33,9 @@ const CurrentActivity = ({
     }, [profile?.activityDefinition.hash])
 
     const activityName = useMemo(() => {
-        if (raidTuple && profile?.transitory.currentActivity.startTime) {
+        if (profile?.activityDefinition.orbit) {
+            return "Orbit"
+        } else if (raidTuple && profile?.transitory.currentActivity.startTime) {
             return (
                 raidVersion(
                     raidTuple,
