@@ -79,21 +79,11 @@ const Footer = ({}: FooterProps) => {
 
             <div className={styles["bottom"]}>
                 <div className={styles["left"]}>
-                    <p>
-                        RaidHub <span className={styles["version"]}>alpha-{version}</span>
-                    </p>
+                    RaidHub <span className={styles["version"]}>alpha-{version}</span>
                 </div>
-                <div className={styles["right"]}>
-                    <p>
-                        <span>Data from </span>
-                        <a className={styles["url"]} href="https://raid.report">
-                            Raid Report
-                        </a>{" "}
-                        and{" "}
-                        <a className={styles["url"]} href="https://bungie.net/7">
-                            Bungie
-                        </a>
-                    </p>
+                <div className={[styles["right"], styles["legal"]].join(" ")}>
+                    <a href="/privacy">Privacy</a>
+                    <a href="/terms">Terms</a>
                 </div>
             </div>
         </footer>

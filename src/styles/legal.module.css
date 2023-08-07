@@ -1,0 +1,8 @@
+.main {
+    letter-spacing: 0.05ch;
+}
+
+.section a {
+    color: var(--brand-orange-light);
+    text-decoration: underline;
+}
