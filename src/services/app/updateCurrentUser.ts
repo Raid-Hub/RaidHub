@@ -4,7 +4,7 @@ import { UserUpdateResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
 
 type UpdateCurrentUser = (data: Partial<User>) => Promise<{
-    updated: Partial<User>
+    updated: User
 }>
 export const updateCurrentUser: UpdateCurrentUser = async data => {
     const session = await getSession()

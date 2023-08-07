@@ -80,10 +80,10 @@ const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => 
                 },
                 data: user
             })
-            .then(() =>
+            .then(updated =>
                 res.status(200).json({
                     success: true,
-                    data: user,
+                    data: updated,
                     error: undefined
                 } satisfies UserUpdateResponse)
             )

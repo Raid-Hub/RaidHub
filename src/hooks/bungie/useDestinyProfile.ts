@@ -1,9 +1,7 @@
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"
 import { getDestinyProfile } from "../../services/bungie/getProfile"
-import { useCallback, useEffect, useState } from "react"
 import { useBungieClient } from "../../components/app/TokenManager"
-import { ProfileComponent } from "../../types/profile"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useQuery } from "@tanstack/react-query"
 

@@ -35,7 +35,7 @@ export type UserUpdateResponse =
     | BadMethodResponse
     | ZodBadRequest<User>
     | ProtectedSessionErrorResponse
-    | ApiResponse<true, Partial<User>>
+    | ApiResponse<true, User>
     | ApiResponse<false, undefined>
 
 export type UserImageCreateResponse =

@@ -37,11 +37,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         errorHandler
     })
 
-    const {
-        profile: raidHubProfile,
-        isLoading: isLoadingRaidHubProfile,
-        revalidate: revalidateRaidHubProfile
-    } = useRaidHubProfile({
+    const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
         destinyMembershipId,
         errorHandler: () => null
     })
@@ -104,11 +100,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                               }
                             : undefined
                     }
-                    icon={raidHubProfile?.icon ?? null}
-                    socials={raidHubProfile?.socials ?? null}
+                    raidHubProfile={raidHubProfile ?? null}
+                    destinyMembershipId={destinyMembershipId}
                     emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
-                    background={raidHubProfile?.background ?? null}
-                    revalidateRaidHubProfile={revalidateRaidHubProfile}
                 />
                 <Banners
                     banners={raidReportData?.rankings ?? null}
@@ -128,10 +122,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     errorHandler={errorHandler}
                 />
                 {!isLoadingRaidHubProfile ? (
-                    raidHubProfile?.pinnedActivity || mostRecentActivity ? (
+                    raidHubProfile?.pinned_activity_id || mostRecentActivity ? (
                         <PinnedActivity
-                            activityId={raidHubProfile?.pinnedActivity ?? mostRecentActivity!}
-                            isPinned={!!raidHubProfile?.pinnedActivity}
+                            activityId={raidHubProfile?.pinned_activity_id ?? mostRecentActivity!}
+                            isPinned={!!raidHubProfile?.pinned_activity_id}
                             errorHandler={errorHandler}
                         />
                     ) : null

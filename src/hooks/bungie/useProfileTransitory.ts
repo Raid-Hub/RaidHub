@@ -6,7 +6,6 @@ import {
     DestinyProfileUserInfoCard
 } from "bungie-net-core/lib/models"
 import { ErrorHandler } from "../../types/generic"
-import { useCallback, useEffect, useState } from "react"
 import { useBungieClient } from "../../components/app/TokenManager"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { getProfileTransitory } from "../../services/bungie/getProfileTransitory"

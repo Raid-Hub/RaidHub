@@ -42,7 +42,7 @@ export const useDestinyStats = ({
 
             return { characterMemberships, historicalStats }
         },
-        [client, destinyMemberships]
+        [client]
     )
 
     return useQuery({
