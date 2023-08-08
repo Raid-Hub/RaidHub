@@ -76,10 +76,9 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
                 revalidate: 30
             }
         } else {
-            console.log(["worldsfirst", RaidToUrlPaths[raid], 1])
             // cache 2nd page
             await queryClient.prefetchQuery(
-                [["worldsfirst", RaidToUrlPaths[raid], 1]],
+                ["worldsfirst", RaidToUrlPaths[raid], 1],
                 () => getLeaderboard(paramsStrings, 1),
                 {
                     staleTime
@@ -115,6 +114,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: AvailableRaid }) => {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
+    console.log(useQueryClient().getQueryCache())
     const query = useQuery({
         queryKey: ["worldsfirst", RaidToUrlPaths[raid], page],
         queryFn: () =>
