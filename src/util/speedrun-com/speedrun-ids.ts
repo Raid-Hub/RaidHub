@@ -16,7 +16,7 @@ export const SpeedrunIds: Record<AvailableRaid, string> = {
     [Raid.ROOT_OF_NIGHTMARES]: "9d88x6ld"
 }
 
-export const SpeedrunVariableIds: Record<AvailableRaid, string | null> = {
+export const SpeedrunVariableId: Record<AvailableRaid, string | null> = {
     [Raid.LEVIATHAN]: "68kmerkl",
     [Raid.EATER_OF_WORLDS]: null,
     [Raid.SPIRE_OF_STARS]: null,
@@ -36,43 +36,43 @@ export const SpeedrunVariableValues: Record<
     Record<string, { id: string; name: keyof LocalStrings["leaderboards"] }>
 > = {
     [Raid.LEVIATHAN]: {
-        standard: { id: "4qy4j26q", name: "anyPercent" },
+        normal: { id: "4qy4j26q", name: "normal" },
         prestige: { id: "mln3zvoq", name: "prestige" }
     },
     [Raid.EATER_OF_WORLDS]: {},
     [Raid.SPIRE_OF_STARS]: {},
     [Raid.SCOURGE_OF_THE_PAST]: {
-        standard: { id: "mln32enq", name: "anyPercent" },
+        "any%": { id: "mln32enq", name: "anyPercent" },
         "no-major-glitches": { id: "4qy467dq", name: "noMajorGlitches" }
     },
     [Raid.CROWN_OF_SORROW]: {},
     [Raid.LAST_WISH]: {
-        standard: { id: "8107wkol", name: "allEncounters" },
+        "all-encounters": { id: "8107wkol", name: "allEncounters" },
         trio: { id: "810292jq", name: "trioAllEncounters" },
-        wishwall: { id: "9qjdxk7q", name: "anyPercent" }
+        "any%": { id: "9qjdxk7q", name: "anyPercent" }
     },
     [Raid.GARDEN_OF_SALVATION]: {
-        standard: { id: "4lxn3041", name: "anyPercent" },
+        "any%": { id: "4lxn3041", name: "anyPercent" },
         trio: { id: "814z3kvl", name: "trio" }
     },
     [Raid.DEEP_STONE_CRYPT]: {
-        standard: { id: "zqo4dmx1", name: "anyPercent" },
+        "any%": { id: "zqo4dmx1", name: "anyPercent" },
         trio: { id: "013g3wxl", name: "trio" }
     },
     [Raid.VAULT_OF_GLASS]: {
-        standard: { id: "jqzj7eml", name: "anyPercent" },
+        "any%": { id: "jqzj7eml", name: "anyPercent" },
         trio: { id: "klrgw42q", name: "trio" }
     },
     [Raid.VOW_OF_THE_DISCIPLE]: {
-        standard: { id: "q75vror1", name: "anyPercent" },
+        "any%": { id: "q75vror1", name: "anyPercent" },
         trio: { id: "1gnw26ol", name: "trio" }
     },
     [Raid.KINGS_FALL]: {
-        standard: { id: "192joekq", name: "anyPercent" },
+        "any%": { id: "192joekq", name: "anyPercent" },
         trio: { id: "12v6yjkq", name: "trio" }
     },
     [Raid.ROOT_OF_NIGHTMARES]: {
-        standard: { id: "lx5v72r1", name: "anyPercent" },
+        "any%": { id: "lx5v72r1", name: "anyPercent" },
         trio: { id: "14o50mjq", name: "trio" }
     }
 }

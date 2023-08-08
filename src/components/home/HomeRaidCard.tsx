@@ -37,9 +37,9 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                         Object.entries(SpeedrunVariableValues[raid]).map(
                             ([type, { id, name: key }]) => (
                                 <Link
-                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta${
-                                        type === "standard" ? "" : "/" + type
-                                    }`}
+                                    href={`/leaderboards/${
+                                        RaidToUrlPaths[raid]
+                                    }/speedrun/rta/${encodeURIComponent(type)}`}
                                     key={id}>
                                     <p>{strings.leaderboards[key]}</p>
                                 </Link>

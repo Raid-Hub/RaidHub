@@ -9,15 +9,93 @@ import Head from "next/head"
 import { useLocale } from "../../../../../components/app/LocaleManager"
 import { usePage } from "../../../../../hooks/util/usePage"
 import {
-    SpeedrunVariableIds,
+    SpeedrunVariableId,
     SpeedrunVariableValues
 } from "../../../../../util/speedrun-com/speedrun-ids"
 import { LocalStrings } from "../../../../../util/presentation/localized-strings"
 
 type RTASpeedunLeaderboadProps = {
     raid: AvailableRaid
-    category?: { path: string; key: keyof LocalStrings["leaderboards"] }
+    category: { subCategory: string; key: keyof LocalStrings["leaderboards"] } | null
     dehydratedState: unknown
+}
+
+export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => ({
+    paths: Object.entries(UrlPathsToRaid)
+        .map(([basePath, raidValue]) => [
+            ...(SpeedrunVariableId[raidValue]
+                ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
+                      params: {
+                          raid: basePath,
+                          board: [path]
+                      }
+                  }))
+                : []),
+            {
+                params: {
+                    raid: basePath,
+                    board: []
+                }
+            }
+        ])
+        .flat(),
+    fallback: "blocking"
+})
+
+export const getStaticProps: GetStaticProps<
+    RTASpeedunLeaderboadProps,
+    { raid: string; board: string[] }
+> = async ({ params }) => {
+    try {
+        const { raid: path, board } = z
+            .object({
+                raid: z.string().refine(key => key in UrlPathsToRaid),
+                board: z
+                    .array(
+                        z.string().refine(category =>
+                            Object.values(SpeedrunVariableValues)
+                                .map(arr => Object.keys(arr))
+                                .flat()
+                                .includes(category)
+                        )
+                    )
+                    .optional()
+            })
+            .parse(params) as { raid: keyof typeof UrlPathsToRaid; board?: string[] }
+        const raid = UrlPathsToRaid[path]
+
+        const queryClient = new QueryClient()
+
+        // we prefetch the first page at build time
+        const staleTime = 60 * 60 * 1000 // 1 hour
+
+        const category =
+            SpeedrunVariableId[raid] && board
+                ? {
+                      subCategory: board[0],
+                      key: SpeedrunVariableValues[raid][board[0]].name
+                  }
+                : null
+        await queryClient.prefetchQuery(
+            ["rta-leaderboards", raid, category?.subCategory ?? null],
+            () => getLeaderboard(raid, category?.subCategory),
+            {
+                staleTime
+            }
+        )
+
+        return {
+            props: {
+                raid,
+                category,
+                dehydratedState: dehydrate(queryClient)
+            },
+            revalidate: staleTime / 1000
+        }
+    } catch (e) {
+        console.error(e)
+        return { notFound: true }
+    }
 }
 
 const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps> = ({
@@ -28,8 +106,8 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps> = ({
     const { strings } = useLocale()
     const [page, setPage] = usePage()
     const query = useQuery({
-        queryKey: ["rta-leaderboards", raid, category?.path],
-        queryFn: () => getLeaderboard(raid, category?.path)
+        queryKey: ["rta-leaderboards", raid, category?.subCategory ?? ""],
+        queryFn: () => getLeaderboard(raid, category?.subCategory)
     })
 
     const raidName = useMemo(() => strings.raidNames[raid], [strings, raid])
@@ -59,70 +137,3 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps> = ({
 }
 
 export default RTASpeedunLeaderboad
-
-export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
-    return {
-        paths: Object.keys(UrlPathsToRaid).map(path => ({
-            params: {
-                raid: path,
-                board: null // todo statically generate some of the non standard leaderboards
-            }
-        })),
-        fallback: "blocking"
-    }
-}
-
-export const getStaticProps: GetStaticProps<
-    RTASpeedunLeaderboadProps,
-    { raid: string; board: string[] }
-> = async ({ params }) => {
-    try {
-        const { raid: path, board } = z
-            .object({
-                raid: z.string().refine(key => key in UrlPathsToRaid),
-                board: z
-                    .array(
-                        z.string().refine(category =>
-                            Object.values(SpeedrunVariableValues)
-                                .map(arr => Object.keys(arr))
-                                .flat()
-                                .includes(category)
-                        )
-                    )
-                    .optional()
-            })
-            .parse(params) as { raid: keyof typeof UrlPathsToRaid; board?: string[] }
-        const raid = UrlPathsToRaid[path]
-
-        const queryClient = new QueryClient()
-
-        // we prefetch the first page at build time
-        const staleTime = 60 * 60 * 1000 // 1 hour
-
-        const category = SpeedrunVariableIds[raid]
-            ? {
-                  path: board?.[0] ?? "standard",
-                  key: SpeedrunVariableValues[raid][board?.[0] ?? "standard"].name
-              }
-            : undefined
-        await queryClient.prefetchQuery(
-            ["rta-leaderboards", raid, category?.path],
-            () => getLeaderboard(raid, category?.path),
-            {
-                staleTime
-            }
-        )
-
-        return {
-            props: {
-                raid,
-                category,
-                dehydratedState: dehydrate(queryClient)
-            },
-            revalidate: staleTime / 1000
-        }
-    } catch (e) {
-        console.error(e)
-        return { notFound: true }
-    }
-}

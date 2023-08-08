@@ -2,7 +2,7 @@ import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leade
 import { AvailableRaid } from "../../types/raids"
 import {
     SpeedrunIds,
-    SpeedrunVariableIds,
+    SpeedrunVariableId,
     SpeedrunVariableValues
 } from "../../util/speedrun-com/speedrun-ids"
 
@@ -17,7 +17,7 @@ export async function getLeaderboard<R extends AvailableRaid>(
     )
     subCategory &&
         url.searchParams.append(
-            `var-${SpeedrunVariableIds[raid]}`,
+            `var-${SpeedrunVariableId[raid]}`,
             SpeedrunVariableValues[raid][subCategory].id
         )
 

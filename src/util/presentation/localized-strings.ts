@@ -65,6 +65,7 @@ export interface LocalStrings {
     save: string
     cancel: string
     leaderboards: {
+        normal: string
         anyPercent: string
         prestige: string
         noMajorGlitches: string
@@ -217,11 +218,12 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         cancel: "Cancel",
         leaderboards: {
             anyPercent: "Any %",
+            trio: "Trio",
+            normal: "Normal",
             prestige: "Prestige",
             noMajorGlitches: "No Major Glitches",
             allEncounters: "All Encounters",
-            trioAllEncounters: "Trio All Encounters",
-            trio: "Trio"
+            trioAllEncounters: "Trio All Encounters"
         }
     }
 }
