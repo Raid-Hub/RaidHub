@@ -11,7 +11,7 @@ import { ReleaseDate } from "../../../util/destiny/raid"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { z } from "zod"
-import { QueryClient, Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
+import { QueryClient, Hydrate, dehydrate, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../services/raidhub/getLeaderboard"
 import { usePage } from "../../../hooks/util/usePage"
 
@@ -76,6 +76,7 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
                 revalidate: 30
             }
         } else {
+            console.log(["worldsfirst", RaidToUrlPaths[raid], 1])
             // cache 2nd page
             await queryClient.prefetchQuery(
                 [["worldsfirst", RaidToUrlPaths[raid], 1]],
@@ -99,7 +100,18 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     }
 }
 
-const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, dehydratedState }) => {
+const WorldsFirstLeaderboadPage: NextPage<WorldsFirstLeaderboadProps> = ({
+    raid,
+    dehydratedState
+}) => {
+    return (
+        <Hydrate state={dehydratedState}>
+            <WorldsFirstLeaderboad raid={raid} />
+        </Hydrate>
+    )
+}
+
+const WorldsFirstLeaderboad = ({ raid }: { raid: AvailableRaid }) => {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
@@ -117,27 +129,25 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({ raid, deh
                 page
             )
     })
+
     return (
         <>
             <Head>
                 <title>{`${raidName} | World First Leaderboards`}</title>
             </Head>
 
-            {/* It's important to hydrate the first page of the leaderboards to improve SEO */}
-            <Hydrate state={dehydratedState}>
-                <Leaderboard
-                    title={"World First " + raidName}
-                    subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                    raid={raid}
-                    entries={query.data ?? []}
-                    isLoading={query.isLoading}
-                    type={"API"}
-                    page={page}
-                    setPage={setPage}
-                />
-            </Hydrate>
+            <Leaderboard
+                title={"World First " + raidName}
+                subtitle={toCustomDateString(ReleaseDate[raid], locale)}
+                raid={raid}
+                entries={query.data ?? []}
+                isLoading={query.isLoading}
+                type={"API"}
+                page={page}
+                setPage={setPage}
+            />
         </>
     )
 }
 
-export default WorldsFirstLeaderboad
+export default WorldsFirstLeaderboadPage
