@@ -1,5 +1,6 @@
 import { ClanBanner } from "bungie-net-core/lib/models"
-import { RGBA, RawClanBannerData } from "./manifest"
+import { RGBA } from "./manifest"
+import { indexDB } from "../../util/dexie"
 
 export type ClanBannerData = {
     decalPrimary: string
@@ -12,27 +13,43 @@ export type ClanBannerData = {
     decalTopColor: string
 }
 
-export function resolveClanBanner(
-    clanBanner: ClanBanner,
-    clanBanners: RawClanBannerData
-): ClanBannerData {
+export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerData> {
+    const [
+        decalPrimaryColor,
+        decalSecondaryColor,
+        { foregroundPath: decalPrimary, backgroundPath: decalSecondary },
+        gonfalcons,
+        gonfalconsColor,
+        decalTopColor,
+        decalTop
+    ] = await Promise.all([
+        indexDB.clanBannerDecalPrimaryColors.get({ hash: banner.decalColorId }).then(RGBAToHex),
+        indexDB.clanBannerDecalSecondaryColors
+            .get({ hash: banner.decalBackgroundColorId })
+            .then(RGBAToHex),
+        indexDB.clanBannerDecalsSquare
+            .get({ hash: banner.decalId })
+            .then(d => d ?? { foregroundPath: "", backgroundPath: "" }),
+
+        indexDB.clanBannerGonfalons.get({ hash: banner.gonfalonId }).then(d => d?.value ?? ""),
+        indexDB.clanBannerGonfalonColors.get({ hash: banner.gonfalonColorId }).then(RGBAToHex),
+        indexDB.clanBannerGonfalonDetailColors
+            .get({ hash: banner.gonfalonDetailColorId })
+            .then(RGBAToHex),
+        indexDB.clanBannerGonfalonDetailsSquare
+            .get({ hash: banner.gonfalonDetailId })
+            .then(d => d?.value ?? "")
+    ] as const)
+
     return {
-        decalPrimaryColor: RGBAToHex(
-            clanBanners.clanBannerDecalPrimaryColors[clanBanner.decalColorId]
-        ),
-        decalSecondaryColor: RGBAToHex(
-            clanBanners.clanBannerDecalSecondaryColors[clanBanner.decalBackgroundColorId]
-        ),
-        decalPrimary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.foregroundPath,
-        decalSecondary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.backgroundPath,
-        gonfalcons: clanBanners.clanBannerGonfalons[clanBanner.gonfalonId],
-        gonfalconsColor: RGBAToHex(
-            clanBanners.clanBannerGonfalonColors[clanBanner.gonfalonColorId]
-        ),
-        decalTopColor: RGBAToHex(
-            clanBanners.clanBannerGonfalonDetailColors[clanBanner.gonfalonDetailColorId]
-        ),
-        decalTop: clanBanners.clanBannerGonfalonDetailsSquare[clanBanner.gonfalonDetailId]
+        decalPrimaryColor,
+        decalSecondaryColor,
+        decalPrimary,
+        decalSecondary,
+        gonfalcons,
+        gonfalconsColor,
+        decalTopColor,
+        decalTop
     }
 }
 

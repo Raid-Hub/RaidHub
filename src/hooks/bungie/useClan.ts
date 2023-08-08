@@ -3,8 +3,7 @@ import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getClan } from "../../services/bungie/getClan"
 import { ErrorHandler } from "../../types/generic"
-import { resolveClanBanner } from "../../util/destiny/clanBanner"
-import { useClanBanners } from "../../components/app/DestinyManifestManager"
+import { useClanBanner } from "../../components/app/DestinyManifestManager"
 import { useQuery } from "@tanstack/react-query"
 
 export function useClan({
@@ -16,7 +15,6 @@ export function useClan({
     membershipType: BungieMembershipType
     errorHandler: ErrorHandler
 }) {
-    const bannerDefs = useClanBanners()
     const client = useBungieClient()
 
     const { data, ...query } = useQuery({
@@ -26,11 +24,13 @@ export function useClan({
         staleTime: 10 * 60000 // clan does not update very often
     })
 
+    const clanBanner = useClanBanner(data?.clanInfo.clanBannerData ?? null)
+
     return {
         data: data
             ? {
                   ...data,
-                  clanBanner: resolveClanBanner(data.clanInfo.clanBannerData, bannerDefs)
+                  clanBanner
               }
             : data,
         ...query

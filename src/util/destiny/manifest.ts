@@ -7,10 +7,7 @@ import {
     DestinyManifest
 } from "bungie-net-core/lib/models"
 import { DestinyManifestComponent, DestinyManifestLanguage } from "bungie-net-core/lib/manifest"
-
-export const KEY_CLANBANNERS = "clanBanner_definitions"
-export const KEY_EMBLEMS = "emblems_definitions"
-export const KEY_WEAPONS = "weapons_definitions"
+import { Hashed, indexDB } from "../dexie"
 
 export type CachedEmblem = {
     banner: string
@@ -60,42 +57,70 @@ export async function updateCachedManifest({
     manifest: DestinyManifest
     language: DestinyManifestLanguage
 }) {
-    const [items, banners] = await Promise.all([
+    await Promise.all([
         getDestinyInventoryItems({
             manifest,
             language
-        }),
-        getClanBannerSource(client).then(res => res.Response as RawClanBannerData)
-    ])
+        }).then(items =>
+            Promise.all([
+                indexDB.weapons.bulkPut(processWeapons(items)),
+                indexDB.emblems.bulkPut(processEmblems(items))
+            ])
+        ),
 
-    localStorage.setItem(KEY_CLANBANNERS, JSON.stringify(banners))
-    localStorage.setItem(KEY_WEAPONS, JSON.stringify(processWeapons(items)))
-    localStorage.setItem(KEY_EMBLEMS, JSON.stringify(processEmblems(items)))
+        getClanBannerSource(client)
+            .then(res => res.Response as RawClanBannerData)
+            .then(banners => {
+                const hash = <K extends keyof RawClanBannerData>(
+                    key: K
+                ): Hashed<
+                    RawClanBannerData[K][string] extends string
+                        ? { value: string }
+                        : RawClanBannerData[K][string]
+                >[] =>
+                    Object.entries(banners[key]).map(([hash, def]) =>
+                        typeof def === "string" ? { hash, value: def } : { hash, ...def }
+                    )
+                return Promise.all([
+                    indexDB.clanBannerDecals.bulkPut(hash("clanBannerDecals")),
+                    indexDB.clanBannerDecalPrimaryColors.bulkPut(
+                        hash("clanBannerDecalPrimaryColors")
+                    ),
+                    indexDB.clanBannerDecalSecondaryColors.bulkPut(
+                        hash("clanBannerDecalSecondaryColors")
+                    ),
+                    indexDB.clanBannerGonfalons.bulkPut(hash("clanBannerGonfalons")),
+                    indexDB.clanBannerGonfalonColors.bulkPut(hash("clanBannerGonfalonColors")),
+                    indexDB.clanBannerGonfalonDetails.bulkPut(hash("clanBannerGonfalonDetails")),
+                    indexDB.clanBannerGonfalonDetailColors.bulkPut(
+                        hash("clanBannerGonfalonDetailColors")
+                    ),
+                    indexDB.clanBannerDecalsSquare.bulkPut(hash("clanBannerDecalsSquare")),
+                    indexDB.clanBannerGonfalonDetailsSquare.bulkPut(
+                        hash("clanBannerGonfalonDetailsSquare")
+                    )
+                ])
+            })
+    ])
 }
 
 function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
     const weaponBuckets = [/* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645]
-    return Object.fromEntries(
-        Object.entries(items)
-            .filter(([_, def]) => weaponBuckets.includes(def.inventory?.bucketTypeHash!))
-            .map(
-                ([hash, def]) =>
-                    [
-                        hash,
-                        {
-                            name: def.displayProperties.name,
-                            icon: def.displayProperties.icon,
-                            type: def.itemTypeDisplayName ?? "Classified"
-                        } as CachedWeapon
-                    ] as const
-            )
-    )
+    return Object.entries(items)
+        .filter(([_, def]) => weaponBuckets.includes(def.inventory?.bucketTypeHash!))
+        .map(
+            ([hash, def]) =>
+                ({
+                    hash,
+                    name: def.displayProperties.name,
+                    icon: def.displayProperties.icon,
+                    type: def.itemTypeDisplayName ?? "Classified"
+                } as Hashed<CachedWeapon>)
+        )
 }
 
 function processEmblems(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
-    return Object.fromEntries(
-        Object.entries(items)
-            .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
-            .map(([hash, def]) => [hash, { banner: def.secondarySpecial }] as const)
-    )
+    return Object.entries(items)
+        .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
+        .map(([hash, def]) => ({ hash, banner: def.secondarySpecial } as Hashed<CachedEmblem>))
 }
