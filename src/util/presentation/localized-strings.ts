@@ -31,7 +31,7 @@ export interface LocalStrings {
     difficulty: { [key in Difficulty]: string }
     killsPerMinute: string
     worldsFirstLeaderboards: string
-    speedrunLeaderboards: string
+    rtaSpeedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
     bannerTitles: { [key in RankingBannerType]: string }
@@ -134,7 +134,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         killsPerMinute: "Kills / Minute",
         worldsFirstLeaderboards: "World's First Leaderboards",
-        speedrunLeaderboards: "Speedrun Leaderboards",
+        rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
         bannerTitles: {

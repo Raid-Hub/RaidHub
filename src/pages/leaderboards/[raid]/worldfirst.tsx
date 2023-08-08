@@ -16,8 +16,9 @@ import { ReleaseDate } from "../../../util/destiny/raid"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { z } from "zod"
-import { QueryClient, Hydrate, dehydrate } from "@tanstack/react-query"
+import { QueryClient, Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../services/raidhub/getLeaderboard"
+import { usePage } from "../../../hooks/util/usePage"
 
 type WorldsFirstLeaderboadProps = {
     raid: AvailableRaid
@@ -31,7 +32,13 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({
     dehydratedState
 }) => {
     const { strings, locale } = useLocale()
+    const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
+    const fullPath = ["worldsfirst", RaidToUrlPaths[raid], DifficultyToUrlPaths[difficulty]]
+    const query = useQuery({
+        queryKey: [fullPath, page],
+        queryFn: () => getLeaderboard(fullPath, page)
+    })
     return (
         <>
             <Head>
@@ -43,8 +50,12 @@ const WorldsFirstLeaderboad: NextPage<WorldsFirstLeaderboadProps> = ({
                 <Leaderboard
                     title={"World First " + raidName}
                     subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                    path={["worldsfirst", RaidToUrlPaths[raid], DifficultyToUrlPaths[difficulty]]}
                     raid={raid}
+                    entries={query.data ?? []}
+                    isLoading={query.isLoading}
+                    type={"API"}
+                    page={page}
+                    setPage={setPage}
                 />
             </Hydrate>
         </>
@@ -86,14 +97,13 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
         // we prefetch the first page at build time
         const fullPath = ["worldsfirst", path, DifficultyToUrlPaths[difficulty]]
         const staleTime = 24 * 60 * 60 * 1000 // 24 hours
-        await queryClient.prefetchQuery(
-            ["leaderboards", fullPath, 0],
-            () => getLeaderboard(fullPath, 0),
-            { staleTime }
-        )
+        await queryClient.prefetchQuery([fullPath, 0], () => getLeaderboard(fullPath, 0), {
+            staleTime
+        })
 
         // clear the static query if it's not marked as complete
-        const prefetched = queryClient.getQueryData(["leaderboards", fullPath, 0]) as any
+        const prefetched = queryClient.getQueryData([fullPath, 0]) as any
+
         if (prefetched.incomplete) {
             return {
                 props: {
@@ -101,15 +111,13 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
                     difficulty,
                     dehydratedState: dehydrate(queryClient)
                 },
-                revalidate: 30000
+                revalidate: 30
             }
         } else {
             // cache 2nd page
-            await queryClient.prefetchQuery(
-                ["leaderboards", fullPath, 1],
-                () => getLeaderboard(fullPath, 1),
-                { staleTime }
-            )
+            await queryClient.prefetchQuery([fullPath, 1], () => getLeaderboard(fullPath, 1), {
+                staleTime
+            })
 
             return {
                 props: {

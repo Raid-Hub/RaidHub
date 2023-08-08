@@ -26,13 +26,15 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
                     <h4>{strings.worldsFirstLeaderboards}</h4>
-                    <Link href={`/leaderboards/worldfirst/${RaidToUrlPaths[raid]}`}>
+                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}>
                         <p>{strings.clickToView}</p>
                     </Link>
                 </div>
                 <div className={styles["content-section"]}>
-                    <h4>{strings.speedrunLeaderboards}</h4>
-                    <p>{strings.comingSoon}</p>
+                    <h4>{strings.rtaSpeedrunLeaderboards}</h4>
+                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
+                        <p>{strings.clickToView}</p>
+                    </Link>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.clearsLeaderboards}</h4>

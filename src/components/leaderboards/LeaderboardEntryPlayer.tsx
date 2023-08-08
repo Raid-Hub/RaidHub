@@ -1,30 +1,32 @@
 import styles from "../../styles/pages/leaderboards.module.css"
-import { RRLeaderboardEntryUser } from "../../services/raidhub/getLeaderboard"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { LeaderboardEntryParticipant } from "../../types/leaderboards"
 
-const LeaderboardEntryUser = ({ user }: { user: RRLeaderboardEntryUser }) => {
-    const [icon, setIcon] = useState(
-        "https://www.bungie.net/common/destiny2_content/icons/" + user.iconPath
-    )
+const defautlIcon = "https://www.bungie.net/img/theme/destiny/icons/missing_emblem.jpg"
+
+const LeaderboardEntryUser = ({ user }: { user: LeaderboardEntryParticipant }) => {
+    const [icon, setIcon] = useState(user.iconURL ?? defautlIcon)
     return (
         <div className={styles["leaderboard-entry-user"]}>
             <div className={styles["user-icon-container"]}>
                 <Image
-                    onError={() =>
-                        setIcon("https://www.bungie.net/img/theme/destiny/icons/missing_emblem.jpg")
-                    }
+                    onError={() => setIcon(defautlIcon)}
                     src={icon}
                     alt={`icon for ${user.displayName}`}
                     fill
                 />
             </div>
-            <Link
-                href={`/profile/${user.membershipType}/${user.membershipId}`}
-                className={styles["username"]}>
-                <p>{user.bungieGlobalDisplayName ?? user.displayName ?? user.membershipId}</p>
-            </Link>
+            {user.url ? (
+                <Link href={user.url} className={styles["username"]}>
+                    <p>{user.displayName}</p>
+                </Link>
+            ) : (
+                <span className={styles["username"]}>
+                    <p>{user.displayName}</p>
+                </span>
+            )}
         </div>
     )
 }
