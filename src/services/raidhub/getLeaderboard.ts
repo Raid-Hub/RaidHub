@@ -32,10 +32,11 @@ type RRLeaderboardEntryUser = {
 }
 
 export async function getLeaderboard(params: string[], page: number) {
+    // this is temporary until our own API is up
     const url = new URL(
-        `https://api.raidreport.dev/raid/leaderboard/${params.join(
-            "/"
-        )}?page=${page}&pageSize=${ENTRIES_PER_PAGE}`
+        `https://api.raidreport.dev/raid/leaderboard/${params
+            .map(p => (p === "regicide" || p === "temposedge" ? "challenge" : p))
+            .join("/")}?page=${page}&pageSize=${ENTRIES_PER_PAGE}`
     )
     const res = await fetch(url, {
         method: "GET"

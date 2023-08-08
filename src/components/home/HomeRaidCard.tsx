@@ -1,5 +1,11 @@
 import styles from "../../styles/pages/home.module.css"
-import { AvailableRaid, RaidToUrlPaths } from "../../types/raids"
+import {
+    AvailableRaid,
+    Difficulty,
+    DifficultyToUrlPaths,
+    RaidHashes,
+    RaidToUrlPaths
+} from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
@@ -27,37 +33,62 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
                     <h4>{strings.worldFirstLeaderboards}</h4>
-                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}>
-                        <p>{strings.clickToView}</p>
-                    </Link>
+                    <ul>
+                        {Object.keys(RaidHashes[raid])
+                            .map(key => Number(key) as Difficulty)
+                            .sort((a, b) => 32 - a - b) // gets the challenge difficulties on top
+                            .map(difficulty => {
+                                return (
+                                    difficulty !== Difficulty.GUIDEDGAMES &&
+                                    difficulty !== Difficulty.NA &&
+                                    difficulty !== Difficulty.CONTEST && (
+                                        <li key={difficulty}>
+                                            <Link
+                                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/${DifficultyToUrlPaths[difficulty]}`}>
+                                                {strings.difficulty[difficulty]}
+                                            </Link>
+                                        </li>
+                                    )
+                                )
+                            })}
+                    </ul>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.rtaSpeedrunLeaderboards}</h4>
-                    {Object.keys(SpeedrunVariableValues[raid]).length ? (
-                        Object.entries(SpeedrunVariableValues[raid]).map(
-                            ([type, { id, name: key }]) => (
-                                <Link
-                                    href={`/leaderboards/${
-                                        RaidToUrlPaths[raid]
-                                    }/speedrun/rta/${encodeURIComponent(type)}`}
-                                    key={id}>
-                                    <p>{strings.leaderboards[key]}</p>
-                                </Link>
+                    <ul>
+                        {Object.keys(SpeedrunVariableValues[raid]).length ? (
+                            Object.entries(SpeedrunVariableValues[raid]).map(
+                                ([type, { id, name: key }]) => (
+                                    <li key={id}>
+                                        <Link
+                                            href={`/leaderboards/${
+                                                RaidToUrlPaths[raid]
+                                            }/speedrun/rta/${encodeURIComponent(type)}`}>
+                                            {strings.leaderboards[key]}
+                                        </Link>
+                                    </li>
+                                )
                             )
-                        )
-                    ) : (
-                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
-                            <p>{strings.leaderboards.anyPercent}</p>
-                        </Link>
-                    )}
+                        ) : (
+                            <li>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
+                                    {strings.leaderboards.anyPercent}
+                                </Link>
+                            </li>
+                        )}
+                    </ul>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.apiSpeedrunLeaderboards}</h4>
-                    <p>{strings.comingSoon}</p>
+                    <ul>
+                        <li>{strings.comingSoon}</li>
+                    </ul>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.clearsLeaderboards}</h4>
-                    <p>{strings.comingSoon}</p>
+                    <ul>
+                        <li>{strings.comingSoon}</li>
+                    </ul>
                 </div>
             </div>
         </div>

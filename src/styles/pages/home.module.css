@@ -56,13 +56,19 @@
 }
 
 .content-section h4 {
+    font-size: large;
     font-weight: 400;
     margin: 1em auto 0.5em auto;
 }
 
-.content-section p {
-    font-weight: 300;
-    font-size: small;
+.content-section ul {
+    padding-inline-start: 1em;
+}
 
-    margin: 0.5em auto 0.5em 1.5em;
+.content-section li {
+    display: block;
+    font-weight: 300;
+    font-size: medium;
+
+    margin: 0.5em auto 0.5em;
 }
