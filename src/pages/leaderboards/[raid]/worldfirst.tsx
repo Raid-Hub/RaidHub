@@ -3,17 +3,8 @@ import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
 import {
     AvailableRaid,
-    Difficulty,
-    DifficultyToUrlPaths,
-    NoContestRaid,
-    NoContestRaids,
-    RaidHashes,
     RaidToUrlPaths,
     RaidsWithReprisedContest,
-    ReprisedContestDifficultyDictionary,
-    ReprisedContestRaidDifficulties,
-    ReprisedRaid,
-    UrlPathsToDifficulty,
     UrlPathsToRaid
 } from "../../../types/raids"
 import { ReleaseDate } from "../../../util/destiny/raid"

@@ -1,11 +1,5 @@
 import styles from "../../styles/pages/home.module.css"
-import {
-    AvailableRaid,
-    Difficulty,
-    DifficultyToUrlPaths,
-    RaidHashes,
-    RaidToUrlPaths
-} from "../../types/raids"
+import { AvailableRaid, RaidToUrlPaths } from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
