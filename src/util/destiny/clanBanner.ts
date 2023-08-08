@@ -2,32 +2,33 @@ import { ClanBanner } from "bungie-net-core/lib/models"
 import { RGBA } from "./manifest"
 import { indexDB } from "../../util/dexie"
 
+type ClanBannerDataPart = {
+    path: string
+    color: string
+}
 export type ClanBannerData = {
-    decalPrimary: string
-    decalPrimaryColor: string
-    decalSecondary: string
-    decalSecondaryColor: string
-    gonfalcons: string
-    gonfalconsColor: string
-    decalTop: string
-    decalTopColor: string
+    decalPrimary: ClanBannerDataPart
+    decalSecondary: ClanBannerDataPart
+    gonfalcons: ClanBannerDataPart
+    decalTop: ClanBannerDataPart
 }
 
 export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerData> {
+    console.log(banner)
     const [
         decalPrimaryColor,
         decalSecondaryColor,
-        { foregroundPath: decalPrimary, backgroundPath: decalSecondary },
-        gonfalcons,
+        { foregroundPath: decalPrimaryPath, backgroundPath: decalSecondaryPath },
+        gonfalconsPath,
         gonfalconsColor,
         decalTopColor,
-        decalTop
+        decalTopPath
     ] = await Promise.all([
         indexDB.clanBannerDecalPrimaryColors.get({ hash: banner.decalColorId }).then(RGBAToHex),
         indexDB.clanBannerDecalSecondaryColors
             .get({ hash: banner.decalBackgroundColorId })
             .then(RGBAToHex),
-        indexDB.clanBannerDecalsSquare
+        indexDB.clanBannerDecals
             .get({ hash: banner.decalId })
             .then(d => d ?? { foregroundPath: "", backgroundPath: "" }),
 
@@ -36,20 +37,28 @@ export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerD
         indexDB.clanBannerGonfalonDetailColors
             .get({ hash: banner.gonfalonDetailColorId })
             .then(RGBAToHex),
-        indexDB.clanBannerGonfalonDetailsSquare
+        indexDB.clanBannerGonfalonDetails
             .get({ hash: banner.gonfalonDetailId })
             .then(d => d?.value ?? "")
     ] as const)
 
     return {
-        decalPrimaryColor,
-        decalSecondaryColor,
-        decalPrimary,
-        decalSecondary,
-        gonfalcons,
-        gonfalconsColor,
-        decalTopColor,
-        decalTop
+        decalPrimary: {
+            path: decalPrimaryPath,
+            color: decalPrimaryColor
+        },
+        decalSecondary: {
+            path: decalSecondaryPath,
+            color: decalSecondaryColor
+        },
+        decalTop: {
+            path: decalTopPath,
+            color: decalTopColor
+        },
+        gonfalcons: {
+            path: gonfalconsPath,
+            color: gonfalconsColor
+        }
     }
 }
 

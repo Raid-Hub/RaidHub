@@ -84,23 +84,21 @@ export async function updateCachedManifest({
                             : { hash: Number(hash), ...def }
                     )
                 return Promise.all([
-                    indexDB.clanBannerDecals.bulkPut(hash("clanBannerDecals")),
                     indexDB.clanBannerDecalPrimaryColors.bulkPut(
                         hash("clanBannerDecalPrimaryColors")
                     ),
                     indexDB.clanBannerDecalSecondaryColors.bulkPut(
                         hash("clanBannerDecalSecondaryColors")
                     ),
-                    indexDB.clanBannerGonfalons.bulkPut(hash("clanBannerGonfalons")),
+                    indexDB.clanBannerDecals.bulkPut(hash("clanBannerDecals")),
+                    // indexDB.clanBannerDecalsSquare.bulkPut(hash("clanBannerDecalsSquare")),
                     indexDB.clanBannerGonfalonColors.bulkPut(hash("clanBannerGonfalonColors")),
-                    indexDB.clanBannerGonfalonDetails.bulkPut(hash("clanBannerGonfalonDetails")),
                     indexDB.clanBannerGonfalonDetailColors.bulkPut(
                         hash("clanBannerGonfalonDetailColors")
                     ),
-                    indexDB.clanBannerDecalsSquare.bulkPut(hash("clanBannerDecalsSquare")),
-                    indexDB.clanBannerGonfalonDetailsSquare.bulkPut(
-                        hash("clanBannerGonfalonDetailsSquare")
-                    )
+                    indexDB.clanBannerGonfalonDetails.bulkPut(hash("clanBannerGonfalonDetails")),
+                    // indexDB.clanBannerGonfalonDetailsSquare.bulkPut(hash("clanBannerGonfalonDetailsSquare")),
+                    indexDB.clanBannerGonfalons.bulkPut(hash("clanBannerGonfalons"))
                 ])
             })
     ])

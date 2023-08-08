@@ -2,7 +2,7 @@ import Dexie, { Table } from "dexie"
 import { CachedEmblem, CachedWeapon, RGBA } from "./destiny/manifest"
 
 export type Hashed<T> = { hash: number } & T
-type CBFB = {
+type ForegroundBackground = {
     foregroundPath: string
     backgroundPath: string
 }
@@ -12,30 +12,30 @@ class CustomDexie extends Dexie {
     // We just tell the typing system this is the case
     weapons!: Table<Hashed<CachedWeapon>>
     emblems!: Table<Hashed<CachedEmblem>>
-    clanBannerDecals!: Table<Hashed<CBFB>>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
-    clanBannerGonfalons!: Table<Hashed<{ value: string }>>
+    clanBannerDecals!: Table<Hashed<ForegroundBackground>>
+    // clanBannerDecalsSquare!: Table<Hashed<ForegroundBackground>>
     clanBannerGonfalonColors!: Table<Hashed<RGBA>>
-    clanBannerGonfalonDetails!: Table<Hashed<{ value: string }>>
     clanBannerGonfalonDetailColors!: Table<Hashed<RGBA>>
-    clanBannerDecalsSquare!: Table<Hashed<CBFB>>
-    clanBannerGonfalonDetailsSquare!: Table<Hashed<{ value: string }>>
+    clanBannerGonfalonDetails!: Table<Hashed<{ value: string }>>
+    // clanBannerGonfalonDetailsSquare!: Table<Hashed<{ value: string }>>
+    clanBannerGonfalons!: Table<Hashed<{ value: string }>>
 
     constructor() {
         super("app")
         this.version(1).stores({
             weapons: "hash",
             emblems: "hash",
-            clanBannerDecals: "hash",
             clanBannerDecalPrimaryColors: "hash",
             clanBannerDecalSecondaryColors: "hash",
-            clanBannerGonfalons: "hash",
+            clanBannerDecals: "hash",
+            // clanBannerDecalsSquare: "hash",
             clanBannerGonfalonColors: "hash",
-            clanBannerGonfalonDetails: "hash",
             clanBannerGonfalonDetailColors: "hash",
-            clanBannerDecalsSquare: "hash",
-            clanBannerGonfalonDetailsSquare: "hash"
+            clanBannerGonfalonDetails: "hash",
+            // clanBannerGonfalonDetailsSquare: "hash",
+            clanBannerGonfalons: "hash"
         })
     }
 }
