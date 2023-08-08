@@ -57,7 +57,7 @@ export async function getLeaderboard(params: string[], page: number) {
                                 iconURL:
                                     "https://www.bungie.net/common/destiny2_content/icons/" +
                                     usr.iconPath,
-                                displayName: usr.displayName,
+                                displayName: usr.bungieGlobalDisplayName || usr.displayName,
                                 url: `/profile/${usr.membershipType}/${usr.membershipId}`
                             } satisfies LeaderboardEntryParticipant)
                     )

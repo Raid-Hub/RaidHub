@@ -26,7 +26,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             </div>
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
-                    <h4>{strings.worldsFirstLeaderboards}</h4>
+                    <h4>{strings.worldFirstLeaderboards}</h4>
                     <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}>
                         <p>{strings.clickToView}</p>
                     </Link>
@@ -50,6 +50,10 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                             <p>{strings.leaderboards.anyPercent}</p>
                         </Link>
                     )}
+                </div>
+                <div className={styles["content-section"]}>
+                    <h4>{strings.apiSpeedrunLeaderboards}</h4>
+                    <p>{strings.comingSoon}</p>
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.clearsLeaderboards}</h4>

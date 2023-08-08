@@ -25,7 +25,10 @@ const LeaderboardEntryComponent = ({ entry }: { entry: LeaderboardEntry }) => {
                     />
                 </Link>
             )}
-            <Link href={entry.url} className={styles["entry-time"]}>
+            <Link
+                href={entry.url}
+                className={styles["entry-time"]}
+                target={entry.url.startsWith("/") ? "" : "_blank"}>
                 {secondsToHMS(entry.timeInSeconds, true)}
             </Link>
         </div>

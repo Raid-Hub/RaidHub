@@ -30,8 +30,9 @@ export interface LocalStrings {
     loadMore: string
     difficulty: { [key in Difficulty]: string }
     killsPerMinute: string
-    worldsFirstLeaderboards: string
+    worldFirstLeaderboards: string
     rtaSpeedrunLeaderboards: string
+    apiSpeedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
     bannerTitles: { [key in RankingBannerType]: string }
@@ -142,8 +143,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGE_CROTA]: "Unknown"
         },
         killsPerMinute: "Kills / Minute",
-        worldsFirstLeaderboards: "World's First Leaderboards",
+        worldFirstLeaderboards: "World First Leaderboards",
         rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",
+        apiSpeedrunLeaderboards: "API Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
         bannerTitles: {

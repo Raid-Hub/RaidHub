@@ -19,7 +19,10 @@ const LeaderboardEntryUser = ({ user }: { user: LeaderboardEntryParticipant }) =
                 />
             </div>
             {user.url ? (
-                <Link href={user.url} className={styles["username"]}>
+                <Link
+                    href={user.url}
+                    className={styles["username"]}
+                    target={user.url.startsWith("/") ? "" : "_blank"}>
                     <p>{user.displayName}</p>
                 </Link>
             ) : (
