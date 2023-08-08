@@ -79,7 +79,9 @@ export async function updateCachedManifest({
                         : RawClanBannerData[K][string]
                 >[] =>
                     Object.entries(banners[key]).map(([hash, def]) =>
-                        typeof def === "string" ? { hash, value: def } : { hash, ...def }
+                        typeof def === "string"
+                            ? { hash: Number(hash), value: def }
+                            : { hash: Number(hash), ...def }
                     )
                 return Promise.all([
                     indexDB.clanBannerDecals.bulkPut(hash("clanBannerDecals")),
@@ -111,7 +113,7 @@ function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefi
         .map(
             ([hash, def]) =>
                 ({
-                    hash,
+                    hash: Number(hash),
                     name: def.displayProperties.name,
                     icon: def.displayProperties.icon,
                     type: def.itemTypeDisplayName ?? "Classified"
@@ -122,5 +124,8 @@ function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefi
 function processEmblems(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
     return Object.entries(items)
         .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
-        .map(([hash, def]) => ({ hash, banner: def.secondarySpecial } as Hashed<CachedEmblem>))
+        .map(
+            ([hash, def]) =>
+                ({ hash: Number(hash), banner: def.secondarySpecial } as Hashed<CachedEmblem>)
+        )
 }

@@ -14,7 +14,7 @@ type SummaryStatsProps = {
 const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
     const { locale, strings } = useLocale()
     const stats = useMemo(() => activity?.stats, [activity])
-    const weapon = useWeapon(stats?.mostUsedWeapon?.hash.toString() ?? null)
+    const weapon = useWeapon(stats?.mostUsedWeapon?.hash ?? null)
     const statsData: {
         icon: StaticImageData
         name: string

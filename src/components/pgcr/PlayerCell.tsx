@@ -30,7 +30,7 @@ const PlayerCell = ({
         [memberIndex, index]
     )
 
-    const emblem = useEmblem(member.banner.toString())
+    const emblem = useEmblem(member.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
     const icon = member.characters[0].logo

@@ -29,7 +29,7 @@ const SelectedPlayer = ({
         [member, characterIndex]
     )
 
-    const emblem = useEmblem(character.banner.toString())
+    const emblem = useEmblem(character.banner)
 
     const classString =
         characterIndex != -1

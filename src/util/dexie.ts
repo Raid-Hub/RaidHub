@@ -1,7 +1,7 @@
 import Dexie, { Table } from "dexie"
 import { CachedEmblem, CachedWeapon, RGBA } from "./destiny/manifest"
 
-export type Hashed<T> = { hash: string } & T
+export type Hashed<T> = { hash: number } & T
 type CBFB = {
     foregroundPath: string
     backgroundPath: string

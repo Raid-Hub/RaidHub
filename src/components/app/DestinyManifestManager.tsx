@@ -62,16 +62,19 @@ export default DestinyManifestManager
 
 const useManifestVersion = () => useContext(DestinyManifestContext)
 
-export function useEmblem(hash: string): CachedEmblem | null {
+export function useEmblem(hash: number | null): CachedEmblem | null {
     const manifestVersion = useManifestVersion()
 
-    const emblem = useLiveQuery(() => indexDB.emblems.get({ hash }), [hash, manifestVersion])
+    const emblem = useLiveQuery(
+        () => (hash ? indexDB.emblems.get({ hash }) : undefined),
+        [hash, manifestVersion]
+    )
     console.log(emblem)
 
     return emblem ?? null
 }
 
-export function useWeapon(hash: string | null): CachedWeapon | null {
+export function useWeapon(hash: number | null): CachedWeapon | null {
     const manifestVersion = useManifestVersion()
     const weapon = useLiveQuery(
         () => (hash ? indexDB.weapons.get({ hash }) : undefined),

@@ -12,7 +12,7 @@ type PlayerStatCellProps = {
 
 const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
-    const weapon = useWeapon(entry.weapons.first()?.hash.toString() ?? null)
+    const weapon = useWeapon(entry.weapons.first()?.hash ?? null)
     const statsData: {
         icon: StaticImageData
         name: string
