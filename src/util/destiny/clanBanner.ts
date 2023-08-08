@@ -41,17 +41,6 @@ export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerD
             .then(d => d?.value ?? "")
     ] as const)
 
-    console.log({
-        decalPrimaryColor,
-        decalSecondaryColor,
-        decalPrimary,
-        decalSecondary,
-        gonfalcons,
-        gonfalconsColor,
-        decalTopColor,
-        decalTop
-    })
-
     return {
         decalPrimaryColor,
         decalSecondaryColor,
