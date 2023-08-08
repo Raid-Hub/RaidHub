@@ -32,27 +32,11 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             </div>
             <div className={styles["card-content"]}>
                 <div className={styles["content-section"]}>
-                    <h4>{strings.worldFirstLeaderboards}</h4>
-                    <ul>
-                        {Object.keys(RaidHashes[raid])
-                            .map(key => Number(key) as Difficulty)
-                            .sort((a, b) => 32 - a - b) // gets the challenge difficulties on top
-                            .map(difficulty => {
-                                return (
-                                    difficulty !== Difficulty.GUIDEDGAMES &&
-                                    difficulty !== Difficulty.NA &&
-                                    difficulty !== Difficulty.CONTEST && (
-                                        <li key={difficulty}>
-                                            <Link
-                                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/${DifficultyToUrlPaths[difficulty]}`}>
-                                                {strings.difficulty[difficulty]}
-                                            </Link>
-                                        </li>
-                                    )
-                                )
-                            })}
-                    </ul>
+                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}>
+                        <h4>{strings.worldFirstLeaderboards}</h4>
+                    </Link>
                 </div>
+
                 <div className={styles["content-section"]}>
                     <h4>{strings.rtaSpeedrunLeaderboards}</h4>
                     <ul>
@@ -88,6 +72,30 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     <h4>{strings.clearsLeaderboards}</h4>
                     <ul>
                         <li>{strings.comingSoon}</li>
+                    </ul>
+                </div>
+                <div className={styles["content-section"]}>
+                    <h4>{strings.otherLeaderboards}</h4>
+                    <ul>
+                        <li>{strings.comingSoon}</li>
+                        {/* {Object.keys(RaidHashes[raid])
+                            .map(key => Number(key) as Difficulty)
+                            .sort((a, b) => 32 - a - b) // gets the challenge difficulties on top
+                            .map(difficulty => {
+                                return (
+                                    difficulty !== Difficulty.GUIDEDGAMES &&
+                                    difficulty !== Difficulty.NA &&
+                                    difficulty !== Difficulty.CONTEST &&
+                                    difficulty !== Difficulty.NORMAL && (
+                                        <li key={difficulty}>
+                                            <Link
+                                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/${DifficultyToUrlPaths[difficulty]}`}>
+                                                {strings.difficulty[difficulty]}
+                                            </Link>
+                                        </li>
+                                    )
+                                )
+                            })} */}
                     </ul>
                 </div>
             </div>
