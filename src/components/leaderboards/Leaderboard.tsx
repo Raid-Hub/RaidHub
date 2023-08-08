@@ -36,8 +36,7 @@ const Leaderboard = ({
 }: LeaderboardProps) => {
     const { strings } = useLocale()
 
-    const hasMorePages = true // todo
-
+    const hasMorePages = isLoading || entries.length === ENTRIES_PER_PAGE
     const handleForwards = () => {
         setPage(page + 1)
     }
@@ -77,7 +76,7 @@ const Leaderboard = ({
                 {(!isLoading &&
                     entries.map((e, idx) => (
                         <Fragment key={e.id}>
-                            <LeaderboardEntryComponent entry={e} rank={e.rank} />
+                            <LeaderboardEntryComponent entry={e} />
                             {idx < entries.length - 1 && (
                                 <hr className={styles["leaderboard-divider"]} />
                             )}

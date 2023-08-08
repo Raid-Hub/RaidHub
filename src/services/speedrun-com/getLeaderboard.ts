@@ -1,13 +1,26 @@
 import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
 import { AvailableRaid } from "../../types/raids"
-import { SpeedrunIds } from "../../util/speedrun-com/speedrun-ids"
+import {
+    SpeedrunIds,
+    SpeedrunVariableIds,
+    SpeedrunVariableValues
+} from "../../util/speedrun-com/speedrun-ids"
 
 const destiny2GameId = "4d7y5zd7"
-
-export async function getLeaderboard(raid: AvailableRaid): Promise<LeaderboardEntry[]> {
+//
+export async function getLeaderboard<R extends AvailableRaid>(
+    raid: R,
+    subCategory?: keyof (typeof SpeedrunVariableValues)[R]
+): Promise<LeaderboardEntry[]> {
     const url = new URL(
         `https://www.speedrun.com/api/v1/leaderboards/${destiny2GameId}/category/${SpeedrunIds[raid]}?embed=players`
     )
+    subCategory &&
+        url.searchParams.append(
+            `var-${SpeedrunVariableIds[raid]}`,
+            SpeedrunVariableValues[raid][subCategory].id
+        )
+
     const res = await fetch(url, {
         method: "GET"
     })
@@ -39,6 +52,7 @@ export async function getLeaderboard(raid: AvailableRaid): Promise<LeaderboardEn
                             } satisfies LeaderboardEntryParticipant
                         }
                     }),
+                    videoURL: r.run.videos.links[0]?.uri,
                     timeInSeconds: r.run.times.primary_t
                 } satisfies LeaderboardEntry)
         )

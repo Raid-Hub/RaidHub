@@ -4,6 +4,7 @@ import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Link from "next/link"
+import { SpeedrunVariableValues } from "../../util/speedrun-com/speedrun-ids"
 
 type HomeRaidCardProps = {
     raid: AvailableRaid
@@ -32,9 +33,23 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.rtaSpeedrunLeaderboards}</h4>
-                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
-                        <p>{strings.clickToView}</p>
-                    </Link>
+                    {Object.keys(SpeedrunVariableValues[raid]).length ? (
+                        Object.entries(SpeedrunVariableValues[raid]).map(
+                            ([type, { id, name: key }]) => (
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta${
+                                        type === "standard" ? "" : "/" + type
+                                    }`}
+                                    key={id}>
+                                    <p>{strings.leaderboards[key]}</p>
+                                </Link>
+                            )
+                        )
+                    ) : (
+                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
+                            <p>{strings.leaderboards.anyPercent}</p>
+                        </Link>
+                    )}
                 </div>
                 <div className={styles["content-section"]}>
                     <h4>{strings.clearsLeaderboards}</h4>

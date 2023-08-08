@@ -51,7 +51,8 @@
     padding: 1rem;
 }
 
-.content-section {
+.content-section a {
+    color: var(--brand-orange-light);
 }
 
 .content-section h4 {

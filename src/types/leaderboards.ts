@@ -4,6 +4,7 @@ export type LeaderboardEntry = {
     url: string
     participants: LeaderboardEntryParticipant[]
     timeInSeconds: number
+    videoURL?: string
 }
 
 export type LeaderboardEntryParticipant = {
