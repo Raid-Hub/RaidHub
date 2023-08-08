@@ -27,7 +27,7 @@ export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> =
                 ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
                       params: {
                           raid: basePath,
-                          board: [path]
+                          board: [encodeURIComponent(path)]
                       }
                   }))
                 : []),
