@@ -10,7 +10,7 @@ const developers = ["Newo", "Bruce", "Theos"]
 const raidHubMailAddress = "raidhub@support.com"
 const contactIcons: { url: string; id: Socials }[] = [
     {
-        url: `https://discord.gg/`,
+        url: `https://discord.gg/raidhub`,
         id: Socials.Discord
     },
     {
