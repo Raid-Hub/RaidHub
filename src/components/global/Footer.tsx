@@ -14,7 +14,7 @@ const contactIcons: { url: string; id: Socials }[] = [
         id: Socials.Discord
     },
     {
-        url: "https://www.twitter.com/raidhub",
+        url: "https://www.twitter.com/raidhubapp",
         id: Socials.Twitter
     },
     {
