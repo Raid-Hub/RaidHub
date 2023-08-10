@@ -6,7 +6,6 @@ export type UseLocalStorage<V> = {
 }
 
 export const useLocalStorage = <V>(key: string, defaultVaule: V): UseLocalStorage<V> => {
-    type X = typeof defaultVaule
     const [_value, setValue] = useState<V>(defaultVaule)
 
     useEffect(() => {

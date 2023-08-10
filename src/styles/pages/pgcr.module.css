@@ -266,28 +266,32 @@
     height: 100%;
 
     margin-left: auto;
-    padding-right: 1em;
+    padding-right: 0.5em;
     display: flex;
     justify-content: flex-end;
-
-    background: linear-gradient(to right, #45454500, #0000002f, #00000066, #00000099);
 }
 
 .score-only {
     align-self: center;
 
-    font-size: medium;
+    text-align: left;
+    min-width: 6.5ch;
+
+    font-size: large;
     font-style: italic;
     font-weight: 500;
 
     color: var(--search-text);
+
+    border-radius: 5px;
+
+    background-color: rgba(0, 0, 0, 0.091);
+    box-shadow: 0 0px 5px 5px rgba(29, 29, 29, 0.145);
 }
 
 .quick-stats {
     margin-left: 0.5em;
     max-width: 100%;
-    overflow-y: none;
-
     padding: 0.6em 0;
 
     display: flex;
@@ -519,7 +523,7 @@
 }
 
 .entry-card.dnf span {
-    color: rgb(96, 70, 70);
+    color: rgb(143, 126, 126);
 }
 
 .entry-card.dnf img {

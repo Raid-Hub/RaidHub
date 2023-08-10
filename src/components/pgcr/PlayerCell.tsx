@@ -90,9 +90,9 @@ const PlayerCell = ({
                         alt={member.displayName + " went flawless this raid"}
                     />
                 ) : showScore ? (
-                    <div className={styles["score-only"]}>
+                    <span className={styles["score-only"]}>
                         {formattedNumber(weightedScore, locale)}
-                    </div>
+                    </span>
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
