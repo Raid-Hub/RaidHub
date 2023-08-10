@@ -4,16 +4,17 @@ import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
-import { useWeapons } from "../app/DestinyManifestManager"
+import { useWeapon } from "../app/DestinyManifestManager"
+import { useMemo } from "react"
 
 type SummaryStatsProps = {
     activity: DestinyPGCR | undefined | null
 }
 
 const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
-    const { language, locale, strings } = useLocale()
-    const weapons = useWeapons()
-    const stats = activity?.stats
+    const { locale, strings } = useLocale()
+    const stats = useMemo(() => activity?.stats, [activity])
+    const weapon = useWeapon(stats?.mostUsedWeapon?.hash ?? null)
     const statsData: {
         icon: StaticImageData
         name: string
@@ -61,7 +62,7 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: stats?.mostUsedWeapon ? weapons[stats.mostUsedWeapon.hash]?.name : strings.none
+            value: weapon?.name ?? strings.none
         }
     ]
     return (

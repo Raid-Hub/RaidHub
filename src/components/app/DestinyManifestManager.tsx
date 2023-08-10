@@ -1,17 +1,13 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import {
-    CachedEmblem,
-    CachedWeapon,
-    KEY_CLANBANNERS,
-    KEY_EMBLEMS,
-    KEY_WEAPONS,
-    RawClanBannerData,
-    updateCachedManifest
-} from "../../util/destiny/manifest"
+import { CachedEmblem, CachedWeapon, updateCachedManifest } from "../../util/destiny/manifest"
 import { useBungieClient } from "./TokenManager"
 import { getDestinyManifest } from "bungie-net-core/lib/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import { useLiveQuery } from "dexie-react-hooks"
+import { indexDB } from "../../util/dexie"
+import { ClanBanner } from "bungie-net-core/lib/models"
+import { ClanBannerData, resolveClanBanner } from "../../util/destiny/clanBanner"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
 
@@ -66,48 +62,35 @@ export default DestinyManifestManager
 
 const useManifestVersion = () => useContext(DestinyManifestContext)
 
-export function useEmblems(): Record<string, CachedEmblem> {
+export function useEmblem(hash: number | null): CachedEmblem | null {
     const manifestVersion = useManifestVersion()
-    const [emblems, setEmblems] = useState<Record<string, CachedEmblem>>({})
 
-    useEffect(() => {
-        const fromStore = localStorage.getItem(KEY_EMBLEMS)
-        fromStore && setEmblems(JSON.parse(fromStore))
-    }, [manifestVersion])
+    const emblem = useLiveQuery(
+        () => (hash ? indexDB.emblems.get({ hash }) : undefined),
+        [hash, manifestVersion]
+    )
+    console.log(emblem)
 
-    return emblems
+    return emblem ?? null
 }
 
-export function useWeapons(): Record<string, CachedWeapon> {
+export function useWeapon(hash: number | null): CachedWeapon | null {
     const manifestVersion = useManifestVersion()
-    const [weapons, setWeapons] = useState<Record<string, CachedWeapon>>({})
+    const weapon = useLiveQuery(
+        () => (hash ? indexDB.weapons.get({ hash }) : undefined),
+        [hash, manifestVersion]
+    )
 
-    useEffect(() => {
-        const fromStore = localStorage.getItem(KEY_WEAPONS)
-        fromStore && setWeapons(JSON.parse(fromStore))
-    }, [manifestVersion])
-
-    return weapons
+    return weapon ?? null
 }
 
-export function useClanBanners(): RawClanBannerData {
+export function useClanBanner(banner: ClanBanner | null): ClanBannerData | null {
     const manifestVersion = useManifestVersion()
-    const [clanBanners, setClanBanners] = useState<RawClanBannerData>({
-        clanBannerDecals: {},
-        clanBannerDecalPrimaryColors: {},
-        clanBannerDecalSecondaryColors: {},
-        clanBannerGonfalons: {},
-        clanBannerGonfalonColors: {},
-        clanBannerGonfalonDetails: {},
-        clanBannerGonfalonDetailColors: {},
-        clanBannerDecalsSquare: {},
-        clanBannerGonfalonDetailsSquare: {}
-    })
 
-    useEffect(() => {
-        const fromStore = localStorage.getItem(KEY_CLANBANNERS)
-        fromStore && setClanBanners(JSON.parse(fromStore))
-    }, [manifestVersion])
+    const clanBanners = useLiveQuery(
+        () => (banner ? resolveClanBanner(banner) : null),
+        [banner, manifestVersion]
+    )
 
-    return clanBanners
+    return clanBanners ?? null
 }

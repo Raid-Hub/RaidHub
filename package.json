@@ -30,6 +30,8 @@
         "@tanstack/react-query": "^4.32.6",
         "aws-sdk": "^2.1417.0",
         "bungie-net-core": "^1.1.7",
+        "dexie": "^3.2.4",
+        "dexie-react-hooks": "^1.1.6",
         "formidable": "^3.5.0",
         "framer-motion": "^10.13.0",
         "next": "^13.1.6",
