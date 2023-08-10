@@ -1,6 +1,7 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import styles from "../../styles/reusable-components.module.css"
 import { AnimatePresence, motion } from "framer-motion"
+import { wait } from "../../util/wait"
 
 const KebabMenu = ({
     size,
@@ -15,13 +16,30 @@ const KebabMenu = ({
     const handleClick = (event: React.MouseEvent<SVGElement>) => {
         setIsOpen(old => !old)
     }
+    const ref = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (!ref.current?.contains(e.target as Node)) {
+                setIsOpen(false)
+            }
+        }
+        if (ref.current && isOpen) {
+            wait(100).then(() => {
+                window.addEventListener("click", handleClickOutside)
+            })
+        }
+        return () => {
+            window.removeEventListener("click", handleClickOutside)
+        }
+    }, [isOpen, ref.current])
 
     const radius = `${size / 8}px`
     const height = `${size / 2}px`
     const width = `${size}px`
     const padding = `${size / 10}px`
     return (
-        <div className={styles["kebab-menu"]} style={{ padding }}>
+        <div ref={ref} className={styles["kebab-menu"]} style={{ padding }}>
             <svg
                 height={height}
                 width={width}

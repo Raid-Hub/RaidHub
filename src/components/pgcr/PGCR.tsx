@@ -10,8 +10,8 @@ import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
 import { Collection } from "@discordjs/collection"
 import KebabMenu from "../reusable/KebabMenu"
-import { useLocaleStorage } from "../../hooks/util/useLocalStorage"
 import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
+import { useLocalStorage } from "../../hooks/util/useLocalStorage"
 
 export type PGCRProps = {
     activityId: string
@@ -20,7 +20,9 @@ export type PGCRProps = {
 
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
-    const { value: prefs, save: savePrefs } = useLocaleStorage<PGCRSettings>("pgcr_prefs")
+    const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>("pgcr_prefs", {
+        showScore: false
+    })
 
     return (
         <>

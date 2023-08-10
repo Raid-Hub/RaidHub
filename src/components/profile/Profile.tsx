@@ -4,7 +4,6 @@ import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
 import PinnedActivity from "./mid/PinnedActivity"
-import ToggleSwitch from "../reusable/ToggleSwitch"
 import { useState } from "react"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
@@ -19,11 +18,8 @@ import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import { useActivityFilters } from "../../hooks/util/useActivityFilters"
 import Loading from "../global/Loading"
-
-export enum Layout {
-    DotCharts,
-    RecentActivities
-}
+import LayoutToggle, { Layout } from "./mid/LayoutToggle"
+import { useLocalStorage } from "../../hooks/util/useLocalStorage"
 
 type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
@@ -69,7 +65,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
     )
 
     // LAYOUT
-    const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
+    const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
 
     const handleLayoutToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
@@ -131,7 +127,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                 ) : (
                     <Loading wrapperClass={styles["pinned-activity-loading"]} />
                 )}
-                <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
+                <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
                 {!isLoadingFilters && (
                     <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
                 )}

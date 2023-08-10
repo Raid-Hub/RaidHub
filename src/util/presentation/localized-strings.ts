@@ -43,10 +43,8 @@ export interface LocalStrings {
     sherpas: string
     na: string
     checkpoints: { [key in Raid]: string }
-    toggle: {
-        charts: string
-        tiles: string
-    }
+    charts: string
+    tiles: string
     viewProfile: string
     inGame: string
     elapsedTime: string
@@ -177,10 +175,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.CROTAS_END]: "Crota",
             [Raid.NA]: ""
         },
-        toggle: {
-            charts: "Charts",
-            tiles: "Tiles"
-        },
+        charts: "Charts",
+        tiles: "Tiles",
         viewProfile: "View Profile",
         inGame: "In Game",
         elapsedTime: "Elapsed time",

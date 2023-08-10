@@ -16,7 +16,8 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
             <div style={{ display: "flex", gap: "1em" }}>
                 <div>{strings.showScore}</div>
                 <ToggleSwitch
-                    defaultValue={value?.showScore ?? false}
+                    label="show-score"
+                    value={value?.showScore ?? false}
                     onToggle={state => save(old => ({ ...old, showScore: state }))}
                     size={20}
                 />

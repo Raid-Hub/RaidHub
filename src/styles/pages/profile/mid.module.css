@@ -285,3 +285,48 @@
     cursor: pointer;
     background-color: var(--brand-orange);
 }
+
+.layout-toggle {
+    height: 6rem;
+    min-width: min-content;
+    width: 80%;
+    flex: 1;
+
+    padding: 1em;
+
+    background-color: var(--modal-background);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    display: flex;
+    gap: 1.3rem;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+}
+
+.description-toggle {
+    min-width: 4rem;
+    text-align: center;
+    display: block;
+
+    text-transform: uppercase;
+    color: var(--secondary-text);
+    font-size: 0.8em;
+}
+
+.description-toggle:hover {
+    cursor: pointer;
+}
+
+.description-toggle.checked {
+    font-weight: 600;
+    color: var(--tertiary-text);
+}
+
+@media (min-width: 960px) {
+    .description-toggle {
+        font-size: 1em;
+    }
+}

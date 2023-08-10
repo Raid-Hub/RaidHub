@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react"
 
 export type UseLocalStorage<V> = {
-    value: V | null
-    save: (value: V | ((old: V | null) => V)) => void
+    value: V
+    save: (value: V | ((old: V) => V)) => void
 }
 
-export const useLocaleStorage = <V>(key: string): UseLocalStorage<V> => {
-    const [_value, setValue] = useState<V | null>(null)
+export const useLocalStorage = <V>(key: string, defaultVaule: V): UseLocalStorage<V> => {
+    type X = typeof defaultVaule
+    const [_value, setValue] = useState<V>(defaultVaule)
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
-        setValue(fromStore ? JSON.parse(fromStore) : null)
+        setValue(fromStore ? JSON.parse(fromStore) : defaultVaule)
     }, [key])
 
-    function save(value: V | ((old: V | null) => V)) {
+    function save(value: V | ((old: V) => V)) {
         const toSave = typeof value === "function" ? (value as (old: V | null) => V)(_value) : value
         localStorage.setItem(key, JSON.stringify(toSave))
         setValue(toSave)

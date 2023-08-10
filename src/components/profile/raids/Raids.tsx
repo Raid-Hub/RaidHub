@@ -6,8 +6,9 @@ import { useEffect, useMemo } from "react"
 import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
 import { ErrorHandler, FilterCallback } from "../../../types/generic"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
-import { Layout } from "../Profile"
+
 import RecentRaids from "./RecentRaids"
+import { Layout } from "../mid/LayoutToggle"
 
 type RaidsProps = {
     membershipId: string

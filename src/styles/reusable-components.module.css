@@ -58,7 +58,7 @@
     content: "";
     position: absolute;
     top: 5%;
-    left: 2.5%;
+    left: 4%;
     width: 45%;
     height: 90%;
     background: #fff;
@@ -71,6 +71,6 @@
 }
 
 .checkbox:checked + label:after {
-    left: 97.5%;
+    left: 96%;
     transform: translateX(-100%);
 }
