@@ -12,7 +12,7 @@ import DestinyManifestManager from "../components/app/DestinyManifestManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchModal from "../components/global/SearchModal"
 import { QueryClientProvider } from "@tanstack/react-query"
-import reactQueryClient from "../services/reactQueryClient"
+import { reactQueryClient } from "../services/reactQueryClient"
 
 type PageProps = {
     session: Session

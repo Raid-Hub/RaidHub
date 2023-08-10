@@ -266,11 +266,19 @@ export const RaidToUrlPaths = {
 
 // todo with our own api, we can change these
 export const DifficultyToUrlPaths = {
-    [Difficulty.NORMAL]: "normal",
-    [Difficulty.PRESTIGE]: "prestige",
-    [Difficulty.CONTEST]: "normal",
-    [Difficulty.MASTER]: "master",
-    [Difficulty.CHALLENGE_VOG]: "challenge",
-    [Difficulty.CHALLENGE_KF]: "challenge",
-    [Difficulty.CHALLENGE_CROTA]: "challenge"
-} satisfies Partial<Record<Difficulty, string>>
+    [Difficulty.NORMAL]: "normal" as const,
+    [Difficulty.PRESTIGE]: "prestige" as const,
+    [Difficulty.MASTER]: "master" as const,
+    [Difficulty.CHALLENGE_VOG]: "temposedge" as const,
+    [Difficulty.CHALLENGE_KF]: "regicide" as const,
+    [Difficulty.CHALLENGE_CROTA]: "challengecrota" as const
+} satisfies Partial<Record<Difficulty, keyof typeof UrlPathsToDifficulty>>
+
+export const UrlPathsToDifficulty = {
+    normal: Difficulty.NORMAL,
+    prestige: Difficulty.PRESTIGE,
+    master: Difficulty.MASTER,
+    temposedge: Difficulty.CHALLENGE_VOG,
+    regicide: Difficulty.CHALLENGE_KF,
+    challengecrota: Difficulty.CHALLENGE_CROTA
+} satisfies Record<string, Difficulty>

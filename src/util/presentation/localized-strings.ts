@@ -30,8 +30,10 @@ export interface LocalStrings {
     loadMore: string
     difficulty: { [key in Difficulty]: string }
     killsPerMinute: string
-    worldsFirstLeaderboards: string
-    speedrunLeaderboards: string
+    worldFirstLeaderboards: string
+    otherLeaderboards: string
+    rtaSpeedrunLeaderboards: string
+    apiSpeedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
     bannerTitles: { [key in RankingBannerType]: string }
@@ -64,6 +66,15 @@ export interface LocalStrings {
     edit: string
     save: string
     cancel: string
+    leaderboards: {
+        normal: string
+        anyPercent: string
+        prestige: string
+        noMajorGlitches: string
+        allEncounters: string
+        trioAllEncounters: string
+        trio: string
+    }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -133,8 +144,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGE_CROTA]: "Unknown"
         },
         killsPerMinute: "Kills / Minute",
-        worldsFirstLeaderboards: "World's First Leaderboards",
-        speedrunLeaderboards: "Speedrun Leaderboards",
+        worldFirstLeaderboards: "World First Leaderboards",
+        otherLeaderboards: "Other Leaderboards",
+        rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",
+        apiSpeedrunLeaderboards: "API Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
         bannerTitles: {
@@ -206,6 +219,15 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         reset: "Reset",
         edit: "Edit",
         save: "Save",
-        cancel: "Cancel"
+        cancel: "Cancel",
+        leaderboards: {
+            anyPercent: "Any %",
+            trio: "Trio",
+            normal: "Normal",
+            prestige: "Prestige",
+            noMajorGlitches: "No Major Glitches",
+            allEncounters: "All Encounters",
+            trioAllEncounters: "Trio All Encounters"
+        }
     }
 }
