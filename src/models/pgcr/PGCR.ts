@@ -156,6 +156,20 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return tags
     }
 
+    get weightedScores(): Collection<string, number> {
+        const totalScore = this.players.reduce(
+            (runningTotal, current) => runningTotal + current.stats.score,
+            0
+        )
+        const avgScore = totalScore / this.playerCount
+        return new Collection(
+            this.players.map(p => {
+                const percentage = ((p.stats.score - avgScore) / avgScore) * 100
+                return [p.membershipId, 100 + percentage]
+            })
+        )
+    }
+
     title(strings: LocalStrings): string {
         return this.raid ? addModifiers(this.raid, this.tags, strings) : ""
     }

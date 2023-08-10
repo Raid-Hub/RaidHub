@@ -7,17 +7,20 @@ import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 import { useRouter } from "next/router"
 import { IPGCREntry } from "../../types/pgcr"
+import { Collection } from "@discordjs/collection"
 
 type ParticipantsProps = {
     players: PGCRPlayer[] | null
     completed: boolean
     pgcrLoadingState: Loading
+    weightedScores: Collection<string, number>
 }
 
 const ParticipantsSection = ({
     players: members,
     pgcrLoadingState,
-    completed
+    completed,
+    weightedScores
 }: ParticipantsProps) => {
     const router = useRouter()
 
@@ -124,7 +127,7 @@ const ParticipantsSection = ({
                     />
                 )}
                 <div className={[styles["grid"], cardLayout].join(" ")}>
-                    {entry && <StatCards entry={entry} />}
+                    {entry && <StatCards entry={entry} weightedScores={weightedScores} />}
                 </div>
             </>
         )

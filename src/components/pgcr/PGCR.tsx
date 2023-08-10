@@ -8,6 +8,7 @@ import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
+import { Collection } from "@discordjs/collection"
 
 export type PGCRProps = {
     activityId: string
@@ -16,6 +17,7 @@ export type PGCRProps = {
 
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+
     return (
         <>
             <Head>
@@ -40,6 +42,7 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                     )}
                     <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                     <ParticipantsSection
+                        weightedScores={pgcr?.weightedScores ?? new Collection()}
                         completed={pgcr?.completed ?? true}
                         players={pgcr?.players ?? []}
                         pgcrLoadingState={pgcrLoadingState}

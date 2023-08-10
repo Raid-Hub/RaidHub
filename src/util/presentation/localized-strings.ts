@@ -75,6 +75,7 @@ export interface LocalStrings {
         trioAllEncounters: string
         trio: string
     }
+    score: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -228,6 +229,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             noMajorGlitches: "No Major Glitches",
             allEncounters: "All Encounters",
             trioAllEncounters: "Trio All Encounters"
-        }
+        },
+        score: "Score"
     }
 }

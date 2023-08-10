@@ -1,3 +1,5 @@
+import { round } from "../math"
+
 export function pgcrEntryRankingScore({
     kills,
     assists,
@@ -9,8 +11,11 @@ export function pgcrEntryRankingScore({
     assists: number
     timePlayedSeconds: number
 }) {
-    const killScore = ((kills + 0.5 * assists) / Math.sqrt(timePlayedSeconds)) * 1000
-    // a multiplier based on your deaths per 5 minutes
-    const deathScore = timePlayedSeconds / 300 / (deaths + 1)
-    return killScore * deathScore
+    // kills weighted 2x assists
+    const killScore = (kills + 0.5 * assists) / Math.sqrt(round(timePlayedSeconds, -1))
+    // a multiplier based on your time per deaths squared, normalized a bit
+    const deathScore = (2 * timePlayedSeconds) / (deaths + 7) ** 2
+    const timeScore = timePlayedSeconds / 360 // 10 points per hour
+
+    return killScore * deathScore + timeScore
 }

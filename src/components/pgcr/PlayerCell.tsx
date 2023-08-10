@@ -36,6 +36,8 @@ const PlayerCell = ({
     const icon = member.characters[0].logo
     const displayName = member.displayName || member.membershipId
 
+    const stats = useMemo(() => member.stats, [member])
+
     return (
         <button
             key={index}
@@ -84,15 +86,15 @@ const PlayerCell = ({
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Kills} alt={"Kills"} />}
-                            <span>{member.stats.kills}</span>
+                            <span>{stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Assists} alt={"Assists"} />}
-                            <span>{member.stats.assists}</span>
+                            <span>{stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Deaths} alt={"Deaths"} />}
-                            <span>{member.stats.deaths}</span>
+                            <span>{stats.deaths}</span>
                         </div>
                     </div>
                 )}
