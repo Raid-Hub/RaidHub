@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react"
+import styles from "../../styles/reusable-components.module.css"
 
 const StyledButton = ({
     children,
@@ -6,7 +7,9 @@ const StyledButton = ({
     ...params
 }: DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => {
     return (
-        <button className={[className, "styled-button"].filter(Boolean).join(" ")} {...params}>
+        <button
+            className={[className, styles["styled-button"]].filter(Boolean).join(" ")}
+            {...params}>
             {children}
         </button>
     )

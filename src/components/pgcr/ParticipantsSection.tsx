@@ -14,13 +14,15 @@ type ParticipantsProps = {
     completed: boolean
     pgcrLoadingState: Loading
     weightedScores: Collection<string, number>
+    showScorePref: boolean
 }
 
 const ParticipantsSection = ({
     players: members,
     pgcrLoadingState,
     completed,
-    weightedScores
+    weightedScores,
+    showScorePref
 }: ParticipantsProps) => {
     const router = useRouter()
 
@@ -108,7 +110,9 @@ const ParticipantsSection = ({
                         isLoadingEmblems={pgcrLoadingState === Loading.HYDRATING}
                         memberIndex={-1}
                         dnf={completed && !member.didComplete}
+                        weightedScore={weightedScores.get(member.membershipId) ?? 0}
                         updateMemberIndex={updateMemberIndex}
+                        showScore={showScorePref}
                     />
                 ))}
             </div>

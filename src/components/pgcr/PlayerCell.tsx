@@ -5,6 +5,8 @@ import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
 import { useMemo } from "react"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
 import { useEmblem } from "../app/DestinyManifestManager"
+import { formattedNumber } from "../../util/presentation/formatting"
+import { useLocale } from "../app/LocaleManager"
 
 type PlayerCellProps = {
     member: PGCRPlayer
@@ -13,6 +15,8 @@ type PlayerCellProps = {
     solo: boolean
     isLoadingEmblems: boolean
     dnf: boolean
+    weightedScore: number
+    showScore: boolean
     updateMemberIndex: (clicked: number) => void
 }
 
@@ -23,8 +27,11 @@ const PlayerCell = ({
     solo,
     isLoadingEmblems,
     dnf,
+    weightedScore,
+    showScore,
     updateMemberIndex
 }: PlayerCellProps) => {
+    const { locale } = useLocale()
     const dynamicCssClass = useMemo(
         () => (memberIndex === index ? styles["selected"] : ""),
         [memberIndex, index]
@@ -82,6 +89,10 @@ const PlayerCell = ({
                         src={Diamond1}
                         alt={member.displayName + " went flawless this raid"}
                     />
+                ) : showScore ? (
+                    <div className={styles["score-only"]}>
+                        {formattedNumber(weightedScore, locale)}
+                    </div>
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>

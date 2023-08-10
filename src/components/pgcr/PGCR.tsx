@@ -9,6 +9,9 @@ import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
 import { Collection } from "@discordjs/collection"
+import KebabMenu from "../reusable/KebabMenu"
+import { useLocaleStorage } from "../../hooks/util/useLocalStorage"
+import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
 
 export type PGCRProps = {
     activityId: string
@@ -17,6 +20,7 @@ export type PGCRProps = {
 
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+    const { value: prefs, save: savePrefs } = useLocaleStorage<PGCRSettings>("pgcr_prefs")
 
     return (
         <>
@@ -40,12 +44,18 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                             style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
                         />
                     )}
+                    <div className={styles["settings-menu-container"]}>
+                        <KebabMenu size={20} alignmentSide="right">
+                            <PGCRSettingsMenu value={prefs} save={savePrefs} />
+                        </KebabMenu>
+                    </div>
                     <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
                     <ParticipantsSection
                         weightedScores={pgcr?.weightedScores ?? new Collection()}
                         completed={pgcr?.completed ?? true}
                         players={pgcr?.players ?? []}
                         pgcrLoadingState={pgcrLoadingState}
+                        showScorePref={prefs?.showScore ?? false}
                     />
                 </section>
                 <section className={styles["summary-stats"]}>
