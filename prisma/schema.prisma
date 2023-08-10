@@ -75,6 +75,6 @@ model Vanity {
   userId                String? @unique
   user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([destinyMembershipId, destinyMembershipType])
   @@unique([destinyMembershipId, destinyMembershipType])
+  @@index([destinyMembershipId, destinyMembershipType])
 }
