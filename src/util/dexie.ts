@@ -8,8 +8,6 @@ type ForegroundBackground = {
 }
 
 class CustomDexie extends Dexie {
-    // 'friends' is added by dexie when declaring the stores()
-    // We just tell the typing system this is the case
     weapons!: Table<Hashed<CachedWeapon>>
     emblems!: Table<Hashed<CachedEmblem>>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>

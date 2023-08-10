@@ -1,5 +1,5 @@
 import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
-import { AvailableRaid } from "../../types/raids"
+import { ListedRaid } from "../../types/raids"
 import {
     SpeedrunIds,
     SpeedrunVariableId,
@@ -8,7 +8,7 @@ import {
 
 const destiny2GameId = "4d7y5zd7"
 //
-export async function getLeaderboard<R extends AvailableRaid>(
+export async function getLeaderboard<R extends ListedRaid>(
     raid: R,
     subCategory?: keyof (typeof SpeedrunVariableValues)[R]
 ): Promise<LeaderboardEntry[]> {

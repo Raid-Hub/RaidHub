@@ -1,6 +1,6 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
-import { AvailableRaids, Raid } from "../../../types/raids"
+import { ListedRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
 import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
@@ -73,7 +73,7 @@ const Raids = ({
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
-                    {AvailableRaids.map((raid, idx) => (
+                    {ListedRaids.map((raid, idx) => (
                         <RaidCard
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}

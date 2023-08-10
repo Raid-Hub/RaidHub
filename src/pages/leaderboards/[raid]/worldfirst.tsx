@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
 import {
-    AvailableRaid,
+    ListedRaid,
     RaidToUrlPaths,
     RaidsWithReprisedContest,
     UrlPathsToRaid
@@ -11,12 +11,12 @@ import { ReleaseDate } from "../../../util/destiny/raid"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { z } from "zod"
-import { QueryClient, Hydrate, dehydrate, useQuery, useQueryClient } from "@tanstack/react-query"
+import { QueryClient, Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../services/raidhub/getLeaderboard"
 import { usePage } from "../../../hooks/util/usePage"
 
 type WorldsFirstLeaderboadProps = {
-    raid: AvailableRaid
+    raid: ListedRaid
     dehydratedState: unknown
 }
 
@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
         const paramsStrings = [
             "worldsfirst",
             RaidToUrlPaths[raid],
-            (RaidsWithReprisedContest as readonly AvailableRaid[]).includes(raid)
+            (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)
                 ? "challenge"
                 : "normal"
         ]
@@ -110,11 +110,10 @@ const WorldsFirstLeaderboadPage: NextPage<WorldsFirstLeaderboadProps> = ({
     )
 }
 
-const WorldsFirstLeaderboad = ({ raid }: { raid: AvailableRaid }) => {
+const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
-    console.log(useQueryClient().getQueryCache())
     const query = useQuery({
         queryKey: ["worldsfirst", RaidToUrlPaths[raid], page],
         queryFn: () =>
@@ -122,7 +121,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: AvailableRaid }) => {
                 [
                     "worldsfirst",
                     RaidToUrlPaths[raid],
-                    (RaidsWithReprisedContest as readonly AvailableRaid[]).includes(raid)
+                    (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)
                         ? "challenge"
                         : "normal"
                 ],

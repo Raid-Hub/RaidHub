@@ -21,7 +21,7 @@ export async function getProfileTransitory({
         client
     )
     const { data: transitoryData, privacy: transitoryPrivacy } = res.Response.profileTransitoryData
-    const { data: characterData, privacy: characterPrivacy } = res.Response.characterActivities
+    const { data: characterData } = res.Response.characterActivities
     if (transitoryPrivacy > 1) {
         throw new PrivateProfileError({
             destinyMembershipId,
@@ -34,6 +34,10 @@ export async function getProfileTransitory({
     }
     return {
         data: transitoryData,
-        current: Object.values(characterData).find(c => c.currentActivityHash)!
+        current: Object.values(characterData).sort(
+            (a, b) =>
+                new Date(b.dateActivityStarted).getTime() -
+                new Date(a.dateActivityStarted).getTime()
+        )[0]
     }
 }

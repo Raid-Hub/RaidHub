@@ -14,7 +14,6 @@ export type ClanBannerData = {
 }
 
 export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerData> {
-    console.log(banner)
     const [
         decalPrimaryColor,
         decalSecondaryColor,

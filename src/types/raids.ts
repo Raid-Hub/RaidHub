@@ -31,9 +31,9 @@ export const enum Difficulty {
     CONTEST = 128
 }
 
-export type AvailableRaid = Exclude<(typeof AvailableRaids)[number], Raid.NA>
+export type ListedRaid = (typeof ListedRaids)[number]
 // sorted in reverse order
-export const AvailableRaids = [
+export const ListedRaids = [
     Raid.ROOT_OF_NIGHTMARES,
     Raid.KINGS_FALL,
     Raid.VOW_OF_THE_DISCIPLE,
@@ -52,11 +52,11 @@ export type DifficultyForRaidType<R extends keyof typeof RaidHashes> =
     keyof (typeof RaidHashes)[R] extends Difficulty ? keyof (typeof RaidHashes)[R] : never
 
 export type RaidHashesForRaidAndDifficulty<
-    R extends AvailableRaid,
+    R extends ListedRaid,
     D extends DifficultyForRaidType<R>
 > = (typeof RaidHashes)[R][Extract<D, keyof (typeof RaidHashes)[R]>]
 
-export type RaidDifficultyTuple = readonly [name: AvailableRaid, difficulty: Difficulty]
+export type RaidDifficultyTuple = readonly [name: ListedRaid, difficulty: Difficulty]
 
 export const CommonRaidDifficulties = [
     Difficulty.NORMAL,
@@ -73,7 +73,7 @@ export const NoContestRaids = [
     Raid.SCOURGE_OF_THE_PAST
 ] as const
 
-export type ContestRaid = Exclude<AvailableRaid, (typeof NoContestRaids)[number]>
+export type ContestRaid = Exclude<ListedRaid, (typeof NoContestRaids)[number]>
 export type NoContestRaid = (typeof NoContestRaids)[number]
 
 export const RaidsWithReprisedContest = [
@@ -188,15 +188,15 @@ export const RaidHashes = {
         [Difficulty.GUIDEDGAMES]: ["1191701339"] as const,
         [Difficulty.MASTER]: ["2918919505"] as const
     }
-} satisfies Record<AvailableRaid, Partial<Record<Difficulty, readonly string[]>>>
+} satisfies Record<ListedRaid, Partial<Record<Difficulty, readonly string[]>>>
 
-export type AllRaidHashesForRaid<R extends AvailableRaid> = Flatten<
+export type AllRaidHashesForRaid<R extends ListedRaid> = Flatten<
     (typeof RaidHashes)[R][Extract<Difficulty, keyof (typeof RaidHashes)[R]>]
 >
 
 export type ValidRaidHash = {
-    [R in AvailableRaid]: AllRaidHashesForRaid<R>
-}[AvailableRaid]
+    [R in ListedRaid]: AllRaidHashesForRaid<R>
+}[ListedRaid]
 
 export const BackdropOpacity: {
     [key in Raid]: number
@@ -247,7 +247,7 @@ export const UrlPathsToRaid = {
     vowofthedisciple: Raid.VOW_OF_THE_DISCIPLE,
     kingsfall: Raid.KINGS_FALL,
     rootofnightmares: Raid.ROOT_OF_NIGHTMARES
-} satisfies Record<string, AvailableRaid>
+} satisfies Record<string, ListedRaid>
 
 export const RaidToUrlPaths = {
     [Raid.LEVIATHAN]: "leviathan",
@@ -262,7 +262,7 @@ export const RaidToUrlPaths = {
     [Raid.VOW_OF_THE_DISCIPLE]: "vowofthedisciple",
     [Raid.KINGS_FALL]: "kingsfall",
     [Raid.ROOT_OF_NIGHTMARES]: "rootofnightmares"
-} satisfies Record<AvailableRaid, keyof typeof UrlPathsToRaid>
+} satisfies Record<ListedRaid, keyof typeof UrlPathsToRaid>
 
 // todo with our own api, we can change these
 export const DifficultyToUrlPaths = {

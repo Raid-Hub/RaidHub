@@ -69,7 +69,6 @@ export function useEmblem(hash: number | null): CachedEmblem | null {
         () => (hash ? indexDB.emblems.get({ hash }) : undefined),
         [hash, manifestVersion]
     )
-    console.log(emblem)
 
     return emblem ?? null
 }
