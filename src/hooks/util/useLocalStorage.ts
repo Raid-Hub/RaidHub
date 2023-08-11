@@ -11,7 +11,7 @@ export const useLocalStorage = <V>(key: string, defaultVaule: V): UseLocalStorag
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
         setValue(fromStore ? JSON.parse(fromStore) : defaultVaule)
-    }, [key])
+    }, [key, defaultVaule])
 
     function save(value: V | ((old: V) => V)) {
         const toSave = typeof value === "function" ? (value as (old: V | null) => V)(_value) : value

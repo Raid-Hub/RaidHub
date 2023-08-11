@@ -32,7 +32,7 @@ const KebabMenu = ({
         return () => {
             window.removeEventListener("click", handleClickOutside)
         }
-    }, [isOpen, ref.current])
+    }, [isOpen])
 
     const radius = `${size / 8}px`
     const height = `${size / 2}px`
