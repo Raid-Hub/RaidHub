@@ -21,7 +21,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
 
     const handleScreenshot = async () => {
         const element: HTMLElement = document.getElementById("screenshot-container")!
-        const canvas = await html2canvas(element, { backgroundColor: null, scale: 5 })
+        const canvas = await html2canvas(element, { backgroundColor: null, scale: 5, useCORS: true})
 
         canvas.toBlob(async function (blob) {
             if (blob) {
