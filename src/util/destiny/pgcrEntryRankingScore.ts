@@ -29,15 +29,6 @@ export function pgcrEntryRankingScore({
     const superScore = (superKills / (timePlayedSeconds / 60)) * 5 // 1 point per super kill per minute
 
     const finalScore = primaryScore + timeScore + precisionScore + superScore
-    console.log({
-        killScore,
-        deathScore,
-        timeScore,
-        precisionScore,
-        superScore,
-        primaryScore,
-        finalScore
-    })
 
     return finalScore
 }

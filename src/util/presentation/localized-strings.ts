@@ -21,6 +21,7 @@ export interface LocalStrings {
     abilityKillsPercentage: string
     totalCharactersUsed: string
     mostUsedWeapon: string
+    allWeapons: string
     kills: string
     assists: string
     totalAssists: string
@@ -108,6 +109,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         abilityKillsPercentage: "Ability Kills",
         totalCharactersUsed: "Characters",
         mostUsedWeapon: "Most Used Weapon",
+        allWeapons: "All Weapons",
         kills: "Kills",
         assists: "Assists",
         totalAssists: "Assists",

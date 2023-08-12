@@ -17,6 +17,7 @@ const PlayerStatCells = ({ entry, weightedScores }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
     const weapon = useWeapon(entry.weapons.first()?.hash ?? null)
     const stats = useMemo(() => entry.stats, [entry])
+
     const statsData: {
         icon: StaticImageData
         name: string
@@ -55,6 +56,11 @@ const PlayerStatCells = ({ entry, weightedScores }: PlayerStatCellProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
+            value: weapon?.name ?? strings.none
+        },
+        {
+            icon: Question_Mark,
+            name: strings.allWeapons,
             value: weapon?.name ?? strings.none
         }
     ]

@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { AdapterAccount, AdapterSession, AdapterUser, DefaultAdapter } from "next-auth/adapters"
+import { AdapterAccount, AdapterSession, AdapterUser, Adapter } from "next-auth/adapters"
 import { Awaitable } from "next-auth"
 import { Account, PrismaClient } from "@prisma/client"
 import BungieClient from "../../../services/bungie/client"
@@ -9,7 +9,7 @@ import { DiscordProfile } from "next-auth/providers/discord"
 import { TwitterProfile } from "next-auth/providers/twitter"
 import { zUser } from "../zod"
 
-export default class CustomPrismaAdapter implements DefaultAdapter {
+export default class CustomPrismaAdapter implements Adapter {
     private prisma: PrismaClient
 
     constructor(prismaClient: PrismaClient) {
@@ -28,16 +28,16 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
             deleteSession
         } = PrismaAdapter(this.prisma)
 
-        this.getUser = getUser
-        this.getUserByEmail = getUserByEmail
-        this.getUserByAccount = getUserByAccount
-        this.updateUser = updateUser
+        this.getUser = getUser!
+        this.getUserByEmail = getUserByEmail!
+        this.getUserByAccount = getUserByAccount!
+        this.updateUser = updateUser!
         this.deleteUser = deleteUser
         this.unlinkAccount = unlinkAccount
-        this.createSession = createSession
-        this.getSessionAndUser = getSessionAndUser
-        this.updateSession = updateSession
-        this.deleteSession = deleteSession
+        this.createSession = createSession!
+        this.getSessionAndUser = getSessionAndUser!
+        this.updateSession = updateSession!
+        this.deleteSession = deleteSession!
     }
 
     createUser = async (user: Omit<AdapterUser, "id">): Promise<AdapterUser> => {
@@ -110,6 +110,7 @@ export default class CustomPrismaAdapter implements DefaultAdapter {
     ) => Promise<void> | Awaitable<AdapterSession | null | undefined>
 
     private async addBungieAccountToUser(account: AdapterAccount) {
+        console.log("adding bungie account")
         const client = new BungieClient()
         client.setToken(account.access_token!)
 
