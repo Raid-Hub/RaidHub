@@ -52,9 +52,7 @@ export default class CustomPrismaAdapter implements Adapter {
     }
 
     linkAccount = async (account: AdapterAccount): Promise<void> => {
-        if (account.provider === "bungie") {
-            await this.addBungieAccountToUser(account)
-        } else if (account.provider === "discord") {
+        if (account.provider === "discord") {
             await this.addDiscordAccountToUser(account)
         } else if (account.provider === "twitch") {
             await this.addTwitchAccountToUser(account)
@@ -108,29 +106,6 @@ export default class CustomPrismaAdapter implements Adapter {
     deleteSession: (
         sessionToken: string
     ) => Promise<void> | Awaitable<AdapterSession | null | undefined>
-
-    private async addBungieAccountToUser(account: AdapterAccount) {
-        console.log("adding bungie account")
-        const client = new BungieClient()
-        client.setToken(account.access_token!)
-
-        const profile = await getMembershipDataForCurrentUser(client).then(bungieProfile)
-
-        return this.prisma.user.update({
-            where: {
-                id: account.userId
-            },
-            data: {
-                destiny_membership_id: profile.destiny_membership_id!,
-                destiny_membership_type: profile.destiny_membership_type!,
-                bungie_username: profile.bungie_username ?? null,
-                bungie_access_token: account.access_token,
-                bungie_access_expires_at: new Date(account.expires_at!),
-                bungie_refresh_token: account.refresh_token,
-                bungie_refresh_expires_at: new Date(Date.now() + 7_775_777_777)
-            }
-        })
-    }
 
     private async addDiscordAccountToUser(account: AdapterAccount) {
         const profile = await fetch("https://discord.com/api/users/@me", {
