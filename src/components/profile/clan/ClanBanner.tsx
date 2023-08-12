@@ -1,4 +1,4 @@
-import styles from "../../../styles/pages/profile/profile.module.css"
+import styles from "../../../styles/pages/profile/clan.module.css"
 import { ClanBannerData } from "../../../util/destiny/clanBanner"
 
 type ClanBannerProps = ClanBannerData
@@ -43,10 +43,12 @@ const ClanBanner = ({ gonfalcons, decalTop, decalSecondary, decalPrimary }: Clan
                     />
                 </mask>
             </defs>
-            <rect width="100%" height="100%" fill={gonfalcons.color} mask="url(#gonfalcons)" />
-            <rect width="100%" height="100%" fill={decalTop.color} mask="url(#topDecal)" />
-            <rect width="100%" height="100%" fill={decalSecondary.color} mask="url(#decal2)" />
-            <rect width="100%" height="100%" fill={decalPrimary.color} mask="url(#decal)" />
+            <g cx="50%" cy="50%">
+                <rect width="100%" height="100%" fill={gonfalcons.color} mask="url(#gonfalcons)" />
+                <rect width="100%" height="100%" fill={decalTop.color} mask="url(#topDecal)" />
+                <rect width="100%" height="100%" fill={decalSecondary.color} mask="url(#decal2)" />
+                <rect width="100%" height="100%" fill={decalPrimary.color} mask="url(#decal)" />
+            </g>
         </svg>
     )
 }
