@@ -1,7 +1,16 @@
 {
-    "git": {
-        "deploymentEnabled": {
-            "main": false
+    "functions": {
+        "pages/api/auth/[...nextauth].ts": {
+            "memory": 1024,
+            "maxDuration": 10
+        },
+        "pages/api/**/*.ts": {
+            "memory": 512,
+            "maxDuration": 2
+        },
+        "pages/**/*.tsx": {
+            "memory": 1024,
+            "maxDuration": 3
         }
     }
 }
