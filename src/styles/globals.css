@@ -18,22 +18,6 @@
     color: var(--primary-text);
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        --primary-text: #000000;
-        --secondary-text: #4e4e4e;
-        --tertiary-text: rgb(79, 79, 79);
-        --border: #ffffff;
-        --header-background: #7f7f7f;
-        --scroll-track: #434343;
-        --search-background: #e9e8e8;
-        --search-text: #000000;
-        --search-placeholder: #848484;
-        --modal-background: rgba(224, 224, 224, 0.471);
-        --modal-background-opaque: rgba(255, 255, 255, 0.939);
-    }
-}
-
 * {
     box-sizing: border-box;
 }
@@ -117,42 +101,6 @@ main {
         min-width: 350px;
     }
 }
-
-/* @font-face {
-    font-family: "Neue Haas Grotesk Display Pro";
-    font-style: normal;
-    font-weight: 400;
-    src: local("Neue Haas Grotesk Display Pro"),
-        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayLight.woff") format("woff");
-}
-@font-face {
-    font-family: "Neue Haas Grotesk Display Pro";
-    font-style: italic;
-    font-weight: 300;
-    src: local("Neue Haas Grotesk Display Pro"),
-        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayThinItalic.woff") format("woff");
-}
-@font-face {
-    font-family: "Neue Haas Grotesk Display Pro";
-    font-style: normal;
-    font-weight: 600;
-    src: local("Neue Haas Grotesk Display Pro"),
-        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayMediu.woff") format("woff");
-}
-@font-face {
-    font-family: "Neue Haas Grotesk Display Pro";
-    font-style: italic;
-    font-weight: 600;
-    src: local("Neue Haas Grotesk Display Pro"),
-        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayMediumItalic.woff") format("woff");
-}
-@font-face {
-    font-family: "Neue Haas Grotesk Display Pro";
-    font-style: normal;
-    font-weight: 900;
-    src: local("Neue Haas Grotesk Display Pro"),
-        url("https://fonts.cdnfonts.com/s/47998/NeueHaasDisplayBlack.woff") format("woff");
-} */
 
 a {
     text-decoration: none;
