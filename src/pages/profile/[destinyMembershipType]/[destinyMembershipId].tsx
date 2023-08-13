@@ -15,11 +15,13 @@ export const getServerSideProps: GetServerSideProps<InitialProfileProps> = async
 }) => {
     try {
         const props = zUniqueDestinyProfile.parse(params)
-        const vanity = await prisma.vanity.findUnique({
-            where: {
-                destinyMembershipId_destinyMembershipType: props
-            }
-        })
+        const vanity = await prisma.vanity
+            .findUnique({
+                where: {
+                    destinyMembershipId_destinyMembershipType: props
+                }
+            })
+            .catch(console.error)
 
         if (vanity?.string) {
             return {

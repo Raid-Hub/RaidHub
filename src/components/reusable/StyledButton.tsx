@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react"
-import styles from "../../styles/reusable-components.module.css"
+import styles from "../../styles/reusable-components/styled-button.module.css"
 
 const StyledButton = ({
     children,

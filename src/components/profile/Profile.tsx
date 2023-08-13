@@ -17,9 +17,9 @@ import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import { useActivityFilters } from "../../hooks/util/useActivityFilters"
-import Loading from "../global/Loading"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
 import { useLocalStorage } from "../../hooks/util/useLocalStorage"
+import Loading from "../global/Loading"
 
 type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
@@ -63,6 +63,8 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(
         undefined
     )
+
+    const pinnedActivity = raidHubProfile?.pinned_activity_id ?? mostRecentActivity
 
     // LAYOUT
     const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
@@ -116,16 +118,18 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     destinyMembershipId={destinyMembershipId}
                     destinyMembershipType={destinyMembershipType}
                 />
-                {!isLoadingRaidHubProfile ? (
-                    raidHubProfile?.pinned_activity_id || mostRecentActivity ? (
-                        <PinnedActivity
-                            activityId={raidHubProfile?.pinned_activity_id ?? mostRecentActivity!}
-                            isPinned={!!raidHubProfile?.pinned_activity_id}
-                            errorHandler={errorHandler}
-                        />
-                    ) : null
+                {pinnedActivity ? (
+                    <PinnedActivity
+                        activityId={pinnedActivity}
+                        isLoadingActivities={mostRecentActivity === undefined}
+                        isLoadingRaidHubProfile={isLoadingRaidHubProfile}
+                        isPinned={!!raidHubProfile?.pinned_activity_id}
+                        errorHandler={errorHandler}
+                    />
                 ) : (
-                    <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                    pinnedActivity === undefined && (
+                        <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                    )
                 )}
                 <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
                 {!isLoadingFilters && (
@@ -141,8 +145,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={characterStats ?? null}
                     raidReport={raidReportData?.activities || null}
-                    isLoadingRaidMetrics={isLoadingRaidMetrics}
-                    isLoadingCharacters={isLoadingDestinyStats}
+                    isLoadingRaidMetrics={
+                        isLoadingMemberships || isLoadingDestinyStats || isLoadingRaidMetrics
+                    }
+                    isLoadingCharacters={isLoadingMemberships || isLoadingDestinyStats}
                     isLoadingRaidReport={isLoadingRaidReportData}
                     setMostRecentActivity={setMostRecentActivity}
                     errorHandler={errorHandler}

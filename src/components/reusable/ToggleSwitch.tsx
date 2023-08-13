@@ -1,4 +1,4 @@
-import styles from "../../styles/reusable-components.module.css"
+import styles from "../../styles/reusable-components/toggle-switch.module.css"
 import { ChangeEvent } from "react"
 
 type ToggleProps = {

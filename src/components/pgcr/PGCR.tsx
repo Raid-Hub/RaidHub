@@ -18,11 +18,16 @@ export type PGCRProps = {
     errorHandler: ErrorHandler
 }
 
+const defaultPrefs = {
+    showScore: false
+}
+
 const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
     const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
-    const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>("pgcr_prefs", {
-        showScore: false
-    })
+    const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>(
+        "pgcr_prefs",
+        defaultPrefs
+    )
 
     return (
         <>
