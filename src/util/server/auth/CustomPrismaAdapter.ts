@@ -10,18 +10,22 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     return {
         async createUser(user) {
             const parsedUser = zUser.parse(user)
-            const [bungieAccessToken, bungieRefreshToken] = z.array(z.object({
-                    value: z.string(),
-                    expires: z.date()
-                })).parse([user.bungieAccessToken, user.bungieRefreshToken])
+            const [bungieAccessToken, bungieRefreshToken] = z
+                .array(
+                    z.object({
+                        value: z.string(),
+                        expires: z.date()
+                    })
+                )
+                .parse([user.bungieAccessToken, user.bungieRefreshToken])
 
             return prisma.user.create({
                 data: {
                     ...parsedUser,
                     bungieAccessToken: {
-                        create: bungieAccessToken,
+                        create: bungieAccessToken
                     },
-                    bungieRefreshToken: {create: bungieRefreshToken}
+                    bungieRefreshToken: { create: bungieRefreshToken }
                 },
                 include: {
                     bungieAccessToken: true,

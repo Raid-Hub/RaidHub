@@ -6,17 +6,17 @@ import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark, Time } from "../../images/icons"
 import { useWeapon } from "../app/DestinyManifestManager"
 import { useMemo } from "react"
-import { Collection } from "@discordjs/collection"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
-    weightedScores: Collection<string, number>
 }
 
-const PlayerStatCells = ({ entry, weightedScores }: PlayerStatCellProps) => {
+const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
     const weapon = useWeapon(entry.weapons.first()?.hash ?? null)
     const stats = useMemo(() => entry.stats, [entry])
+    const { pgcr } = usePGCRContext()
 
     const statsData: {
         icon: StaticImageData
@@ -41,7 +41,7 @@ const PlayerStatCells = ({ entry, weightedScores }: PlayerStatCellProps) => {
         {
             icon: MVP,
             name: strings.score,
-            value: formattedNumber(weightedScores.get(entry.membershipId) ?? 0, locale)
+            value: formattedNumber(pgcr?.weightedScores.get(entry.membershipId) ?? 0, locale)
         },
         {
             icon: Abilities,

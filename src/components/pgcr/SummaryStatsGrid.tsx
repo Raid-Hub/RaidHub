@@ -1,26 +1,24 @@
 import styles from "../../styles/pages/pgcr.module.css"
-import DestinyPGCR from "../../models/pgcr/PGCR"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
 import { useWeapon } from "../app/DestinyManifestManager"
 import { useMemo } from "react"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
-type SummaryStatsProps = {
-    activity: DestinyPGCR | undefined | null
-}
-
-const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
+const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()
-    const stats = useMemo(() => activity?.stats, [activity])
+    const { pgcr } = usePGCRContext()
+
+    const stats = useMemo(() => pgcr?.stats, [pgcr])
     const weapon = useWeapon(stats?.mostUsedWeapon?.hash ?? null)
     const statsData: {
         icon: StaticImageData
         name: string
         value: number | string
     }[] = [
-        ...(activity?.completed
+        ...(pgcr?.completed
             ? [
                   {
                       icon: MVP,

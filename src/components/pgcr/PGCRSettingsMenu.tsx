@@ -1,28 +1,21 @@
 import { useSession } from "next-auth/react"
 import { UseLocalStorage } from "../../hooks/util/useLocalStorage"
-import PGCRPlayer from "../../models/pgcr/Player"
 import styles from "../../styles/pages/pgcr.module.css"
 import { useLocale } from "../app/LocaleManager"
 import ToggleSwitch from "../reusable/ToggleSwitch"
-import Image from "next/image"
-import { Pin } from "../../images/icons"
-import { updateCurrentUser } from "../../services/app/updateCurrentUser"
+import PinPCRCell from "./PinPGCRCell"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 export type PGCRSettings = {
     showScore: boolean
 }
 
-type PGCRSettingsMenuProps = UseLocalStorage<PGCRSettings> & {
-    players: PGCRPlayer[] | null
-}
+type PGCRSettingsMenuProps = UseLocalStorage<PGCRSettings>
 
-const PGCRSettingsMenu = ({ value, save, players }: PGCRSettingsMenuProps) => {
+const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
     const { data: sessionData } = useSession()
+    const { pgcr } = usePGCRContext()
     const { strings } = useLocale()
-
-    const handlePinClick = () => {
-        updateCurrentUser({})
-    }
 
     return (
         <div className={styles["settings-menu-dropdown"]}>
@@ -45,23 +38,12 @@ const PGCRSettingsMenu = ({ value, save, players }: PGCRSettingsMenuProps) => {
                 }}
             />
 
-            {players
-                ?.map(p => p.membershipId)
-                .includes(sessionData?.user.destinyMembershipId as string) && (
-                <div>
-                    <span>{strings.pinThisActivity}</span>
-                    <div
-                        style={{ width: "50%", position: "relative", cursor: "pointer" }}
-                        onClick={handlePinClick}>
-                        <Image
-                            src={Pin}
-                            alt={strings.pinThisActivity}
-                            fill
-                            style={{ objectFit: "contain" }}
-                        />
-                    </div>
-                </div>
-            )}
+            {sessionData?.user.destinyMembershipId &&
+                pgcr?.players
+                    ?.map(p => p.membershipId)
+                    .includes(sessionData.user.destinyMembershipId) && (
+                    <PinPCRCell destinyMembershipId={sessionData.user.destinyMembershipId} />
+                )}
         </div>
     )
 }

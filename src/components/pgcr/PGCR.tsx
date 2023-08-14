@@ -1,29 +1,22 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import Head from "next/head"
-import { usePGCR } from "../../hooks/bungie/usePGCR"
 import { BackdropOpacity, Raid, Short } from "../../types/raids"
-import { ErrorHandler } from "../../types/generic"
 import ActivityHeader from "./ActivityHeader"
 import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import RaidCardBackground from "../../images/raid-backgrounds"
 import Image from "next/image"
-import { Collection } from "@discordjs/collection"
 import KebabMenu from "../reusable/KebabMenu"
 import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
 import { useLocalStorage } from "../../hooks/util/useLocalStorage"
-
-export type PGCRProps = {
-    activityId: string
-    errorHandler: ErrorHandler
-}
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 const defaultPrefs = {
     showScore: false
 }
 
-const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
-    const { data: pgcr, loadingState: pgcrLoadingState } = usePGCR({ activityId, errorHandler })
+const PGCR = () => {
+    const { pgcr } = usePGCRContext()
     const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>(
         "pgcr_prefs",
         defaultPrefs
@@ -33,7 +26,9 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
         <>
             <Head>
                 <title key="title">
-                    {pgcr?.raid ? `${Short[pgcr.raid]} ${activityId} | RaidHub` : "RaidHub"}
+                    {pgcr?.raid
+                        ? `${Short[pgcr.raid]} ${pgcr.activityDetails.instanceId} | RaidHub`
+                        : "RaidHub"}
                 </title>
             </Head>
             <main className={styles["main"]}>
@@ -53,24 +48,14 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                     )}
                     <div className={styles["settings-menu-container"]}>
                         <KebabMenu size={20} alignmentSide="right">
-                            <PGCRSettingsMenu
-                                value={prefs}
-                                save={savePrefs}
-                                players={pgcr?.players ?? null}
-                            />
+                            <PGCRSettingsMenu value={prefs} save={savePrefs} />
                         </KebabMenu>
                     </div>
-                    <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />
-                    <ParticipantsSection
-                        weightedScores={pgcr?.weightedScores ?? new Collection()}
-                        completed={pgcr?.completed ?? true}
-                        players={pgcr?.players ?? []}
-                        pgcrLoadingState={pgcrLoadingState}
-                        showScorePref={prefs?.showScore ?? false}
-                    />
+                    <ActivityHeader />
+                    <ParticipantsSection showScorePref={prefs?.showScore ?? false} />
                 </section>
                 <section className={styles["summary-stats"]}>
-                    <SummaryStatsGrid activity={pgcr} />
+                    <SummaryStatsGrid />
                 </section>
             </main>
         </>

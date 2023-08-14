@@ -2,7 +2,7 @@ import { NextApiHandler } from "next"
 import { BadMethodResponse, UserDeleteResponse, UserUpdateResponse } from "../../../types/api"
 import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
-import { zUser } from "../../../util/server/zod"
+import { zModifiableUser } from "../../../util/server/zod"
 
 const handler: NextApiHandler = async (req, res) => {
     switch (req.method) {
@@ -65,7 +65,7 @@ const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => 
 
 const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => {
     try {
-        const user = zUser.partial().parse(req.body)
+        const user = zModifiableUser.partial().parse(req.body)
 
         await prisma.user
             .update({
