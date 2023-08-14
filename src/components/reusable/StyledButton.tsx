@@ -1,11 +1,6 @@
-import { ButtonHTMLAttributes, DetailedHTMLProps } from "react"
 import styles from "../../styles/reusable-components/styled-button.module.css"
 
-const StyledButton = ({
-    children,
-    className,
-    ...params
-}: DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => {
+const StyledButton = ({ children, className, ...params }: React.ComponentProps<"button">) => {
     return (
         <button
             className={[className, styles["styled-button"]].filter(Boolean).join(" ")}

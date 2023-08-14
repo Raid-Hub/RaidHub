@@ -1,8 +1,8 @@
-import { User } from "@prisma/client"
 import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
 import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { CallbacksOptions, Session } from "next-auth/core/types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
+import { AdapterUser } from "next-auth/adapters"
 
 export type SessionUser = {
     id: string
@@ -13,62 +13,58 @@ export type SessionUser = {
     twitch: string | null
     discord: string | null
     twitter: string | null
-    image: string | null
+    image: string
     bungieAccessToken?: {
         value: string
         expires: number
     }
 }
 
-function sessionUser(user: User): SessionUser {
+function sessionUser(user: AdapterUser): SessionUser {
     return {
         id: user.id,
-        destinyMembershipId: user.destiny_membership_id,
-        destinyMembershipType: user.destiny_membership_type,
+        destinyMembershipId: user.destinyMembershipId,
+        destinyMembershipType: user.destinyMembershipType,
         image: user.image,
         name: user.name,
-        bungie: user.bungie_username,
-        twitch: user.twitch_username,
-        twitter: user.twitter_username,
-        discord: user.discord_username,
-        bungieAccessToken:
-            user.bungie_access_token && user.bungie_access_expires_at
-                ? {
-                      value: user.bungie_access_token,
-                      expires: user.bungie_access_expires_at.getTime()
-                  }
-                : undefined
+        bungie: user.bungieUsername,
+        twitch: user.twitchUsername,
+        twitter: user.twitterUsername,
+        discord: user.discordUsername,
+        bungieAccessToken: user.bungieAccessToken
+            ? {
+                  value: user.bungieAccessToken.value,
+                  expires: user.bungieAccessToken.expires.getTime()
+              }
+            : undefined
     }
 }
 
 export const sessionCallback: CallbacksOptions["session"] = async ({ session, user }) => {
-    const newUser = sessionUser(user as User)
+    const newUser = sessionUser(user)
 
-    if (
-        !user.bungie_access_expires_at ||
-        !user.bungie_refresh_expires_at ||
-        !user.bungie_refresh_token
-    ) {
+    if (!user.bungieAccessToken) {
         // If user is not authenticated with Bungie
         return {
             ...session,
             user: newUser
         } satisfies Session
-    } else if (Date.now() < user.bungie_access_expires_at.getTime()) {
+    } else if (Date.now() < user.bungieAccessToken.expires.getTime()) {
         // If user access token has not expired yet
         return {
             ...session,
             user: newUser
         } satisfies Session
-    } else if (Date.now() < user.bungie_refresh_expires_at.getTime()) {
+    } else if (user.bungieRefreshToken && Date.now() < user.bungieRefreshToken?.expires.getTime()) {
         try {
-            const tokens = await getAccessTokenFromRefreshToken(user.bungie_refresh_token)
-            const updatedUser = await updateBungieAccessTokens(user.id, tokens)
+            const tokens = await getAccessTokenFromRefreshToken(user.bungieRefreshToken.value)
+
+            updateBungieAccessTokens(tokens.bungieMembershipId, tokens).then(console.log)
 
             return {
                 ...session,
                 user: {
-                    ...sessionUser(updatedUser),
+                    ...newUser,
                     bungieAccessToken: {
                         value: tokens.access.value,
                         expires: tokens.access.expires
@@ -83,6 +79,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     error: "BungieAPIOffline"
                 } satisfies Session
             } else {
+                console.error(e)
                 return {
                     ...session,
                     user: newUser,

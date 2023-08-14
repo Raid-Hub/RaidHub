@@ -53,7 +53,11 @@ const PGCR = ({ activityId, errorHandler }: PGCRProps) => {
                     )}
                     <div className={styles["settings-menu-container"]}>
                         <KebabMenu size={20} alignmentSide="right">
-                            <PGCRSettingsMenu value={prefs} save={savePrefs} />
+                            <PGCRSettingsMenu
+                                value={prefs}
+                                save={savePrefs}
+                                players={pgcr?.players ?? null}
+                            />
                         </KebabMenu>
                     </div>
                     <ActivityHeader activity={pgcr} pgcrLoadingState={pgcrLoadingState} />

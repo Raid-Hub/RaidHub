@@ -645,3 +645,8 @@
 
     font-size: 0.625rem;
 }
+
+.settings-menu-dropdown > div {
+    display: flex;
+    gap: 1em;
+}

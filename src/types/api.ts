@@ -53,14 +53,14 @@ export type UserAccountDeleteResponse =
 export type Profile = {
     name: string
     image: string
-    destiny_membership_id: string
-    destiny_membership_type: BungieMembershipType
-    bungie_username: string | null
-    discord_username: string | null
-    twitch_username: string | null
-    twitter_username: string | null
-    pinned_activity_id: string | null
-    profile_decoration: string | null
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+    bungieUsername: string | null
+    discordUsername: string | null
+    twitchUsername: string | null
+    twitterUsername: string | null
+    pinnedActivityId: string | null
+    profileDecoration: string | null
     vanity: {
         string: string | null
     } | null
@@ -79,4 +79,10 @@ export type ProfileGetResponse =
 export type ProfileVanityGetResponse =
     | BadMethodResponse
     | ApiResponse<true, { string: string } | null>
+    | ApiResponse<false, any>
+
+export type ProfilePinPGCRUpdateResponse =
+    | BadMethodResponse
+    | ProtectedSessionErrorResponse
+    | ApiResponse<true, { activityId: string | null }>
     | ApiResponse<false, any>

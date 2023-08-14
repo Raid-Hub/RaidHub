@@ -53,28 +53,20 @@ async function seedFakeUsers() {
                 (name, idx) =>
                     ({
                         id: idx.toString(),
-                        destiny_membership_id: "46116860184" + randomNumber(10000000, 99999999),
-                        destiny_membership_type: Math.floor(Math.random() * 3) + 1,
+                        destinyMembershipId: "46116860184" + randomNumber(10000000, 99999999),
+                        destinyMembershipType: Math.floor(Math.random() * 3) + 1,
                         name,
                         image: "https://picsum.photos/50",
-                        bungie_username: name + "#" + randomNumber(0, 9999),
-                        twitch_username: null,
-                        twitter_username: null,
-                        discord_username: null,
-                        bungie_access_token: genRandomString(100),
-                        bungie_access_expires_at: new Date(
-                            Date.now() + randomNumber(-10_600_000, 3_600_000)
-                        ),
-                        bungie_refresh_token: genRandomString(100),
-                        bungie_refresh_expires_at: new Date(
-                            Date.now() + randomNumber(-5_000_000_000, 7_776_000_000)
-                        ),
+                        bungieUsername: name + "#" + randomNumber(0, 9999),
+                        twitchUsername: null,
+                        twitterUsername: null,
+                        discordUsername: null,
                         email: name + randomNumber(0, 500) + "@raidhub.app"
                     } as User)
             )
     }
 
-    async function createAccount({ id, destiny_membership_id }: User) {
+    async function createAccount({ id, destinyMembershipId }: User) {
         return await prisma.account.create({
             data: {
                 user: {
@@ -84,7 +76,7 @@ async function seedFakeUsers() {
                 },
                 type: "oauth",
                 provider: "bungie",
-                providerAccountId: destiny_membership_id!,
+                providerAccountId: destinyMembershipId,
                 access_token: genRandomString(40),
                 expires_at: Date.now() / 1000 + randomNumber(-10000000, 100000000),
                 refresh_token: genRandomString(40),

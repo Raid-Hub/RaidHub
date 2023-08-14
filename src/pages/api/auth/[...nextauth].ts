@@ -1,4 +1,4 @@
-import { User as PrismaUser } from "@prisma/client"
+import { AccessToken, User as PrismaUser, RefreshToken } from "@prisma/client"
 import NextAuth from "next-auth/next"
 import { DefaultSession } from "next-auth"
 import prisma from "../../../util/server/prisma"
@@ -20,11 +20,16 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/adapters" {
-    interface AdapterUser extends PrismaUser {}
+    interface AdapterUser extends PrismaUser {
+        name: string
+        image: string
+        bungieAccessToken: AccessToken | null
+        bungieRefreshToken: RefreshToken | null
+    }
 }
 
 export default NextAuth({
-    adapter: new CustomPrismaAdapter(prisma),
+    adapter: CustomPrismaAdapter(prisma),
     providers: getProviders(),
     pages: {
         signIn: "/login",

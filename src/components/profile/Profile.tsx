@@ -64,7 +64,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         undefined
     )
 
-    const pinnedActivity = raidHubProfile?.pinned_activity_id ?? mostRecentActivity
+    const pinnedActivity = raidHubProfile?.pinnedActivityId ?? mostRecentActivity
 
     // LAYOUT
     const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
@@ -123,7 +123,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         activityId={pinnedActivity}
                         isLoadingActivities={mostRecentActivity === undefined}
                         isLoadingRaidHubProfile={isLoadingRaidHubProfile}
-                        isPinned={!!raidHubProfile?.pinned_activity_id}
+                        isPinned={!!raidHubProfile?.pinnedActivityId}
                         errorHandler={errorHandler}
                     />
                 ) : (

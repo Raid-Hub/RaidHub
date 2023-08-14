@@ -1,22 +1,17 @@
-import { NextApiHandler, NextApiRequest } from "next"
+import { NextApiHandler } from "next"
 import { BadMethodResponse, UserDeleteResponse, UserUpdateResponse } from "../../../types/api"
 import { protectSession } from "../../../util/server/sessionProtection"
 import prisma from "../../../util/server/prisma"
 import { zUser } from "../../../util/server/zod"
 
-export const getUserId = (req: NextApiRequest): string | undefined =>
-    req.url?.split("/")[3]?.toString()
-
 const handler: NextApiHandler = async (req, res) => {
     switch (req.method) {
         case "DELETE":
-            await handleDelete(req, res)
-            break
+            return await handleDelete(req, res)
         case "PUT":
-            await handleUpdate(req, res)
-            break
+            return await handleUpdate(req, res)
         default:
-            res.status(405).json({
+            return res.status(405).json({
                 data: { method: req.method! },
                 success: false,
                 error: "Method not allowed"
@@ -27,11 +22,11 @@ const handler: NextApiHandler = async (req, res) => {
 export default handler
 
 const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => {
-    const ok = async () => {
-        await prisma.user
+    const ok = () =>
+        prisma.user
             .delete({
                 where: {
-                    id: getUserId(req)
+                    id: userId
                 }
             })
             .then(() =>
@@ -48,7 +43,6 @@ const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => 
                     data: err
                 } satisfies UserDeleteResponse)
             )
-    }
 
     const requestCookie = req.cookies["__Host-next-auth.csrf-token"]?.split("|")[0]
 
@@ -59,9 +53,9 @@ const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => 
             error: "Unauthorized"
         } satisfies UserDeleteResponse)
     } else if (req.body.csrfToken === requestCookie) {
-        await ok()
+        return ok()
     } else {
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             data: null,
             error: "Invalid CSFR token"
@@ -76,7 +70,7 @@ const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => 
         await prisma.user
             .update({
                 where: {
-                    id: getUserId(req)
+                    id: userId
                 },
                 data: user
             })

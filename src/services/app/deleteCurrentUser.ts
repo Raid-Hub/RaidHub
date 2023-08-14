@@ -1,6 +1,7 @@
 import { getCsrfToken, getSession } from "next-auth/react"
 import { UserDeleteResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
+import { wait } from "../../util/wait"
 
 type DeleteCurrentUser = (options: { callbackUrl?: string; redirect?: boolean }) => Promise<
     | {
@@ -29,6 +30,7 @@ export const deleteCurrentUser: DeleteCurrentUser = async options => {
 
     const res = await fetch(`/api/user/${session.user.id}`, fetchOptions)
     const responseJson = (await res.json()) as UserDeleteResponse
+
     if (!res.ok || responseJson.success === false) {
         if (responseJson.success === false) {
             throw new AppError(responseJson.error, responseJson.data)

@@ -44,9 +44,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                         </button>
                     )}
                     {providers?.get("twitter") && (
-                        <button onClick={() => signIn("twitter", {}, "reauth=false")}>
-                            Add twitter account
-                        </button>
+                        <button onClick={() => signIn("twitter")}>Add twitter account</button>
                     )}
                     <button onClick={() => unlinkAccountFromUser({ providerId: "discord" })}>
                         Unlink Discord

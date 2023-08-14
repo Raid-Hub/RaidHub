@@ -76,6 +76,7 @@ export interface LocalStrings {
     }
     score: string
     showScore: string
+    pinThisActivity: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -230,6 +231,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             trioAllEncounters: "Trio All Encounters"
         },
         score: "Score",
-        showScore: "Show Score"
+        showScore: "Show Score",
+        pinThisActivity: "Pin this PGCR"
     }
 }
