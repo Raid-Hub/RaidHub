@@ -5,6 +5,7 @@ import { BungieMembershipType } from "bungie-net-core/lib/models"
 export const zUser = z.object({
     destinyMembershipId: z.string(),
     destinyMembershipType: z.nativeEnum(BungieMembershipType),
+    bungieMembershipId: z.string(),
     name: z.string(),
     image: z.string().url(),
     bungieUsername: z.nullable(z.string()),
@@ -16,7 +17,7 @@ export const zUser = z.object({
     profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500")),
     emailVerified: z.nullable(z.date())
 }) satisfies {
-    _output: Omit<PrismaUser, "id" | "accessTokenId" | "refreshTokenId">
+    _output: Omit<PrismaUser, "id">
 }
 
 export const zUniqueDestinyProfile = z.object({

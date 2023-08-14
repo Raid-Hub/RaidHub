@@ -59,7 +59,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
         try {
             const tokens = await getAccessTokenFromRefreshToken(user.bungieRefreshToken.value)
 
-            updateBungieAccessTokens(tokens.bungieMembershipId, tokens).then(console.log)
+            updateBungieAccessTokens(tokens)
 
             return {
                 ...session,

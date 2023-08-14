@@ -1,16 +1,15 @@
+import { BungieToken } from "bungie-net-core/lib/auth"
 import prisma from "../prisma"
 
-type BungieToken = {
-    value: string
-    expires: number
-}
-export async function updateBungieAccessTokens(
-    destinyMembershipId: string,
-    tokens: {
-        access: BungieToken
-        refresh: BungieToken
-    }
-) {
+export async function updateBungieAccessTokens({
+    bungieMembershipId,
+    access,
+    refresh
+}: {
+    bungieMembershipId: string
+    access: BungieToken
+    refresh: BungieToken
+}) {
     const prepare = (token: BungieToken) => ({
         value: token.value,
         expires: new Date(token.expires)
@@ -18,19 +17,17 @@ export async function updateBungieAccessTokens(
 
     return prisma.user.update({
         where: {
-            destinyMembershipId
+            bungieMembershipId
         },
         data: {
             bungieAccessToken: {
-                connectOrCreate: {
-                    where: { destinyMembershipId },
-                    create: prepare(tokens.access)
+                update: {
+                    data: prepare(access)
                 }
             },
             bungieRefreshToken: {
-                connectOrCreate: {
-                    where: { destinyMembershipId },
-                    create: prepare(tokens.refresh)
+                update: {
+                    data: prepare(refresh)
                 }
             }
         },

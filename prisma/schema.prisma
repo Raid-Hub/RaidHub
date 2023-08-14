@@ -37,6 +37,7 @@ model Account {
 model User {
   id                    String        @id @default(cuid())
   name                  String
+  bungieMembershipId    String        @unique @map("bungie_membership_id")
   destinyMembershipId   String        @unique @map("destiny_membership_id")
   destinyMembershipType Int           @map("destiny_membership_type")
   bungieUsername        String?       @map("bungie_username")
@@ -55,28 +56,29 @@ model User {
   accounts              Account[]
   sessions              Session[]
 
+  @@index([bungieMembershipId])
   @@index([destinyMembershipId])
   @@index([pinnedActivityId])
 }
 
 model AccessToken {
-  id                  String   @id @default(uuid())
-  destinyMembershipId String   @unique @map("destiny_membership_id")
-  value               String   @db.Text
-  expires             DateTime @default(now())
-  user                User     @relation(fields: [destinyMembershipId], references: [destinyMembershipId], onDelete: Cascade)
+  id                 String   @id @default(uuid())
+  bungieMembershipId String   @unique @map("bungie_membership_id")
+  value              String   @db.Text
+  expires            DateTime @default(now())
+  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
 
-  @@index([destinyMembershipId])
+  @@index([bungieMembershipId])
 }
 
 model RefreshToken {
-  id                  String   @id @default(uuid())
-  destinyMembershipId String   @unique @map("destiny_membership_id")
-  value               String   @db.Text
-  expires             DateTime @default(now())
-  user                User     @relation(fields: [destinyMembershipId], references: [destinyMembershipId], onDelete: Cascade)
+  id                 String   @id @default(uuid())
+  bungieMembershipId String   @unique @map("bungie_membership_id")
+  value              String   @db.Text
+  expires            DateTime @default(now())
+  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
 
-  @@index([destinyMembershipId])
+  @@index([bungieMembershipId])
 }
 
 // do not edit these fields

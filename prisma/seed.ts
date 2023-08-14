@@ -53,7 +53,8 @@ async function seedFakeUsers() {
                 (name, idx) =>
                     ({
                         id: idx.toString(),
-                        destinyMembershipId: "46116860184" + randomNumber(10000000, 99999999),
+                        bungieMembershipId: "s212" + randomNumber(10000, 99999),
+                        destinyMembershipId: "s46116860184" + randomNumber(10000000, 99999999),
                         destinyMembershipType: Math.floor(Math.random() * 3) + 1,
                         name,
                         image: "https://picsum.photos/50",

@@ -1,7 +1,6 @@
 import { getCsrfToken, getSession } from "next-auth/react"
 import { UserDeleteResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
-import { wait } from "../../util/wait"
 
 type DeleteCurrentUser = (options: { callbackUrl?: string; redirect?: boolean }) => Promise<
     | {

@@ -16,6 +16,7 @@ export async function bungieProfile(
     return {
         id: primaryDestinyMembership.membershipId,
         name: primaryDestinyMembership.displayName,
+        bungieMembershipId: bungieNetUser.membershipId,
         destinyMembershipId: primaryDestinyMembership.membershipId,
         destinyMembershipType: primaryDestinyMembership.membershipType,
         bungieUsername: primaryDestinyMembership.bungieGlobalDisplayNameCode
@@ -33,15 +34,15 @@ export async function bungieProfile(
         profileDecoration: null,
         bungieAccessToken: {
             id: v4(),
-            destinyMembershipId: primaryDestinyMembership.membershipId,
+            bungieMembershipId: bungieNetUser.membershipId,
             value: tokens.access_token!,
             expires: new Date(tokens.expires_at! * 1000)
         },
         bungieRefreshToken: {
             id: v4(),
-            destinyMembershipId: primaryDestinyMembership.membershipId,
+            bungieMembershipId: bungieNetUser.membershipId,
             value: tokens.refresh_token!,
-            expires: new Date(Date.now() + 7_775_777_777)
+            expires: new Date(Date.now() + 7_775_777_777) // <90 days
         },
         email: "",
         emailVerified: null

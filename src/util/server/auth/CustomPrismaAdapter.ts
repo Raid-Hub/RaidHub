@@ -4,26 +4,24 @@ import { zUser } from "../zod"
 import { DiscordProfile } from "next-auth/providers/discord"
 import prisma from "../prisma"
 import { TwitterProfile } from "next-auth/providers/twitter"
+import { z } from "zod"
 
 export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     return {
         async createUser(user) {
-            const parsed = zUser.parse(user)
+            const parsedUser = zUser.parse(user)
+            const [bungieAccessToken, bungieRefreshToken] = z.array(z.object({
+                    value: z.string(),
+                    expires: z.date()
+                })).parse([user.bungieAccessToken, user.bungieRefreshToken])
+
             return prisma.user.create({
                 data: {
-                    ...parsed,
+                    ...parsedUser,
                     bungieAccessToken: {
-                        create: {
-                            value: user.bungieAccessToken!.value,
-                            expires: user.bungieAccessToken!.expires
-                        }
+                        create: bungieAccessToken,
                     },
-                    bungieRefreshToken: {
-                        create: {
-                            value: user.bungieRefreshToken!.value,
-                            expires: user.bungieRefreshToken!.expires
-                        }
-                    }
+                    bungieRefreshToken: {create: bungieRefreshToken}
                 },
                 include: {
                     bungieAccessToken: true,
@@ -35,17 +33,6 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             return prisma.user.findUnique({
                 where: {
                     id
-                },
-                include: {
-                    bungieAccessToken: true,
-                    bungieRefreshToken: true
-                }
-            })
-        },
-        async getUserByEmail(email) {
-            return prisma.user.findUnique({
-                where: {
-                    email: email
                 },
                 include: {
                     bungieAccessToken: true,

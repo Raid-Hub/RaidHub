@@ -20,7 +20,7 @@ type RaidsProps = {
     isLoadingRaidMetrics: boolean
     isLoadingRaidReport: boolean
     isLoadingCharacters: boolean
-    setMostRecentActivity: (id: string | null) => void
+    setMostRecentActivity: (id: string | null | undefined) => void
     errorHandler: ErrorHandler
 }
 
@@ -47,6 +47,8 @@ const Raids = ({
             setMostRecentActivity(
                 data.allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
             )
+        } else {
+            setMostRecentActivity(undefined)
         }
     }, [data?.allActivities, setMostRecentActivity])
 
