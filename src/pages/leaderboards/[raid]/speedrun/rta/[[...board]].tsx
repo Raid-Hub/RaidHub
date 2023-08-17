@@ -21,24 +21,27 @@ type RTASpeedunLeaderboadProps = {
 }
 
 export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => ({
-    paths: Object.entries(UrlPathsToRaid)
-        .map(([basePath, raidValue]) => [
-            ...(SpeedrunVariableId[raidValue]
-                ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
-                      params: {
-                          raid: basePath,
-                          board: [encodeURIComponent(path)]
+    paths:
+        process.env.APP_ENV !== "local"
+            ? Object.entries(UrlPathsToRaid)
+                  .map(([basePath, raidValue]) => [
+                      ...(SpeedrunVariableId[raidValue]
+                          ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
+                                params: {
+                                    raid: basePath,
+                                    board: [encodeURIComponent(path)]
+                                }
+                            }))
+                          : []),
+                      {
+                          params: {
+                              raid: basePath,
+                              board: []
+                          }
                       }
-                  }))
-                : []),
-            {
-                params: {
-                    raid: basePath,
-                    board: []
-                }
-            }
-        ])
-        .flat(),
+                  ])
+                  .flat()
+            : [],
     fallback: "blocking"
 })
 

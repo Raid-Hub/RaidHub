@@ -37,7 +37,7 @@ const PlayerCell = ({
         [memberIndex, index]
     )
 
-    const emblem = useEmblem(member.banner)
+    const { data: emblem } = useEmblem(member.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
     const icon = member.characters[0].logo
@@ -57,7 +57,7 @@ const PlayerCell = ({
             onClick={() => updateMemberIndex(index)}>
             {!isLoadingEmblems ? (
                 <Image
-                    src={bannerEmblemFromCache(emblem)}
+                    src={bannerEmblemFromCache(emblem ?? null)}
                     alt=""
                     fill
                     className={styles["emblem"]}

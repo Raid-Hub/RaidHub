@@ -26,7 +26,7 @@ const PinnedActivity = ({
 }: PinnedActivityProps) => {
     const { data: pgcr, isLoading: isLoadingPGCR } = useActivity({ activityId, errorHandler })
     const { locale, strings } = useLocale()
-    console.log({ isLoadingPGCR, isLoadingActivities })
+
     return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (
         <Loading wrapperClass={styles["pinned-activity-loading"]} />
     ) : pgcr ? (

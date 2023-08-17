@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { updateCurrentUser } from "../../services/app/updateCurrentUser"
 import { User } from "@prisma/client"
 import { ModifiableUser } from "../../types/profile"
+import { useSession } from "next-auth/react"
 
 export function useRaidHubProfileMutation(destinyMembershipId: string) {
     const queryClient = useQueryClient()
+    const { update: updateSession } = useSession()
 
     return useMutation({
         mutationFn: (data: Partial<ModifiableUser>) => updateCurrentUser(data),
@@ -22,6 +24,7 @@ export function useRaidHubProfileMutation(destinyMembershipId: string) {
         },
         onError: (err, req, context) => {
             queryClient.setQueryData(["raidhubProfile", destinyMembershipId], context?.cache)
-        }
+        },
+        onSuccess: () => updateSession()
     })
 }

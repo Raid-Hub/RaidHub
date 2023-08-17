@@ -24,7 +24,7 @@ export function useClan({
         staleTime: 10 * 60000 // clan does not update very often
     })
 
-    const clanBanner = useClanBanner(data?.clanInfo.clanBannerData ?? null)
+    const { data: clanBanner } = useClanBanner(data?.clanInfo.clanBannerData ?? null)
 
     return {
         data: data

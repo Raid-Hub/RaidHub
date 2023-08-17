@@ -29,7 +29,7 @@ const SelectedPlayer = ({
         [member, characterIndex]
     )
 
-    const emblem = useEmblem(character.banner)
+    const { data: emblem } = useEmblem(character.banner)
 
     const classString =
         characterIndex != -1
@@ -46,7 +46,12 @@ const SelectedPlayer = ({
                 completionClass
             ].join(" ")}
             onClick={() => updateMemberIndex(index)}>
-            <Image src={bannerEmblemFromCache(emblem)} alt="" fill className={styles["emblem"]} />
+            <Image
+                src={bannerEmblemFromCache(emblem ?? null)}
+                alt=""
+                fill
+                className={styles["emblem"]}
+            />
             <div className={styles["color-film"]} />
 
             <div className={[styles["member-name"], styles["centered"]].join(" ")}>

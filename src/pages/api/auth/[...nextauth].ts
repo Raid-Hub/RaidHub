@@ -9,6 +9,7 @@ import { SessionUser, sessionCallback } from "../../../util/server/auth/sessionC
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
+import { updateBungieAccessTokens } from "../../../util/server/auth/updateBungieAccessTokens"
 
 type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -38,7 +39,23 @@ export default NextAuth({
         newUser: "/account" // New users will be directed here on first sign in
     },
     callbacks: {
-        session: sessionCallback
+        session: sessionCallback,
+        signIn({ account }) {
+            if (account?.provider === "bungie") {
+                updateBungieAccessTokens({
+                    bungieMembershipId: account.membership_id as string,
+                    access: {
+                        value: account.access_token!,
+                        expires: account.expires_at! * 1000
+                    },
+                    refresh: {
+                        value: account.refresh_token!,
+                        expires: Date.now() + 7776000000
+                    }
+                })
+            }
+            return true
+        }
     }
 })
 

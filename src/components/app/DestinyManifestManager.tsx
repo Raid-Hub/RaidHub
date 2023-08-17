@@ -1,13 +1,13 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { CachedEmblem, CachedWeapon, updateCachedManifest } from "../../util/destiny/manifest"
+import { updateCachedManifest } from "../../util/destiny/manifest"
 import { useBungieClient } from "./TokenManager"
 import { getDestinyManifest } from "bungie-net-core/lib/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useLiveQuery } from "dexie-react-hooks"
-import { indexDB } from "../../util/dexie"
 import { ClanBanner } from "bungie-net-core/lib/models"
-import { ClanBannerData, resolveClanBanner } from "../../util/destiny/clanBanner"
+import { resolveClanBanner } from "../../util/destiny/clanBanner"
+import { useQuery } from "@tanstack/react-query"
+import { indexDB } from "../../util/dexie"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
 
@@ -62,34 +62,42 @@ export default DestinyManifestManager
 
 const useManifestVersion = () => useContext(DestinyManifestContext)
 
-export function useEmblem(hash: number | null): CachedEmblem | null {
+export function useEmblem(hash: number | null) {
     const manifestVersion = useManifestVersion()
 
-    const emblem = useLiveQuery(
-        () => (hash ? indexDB.emblems.get({ hash }) : undefined),
-        [hash, manifestVersion]
-    )
+    const fetchData = async () => (hash ? indexDB.emblems.get({ hash }) : undefined)
 
-    return emblem ?? null
+    const emblem = useQuery({
+        queryKey: ["emblem", hash, manifestVersion],
+        queryFn: () => fetchData(),
+        staleTime: Infinity
+    })
+
+    return emblem
 }
 
-export function useWeapon(hash: number | null): CachedWeapon | null {
+export function useWeapon(hash: number | null) {
     const manifestVersion = useManifestVersion()
-    const weapon = useLiveQuery(
-        () => (hash ? indexDB.weapons.get({ hash }) : undefined),
-        [hash, manifestVersion]
-    )
 
-    return weapon ?? null
+    const fetchData = async () => (hash ? indexDB.weapons.get({ hash }) : undefined)
+
+    const weapon = useQuery({
+        queryKey: ["weapon", hash, manifestVersion],
+        queryFn: () => fetchData(),
+        staleTime: Infinity
+    })
+
+    return weapon
 }
 
-export function useClanBanner(banner: ClanBanner | null): ClanBannerData | null {
+export function useClanBanner(banner: ClanBanner | null) {
     const manifestVersion = useManifestVersion()
 
-    const clanBanners = useLiveQuery(
-        () => (banner ? resolveClanBanner(banner) : null),
-        [banner, manifestVersion]
-    )
+    const clanBanners = useQuery({
+        queryKey: ["clanBanner", banner, manifestVersion],
+        queryFn: () => (banner ? resolveClanBanner(banner) : undefined),
+        staleTime: Infinity
+    })
 
-    return clanBanners ?? null
+    return clanBanners
 }

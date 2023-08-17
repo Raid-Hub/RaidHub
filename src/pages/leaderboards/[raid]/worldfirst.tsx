@@ -21,14 +21,19 @@ type WorldsFirstLeaderboadProps = {
 }
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
-    return {
-        paths: Object.keys(UrlPathsToRaid).map(path => ({
-            params: {
-                raid: path
-            }
-        })),
-        fallback: false
-    }
+    return process.env.APP_ENV !== "local"
+        ? {
+              paths: Object.keys(UrlPathsToRaid).map(path => ({
+                  params: {
+                      raid: path
+                  }
+              })),
+              fallback: false
+          }
+        : {
+              paths: [],
+              fallback: "blocking"
+          }
 }
 
 export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: string }> = async ({

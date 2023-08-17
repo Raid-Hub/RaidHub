@@ -52,7 +52,7 @@ const AccountIcon = ({}: AccountIconProps) => {
                                     {
                                         callbackUrl: encodeURI(window.location.href)
                                     },
-                                    "reauth=false"
+                                    "reauth=true"
                                 )
                             }}>
                             <span>{strings.logIn}</span>
