@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 
 export function round(val: number, places: number): number {
-    const factor = Math.pow(10, places)
+    const factor = 10 ** places
     return Math.round(val * factor) / factor
 }
 

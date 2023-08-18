@@ -2,8 +2,9 @@ import { User } from "@prisma/client"
 import { getSession } from "next-auth/react"
 import { UserUpdateResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
+import { ModifiableUser } from "../../types/profile"
 
-type UpdateCurrentUser = (data: Partial<User>) => Promise<{
+type UpdateCurrentUser = (data: ModifiableUser) => Promise<{
     updated: User
 }>
 export const updateCurrentUser: UpdateCurrentUser = async data => {

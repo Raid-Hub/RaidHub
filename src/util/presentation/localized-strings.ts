@@ -21,6 +21,7 @@ export interface LocalStrings {
     abilityKillsPercentage: string
     totalCharactersUsed: string
     mostUsedWeapon: string
+    allWeapons: string
     kills: string
     assists: string
     totalAssists: string
@@ -43,10 +44,8 @@ export interface LocalStrings {
     sherpas: string
     na: string
     checkpoints: { [key in Raid]: string }
-    toggle: {
-        charts: string
-        tiles: string
-    }
+    charts: string
+    tiles: string
     viewProfile: string
     inGame: string
     elapsedTime: string
@@ -75,6 +74,9 @@ export interface LocalStrings {
         trioAllEncounters: string
         trio: string
     }
+    score: string
+    showScore: string
+    pinThisActivity: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -108,6 +110,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         abilityKillsPercentage: "Ability Kills",
         totalCharactersUsed: "Characters",
         mostUsedWeapon: "Most Used Weapon",
+        allWeapons: "All Weapons",
         kills: "Kills",
         assists: "Assists",
         totalAssists: "Assists",
@@ -175,10 +178,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Raid.CROTAS_END]: "Crota",
             [Raid.NA]: ""
         },
-        toggle: {
-            charts: "Charts",
-            tiles: "Tiles"
-        },
+        charts: "Charts",
+        tiles: "Tiles",
         viewProfile: "View Profile",
         inGame: "In Game",
         elapsedTime: "Elapsed time",
@@ -228,6 +229,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             noMajorGlitches: "No Major Glitches",
             allEncounters: "All Encounters",
             trioAllEncounters: "Trio All Encounters"
-        }
+        },
+        score: "Score",
+        showScore: "Show Score",
+        pinThisActivity: "Pin this PGCR"
     }
 }

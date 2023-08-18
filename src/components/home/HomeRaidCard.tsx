@@ -1,5 +1,5 @@
 import styles from "../../styles/pages/home.module.css"
-import { AvailableRaid, RaidToUrlPaths } from "../../types/raids"
+import { ListedRaid, RaidToUrlPaths } from "../../types/raids"
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
 import RaidCardBackground from "../../images/raid-backgrounds"
@@ -7,7 +7,7 @@ import Link from "next/link"
 import { SpeedrunVariableValues } from "../../util/speedrun-com/speedrun-ids"
 
 type HomeRaidCardProps = {
-    raid: AvailableRaid
+    raid: ListedRaid
     strings: LocalStrings
 }
 

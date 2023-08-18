@@ -1,4 +1,4 @@
-import { User as PrismaUser } from "@prisma/client"
+import { AccessToken, User as PrismaUser, RefreshToken } from "@prisma/client"
 import NextAuth from "next-auth/next"
 import { DefaultSession } from "next-auth"
 import prisma from "../../../util/server/prisma"
@@ -9,6 +9,7 @@ import { SessionUser, sessionCallback } from "../../../util/server/auth/sessionC
 import { Provider } from "next-auth/providers"
 import CustomPrismaAdapter from "../../../util/server/auth/CustomPrismaAdapter"
 import CustomBungieProvider from "../../../util/server/auth/CustomBungieProvider"
+import { updateBungieAccessTokens } from "../../../util/server/auth/updateBungieAccessTokens"
 
 type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
@@ -20,11 +21,16 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/adapters" {
-    interface AdapterUser extends PrismaUser {}
+    interface AdapterUser extends PrismaUser {
+        name: string
+        image: string
+        bungieAccessToken: AccessToken | null
+        bungieRefreshToken: RefreshToken | null
+    }
 }
 
 export default NextAuth({
-    adapter: new CustomPrismaAdapter(prisma),
+    adapter: CustomPrismaAdapter(prisma),
     providers: getProviders(),
     pages: {
         signIn: "/login",
@@ -33,7 +39,23 @@ export default NextAuth({
         newUser: "/account" // New users will be directed here on first sign in
     },
     callbacks: {
-        session: sessionCallback
+        session: sessionCallback,
+        signIn({ account }) {
+            if (account?.provider === "bungie") {
+                updateBungieAccessTokens({
+                    bungieMembershipId: account.membership_id as string,
+                    access: {
+                        value: account.access_token!,
+                        expires: account.expires_at! * 1000
+                    },
+                    refresh: {
+                        value: account.refresh_token!,
+                        expires: Date.now() + 7776000000
+                    }
+                })
+            }
+            return true
+        }
     }
 })
 

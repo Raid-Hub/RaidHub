@@ -1,6 +1,7 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
 import prisma from "./prisma"
-import { getUserId } from "../../pages/api/user/[userId]"
+
+const getUserId = (req: NextApiRequest): string | undefined => req.url?.split("/")[3]?.toString()
 
 type Handler<T = any> = (req: NextApiRequest, res: NextApiResponse<T>, userId: string) => unknown
 
@@ -10,8 +11,7 @@ export const protectSession =
         const userId = getUserId(req)
         const sessionToken = req.cookies["__Secure-next-auth.session-token"]
         if (!userId || !sessionToken) {
-            res.status(401).json({ error: "Unauthorized request" })
-            return
+            return res.status(401).json({ error: "Unauthorized request" })
         }
 
         const session = await prisma.session.findFirst({
@@ -21,9 +21,8 @@ export const protectSession =
         })
 
         if (userId !== session?.userId) {
-            res.status(401).json({ error: "Unauthorized request" })
-            return
+            return res.status(401).json({ error: "Unauthorized request" })
         }
 
-        handler(req, res, userId)
+        return handler(req, res, userId)
     }

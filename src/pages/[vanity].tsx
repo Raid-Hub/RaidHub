@@ -19,11 +19,14 @@ export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
     })
 
     return {
-        paths: vanities.map(v => ({
-            params: {
-                vanity: v.string
-            }
-        })),
+        paths:
+            process.env.APP_ENV !== "local"
+                ? vanities.map(v => ({
+                      params: {
+                          vanity: v.string
+                      }
+                  }))
+                : [],
         fallback: "blocking"
     }
 }

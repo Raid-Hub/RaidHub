@@ -1,10 +1,13 @@
-import { User } from "@prisma/client"
 import { BungieNetResponse } from "bungie-net-core/lib/api"
 import { UserMembershipData } from "bungie-net-core/lib/models"
+import { TokenSet } from "next-auth"
+import { AdapterUser } from "next-auth/adapters"
+import { v4 } from "uuid"
 
-export async function bungieProfile({
-    Response
-}: BungieNetResponse<UserMembershipData>): Promise<User> {
+export async function bungieProfile(
+    { Response }: BungieNetResponse<UserMembershipData>,
+    tokens: TokenSet
+): Promise<AdapterUser> {
     const { bungieNetUser, destinyMemberships, primaryMembershipId } = Response
     const primaryDestinyMembership =
         destinyMemberships.find(membership => membership.membershipId === primaryMembershipId) ??
@@ -13,25 +16,35 @@ export async function bungieProfile({
     return {
         id: primaryDestinyMembership.membershipId,
         name: primaryDestinyMembership.displayName,
-        destiny_membership_id: primaryDestinyMembership.membershipId,
-        destiny_membership_type: primaryDestinyMembership.membershipType,
-        discord_username: null,
-        twitch_username: null,
-        twitter_username: null,
-        bungie_username: primaryDestinyMembership.bungieGlobalDisplayNameCode
+        bungieMembershipId: bungieNetUser.membershipId,
+        destinyMembershipId: primaryDestinyMembership.membershipId,
+        destinyMembershipType: primaryDestinyMembership.membershipType,
+        bungieUsername: primaryDestinyMembership.bungieGlobalDisplayNameCode
             ? primaryDestinyMembership.bungieGlobalDisplayName +
               "#" +
               primaryDestinyMembership.bungieGlobalDisplayNameCode
             : null,
-        bungie_access_token: null,
-        bungie_access_expires_at: null,
-        bungie_refresh_token: null,
-        bungie_refresh_expires_at: null,
+        discordUsername: null,
+        twitchUsername: bungieNetUser.twitchDisplayName ?? null,
+        twitterUsername: null,
         image: `https://www.bungie.net${
             bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
         }${bungieNetUser.profilePicturePath}`,
-        email: null,
-        pinned_activity_id: null,
-        profile_decoration: null
+        pinnedActivityId: null,
+        profileDecoration: null,
+        bungieAccessToken: {
+            id: v4(),
+            bungieMembershipId: bungieNetUser.membershipId,
+            value: tokens.access_token!,
+            expires: new Date(tokens.expires_at! * 1000)
+        },
+        bungieRefreshToken: {
+            id: v4(),
+            bungieMembershipId: bungieNetUser.membershipId,
+            value: tokens.refresh_token!,
+            expires: new Date(Date.now() + 7_775_777_777) // <90 days
+        },
+        email: "",
+        emailVerified: null
     }
 }

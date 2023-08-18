@@ -1,6 +1,6 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import {
-    AvailableRaid,
+    ListedRaid,
     Difficulty,
     ReprisedContestDifficultyDictionary,
     ReprisedContestRaidDifficulties
@@ -24,7 +24,7 @@ import { motion } from "framer-motion"
 import { ExtendedActivity, RaceTag } from "../../../types/profile"
 
 type RaidModalProps = {
-    raid: AvailableRaid
+    raid: ListedRaid
     allActivities: ActivityCollection | null
     filter: FilterCallback<ExtendedActivity>
     stats: RaidStatsCollection | undefined

@@ -10,8 +10,8 @@ import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
 import {
-    AvailableRaid,
-    AvailableRaids,
+    ListedRaid,
+    ListedRaids,
     Difficulty,
     ReprisedContestRaidDifficulties,
     ReprisedRaidChallengeMode
@@ -38,7 +38,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     readonly players: PGCRPlayer[]
     readonly startDate: Date
     readonly completionDate: Date
-    readonly raid: AvailableRaid | null
+    readonly raid: ListedRaid | null
     readonly difficulty: Difficulty
 
     constructor(data: DestinyPostGameCarnageReportData, options: PostGameCarnageReportOptions) {
@@ -130,7 +130,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     get tags(): Tag[] {
         const tags = new Array<Tag>()
         if (!this.raid) return tags
-        if (!AvailableRaids.includes(this.raid)) return []
+        if (!ListedRaids.includes(this.raid)) return []
         if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
         if (isContest(this.raid, this.startDate)) {
             if (
@@ -154,6 +154,20 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             if (this.stats.totalWeaponKills === 0) tags.push(Tag.ABILITIES_ONLY)
         }
         return tags
+    }
+
+    get weightedScores(): Collection<string, number> {
+        const totalScore = this.players.reduce(
+            (runningTotal, current) => runningTotal + current.stats.score,
+            0
+        )
+        const avgScore = totalScore / this.playerCount
+        return new Collection(
+            this.players.map(p => {
+                const percentage = ((p.stats.score - avgScore) / avgScore) * 100
+                return [p.membershipId, 100 + percentage]
+            })
+        )
     }
 
     title(strings: LocalStrings): string {

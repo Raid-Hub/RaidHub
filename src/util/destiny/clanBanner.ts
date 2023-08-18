@@ -1,6 +1,6 @@
 import { ClanBanner } from "bungie-net-core/lib/models"
 import { RGBA } from "./manifest"
-import { indexDB } from "../../util/dexie"
+import { indexDB } from "../dexie"
 
 type ClanBannerDataPart = {
     path: string
@@ -14,7 +14,6 @@ export type ClanBannerData = {
 }
 
 export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerData> {
-    console.log(banner)
     const [
         decalPrimaryColor,
         decalSecondaryColor,

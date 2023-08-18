@@ -7,19 +7,15 @@ import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 import { useRouter } from "next/router"
 import { IPGCREntry } from "../../types/pgcr"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 type ParticipantsProps = {
-    players: PGCRPlayer[] | null
-    completed: boolean
-    pgcrLoadingState: Loading
+    showScorePref: boolean
 }
 
-const ParticipantsSection = ({
-    players: members,
-    pgcrLoadingState,
-    completed
-}: ParticipantsProps) => {
+const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
     const router = useRouter()
+    const { pgcr, loadingState } = usePGCRContext()
 
     const getQueryValue = useCallback(
         (key: string, maxValue: number) => {
@@ -60,12 +56,12 @@ const ParticipantsSection = ({
         [router]
     )
 
-    const memberIndex = getQueryValue("player", members?.length ?? 0)
-    const selected: PGCRPlayer | null = members?.[memberIndex] ?? null
+    const memberIndex = getQueryValue("player", pgcr?.players.length ?? 0)
+    const selected: PGCRPlayer | null = pgcr?.players[memberIndex] ?? null
 
     const characterIndex = getQueryValue(
         "character",
-        members?.[memberIndex]?.characterIds.length ?? 0
+        pgcr?.players[memberIndex]?.characterIds.length ?? 0
     )
     const entry: IPGCREntry | null = selected?.characters[characterIndex] ?? selected ?? null
 
@@ -84,28 +80,30 @@ const ParticipantsSection = ({
             : setQueryValues({ character: clicked })
     }
 
-    const cardLayout = members
-        ? members.length < 4 && memberIndex === -1
+    const cardLayout = pgcr?.players
+        ? pgcr.players.length < 4 && memberIndex === -1
             ? styles["members-low"]
-            : members.length % 2 && memberIndex === -1
+            : pgcr.players.length % 2 && memberIndex === -1
             ? styles["members-odd"]
             : styles["members-even"]
         : styles["members-even"]
 
     // standard view
-    if (memberIndex === -1 || !members) {
+    if (memberIndex === -1 || !pgcr?.players) {
         return (
             <div className={[styles["grid"], cardLayout].join(" ")}>
-                {members?.map((member, idx) => (
+                {pgcr?.players.map((member, idx) => (
                     <PlayerCell
-                        solo={members.length === 1}
+                        solo={pgcr?.players.length === 1}
                         key={member.membershipId}
                         member={member}
                         index={idx}
-                        isLoadingEmblems={pgcrLoadingState === Loading.HYDRATING}
+                        isLoadingEmblems={loadingState === Loading.HYDRATING}
                         memberIndex={-1}
-                        dnf={completed && !member.didComplete}
+                        dnf={pgcr?.completed && !member.didComplete}
+                        weightedScore={pgcr?.weightedScores.get(member.membershipId) ?? 0}
                         updateMemberIndex={updateMemberIndex}
+                        showScore={showScorePref}
                     />
                 ))}
             </div>

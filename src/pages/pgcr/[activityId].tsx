@@ -1,21 +1,32 @@
-import { useState } from "react"
+import { createContext, useContext, useState } from "react"
 import { GetServerSideProps, NextPage } from "next"
-import ErrorComponent from "../../components/global/Error"
 import CustomError from "../../models/errors/CustomError"
-import PGCR from "../../components/pgcr/PGCR"
 import { z } from "zod"
+import { usePGCR } from "../../hooks/bungie/usePGCR"
+import DestinyPGCR from "../../models/pgcr/PGCR"
+import ErrorComponent from "../../components/global/Error"
+import PGCR from "../../components/pgcr/PGCR"
+import { Loading } from "../../types/generic"
+
+const PgcrContext = createContext<{ pgcr: DestinyPGCR | null | undefined; loadingState: Loading }>({
+    pgcr: undefined,
+    loadingState: Loading.LOADING
+})
+
+export const usePGCRContext = () => useContext(PgcrContext)
 
 type PGCRPageProps = {
     activityId: string
 }
 const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
     const [error, setError] = useState<CustomError | null>(null)
+    const { data: pgcr, loadingState } = usePGCR({ activityId, errorHandler: setError })
 
-    if (error) {
-        return <ErrorComponent error={error} />
-    } else {
-        return <PGCR activityId={activityId} errorHandler={setError} />
-    }
+    return (
+        <PgcrContext.Provider value={{ pgcr, loadingState }}>
+            {error ? <ErrorComponent error={error} /> : <PGCR />}
+        </PgcrContext.Provider>
+    )
 }
 
 export default PGCRPage

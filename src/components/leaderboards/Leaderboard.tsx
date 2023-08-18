@@ -4,9 +4,9 @@ import Image from "next/image"
 import RaidBanners from "../../images/raid-banners"
 import { useLocale } from "../app/LocaleManager"
 import { Fragment } from "react"
-import StyledButton from "../global/StyledButton"
+import StyledButton from "../reusable/StyledButton"
 import Loading from "../global/Loading"
-import { AvailableRaid } from "../../types/raids"
+import { ListedRaid } from "../../types/raids"
 import { LeaderboardEntry } from "../../types/leaderboards"
 
 type LeaderboardType = "RTA" | "API"
@@ -14,7 +14,7 @@ type LeaderboardType = "RTA" | "API"
 type LeaderboardProps = {
     title: string
     subtitle?: string
-    raid: AvailableRaid
+    raid: ListedRaid
     entries: LeaderboardEntry[]
     isLoading: boolean
     type: LeaderboardType

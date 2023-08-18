@@ -1,6 +1,6 @@
 import { Hydrate, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../../../services/speedrun-com/getLeaderboard"
-import { AvailableRaid, UrlPathsToRaid } from "../../../../../types/raids"
+import { ListedRaid, UrlPathsToRaid } from "../../../../../types/raids"
 import Leaderboard, { ENTRIES_PER_PAGE } from "../../../../../components/leaderboards/Leaderboard"
 import { useMemo } from "react"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
@@ -15,30 +15,33 @@ import {
 import { LocalStrings } from "../../../../../util/presentation/localized-strings"
 
 type RTASpeedunLeaderboadProps = {
-    raid: AvailableRaid
+    raid: ListedRaid
     category: { subCategory: string; key: keyof LocalStrings["leaderboards"] } | null
     dehydratedState: unknown
 }
 
 export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => ({
-    paths: Object.entries(UrlPathsToRaid)
-        .map(([basePath, raidValue]) => [
-            ...(SpeedrunVariableId[raidValue]
-                ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
-                      params: {
-                          raid: basePath,
-                          board: [encodeURIComponent(path)]
+    paths:
+        process.env.APP_ENV !== "local"
+            ? Object.entries(UrlPathsToRaid)
+                  .map(([basePath, raidValue]) => [
+                      ...(SpeedrunVariableId[raidValue]
+                          ? Object.keys(SpeedrunVariableValues[raidValue]).map(path => ({
+                                params: {
+                                    raid: basePath,
+                                    board: [encodeURIComponent(path)]
+                                }
+                            }))
+                          : []),
+                      {
+                          params: {
+                              raid: basePath,
+                              board: []
+                          }
                       }
-                  }))
-                : []),
-            {
-                params: {
-                    raid: basePath,
-                    board: []
-                }
-            }
-        ])
-        .flat(),
+                  ])
+                  .flat()
+            : [],
     fallback: "blocking"
 })
 

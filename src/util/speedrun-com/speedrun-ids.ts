@@ -1,7 +1,7 @@
-import { AvailableRaid, Raid } from "../../types/raids"
+import { ListedRaid, Raid } from "../../types/raids"
 import { LocalStrings } from "../presentation/localized-strings"
 
-export const SpeedrunIds: Record<AvailableRaid, string> = {
+export const SpeedrunIds: Record<ListedRaid, string> = {
     [Raid.LEVIATHAN]: "jdzvzqvk",
     [Raid.EATER_OF_WORLDS]: "824r4ygd",
     [Raid.SPIRE_OF_STARS]: "9d8g973k",
@@ -16,7 +16,7 @@ export const SpeedrunIds: Record<AvailableRaid, string> = {
     [Raid.ROOT_OF_NIGHTMARES]: "9d88x6ld"
 }
 
-export const SpeedrunVariableId: Record<AvailableRaid, string | null> = {
+export const SpeedrunVariableId: Record<ListedRaid, string | null> = {
     [Raid.LEVIATHAN]: "68kmerkl",
     [Raid.EATER_OF_WORLDS]: null,
     [Raid.SPIRE_OF_STARS]: null,
@@ -32,7 +32,7 @@ export const SpeedrunVariableId: Record<AvailableRaid, string | null> = {
 }
 
 export const SpeedrunVariableValues: Record<
-    AvailableRaid,
+    ListedRaid,
     Record<string, { id: string; name: keyof LocalStrings["leaderboards"] }>
 > = {
     [Raid.LEVIATHAN]: {

@@ -12,12 +12,13 @@ datasource db {
   relationMode = "prisma"
 }
 
+// do not edit these fields
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @map("user_id")
   type              String
   provider          String
-  providerAccountId String
+  providerAccountId String  @map("provider_account_id")
   refresh_token     String? @db.Text
   access_token      String? @db.Text
   expires_at        Int?
@@ -34,34 +35,58 @@ model Account {
 }
 
 model User {
-  id                        String    @id @default(cuid())
-  name                      String
-  destiny_membership_id     String    @unique
-  destiny_membership_type   Int
-  bungie_username           String?
-  discord_username          String?
-  twitch_username           String?
-  twitter_username          String?
-  image                     String
-  bungie_access_token       String?   @db.Text
-  bungie_access_expires_at  DateTime? @default(now())
-  bungie_refresh_token      String?   @db.Text
-  bungie_refresh_expires_at DateTime? @default(now())
-  email                     String?   @unique
-  vanity                    Vanity?
-  pinned_activity_id        String?
-  profile_decoration        String?   @db.VarChar(512)
-  accounts                  Account[]
-  sessions                  Session[]
+  id                    String        @id @default(cuid())
+  name                  String
+  bungieMembershipId    String        @unique @map("bungie_membership_id")
+  destinyMembershipId   String        @unique @map("destiny_membership_id")
+  destinyMembershipType Int           @map("destiny_membership_type")
+  bungieUsername        String?       @map("bungie_username")
+  discordUsername       String?       @map("discord_username")
+  twitchUsername        String?       @map("twitch_username")
+  twitterUsername       String?       @map("twitter_username")
+  image                 String
+  bungieAccessToken     AccessToken?
+  bungieRefreshToken    RefreshToken?
+  vanity                Vanity?
+  pinnedActivityId      String?       @map("pinned_activity_id")
+  pinnedPGCR            PGCR?         @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
+  profileDecoration     String?       @map("profile_decoration") @db.VarChar(512)
+  email                 String        @unique @default("")
+  emailVerified         DateTime?     @map("email_verified")
+  accounts              Account[]
+  sessions              Session[]
 
-  @@index([destiny_membership_id])
+  @@index([bungieMembershipId])
+  @@index([destinyMembershipId])
+  @@index([pinnedActivityId])
 }
 
+model AccessToken {
+  id                 String   @id @default(uuid())
+  bungieMembershipId String   @unique @map("bungie_membership_id")
+  value              String   @db.Text
+  expires            DateTime @default(now())
+  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
+
+  @@index([bungieMembershipId])
+}
+
+model RefreshToken {
+  id                 String   @id @default(uuid())
+  bungieMembershipId String   @unique @map("bungie_membership_id")
+  value              String   @db.Text
+  expires            DateTime @default(now())
+  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
+
+  @@index([bungieMembershipId])
+}
+
+// do not edit these fields
 model Session {
   id           String   @id @default(cuid())
-  sessionToken String   @unique
+  sessionToken String   @unique @map("session_token")
   expires      DateTime @default(now())
-  userId       String
+  userId       String   @map("user_id")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -70,11 +95,17 @@ model Session {
 model Vanity {
   id                    String  @id @default(cuid())
   string                String  @unique
-  destinyMembershipId   String
-  destinyMembershipType Int
-  userId                String? @unique
+  destinyMembershipId   String  @map("destiny_membership_id")
+  destinyMembershipType Int     @map("destiny_membership_type")
+  userId                String? @unique @map("user_id")
   user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([destinyMembershipId, destinyMembershipType])
   @@index([destinyMembershipId, destinyMembershipType])
+}
+
+model PGCR {
+  id              String  @id
+  videoURL        String? @map("video_url")
+  usersWithPinned User[]
 }

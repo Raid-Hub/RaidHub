@@ -5,6 +5,8 @@ import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
 import { useMemo } from "react"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
 import { useEmblem } from "../app/DestinyManifestManager"
+import { formattedNumber } from "../../util/presentation/formatting"
+import { useLocale } from "../app/LocaleManager"
 
 type PlayerCellProps = {
     member: PGCRPlayer
@@ -13,6 +15,8 @@ type PlayerCellProps = {
     solo: boolean
     isLoadingEmblems: boolean
     dnf: boolean
+    weightedScore: number
+    showScore: boolean
     updateMemberIndex: (clicked: number) => void
 }
 
@@ -23,18 +27,23 @@ const PlayerCell = ({
     solo,
     isLoadingEmblems,
     dnf,
+    weightedScore,
+    showScore,
     updateMemberIndex
 }: PlayerCellProps) => {
+    const { locale } = useLocale()
     const dynamicCssClass = useMemo(
         () => (memberIndex === index ? styles["selected"] : ""),
         [memberIndex, index]
     )
 
-    const emblem = useEmblem(member.banner)
+    const { data: emblem } = useEmblem(member.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
     const icon = member.characters[0].logo
     const displayName = member.displayName || member.membershipId
+
+    const stats = useMemo(() => member.stats, [member])
 
     return (
         <button
@@ -48,7 +57,7 @@ const PlayerCell = ({
             onClick={() => updateMemberIndex(index)}>
             {!isLoadingEmblems ? (
                 <Image
-                    src={bannerEmblemFromCache(emblem)}
+                    src={bannerEmblemFromCache(emblem ?? null)}
                     alt=""
                     fill
                     className={styles["emblem"]}
@@ -80,19 +89,23 @@ const PlayerCell = ({
                         src={Diamond1}
                         alt={member.displayName + " went flawless this raid"}
                     />
+                ) : showScore ? (
+                    <span className={styles["score-only"]}>
+                        {formattedNumber(weightedScore, locale)}
+                    </span>
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Kills} alt={"Kills"} />}
-                            <span>{member.stats.kills}</span>
+                            <span>{stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Assists} alt={"Assists"} />}
-                            <span>{member.stats.assists}</span>
+                            <span>{stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Deaths} alt={"Deaths"} />}
-                            <span>{member.stats.deaths}</span>
+                            <span>{stats.deaths}</span>
                         </div>
                     </div>
                 )}

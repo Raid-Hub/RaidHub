@@ -4,7 +4,7 @@ import {
     DestinyHistoricalStatsPeriodGroup,
     DestinyHistoricalStatsValue
 } from "bungie-net-core/lib/models"
-import { AvailableRaid, Difficulty } from "../../../types/raids"
+import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raid"
 
 export default class Activity implements DestinyHistoricalStatsPeriodGroup {
@@ -15,7 +15,7 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     readonly startDate: Date
     readonly endDate: Date
     readonly hash: string
-    readonly raid: AvailableRaid
+    readonly raid: ListedRaid
     readonly difficulty: Difficulty
     constructor(data: DestinyHistoricalStatsPeriodGroup) {
         this.period = data.period

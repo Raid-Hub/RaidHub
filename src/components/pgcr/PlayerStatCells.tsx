@@ -3,8 +3,10 @@ import { formattedNumber, secondsToHMS } from "../../util/presentation/formattin
 import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
-import { Abilities, Assists, Deaths, Kills, Question_Mark, Time } from "../../images/icons"
+import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark, Time } from "../../images/icons"
 import { useWeapon } from "../app/DestinyManifestManager"
+import { useMemo } from "react"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
@@ -12,7 +14,10 @@ type PlayerStatCellProps = {
 
 const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
-    const weapon = useWeapon(entry.weapons.first()?.hash ?? null)
+    const { data: weapon } = useWeapon(entry.weapons.first()?.hash ?? null)
+    const stats = useMemo(() => entry.stats, [entry])
+    const { pgcr } = usePGCRContext()
+
     const statsData: {
         icon: StaticImageData
         name: string
@@ -21,31 +26,41 @@ const PlayerStatCells = ({ entry }: PlayerStatCellProps) => {
         {
             icon: Kills,
             name: strings.kills,
-            value: formattedNumber(entry.stats.kills, locale)
+            value: formattedNumber(stats.kills, locale)
         },
         {
             icon: Deaths,
             name: strings.deaths,
-            value: formattedNumber(entry.stats.deaths, locale)
+            value: formattedNumber(stats.deaths, locale)
         },
         {
             icon: Assists,
             name: strings.assists,
-            value: formattedNumber(entry.stats.assists, locale)
+            value: formattedNumber(stats.assists, locale)
+        },
+        {
+            icon: MVP,
+            name: strings.score,
+            value: formattedNumber(pgcr?.weightedScores.get(entry.membershipId) ?? 0, locale)
         },
         {
             icon: Abilities,
             name: strings.abilityKills,
-            value: formattedNumber(entry.stats.abilityKills, locale)
+            value: formattedNumber(stats.abilityKills, locale)
         },
         {
             icon: Time,
             name: strings.timeSpent,
-            value: secondsToHMS(entry.stats.timePlayedSeconds)
+            value: secondsToHMS(stats.timePlayedSeconds)
         },
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
+            value: weapon?.name ?? strings.none
+        },
+        {
+            icon: Question_Mark,
+            name: strings.allWeapons,
             value: weapon?.name ?? strings.none
         }
     ]
