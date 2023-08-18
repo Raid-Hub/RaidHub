@@ -1,0 +1,38 @@
+.toggle {
+}
+
+.checkbox {
+    height: 0;
+    width: 0;
+    display: none;
+}
+
+.toggle label {
+    cursor: pointer;
+    background: rgb(39, 39, 39);
+    display: block;
+
+    transition: background-color ease-in-out 0.3s;
+    position: relative;
+}
+
+.toggle label:after {
+    content: "";
+    position: absolute;
+    top: 5%;
+    left: 4%;
+    width: 45%;
+    height: 90%;
+    background: #fff;
+    border-radius: inherit;
+    transition: 0.3s;
+}
+
+.checkbox:checked + label {
+    background: var(--brand-orange-light);
+}
+
+.checkbox:checked + label:after {
+    left: 96%;
+    transform: translateX(-100%);
+}

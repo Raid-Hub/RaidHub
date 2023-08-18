@@ -1,7 +1,7 @@
-import { AvailableRaid, Raid } from "../types/raids"
+import { ListedRaid, Raid } from "../types/raids"
 import { StaticImageData } from "next/image"
 
-const RaidCardBackground: { [key in AvailableRaid]: StaticImageData | string } = {
+const RaidCardBackground: { [key in ListedRaid]: StaticImageData | string } = {
     [Raid.LEVIATHAN]:
         "https://cdn.discordapp.com/attachments/1136751502912934060/1136752390440222741/leviathan.webp",
     [Raid.EATER_OF_WORLDS]:

@@ -17,6 +17,7 @@ export const unlinkAccountFromUser: DeleteCurrentUser = async ({ providerId }) =
         }
     )
     const responseJson = (await res.json()) as UserAccountDeleteResponse
+
     if (!res.ok || responseJson.success === false) {
         if (responseJson.success === false) {
             throw new AppError(responseJson.error, responseJson.data)

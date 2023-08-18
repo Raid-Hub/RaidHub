@@ -17,18 +17,20 @@
 }
 
 .clan-banner-container {
-    display: flex;
-    width: 90px;
-    height: 180px;
     margin-right: 1em;
-    align-self: center;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
-svg.clan-img {
-    overflow: visible;
+.clan-img {
+    width: 90px;
+    height: 160px;
 }
 
 .desc {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.2em;

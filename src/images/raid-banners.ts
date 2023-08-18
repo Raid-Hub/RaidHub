@@ -1,7 +1,7 @@
-import { AvailableRaid, Raid } from "../types/raids"
+import { ListedRaid, Raid } from "../types/raids"
 import { StaticImageData } from "next/image"
 
-const RaidBanners: { [key in AvailableRaid]: StaticImageData | string } = {
+const RaidBanners: { [key in ListedRaid]: StaticImageData | string } = {
     [Raid.LEVIATHAN]:
         "https://cdn.discordapp.com/attachments/1136751502912934060/1136768967977996439/levi.jpg",
     [Raid.EATER_OF_WORLDS]:

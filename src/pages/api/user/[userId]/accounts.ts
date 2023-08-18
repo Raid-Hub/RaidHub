@@ -33,7 +33,7 @@ const handleDelete: NextApiHandler = protectSession(async (req, res, userId) => 
                 data: {
                     [providerIdToUsernamePropMap[providerId]]: null
                 },
-                select: {
+                include: {
                     accounts: {
                         select: {
                             provider: true

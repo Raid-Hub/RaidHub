@@ -1,5 +1,5 @@
 .main {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .leaderboard-header {

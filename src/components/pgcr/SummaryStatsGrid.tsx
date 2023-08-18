@@ -1,25 +1,24 @@
 import styles from "../../styles/pages/pgcr.module.css"
-import DestinyPGCR from "../../models/pgcr/PGCR"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
-import { useWeapons } from "../app/DestinyManifestManager"
+import { useWeapon } from "../app/DestinyManifestManager"
+import { useMemo } from "react"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
-type SummaryStatsProps = {
-    activity: DestinyPGCR | undefined | null
-}
+const SummaryStatsGrid = () => {
+    const { locale, strings } = useLocale()
+    const { pgcr } = usePGCRContext()
 
-const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
-    const { language, locale, strings } = useLocale()
-    const weapons = useWeapons()
-    const stats = activity?.stats
+    const stats = useMemo(() => pgcr?.stats, [pgcr])
+    const { data: weapon } = useWeapon(stats?.mostUsedWeapon?.hash ?? null)
     const statsData: {
         icon: StaticImageData
         name: string
         value: number | string
     }[] = [
-        ...(activity?.completed
+        ...(pgcr?.completed
             ? [
                   {
                       icon: MVP,
@@ -61,7 +60,7 @@ const SummaryStatsGrid = ({ activity }: SummaryStatsProps) => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: stats?.mostUsedWeapon ? weapons[stats.mostUsedWeapon.hash]?.name : strings.none
+            value: weapon?.name ?? strings.none
         }
     ]
     return (

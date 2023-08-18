@@ -1,13 +1,14 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
-import { AvailableRaids, Raid } from "../../../types/raids"
+import { ListedRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
 import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
 import { ErrorHandler, FilterCallback } from "../../../types/generic"
 import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
-import { Layout } from "../Profile"
+
 import RecentRaids from "./RecentRaids"
+import { Layout } from "../mid/LayoutToggle"
 
 type RaidsProps = {
     membershipId: string
@@ -19,7 +20,7 @@ type RaidsProps = {
     isLoadingRaidMetrics: boolean
     isLoadingRaidReport: boolean
     isLoadingCharacters: boolean
-    setMostRecentActivity: (id: string | null) => void
+    setMostRecentActivity: (id: string | null | undefined) => void
     errorHandler: ErrorHandler
 }
 
@@ -46,6 +47,8 @@ const Raids = ({
             setMostRecentActivity(
                 data.allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
             )
+        } else {
+            setMostRecentActivity(undefined)
         }
     }, [data?.allActivities, setMostRecentActivity])
 
@@ -73,7 +76,7 @@ const Raids = ({
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
-                    {AvailableRaids.map((raid, idx) => (
+                    {ListedRaids.map((raid, idx) => (
                         <RaidCard
                             stats={raidMetrics?.get(raid)}
                             report={raidReport?.get(raid)}

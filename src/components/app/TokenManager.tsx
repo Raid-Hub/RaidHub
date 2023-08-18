@@ -1,5 +1,5 @@
 import { signOut, useSession } from "next-auth/react"
-import { ReactNode, createContext, useContext, useEffect } from "react"
+import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import BungieClient from "../../services/bungie/client"
 
 const client = new BungieClient()
@@ -12,6 +12,11 @@ type TokenManagerProps = {
 
 const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     const { data: sessionData, status } = useSession()
+    const [failedTokenRequests, setFailedTokenRequests] = useState(0)
+
+    if (failedTokenRequests > 3) {
+        signOut()
+    }
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
     useEffect(() => {
@@ -19,7 +24,8 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
             setRefetchInterval(120)
         } else if (sessionData?.error == "AccessTokenError") {
             console.error(sessionData.error)
-            setRefetchInterval(5)
+            setRefetchInterval(10)
+            setFailedTokenRequests(prev => prev + 1)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             setRefetchInterval(0)
             signOut()

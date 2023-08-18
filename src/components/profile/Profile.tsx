@@ -4,7 +4,6 @@ import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
 import PinnedActivity from "./mid/PinnedActivity"
-import ToggleSwitch from "./mid/ToggleSwitch"
 import { useState } from "react"
 import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
@@ -18,12 +17,9 @@ import CurrentActivity from "./mid/CurrentActivity"
 import { InitialProfileProps } from "../../types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import { useActivityFilters } from "../../hooks/util/useActivityFilters"
+import LayoutToggle, { Layout } from "./mid/LayoutToggle"
+import { useLocalStorage } from "../../hooks/util/useLocalStorage"
 import Loading from "../global/Loading"
-
-export enum Layout {
-    DotCharts,
-    RecentActivities
-}
 
 type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
@@ -68,8 +64,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         undefined
     )
 
+    const pinnedActivity = raidHubProfile?.pinnedActivityId ?? mostRecentActivity
+
     // LAYOUT
-    const [layout, setLayout] = useState<Layout>(Layout.DotCharts)
+    const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
 
     const handleLayoutToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
@@ -120,18 +118,20 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     destinyMembershipId={destinyMembershipId}
                     destinyMembershipType={destinyMembershipType}
                 />
-                {!isLoadingRaidHubProfile ? (
-                    raidHubProfile?.pinned_activity_id || mostRecentActivity ? (
-                        <PinnedActivity
-                            activityId={raidHubProfile?.pinned_activity_id ?? mostRecentActivity!}
-                            isPinned={!!raidHubProfile?.pinned_activity_id}
-                            errorHandler={errorHandler}
-                        />
-                    ) : null
+                {pinnedActivity ? (
+                    <PinnedActivity
+                        activityId={pinnedActivity}
+                        isLoadingActivities={mostRecentActivity === undefined}
+                        isLoadingRaidHubProfile={isLoadingRaidHubProfile}
+                        isPinned={!!raidHubProfile?.pinnedActivityId}
+                        errorHandler={errorHandler}
+                    />
                 ) : (
-                    <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                    pinnedActivity === undefined && (
+                        <Loading wrapperClass={styles["pinned-activity-loading"]} />
+                    )
                 )}
-                <ToggleSwitch checked={!!layout} onToggle={handleLayoutToggle} />
+                <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
                 {!isLoadingFilters && (
                     <FilterSelector activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
                 )}
@@ -145,8 +145,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={characterStats ?? null}
                     raidReport={raidReportData?.activities || null}
-                    isLoadingRaidMetrics={isLoadingRaidMetrics}
-                    isLoadingCharacters={isLoadingDestinyStats}
+                    isLoadingRaidMetrics={
+                        isLoadingMemberships || isLoadingDestinyStats || isLoadingRaidMetrics
+                    }
+                    isLoadingCharacters={isLoadingMemberships || isLoadingDestinyStats}
                     isLoadingRaidReport={isLoadingRaidReportData}
                     setMostRecentActivity={setMostRecentActivity}
                     errorHandler={errorHandler}

@@ -33,24 +33,24 @@ const handleGet: NextApiHandler = async (req, res) => {
         // fetch the public user profile
         const profile = await prisma.user.findUnique({
             where: {
-                destiny_membership_id: destinyMembershipId
+                destinyMembershipId
             },
             select: {
                 name: true,
-                destiny_membership_id: true,
-                destiny_membership_type: true,
-                bungie_username: true,
-                discord_username: true,
-                twitch_username: true,
-                twitter_username: true,
+                destinyMembershipId: true,
+                destinyMembershipType: true,
+                bungieUsername: true,
+                discordUsername: true,
+                twitchUsername: true,
+                twitterUsername: true,
                 image: true,
                 vanity: {
                     select: {
                         string: true
                     }
                 },
-                pinned_activity_id: true,
-                profile_decoration: true
+                pinnedActivityId: true,
+                profileDecoration: true
             }
         })
 

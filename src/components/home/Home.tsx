@@ -1,5 +1,5 @@
 import styles from "../../styles/pages/home.module.css"
-import { AvailableRaids } from "../../types/raids"
+import { ListedRaids } from "../../types/raids"
 import { useLocale } from "../app/LocaleManager"
 import HomeRaidCard from "./HomeRaidCard"
 
@@ -8,7 +8,7 @@ const Home = () => {
     return (
         <main>
             <section className={styles["raids"]}>
-                {AvailableRaids.map(raid => (
+                {ListedRaids.map(raid => (
                     <HomeRaidCard raid={raid} strings={strings} key={raid} />
                 ))}
             </section>

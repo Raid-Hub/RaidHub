@@ -1,0 +1,19 @@
+.styled-button {
+    display: inline-block;
+    outline: 0;
+    border: none;
+
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 4px;
+    background-color: var(--button);
+
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.styled-button:hover:not(:disabled) {
+    cursor: pointer;
+    background-color: var(--brand-orange-light);
+}

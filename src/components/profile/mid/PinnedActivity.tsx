@@ -13,12 +13,21 @@ type PinnedActivityProps = {
     activityId: string
     isPinned: boolean
     errorHandler: ErrorHandler
+    isLoadingActivities: boolean
+    isLoadingRaidHubProfile: boolean
 }
 
-const PinnedActivity = ({ activityId, errorHandler, isPinned }: PinnedActivityProps) => {
-    const { data: pgcr, isLoading } = useActivity({ activityId, errorHandler })
+const PinnedActivity = ({
+    activityId,
+    errorHandler,
+    isPinned,
+    isLoadingActivities,
+    isLoadingRaidHubProfile
+}: PinnedActivityProps) => {
+    const { data: pgcr, isLoading: isLoadingPGCR } = useActivity({ activityId, errorHandler })
     const { locale, strings } = useLocale()
-    return isLoading ? (
+
+    return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (
         <Loading wrapperClass={styles["pinned-activity-loading"]} />
     ) : pgcr ? (
         <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>

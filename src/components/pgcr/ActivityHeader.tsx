@@ -1,5 +1,4 @@
 import styles from "../../styles/pages/pgcr.module.css"
-import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
 import html2canvas from "html2canvas"
@@ -7,13 +6,10 @@ import { useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
 import { motion } from "framer-motion"
+import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
-type ActivityHeaderProps = {
-    activity: DestinyPGCR | undefined | null
-    pgcrLoadingState: Loading
-}
-
-const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => {
+const ActivityHeader = () => {
+    const { pgcr, loadingState } = usePGCRContext()
     const { strings, locale } = useLocale()
     const checkpointDisclaimer = strings.checkPointDisclaimer
     const incomplete = strings.incompleteRaid
@@ -21,7 +17,11 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
 
     const handleScreenshot = async () => {
         const element: HTMLElement = document.getElementById("screenshot-container")!
-        const canvas = await html2canvas(element, { backgroundColor: null, scale: 5, useCORS: true})
+        const canvas = await html2canvas(element, {
+            backgroundColor: null,
+            scale: 5,
+            useCORS: true
+        })
 
         canvas.toBlob(async function (blob) {
             if (blob) {
@@ -44,24 +44,24 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
-                            {!pgcrLoadingState && activity
-                                ? toCustomDateString(activity.completionDate, locale)
-                                : pgcrLoadingState === Loading.LOADING
+                            {!loadingState && pgcr
+                                ? toCustomDateString(pgcr.completionDate, locale)
+                                : loadingState === Loading.LOADING
                                 ? "Loading..."
                                 : "Hydrating..."}
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
-                        {pgcrLoadingState === Loading.LOADING || !activity ? (
+                        {loadingState === Loading.LOADING || !pgcr ? (
                             <span>{strings.loading}</span>
                         ) : (
-                            <span>{strings.raidNames[activity.raid ?? Raid.NA]}</span>
+                            <span>{strings.raidNames[pgcr.raid ?? Raid.NA]}</span>
                         )}
                     </div>
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>
-                        {activity?.speed
+                        {pgcr?.speed
                             .string(strings)
                             .split(" ")
                             .map((t, idx) => (
@@ -70,7 +70,7 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
                                     {t[t.length - 1]}
                                 </span>
                             ))}
-                        {!(activity?.completed ?? true) && (
+                        {!(pgcr?.completed ?? true) && (
                             <span>
                                 <b>{`(${incomplete})`}</b>
                             </span>
@@ -80,13 +80,13 @@ const ActivityHeader = ({ activity, pgcrLoadingState }: ActivityHeaderProps) => 
             </div>
             <div className={styles["activity-tile-header-attributes"]}>
                 <div className={styles["tags-container"]}>
-                    {activity?.tags.map((tag, idx) => (
+                    {pgcr?.tags.map((tag, idx) => (
                         <div key={idx} className={styles["tag"]}>
                             {strings.tags[tag]}
                         </div>
                     ))}
                 </div>
-                {activity?.wasFresh() === null && (
+                {pgcr?.wasFresh() === null && (
                     <div className={styles["cp-error"]}>
                         <p>{checkpointDisclaimer}</p>
                     </div>

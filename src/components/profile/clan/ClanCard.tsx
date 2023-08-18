@@ -21,7 +21,7 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
     ) : clan ? (
         <div className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
-                <ClanBanner {...clan.clanBanner} />
+                {clan.clanBanner && <ClanBanner {...clan.clanBanner} />}
             </div>
             <div className={styles["desc"]}>
                 <span className={styles["desc-title"]}>

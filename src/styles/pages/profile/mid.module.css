@@ -330,19 +330,3 @@
         font-size: 1em;
     }
 }
-/* The switch - the box around the slider */
-.switch {
-    flex-shrink: 0;
-    transform: rotate(90deg);
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 60px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}

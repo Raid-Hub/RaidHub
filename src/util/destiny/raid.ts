@@ -1,5 +1,5 @@
 import {
-    AvailableRaid,
+    ListedRaid,
     ContestRaid,
     Difficulty,
     NoContestRaid,
@@ -12,7 +12,7 @@ import {
 import { LocalStrings } from "../presentation/localized-strings"
 import { Tag } from "../raidhub/tags"
 
-export function isDayOne(raid: AvailableRaid, ended: Date): boolean {
+export function isDayOne(raid: ListedRaid, ended: Date): boolean {
     if (DayOneEnd[raid] === undefined) {
         return false
     } else {
@@ -20,14 +20,14 @@ export function isDayOne(raid: AvailableRaid, ended: Date): boolean {
     }
 }
 
-export function isContest(raid: AvailableRaid, started: Date): boolean {
+export function isContest(raid: ListedRaid, started: Date): boolean {
     if (ContestEnd[raid as ContestRaid] === undefined) {
         return false
     } else {
         return started.getTime() < ContestEnd[raid as ContestRaid].getTime()
     }
 }
-export function isWeekOne(raid: AvailableRaid, ended: Date): boolean {
+export function isWeekOne(raid: ListedRaid, ended: Date): boolean {
     if (WeekOneEnd[raid as NoContestRaid] === undefined) {
         return false
     } else {
@@ -80,10 +80,7 @@ const HashDictionary = (() =>
                         hash =>
                             [
                                 hash,
-                                [
-                                    parseInt(raid) as AvailableRaid,
-                                    parseInt(difficulty) as Difficulty
-                                ]
+                                [parseInt(raid) as ListedRaid, parseInt(difficulty) as Difficulty]
                             ] as const
                     )
                 )
@@ -95,7 +92,7 @@ export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
 // CONSTANTS
 
-export const ReleaseDate: Record<AvailableRaid, Date> = {
+export const ReleaseDate: Record<ListedRaid, Date> = {
     [Raid.LEVIATHAN]: new Date("September 13, 2017 10:00:00 AM PDT"),
     [Raid.EATER_OF_WORLDS]: new Date("December 8, 2017 10:00:00 AM PST"),
     [Raid.SPIRE_OF_STARS]: new Date("May 11, 2018 10:00:00 AM PDT"),
@@ -110,7 +107,7 @@ export const ReleaseDate: Record<AvailableRaid, Date> = {
     [Raid.ROOT_OF_NIGHTMARES]: new Date("March 10, 2023 9:00:00 AM PST")
 }
 
-const DayOneEnd: Record<AvailableRaid, Date> = {
+const DayOneEnd: Record<ListedRaid, Date> = {
     [Raid.LEVIATHAN]: new Date("September 14, 2017 10:00:00 AM PDT"),
     [Raid.EATER_OF_WORLDS]: new Date("December 9, 2017 10:00:00 AM PST"),
     [Raid.SPIRE_OF_STARS]: new Date("May 12, 2018 10:00:00 AM PDT"),

@@ -52,12 +52,12 @@ const UserCard = ({
     }, [inputStyling, isLoading])
 
     useEffect(() => {
-        setInputStyling(raidHubProfile?.profile_decoration ?? defaultEditInput)
-    }, [raidHubProfile?.profile_decoration])
+        setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)
+    }, [raidHubProfile?.profileDecoration])
 
     const handleEditorInputSave = useCallback(() => {
         mutateProfile({
-            profile_decoration: inputStyling
+            profileDecoration: inputStyling
         })
         setIsEditing(false)
     }, [inputStyling, mutateProfile])
@@ -65,31 +65,31 @@ const UserCard = ({
     const socials = useMemo(() => {
         if (!raidHubProfile) return null
         const socials = new Array<ProfileSocialData>()
-        if (raidHubProfile.bungie_username) {
+        if (raidHubProfile.bungieUsername) {
             socials.push({
                 id: Socials.Bungie,
-                displayName: raidHubProfile.bungie_username,
-                url: `https://www.bungie.net/7/en/User/Profile/${raidHubProfile.destiny_membership_type}/${raidHubProfile.destiny_membership_id}`
+                displayName: raidHubProfile.bungieUsername,
+                url: `https://www.bungie.net/7/en/User/Profile/${raidHubProfile.destinyMembershipType}/${raidHubProfile.destinyMembershipId}`
             })
         }
-        if (raidHubProfile.discord_username) {
+        if (raidHubProfile.discordUsername) {
             socials.push({
                 id: Socials.Discord,
-                displayName: raidHubProfile.discord_username
+                displayName: raidHubProfile.discordUsername
             })
         }
-        if (raidHubProfile.twitter_username) {
+        if (raidHubProfile.twitterUsername) {
             socials.push({
                 id: Socials.Twitter,
-                displayName: raidHubProfile.twitter_username,
-                url: `https://twitter.com/${raidHubProfile.twitter_username}`
+                displayName: raidHubProfile.twitterUsername,
+                url: `https://twitter.com/${raidHubProfile.twitterUsername}`
             })
         }
-        if (raidHubProfile.twitch_username) {
+        if (raidHubProfile.twitchUsername) {
             socials.push({
                 id: Socials.Twitch,
-                displayName: raidHubProfile.twitch_username,
-                url: `https://twitch.tv/${raidHubProfile.twitch_username}`
+                displayName: raidHubProfile.twitchUsername,
+                url: `https://twitch.tv/${raidHubProfile.twitchUsername}`
             })
         }
         return socials
@@ -147,7 +147,7 @@ const UserCard = ({
                         <button
                             onClick={() => {
                                 setInputStyling(
-                                    raidHubProfile?.profile_decoration ?? defaultEditInput
+                                    raidHubProfile?.profileDecoration ?? defaultEditInput
                                 )
                             }}>
                             {strings.reset}

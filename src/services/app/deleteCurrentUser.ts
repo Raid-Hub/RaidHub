@@ -29,6 +29,7 @@ export const deleteCurrentUser: DeleteCurrentUser = async options => {
 
     const res = await fetch(`/api/user/${session.user.id}`, fetchOptions)
     const responseJson = (await res.json()) as UserDeleteResponse
+
     if (!res.ok || responseJson.success === false) {
         if (responseJson.success === false) {
             throw new AppError(responseJson.error, responseJson.data)

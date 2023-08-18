@@ -12,6 +12,6 @@ export async function getPlayer(destinyMembershipId: string): Promise<RaidReport
         const { response } = (await res.json()) as GetPlayerResponse
         return response
     } else {
-        throw new Error(await res.json())
+        throw await res.json()
     }
 }

@@ -1,38 +1,63 @@
 import { ClanBanner } from "bungie-net-core/lib/models"
-import { RGBA, RawClanBannerData } from "./manifest"
+import { RGBA } from "./manifest"
+import { indexDB } from "../dexie"
 
+type ClanBannerDataPart = {
+    path: string
+    color: string
+}
 export type ClanBannerData = {
-    decalPrimary: string
-    decalPrimaryColor: string
-    decalSecondary: string
-    decalSecondaryColor: string
-    gonfalcons: string
-    gonfalconsColor: string
-    decalTop: string
-    decalTopColor: string
+    decalPrimary: ClanBannerDataPart
+    decalSecondary: ClanBannerDataPart
+    gonfalcons: ClanBannerDataPart
+    decalTop: ClanBannerDataPart
 }
 
-export function resolveClanBanner(
-    clanBanner: ClanBanner,
-    clanBanners: RawClanBannerData
-): ClanBannerData {
+export async function resolveClanBanner(banner: ClanBanner): Promise<ClanBannerData> {
+    const [
+        decalPrimaryColor,
+        decalSecondaryColor,
+        { foregroundPath: decalPrimaryPath, backgroundPath: decalSecondaryPath },
+        gonfalconsPath,
+        gonfalconsColor,
+        decalTopColor,
+        decalTopPath
+    ] = await Promise.all([
+        indexDB.clanBannerDecalPrimaryColors.get({ hash: banner.decalColorId }).then(RGBAToHex),
+        indexDB.clanBannerDecalSecondaryColors
+            .get({ hash: banner.decalBackgroundColorId })
+            .then(RGBAToHex),
+        indexDB.clanBannerDecals
+            .get({ hash: banner.decalId })
+            .then(d => d ?? { foregroundPath: "", backgroundPath: "" }),
+
+        indexDB.clanBannerGonfalons.get({ hash: banner.gonfalonId }).then(d => d?.value ?? ""),
+        indexDB.clanBannerGonfalonColors.get({ hash: banner.gonfalonColorId }).then(RGBAToHex),
+        indexDB.clanBannerGonfalonDetailColors
+            .get({ hash: banner.gonfalonDetailColorId })
+            .then(RGBAToHex),
+        indexDB.clanBannerGonfalonDetails
+            .get({ hash: banner.gonfalonDetailId })
+            .then(d => d?.value ?? "")
+    ] as const)
+
     return {
-        decalPrimaryColor: RGBAToHex(
-            clanBanners.clanBannerDecalPrimaryColors[clanBanner.decalColorId]
-        ),
-        decalSecondaryColor: RGBAToHex(
-            clanBanners.clanBannerDecalSecondaryColors[clanBanner.decalBackgroundColorId]
-        ),
-        decalPrimary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.foregroundPath,
-        decalSecondary: clanBanners.clanBannerDecalsSquare[clanBanner.decalId]?.backgroundPath,
-        gonfalcons: clanBanners.clanBannerGonfalons[clanBanner.gonfalonId],
-        gonfalconsColor: RGBAToHex(
-            clanBanners.clanBannerGonfalonColors[clanBanner.gonfalonColorId]
-        ),
-        decalTopColor: RGBAToHex(
-            clanBanners.clanBannerGonfalonDetailColors[clanBanner.gonfalonDetailColorId]
-        ),
-        decalTop: clanBanners.clanBannerGonfalonDetailsSquare[clanBanner.gonfalonDetailId]
+        decalPrimary: {
+            path: decalPrimaryPath,
+            color: decalPrimaryColor
+        },
+        decalSecondary: {
+            path: decalSecondaryPath,
+            color: decalSecondaryColor
+        },
+        decalTop: {
+            path: decalTopPath,
+            color: decalTopColor
+        },
+        gonfalcons: {
+            path: gonfalconsPath,
+            color: gonfalconsColor
+        }
     }
 }
 
