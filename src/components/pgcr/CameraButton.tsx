@@ -10,13 +10,14 @@ const CameraButton = () => {
     const handleSuccess = async (blob: Blob) => {
         try {
             await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
-            setIsLoading(false)
             setIsCopied(true)
             setTimeout(() => {
                 setIsCopied(false)
             }, 2000)
         } catch (e) {
             console.error(e)
+        } finally {
+            setIsLoading(false)
         }
     }
 
