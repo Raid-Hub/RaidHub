@@ -32,7 +32,7 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
 
             <hr />
             <div>
-                <span>{strings.showScore}</span>
+                <span>{strings.screenshot}</span>
                 <CameraButton />
             </div>
 

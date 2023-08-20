@@ -34,8 +34,7 @@ const CameraButton = () => {
         }
     }
 
-    // const animate = isLoading ? "loading" : isCopied ? "copied" : "normal"
-    const animate = "loading"
+    const animate = isLoading ? "loading" : isCopied ? "copied" : "normal"
     return (
         <motion.button
             className={styles["screenshot-button"]}
@@ -44,7 +43,7 @@ const CameraButton = () => {
             variants={variants.button}>
             <motion.svg
                 preserveAspectRatio={"xMidYMid"}
-                viewBox={"0 0 63.19 63.19"}
+                viewBox={"0 0 24 24"}
                 height={20}
                 width={20}>
                 {/* This is the default view */}
@@ -52,11 +51,11 @@ const CameraButton = () => {
                 <g>
                     <motion.circle
                         stroke={"#FFFFFF"}
-                        strokeWidth={"7"}
+                        strokeWidth={"2"}
                         fill={"transparent"}
-                        cx={31.59}
-                        cy={31.59}
-                        r={24}
+                        cx={12}
+                        cy={12}
+                        r={10}
                         key={"circle"}
                         variants={variants.copy}
                         animate={animate}
@@ -64,10 +63,7 @@ const CameraButton = () => {
                 </g>
 
                 {/* This is the loading view */}
-                <motion.g
-                    animate={animate}
-                    variants={variants.loader}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
+                <motion.g animate={animate} variants={variants.loader}>
                     <motion.path
                         opacity={0.2}
                         fillRule="evenodd"
@@ -77,7 +73,7 @@ const CameraButton = () => {
                     />
                     <motion.path
                         d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
-                        fill="#000000"
+                        fill="#AAAAAA"
                     />
                 </motion.g>
 
@@ -85,21 +81,21 @@ const CameraButton = () => {
                 <g>
                     <motion.circle
                         stroke={"#FFFFFF"}
-                        strokeWidth={"7"}
+                        strokeWidth={"2"}
                         fill={"transparent"}
-                        cx={31.59}
-                        cy={31.59}
-                        r={24}
+                        cx={12}
+                        cy={12}
+                        r={10}
                         key={"circle"}
                         animate={animate}
                         variants={variants.circle}
                     />
                     <motion.path
                         stroke={"#FFFFFF"}
-                        strokeWidth={"7"}
+                        strokeWidth={"2"}
                         strokeLinecap={"round"}
                         fill={"transparent"}
-                        d={"M17.29 31.59l10.98 10.42 17.49-18.23"}
+                        d="M6.52347 11.91904l4.14166 3.93367 6.6008 -7.15843"
                         key={"check"}
                         animate={animate}
                         variants={variants.path}
@@ -123,7 +119,7 @@ const variants = {
     },
     loader: {
         normal: { opacity: 0 },
-        loading: { opacity: 1, rotate: 360, width: "20px", height: "20px" },
+        loading: { opacity: 1, rotate: 360 },
         copied: { opacity: 0 }
     },
     circle: {
