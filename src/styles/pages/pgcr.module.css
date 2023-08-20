@@ -622,24 +622,6 @@
         max-height: 35px;
     }
 }
-
-.screenshot-button {
-    width: min-content;
-    height: min-content;
-    padding: 0.5em 1.5em;
-    margin-right: 0.89em; /* ~15px */
-    background: var(--modal-background);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    font-weight: bold;
-    color: white;
-    display: grid;
-}
-
-.screenshot-button * {
-    grid-column: 1;
-    grid-row: 1;
-}
 .settings-menu-container {
     position: absolute;
     right: 0.5em;
@@ -667,4 +649,12 @@
 .settings-menu-dropdown > div {
     display: flex;
     gap: 1em;
+    align-items: center;
+}
+
+.settings-menu-dropdown hr {
+    border: none;
+    height: 1px;
+    width: 100%;
+    background-color: #888888;
 }

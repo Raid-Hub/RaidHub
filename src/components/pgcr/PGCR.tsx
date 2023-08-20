@@ -10,6 +10,8 @@ import KebabMenu from "../reusable/KebabMenu"
 import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
 import { useLocalStorage } from "../../hooks/util/useLocalStorage"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import ScreenshotContainer from "../reusable/ScreenshotContainer"
+import { createRef } from "react"
 
 const defaultPrefs = {
     showScore: false
@@ -17,6 +19,7 @@ const defaultPrefs = {
 
 const PGCR = () => {
     const { pgcr } = usePGCRContext()
+    const summaryCardRef = createRef<HTMLElement>()
     const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>(
         "pgcr_prefs",
         defaultPrefs
@@ -32,31 +35,39 @@ const PGCR = () => {
                 </title>
             </Head>
             <main className={styles["main"]} id={"screenshot-container"}>
-                <section className={styles["summary-card"]}>
-                    {typeof pgcr?.raid === "number" && (
-                        <Image
-                            priority
-                            className={[
-                                styles["summary-card-background"],
-                                pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
-                            ].join(" ")}
-                            src={RaidCardBackground[pgcr.raid]}
-                            alt="background image"
-                            fill
-                            style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
-                        />
-                    )}
-                    <div className={styles["settings-menu-container"]}>
-                        <KebabMenu size={20} alignmentSide="right">
-                            <PGCRSettingsMenu value={prefs} save={savePrefs} />
-                        </KebabMenu>
-                    </div>
-                    <ActivityHeader />
-                    <ParticipantsSection showScorePref={prefs?.showScore ?? false} />
-                </section>
-                <section className={styles["summary-stats"]}>
-                    <SummaryStatsGrid />
-                </section>
+                <ScreenshotContainer
+                    childRef={summaryCardRef}
+                    options={{
+                        backgroundColor: null,
+                        scale: 5,
+                        useCORS: true
+                    }}>
+                    <section className={styles["summary-card"]} ref={summaryCardRef}>
+                        {typeof pgcr?.raid === "number" && (
+                            <Image
+                                priority
+                                className={[
+                                    styles["summary-card-background"],
+                                    pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
+                                ].join(" ")}
+                                src={RaidCardBackground[pgcr.raid]}
+                                alt="background image"
+                                fill
+                                style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                            />
+                        )}
+                        <div
+                            className={styles["settings-menu-container"]}
+                            data-html2canvas-ignore={true}>
+                            <KebabMenu size={20} alignmentSide="right">
+                                <PGCRSettingsMenu value={prefs} save={savePrefs} />
+                            </KebabMenu>
+                        </div>
+                        <ActivityHeader />
+                        <ParticipantsSection showScorePref={prefs?.showScore ?? false} />
+                    </section>
+                </ScreenshotContainer>
+                <SummaryStatsGrid />
             </main>
         </>
     )

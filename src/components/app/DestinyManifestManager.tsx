@@ -79,7 +79,7 @@ export function useEmblem(hash: number | null) {
 export function useWeapon(hash: number | null) {
     const manifestVersion = useManifestVersion()
 
-    const fetchData = async () => (hash ? indexDB.weapons.get({ hash }) : undefined)
+    const fetchData = async () => (hash ? indexDB.weapons.get({ hash }) : null)
 
     const weapon = useQuery({
         queryKey: ["weapon", hash, manifestVersion],
