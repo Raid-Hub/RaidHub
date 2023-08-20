@@ -1,13 +1,5 @@
 import html2canvas, { Options } from "html2canvas"
-import {
-    ReactNode,
-    RefObject,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState
-} from "react"
+import { ReactNode, RefObject, createContext, useContext } from "react"
 
 type CanvasOptions = Partial<Options> | undefined
 
@@ -34,6 +26,7 @@ export const useScreenshot = ({
         try {
             const canvas = await html2canvas(element, options)
 
+            console.log(canvas)
             canvas.toBlob(async blob => {
                 if (blob) {
                     onSuccess?.(blob)
