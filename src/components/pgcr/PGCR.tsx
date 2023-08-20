@@ -34,7 +34,7 @@ const PGCR = () => {
                         : "RaidHub"}
                 </title>
             </Head>
-            <main className={styles["main"]} id={"screenshot-container"}>
+            <main className={styles["main"]}>
                 <ScreenshotContainer
                     childRef={summaryCardRef}
                     options={{
