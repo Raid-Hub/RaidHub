@@ -10,6 +10,9 @@ import { DestinyManifestComponent, DestinyManifestLanguage } from "bungie-net-co
 import { Hashed, indexDB } from "../dexie"
 
 export type CachedEmblem = {
+    emblem: string
+    icon: string
+    iconTransparent: string
     banner: string
 }
 
@@ -63,8 +66,8 @@ export async function updateCachedManifest({
             language
         }).then(items =>
             Promise.all([
-                indexDB.weapons.bulkPut(processWeapons(items)),
-                indexDB.emblems.bulkPut(processEmblems(items))
+                indexDB.weapons.clear().then(() => indexDB.weapons.bulkPut(processWeapons(items))),
+                indexDB.emblems.clear().then(() => indexDB.emblems.bulkPut(processEmblems(items)))
             ])
         ),
 
@@ -83,31 +86,29 @@ export async function updateCachedManifest({
                             ? { hash: Number(hash), value: def }
                             : { hash: Number(hash), ...def }
                     )
-                return Promise.all([
-                    indexDB.clanBannerDecalPrimaryColors.bulkPut(
-                        hash("clanBannerDecalPrimaryColors")
-                    ),
-                    indexDB.clanBannerDecalSecondaryColors.bulkPut(
-                        hash("clanBannerDecalSecondaryColors")
-                    ),
-                    indexDB.clanBannerDecals.bulkPut(hash("clanBannerDecals")),
-                    // indexDB.clanBannerDecalsSquare.bulkPut(hash("clanBannerDecalsSquare")),
-                    indexDB.clanBannerGonfalonColors.bulkPut(hash("clanBannerGonfalonColors")),
-                    indexDB.clanBannerGonfalonDetailColors.bulkPut(
-                        hash("clanBannerGonfalonDetailColors")
-                    ),
-                    indexDB.clanBannerGonfalonDetails.bulkPut(hash("clanBannerGonfalonDetails")),
-                    // indexDB.clanBannerGonfalonDetailsSquare.bulkPut(hash("clanBannerGonfalonDetailsSquare")),
-                    indexDB.clanBannerGonfalons.bulkPut(hash("clanBannerGonfalons"))
-                ])
+
+                const clearAndPut = async <K extends keyof RawClanBannerData>(key: K) => {
+                    indexDB[key].clear().then(() => {
+                        // @ts-expect-error
+                        indexDB[key].bulkPut(hash(key))
+                    })
+                }
+                return Promise.all(
+                    Object.keys(banners).map(table => clearAndPut(table as keyof RawClanBannerData))
+                )
             })
     ])
 }
 
 function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
     const weaponBuckets = [/* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645]
+
     return Object.entries(items)
-        .filter(([_, def]) => weaponBuckets.includes(def.inventory?.bucketTypeHash!))
+        .filter(
+            ([_, def]) =>
+                def.traitIds?.some(trait => trait.match(/^item\.weapon\.[A-Za-z0-9_]+$/)) &&
+                weaponBuckets.includes(def.inventory?.bucketTypeHash!)
+        )
         .map(
             ([hash, def]) =>
                 ({
@@ -121,9 +122,16 @@ function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefi
 
 function processEmblems(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
     return Object.entries(items)
+
         .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
         .map(
             ([hash, def]) =>
-                ({ hash: Number(hash), banner: def.secondarySpecial } as Hashed<CachedEmblem>)
+                ({
+                    hash: Number(hash),
+                    icon: def.displayProperties.icon,
+                    emblem: def.secondaryIcon,
+                    iconTransparent: def.secondaryOverlay,
+                    banner: def.secondarySpecial
+                } as Hashed<CachedEmblem>)
         )
 }

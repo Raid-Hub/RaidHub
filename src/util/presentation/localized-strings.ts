@@ -23,7 +23,10 @@ export interface LocalStrings {
     mostUsedWeapon: string
     overallKD: string
     superKills: string
-    allWeapons: string
+    super: string
+    grenade: string
+    melee: string
+    killBreakdown: string
     kills: string
     assists: string
     totalAssists: string
@@ -113,7 +116,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         mostUsedWeapon: "Most Used Weapon",
         overallKD: "Overall K/D",
         superKills: "Super Kills",
-        allWeapons: "All Weapons",
+        super: "Super",
+        grenade: "Grenade",
+        melee: "Melee",
+        killBreakdown: "Kill Breakdown",
         kills: "Kills",
         assists: "Assists",
         totalAssists: "Assists",

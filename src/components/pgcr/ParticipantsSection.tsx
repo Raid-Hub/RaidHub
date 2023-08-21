@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import PlayerStatCells from "./PlayerStatCells"
 import DestinyPGCRCharacter from "../../models/pgcr/Character"
+import KillsBreakdown from "./KillsBreakdown"
 
 type ParticipantsProps = {
     showScorePref: boolean
@@ -29,7 +30,7 @@ const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
     )
 
     const setQueryValues = useCallback(
-        (values: Partial<Record<"player" | "character", string>>) => {
+        (values: Partial<{ player: string; character: string; weapons: boolean }>) => {
             const query: typeof values = {}
             const player = values.player ?? router.query.player
             if (player) {
@@ -38,6 +39,10 @@ const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
             const character = values.character ?? router.query.character
             if (character) {
                 query.character = String(character)
+            }
+            const weapons = values.weapons ?? router.query.weapons
+            if (weapons === true || weapons === "true") {
+                query.weapons = true
             }
             router.push(
                 {
@@ -58,12 +63,14 @@ const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
     const selectedPlayer: PGCRPlayer | null = pgcr?.players.get(getQueryValue("player")) ?? null
     const selectedCharacter: DestinyPGCRCharacter | null =
         selectedPlayer?.characters.get(getQueryValue("character")) ?? null
+    const isShowingWeaponsView = getQueryValue("weapons") === "true"
 
     const updatePlayerId = (clicked: string) => {
         selectedPlayer?.membershipId === clicked
             ? setQueryValues({
                   player: "",
-                  character: ""
+                  character: "",
+                  weapons: false
               })
             : setQueryValues({ player: clicked })
     }
@@ -106,16 +113,22 @@ const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
         // selected view
         return (
             <>
-                {selectedPlayer && (
-                    <SelectedPlayerHeader
-                        selectedPlayer={selectedPlayer}
-                        selectedCharacter={selectedCharacter}
-                        onClick={() => updatePlayerId(selectedPlayer.membershipId)}
-                        updateCharacterId={updateCharacterId}
+                <SelectedPlayerHeader
+                    selectedPlayer={selectedPlayer}
+                    selectedCharacter={selectedCharacter}
+                    onClick={() => updatePlayerId(selectedPlayer.membershipId)}
+                    updateCharacterId={updateCharacterId}
+                />
+                {!isShowingWeaponsView ? (
+                    <PlayerStatCells
+                        entry={selectedCharacter ?? selectedPlayer}
+                        showWeaponsDetails={() => setQueryValues({ weapons: true })}
                     />
-                )}
-                {(selectedCharacter ?? selectedPlayer) && (
-                    <PlayerStatCells entry={selectedCharacter ?? selectedPlayer} />
+                ) : (
+                    <KillsBreakdown
+                        entry={selectedCharacter ?? selectedPlayer}
+                        back={() => setQueryValues({ weapons: false })}
+                    />
                 )}
             </>
         )

@@ -28,14 +28,5 @@ export function pgcrEntryRankingScore({
 
     const finalScore = killScore * deathScore + timeScore + precisionScore + superScore
 
-    console.table({
-        killScore,
-        deathScore,
-        timeScore,
-        precisionScore,
-        superScore,
-        finalScore
-    })
-
     return finalScore
 }

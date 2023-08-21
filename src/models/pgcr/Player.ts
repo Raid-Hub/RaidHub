@@ -31,7 +31,9 @@ export default class PGCRPlayer implements IPGCREntry {
             abilityKills: reduce("abilityKills"),
             timePlayedSeconds: reduce("timePlayedSeconds"),
             precisionKills: reduce("precisionKills"),
-            superKills: reduce("superKills")
+            superKills: reduce("superKills"),
+            grenadeKills: reduce("grenadeKills"),
+            meleeKills: reduce("meleeKills")
         }
 
         this.stats = {
