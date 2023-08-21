@@ -26,7 +26,6 @@ export const useScreenshot = ({
         try {
             const canvas = await html2canvas(element, options)
 
-            console.log(canvas)
             canvas.toBlob(async blob => {
                 if (blob) {
                     onSuccess?.(blob)
