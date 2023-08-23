@@ -7,7 +7,7 @@ import manifest from "../../../public/manifest.json"
 type FooterProps = {}
 
 const developers = ["Newo", "Bruce", "Theos"]
-const raidHubMailAddress = "raidhub@support.com"
+const raidHubMailAddress = "admin@raidhub.app"
 const contactIcons: { url: string; id: Socials }[] = [
     {
         url: `https://discord.gg/raidhub`,
@@ -79,21 +79,11 @@ const Footer = ({}: FooterProps) => {
 
             <div className={styles["bottom"]}>
                 <div className={styles["left"]}>
-                    <p>
-                        RaidHub <span className={styles["version"]}>alpha-{version}</span>
-                    </p>
+                    RaidHub <span className={styles["version"]}>alpha-{version}</span>
                 </div>
-                <div className={styles["right"]}>
-                    <p>
-                        <span>Data from </span>
-                        <a className={styles["url"]} href="https://raid.report">
-                            Raid Report
-                        </a>{" "}
-                        and{" "}
-                        <a className={styles["url"]} href="https://bungie.net/7">
-                            Bungie
-                        </a>
-                    </p>
+                <div className={[styles["right"], styles["legal"]].join(" ")}>
+                    <Link href="/privacy">Privacy</Link>
+                    <Link href="/terms">Terms</Link>
                 </div>
             </div>
         </footer>

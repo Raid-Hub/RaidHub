@@ -4,6 +4,7 @@
     padding: 1em 1em;
     background-color: var(--header-background);
     border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     display: grid;
     gap: 1em;
@@ -92,6 +93,12 @@
     text-transform: uppercase;
 }
 
-.url {
-    font-style: italic;
+.legal {
+    display: flex;
+    gap: 0.7em;
+}
+
+.legal a:hover,
+.developers a:hover {
+    color: var(--secondary-text);
 }
