@@ -14,7 +14,7 @@ export async function bungieProfile(
         destinyMemberships[0]
 
     return {
-        id: primaryDestinyMembership.membershipId,
+        id: bungieNetUser.membershipId,
         name: primaryDestinyMembership.displayName,
         bungieMembershipId: bungieNetUser.membershipId,
         destinyMembershipId: primaryDestinyMembership.membershipId,

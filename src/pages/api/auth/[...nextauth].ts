@@ -40,9 +40,10 @@ export default NextAuth({
     },
     callbacks: {
         session: sessionCallback,
-        signIn({ account }) {
-            if (account?.provider === "bungie") {
-                updateBungieAccessTokens({
+        async signIn({ account, user }) {
+            // @ts-expect-error this line here determines if we need to update the tokens
+            if (account?.provider === "bungie" && user.id !== user.bungieMembershipId) {
+                await updateBungieAccessTokens({
                     bungieMembershipId: account.membership_id as string,
                     access: {
                         value: account.access_token!,
@@ -50,7 +51,7 @@ export default NextAuth({
                     },
                     refresh: {
                         value: account.refresh_token!,
-                        expires: Date.now() + 7776000000
+                        expires: Date.now() + 7_775_777_777
                     }
                 })
             }
