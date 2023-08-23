@@ -72,8 +72,6 @@ const PlayerCell = ({
                     <Image
                         src={icon}
                         alt={member.characters[0].className}
-                        sizes="80px"
-                        fill
                         className={styles["class-logo"]}
                     />
                 </div>
