@@ -22,7 +22,7 @@ export function pgcrEntryRankingScore({
 
     const timeScore = timePlayedSeconds / 360 // 10 points per hour
 
-    const precisionScore = (precisionKills / kills) * 10 // 1 point per 10% of kills
+    const precisionScore = (precisionKills / (kills || 1)) * 10 // 1 point per 10% of kills
 
     const superScore = (superKills / (timePlayedSeconds / 60)) * 5 // 1 point per super kill per minute
 

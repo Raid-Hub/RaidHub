@@ -9,12 +9,10 @@ import { Variants, motion } from "framer-motion"
 
 const variants = {
     open: {
+        height: "unset",
         gridTemplateRows: "1fr"
     },
-    closed: {
-        height: 0,
-        gridTemplateRows: "0fr"
-    }
+    closed: { height: "unset", gridTemplateRows: "0fr" }
 } satisfies Variants
 
 const AccountIcon = () => {

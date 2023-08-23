@@ -88,10 +88,13 @@ export async function updateCachedManifest({
                     )
 
                 const clearAndPut = async <K extends keyof RawClanBannerData>(key: K) => {
-                    indexDB[key].clear().then(() => {
-                        // @ts-expect-error
-                        indexDB[key].bulkPut(hash(key))
-                    })
+                    indexDB[key]
+                        .clear()
+                        .catch(e => {})
+                        .then(() => {
+                            // @ts-expect-error
+                            indexDB[key].bulkPut(hash(key))
+                        })
                 }
                 return Promise.all(
                     Object.keys(banners).map(table => clearAndPut(table as keyof RawClanBannerData))
