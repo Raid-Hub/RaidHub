@@ -104,7 +104,8 @@ export const ReleaseDate: Record<ListedRaid, Date> = {
     [Raid.VAULT_OF_GLASS]: new Date("May 22, 2021 10:00:00 AM PDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 5, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 26, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 10, 2023 9:00:00 AM PST")
+    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 10, 2023 9:00:00 AM PST"),
+    [Raid.CROTAS_END]: new Date("September 1, 2023 10:00:00 AM PDT")
 }
 
 const DayOneEnd: Record<ListedRaid, Date> = {
@@ -119,7 +120,8 @@ const DayOneEnd: Record<ListedRaid, Date> = {
     [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 6, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST")
+    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST"),
+    [Raid.CROTAS_END]: new Date("September 2, 2023 10:00:00 AM PDT")
 }
 
 const ContestEnd: Record<ContestRaid, Date> = {
@@ -129,7 +131,8 @@ const ContestEnd: Record<ContestRaid, Date> = {
     [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 7, 2022 10:00:00 AM PST"),
     [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST")
+    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST"),
+    [Raid.CROTAS_END]: new Date("September 3, 2023 10:00:00 AM PDT")
 }
 
 const WeekOneEnd: Record<NoContestRaid, Date> = {

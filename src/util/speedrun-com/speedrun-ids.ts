@@ -13,7 +13,8 @@ export const SpeedrunIds: Record<ListedRaid, string> = {
     [Raid.VAULT_OF_GLASS]: "q25x58vk",
     [Raid.VOW_OF_THE_DISCIPLE]: "7kj909n2",
     [Raid.KINGS_FALL]: "9kvlp902",
-    [Raid.ROOT_OF_NIGHTMARES]: "9d88x6ld"
+    [Raid.ROOT_OF_NIGHTMARES]: "9d88x6ld",
+    [Raid.CROTAS_END]: ""
 }
 
 export const SpeedrunVariableId: Record<ListedRaid, string | null> = {
@@ -28,7 +29,8 @@ export const SpeedrunVariableId: Record<ListedRaid, string | null> = {
     [Raid.VAULT_OF_GLASS]: "e8mqrmwn",
     [Raid.VOW_OF_THE_DISCIPLE]: "gnx2yo48",
     [Raid.KINGS_FALL]: "9l75odz8",
-    [Raid.ROOT_OF_NIGHTMARES]: "jlzxvz78"
+    [Raid.ROOT_OF_NIGHTMARES]: "jlzxvz78",
+    [Raid.CROTAS_END]: null
 }
 
 export const SpeedrunVariableValues: Record<
@@ -74,5 +76,6 @@ export const SpeedrunVariableValues: Record<
     [Raid.ROOT_OF_NIGHTMARES]: {
         "any%": { id: "lx5v72r1", name: "anyPercent" },
         trio: { id: "14o50mjq", name: "trio" }
-    }
+    },
+    [Raid.CROTAS_END]: {}
 }

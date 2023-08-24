@@ -34,6 +34,7 @@ export const enum Difficulty {
 export type ListedRaid = (typeof ListedRaids)[number]
 // sorted in reverse order
 export const ListedRaids = [
+    Raid.CROTAS_END,
     Raid.ROOT_OF_NIGHTMARES,
     Raid.KINGS_FALL,
     Raid.VOW_OF_THE_DISCIPLE,
@@ -187,6 +188,12 @@ export const RaidHashes = {
         [Difficulty.NORMAL]: ["2381413764"] as const,
         [Difficulty.GUIDEDGAMES]: ["1191701339"] as const,
         [Difficulty.MASTER]: ["2918919505"] as const
+    },
+    [Raid.CROTAS_END]: {
+        [Difficulty.NORMAL]: ["4179289725"] as const,
+        [Difficulty.GUIDEDGAMES]: ["4103176774"] as const,
+        [Difficulty.CHALLENGE_CROTA]: ["156253568"] as const,
+        [Difficulty.MASTER]: ["1507509200"] as const
     }
 } satisfies Record<ListedRaid, Partial<Record<Difficulty, readonly string[]>>>
 
@@ -230,7 +237,7 @@ export const Short: { [key in Raid]: string } = {
     [Raid.VOW_OF_THE_DISCIPLE]: "Vow",
     [Raid.KINGS_FALL]: "KF",
     [Raid.ROOT_OF_NIGHTMARES]: "RoN",
-    [Raid.CROTAS_END]: "Crota",
+    [Raid.CROTAS_END]: "CE",
     [Raid.NA]: "*"
 }
 
@@ -246,7 +253,8 @@ export const UrlPathsToRaid = {
     vaultofglass: Raid.VAULT_OF_GLASS,
     vowofthedisciple: Raid.VOW_OF_THE_DISCIPLE,
     kingsfall: Raid.KINGS_FALL,
-    rootofnightmares: Raid.ROOT_OF_NIGHTMARES
+    rootofnightmares: Raid.ROOT_OF_NIGHTMARES,
+    crotasend: Raid.CROTAS_END
 } satisfies Record<string, ListedRaid>
 
 export const RaidToUrlPaths = {
@@ -261,7 +269,8 @@ export const RaidToUrlPaths = {
     [Raid.VAULT_OF_GLASS]: "vaultofglass",
     [Raid.VOW_OF_THE_DISCIPLE]: "vowofthedisciple",
     [Raid.KINGS_FALL]: "kingsfall",
-    [Raid.ROOT_OF_NIGHTMARES]: "rootofnightmares"
+    [Raid.ROOT_OF_NIGHTMARES]: "rootofnightmares",
+    [Raid.CROTAS_END]: "crotasend"
 } satisfies Record<ListedRaid, keyof typeof UrlPathsToRaid>
 
 // todo with our own api, we can change these
