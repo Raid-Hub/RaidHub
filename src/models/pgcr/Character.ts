@@ -37,8 +37,14 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
             : new Collection()
 
         const getStat = (key: string): number | undefined => this.values[key]?.basic.value
-        const getExtendedStat = (key: string): number | undefined =>
-            this.extended.values[key]?.basic.value
+        const getExtendedStat = (
+            key:
+                | "precisionKills"
+                | "weaponKillsAbility"
+                | "weaponKillsGrenade"
+                | "weaponKillsMelee"
+                | "weaponKillsSuper"
+        ): number | undefined => this.extended.values[key]?.basic.value
 
         const weaponKills = this.weapons.reduce((kills, weapon) => kills + weapon.kills, 0)
         const _stats = {
@@ -51,6 +57,8 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
             kda: getStat("kills")! + getStat("assists")! / (getStat("deaths") || 1),
             precisionKills: getExtendedStat("precisionKills")!,
             superKills: getExtendedStat("weaponKillsSuper")!,
+            grenadeKills: getExtendedStat("weaponKillsGrenade")!,
+            meleeKills: getExtendedStat("weaponKillsMelee")!,
             timePlayedSeconds: !!getStat("completed")!
                 ? getStat("activityDurationSeconds")! - getStat("startSeconds")!
                 : getStat("timePlayedSeconds")!
