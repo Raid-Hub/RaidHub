@@ -159,8 +159,8 @@ export const RaidHashes = {
         [Difficulty.GUIDEDGAMES]: ["960175301"] as const
     },
     [Raid.GARDEN_OF_SALVATION]: {
-        [Difficulty.NORMAL]: ["2659723068", "3458480158"] as const,
-        [Difficulty.GUIDEDGAMES]: ["2497200493", "3845997235"] as const
+        [Difficulty.NORMAL]: ["2659723068", "3458480158", "1042180643"] as const,
+        [Difficulty.GUIDEDGAMES]: ["2497200493", "3845997235", "3823237780"] as const
     },
     [Raid.DEEP_STONE_CRYPT]: {
         [Difficulty.NORMAL]: ["910380154"] as const,
