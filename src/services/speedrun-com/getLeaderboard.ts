@@ -12,6 +12,10 @@ export async function getLeaderboard<R extends ListedRaid>(
     raid: R,
     subCategory?: keyof (typeof SpeedrunVariableValues)[R]
 ): Promise<LeaderboardEntry[]> {
+    if (!SpeedrunIds[raid]) {
+        return []
+    }
+
     const url = new URL(
         `https://www.speedrun.com/api/v1/leaderboards/${destiny2GameId}/category/${SpeedrunIds[raid]}?embed=players`
     )
