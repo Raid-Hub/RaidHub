@@ -9,11 +9,23 @@
         "noEmit": true,
         "esModuleInterop": true,
         "module": "esnext",
-        "moduleResolution": "Node",
+        "moduleResolution": "Node16",
         "resolveJsonModule": true,
         "jsx": "preserve",
         "incremental": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "baseUrl": "src/",
+        "paths": {
+            "@/components/*": ["components/*"],
+            "@/hooks/*": ["hooks/*"],
+            "@/images/*": ["images/*"],
+            "@/models/*": ["models/*"],
+            "@/pages/*": ["pages/*"],
+            "@/services/*": ["components/*"],
+            "@/styles/*": ["styles/*"],
+            "@/types/*": ["types/*"],
+            "@/util/*": ["util/*"]
+        }
     },
     "include": ["**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"],
