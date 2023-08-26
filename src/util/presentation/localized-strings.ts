@@ -21,7 +21,12 @@ export interface LocalStrings {
     abilityKillsPercentage: string
     totalCharactersUsed: string
     mostUsedWeapon: string
-    allWeapons: string
+    overallKD: string
+    superKills: string
+    super: string
+    grenade: string
+    melee: string
+    killBreakdown: string
     kills: string
     assists: string
     totalAssists: string
@@ -30,7 +35,6 @@ export interface LocalStrings {
     tags: { [key in Tag]: string }
     loadMore: string
     difficulty: { [key in Difficulty]: string }
-    killsPerMinute: string
     worldFirstLeaderboards: string
     otherLeaderboards: string
     rtaSpeedrunLeaderboards: string
@@ -110,7 +114,12 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         abilityKillsPercentage: "Ability Kills",
         totalCharactersUsed: "Characters",
         mostUsedWeapon: "Most Used Weapon",
-        allWeapons: "All Weapons",
+        overallKD: "Overall K/D",
+        superKills: "Super Kills",
+        super: "Super",
+        grenade: "Grenade",
+        melee: "Melee",
+        killBreakdown: "Kill Breakdown",
         kills: "Kills",
         assists: "Assists",
         totalAssists: "Assists",
@@ -146,7 +155,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGE_KF]: "Regicide",
             [Difficulty.CHALLENGE_CROTA]: "Unknown"
         },
-        killsPerMinute: "Kills / Minute",
         worldFirstLeaderboards: "World First Leaderboards",
         otherLeaderboards: "Other Leaderboards",
         rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",

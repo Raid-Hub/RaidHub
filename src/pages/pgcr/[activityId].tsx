@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react"
-import { GetServerSideProps, NextPage } from "next"
+import { GetStaticProps, NextPage } from "next"
 import CustomError from "../../models/errors/CustomError"
 import { z } from "zod"
 import { usePGCR } from "../../hooks/bungie/usePGCR"
@@ -31,11 +31,18 @@ const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
 
 export default PGCRPage
 
-export const getServerSideProps: GetServerSideProps<PGCRPageProps> = async ({ params }) => {
+export const getStaticPaths = () => {
+    return {
+        paths: [],
+        fallback: "blocking"
+    }
+}
+
+export const getStaticProps: GetStaticProps<PGCRPageProps> = async ({ params }) => {
     try {
         const props = z
             .object({
-                activityId: z.string()
+                activityId: z.string().regex(/^\d+$/)
             })
             .parse(params)
         return {

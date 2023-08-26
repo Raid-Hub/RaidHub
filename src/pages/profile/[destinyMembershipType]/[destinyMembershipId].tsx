@@ -1,5 +1,5 @@
 import ProfileWrapper from "../../../components/profile/ProfileWrapper"
-import { GetServerSideProps, NextPage } from "next"
+import { GetStaticProps, NextPage } from "next"
 import { InitialProfileProps } from "../../../types/profile"
 import { zUniqueDestinyProfile } from "../../../util/server/zod"
 import prisma from "../../../util/server/prisma"
@@ -8,11 +8,14 @@ const ProfilePage: NextPage<InitialProfileProps> = props => {
     return <ProfileWrapper {...props} />
 }
 
-export const getServerSideProps: GetServerSideProps<InitialProfileProps> = async ({
-    params,
-    res,
-    req
-}) => {
+export const getStaticPaths = () => {
+    return {
+        paths: [],
+        fallback: "blocking"
+    }
+}
+
+export const getStaticProps: GetStaticProps<InitialProfileProps> = async ({ params }) => {
     try {
         const props = zUniqueDestinyProfile.parse(params)
         const vanity = await prisma.vanity
@@ -31,7 +34,10 @@ export const getServerSideProps: GetServerSideProps<InitialProfileProps> = async
                 }
             }
         } else {
-            return { props }
+            return {
+                revalidate: 3600 * 24,
+                props
+            }
         }
     } catch {
         return { notFound: true }

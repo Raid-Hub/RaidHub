@@ -2,14 +2,16 @@ import PGCRCharacter from "./Character"
 import { mergeWeaponCollections } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { Collection } from "@discordjs/collection"
 
 export default class PGCRPlayer implements IPGCREntry {
-    readonly characters: PGCRCharacter[]
+    readonly membershipId: string
+    readonly characters: Collection<string, PGCRCharacter>
     readonly deathless: boolean
     readonly stats: IPGCREntryStats
     readonly weapons: PlayerWeapons
-    constructor(characters: PGCRCharacter[]) {
+    constructor(membershipId: string, characters: Collection<string, PGCRCharacter>) {
+        this.membershipId = membershipId
         this.characters = characters.sort((a, b) => {
             if (a.didComplete != b.didComplete) {
                 return a.didComplete ? -1 : 1
@@ -29,7 +31,9 @@ export default class PGCRPlayer implements IPGCREntry {
             abilityKills: reduce("abilityKills"),
             timePlayedSeconds: reduce("timePlayedSeconds"),
             precisionKills: reduce("precisionKills"),
-            superKills: reduce("superKills")
+            superKills: reduce("superKills"),
+            grenadeKills: reduce("grenadeKills"),
+            meleeKills: reduce("meleeKills")
         }
 
         this.stats = {
@@ -41,16 +45,13 @@ export default class PGCRPlayer implements IPGCREntry {
 
         this.weapons = mergeWeaponCollections(this.characters.map(char => char.weapons))
     }
-    get membershipId(): string {
-        return this.characters[0].membershipId
-    }
-
-    get membershipType(): BungieMembershipType {
-        return this.characters[0].membershipType
-    }
 
     get displayName(): string | undefined {
         return this.characters.find(c => c.displayName)?.displayName
+    }
+
+    get membershipType() {
+        return this.characters.first()!.membershipType
     }
 
     get flawless(): boolean {
@@ -66,6 +67,6 @@ export default class PGCRPlayer implements IPGCREntry {
     }
 
     get banner(): number {
-        return this.characters[0].banner
+        return this.characters.first()!.banner
     }
 }

@@ -1,5 +1,5 @@
 import Dexie, { Table } from "dexie"
-import { CachedEmblem, CachedWeapon, RGBA } from "./destiny/manifest"
+import { CachedEmblem, CachedWeapon, RGBA, RawClanBannerData } from "./destiny/manifest"
 
 export type Hashed<T> = { hash: number } & T
 type ForegroundBackground = {
@@ -7,17 +7,17 @@ type ForegroundBackground = {
     backgroundPath: string
 }
 
-class CustomDexie extends Dexie {
+class CustomDexie extends Dexie implements Record<keyof RawClanBannerData, Table> {
     weapons!: Table<Hashed<CachedWeapon>>
     emblems!: Table<Hashed<CachedEmblem>>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
     clanBannerDecals!: Table<Hashed<ForegroundBackground>>
-    // clanBannerDecalsSquare!: Table<Hashed<ForegroundBackground>>
+    clanBannerDecalsSquare!: Table<Hashed<ForegroundBackground>> // unused
     clanBannerGonfalonColors!: Table<Hashed<RGBA>>
     clanBannerGonfalonDetailColors!: Table<Hashed<RGBA>>
     clanBannerGonfalonDetails!: Table<Hashed<{ value: string }>>
-    // clanBannerGonfalonDetailsSquare!: Table<Hashed<{ value: string }>>
+    clanBannerGonfalonDetailsSquare!: Table<Hashed<{ value: string }>> // unused
     clanBannerGonfalons!: Table<Hashed<{ value: string }>>
 
     constructor() {
@@ -28,11 +28,11 @@ class CustomDexie extends Dexie {
             clanBannerDecalPrimaryColors: "hash",
             clanBannerDecalSecondaryColors: "hash",
             clanBannerDecals: "hash",
-            // clanBannerDecalsSquare: "hash",
+            clanBannerDecalsSquare: "hash", // unused
             clanBannerGonfalonColors: "hash",
             clanBannerGonfalonDetailColors: "hash",
             clanBannerGonfalonDetails: "hash",
-            // clanBannerGonfalonDetailsSquare: "hash",
+            clanBannerGonfalonDetailsSquare: "hash", // unused
             clanBannerGonfalons: "hash"
         })
     }

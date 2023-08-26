@@ -21,6 +21,8 @@ export interface IPGCREntryStats {
     readonly abilityKills: number
     readonly precisionKills: number
     readonly superKills: number
+    readonly meleeKills: number
+    readonly grenadeKills: number
     // calculates a player's raw score for an activity, used to determine the MVP
     readonly score: number
 }

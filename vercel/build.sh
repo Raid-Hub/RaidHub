@@ -18,7 +18,7 @@ if [[ -n $NAMESPACE ]] ; then
   echo "Deploying local build to preview: $NAMESPACE.raidhub.app..."
 
   yarn prisma generate
-  yarn prisma db push --accept-data-loss --skip-generate
+  yarn prisma db push --force-reset --skip-generate
   
   seed_and_build
 
