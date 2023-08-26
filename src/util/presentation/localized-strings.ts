@@ -81,6 +81,7 @@ export interface LocalStrings {
     score: string
     showScore: string
     pinThisActivity: string
+    screenshot: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -240,6 +241,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         score: "Score",
         showScore: "Show Score",
-        pinThisActivity: "Pin this PGCR"
+        pinThisActivity: "Pin this PGCR",
+        screenshot: "Screenshot"
     }
 }

@@ -208,19 +208,19 @@ export type ValidRaidHash = {
 export const BackdropOpacity: {
     [key in Raid]: number
 } = {
-    [Raid.LEVIATHAN]: 0.5,
-    [Raid.EATER_OF_WORLDS]: 0.5,
-    [Raid.SPIRE_OF_STARS]: 0.5,
-    [Raid.LAST_WISH]: 0.6,
-    [Raid.SCOURGE_OF_THE_PAST]: 0.5,
-    [Raid.CROWN_OF_SORROW]: 0.5,
-    [Raid.GARDEN_OF_SALVATION]: 0.5,
-    [Raid.DEEP_STONE_CRYPT]: 0.8,
-    [Raid.VAULT_OF_GLASS]: 0.7,
-    [Raid.VOW_OF_THE_DISCIPLE]: 0.5,
-    [Raid.KINGS_FALL]: 0.4,
-    [Raid.ROOT_OF_NIGHTMARES]: 0.75,
-    [Raid.CROTAS_END]: 0.6,
+    [Raid.LEVIATHAN]: 0.8,
+    [Raid.EATER_OF_WORLDS]: 0.8,
+    [Raid.SPIRE_OF_STARS]: 0.8,
+    [Raid.LAST_WISH]: 0.9,
+    [Raid.SCOURGE_OF_THE_PAST]: 0.8,
+    [Raid.CROWN_OF_SORROW]: 0.8,
+    [Raid.GARDEN_OF_SALVATION]: 0.8,
+    [Raid.DEEP_STONE_CRYPT]: 0.9,
+    [Raid.VAULT_OF_GLASS]: 0.9,
+    [Raid.VOW_OF_THE_DISCIPLE]: 0.9,
+    [Raid.KINGS_FALL]: 0.8,
+    [Raid.ROOT_OF_NIGHTMARES]: 0.9,
+    [Raid.CROTAS_END]: 0.9,
     [Raid.NA]: 0
 }
 

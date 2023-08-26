@@ -8,8 +8,6 @@ import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 const ActivityHeader = () => {
     const { pgcr, loadingState } = usePGCRContext()
     const { strings, locale } = useLocale()
-    const checkpointDisclaimer = strings.checkPointDisclaimer
-    const incomplete = strings.incompleteRaid
 
     return (
         <div className={styles["activity-tile-header-container"]}>
@@ -45,7 +43,7 @@ const ActivityHeader = () => {
                             ))}
                         {!(pgcr?.completed ?? true) && (
                             <span>
-                                <b>{`(${incomplete})`}</b>
+                                <b>{`(${strings.incompleteRaid})`}</b>
                             </span>
                         )}
                     </div>
@@ -61,7 +59,7 @@ const ActivityHeader = () => {
                 </div>
                 {pgcr?.wasFresh() === null && (
                     <div className={styles["cp-error"]}>
-                        <p>{checkpointDisclaimer}</p>
+                        <p>{strings.checkPointDisclaimer}</p>
                     </div>
                 )}
             </div>

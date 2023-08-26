@@ -5,6 +5,7 @@ import { useLocale } from "../app/LocaleManager"
 import ToggleSwitch from "../reusable/ToggleSwitch"
 import PinPCRCell from "./PinPGCRCell"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import CameraButton from "./CameraButton"
 
 export type PGCRSettings = {
     showScore: boolean
@@ -29,20 +30,20 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
                 />
             </div>
 
-            <hr
-                style={{
-                    border: "none",
-                    height: "1px",
-                    width: "100%",
-                    backgroundColor: "#888888"
-                }}
-            />
+            <hr />
+            <div>
+                <span>{strings.screenshot}</span>
+                <CameraButton />
+            </div>
 
             {sessionData?.user.destinyMembershipId &&
                 pgcr?.players
                     ?.map(p => p.membershipId)
                     .includes(sessionData.user.destinyMembershipId) && (
-                    <PinPCRCell destinyMembershipId={sessionData.user.destinyMembershipId} />
+                    <>
+                        <hr />
+                        <PinPCRCell destinyMembershipId={sessionData.user.destinyMembershipId} />
+                    </>
                 )}
         </div>
     )

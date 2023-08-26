@@ -69,7 +69,7 @@ const SummaryStatsGrid = () => {
         }
     ]
     return (
-        <>
+        <section className={styles["summary-stats"]}>
             {statsData.map(({ icon, name, value }, idx) => (
                 <div key={idx} className={styles["summary-stat"]}>
                     <div className={styles["summary-stat-content"]}>
@@ -97,7 +97,7 @@ const SummaryStatsGrid = () => {
                     </div>
                 </div>
             ))}
-        </>
+        </section>
     )
 }
 
