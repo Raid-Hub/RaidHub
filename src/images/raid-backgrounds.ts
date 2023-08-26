@@ -27,7 +27,7 @@ const RaidCardBackground: { [key in ListedRaid]: StaticImageData | string } = {
     [Raid.ROOT_OF_NIGHTMARES]:
         "https://cdn.discordapp.com/attachments/1136751502912934060/1136759097253970030/ron.webp",
     [Raid.CROTAS_END]:
-        "https://www.destinythegame.com/content/dam/warp/warp/crotas-end/crota-trailer-poster.jpg"
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1144455377010819072/crota.webp"
 }
 
 export default RaidCardBackground

@@ -280,7 +280,7 @@ export const DifficultyToUrlPaths = {
     [Difficulty.MASTER]: "master" as const,
     [Difficulty.CHALLENGE_VOG]: "temposedge" as const,
     [Difficulty.CHALLENGE_KF]: "regicide" as const,
-    [Difficulty.CHALLENGE_CROTA]: "challengecrota" as const
+    [Difficulty.CHALLENGE_CROTA]: "superiorswordplay" as const
 } satisfies Partial<Record<Difficulty, keyof typeof UrlPathsToDifficulty>>
 
 export const UrlPathsToDifficulty = {
@@ -289,5 +289,5 @@ export const UrlPathsToDifficulty = {
     master: Difficulty.MASTER,
     temposedge: Difficulty.CHALLENGE_VOG,
     regicide: Difficulty.CHALLENGE_KF,
-    challengecrota: Difficulty.CHALLENGE_CROTA
+    superiorswordplay: Difficulty.CHALLENGE_CROTA
 } satisfies Record<string, Difficulty>
