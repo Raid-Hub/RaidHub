@@ -6,7 +6,6 @@ import {
     UserInfoCard
 } from "bungie-net-core/lib/models"
 import PGCRCharacter from "./Character"
-import DestinyPGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"
 import {
@@ -18,7 +17,7 @@ import {
 } from "../../types/raids"
 import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
-import { IPGCREntryStats } from "../../types/pgcr"
+import { IPGCREntryStats, WeaponStatsValues } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
 import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
 import { Collection } from "@discordjs/collection"
@@ -27,19 +26,35 @@ import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 type PostGameCarnageReportOptions = {
     filtered: boolean
 }
+type SummaryStats = {
+    mvp: string | null
+    totalKills: number
+    totalDeaths: number
+    totalAssists: number
+    overallKD: number
+    overallKAD: number
+    totalWeaponKills: number
+    totalSuperKills: number
+    totalAbilityKills: number
+    killsPerMinute: number
+    totalCharactersUsed: number
+    mostUsedWeapon: WeaponStatsValues | null
+}
+
 export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     readonly activityDetails: DestinyHistoricalStatsActivity
     readonly activityWasStartedFromBeginning: boolean | undefined
-    readonly entries: DestinyPGCRCharacter[]
+    readonly entries: PGCRCharacter[]
     readonly period: string
     readonly startingPhaseIndex: number | undefined
     readonly teams: DestinyPostGameCarnageReportTeamEntry[]
 
-    readonly players: PGCRPlayer[]
+    readonly players: Collection<string, PGCRPlayer>
     readonly startDate: Date
     readonly completionDate: Date
     readonly raid: ListedRaid | null
     readonly difficulty: Difficulty
+    readonly stats: SummaryStats
 
     constructor(data: DestinyPostGameCarnageReportData, options: PostGameCarnageReportOptions) {
         this.period = data.period
@@ -52,30 +67,59 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.teams = data.teams
 
         // group characters by membershipId
-        const players = new Array<PGCRPlayer>()
-        const buckets = new Map<string, DestinyPGCRCharacter[]>()
+        this.players = new Collection<string, PGCRPlayer>()
+        const buckets = new Map<string, Collection<string, PGCRCharacter>>()
         this.entries.forEach(char => {
             if (buckets.has(char.membershipId)) {
-                buckets.get(char.membershipId)!.push(char)
+                buckets.get(char.membershipId)!.set(char.characterId, char)
             } else {
-                buckets.set(char.membershipId, [char])
+                buckets.set(char.membershipId, new Collection([[char.characterId, char]]))
             }
         })
-        buckets.forEach(characters => {
-            players.push(new PGCRPlayer(characters))
+        buckets.forEach((characters, membershipId) => {
+            this.players.set(membershipId, new PGCRPlayer(membershipId, characters))
         })
-        this.players = players.sort(sortPlayers)
+        this.players.sort(sortPlayers)
 
         this.startDate = new Date(this.period)
         this.completionDate = new Date(
             this.startDate.getTime() +
                 this.entries[0]?.values.activityDurationSeconds.basic.value * 1000
         )
+
         try {
             ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
         } catch {
             this.raid = null
             this.difficulty = Difficulty.NORMAL
+        }
+
+        const reduce = (key: keyof IPGCREntryStats) =>
+            this.players.reduce((a, b) => a + b.stats[key], 0)
+        this.stats = {
+            mvp:
+                this.players.reduce<PGCRPlayer>((a, b) => (a.stats.score > b.stats.score ? a : b))
+                    .displayName ?? null,
+            totalKills: reduce("kills"),
+            totalDeaths: reduce("deaths"),
+            totalAssists: reduce("assists"),
+            overallKD: reduce("kills") / reduce("deaths"),
+            overallKAD: (reduce("deaths") + reduce("assists")) / reduce("deaths"),
+            totalWeaponKills: reduce("weaponKills"),
+            totalSuperKills: reduce("superKills"),
+            totalAbilityKills: reduce("abilityKills"),
+            totalCharactersUsed: this.entries.length,
+            killsPerMinute:
+                (reduce("kills") /
+                    ((this.completionDate.getTime() - this.startDate.getTime()) / 1000)) *
+                60,
+            mostUsedWeapon:
+                this.entries
+                    .map(e => e.weapons)
+                    .reduce((a, b) =>
+                        (a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b
+                    )
+                    .first() ?? null
         }
     }
 
@@ -91,29 +135,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     }
 
     get playerCount(): number {
-        return this.players.length
-    }
-
-    get stats() {
-        const reduce = (key: keyof IPGCREntryStats) =>
-            this.players.reduce((a, b) => a + b.stats[key], 0)
-        return {
-            mvp: this.players.reduce((a, b) => (a.stats.score > b.stats.score ? a : b)).displayName,
-            totalKills: reduce("kills"),
-            totalDeaths: reduce("deaths"),
-            totalAssists: reduce("assists"),
-            totalWeaponKills: reduce("weaponKills"),
-            totalAbilityKills: reduce("abilityKills"),
-            killsPerMinute:
-                (reduce("kills") /
-                    ((this.completionDate.getTime() - this.startDate.getTime()) / 1000)) *
-                60,
-            totalCharactersUsed: this.entries.length,
-            mostUsedWeapon: this.entries
-                .map(e => e.weapons)
-                .reduce((a, b) => ((a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b))
-                .first()
-        }
+        return this.players.size
     }
 
     get speed() {

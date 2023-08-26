@@ -2,59 +2,50 @@ import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
 import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
-import { useMemo } from "react"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
 import { useEmblem } from "../app/DestinyManifestManager"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 
 type PlayerCellProps = {
-    member: PGCRPlayer
-    index: number
-    memberIndex: number
+    player: PGCRPlayer
+    selectedPlayerId: string | null
     solo: boolean
     isLoadingEmblems: boolean
     dnf: boolean
     weightedScore: number
     showScore: boolean
-    updateMemberIndex: (clicked: number) => void
+    onClick: () => void
 }
 
 const PlayerCell = ({
-    member,
-    index,
-    memberIndex,
+    player,
+    selectedPlayerId,
     solo,
     isLoadingEmblems,
     dnf,
     weightedScore,
     showScore,
-    updateMemberIndex
+    onClick
 }: PlayerCellProps) => {
     const { locale } = useLocale()
-    const dynamicCssClass = useMemo(
-        () => (memberIndex === index ? styles["selected"] : ""),
-        [memberIndex, index]
-    )
+    const dynamicCssClass = player.membershipId === selectedPlayerId ? styles["selected"] : ""
 
-    const { data: emblem } = useEmblem(member.banner)
+    const { data: emblem } = useEmblem(player.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
-    const icon = member.characters[0].logo
-    const displayName = member.displayName || member.membershipId
-
-    const stats = useMemo(() => member.stats, [member])
+    const icon = player.characters.first()!.logo
+    const displayName = player.displayName || player.membershipId
 
     return (
         <button
-            key={index}
             className={[
                 styles["entry-card"],
                 styles["selectable"],
                 dynamicCssClass,
                 completionClass
             ].join(" ")}
-            onClick={() => updateMemberIndex(index)}>
+            onClick={onClick}>
             {!isLoadingEmblems ? (
                 <Image
                     src={bannerEmblemFromCache(emblem ?? null)}
@@ -67,11 +58,13 @@ const PlayerCell = ({
             )}
             <div className={styles["color-film"]} />
 
-            {member.characters.length && (
+            {player.characters.size && (
                 <div className={styles["class-logo-container"]}>
                     <Image
                         src={icon}
-                        alt={member.characters[0].className}
+                        alt={player.characters.first()!.className}
+                        sizes="80px"
+                        fill
                         className={styles["class-logo"]}
                     />
                 </div>
@@ -85,7 +78,7 @@ const PlayerCell = ({
                     <Image
                         className={styles["flawless-diamond"]}
                         src={Diamond1}
-                        alt={member.displayName + " went flawless this raid"}
+                        alt={player.displayName + " went flawless this raid"}
                     />
                 ) : showScore ? (
                     <span className={styles["score-only"]}>
@@ -95,15 +88,15 @@ const PlayerCell = ({
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Kills} alt={"Kills"} />}
-                            <span>{stats.kills}</span>
+                            <span>{player.stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Assists} alt={"Assists"} />}
-                            <span>{stats.assists}</span>
+                            <span>{player.stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
                             {<Image src={Deaths} alt={"Deaths"} />}
-                            <span>{stats.deaths}</span>
+                            <span>{player.stats.deaths}</span>
                         </div>
                     </div>
                 )}

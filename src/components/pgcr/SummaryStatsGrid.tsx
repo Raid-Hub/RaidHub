@@ -49,8 +49,13 @@ const SummaryStatsGrid = () => {
         },
         {
             icon: Question_Mark,
-            name: strings.killsPerMinute,
-            value: formattedNumber(stats?.killsPerMinute ?? 0, locale)
+            name: strings.overallKD,
+            value: formattedNumber(stats?.overallKD ?? 0, locale)
+        },
+        {
+            icon: Question_Mark,
+            name: strings.superKills,
+            value: formattedNumber(stats?.totalSuperKills ?? 0, locale)
         },
         {
             icon: Question_Mark,

@@ -1,51 +1,33 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
-import { useMemo } from "react"
 import { useEmblem } from "../app/DestinyManifestManager"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
+import PGCRCharacter from "../../models/pgcr/Character"
 
 type SelectedPlayerProps = {
-    member: PGCRPlayer
-    index: number
-    memberIndex: number
-    updateMemberIndex: (clicked: number) => void
-    characterIndex: number
+    player: PGCRPlayer
+    character: PGCRCharacter | null
+    onClick: () => void
 }
 
-const SelectedPlayer = ({
-    member,
-    index,
-    memberIndex,
-    updateMemberIndex,
-    characterIndex
-}: SelectedPlayerProps) => {
-    const displayName = member.displayName || member.membershipId
-    const dynamicCssClass = memberIndex === index ? styles["selected"] : ""
-    const completionClass = member.didComplete ? "" : styles["dnf"]
+const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => {
+    const { data: emblem } = useEmblem(character?.banner ?? player.banner)
 
-    const character = useMemo(
-        () => member.characters[characterIndex == -1 ? 0 : characterIndex],
-        [member, characterIndex]
-    )
+    const displayName = player.displayName || player.membershipId
+    const completionClass = player.didComplete ? "" : styles["dnf"]
 
-    const { data: emblem } = useEmblem(character.banner)
-
-    const classString =
-        characterIndex != -1
-            ? character.className
-            : member.characters.map(c => c.className).join(" | ")
+    const classString = character?.className ?? player.characters.map(c => c.className).join(" | ")
 
     return (
         <button
-            key={index}
             className={[
                 styles["selected-entry-card"],
                 styles["selectable"],
-                dynamicCssClass,
+                styles["selected"],
                 completionClass
             ].join(" ")}
-            onClick={() => updateMemberIndex(index)}>
+            onClick={onClick}>
             <Image
                 src={bannerEmblemFromCache(emblem ?? null)}
                 alt=""

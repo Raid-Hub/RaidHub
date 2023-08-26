@@ -4,53 +4,50 @@ import SelectedPlayer from "./SelectedPlayer"
 import Image from "next/image"
 import { External } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
-import { useRouter } from "next/router"
 import Link from "next/link"
+import PGCRCharacter from "../../models/pgcr/Character"
 
 type SelectedPlayerHeaderProps = {
-    selected: PGCRPlayer
-    selectedIndex: number
-    characterIndex: number
-    updateMemberIndex: (clicked: number) => void
-    updateCharacterIndex: (clicked: number) => void
+    selectedPlayer: PGCRPlayer
+    selectedCharacter: PGCRCharacter | null
+    onClick: () => void
+    updateCharacterId: (clicked: string) => void
 }
 const SelectedPlayerHeader = ({
-    selected,
-    selectedIndex,
-    characterIndex,
-    updateMemberIndex,
-    updateCharacterIndex
+    selectedPlayer,
+    selectedCharacter,
+    onClick,
+    updateCharacterId
 }: SelectedPlayerHeaderProps) => {
     const { strings } = useLocale()
-    const router = useRouter()
 
     return (
         <div className={styles["members-header"]}>
             <SelectedPlayer
-                member={selected ?? null}
-                index={selectedIndex}
-                memberIndex={selectedIndex}
-                updateMemberIndex={updateMemberIndex}
-                characterIndex={characterIndex}
+                player={selectedPlayer}
+                character={selectedCharacter}
+                onClick={onClick}
             />
-            {selected.characters.length > 1 && (
+            {selectedPlayer.characters.size > 1 && (
                 <div className={styles["class-button-container"]}>
-                    {selected.characters.map(({ logo, className }, idx) => (
+                    {selectedPlayer.characters.map(({ logo, className, characterId }) => (
                         <button
-                            key={idx}
+                            key={characterId}
                             className={[
                                 styles["selectable"],
-                                idx === characterIndex ? styles["selected"] : "",
+                                selectedCharacter?.characterId === characterId
+                                    ? styles["selected"]
+                                    : "",
                                 styles["class-button"]
                             ].join(" ")}
-                            onClick={() => updateCharacterIndex(idx)}>
+                            onClick={() => updateCharacterId(characterId)}>
                             <Image src={logo} alt={className} />
                         </button>
                     ))}
                 </div>
             )}
             <Link
-                href={`/profile/${selected.membershipType}/${selected.membershipId}`}
+                href={`/profile/${selectedPlayer.membershipType}/${selectedPlayer.membershipId}`}
                 className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
                 <Image
                     src={External}

@@ -25,7 +25,9 @@ const RaidBanners: { [key in ListedRaid]: StaticImageData | string } = {
     [Raid.KINGS_FALL]:
         "https://cdn.discordapp.com/attachments/1136751502912934060/1136776084487159878/kf.jpg",
     [Raid.ROOT_OF_NIGHTMARES]:
-        "https://cdn.discordapp.com/attachments/1136751502912934060/1136764576491380746/ron.jpg"
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1136764576491380746/ron.jpg",
+    [Raid.CROTAS_END]:
+        "https://cdn.discordapp.com/attachments/1136751502912934060/1144450405988847706/crota.jpg"
 }
 
 export default RaidBanners
