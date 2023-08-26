@@ -36,7 +36,9 @@ export async function getLeaderboard(params: string[], page: number) {
     const url = new URL(
         `https://api.raidreport.dev/raid/leaderboard/${params
             .map(p =>
-                p === "regicide" || p === "temposedge" || p === "challengecrota" ? "challenge" : p
+                p === "regicide" || p === "temposedge" || p === "superiorswordplay"
+                    ? "challenge"
+                    : p
             )
             .join("/")}?page=${page}&pageSize=${ENTRIES_PER_PAGE}`
     )
