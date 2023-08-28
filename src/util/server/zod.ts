@@ -1,6 +1,5 @@
 import { z } from "zod"
 import { User as PrismaUser, Prisma } from "@prisma/client"
-import { BungieMembershipType as BungieMembership } from "bungie-net-core/enums"
 import { BungieMembershipType } from "bungie-net-core/models"
 
 export const zModifiableUser = z.object({
@@ -10,10 +9,24 @@ export const zModifiableUser = z.object({
     profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
 })
 
+// rather than importing the full enum, we make it ourselves
+const BungieMembershipEnum = z.nativeEnum({
+    None: 0,
+    TigerXbox: 1,
+    TigerPsn: 2,
+    TigerSteam: 3,
+    TigerBlizzard: 4,
+    TigerStadia: 5,
+    TigerEgs: 6,
+    TigerDemon: 10,
+    BungieNext: 254,
+    All: -1
+})
+
 export const zUser = z
     .object({
         destinyMembershipId: z.string(),
-        destinyMembershipType: z.nativeEnum(BungieMembership),
+        destinyMembershipType: BungieMembershipEnum,
         bungieMembershipId: z.string(),
         bungieUsername: z.nullable(z.string()),
         discordUsername: z.nullable(z.string()),
@@ -26,7 +39,6 @@ export const zUser = z
     _output: Omit<PrismaUser, "id">
 }
 
-const BungieMembershipEnum = z.nativeEnum(BungieMembership)
 export const zUniqueDestinyProfile = z.object({
     destinyMembershipType: z.union([
         BungieMembershipEnum,

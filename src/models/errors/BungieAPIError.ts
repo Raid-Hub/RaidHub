@@ -1,9 +1,8 @@
-import { PlatformErrorCodes } from "bungie-net-core/enums"
-import { BungieNetResponse } from "bungie-net-core/models"
+import { BungieNetResponse, PlatformErrorCodes } from "bungie-net-core/models"
 
 export class BungieAPIError<T> extends Error implements BungieNetResponse<T> {
     readonly DetailedErrorTrace: string
-    readonly ErrorCode: (typeof PlatformErrorCodes)[keyof typeof PlatformErrorCodes]
+    readonly ErrorCode: PlatformErrorCodes
     readonly ErrorStatus: string
     readonly Message: string
     readonly MessageData: Record<string, string>
