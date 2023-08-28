@@ -30,7 +30,7 @@
         "@prisma/client": "^5.2.0",
         "@tanstack/react-query": "^4.32.6",
         "aws-sdk": "^2.1417",
-        "bungie-net-core": "^2.0.0",
+        "bungie-net-core": "^2.1.0",
         "dexie": "^3.2.4",
         "formidable": "^3.5.0",
         "framer-motion": "^10.13.0",

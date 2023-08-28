@@ -1798,10 +1798,10 @@ bundle-name@^3.0.0:
   dependencies:
     run-applescript "^5.0.0"
 
-bungie-net-core@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/bungie-net-core/-/bungie-net-core-2.0.0.tgz#ee5a388f195c62c6437bfe794e177ecb956966ae"
-  integrity sha512-wz99clpYm0nmX3jJQst+EWtOYyxT3W650QgW2qnU5ubTqM9QDsnyyxOIIxnAFOxenbmtcrwnNiGQ+EvRuImnCQ==
+bungie-net-core@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/bungie-net-core/-/bungie-net-core-2.1.0.tgz#b9bfbc6448c86d386a1b7291f4efdb692c67c25c"
+  integrity sha512-0u46JCkAs2ojYiLlKu9SNnmTK/kCTuL1QdgXxVL61kZPpbz+txtCE22BYELsbtmOJUGakkQrthCQDzhnY/GVmQ==
 
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
