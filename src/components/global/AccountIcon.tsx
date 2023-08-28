@@ -62,6 +62,7 @@ const AccountIcon = () => {
             </div>
             <motion.div
                 className={styles["account-dropdown-content-container"]}
+                initial={"closed"}
                 animate={animate}
                 variants={variants}>
                 <ul className={styles["account-dropdown-content"]} onClick={handleItemClick}>
