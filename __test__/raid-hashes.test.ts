@@ -1,8 +1,8 @@
 import { expect, describe, test } from "@jest/globals"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
 import BungieClient from "../src/services/bungie/client"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "../src/services/bungie/getRaidHistoryPage"
 import { AllValidHashes } from "../src/util/destiny/raid"
+import { BungieMembershipType } from "bungie-net-core/enums"
 
 const client = new BungieClient()
 

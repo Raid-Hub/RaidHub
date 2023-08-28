@@ -1,8 +1,8 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/client"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieClientProtocol } from "bungie-net-core"
 import { ACTIVITIES_PER_PAGE, getRaidHistoryPage } from "./getRaidHistoryPage"
 import { Collection } from "@discordjs/collection"
-import Activity from "../../models/profile/data/Activity"
+import { BungieMembershipType } from "bungie-net-core/models"
+import Activity from "@/models/profile/data/Activity"
 
 /** Adds all raids into the dictionary */
 export async function getAllCharacterRaids({

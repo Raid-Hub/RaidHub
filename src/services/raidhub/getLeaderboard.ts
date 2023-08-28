@@ -1,4 +1,4 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { ENTRIES_PER_PAGE } from "../../components/leaderboards/Leaderboard"
 import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
 type RRLeaderboardResponse = {

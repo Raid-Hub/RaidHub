@@ -3,7 +3,7 @@ import {
     DestinyHistoricalStatsActivity,
     DestinyHistoricalStatsPeriodGroup,
     DestinyHistoricalStatsValue
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raid"
 

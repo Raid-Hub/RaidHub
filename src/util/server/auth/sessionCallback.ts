@@ -1,8 +1,9 @@
-import { getAccessTokenFromRefreshToken } from "bungie-net-core/lib/auth"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { CallbacksOptions, Session } from "next-auth/core/types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 import { AdapterUser } from "next-auth/adapters"
+import { refreshAuthorization } from "bungie-net-core/auth"
+import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieFetchConfig } from "bungie-net-core"
 
 export type SessionUser = {
     id: string
@@ -57,17 +58,38 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
         } satisfies Session
     } else if (user.bungieRefreshToken && Date.now() < user.bungieRefreshToken?.expires.getTime()) {
         try {
-            const tokens = await getAccessTokenFromRefreshToken(user.bungieRefreshToken.value)
+            const tokens = await refreshAuthorization(
+                user.bungieRefreshToken.value,
+                {
+                    client_id: process.env.BUNGIE_CLIENT_ID!,
+                    client_secret: process.env.BUNGIE_CLIENT_SECRET!
+                },
+                {
+                    async fetch<T>(config: BungieFetchConfig) {
+                        return fetch(config.url, config).then(res => res.json()) as T
+                    }
+                }
+            )
 
-            updateBungieAccessTokens(tokens)
+            updateBungieAccessTokens({
+                bungieMembershipId: tokens.membership_id,
+                access: {
+                    value: tokens.access_token,
+                    expires: tokens.expires_in * 1000
+                },
+                refresh: {
+                    value: tokens.refresh_token,
+                    expires: tokens.refresh_expires_in * 1000
+                }
+            })
 
             return {
                 ...session,
                 user: {
                     ...newUser,
                     bungieAccessToken: {
-                        value: tokens.access.value,
-                        expires: tokens.access.expires
+                        value: tokens.access_token,
+                        expires: tokens.expires_in * 1000
                     }
                 }
             } satisfies Session

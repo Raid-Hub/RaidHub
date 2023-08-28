@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/enums"
 
 const prisma = new PrismaClient()
 

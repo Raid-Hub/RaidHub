@@ -1,11 +1,6 @@
-import {
-    BungieMembershipType,
-    GroupType,
-    GroupV2,
-    GroupsForMemberFilter
-} from "bungie-net-core/lib/models"
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { getGroupsForMember } from "bungie-net-core/lib/endpoints/GroupV2"
+import { BungieClientProtocol } from "bungie-net-core"
+import { getGroupsForMember } from "bungie-net-core/endpoints/GroupV2"
+import { BungieMembershipType, GroupV2 } from "bungie-net-core/models"
 
 export async function getClan({
     membershipId,
@@ -16,15 +11,12 @@ export async function getClan({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
 }): Promise<GroupV2 | null> {
-    const res = await getGroupsForMember(
-        {
-            filter: GroupsForMemberFilter.All,
-            groupType: GroupType.Clan,
-            membershipId,
-            membershipType
-        },
-        client
-    )
+    const res = await getGroupsForMember(client, {
+        filter: 0, // GroupsForMemberFilter.All
+        groupType: 1, // GroupType.Clan
+        membershipId,
+        membershipType
+    })
     const clan = res.Response.results[0]
     if (!clan) return null
 

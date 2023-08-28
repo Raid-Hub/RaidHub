@@ -1,11 +1,7 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import {
-    BungieMembershipType,
-    DestinyCharacterComponent,
-    DestinyComponentType
-} from "bungie-net-core/lib/models"
-import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
-import PrivateProfileError from "../../models/errors/PrivateProfileError"
+import PrivateProfileError from "@/models/errors/PrivateProfileError"
+import { BungieClientProtocol } from "bungie-net-core"
+import { BungieMembershipType, DestinyCharacterComponent } from "bungie-net-core/models"
+import { getProfile } from "bungie-net-core/endpoints/Destiny2"
 
 export async function getFirstCharacter({
     destinyMembershipId,
@@ -16,20 +12,17 @@ export async function getFirstCharacter({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
 }): Promise<DestinyCharacterComponent> {
-    const res = await getProfile(
-        {
-            destinyMembershipId,
-            membershipType,
-            components: [DestinyComponentType.Characters]
-        },
-        client
-    )
+    const res = await getProfile(client, {
+        destinyMembershipId,
+        membershipType,
+        components: [200 /**DestinyComponentType.Characters*/]
+    })
     const data = res.Response.characters.data
     if (!data) {
         throw new PrivateProfileError({
             destinyMembershipId,
             membershipType,
-            components: [DestinyComponentType.Characters]
+            components: [200 /**DestinyComponentType.Characters*/]
         })
     }
     const character = Object.values(data)[0]

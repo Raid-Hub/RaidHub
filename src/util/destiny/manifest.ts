@@ -1,13 +1,13 @@
-import { getClanBannerSource } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/lib/client"
+import { BungieClientProtocol } from "bungie-net-core"
 import { getDestinyInventoryItems } from "../../services/bungie/getDestinyInventoryItems"
+import { Hashed, indexDB } from "../dexie"
 import {
     ClanBannerSource,
     DestinyInventoryItemDefinition,
     DestinyManifest
-} from "bungie-net-core/lib/models"
-import { DestinyManifestComponent, DestinyManifestLanguage } from "bungie-net-core/lib/manifest"
-import { Hashed, indexDB } from "../dexie"
+} from "bungie-net-core/models"
+import { DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
 
 export type CachedEmblem = {
     emblem: string
@@ -63,7 +63,8 @@ export async function updateCachedManifest({
     await Promise.all([
         getDestinyInventoryItems({
             manifest,
-            language
+            language,
+            client
         }).then(items =>
             Promise.all([
                 indexDB.weapons.clear().then(() => indexDB.weapons.bulkPut(processWeapons(items))),
@@ -103,7 +104,7 @@ export async function updateCachedManifest({
     ])
 }
 
-function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
+function processWeapons(items: Record<string, DestinyInventoryItemDefinition>) {
     const weaponBuckets = [/* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645]
 
     return Object.entries(items)
@@ -123,7 +124,7 @@ function processWeapons(items: DestinyManifestComponent<DestinyInventoryItemDefi
         )
 }
 
-function processEmblems(items: DestinyManifestComponent<DestinyInventoryItemDefinition>) {
+function processEmblems(items: Record<string, DestinyInventoryItemDefinition>) {
     return Object.entries(items)
 
         .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")

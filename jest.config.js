@@ -9,6 +9,7 @@ module.exports = {
     preset: "ts-jest",
     coverageProvider: "v8",
     testEnvironment: "node",
+    tsConfig: "tsconfig.test.json",
     testMatch: ["**/*.test.ts"],
     transform: {
         "^.+\\.tsx?$": "ts-jest",

@@ -2,11 +2,10 @@ import { Difficulty, Raid } from "./raids"
 import RaidStatsCollection from "../models/profile/data/RaidStatsCollection"
 import { Socials } from "../util/profile/socials"
 import {
-    BungieMembershipType,
     DestinyHistoricalStatsValue,
     DestinyProfileComponent,
     GroupV2
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import RaidReportDataCollection from "../models/profile/data/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/clanBanner"
@@ -14,6 +13,7 @@ import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
 import { zModifiableUser } from "../util/server/zod"
 import { z } from "zod"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string

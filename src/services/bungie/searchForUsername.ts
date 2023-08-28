@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { PlatformErrorCodes, UserSearchResponseDetail } from "bungie-net-core/lib/models"
-import { searchByGlobalNamePost } from "bungie-net-core/lib/endpoints/User"
+import { BungieClientProtocol } from "bungie-net-core"
+import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
+import { UserSearchResponseDetail } from "bungie-net-core/models"
 
 export async function searchForUsername({
     displayNamePrefix,
@@ -13,17 +13,19 @@ export async function searchForUsername({
 }): Promise<UserSearchResponseDetail[]> {
     const search = async (page: number) =>
         searchByGlobalNamePost(
+            client,
             {
                 page
             },
             {
                 displayNamePrefix
-            },
-            client
+            }
         )
             .then(res => res.Response)
             .catch(error => {
-                if (error.ErrorCode === PlatformErrorCodes.UserCannotResolveCentralAccount) {
+                if (
+                    error.ErrorCode === 217 /**PlatformErrorCodes.UserCannotResolveCentralAccount*/
+                ) {
                     return {
                         searchResults: new Array<UserSearchResponseDetail>(),
                         hasMore: false

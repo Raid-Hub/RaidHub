@@ -1,5 +1,4 @@
-import { BungieNetResponse } from "bungie-net-core/lib/api"
-import { UserMembershipData } from "bungie-net-core/lib/models"
+import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 import { TokenSet } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 import { v4 } from "uuid"

@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalWeaponStats } from "bungie-net-core/lib/models"
+import { DestinyHistoricalWeaponStats } from "bungie-net-core/models"
 import { PlayerWeapons } from "../../types/pgcr"
 
 export function parseWeapons(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {

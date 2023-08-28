@@ -1,5 +1,5 @@
 import styles from "../../../styles/pages/profile/user.module.css"
-import { UserInfoCard } from "bungie-net-core/lib/models"
+import { UserInfoCard } from "bungie-net-core/models"
 import SocialTag from "./SocialTag"
 import UserName from "./UserName"
 import Loading from "../../global/Loading"

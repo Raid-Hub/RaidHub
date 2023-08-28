@@ -1,6 +1,10 @@
-import { BungieToken } from "bungie-net-core/lib/auth"
 import prisma from "../prisma"
 import { v4 } from "uuid"
+
+type BungieToken = {
+    value: string
+    expires: number
+}
 
 export async function updateBungieAccessTokens({
     bungieMembershipId,
@@ -8,10 +12,10 @@ export async function updateBungieAccessTokens({
     refresh
 }: {
     bungieMembershipId: string
-    access: Pick<BungieToken, "value" | "expires">
-    refresh: Pick<BungieToken, "value" | "expires">
+    access: BungieToken
+    refresh: BungieToken
 }) {
-    const prepare = (token: Pick<BungieToken, "value" | "expires">) => ({
+    const prepare = (token: BungieToken) => ({
         id: v4(),
         value: token.value,
         expires: new Date(token.expires)

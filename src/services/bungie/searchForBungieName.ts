@@ -1,7 +1,7 @@
-import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
-import { searchDestinyPlayerByBungieName } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { isPrimaryCrossSave } from "../../util/destiny/crossSave"
+import { isPrimaryCrossSave } from "@/util/destiny/crossSave"
+import { BungieClientProtocol } from "bungie-net-core"
+import { UserInfoCard } from "bungie-net-core/models"
+import { searchDestinyPlayerByBungieName } from "bungie-net-core/endpoints/Destiny2"
 
 export async function searchForBungieName({
     displayName,
@@ -13,14 +13,14 @@ export async function searchForBungieName({
     client: BungieClientProtocol
 }): Promise<UserInfoCard> {
     const response = await searchDestinyPlayerByBungieName(
+        client,
         {
-            membershipType: BungieMembershipType.All
+            membershipType: -1
         },
         {
             displayName,
             displayNameCode
-        },
-        client
+        }
     )
     return response.Response.filter(isPrimaryCrossSave)[0]
 }

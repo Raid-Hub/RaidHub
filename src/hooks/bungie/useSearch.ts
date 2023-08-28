@@ -8,7 +8,6 @@ import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
 import { useRouter } from "next/router"
 import { isPrimaryCrossSave } from "../../util/destiny/crossSave"
-import { PlatformErrorCodes } from "bungie-net-core/lib/models"
 
 const DEBOUNCE = 250
 
@@ -63,7 +62,7 @@ export const useSearch = ({
                     `/profile/${membershipType}/${membershipId}`
                 )
             } catch (e: any) {
-                if (e.ErrorCode !== PlatformErrorCodes.UserCannotResolveCentralAccount) {
+                if (e.ErrorCode !== 217) {
                     throw e
                 }
             } finally {

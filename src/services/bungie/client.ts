@@ -1,7 +1,8 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "@/models/errors/BungieAPIError"
+import { PlatformErrorCodes } from "bungie-net-core/models"
 
-const DONT_RETRY_CODES = [
+const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount,
     5 //PlatformErrorCodes.SystemDisabled
 ]
@@ -14,8 +15,11 @@ export default class BungieClient implements BungieClientProtocol {
             throw new Error("Missing BUNGIE_API_KEY")
         }
         const headers: Record<string, string> = {
-            ...config.headers,
-            "X-API-KEY": apiKey
+            ...config.headers
+        }
+
+        if (config.url.pathname.includes("Platform")) {
+            headers["X-API-KEY"] = apiKey
         }
 
         if (this.accessToken) {

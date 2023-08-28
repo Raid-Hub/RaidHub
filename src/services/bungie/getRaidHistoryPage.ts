@@ -1,10 +1,6 @@
-import {
-    BungieMembershipType,
-    DestinyActivityModeType,
-    DestinyHistoricalStatsPeriodGroup
-} from "bungie-net-core/lib/models"
-import { getActivityHistory } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { BungieClientProtocol } from "bungie-net-core"
+import { BungieMembershipType, DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
+import { getActivityHistory } from "bungie-net-core/endpoints/Destiny2"
 
 export const ACTIVITIES_PER_PAGE = 250
 
@@ -21,16 +17,13 @@ export async function getRaidHistoryPage({
     page: number
     client: BungieClientProtocol
 }): Promise<DestinyHistoricalStatsPeriodGroup[]> {
-    const res = await getActivityHistory(
-        {
-            characterId,
-            destinyMembershipId,
-            membershipType,
-            page,
-            mode: DestinyActivityModeType.Raid,
-            count: ACTIVITIES_PER_PAGE
-        },
-        client
-    )
+    const res = await getActivityHistory(client, {
+        characterId,
+        destinyMembershipId,
+        membershipType,
+        page,
+        mode: 4, //DestinyActivityModeType.Raid,
+        count: ACTIVITIES_PER_PAGE
+    })
     return res.Response.activities ?? []
 }

@@ -1,6 +1,6 @@
-import { getPostGameCarnageReport } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import DestinyPGCR from "../../models/pgcr/PGCR"
+import DestinyPGCR from "@/models/pgcr/PGCR"
+import { BungieClientProtocol } from "bungie-net-core"
+import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
 
 export async function getPGCR({
     activityId,
@@ -9,7 +9,7 @@ export async function getPGCR({
     activityId: string
     client: BungieClientProtocol
 }): Promise<DestinyPGCR> {
-    const res = await getPostGameCarnageReport({ activityId }, client)
+    const res = await getPostGameCarnageReport(client, { activityId })
     return new DestinyPGCR(res.Response, {
         filtered: true
     })

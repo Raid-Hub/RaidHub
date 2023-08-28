@@ -1,5 +1,5 @@
 import { User } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { ZodError } from "zod"
 
 export type ApiMethod = "GET" | "POST" | "PUT" | "DELETE"

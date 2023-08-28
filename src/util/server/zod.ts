@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { User as PrismaUser, Prisma } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType as BungieMembership } from "bungie-net-core/enums"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export const zModifiableUser = z.object({
     name: z.string(),
@@ -12,7 +13,7 @@ export const zModifiableUser = z.object({
 export const zUser = z
     .object({
         destinyMembershipId: z.string(),
-        destinyMembershipType: z.nativeEnum(BungieMembershipType),
+        destinyMembershipType: z.nativeEnum(BungieMembership),
         bungieMembershipId: z.string(),
         bungieUsername: z.nullable(z.string()),
         discordUsername: z.nullable(z.string()),
@@ -25,10 +26,14 @@ export const zUser = z
     _output: Omit<PrismaUser, "id">
 }
 
+const BungieMembershipEnum = z.nativeEnum(BungieMembership)
 export const zUniqueDestinyProfile = z.object({
     destinyMembershipType: z.union([
-        z.nativeEnum(BungieMembershipType),
-        z.string().regex(/^\d+$/).transform(Number)
+        BungieMembershipEnum,
+        z
+            .string()
+            .regex(/^\d+$/)
+            .transform(str => BungieMembershipEnum.parse(Number(str)))
     ]),
     destinyMembershipId: z.string()
 }) satisfies {

@@ -1,18 +1,17 @@
 import {
-    BungieMembershipType,
     DestinyCharacterComponent,
-    DestinyClass,
     DestinyHistoricalStatsValue,
     DestinyPlayer,
     DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportExtendedData,
     UserInfoCard
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny/characters"
 import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number
@@ -88,7 +87,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
     }
 
     get className(): string {
-        return this.player.characterClass ?? CharacterName[DestinyClass.Unknown]
+        return this.player.characterClass ?? CharacterName[3]
     }
 
     get logo() {
@@ -105,7 +104,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
             player: {
                 ...this.player,
                 ...character,
-                characterClass: CharacterName[character?.classType ?? DestinyClass.Unknown],
+                characterClass: CharacterName[character?.classType ?? 3],
                 destinyUserInfo: {
                     ...this.player.bungieNetUserInfo,
                     ...userInfo

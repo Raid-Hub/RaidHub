@@ -2,8 +2,8 @@ import styles from "../../../styles/pages/profile/clan.module.css"
 import { useClan } from "../../../hooks/bungie/useClan"
 import Loading from "../../global/Loading"
 import ClanBanner from "./ClanBanner"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
 import { fixClanName } from "../../../util/destiny/fixClanName"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 type ClanCardProps = {
     membershipId: string

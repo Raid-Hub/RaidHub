@@ -1,7 +1,7 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { getProfile } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/lib/models"
+import { BungieClientProtocol } from "bungie-net-core"
 import PrivateProfileError from "../../models/errors/PrivateProfileError"
+import { getProfile } from "bungie-net-core/endpoints/Destiny2"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export async function getProfileTransitory({
     destinyMembershipId,
@@ -12,24 +12,26 @@ export async function getProfileTransitory({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
 }) {
-    const res = await getProfile(
-        {
-            destinyMembershipId,
-            membershipType,
-            components: [DestinyComponentType.Transitory, DestinyComponentType.CharacterActivities]
-        },
-        client
-    )
+    const res = await getProfile(client, {
+        destinyMembershipId,
+        membershipType,
+        components: [
+            1000, 204 /**DestinyComponentType.Transitory, DestinyComponentType.CharacterActivities*/
+        ]
+    })
     const { data: transitoryData, privacy: transitoryPrivacy } = res.Response.profileTransitoryData
     const { data: characterData } = res.Response.characterActivities
-    if (transitoryPrivacy > 1) {
+    if (!characterData) {
         throw new PrivateProfileError({
             destinyMembershipId,
             membershipType,
-            components: [DestinyComponentType.Transitory, DestinyComponentType.CharacterActivities]
+            components: [
+                1000,
+                204 /**DestinyComponentType.Transitory, DestinyComponentType.CharacterActivities*/
+            ]
         })
     }
-    if (!transitoryData || !characterData) {
+    if (!transitoryData) {
         return null
     }
     return {
