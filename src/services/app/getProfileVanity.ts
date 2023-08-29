@@ -1,6 +1,6 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
-import AppError from "../../models/errors/AppError"
-import { ProfileVanityGetResponse } from "../../types/api"
+import { BungieMembershipType } from "bungie-net-core/models"
+import AppError from "@/models/errors/AppError"
+import { ProfileVanityGetResponse } from "@/types/api"
 
 export async function getProfileVanity({
     destinyMembershipId,

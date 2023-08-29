@@ -1,9 +1,6 @@
-import {
-    BungieMembershipType,
-    DestinyHistoricalStatsAccountResult
-} from "bungie-net-core/lib/models"
-import { getHistoricalStatsForAccount } from "bungie-net-core/lib/endpoints/Destiny2"
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
+import { DestinyHistoricalStatsAccountResult, BungieMembershipType } from "bungie-net-core/models"
+import { BungieClientProtocol } from "bungie-net-core"
+import { getHistoricalStatsForAccount } from "bungie-net-core/endpoints/Destiny2"
 
 export async function getDestinyStats({
     destinyMembershipId,
@@ -14,12 +11,9 @@ export async function getDestinyStats({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
 }): Promise<DestinyHistoricalStatsAccountResult> {
-    const stats = await getHistoricalStatsForAccount(
-        {
-            destinyMembershipId,
-            membershipType
-        },
-        client
-    )
+    const stats = await getHistoricalStatsForAccount(client, {
+        destinyMembershipId,
+        membershipType
+    })
     return stats.Response
 }

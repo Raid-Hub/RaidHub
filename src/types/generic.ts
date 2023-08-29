@@ -1,5 +1,5 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
 import CustomError from "../models/errors/CustomError"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export type CustomBungieSearchResult = {
     bungieGlobalDisplayName: string

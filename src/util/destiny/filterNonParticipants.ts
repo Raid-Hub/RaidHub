@@ -1,4 +1,4 @@
-import { DestinyPostGameCarnageReportEntry } from "bungie-net-core/lib/models"
+import { DestinyPostGameCarnageReportEntry } from "bungie-net-core/models"
 /**
  * Determines if an entry was a non-participant in the raid
  * @param entry The entry to determine to ensure

@@ -9,12 +9,12 @@ import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import ProgressBar from "nextjs-progressbar"
-import SearchModal from "../components/global/SearchModal"
+import SearchModal from "@/components/global/SearchModal"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { reactQueryClient } from "../services/reactQueryClient"
 import dynamic from "next/dynamic"
 
-//** Allows us to offload the the import of dexie (indexdb tool) until necessary */
+/** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() => import("../components/app/DestinyManifestManager"))
 
 type PageProps = {

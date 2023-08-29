@@ -4,7 +4,7 @@ import {
     DestinyPostGameCarnageReportData,
     DestinyPostGameCarnageReportTeamEntry,
     UserInfoCard
-} from "bungie-net-core/lib/models"
+} from "bungie-net-core/models"
 import PGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
 import { Seasons } from "../../util/destiny/dates"

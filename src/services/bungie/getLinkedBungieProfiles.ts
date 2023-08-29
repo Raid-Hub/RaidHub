@@ -1,6 +1,6 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/api"
-import { BungieMembershipType, DestinyLinkedProfilesResponse } from "bungie-net-core/lib/models"
-import { getLinkedProfiles } from "bungie-net-core/lib/endpoints/Destiny2"
+import { BungieClientProtocol } from "bungie-net-core"
+import { BungieMembershipType, DestinyLinkedProfilesResponse } from "bungie-net-core/models"
+import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
 
 export async function getLinkedBungieProfiles({
     membershipId,
@@ -11,21 +11,18 @@ export async function getLinkedBungieProfiles({
     membershipType: BungieMembershipType
     client: BungieClientProtocol
 }): Promise<DestinyLinkedProfilesResponse> {
-    const { Response } = await getLinkedProfiles(
-        {
-            membershipId,
-            membershipType,
-            getAllMemberships: true
-        },
-        client
-    )
+    const { Response } = await getLinkedProfiles(client, {
+        membershipId,
+        membershipType,
+        getAllMemberships: true
+    })
     return {
         ...Response,
         profiles: Response.profiles.filter(
             profile =>
-                ![BungieMembershipType.BungieNext, BungieMembershipType.None].includes(
-                    profile.membershipType
-                )
+                ![
+                    254 /** BungieMembershipType.BungieNext */, 0 /** BungieMembershipType.None */
+                ].includes(profile.membershipType)
         )
     }
 }

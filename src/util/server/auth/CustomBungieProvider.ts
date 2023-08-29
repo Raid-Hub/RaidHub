@@ -1,7 +1,6 @@
 import { OAuthConfig, OAuthUserConfig } from "next-auth/providers"
 import { bungieProfile } from "./bungieProfile"
-import { BungieNetResponse } from "bungie-net-core/lib/api"
-import { UserMembershipData } from "bungie-net-core/lib/models"
+import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 
 export default function CustomBungieProvider<P extends BungieNetResponse<UserMembershipData>>(
     options: OAuthUserConfig<P> & {

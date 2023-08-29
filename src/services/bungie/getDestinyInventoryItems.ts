@@ -1,21 +1,19 @@
-import {
-    DestinyManifestComponent,
-    DestinyManifestDefinition,
-    DestinyManifestLanguage,
-    getDestinyManifestComponent
-} from "bungie-net-core/lib/manifest"
-import { DestinyInventoryItemDefinition, DestinyManifest } from "bungie-net-core/lib/models"
+import { BungieClientProtocol } from "bungie-net-core"
+import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
+import { DestinyInventoryItemDefinition, DestinyManifest } from "bungie-net-core/models"
 
 export async function getDestinyInventoryItems({
     manifest,
-    language
+    language,
+    client
 }: {
     manifest: DestinyManifest
     language: DestinyManifestLanguage
-}): Promise<DestinyManifestComponent<DestinyInventoryItemDefinition>> {
-    const res = await getDestinyManifestComponent({
+    client: BungieClientProtocol
+}): Promise<Record<string, DestinyInventoryItemDefinition>> {
+    const res = await getDestinyManifestComponent(client, {
         destinyManifest: manifest,
-        tableName: DestinyManifestDefinition.DestinyInventoryItemDefinition,
+        tableName: "DestinyInventoryItemDefinition",
         language: language
     })
     return res

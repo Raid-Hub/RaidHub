@@ -1,4 +1,4 @@
-import { ClanBanner } from "bungie-net-core/lib/models"
+import { ClanBanner } from "bungie-net-core/models"
 import { RGBA } from "./manifest"
 import { indexDB } from "../dexie"
 

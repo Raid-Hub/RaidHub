@@ -1,4 +1,5 @@
-import { BungieMembershipType, UserInfoCard } from "bungie-net-core/lib/models"
+import { UserInfoCard } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 // Finds the original membershipType of a destiny account
 export function findPrimaryCrossSave({

@@ -1,6 +1,6 @@
-import { BungieAPIError } from "bungie-net-core/lib/api"
-import { ErrorHandler } from "../../types/generic"
-import { PlatformErrorCodes } from "bungie-net-core/lib/models"
+import { ErrorHandler } from "@/types/generic"
+import { BungieAPIError } from "./BungieAPIError"
+import { PlatformErrorCodes } from "bungie-net-core/models"
 
 export enum ErrorCode {
     Allowed = "",
@@ -42,7 +42,7 @@ export default class CustomError extends Error {
             newErr = e
             newErr.code = code
         } else if (e instanceof BungieAPIError) {
-            if (e.ErrorCode === PlatformErrorCodes.SystemDisabled) {
+            if (e.ErrorCode === 5 /**PlatformErrorCodes.SystemDisabled*/) {
                 newErr = new CustomError(e.Message, ErrorCode.BungieAPIOffline, e.stack)
             } else {
                 newErr = new CustomError(e.Message, code, e.stack)

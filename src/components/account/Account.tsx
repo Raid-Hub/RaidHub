@@ -28,23 +28,20 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                     <button onClick={() => deleteCurrentUser({ callbackUrl: "/" })}>
                         Delete Account
                     </button>
-                    {providers?.get("bungie") && (
-                        <button onClick={() => signIn("bungie", {}, "reauth=false")}>
-                            Add bungie account
-                        </button>
-                    )}
                     {providers?.get("discord") && (
-                        <button onClick={() => signIn("discord", {}, "prompt=none")}>
+                        <button onClick={() => signIn("discord", {}, { prompt: "consent" })}>
                             Add discord account
                         </button>
                     )}
                     {providers?.get("twitch") && (
-                        <button onClick={() => signIn("twitch", {}, "force_verify=false")}>
+                        <button onClick={() => signIn("twitch", {}, { force_verify: "true" })}>
                             Add twitch account
                         </button>
                     )}
                     {providers?.get("twitter") && (
-                        <button onClick={() => signIn("twitter")}>Add twitter account</button>
+                        <button onClick={() => signIn("twitter", {}, { force_login: "true" })}>
+                            Add twitter account
+                        </button>
                     )}
                     <button onClick={() => unlinkAccountFromUser({ providerId: "discord" })}>
                         Unlink Discord

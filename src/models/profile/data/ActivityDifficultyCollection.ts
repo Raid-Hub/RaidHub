@@ -1,6 +1,6 @@
 import { RaidData } from "../../../types/profile"
 import { Difficulty, Raid } from "../../../types/raids"
-import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/lib/models"
+import { DestinyHistoricalStatsPeriodGroup } from "bungie-net-core/models"
 import Activity from "./Activity"
 import { Collection } from "@discordjs/collection"
 import { FilterCallback } from "../../../types/generic"

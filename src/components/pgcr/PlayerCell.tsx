@@ -64,7 +64,6 @@ const PlayerCell = ({
                         src={icon}
                         alt={player.characters.first()!.className}
                         sizes="80px"
-                        fill
                         className={styles["class-logo"]}
                     />
                 </div>

@@ -1,10 +1,10 @@
-import { BungieMembershipType } from "bungie-net-core/lib/models"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getClan } from "../../services/bungie/getClan"
 import { ErrorHandler } from "../../types/generic"
 import { useClanBanner } from "../../components/app/DestinyManifestManager"
 import { useQuery } from "@tanstack/react-query"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export function useClan({
     membershipId,

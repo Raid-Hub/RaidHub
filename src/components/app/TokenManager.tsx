@@ -1,9 +1,8 @@
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import BungieClient from "../../services/bungie/client"
+import BungieClient from "@/services/bungie/client"
 
-const client = new BungieClient()
-const BungieClientContext = createContext<BungieClient>(client)
+const BungieAccessTokenContext = createContext<string | null>(null)
 
 type TokenManagerProps = {
     setRefetchInterval(val: number): void
@@ -12,6 +11,7 @@ type TokenManagerProps = {
 
 const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     const { data: sessionData, status } = useSession()
+    const [accessToken, setAccessToken] = useState<string>("")
     const [failedTokenRequests, setFailedTokenRequests] = useState(0)
 
     if (failedTokenRequests > 3) {
@@ -35,15 +35,29 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
             sessionData?.user.bungieAccessToken?.value &&
             sessionData.user.bungieAccessToken.expires
         ) {
-            client.setToken(sessionData.user.bungieAccessToken.value)
+            setAccessToken(sessionData.user.bungieAccessToken.value)
             const timeRemaining = sessionData.user.bungieAccessToken.expires - Date.now()
             setRefetchInterval(timeRemaining >= 0 ? Math.ceil((timeRemaining + 1) / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
-
-    return <BungieClientContext.Provider value={client}>{children}</BungieClientContext.Provider>
+    return (
+        <BungieAccessTokenContext.Provider value={accessToken}>
+            {children}
+        </BungieAccessTokenContext.Provider>
+    )
 }
 
-export const useBungieClient = () => useContext(BungieClientContext)
+const client = new BungieClient()
+export const useBungieClient = () => {
+    const accessToken = useContext(BungieAccessTokenContext)
+    if (accessToken === null) throw Error("Cannot use BungieClient outside a child of TokenManager")
+
+    if (accessToken) {
+        client.setToken(accessToken)
+    } else {
+        client.clearToken()
+    }
+    return client
+}
 
 export default TokenManager

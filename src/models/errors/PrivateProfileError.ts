@@ -1,4 +1,4 @@
-import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/lib/models"
+import { BungieMembershipType, DestinyComponentType } from "bungie-net-core/models"
 import CustomError, { ErrorCode } from "./CustomError"
 
 export default class PrivateProfileError extends CustomError {

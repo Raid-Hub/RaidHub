@@ -1,7 +1,7 @@
-import { BungieClientProtocol } from "bungie-net-core/lib/client"
+import { BungieClientProtocol } from "bungie-net-core"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Collection } from "@discordjs/collection"
-import { DestinyCharacterComponent, UserInfoCard } from "bungie-net-core/lib/models"
+import { DestinyCharacterComponent, UserInfoCard } from "bungie-net-core/models"
 import { getLinkedDestinyProfile } from "./getLinkedDestinyProfile"
 import { getDestinyCharacter } from "./getDestinyCharacter"
 

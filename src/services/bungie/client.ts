@@ -1,58 +1,47 @@
-import { NotConfiguredError } from "bungie-net-core"
-import {
-    BungieAPIError,
-    BungieClientProtocol,
-    BungieFetchConfig,
-    BungieNetResponse
-} from "bungie-net-core/lib/api"
-import { PlatformErrorCodes } from "bungie-net-core/lib/models"
+import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
+import { BungieAPIError } from "@/models/errors/BungieAPIError"
+import { PlatformErrorCodes } from "bungie-net-core/models"
 
-const DONT_RETRY_CODES = [
-    PlatformErrorCodes.UserCannotResolveCentralAccount,
-    PlatformErrorCodes.SystemDisabled
+const DONT_RETRY_CODES: PlatformErrorCodes[] = [
+    217, //PlatformErrorCodes.UserCannotResolveCentralAccount,
+    5 //PlatformErrorCodes.SystemDisabled
 ]
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
-    async fetch<T>(config: BungieFetchConfig): Promise<BungieNetResponse<T>> {
+    async fetch<T>(config: BungieFetchConfig): Promise<T> {
         const apiKey = process.env.BUNGIE_API_KEY
         if (!apiKey) {
-            throw new NotConfiguredError(["BUNGIE_API_KEY"])
+            throw new Error("Missing BUNGIE_API_KEY")
+        }
+        const headers: Record<string, string> = {
+            ...config.headers
         }
 
-        let headers: Record<string, string> = {
-            "Content-Type": "application/json",
-            "X-API-KEY": apiKey
+        if (config.url.pathname.includes("Platform")) {
+            headers["X-API-KEY"] = apiKey
         }
+
         if (this.accessToken) {
-            headers = {
-                ...headers,
-                Authorization: `Bearer ${this.accessToken}`
-            }
+            headers["Authorization"] = `Bearer ${this.accessToken}`
         }
-
-        const body = config.body ? JSON.stringify(config.body) : null
-
-        const url = new URL(config.url)
-        if (config.params)
-            Object.entries(config.params)
-                .filter(([_, value]) => !!value)
-                .forEach(([key, value]) => url.searchParams.set(key, value))
 
         const payload = {
             method: config.method,
-            body,
+            body: config.body,
             headers
         }
 
         const request = async (retry?: boolean) => {
-            if (retry) url.searchParams.set("retry", true.toString())
-            const res = await fetch(url, payload)
-            const data: BungieNetResponse<T> = await res.json()
-            if (data.ErrorCode !== PlatformErrorCodes.Success || !res.ok) {
+            if (retry) config.url.searchParams.set("retry", true.toString())
+            const res = await fetch(config.url, payload)
+            const data = await res.json()
+            if (data.ErrorCode && data.ErrorCode !== 1) {
                 throw new BungieAPIError(data)
+            } else if (!res.ok) {
+                throw Error("Error parsing response")
             }
-            return data
+            return data as T
         }
 
         try {

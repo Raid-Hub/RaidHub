@@ -1,16 +1,10 @@
 .raids {
-    display: flex;
-    flex-direction: reverse;
-    flex-wrap: wrap;
-
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
     gap: 1.5rem;
 }
 
 .home-raid-card {
-    flex-grow: 1;
-    flex-shrink: 0;
-    flex-basis: 18rem;
-
     display: flex;
     flex-direction: column;
 

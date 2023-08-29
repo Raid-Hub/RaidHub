@@ -5,7 +5,7 @@ import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import { useProfileTransitory } from "../../../hooks/bungie/useProfileTransitory"
-import { BungieMembershipType } from "bungie-net-core/lib/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 type CurrentActivityParams = {
     destinyMembershipId: string
