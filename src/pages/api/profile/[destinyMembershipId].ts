@@ -1,6 +1,6 @@
 import { NextApiHandler, NextApiRequest } from "next"
-import { BadMethodResponse, ProfileGetResponse } from "../../../types/api"
-import prisma from "../../../util/server/prisma"
+import { BadMethodResponse, ProfileGetResponse } from "@/types/api"
+import prisma from "@/util/server/prisma"
 
 const getDestinyMembershipId = (req: NextApiRequest): string | undefined =>
     req.url?.split("/")[3]?.toString()
@@ -44,13 +44,8 @@ const handleGet: NextApiHandler = async (req, res) => {
                 twitchUsername: true,
                 twitterUsername: true,
                 image: true,
-                vanity: {
-                    select: {
-                        string: true
-                    }
-                },
-                pinnedActivityId: true,
-                profileDecoration: true
+                vanity: true,
+                profile: true
             }
         })
 

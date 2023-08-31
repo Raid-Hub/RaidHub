@@ -1,4 +1,4 @@
-import { User } from "@prisma/client"
+import { User, Profile as PrismaProfile, Vanity } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { ZodError } from "zod"
 
@@ -59,11 +59,8 @@ export type Profile = {
     discordUsername: string | null
     twitchUsername: string | null
     twitterUsername: string | null
-    pinnedActivityId: string | null
-    profileDecoration: string | null
-    vanity: {
-        string: string | null
-    } | null
+    vanity: Vanity | null
+    profile: PrismaProfile | null
 }
 
 export type ProfileGetResponse =
@@ -81,8 +78,7 @@ export type ProfileVanityGetResponse =
     | ApiResponse<true, { string: string } | null>
     | ApiResponse<false, any>
 
-export type ProfilePinPGCRUpdateResponse =
+export type ProfileUpdateResponse =
     | BadMethodResponse
-    | ProtectedSessionErrorResponse
-    | ApiResponse<true, { activityId: string | null }>
+    | ApiResponse<true, PrismaProfile>
     | ApiResponse<false, any>

@@ -1,8 +1,8 @@
 import { NextApiHandler } from "next"
-import { BadMethodResponse, UserDeleteResponse, UserUpdateResponse } from "../../../types/api"
-import { protectSession } from "../../../util/server/sessionProtection"
-import prisma from "../../../util/server/prisma"
-import { zModifiableUser } from "../../../util/server/zod"
+import { BadMethodResponse, UserDeleteResponse, UserUpdateResponse } from "@/types/api"
+import { protectSession } from "@/util/server/sessionProtection"
+import prisma from "@/util/server/prisma"
+import { zModifiableUser } from "@/util/server/zod"
 
 const handler: NextApiHandler = async (req, res) => {
     switch (req.method) {

@@ -40,6 +40,7 @@ model User {
   bungieMembershipId    String        @unique @map("bungie_membership_id")
   destinyMembershipId   String        @unique @map("destiny_membership_id")
   destinyMembershipType Int           @map("destiny_membership_type")
+  vanity                Vanity?
   bungieUsername        String?       @map("bungie_username")
   discordUsername       String?       @map("discord_username")
   twitchUsername        String?       @map("twitch_username")
@@ -47,18 +48,14 @@ model User {
   image                 String
   bungieAccessToken     AccessToken?
   bungieRefreshToken    RefreshToken?
-  vanity                Vanity?
-  pinnedActivityId      String?       @map("pinned_activity_id")
-  pinnedPGCR            PGCR?         @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
-  profileDecoration     String?       @map("profile_decoration") @db.VarChar(512)
   email                 String        @unique @default("")
   emailVerified         DateTime?     @map("email_verified")
+  profile               Profile?
   accounts              Account[]
   sessions              Session[]
 
   @@index([bungieMembershipId])
   @@index([destinyMembershipId])
-  @@index([pinnedActivityId])
 }
 
 model AccessToken {
@@ -92,6 +89,18 @@ model Session {
   @@index([userId])
 }
 
+model Profile {
+  id                String  @id @default(cuid())
+  pinnedActivityId  String? @map("pinned_activity_id")
+  pinnedPGCR        PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
+  profileDecoration String? @map("profile_decoration") @db.VarChar(512)
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([pinnedActivityId])
+}
+
 model Vanity {
   id                    String  @id @default(cuid())
   string                String  @unique
@@ -105,7 +114,7 @@ model Vanity {
 }
 
 model PGCR {
-  id              String  @id
-  videoURL        String? @map("video_url")
-  usersWithPinned User[]
+  id                 String    @id
+  videoURL           String?   @map("video_url")
+  profilesWithPinned Profile[]
 }

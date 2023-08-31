@@ -1,15 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { updateCurrentUser } from "../../services/app/updateCurrentUser"
-import { User } from "@prisma/client"
+import { Profile, User } from "@prisma/client"
 import { ModifiableUser } from "../../types/profile"
 import { useSession } from "next-auth/react"
+import { updateCurrentProfile } from "@/services/app/updateCurrentProfile"
 
 export function useRaidHubProfileMutation(destinyMembershipId: string) {
     const queryClient = useQueryClient()
-    const { update: updateSession } = useSession()
+    const { update: updateSession, data: session } = useSession()
+
+    const updateProfile = (data: Partial<Profile>) => {
+        if (!session) {
+            throw Error("No current session")
+        } else {
+            return updateCurrentProfile(data, session)
+        }
+    }
 
     return useMutation({
-        mutationFn: (data: Partial<ModifiableUser>) => updateCurrentUser(data),
+        mutationFn: updateProfile,
         onMutate: async req => {
             // Cancel any outgoing refetches
             // (so they don't overwrite our optimistic update)

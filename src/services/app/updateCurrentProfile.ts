@@ -1,18 +1,17 @@
-import { User } from "@prisma/client"
-import { getSession } from "next-auth/react"
+import { Profile, User } from "@prisma/client"
 import { UserUpdateResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
-import { ModifiableUser } from "../../types/profile"
+import { Session } from "next-auth"
+import { zProfile } from "@/util/server/zod"
+import { z } from "zod"
 
-type UpdateCurrentUser = (data: ModifiableUser) => Promise<{
-    updated: User
+type UpdateCurrentProfile = (
+    data: Partial<z.infer<typeof zProfile>>,
+    session: Session
+) => Promise<{
+    updated: Profile
 }>
-export const updateCurrentUser: UpdateCurrentUser = async data => {
-    const session = await getSession()
-    if (!session) {
-        throw new Error("Failed to update user: No current session")
-    }
-
+export const updateCurrentProfile: UpdateCurrentProfile = async (data, session) => {
     const fetchOptions = {
         method: "PUT",
         headers: {
@@ -21,7 +20,7 @@ export const updateCurrentUser: UpdateCurrentUser = async data => {
         body: JSON.stringify(data)
     }
 
-    const res = await fetch(`/api/user/${session.user.id}`, fetchOptions)
+    const res = await fetch(`/api/profile/${session.user.id}`, fetchOptions)
     const responseJson = (await res.json()) as UserUpdateResponse
     if (!res.ok || responseJson.success === false) {
         if (responseJson.success === false) {

@@ -11,9 +11,9 @@ import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/clanBanner"
 import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
-import { zModifiableUser } from "../util/server/zod"
 import { z } from "zod"
 import { BungieMembershipType } from "bungie-net-core/models"
+import { zModifiableUser } from "@/util/server/zod"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string

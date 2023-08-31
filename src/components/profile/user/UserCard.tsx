@@ -52,8 +52,8 @@ const UserCard = ({
     }, [inputStyling, isLoading])
 
     useEffect(() => {
-        setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)
-    }, [raidHubProfile?.profileDecoration])
+        setInputStyling(raidHubProfile?.profile?.profileDecoration ?? defaultEditInput)
+    }, [raidHubProfile?.profile?.profileDecoration])
 
     const handleEditorInputSave = useCallback(() => {
         mutateProfile({
@@ -147,7 +147,7 @@ const UserCard = ({
                         <button
                             onClick={() => {
                                 setInputStyling(
-                                    raidHubProfile?.profileDecoration ?? defaultEditInput
+                                    raidHubProfile?.profile?.profileDecoration ?? defaultEditInput
                                 )
                             }}>
                             {strings.reset}

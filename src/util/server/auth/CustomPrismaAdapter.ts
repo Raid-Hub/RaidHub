@@ -22,6 +22,9 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             return prisma.user.create({
                 data: {
                     ...parsedUser,
+                    profile: {
+                        create: {}
+                    },
                     bungieAccessToken: {
                         create: bungieAccessToken
                     },

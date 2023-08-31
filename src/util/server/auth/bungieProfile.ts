@@ -29,8 +29,6 @@ export async function bungieProfile(
         image: `https://www.bungie.net${
             bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
         }${bungieNetUser.profilePicturePath}`,
-        pinnedActivityId: null,
-        profileDecoration: null,
         bungieAccessToken: {
             id: v4(),
             bungieMembershipId: bungieNetUser.membershipId,
