@@ -5,7 +5,6 @@ import ImageUploadForm from "./ImageUploadForm"
 import { useProviders } from "../../hooks/app/useProviders"
 import Link from "next/link"
 import { trpc } from "~/util/trpc"
-import { useRouter } from "next/router"
 
 type AccountProps = {
     session: Session
