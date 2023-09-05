@@ -1,4 +1,4 @@
-import { updateCurrentUser } from "../../services/app/updateCurrentUser"
+import { updateCurrentUser } from "../../services/app/uploadProfileIcon"
 import { useForm } from "react-hook-form"
 import { User } from "@prisma/client"
 import { SessionUser } from "../../util/server/auth/sessionCallback"

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { updateCurrentUser } from "../../services/app/updateCurrentUser"
+import { updateCurrentUser } from "../../services/app/uploadProfileIcon"
 import { Profile, User } from "@prisma/client"
 import { ModifiableUser } from "../../types/profile"
 import { useSession } from "next-auth/react"

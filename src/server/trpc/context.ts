@@ -19,17 +19,4 @@ export const createContext = async (opts?: trpcNext.CreateNextContextOptions) =>
     }
 }
 
-export const isProtected = middleware(({ ctx, next }) => {
-    if (!ctx.session) {
-        throw new TRPCError({ code: "UNAUTHORIZED" })
-    }
-
-    return next({
-        ctx: {
-            ...ctx,
-            session: ctx.session
-        }
-    })
-})
-
 export type Context = trpc.inferAsyncReturnType<typeof createContext>

@@ -1,10 +1,8 @@
 import { S3 } from "aws-sdk"
-import { protectSession } from "../../../../util/server/sessionProtection"
-import { NextApiHandler, NextApiRequest } from "next"
-import { BadMethodResponse, UserImageCreateResponse } from "../../../../types/api"
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
 import formidable from "formidable"
 import fs from "fs"
-import prisma from "../../../../server/prisma"
+import prisma from "../../../server/prisma"
 import { IncomingForm } from "formidable"
 import path, { join } from "path"
 import { v4 as uuidv4 } from "uuid"
@@ -14,7 +12,37 @@ const s3 = new S3({
     secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY
 })
 
-const handler: NextApiHandler = async (req, res) => {
+export const config = {
+    api: {
+        bodyParser: false
+    }
+}
+
+const supportedFileTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+
+type Handler<T = any> = (req: NextApiRequest, res: NextApiResponse<T>, userId: string) => unknown
+const protectedRoute =
+    (handler: Handler): NextApiHandler =>
+    async (req, res) => {
+        const sessionToken = req.cookies["__Secure-next-auth.session-token"]
+        if (!sessionToken) {
+            return res.status(401).json({ error: "Unauthorized request" })
+        }
+
+        const session = await prisma.session.findFirst({
+            where: {
+                sessionToken
+            }
+        })
+
+        if (!session?.userId) {
+            return res.status(401).json({ error: "Unauthorized request" })
+        }
+
+        return handler(req, res, session.userId)
+    }
+
+export default async function (req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "PUT") {
         await handleUpdate(req, res)
     } else {
@@ -22,52 +50,29 @@ const handler: NextApiHandler = async (req, res) => {
             data: { method: req.method! },
             success: false,
             error: "Method not allowed"
-        } satisfies BadMethodResponse)
+        })
     }
 }
 
-const handleUpdate: NextApiHandler = protectSession(async (req, res, userId) => {
+const handleUpdate: NextApiHandler = protectedRoute(async (req, res, userId) => {
     await uploadImage(req, userId)
-        .then(imageUrl =>
-            prisma.user.update({
-                where: {
-                    id: userId
-                },
-                data: {
-                    image: imageUrl
-                },
-                select: {
-                    image: true
-                }
-            })
-        )
-        .then(result =>
+        .then(url =>
             res.status(201).json({
                 success: true,
                 error: undefined,
                 data: {
-                    imageUrl: result.image!
+                    imageUrl: url!
                 }
-            } satisfies UserImageCreateResponse)
+            })
         )
         .catch(err =>
             res.status(500).json({
                 success: false,
                 error: "Failed to edit profile picture",
                 data: err
-            } satisfies UserImageCreateResponse)
+            })
         )
 })
-
-export const config = {
-    api: {
-        bodyParser: false
-    }
-}
-
-export default handler
-
-const supportedFileTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"]
 
 async function uploadImage(req: NextApiRequest, userId: string) {
     return new Promise<string>((resolve, reject) => {
@@ -109,6 +114,50 @@ async function uploadImage(req: NextApiRequest, userId: string) {
     })
 }
 
+async function uploadToS3({ file, userId }: { file: formidable.File; userId: string }) {
+    const uuid = uuidv4()
+    const newLocation = await s3
+        .upload({
+            Bucket: process.env.AWS_S3_BUCKET_NAME!,
+            Key: `profile/${userId}/${uuid}.png`,
+            ContentType: file.mimetype!,
+            Body: fs.createReadStream(file.filepath),
+            Expires:
+                process.env.APP_ENV === "preview"
+                    ? new Date(Date.now() + 30 * 24 * 3600 * 1000)
+                    : undefined
+        })
+        .promise()
+        .then(res => res.Location)
+
+    // s3.listObjectsV2({
+    //     Bucket: process.env.AWS_S3_BUCKET_NAME!,
+    //     Prefix: `profile/${userId}/`
+    // })
+    //     .promise()
+    //     .then(data => {
+    //         const Objects =
+    //             (data.Contents?.filter(({ Key }) => !Key?.includes(uuid)).map(({ Key }) => ({
+    //                 Key
+    //             })) as {
+    //                 Key: string
+    //             }[]) ?? []
+
+    //         if (Objects.length === 0) {
+    //             return
+    //         }
+
+    //         s3.deleteObjects({
+    //             Bucket: process.env.AWS_S3_BUCKET_NAME!,
+    //             Delete: {
+    //                 Objects
+    //             }
+    //         })
+    //             .promise()
+    //     })
+    return newLocation
+}
+
 // this is only used in local dev environments
 async function saveLocally({ file, userId }: { file: formidable.File; userId: string }) {
     const uuid = uuidv4()
@@ -147,54 +196,4 @@ async function saveLocally({ file, userId }: { file: formidable.File; userId: st
     })
 
     return filePath
-}
-
-async function uploadToS3({ file, userId }: { file: formidable.File; userId: string }) {
-    const uuid = uuidv4()
-    const newLocation = await s3
-        .upload({
-            Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Key: `profile/${userId}/${uuid}.png`,
-            ContentType: file.mimetype!,
-            Body: fs.createReadStream(file.filepath),
-            Expires:
-                process.env.APP_ENV === "preview"
-                    ? new Date(Date.now() + 30 * 24 * 3600 * 1000)
-                    : undefined
-        })
-        .promise()
-        .then(res => res.Location)
-
-    try {
-        s3.listObjectsV2({
-            Bucket: process.env.AWS_S3_BUCKET_NAME!,
-            Prefix: `profile/${userId}/`
-        })
-            .promise()
-            .then(data => {
-                const Objects =
-                    (data.Contents?.filter(({ Key }) => !Key?.includes(uuid)).map(({ Key }) => ({
-                        Key
-                    })) as {
-                        Key: string
-                    }[]) ?? []
-
-                if (Objects.length === 0) {
-                    return
-                }
-
-                s3.deleteObjects({
-                    Bucket: process.env.AWS_S3_BUCKET_NAME!,
-                    Delete: {
-                        Objects
-                    }
-                })
-                    .promise()
-                    .then(() => console.log(`Deleted ${Objects.length} images for user: ${userId}`))
-            })
-    } catch (err) {
-        console.error("Error deleting objects:", err)
-    }
-
-    return newLocation
 }
