@@ -41,8 +41,10 @@ const PinnedActivity = ({
                 />
             )}
             <Image
-                className={styles[isPinned ? "pin-icon" : "recent-icon"]}
                 src={isPinned ? Pin : Time}
+                width={20}
+                height={20}
+                className={styles[isPinned ? "pin-icon" : "recent-icon"]}
                 alt="pinned"
             />
             <div className={styles["pinned-activity-text"]}>
@@ -52,7 +54,13 @@ const PinnedActivity = ({
                 <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
 
                 <div className={styles["pinned-activity-time"]}>
-                    <Image src={Eager} alt="" style={{ width: "20px", height: "20px" }} />
+                    <Image
+                        src={Eager}
+                        alt=""
+                        style={{ width: "20px", height: "20px" }}
+                        width={20}
+                        height={20}
+                    />
                     <span>{pgcr.speed.string(strings)}</span>
                 </div>
             </div>

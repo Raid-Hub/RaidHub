@@ -58,6 +58,7 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
             style={{ display: "flex", gap: "1em", padding: "1em" }}
             className={styles["entry-card"]}>
             <Image
+                unoptimized
                 src={weapon?.icon ? `https://www.bungie.net${weapon.icon}` : Question_Mark}
                 alt={weapon?.name ?? ""}
                 width={96}
@@ -94,6 +95,7 @@ const AbilityCell = ({
             style={{ display: "flex", gap: "1em", padding: "1em" }}
             className={styles["entry-card"]}>
             <Image
+                unoptimized
                 src={icon}
                 alt={name}
                 width={96}

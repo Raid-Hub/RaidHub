@@ -43,7 +43,13 @@ const Banners = ({ destinyMembershipId, isLoading, banners }: BannerProps) => {
                 ))}
                 {Object.keys(Founders).includes(destinyMembershipId) && (
                     <div className={styles["ranking-banner"]}>
-                        <Image className={styles["ranking-banner-icon"]} src={Logo} alt="" />
+                        <Image
+                            className={styles["ranking-banner-icon"]}
+                            src={Logo}
+                            alt=""
+                            width={30}
+                            height={30}
+                        />
 
                         <div className={styles["banner-text"]}>
                             <p className={styles["banner-bold"]}>RaidHub Founder</p>

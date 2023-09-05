@@ -9,7 +9,13 @@ const Header = () => {
     return (
         <header id="header" className={styles["header"]}>
             <Link href={"/"} className={styles["logo"]}>
-                <Image className={styles["logo-img"]} src={Logo} alt="logo" sizes="40px" />
+                <Image
+                    className={styles["logo-img"]}
+                    src={Logo}
+                    alt="logo"
+                    width={30}
+                    height={30}
+                />
                 <span className={styles["logo-text"]}>RaidHub</span>
             </Link>
             <div className={styles["right-content"]}>

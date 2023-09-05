@@ -82,7 +82,13 @@ const SearchBar = ({}: SearchBarProps) => {
                 {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
                     <div className={styles["loader"]} />
                 ) : (
-                    <Image className={styles["search-img"]} src={Search} alt="search" />
+                    <Image
+                        className={styles["search-img"]}
+                        src={Search}
+                        alt="search"
+                        width={15}
+                        height={15}
+                    />
                 )}
             </div>
             <form onSubmit={handleFormEnter}>

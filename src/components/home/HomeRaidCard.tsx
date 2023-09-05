@@ -13,12 +13,13 @@ type HomeRaidCardProps = {
 
 const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
     return (
-        <div className={styles["home-raid-card"]}>
+        <div id={RaidToUrlPaths[raid]} className={styles["home-raid-card"]}>
             <div className={styles["card-image-header"]}>
                 <Image
                     priority
-                    width={640}
-                    height={360}
+                    unoptimized={false}
+                    width={320}
+                    height={180}
                     src={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />

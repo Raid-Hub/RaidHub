@@ -10,7 +10,13 @@ type RankingBannerProps = {
 const RankingBanner = ({ icon, backgroundColor, children: spanStack }: RankingBannerProps) => {
     return (
         <div className={styles["ranking-banner"]} style={{ backgroundColor }}>
-            <Image className={styles["ranking-banner-icon"]} src={icon} alt="" />
+            <Image
+                className={styles["ranking-banner-icon"]}
+                src={icon}
+                alt=""
+                width={30}
+                height={30}
+            />
             <div className={styles["banner-text"]}>{spanStack}</div>
         </div>
     )

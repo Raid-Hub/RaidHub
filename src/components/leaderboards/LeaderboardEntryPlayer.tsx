@@ -12,6 +12,7 @@ const LeaderboardEntryUser = ({ user }: { user: LeaderboardEntryParticipant }) =
         <div className={styles["leaderboard-entry-user"]}>
             <div className={styles["user-icon-container"]}>
                 <Image
+                    unoptimized
                     onError={() => setIcon(defautlIcon)}
                     src={icon}
                     alt={`icon for ${user.displayName}`}
