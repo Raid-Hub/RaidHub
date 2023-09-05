@@ -2,7 +2,7 @@ import { Adapter, AdapterAccount } from "next-auth/adapters"
 import { Account, PrismaClient } from "@prisma/client"
 import { zUser } from "../zod"
 import { DiscordProfile } from "next-auth/providers/discord"
-import prisma from "../prisma"
+import prisma from "../../../server/prisma"
 import { TwitterProfile } from "next-auth/providers/twitter"
 import { z } from "zod"
 

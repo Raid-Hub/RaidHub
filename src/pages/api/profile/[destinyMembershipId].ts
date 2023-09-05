@@ -1,6 +1,6 @@
 import { NextApiHandler, NextApiRequest } from "next"
 import { BadMethodResponse, ProfileGetResponse } from "@/types/api"
-import prisma from "@/util/server/prisma"
+import prisma from "server/prisma"
 
 const getDestinyMembershipId = (req: NextApiRequest): string | undefined =>
     req.url?.split("/")[3]?.toString()

@@ -2,7 +2,7 @@ import { Profile, User } from "@prisma/client"
 import { UserUpdateResponse } from "../../types/api"
 import AppError from "../../models/errors/AppError"
 import { Session } from "next-auth"
-import { zProfile } from "@/util/server/zod"
+import { zProfile } from "@/util/zod"
 import { z } from "zod"
 
 type UpdateCurrentProfile = (

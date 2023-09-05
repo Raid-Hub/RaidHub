@@ -21,6 +21,7 @@
             "@/images/*": ["images/*"],
             "@/models/*": ["models/*"],
             "@/pages/*": ["pages/*"],
+            "@/server/*": ["server/*"],
             "@/services/*": ["services/*"],
             "@/styles/*": ["styles/*"],
             "@/types/*": ["types/*"],

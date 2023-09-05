@@ -1,4 +1,4 @@
-import prisma from "../prisma"
+import prisma from "../../../server/prisma"
 import { v4 } from "uuid"
 
 type BungieToken = {

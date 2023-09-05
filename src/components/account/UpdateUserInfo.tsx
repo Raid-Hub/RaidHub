@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { User } from "@prisma/client"
 import { SessionUser } from "../../util/server/auth/sessionCallback"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { zUser } from "../../util/server/zod"
+import { zUser } from "../../util/zod"
 
 type UpdateUserInfoProps = {
     user: SessionUser

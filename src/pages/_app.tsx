@@ -10,9 +10,8 @@ import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchModal from "@/components/global/SearchModal"
-import { QueryClientProvider } from "@tanstack/react-query"
-import { reactQueryClient } from "../services/reactQueryClient"
 import dynamic from "next/dynamic"
+import { trpc } from "@/util/trpc"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() => import("../components/app/DestinyManifestManager"))
@@ -23,7 +22,6 @@ type PageProps = {
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
-    const [queryClient] = useState(reactQueryClient)
 
     return (
         <LocaleManager>
@@ -34,35 +32,33 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
                 />
             </Head>
-            <QueryClientProvider client={queryClient}>
-                <SessionProvider
-                    session={session}
-                    refetchInterval={sessionRefetchInterval}
-                    refetchOnWindowFocus={false}>
-                    <TokenManager setRefetchInterval={setSessionRefetchInterval}>
-                        <DestinyManifestManager>
-                            <Header />
-                            <ProgressBar
-                                options={{
-                                    showSpinner: false,
-                                    parent: "#header",
-                                    trickle: true,
-                                    speed: 700
-                                }}
-                                stopDelayMs={100}
-                                height={3}
-                                showOnShallow={false}
-                                color={"orange"}
-                            />
-                            <SearchModal />
-                            <Component {...pageProps} />
-                            <Footer />
-                        </DestinyManifestManager>
-                    </TokenManager>
-                </SessionProvider>
-            </QueryClientProvider>
+            <SessionProvider
+                session={session}
+                refetchInterval={sessionRefetchInterval}
+                refetchOnWindowFocus={false}>
+                <TokenManager setRefetchInterval={setSessionRefetchInterval}>
+                    <DestinyManifestManager>
+                        <Header />
+                        <ProgressBar
+                            options={{
+                                showSpinner: false,
+                                parent: "#header",
+                                trickle: true,
+                                speed: 700
+                            }}
+                            stopDelayMs={100}
+                            height={3}
+                            showOnShallow={false}
+                            color={"orange"}
+                        />
+                        <SearchModal />
+                        <Component {...pageProps} />
+                        <Footer />
+                    </DestinyManifestManager>
+                </TokenManager>
+            </SessionProvider>
         </LocaleManager>
     )
 }
 
-export default App
+export default trpc.withTRPC(App)

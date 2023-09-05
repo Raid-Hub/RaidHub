@@ -1,7 +1,7 @@
 import { NextApiHandler } from "next"
 import { BadMethodResponse, UserAccountDeleteResponse } from "../../../../types/api"
 import { protectSession } from "../../../../util/server/sessionProtection"
-import prisma from "../../../../util/server/prisma"
+import prisma from "../../../../server/prisma"
 import { providerIdToUsernamePropMap } from "../../../../util/server/auth/providerIdMap"
 import { z } from "zod"
 

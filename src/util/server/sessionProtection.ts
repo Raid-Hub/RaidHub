@@ -1,5 +1,5 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
-import prisma from "./prisma"
+import prisma from "../../server/prisma"
 
 const getUserId = (req: NextApiRequest): string | undefined => req.url?.split("/")[3]?.toString()
 

@@ -1,7 +1,7 @@
 import { NextApiHandler } from "next"
 import { BadMethodResponse, ProfileVanityGetResponse } from "../../../types/api"
-import prisma from "../../../util/server/prisma"
-import { zUniqueDestinyProfile } from "../../../util/server/zod"
+import prisma from "../../../server/prisma"
+import { zUniqueDestinyProfile } from "../../../util/zod"
 
 const handler: NextApiHandler = async (req, res) => {
     if (req.method === "GET") {
