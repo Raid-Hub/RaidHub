@@ -61,6 +61,7 @@ const ActivityTile = ({
                     src={RaidCardBackground[raid]}
                     alt={`Raid card for ${strings.raidNames[raid]}`}
                     fill
+                    sizes="160px"
                     className={styles["activity-content-img"]}
                 />
                 <p className={styles["activity-title"]}>

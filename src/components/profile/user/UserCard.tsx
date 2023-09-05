@@ -19,7 +19,7 @@ type UserCardProps = {
     userInfo: UserInfoCard | undefined
     raidHubProfile: Profile | null
     destinyMembershipId: string
-    emblemBackgroundPath: string | undefined
+    emblemBackgroundPathSrc: string
 }
 
 const UserCard = ({
@@ -27,7 +27,7 @@ const UserCard = ({
     userInfo,
     raidHubProfile,
     destinyMembershipId,
-    emblemBackgroundPath
+    emblemBackgroundPathSrc
 }: UserCardProps) => {
     const { data } = useSession()
     const { strings } = useLocale()
@@ -100,18 +100,19 @@ const UserCard = ({
     ) : (
         <div ref={ref} className={styles["card"]}>
             <div className={styles["banner"]}>
-                {emblemBackgroundPath && (
-                    <Image
-                        className={styles["image-background"]}
-                        src={`https://bungie.net${emblemBackgroundPath}`}
-                        width={474}
-                        height={96}
-                        priority
-                        alt="profile banner"
-                    />
-                )}
+                <Image
+                    unoptimized
+                    className={styles["image-background"]}
+                    src={emblemBackgroundPathSrc}
+                    width={474}
+                    height={96}
+                    priority
+                    alt="profile banner"
+                />
+
                 <div className={styles["details"]}>
                     <Image
+                        unoptimized={!raidHubProfile?.image}
                         src={
                             raidHubProfile?.image ??
                             "https://bungie.net" +

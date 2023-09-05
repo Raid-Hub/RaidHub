@@ -9,16 +9,14 @@ const nextConfig = {
         APP_ENV: process.env.APP_ENV
     },
     images: {
-        domains: [
-            "bungie.net",
-            "www.bungie.net",
-            "raidhub.s3.amazonaws.com",
-            "raidhub-staging.s3.amazonaws.com",
-            "raidhub-app.s3.amazonaws.com",
-            "cdn.discordapp.com/attachments/1136751502912934060",
-            "www.speedrun.com/userasset"
-        ],
-        unoptimized: true
+        remotePatterns: [
+            /** Only optimize images from our cdn */
+            {
+                protocol: "https",
+                hostname: "cdn.discordapp.com",
+                pathname: "/attachments/1136751502912934060/*/*.*"
+            }
+        ]
     },
     i18n: {
         locales,

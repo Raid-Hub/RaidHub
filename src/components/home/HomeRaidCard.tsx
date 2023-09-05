@@ -1,10 +1,10 @@
-import styles from "../../styles/pages/home.module.css"
-import { ListedRaid, RaidToUrlPaths } from "../../types/raids"
-import { LocalStrings } from "../../util/presentation/localized-strings"
 import Image from "next/image"
-import RaidCardBackground from "../../images/raid-backgrounds"
 import Link from "next/link"
-import { SpeedrunVariableValues } from "../../util/speedrun-com/speedrun-ids"
+import styles from "@/styles/pages/home.module.css"
+import RaidCardBackground from "@/images/raid-backgrounds"
+import { ListedRaid, RaidToUrlPaths, RaidsWithReprisedContest, ReprisedRaid } from "@/types/raids"
+import { LocalStrings } from "@/util/presentation/localized-strings"
+import { SpeedrunVariableValues } from "@/util/speedrun-com/speedrun-ids"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -13,12 +13,13 @@ type HomeRaidCardProps = {
 
 const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
     return (
-        <div className={styles["home-raid-card"]}>
+        <div id={RaidToUrlPaths[raid]} className={styles["home-raid-card"]}>
             <div className={styles["card-image-header"]}>
                 <Image
                     priority
-                    width={640}
-                    height={360}
+                    unoptimized={false}
+                    width={320}
+                    height={180}
                     src={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
@@ -71,25 +72,15 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["content-section"]}>
                     <h4>{strings.otherLeaderboards}</h4>
                     <ul>
-                        <li>{strings.comingSoon}</li>
-                        {/* {Object.keys(RaidHashes[raid])
-                            .map(key => Number(key) as Difficulty)
-                            .sort((a, b) => 32 - a - b) // gets the challenge difficulties on top
-                            .map(difficulty => {
-                                return (
-                                    difficulty !== Difficulty.GUIDEDGAMES &&
-                                    difficulty !== Difficulty.NA &&
-                                    difficulty !== Difficulty.CONTEST &&
-                                    difficulty !== Difficulty.NORMAL && (
-                                        <li key={difficulty}>
-                                            <Link
-                                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/${DifficultyToUrlPaths[difficulty]}`}>
-                                                {strings.difficulty[difficulty]}
-                                            </Link>
-                                        </li>
-                                    )
-                                )
-                            })} */}
+                        {RaidsWithReprisedContest.includes(raid as ReprisedRaid) ? (
+                            <li>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/nochallenge`}>
+                                    {strings.noChallenge}
+                                </Link>
+                            </li>
+                        ) : (
+                            <li>{strings.comingSoon}</li>
+                        )}
                     </ul>
                 </div>
             </div>

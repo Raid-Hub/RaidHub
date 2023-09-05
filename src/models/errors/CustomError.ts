@@ -36,7 +36,7 @@ export default class CustomError extends Error {
         this.stack = stack
     }
 
-    static handle(errorHandler: ErrorHandler, e: any, code: ErrorCode) {
+    static handle<R>(errorHandler: ErrorHandler<R>, e: unknown, code: ErrorCode) {
         let newErr: CustomError
         if (e instanceof CustomError) {
             newErr = e
@@ -54,6 +54,6 @@ export default class CustomError extends Error {
             newErr = new CustomError(JSON.stringify(e), code, undefined)
             Error.captureStackTrace(newErr, errorHandler)
         }
-        errorHandler(newErr)
+        return errorHandler(newErr)
     }
 }

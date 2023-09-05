@@ -100,7 +100,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                     }
                     raidHubProfile={raidHubProfile ?? null}
                     destinyMembershipId={destinyMembershipId}
-                    emblemBackgroundPath={primaryDestinyProfile?.emblemBackgroundPath}
+                    emblemBackgroundPathSrc={`https://www.bungie.net/${
+                        primaryDestinyProfile?.emblemBackgroundPath ??
+                        "common/destiny2_content/icons/2644a073545e566485629b95989b5f83.jpg"
+                    }`}
                 />
                 <Banners
                     banners={raidReportData?.rankings ?? null}

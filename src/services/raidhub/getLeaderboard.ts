@@ -1,6 +1,10 @@
 import { BungieMembershipType } from "bungie-net-core/models"
 import { ENTRIES_PER_PAGE } from "../../components/leaderboards/Leaderboard"
-import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
+import {
+    LeaderboardEntry,
+    LeaderboardEntryParticipant,
+    LeaderboardMeta
+} from "../../types/leaderboards"
 type RRLeaderboardResponse = {
     response: {
         entries: RRLeaderboardEntry[]
@@ -31,7 +35,7 @@ type RRLeaderboardEntryUser = {
     membershipType: BungieMembershipType
 }
 
-export async function getLeaderboard(params: string[], page: number) {
+export async function getLeaderboard(params: string[], page: number): Promise<LeaderboardMeta> {
     // this is temporary until our own API is up
     const url = new URL(
         `https://api.raidreport.dev/raid/leaderboard/${params
@@ -49,31 +53,37 @@ export async function getLeaderboard(params: string[], page: number) {
 
         if (res.ok) {
             const { response } = (await res.json()) as RRLeaderboardResponse
-            return response.entries.map(
-                e =>
-                    ({
-                        id: e.activityDetails.instanceId,
-                        rank: e.rank,
-                        url: `/pgcr/${e.activityDetails.instanceId}`,
-                        timeInSeconds: e.value,
-                        participants: e.destinyUserInfos.map(
-                            usr =>
-                                ({
-                                    id: usr.membershipId,
-                                    iconURL:
-                                        "https://www.bungie.net/common/destiny2_content/icons/" +
-                                        usr.iconPath,
-                                    displayName: usr.bungieGlobalDisplayName || usr.displayName,
-                                    url: `/profile/${usr.membershipType}/${usr.membershipId}`
-                                } satisfies LeaderboardEntryParticipant)
-                        )
-                    } satisfies LeaderboardEntry)
-            )
+            return {
+                incomplete: params.includes("crotasend"),
+                entries: response.entries.map(
+                    e =>
+                        ({
+                            id: e.activityDetails.instanceId,
+                            rank: e.rank,
+                            url: `/pgcr/${e.activityDetails.instanceId}`,
+                            timeInSeconds: e.value,
+                            participants: e.destinyUserInfos.map(
+                                usr =>
+                                    ({
+                                        id: usr.membershipId,
+                                        iconURL:
+                                            "https://www.bungie.net/common/destiny2_content/icons/" +
+                                            usr.iconPath,
+                                        displayName: usr.bungieGlobalDisplayName || usr.displayName,
+                                        url: `/profile/${usr.membershipType}/${usr.membershipId}`
+                                    } satisfies LeaderboardEntryParticipant)
+                            )
+                        } satisfies LeaderboardEntry)
+                )
+            }
         } else {
             throw await res.json()
         }
     } catch (e) {
         console.error(e)
-        return []
+        return {
+            incomplete: true,
+            entries: []
+        }
     }
 }

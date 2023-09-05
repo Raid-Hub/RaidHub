@@ -78,6 +78,8 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
                 onClick={showWeaponsDetails}>
                 <Image
                     src={Question_Mark}
+                    width={30}
+                    height={30}
                     alt={strings.killBreakdown}
                     className={styles["stat-icon"]}
                 />

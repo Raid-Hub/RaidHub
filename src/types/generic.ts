@@ -14,5 +14,5 @@ export enum Loading {
     HYDRATING
 }
 export type Flatten<T> = T extends ReadonlyArray<infer U> ? U : never
-export type ErrorHandler = (error: CustomError) => void
+export type ErrorHandler<R = void> = (error: CustomError) => R
 export type FilterCallback<T> = (value: T) => boolean

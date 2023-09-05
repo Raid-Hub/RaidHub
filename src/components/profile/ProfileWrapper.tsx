@@ -1,7 +1,7 @@
 import Profile from "./Profile"
 import { NextPage } from "next"
 import { InitialProfileProps } from "../../types/profile"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ErrorComponent from "../global/Error"
 import CustomError from "../../models/errors/CustomError"
 
@@ -10,6 +10,10 @@ const ProfileWrapper: NextPage<InitialProfileProps> = ({
     destinyMembershipType
 }) => {
     const [error, setError] = useState<CustomError | null>(null)
+
+    useEffect(() => {
+        setError(null)
+    }, [destinyMembershipId, destinyMembershipType])
 
     if (error) {
         return <ErrorComponent error={error} />

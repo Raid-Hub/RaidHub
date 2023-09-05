@@ -29,6 +29,7 @@ const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => 
             ].join(" ")}
             onClick={onClick}>
             <Image
+                unoptimized
                 src={bannerEmblemFromCache(emblem ?? null)}
                 alt=""
                 fill

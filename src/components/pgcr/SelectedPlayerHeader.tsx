@@ -41,7 +41,7 @@ const SelectedPlayerHeader = ({
                                 styles["class-button"]
                             ].join(" ")}
                             onClick={() => updateCharacterId(characterId)}>
-                            <Image src={logo} alt={className} />
+                            <Image src={logo} alt={className} width={60} height={60} />
                         </button>
                     ))}
                 </div>
@@ -51,6 +51,8 @@ const SelectedPlayerHeader = ({
                 className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
                 <Image
                     src={External}
+                    width={30}
+                    height={30}
                     alt={"View profile"}
                     className={styles["view-profile-icon"]}
                 />

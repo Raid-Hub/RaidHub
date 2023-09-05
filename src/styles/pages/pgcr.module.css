@@ -632,6 +632,7 @@
     }
 }
 .settings-menu-container {
+    z-index: 2;
     position: absolute;
     right: 0.5em;
     top: 0.5em;
