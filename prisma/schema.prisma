@@ -36,6 +36,8 @@ model Account {
 
 model User {
   id                    String        @id @default(cuid())
+  name                  String
+  image                 String
   bungieMembershipId    String        @unique @map("bungie_membership_id")
   destinyMembershipId   String        @unique @map("destiny_membership_id")
   destinyMembershipType Int           @map("destiny_membership_type")
@@ -47,8 +49,9 @@ model User {
   accounts              Account[]
   sessions              Session[]
 
+  @@unique([destinyMembershipId, destinyMembershipType])
   @@index([bungieMembershipId])
-  @@index([destinyMembershipId])
+  @@index([destinyMembershipId, destinyMembershipType])
 }
 
 model AccessToken {
@@ -83,20 +86,20 @@ model Session {
 }
 
 model Profile {
-  id                  String  @id @default(cuid())
-  destinyMembershipId String  @unique @map("destinyMembershipId")
-  name                  String
-  user                User    @relation(fields: [destinyMembershipId], references: [destinyMembershipId], onDelete: Cascade)
-  vanity              Vanity?
-  image               String
-  bungieUsername      String? @map("bungie_username")
-  discordUsername     String? @map("discord_username")
-  twitchUsername      String? @map("twitch_username")
-  twitterUsername     String? @map("twitter_username")
-  pinnedActivityId    String? @map("pinned_activity_id")
-  pinnedPGCR          PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
-  profileDecoration   String? @map("profile_decoration") @db.VarChar(512)
+  id                    String  @id @default(cuid())
+  destinyMembershipId   String  @unique @map("destinyMembershipId")
+  destinyMembershipType Int     @map("destiny_membership_type")
+  user                  User    @relation(fields: [destinyMembershipId, destinyMembershipType], references: [destinyMembershipId, destinyMembershipType], onDelete: Cascade)
+  vanity                Vanity?
+  bungieUsername        String? @map("bungie_username")
+  discordUsername       String? @map("discord_username")
+  twitchUsername        String? @map("twitch_username")
+  twitterUsername       String? @map("twitter_username")
+  pinnedActivityId      String? @map("pinned_activity_id")
+  pinnedPGCR            PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
+  profileDecoration     String? @map("profile_decoration") @db.VarChar(512)
 
+  @@unique([destinyMembershipId, destinyMembershipType])
   @@index([pinnedActivityId])
 }
 

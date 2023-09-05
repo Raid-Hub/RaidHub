@@ -1,5 +1,5 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
-import { BungieAPIError } from "@/models/errors/BungieAPIError"
+import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [

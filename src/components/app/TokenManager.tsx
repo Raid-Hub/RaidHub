@@ -1,6 +1,6 @@
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import BungieClient from "@/services/bungie/client"
+import BungieClient from "~/services/bungie/client"
 
 const BungieAccessTokenContext = createContext<string | null>(null)
 

@@ -1,4 +1,4 @@
-import { ErrorHandler } from "@/types/generic"
+import { ErrorHandler } from "~/types/generic"
 import { BungieAPIError } from "./BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 

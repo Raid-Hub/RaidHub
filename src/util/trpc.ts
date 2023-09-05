@@ -1,5 +1,5 @@
-import { AppRouter } from "@/server/trpc"
-import { reactQueryClient } from "@/util/reactQueryClient"
+import { AppRouter } from "~/server/trpc"
+import { reactQueryClient } from "~/util/reactQueryClient"
 import { httpBatchLink } from "@trpc/client"
 import { createTRPCNext } from "@trpc/next"
 

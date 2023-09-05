@@ -1,6 +1,6 @@
 import { publicProcedure } from "../.."
 import { TRPCError } from "@trpc/server"
-import { zUniqueDestinyProfile } from "@/util/zod"
+import { zUniqueDestinyProfile } from "~/util/zod"
 
 export const getVanity = publicProcedure
     .input(zUniqueDestinyProfile)

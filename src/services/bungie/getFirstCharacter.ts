@@ -1,4 +1,4 @@
-import PrivateProfileError from "@/models/errors/PrivateProfileError"
+import PrivateProfileError from "~/models/errors/PrivateProfileError"
 import { BungieClientProtocol } from "bungie-net-core"
 import { BungieMembershipType, DestinyCharacterComponent } from "bungie-net-core/models"
 import { getProfile } from "bungie-net-core/endpoints/Destiny2"

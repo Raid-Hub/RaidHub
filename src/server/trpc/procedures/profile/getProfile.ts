@@ -11,12 +11,22 @@ export const getProfile = publicProcedure
     .query(async ({ input, ctx }) => {
         const destinyMembershipId = input.destinyMembershipId
         try {
-            const profile = await ctx.prisma.profile.findUnique({
+            const data = await ctx.prisma.profile.findUnique({
                 where: {
                     destinyMembershipId: destinyMembershipId
+                },
+                include: {
+                    user: {
+                        select: {
+                            image: true,
+                            name: true
+                        }
+                    }
                 }
             })
-            return profile
+            if (!data) return null
+            const { user, ...profile } = data
+            return { user, profile }
         } catch (e: any) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",

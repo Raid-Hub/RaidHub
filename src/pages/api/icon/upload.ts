@@ -42,37 +42,35 @@ const protectedRoute =
         return handler(req, res, session.userId)
     }
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "PUT") {
-        await handleUpdate(req, res)
+        return protectedRoute(async (req, res, userId) => {
+            return uploadImage(req, userId)
+                .then(url =>
+                    res.status(201).json({
+                        success: true,
+                        error: undefined,
+                        data: {
+                            imageUrl: url!
+                        }
+                    })
+                )
+                .catch(err =>
+                    res.status(500).json({
+                        success: false,
+                        error: "Failed to edit profile picture",
+                        data: err
+                    })
+                )
+        })(req, res)
     } else {
-        res.status(405).json({
+        return res.status(405).json({
             data: { method: req.method! },
             success: false,
             error: "Method not allowed"
         })
     }
 }
-
-const handleUpdate: NextApiHandler = protectedRoute(async (req, res, userId) => {
-    await uploadImage(req, userId)
-        .then(url =>
-            res.status(201).json({
-                success: true,
-                error: undefined,
-                data: {
-                    imageUrl: url!
-                }
-            })
-        )
-        .catch(err =>
-            res.status(500).json({
-                success: false,
-                error: "Failed to edit profile picture",
-                data: err
-            })
-        )
-})
 
 async function uploadImage(req: NextApiRequest, userId: string) {
     return new Promise<string>((resolve, reject) => {
@@ -82,7 +80,12 @@ async function uploadImage(req: NextApiRequest, userId: string) {
         })
         form.parse(req, async (error, _, { file: files }) => {
             if (error) {
-                return reject(error)
+                if (error.code === 1009) {
+                    return reject(new Error("Image too large"))
+                } else {
+                    console.error(error)
+                    return reject(error)
+                }
             }
             try {
                 const file = Array.isArray(files) ? files[0] : files
@@ -161,7 +164,7 @@ async function uploadToS3({ file, userId }: { file: formidable.File; userId: str
 // this is only used in local dev environments
 async function saveLocally({ file, userId }: { file: formidable.File; userId: string }) {
     const uuid = uuidv4()
-    const uploadFolder = path.join(__dirname, "../../../../../../public")
+    const uploadFolder = path.join(__dirname, "../../../../../public")
     const fileName = `/profile-${userId}-${uuid}-icon.png`
     const destination = join(uploadFolder, fileName)
 

@@ -1,24 +1,24 @@
-import styles from "../../styles/pages/profile/profile.module.css"
-import { ErrorHandler } from "../../types/generic"
+import styles from "~/styles/pages/profile/profile.module.css"
+import { ErrorHandler } from "~/types/generic"
 import Head from "next/head"
 import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
 import PinnedActivity from "./mid/PinnedActivity"
+import { trpc } from "~/util/trpc"
 import { useState } from "react"
-import { useDestinyStats } from "../../hooks/bungie/useDestinyStats"
-import { useCharacterStats } from "../../hooks/bungie/useCharacterStats"
-import { useRaidHubProfile } from "../../hooks/raidhub/useRaidHubProfile"
-import { useDestinyProfile } from "../../hooks/bungie/useDestinyProfile"
-import { useBungieMemberships } from "../../hooks/bungie/useBungieMemberships"
-import { useRaidReport } from "../../hooks/raidreport/useRaidReportData"
+import { useDestinyStats } from "~/hooks/bungie/useDestinyStats"
+import { useCharacterStats } from "~/hooks/bungie/useCharacterStats"
+import { useDestinyProfile } from "~/hooks/bungie/useDestinyProfile"
+import { useBungieMemberships } from "~/hooks/bungie/useBungieMemberships"
+import { useRaidReport } from "~/hooks/raidreport/useRaidReportData"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import { useActivityFilters } from "~/hooks/util/useActivityFilters"
 import Banners from "./banners/Banners"
 import Raids from "./raids/Raids"
 import CurrentActivity from "./mid/CurrentActivity"
-import { InitialProfileProps } from "../../types/profile"
+import { InitialProfileProps } from "~/types/profile"
 import FilterSelector from "./mid/FilterSelector"
-import { useActivityFilters } from "../../hooks/util/useActivityFilters"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
-import { useLocalStorage } from "../../hooks/util/useLocalStorage"
 import Loading from "../global/Loading"
 
 type ProfileProps = InitialProfileProps & {
@@ -27,15 +27,15 @@ type ProfileProps = InitialProfileProps & {
 
 const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
     // DATA HOOKS
+    const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } =
+        trpc.profile.getProfile.useQuery({
+            destinyMembershipId
+        })
+
     const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } = useDestinyProfile({
         destinyMembershipId,
         destinyMembershipType,
         errorHandler
-    })
-
-    const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } = useRaidHubProfile({
-        destinyMembershipId,
-        errorHandler: () => null
     })
 
     const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
@@ -64,7 +64,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
         undefined
     )
 
-    const pinnedActivity = raidHubProfile?.profile?.pinnedActivityId ?? mostRecentActivity
+    const pinnedActivity = raidHubProfile?.pinnedActivityId ?? mostRecentActivity
 
     // LAYOUT
     const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
@@ -99,7 +99,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                             : undefined
                     }
                     raidHubProfile={raidHubProfile ?? null}
-                    destinyMembershipId={destinyMembershipId}
                     emblemBackgroundPathSrc={`https://www.bungie.net/${
                         primaryDestinyProfile?.emblemBackgroundPath ??
                         "common/destiny2_content/icons/2644a073545e566485629b95989b5f83.jpg"
@@ -126,7 +125,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         activityId={pinnedActivity}
                         isLoadingActivities={mostRecentActivity === undefined}
                         isLoadingRaidHubProfile={isLoadingRaidHubProfile}
-                        isPinned={!!raidHubProfile?.profile?.pinnedActivityId}
+                        isPinned={!!raidHubProfile?.pinnedActivityId}
                         errorHandler={errorHandler}
                     />
                 ) : (

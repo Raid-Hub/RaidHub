@@ -13,7 +13,7 @@ import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
 import { z } from "zod"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { zModifiableUser } from "@/util/zod"
+import { zModifiableProfile } from "~/util/zod"
 
 export type ProfileComponent = DestinyProfileComponent & {
     emblemBackgroundPath: string
@@ -141,4 +141,4 @@ export interface ActivityFilter {
     deepClone(): ActivityFilter
 }
 
-export type ModifiableUser = Partial<z.infer<typeof zModifiableUser>>
+export type zModifiableProfile = Partial<z.infer<typeof zModifiableProfile>>

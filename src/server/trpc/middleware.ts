@@ -1,7 +1,7 @@
-import { middleware } from "."
+import { middleware, publicProcedure } from "."
 import { TRPCError } from "@trpc/server"
 
-export const isProtected = middleware(({ ctx, next }) => {
+const isProtected = middleware(({ ctx, next }) => {
     if (!ctx.session) {
         throw new TRPCError({ code: "UNAUTHORIZED" })
     }
@@ -13,3 +13,5 @@ export const isProtected = middleware(({ ctx, next }) => {
         }
     })
 })
+
+export const protectedProcedure = publicProcedure.use(isProtected)

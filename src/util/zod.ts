@@ -2,13 +2,6 @@ import { z } from "zod"
 import { User as PrismaUser, Profile as PrismaProfile, Prisma } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 
-export const zProfile = z.object({
-    pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
-    profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
-}) satisfies {
-    _output: Omit<PrismaProfile, "id" | "userId">
-}
-
 // rather than importing the full enum, we make it ourselves
 const BungieMembershipEnum = z.nativeEnum({
     None: 0,
@@ -23,16 +16,25 @@ const BungieMembershipEnum = z.nativeEnum({
     All: -1
 })
 
+export const zProfile = z.object({
+    destinyMembershipId: z.string(),
+    destinyMembershipType: BungieMembershipEnum,
+    bungieUsername: z.nullable(z.string()),
+    discordUsername: z.nullable(z.string()),
+    twitchUsername: z.nullable(z.string()),
+    twitterUsername: z.nullable(z.string()),
+    pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
+    profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
+}) satisfies {
+    _output: Omit<PrismaProfile, "id">
+}
+
 export const zUser = z.object({
     name: z.string(),
     image: z.string(),
     destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
     bungieMembershipId: z.string(),
-    bungieUsername: z.nullable(z.string()),
-    discordUsername: z.nullable(z.string()),
-    twitchUsername: z.nullable(z.string()),
-    twitterUsername: z.nullable(z.string()),
     email: z.string(),
     emailVerified: z.nullable(z.date())
 }) satisfies {
@@ -44,6 +46,22 @@ export const zModifiableUser = z.object({
     image: z.string()
 }) satisfies {
     _output: Partial<z.infer<typeof zUser>>
+}
+
+export const zModifiableProfile = z.object({
+    pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
+    profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
+}) satisfies {
+    _output: Partial<z.infer<typeof zProfile>>
+}
+
+export const zUsernames = z.object({
+    bungieUsername: z.string().nullable(),
+    discordUsername: z.string().nullable(),
+    twitterUsername: z.string().nullable(),
+    twitchUsername: z.string().nullable()
+}) satisfies {
+    _output: Partial<z.infer<typeof zProfile>>
 }
 
 export const zUniqueDestinyProfile = z.object({

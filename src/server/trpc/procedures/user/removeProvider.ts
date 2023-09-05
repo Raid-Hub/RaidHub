@@ -1,7 +1,6 @@
 import { z } from "zod"
-import { protectedProcedure } from "../.."
-import { providerIdToUsernamePropMap } from "@/server/next-auth/providerIdMap"
 import { TRPCError } from "@trpc/server"
+import { protectedProcedure } from "../../middleware"
 
 // delete account from user
 export const removeProvider = protectedProcedure

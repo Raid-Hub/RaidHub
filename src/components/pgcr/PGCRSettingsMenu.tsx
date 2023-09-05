@@ -42,7 +42,7 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
                     .includes(sessionData.user.destinyMembershipId) && (
                     <>
                         <hr />
-                        <PinPCRCell destinyMembershipId={sessionData.user.destinyMembershipId} />
+                        <PinPCRCell />
                     </>
                 )}
         </div>

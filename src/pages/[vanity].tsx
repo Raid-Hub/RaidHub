@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
     const vanities = await prisma.vanity.findMany({
         where: {
             NOT: {
-                userId: null
+                profileId: null
             }
         }
     })
@@ -27,7 +27,7 @@ export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
                       }
                   }))
                 : [],
-        fallback: "blocking"
+        fallback: true
     }
 }
 

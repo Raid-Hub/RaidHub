@@ -1,9 +1,17 @@
-import { protectedProcedure } from "../.."
+import { zModifiableProfile, zModifiableUser } from "~/util/zod"
 import { TRPCError } from "@trpc/server"
-import { zModifiableUser } from "@/util/zod"
+import { z } from "zod"
+import { protectedProcedure } from "../../middleware"
 
 export const updateProfile = protectedProcedure
-    .input(zModifiableUser.partial())
+    .input(
+        z
+            .object({
+                profile: zModifiableProfile.partial(),
+                user: zModifiableUser.partial()
+            })
+            .partial()
+    )
     .mutation(async ({ input, ctx }) => {
         try {
             const { profile } = await ctx.prisma.user.update({
@@ -11,9 +19,10 @@ export const updateProfile = protectedProcedure
                     id: ctx.session.user.id
                 },
                 data: {
+                    ...input.user,
                     profile: {
                         update: {
-                            data: input
+                            data: input.profile
                         }
                     }
                 },

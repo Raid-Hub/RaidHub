@@ -9,9 +9,9 @@ import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import ProgressBar from "nextjs-progressbar"
-import SearchModal from "@/components/global/SearchModal"
+import SearchModal from "~/components/global/SearchModal"
 import dynamic from "next/dynamic"
-import { trpc } from "@/util/trpc"
+import { trpc } from "~/util/trpc"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() => import("../components/app/DestinyManifestManager"))

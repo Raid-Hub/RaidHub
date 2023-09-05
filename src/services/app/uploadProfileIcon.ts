@@ -1,4 +1,4 @@
-import AppError from "@/models/errors/AppError"
+import AppError from "~/models/errors/AppError"
 
 type UploadProfileIconResponse =
     | {

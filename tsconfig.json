@@ -16,16 +16,16 @@
         "isolatedModules": true,
         "baseUrl": "src/",
         "paths": {
-            "@/components/*": ["components/*"],
-            "@/hooks/*": ["hooks/*"],
-            "@/images/*": ["images/*"],
-            "@/models/*": ["models/*"],
-            "@/pages/*": ["pages/*"],
-            "@/server/*": ["server/*"],
-            "@/services/*": ["services/*"],
-            "@/styles/*": ["styles/*"],
-            "@/types/*": ["types/*"],
-            "@/util/*": ["util/*"]
+            "~/components/*": ["components/*"],
+            "~/hooks/*": ["hooks/*"],
+            "~/images/*": ["images/*"],
+            "~/models/*": ["models/*"],
+            "~/pages/*": ["pages/*"],
+            "~/server/*": ["server/*"],
+            "~/services/*": ["services/*"],
+            "~/styles/*": ["styles/*"],
+            "~/types/*": ["types/*"],
+            "~/util/*": ["util/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],
