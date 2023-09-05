@@ -4,6 +4,7 @@ import Loading from "../../global/Loading"
 import ClanBanner from "./ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
 import { BungieMembershipType } from "bungie-net-core/models"
+import CustomError, { ErrorCode } from "@/models/errors/CustomError"
 
 type ClanCardProps = {
     membershipId: string
@@ -11,10 +12,13 @@ type ClanCardProps = {
 }
 
 const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
-    const { data: clan, isLoading } = useClan({
+    const {
+        data: clan,
+        isLoading,
+        error
+    } = useClan({
         membershipId,
-        membershipType,
-        errorHandler: console.error
+        membershipType
     })
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />
@@ -34,6 +38,11 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
                     <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
                 </div>
             </div>
+        </div>
+    ) : error ? (
+        <div className={styles["clan"]} style={{ flexDirection: "column", gap: "1em" }}>
+            <div>Error Loading Clan</div>
+            <div>{CustomError.handle(e => e.message, error, ErrorCode.Clan)}</div>
         </div>
     ) : null
 }

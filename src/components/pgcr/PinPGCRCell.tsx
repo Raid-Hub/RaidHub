@@ -27,6 +27,8 @@ const PinPCRCell = ({ destinyMembershipId }: { destinyMembershipId: string }) =>
                 style={{ width: "50%", position: "relative", cursor: "pointer" }}
                 onClick={handlePinClick}>
                 <Image
+                    width={15}
+                    height={15}
                     src={Pin}
                     alt={strings.pinThisActivity}
                     fill

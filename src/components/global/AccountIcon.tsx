@@ -58,7 +58,7 @@ const AccountIcon = () => {
                 className={styles["account-button"]}
                 role="button"
                 onClick={handleIconClick}>
-                <Image src={image} alt="profile" fill sizes="30px" />
+                <Image src={image} alt="profile" fill unoptimized />
             </div>
             <motion.div
                 className={styles["account-dropdown-content-container"]}

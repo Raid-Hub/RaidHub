@@ -75,6 +75,8 @@ const SummaryStatsGrid = () => {
                     <div className={styles["summary-stat-content"]}>
                         <Image
                             src={icon}
+                            width={30}
+                            height={30}
                             alt={name + ": " + value}
                             className={styles["stat-icon"]}
                         />

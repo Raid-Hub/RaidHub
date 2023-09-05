@@ -87,7 +87,7 @@ const SearchModal = ({}: SearchModalProps) => {
                             />
                         </form>
                         <div className={styles["search-top-right"]}>
-                            <Image src={Search} alt="search" />
+                            <Image src={Search} alt="search" width={20} height={20} />
                         </div>
                     </div>
                     <hr />

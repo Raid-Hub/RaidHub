@@ -1,3 +1,8 @@
+export type LeaderboardMeta = {
+    incomplete?: boolean
+    entries: LeaderboardEntry[]
+}
+
 export type LeaderboardEntry = {
     id: string
     rank: number

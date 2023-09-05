@@ -1,25 +1,20 @@
-import CustomError, { ErrorCode } from "../../models/errors/CustomError"
-import { useBungieClient } from "../../components/app/TokenManager"
-import { getClan } from "../../services/bungie/getClan"
-import { ErrorHandler } from "../../types/generic"
-import { useClanBanner } from "../../components/app/DestinyManifestManager"
+import { useBungieClient } from "@/components/app/TokenManager"
+import { getClan } from "@/services/bungie/getClan"
+import { useClanBanner } from "@/components/app/DestinyManifestManager"
 import { useQuery } from "@tanstack/react-query"
 import { BungieMembershipType } from "bungie-net-core/models"
 
 export function useClan({
     membershipId,
-    membershipType,
-    errorHandler
+    membershipType
 }: {
     membershipId: string
     membershipType: BungieMembershipType
-    errorHandler: ErrorHandler
 }) {
     const client = useBungieClient()
 
     const { data, ...query } = useQuery({
         queryKey: ["clan", membershipId, membershipType],
-        onError: e => CustomError.handle(errorHandler, e, ErrorCode.Clan),
         queryFn: () => getClan({ membershipId, membershipType, client }),
         staleTime: 10 * 60000 // clan does not update very often
     })

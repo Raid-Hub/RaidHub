@@ -44,7 +44,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
         return (
             <>
                 {props.type === "challenge" && props.bestPossible && (
-                    <Image src={Diamond2} alt="mastery diamond" />
+                    <Image src={Diamond2} alt="mastery diamond" width={15} height={15} />
                 )}
                 <span>{label}</span>
             </>

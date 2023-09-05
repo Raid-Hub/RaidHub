@@ -48,6 +48,7 @@ const PlayerCell = ({
             onClick={onClick}>
             {!isLoadingEmblems ? (
                 <Image
+                    unoptimized
                     src={bannerEmblemFromCache(emblem ?? null)}
                     alt=""
                     fill
@@ -75,6 +76,8 @@ const PlayerCell = ({
             <div className={styles["quick-stats-container"]}>
                 {solo ? (
                     <Image
+                        width={40}
+                        height={40}
                         className={styles["flawless-diamond"]}
                         src={Diamond1}
                         alt={player.displayName + " went flawless this raid"}
@@ -86,15 +89,15 @@ const PlayerCell = ({
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Kills} alt={"Kills"} />}
+                            {<Image src={Kills} alt={"Kills"} width={12} height={12} />}
                             <span>{player.stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Assists} alt={"Assists"} />}
+                            {<Image src={Assists} alt={"Assists"} width={12} height={12} />}
                             <span>{player.stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Deaths} alt={"Deaths"} />}
+                            {<Image src={Deaths} alt={"Deaths"} width={12} height={12} />}
                             <span>{player.stats.deaths}</span>
                         </div>
                     </div>

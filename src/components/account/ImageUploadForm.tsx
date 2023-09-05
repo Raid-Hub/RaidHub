@@ -53,7 +53,9 @@ const ImageUploadForm = ({
                 <input type="file" onChange={handleFileChange} accept="image/*" />
                 <button type="submit">Upload</button>
             </form>
-            {image && <Image src={image} width={50} height={50} alt={"profile-picture"} />}
+            {image && (
+                <Image src={image} width={50} height={50} unoptimized alt={"profile-picture"} />
+            )}
         </div>
     )
 }

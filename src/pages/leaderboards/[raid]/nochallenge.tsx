@@ -5,6 +5,7 @@ import {
     ListedRaid,
     RaidToUrlPaths,
     RaidsWithReprisedContest,
+    ReprisedRaid,
     UrlPathsToRaid
 } from "../../../types/raids"
 import { ReleaseDate } from "../../../util/destiny/raid"
@@ -16,7 +17,7 @@ import { getLeaderboard } from "../../../services/raidhub/getLeaderboard"
 import { usePage } from "../../../hooks/util/usePage"
 import { LeaderboardMeta } from "@/types/leaderboards"
 
-type WorldsFirstLeaderboadProps = {
+type NoChallengeContestLeaderboadProps = {
     raid: ListedRaid
     dehydratedState: unknown
 }
@@ -24,11 +25,13 @@ type WorldsFirstLeaderboadProps = {
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
     return process.env.APP_ENV !== "local"
         ? {
-              paths: Object.keys(UrlPathsToRaid).map(path => ({
-                  params: {
-                      raid: path
-                  }
-              })),
+              paths: Object.entries(UrlPathsToRaid)
+                  .filter(([path, raid]) => RaidsWithReprisedContest.includes(raid as ReprisedRaid))
+                  .map(([path, raid]) => ({
+                      params: {
+                          raid: path
+                      }
+                  })),
               fallback: false
           }
         : {
@@ -37,9 +40,10 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
           }
 }
 
-export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: string }> = async ({
-    params
-}) => {
+export const getStaticProps: GetStaticProps<
+    NoChallengeContestLeaderboadProps,
+    { raid: string }
+> = async ({ params }) => {
     try {
         const { raid: path } = z
             .object({
@@ -49,16 +53,13 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
             raid: keyof typeof UrlPathsToRaid
         }
         const raid = UrlPathsToRaid[path]
+        if (!RaidsWithReprisedContest.includes(raid as ReprisedRaid)) {
+            return { notFound: true }
+        }
 
         const queryClient = new QueryClient()
 
-        const paramsStrings = [
-            "worldsfirst",
-            RaidToUrlPaths[raid],
-            (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)
-                ? "challenge"
-                : "normal"
-        ]
+        const paramsStrings = ["worldsfirst", RaidToUrlPaths[raid], "normal"]
 
         // we prefetch the first page at build time
         const staleTime = 24 * 60 * 60 * 1000 // 24 hours
@@ -75,9 +76,9 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
             "worldsfirst",
             RaidToUrlPaths[raid],
             0
-        ]) as any
+        ])
 
-        if (prefetched.incomplete) {
+        if (prefetched?.incomplete) {
             return {
                 props: {
                     raid,
@@ -109,44 +110,34 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     }
 }
 
-const WorldsFirstLeaderboadPage: NextPage<WorldsFirstLeaderboadProps> = ({
+const NoChallengeContestLeaderboadPage: NextPage<NoChallengeContestLeaderboadProps> = ({
     raid,
     dehydratedState
 }) => {
     return (
         <Hydrate state={dehydratedState}>
-            <WorldsFirstLeaderboad raid={raid} />
+            <NoChallengeContestLeaderboad raid={raid} />
         </Hydrate>
     )
 }
 
-const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
+const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
     const query = useQuery({
         queryKey: ["worldsfirst", RaidToUrlPaths[raid], page],
-        queryFn: () =>
-            getLeaderboard(
-                [
-                    "worldsfirst",
-                    RaidToUrlPaths[raid],
-                    (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)
-                        ? "challenge"
-                        : "normal"
-                ],
-                page
-            )
+        queryFn: () => getLeaderboard(["worldsfirst", RaidToUrlPaths[raid], "normal"], page)
     })
 
     return (
         <>
             <Head>
-                <title>{`${raidName} | World First Leaderboards`}</title>
+                <title>{`${raidName} | No Challenge Contest Leaderboards`}</title>
             </Head>
 
             <Leaderboard
-                title={"World First " + raidName}
+                title={"No Challenge Contest " + raidName}
                 subtitle={toCustomDateString(ReleaseDate[raid], locale)}
                 raid={raid}
                 entries={query.data?.entries ?? []}
@@ -159,4 +150,4 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     )
 }
 
-export default WorldsFirstLeaderboadPage
+export default NoChallengeContestLeaderboadPage
