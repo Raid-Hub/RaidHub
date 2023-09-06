@@ -2,10 +2,11 @@ import { S3 } from "aws-sdk"
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
 import formidable from "formidable"
 import fs from "fs"
-import prisma from "../../../server/prisma"
 import { IncomingForm } from "formidable"
 import path, { join } from "path"
 import { v4 as uuidv4 } from "uuid"
+import { getServerSession } from "next-auth"
+import { authOptions as nextAuthOptions } from "~/server/next-auth"
 
 const s3 = new S3({
     accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
@@ -24,22 +25,13 @@ type Handler<T = any> = (req: NextApiRequest, res: NextApiResponse<T>, userId: s
 const protectedRoute =
     (handler: Handler): NextApiHandler =>
     async (req, res) => {
-        const sessionToken = req.cookies["__Secure-next-auth.session-token"]
-        if (!sessionToken) {
+        const session = await getServerSession(req, res, nextAuthOptions)
+
+        if (!session?.user.id) {
             return res.status(401).json({ error: "Unauthorized request" })
         }
 
-        const session = await prisma.session.findFirst({
-            where: {
-                sessionToken
-            }
-        })
-
-        if (!session?.userId) {
-            return res.status(401).json({ error: "Unauthorized request" })
-        }
-
-        return handler(req, res, session.userId)
+        return handler(req, res, session.user.id)
     }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -133,31 +125,30 @@ async function uploadToS3({ file, userId }: { file: formidable.File; userId: str
         .promise()
         .then(res => res.Location)
 
-    // s3.listObjectsV2({
-    //     Bucket: process.env.AWS_S3_BUCKET_NAME!,
-    //     Prefix: `profile/${userId}/`
-    // })
-    //     .promise()
-    //     .then(data => {
-    //         const Objects =
-    //             (data.Contents?.filter(({ Key }) => !Key?.includes(uuid)).map(({ Key }) => ({
-    //                 Key
-    //             })) as {
-    //                 Key: string
-    //             }[]) ?? []
+    s3.listObjectsV2({
+        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Prefix: `profile/${userId}/`
+    })
+        .promise()
+        .then(data => {
+            const Objects =
+                (data.Contents?.filter(({ Key }) => !Key?.includes(uuid)).map(({ Key }) => ({
+                    Key
+                })) as {
+                    Key: string
+                }[]) ?? []
 
-    //         if (Objects.length === 0) {
-    //             return
-    //         }
+            if (Objects.length === 0) {
+                return
+            }
 
-    //         s3.deleteObjects({
-    //             Bucket: process.env.AWS_S3_BUCKET_NAME!,
-    //             Delete: {
-    //                 Objects
-    //             }
-    //         })
-    //             .promise()
-    //     })
+            s3.deleteObjects({
+                Bucket: process.env.AWS_S3_BUCKET_NAME!,
+                Delete: {
+                    Objects
+                }
+            }).promise()
+        })
     return newLocation
 }
 

@@ -1,6 +1,5 @@
 import { zModifiableProfile, zModifiableUser } from "~/util/zod"
 import { TRPCError } from "@trpc/server"
-import { z } from "zod"
 import { protectedProcedure } from "../../middleware"
 
 export const updateProfile = protectedProcedure
