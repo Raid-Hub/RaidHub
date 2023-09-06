@@ -27,7 +27,7 @@ export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
                       }
                   }))
                 : [],
-        fallback: true
+        fallback: "blocking"
     }
 }
 

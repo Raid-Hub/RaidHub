@@ -5,12 +5,10 @@ import { protectedProcedure } from "../../middleware"
 
 export const updateProfile = protectedProcedure
     .input(
-        zModifiableProfile.merge(zModifiableUser).transform(
-            z.object({
-                profile: zModifiableProfile,
-                user: zModifiableUser
-            }).parse
-        )
+        zModifiableProfile.merge(zModifiableUser).transform(p => ({
+            profile: zModifiableProfile.parse(p),
+            user: zModifiableUser.parse(p)
+        }))
     )
     .mutation(async ({ input, ctx }) => {
         try {

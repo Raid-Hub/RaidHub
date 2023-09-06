@@ -19,7 +19,7 @@ export const uploadProfileIcon = async ({ file }: { file: File }) => {
     formData.append("file", file)
 
     const fetchOptions = {
-        method: "PUT",
+        method: "POST",
         body: formData
     }
 

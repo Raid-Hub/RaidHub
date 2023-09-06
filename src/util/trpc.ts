@@ -20,7 +20,7 @@ export const trpc = createTRPCNext<AppRouter>({
         return {
             links: [
                 httpBatchLink({
-                    url: `${getBaseUrl()}/api/`
+                    url: `${getBaseUrl()}/api`
                 })
             ],
             queryClient: reactQueryClient

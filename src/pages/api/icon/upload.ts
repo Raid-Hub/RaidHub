@@ -43,7 +43,7 @@ const protectedRoute =
     }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === "PUT") {
+    if (req.method === "POST") {
         return protectedRoute(async (req, res, userId) => {
             return uploadImage(req, userId)
                 .then(url =>

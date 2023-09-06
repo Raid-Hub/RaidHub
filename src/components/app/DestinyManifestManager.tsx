@@ -95,7 +95,7 @@ export function useClanBanner(banner: ClanBanner | null) {
 
     const clanBanners = useQuery({
         queryKey: ["clanBanner", banner, manifestVersion],
-        queryFn: () => (banner ? resolveClanBanner(banner) : undefined),
+        queryFn: () => (banner ? resolveClanBanner(banner) : null),
         staleTime: Infinity
     })
 
