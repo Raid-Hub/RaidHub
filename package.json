@@ -16,9 +16,9 @@
         "test": "jest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
-        "sign": "bash ./proxy/sign.sh",
-        "build": "bash ./vercel/build.sh",
-        "deploy": "bash ./vercel/dev-deploy.sh"
+        "sign": "./proxy/sign.sh",
+        "build": "./vercel/build.sh",
+        "deploy": "./vercel/dev-deploy.sh"
     },
     "prisma": {
         "seed": "ts-node prisma/seed.ts"
