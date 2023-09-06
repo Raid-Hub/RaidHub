@@ -26,7 +26,7 @@ export const getProfile = publicProcedure
             })
             if (!data) return null
             const { user, ...profile } = data
-            return { user, profile }
+            return { ...user, ...profile }
         } catch (e: any) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",

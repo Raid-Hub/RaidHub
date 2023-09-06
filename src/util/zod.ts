@@ -41,17 +41,23 @@ export const zUser = z.object({
     _output: Omit<PrismaUser, "id">
 }
 
-export const zModifiableUser = z.object({
-    name: z.string(),
-    image: z.string()
-}) satisfies {
+export const zModifiableUser = z
+    .object({
+        name: z.string(),
+        image: z.string()
+    })
+    .partial() satisfies {
     _output: Partial<z.infer<typeof zUser>>
 }
 
-export const zModifiableProfile = z.object({
-    pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
-    profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
-}) satisfies {
+export const zModifiableProfile = z
+    .object({
+        pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
+        profileDecoration: z.nullable(
+            z.string().max(500, "CSS String too long, maximum length: 500")
+        )
+    })
+    .partial() satisfies {
     _output: Partial<z.infer<typeof zProfile>>
 }
 

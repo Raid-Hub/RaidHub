@@ -110,9 +110,9 @@ const UserCard = ({
 
                 <div className={styles["details"]}>
                     <Image
-                        unoptimized={!raidHubProfile?.user.image}
+                        unoptimized={!raidHubProfile?.image}
                         src={
-                            raidHubProfile?.user.image ??
+                            raidHubProfile?.image ??
                             "https://bungie.net" +
                                 (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                         }

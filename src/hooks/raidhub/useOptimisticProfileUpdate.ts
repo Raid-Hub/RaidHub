@@ -20,10 +20,7 @@ export function useOptimisticProfileUpdate() {
                         {
                             destinyMembershipId: session.user.destinyMembershipId
                         },
-                        () => ({
-                            profile: { ...prevData.profile, ...newData.profile },
-                            user: { ...prevData.user, ...newData.user }
-                        })
+                        () => ({ ...prevData, ...newData })
                     )
                 }
                 // Return the previous data so we can revert if something goes wrong

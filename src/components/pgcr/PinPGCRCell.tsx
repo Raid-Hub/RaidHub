@@ -2,22 +2,17 @@ import Image from "next/image"
 import { Pin } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
-import { useSession } from "next-auth/react"
-import { trpc } from "~/util/trpc"
 import DestinyPGCR from "~/models/pgcr/PGCR"
+import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 
 const PinPCRCell = () => {
     const { strings } = useLocale()
-    const { data: sessionData } = useSession()
     const { pgcr } = usePGCRContext()
-    const { mutate, data: profile } = trpc.user.updateProfile.useMutation()
+    const { mutate, data: profile } = useOptimisticProfileUpdate()
 
     const handlePinClick = (pgcr: DestinyPGCR) =>
         mutate({
-            pinnedActivityId:
-                sessionData?.user.destinyMembershipId !== pgcr.activityDetails.instanceId
-                    ? pgcr.activityDetails.instanceId
-                    : null
+            pinnedActivityId: pgcr.activityDetails.instanceId
         })
 
     return profile && pgcr ? (

@@ -25,7 +25,7 @@ const ImageUploadForm = ({
         if (selectedFile) {
             try {
                 uploadProfileIcon({ file: selectedFile }).then(res => {
-                    mutate({ user: { image: res.imageUrl } })
+                    mutate({ image: res.imageUrl })
                 })
             } catch (error) {
                 console.error("Error:", error)
