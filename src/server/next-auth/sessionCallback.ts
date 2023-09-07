@@ -7,13 +7,9 @@ import { BungieFetchConfig } from "bungie-net-core"
 
 export type SessionUser = {
     id: string
-    destinyMembershipId: string | null
-    destinyMembershipType: BungieMembershipType | null
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
     name: string
-    bungie: string | null
-    twitch: string | null
-    discord: string | null
-    twitter: string | null
     image: string
     bungieAccessToken?: {
         value: string
@@ -28,10 +24,6 @@ function sessionUser(user: AdapterUser): SessionUser {
         destinyMembershipType: user.destinyMembershipType,
         image: user.image,
         name: user.name,
-        bungie: user.bungieUsername,
-        twitch: user.twitchUsername,
-        twitter: user.twitterUsername,
-        discord: user.discordUsername,
         bungieAccessToken: user.bungieAccessToken
             ? {
                   value: user.bungieAccessToken.value,

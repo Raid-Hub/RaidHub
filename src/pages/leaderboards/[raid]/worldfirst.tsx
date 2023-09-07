@@ -14,7 +14,7 @@ import { z } from "zod"
 import { QueryClient, Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../services/raidhub/getLeaderboard"
 import { usePage } from "../../../hooks/util/usePage"
-import { LeaderboardMeta } from "@/types/leaderboards"
+import { LeaderboardMeta } from "~/types/leaderboards"
 
 type WorldsFirstLeaderboadProps = {
     raid: ListedRaid

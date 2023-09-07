@@ -4,7 +4,7 @@ import Loading from "../../global/Loading"
 import ClanBanner from "./ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
 import { BungieMembershipType } from "bungie-net-core/models"
-import CustomError, { ErrorCode } from "@/models/errors/CustomError"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 
 type ClanCardProps = {
     membershipId: string

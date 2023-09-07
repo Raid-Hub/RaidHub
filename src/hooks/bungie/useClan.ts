@@ -1,6 +1,6 @@
-import { useBungieClient } from "@/components/app/TokenManager"
-import { getClan } from "@/services/bungie/getClan"
-import { useClanBanner } from "@/components/app/DestinyManifestManager"
+import { useBungieClient } from "~/components/app/TokenManager"
+import { getClan } from "~/services/bungie/getClan"
+import { useClanBanner } from "~/components/app/DestinyManifestManager"
 import { useQuery } from "@tanstack/react-query"
 import { BungieMembershipType } from "bungie-net-core/models"
 

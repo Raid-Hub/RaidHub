@@ -1,4 +1,4 @@
-import DestinyPGCR from "@/models/pgcr/PGCR"
+import DestinyPGCR from "~/models/pgcr/PGCR"
 import { BungieClientProtocol } from "bungie-net-core"
 import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
 

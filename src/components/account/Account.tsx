@@ -1,12 +1,10 @@
 import styles from "../../styles/pages/account.module.css"
 import { signIn, signOut } from "next-auth/react"
 import { Session } from "next-auth"
-import { deleteCurrentUser } from "../../services/app/deleteCurrentUser"
-import UpdateUserInfo from "./UpdateUserInfo"
 import ImageUploadForm from "./ImageUploadForm"
 import { useProviders } from "../../hooks/app/useProviders"
-import { unlinkAccountFromUser } from "../../services/app/deleteAccountFromUser"
 import Link from "next/link"
+import { trpc } from "~/util/trpc"
 
 type AccountProps = {
     session: Session
@@ -15,6 +13,13 @@ type AccountProps = {
 
 const Account = ({ session, refreshSession }: AccountProps) => {
     const { providers } = useProviders()
+    const { mutate: deleteUserMutation } = trpc.user.deleteUser.useMutation()
+    const { mutate: unlinkAccountFromUser } = trpc.user.removeProvider.useMutation()
+    const deleteUser = () => {
+        deleteUserMutation()
+        signOut({ callbackUrl: "/" })
+    }
+
     return (
         <main>
             <h1>Welcome, {session.user.name}</h1>
@@ -25,9 +30,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                     <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                         Sign in with a different bungie account
                     </button>
-                    <button onClick={() => deleteCurrentUser({ callbackUrl: "/" })}>
-                        Delete Account
-                    </button>
+                    <button onClick={deleteUser}>Delete Account</button>
                     {providers?.get("discord") && (
                         <button onClick={() => signIn("discord", {}, { prompt: "consent" })}>
                             Add discord account
@@ -59,7 +62,6 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                         </Link>
                     )}
                 </div>
-                <UpdateUserInfo user={session.user} refreshSession={refreshSession} />
                 <ImageUploadForm user={session.user} refreshSession={refreshSession} />
             </section>
         </main>

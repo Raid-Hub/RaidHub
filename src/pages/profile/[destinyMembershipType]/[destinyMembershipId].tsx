@@ -1,8 +1,8 @@
 import ProfileWrapper from "../../../components/profile/ProfileWrapper"
 import { GetStaticProps, NextPage } from "next"
 import { InitialProfileProps } from "../../../types/profile"
-import { zUniqueDestinyProfile } from "../../../util/server/zod"
-import prisma from "../../../util/server/prisma"
+import { zUniqueDestinyProfile } from "../../../util/zod"
+import prisma from "../../../server/prisma"
 
 const ProfilePage: NextPage<InitialProfileProps> = props => {
     return <ProfileWrapper {...props} />

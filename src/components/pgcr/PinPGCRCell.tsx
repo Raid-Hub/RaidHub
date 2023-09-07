@@ -1,31 +1,26 @@
 import Image from "next/image"
 import { Pin } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
-import { useRaidHubProfileMutation } from "../../hooks/raidhub/useRaidHubProfileMutation"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
-import { useSession } from "next-auth/react"
+import DestinyPGCR from "~/models/pgcr/PGCR"
+import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 
-const PinPCRCell = ({ destinyMembershipId }: { destinyMembershipId: string }) => {
+const PinPCRCell = () => {
     const { strings } = useLocale()
-    const { data: sessionData } = useSession()
     const { pgcr } = usePGCRContext()
-    const { mutate } = useRaidHubProfileMutation(destinyMembershipId)
+    const { mutate, data: profile } = useOptimisticProfileUpdate()
 
-    const handlePinClick = () =>
-        pgcr &&
+    const handlePinClick = (pgcr: DestinyPGCR) =>
         mutate({
-            pinnedActivityId:
-                sessionData?.user.destinyMembershipId !== pgcr.activityDetails.instanceId
-                    ? pgcr.activityDetails.instanceId
-                    : null
+            pinnedActivityId: pgcr.activityDetails.instanceId
         })
 
-    return (
+    return profile && pgcr ? (
         <div>
             <span>{strings.pinThisActivity}</span>
             <div
                 style={{ width: "50%", position: "relative", cursor: "pointer" }}
-                onClick={handlePinClick}>
+                onClick={() => handlePinClick(pgcr)}>
                 <Image
                     width={15}
                     height={15}
@@ -36,7 +31,7 @@ const PinPCRCell = ({ destinyMembershipId }: { destinyMembershipId: string }) =>
                 />
             </div>
         </div>
-    )
+    ) : null
 }
 
 export default PinPCRCell

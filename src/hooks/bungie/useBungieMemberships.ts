@@ -1,8 +1,8 @@
 import { useCallback } from "react"
-import { ErrorHandler } from "@/types/generic"
-import CustomError, { ErrorCode } from "@/models/errors/CustomError"
-import { useBungieClient } from "@/components/app/TokenManager"
-import { getLinkedBungieProfiles } from "@/services/bungie/getLinkedBungieProfiles"
+import { ErrorHandler } from "~/types/generic"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import { useBungieClient } from "~/components/app/TokenManager"
+import { getLinkedBungieProfiles } from "~/services/bungie/getLinkedBungieProfiles"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { useQuery } from "@tanstack/react-query"
 

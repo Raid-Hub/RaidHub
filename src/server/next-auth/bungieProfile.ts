@@ -1,12 +1,11 @@
 import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 import { TokenSet } from "next-auth"
-import { AdapterUser } from "next-auth/adapters"
 import { v4 } from "uuid"
 
 export async function bungieProfile(
     { Response }: BungieNetResponse<UserMembershipData>,
     tokens: TokenSet
-): Promise<AdapterUser> {
+) {
     const { bungieNetUser, destinyMemberships, primaryMembershipId } = Response
     const primaryDestinyMembership =
         destinyMemberships.find(membership => membership.membershipId === primaryMembershipId) ??
@@ -29,8 +28,6 @@ export async function bungieProfile(
         image: `https://www.bungie.net${
             bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
         }${bungieNetUser.profilePicturePath}`,
-        pinnedActivityId: null,
-        profileDecoration: null,
         bungieAccessToken: {
             id: v4(),
             bungieMembershipId: bungieNetUser.membershipId,

@@ -21,7 +21,7 @@ async function main() {
 }
 
 async function seedFakeUsers() {
-    const users = createFakeUsers()
+    const users = generateFakeUsers()
 
     const seeded = new Array(MAX_FAKE_USERS).fill(null).map((_, i) => i.toString())
 
@@ -40,34 +40,45 @@ async function seedFakeUsers() {
             })
         )
 
+    const profiles = Promise.all(users.map(user => createProfile(user)))
+
     const accounts = Promise.all(users.map(user => createAccount(user)))
 
     const sessions = Promise.all(users.map(user => createSession(user)))
 
-    await Promise.all([accounts, sessions])
+    await Promise.all([profiles, accounts, sessions])
 
-    function createFakeUsers() {
+    function generateFakeUsers() {
         return Array.from(gamertags())
             .slice(0, MAX_FAKE_USERS)
-            .map(
-                (name, idx) =>
-                    ({
-                        id: idx.toString(),
-                        bungieMembershipId: "s212" + randomNumber(10000, 99999),
-                        destinyMembershipId: "s46116860184" + randomNumber(10000000, 99999999),
-                        destinyMembershipType: Math.floor(Math.random() * 3) + 1,
-                        name,
-                        image: "https://picsum.photos/50",
-                        bungieUsername: name + "#" + randomNumber(0, 9999),
-                        twitchUsername: null,
-                        twitterUsername: null,
-                        discordUsername: null,
-                        email: name + randomNumber(0, 500) + "@raidhub.app"
-                    } as User)
-            )
+            .map((name, idx) => ({
+                name,
+                image: "https://picsum.photos/50",
+                id: idx.toString(),
+                bungieMembershipId: "s212" + randomNumber(10000, 99999),
+                destinyMembershipId: "s46116860184" + randomNumber(10000000, 99999999),
+                destinyMembershipType: Math.floor(Math.random() * 3) + 1,
+                email: name + randomNumber(0, 500) + "@raidhub.app"
+            }))
     }
 
-    async function createAccount({ id, destinyMembershipId }: User) {
+    async function createProfile({ id, name }: Omit<User, "emailVerified"> & { name: string }) {
+        return await prisma.profile.create({
+            data: {
+                user: {
+                    connect: {
+                        id
+                    }
+                },
+                bungieUsername: name + "#" + randomNumber(0, 9999),
+                twitchUsername: null,
+                twitterUsername: null,
+                discordUsername: null
+            }
+        })
+    }
+
+    async function createAccount({ id, destinyMembershipId }: Omit<User, "emailVerified">) {
         return await prisma.account.create({
             data: {
                 user: {
@@ -86,7 +97,7 @@ async function seedFakeUsers() {
         })
     }
 
-    async function createSession({ id }: User) {
+    async function createSession({ id }: Omit<User, "emailVerified">) {
         return await prisma.session.create({
             data: {
                 user: {

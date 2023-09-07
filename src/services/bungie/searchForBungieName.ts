@@ -1,4 +1,4 @@
-import { isPrimaryCrossSave } from "@/util/destiny/crossSave"
+import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { BungieClientProtocol } from "bungie-net-core"
 import { UserInfoCard } from "bungie-net-core/models"
 import { searchDestinyPlayerByBungieName } from "bungie-net-core/endpoints/Destiny2"

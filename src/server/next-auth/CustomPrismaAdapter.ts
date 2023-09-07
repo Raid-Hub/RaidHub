@@ -1,15 +1,16 @@
 import { Adapter, AdapterAccount } from "next-auth/adapters"
 import { Account, PrismaClient } from "@prisma/client"
-import { zUser } from "../zod"
 import { DiscordProfile } from "next-auth/providers/discord"
 import prisma from "../prisma"
 import { TwitterProfile } from "next-auth/providers/twitter"
 import { z } from "zod"
+import { zUser, zUsernames } from "~/util/zod"
 
 export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     return {
         async createUser(user) {
             const parsedUser = zUser.parse(user)
+            const usernames = zUsernames.parse(user)
             const [bungieAccessToken, bungieRefreshToken] = z
                 .array(
                     z.object({
@@ -22,6 +23,9 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             return prisma.user.create({
                 data: {
                     ...parsedUser,
+                    profile: {
+                        create: usernames
+                    },
                     bungieAccessToken: {
                         create: bungieAccessToken
                     },
@@ -121,6 +125,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 },
                 data: parsed,
                 include: {
+                    profile: true,
                     bungieAccessToken: true,
                     bungieRefreshToken: true
                 }
@@ -144,8 +149,18 @@ async function addDiscordAccountToUser(account: AdapterAccount) {
     })
 
     return prisma.user.update({
-        where: { id: account.userId },
-        data: { discordUsername: profile.username }
+        where: {
+            id: account.userId
+        },
+        data: {
+            profile: {
+                update: {
+                    data: {
+                        discordUsername: profile.username
+                    }
+                }
+            }
+        }
     })
 }
 
@@ -165,9 +180,20 @@ async function addTwitchAccountToUser(account: AdapterAccount) {
             throw data
         }
     })
+
     return prisma.user.update({
-        where: { id: account.userId },
-        data: { twitchUsername: profile.display_name }
+        where: {
+            id: account.userId
+        },
+        data: {
+            profile: {
+                update: {
+                    data: {
+                        twitchUsername: profile.display_name
+                    }
+                }
+            }
+        }
     })
 }
 
@@ -186,7 +212,17 @@ async function addTwitterAccountToUser(account: AdapterAccount) {
     })
 
     return prisma.user.update({
-        where: { id: account.userId },
-        data: { twitterUsername: profile.username }
+        where: {
+            id: account.userId
+        },
+        data: {
+            profile: {
+                update: {
+                    data: {
+                        twitterUsername: profile.username
+                    }
+                }
+            }
+        }
     })
 }

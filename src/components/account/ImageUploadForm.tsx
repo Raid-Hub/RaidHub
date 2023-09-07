@@ -1,7 +1,8 @@
 import { ChangeEventHandler, FormEventHandler, useState } from "react"
-import { SessionUser } from "../../util/server/auth/sessionCallback"
 import Image from "next/image"
-import { UserImageCreateResponse } from "../../types/api"
+import { SessionUser } from "~/server/next-auth/sessionCallback"
+import { uploadProfileIcon } from "~/services/app/uploadProfileIcon"
+import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 
 const ImageUploadForm = ({
     user,
@@ -12,6 +13,7 @@ const ImageUploadForm = ({
 }) => {
     const [image, setImage] = useState<string | null>(null)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const { mutate } = useOptimisticProfileUpdate()
 
     const handleFileChange: ChangeEventHandler<HTMLInputElement> = event => {
         setSelectedFile(event.target.files?.[0] ?? null)
@@ -21,26 +23,10 @@ const ImageUploadForm = ({
         event.preventDefault()
 
         if (selectedFile) {
-            const formData = new FormData()
-            formData.append("file", selectedFile)
-
             try {
-                const response = await fetch(`/api/user/${user.id}/image`, {
-                    method: "PUT",
-                    body: formData
+                uploadProfileIcon({ file: selectedFile }).then(res => {
+                    mutate({ image: res.imageUrl })
                 })
-
-                if (response.ok) {
-                    const res = (await response.json()) as UserImageCreateResponse
-
-                    if (res.success) {
-                        console.log("Image uploaded:", res.data)
-                        setImage(res.data.imageUrl)
-                        refreshSession()
-                    }
-                } else {
-                    console.error("Upload failed:", response.statusText)
-                }
             } catch (error) {
                 console.error("Error:", error)
             }

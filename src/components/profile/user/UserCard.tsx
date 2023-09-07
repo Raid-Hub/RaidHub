@@ -1,4 +1,4 @@
-import styles from "../../../styles/pages/profile/user.module.css"
+import styles from "~/styles/pages/profile/user.module.css"
 import { UserInfoCard } from "bungie-net-core/models"
 import SocialTag from "./SocialTag"
 import UserName from "./UserName"
@@ -7,18 +7,17 @@ import Image from "next/image"
 import { useSession } from "next-auth/react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useLocale } from "../../app/LocaleManager"
-import { useRaidHubProfileMutation } from "../../../hooks/raidhub/useRaidHubProfileMutation"
-import { Profile } from "../../../types/api"
 import { Socials } from "../../../util/profile/socials"
 import { ProfileSocialData } from "../../../types/profile"
+import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
+import { RouterOutput as TRPCRouterOutput } from "~/server/trpc"
 
 const defaultEditInput = "black"
 
 type UserCardProps = {
     isLoading: boolean
     userInfo: UserInfoCard | undefined
-    raidHubProfile: Profile | null
-    destinyMembershipId: string
+    raidHubProfile: TRPCRouterOutput["profile"]["getProfile"]
     emblemBackgroundPathSrc: string
 }
 
@@ -26,7 +25,6 @@ const UserCard = ({
     isLoading,
     userInfo,
     raidHubProfile,
-    destinyMembershipId,
     emblemBackgroundPathSrc
 }: UserCardProps) => {
     const { data } = useSession()
@@ -34,7 +32,7 @@ const UserCard = ({
     const ref = useRef<HTMLDivElement>(null)
     const [isEditing, setIsEditing] = useState(false)
     const [inputStyling, setInputStyling] = useState<string>("")
-    const { mutate: mutateProfile } = useRaidHubProfileMutation(destinyMembershipId)
+    const { mutate: mutateProfile } = useOptimisticProfileUpdate()
 
     useEffect(() => {
         if (ref.current) {
@@ -112,12 +110,12 @@ const UserCard = ({
 
                 <div className={styles["details"]}>
                     <Image
-                        unoptimized={!raidHubProfile?.image}
                         src={
                             raidHubProfile?.image ??
-                            "https://bungie.net" +
+                            "https://www.bungie.net" +
                                 (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
                         }
+                        unoptimized
                         width={80}
                         height={80}
                         alt="profile picture"

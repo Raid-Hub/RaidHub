@@ -4,16 +4,16 @@ import {
     DestinyProfileTransitoryComponent,
     DestinyProfileUserInfoCard
 } from "bungie-net-core/models"
-import { ErrorHandler } from "@/types/generic"
+import { ErrorHandler } from "~/types/generic"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { useBungieClient } from "@/components/app/TokenManager"
-import CustomError, { ErrorCode } from "@/models/errors/CustomError"
-import { getProfileTransitory } from "@/services/bungie/getProfileTransitory"
+import { useBungieClient } from "~/components/app/TokenManager"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import { getProfileTransitory } from "~/services/bungie/getProfileTransitory"
 import {
     getActivityDefiniton,
     getActivityModeDefiniton
-} from "@/services/bungie/getActivityDefinition"
-import { getLinkedDestinyProfile } from "@/services/bungie/getLinkedDestinyProfile"
+} from "~/services/bungie/getActivityDefinition"
+import { getLinkedDestinyProfile } from "~/services/bungie/getLinkedDestinyProfile"
 import { useQuery } from "@tanstack/react-query"
 
 export type TransitoryActivity = {
