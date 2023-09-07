@@ -1,49 +1,34 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
+import styles from "~/styles/pages/profile/raids.module.css"
 import Link from "next/link"
-import { Difficulty, Raid } from "../../../types/raids"
-import { useLocale } from "../../app/LocaleManager"
-import { useCallback, useState } from "react"
-import { Diamond2 } from "../../../images/icons"
-import { RaceTag, RaidTag } from "../../../types/profile"
-import { LocalStrings } from "../../../util/presentation/localized-strings"
-import { Tag, wfRaceMode } from "../../../util/raidhub/tags"
+import { Difficulty, Raid } from "~/types/raids"
+import { useLocale } from "~/components/app/LocaleManager"
+import { Diamond2 } from "~/images/icons"
+import { RaidTag } from "~/types/profile"
+import { LocalStrings } from "~/util/presentation/localized-strings"
+import { Tag } from "~/util/raidhub/tags"
 import Image from "next/image"
+import useHover from "~/hooks/util/useDebouncedHover"
 
 type RaidTagLabelProps = {
     instanceId?: string
     setActiveId: (instanceId: string) => void
-} & (
-    | ({
-          type: "challenge"
-      } & RaidTag)
-    | ({
-          type: "race"
-      } & RaceTag)
-)
+} & RaidTag
+
 const RaidTagLabel = (props: RaidTagLabelProps) => {
     const { strings } = useLocale()
-    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
 
-    const handleHover = () => {
-        const timeout = setTimeout(() => {
-            props.instanceId && props.setActiveId(props.instanceId)
-        }, 750)
-        setTimer(timeout)
+    const action = () => {
+        props.instanceId && props.setActiveId(props.instanceId)
     }
 
-    const handleLeave = useCallback(() => {
-        timer && clearTimeout(timer)
-    }, [timer])
+    const { handleHover, handleLeave } = useHover({ action, debounce: 750 })
 
-    const label =
-        props.type === "challenge"
-            ? getChallengeLabel(props, strings)
-            : getRaceLabel(props, strings)
+    const label = getChallengeLabel(props, strings)
 
     function InnerTag() {
         return (
             <>
-                {props.type === "challenge" && props.bestPossible && (
+                {props.bestPossible && (
                     <Image src={Diamond2} alt="mastery diamond" width={15} height={15} />
                 )}
                 <span>{label}</span>
@@ -68,16 +53,16 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     ) : null
 }
 
-function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
-    const tag = wfRaceMode(props)
-    if (tag) {
-        return `${strings.tags[tag]}${props.asterisk ? "*" : ""}${
-            props.placement ? ` #${props.placement}` : ""
-        }`
-    } else {
-        return null
-    }
-}
+// function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
+//     const tag = wfRaceMode(props)
+//     if (tag) {
+//         return `${strings.tags[tag]}${props.asterisk ? "*" : ""}${
+//             props.placement ? ` #${props.placement}` : ""
+//         }`
+//     } else {
+//         return null
+//     }
+// }
 
 function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string | null {
     // special cases

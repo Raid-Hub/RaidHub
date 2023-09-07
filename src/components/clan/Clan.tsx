@@ -3,7 +3,7 @@ import Head from "next/head"
 import Link from "next/link"
 import { useMemo } from "react"
 import { useClanContext } from "~/pages/clan/[groupId]"
-import ClanBanner from "../profile/clan/ClanBanner"
+import ClanBanner from "../reusable/ClanBanner"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 

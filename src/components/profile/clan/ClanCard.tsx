@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/clan.module.css"
 import { useClan } from "../../../hooks/bungie/useClan"
 import Loading from "../../global/Loading"
-import ClanBanner from "./ClanBanner"
+import ClanBanner from "../../reusable/ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
 import { BungieMembershipType } from "bungie-net-core/models"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"

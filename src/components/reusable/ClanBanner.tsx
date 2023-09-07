@@ -1,4 +1,4 @@
-import { ClanBannerData } from "../../../util/destiny/clanBanner"
+import { ClanBannerData } from "~/util/destiny/clanBanner"
 
 type ClanBannerProps = ClanBannerData & { sx: number }
 

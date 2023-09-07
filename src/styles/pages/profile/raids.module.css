@@ -30,21 +30,10 @@
     opacity: 0.95;
 }
 
-.img-overlay {
+.tag-row {
     position: absolute;
     top: 0;
-    width: 100%;
-    height: 99%;
-    padding: 0 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.tag-row {
-    margin: 0.5em;
-    margin-left: 0;
-    height: 25px;
+    left: 0;
     display: flex;
 }
 
@@ -68,8 +57,31 @@
     white-space: nowrap;
 }
 
+.clickable-tag img {
+    width: 15px;
+    height: auto;
+}
+
+.race-tag {
+    cursor: pointer;
+    height: 100%;
+
+    color: white;
+
+    padding: 0.5em;
+
+    background-color: rgba(161, 105, 0, 0.857);
+    background-size: 0em;
+    border-bottom-right-radius: 7px;
+
+    white-space: nowrap;
+}
+
 .img-overlay-bottom {
-    margin-bottom: 1em;
+    position: absolute;
+    bottom: 1em;
+
+    padding: 0 1em;
 }
 
 .card-title {
@@ -93,11 +105,6 @@
     background-color: var(--modal-background);
 
     height: 100%;
-}
-
-.clickable-tag img {
-    width: 15px;
-    height: auto;
 }
 
 .graph-content {
