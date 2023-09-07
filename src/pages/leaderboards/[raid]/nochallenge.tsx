@@ -133,11 +133,11 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     return (
         <>
             <Head>
-                <title>{`${raidName} | No Challenge Contest Leaderboards`}</title>
+                <title>{`${raidName} | Normal Contest Leaderboards`}</title>
             </Head>
 
             <Leaderboard
-                title={"No Challenge Contest " + raidName}
+                title={"Normal Contest " + raidName}
                 subtitle={toCustomDateString(ReleaseDate[raid], locale)}
                 raid={raid}
                 entries={query.data?.entries ?? []}

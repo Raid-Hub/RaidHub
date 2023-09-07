@@ -76,13 +76,9 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
                 className={[styles["entry-card"], styles["character-stat"]].join(" ")}
                 style={{ cursor: "pointer" }}
                 onClick={showWeaponsDetails}>
-                <Image
-                    src={Question_Mark}
-                    width={30}
-                    height={30}
-                    alt={strings.killBreakdown}
-                    className={styles["stat-icon"]}
-                />
+                <div className={styles["stat-icon-container"]}>
+                    <Image src={Question_Mark} alt={strings.killBreakdown} fill />
+                </div>
                 <div className={styles["summary-stat-info"]}>
                     <span
                         className={[styles["summary-stat-name"], styles["contained-span"]].join(

@@ -12,13 +12,9 @@ const PlayerStatCell = ({
 }) => {
     return (
         <div className={[styles["entry-card"], styles["character-stat"]].join(" ")}>
-            <Image
-                src={icon}
-                alt={name + ": " + value}
-                className={styles["stat-icon"]}
-                width={30}
-                height={30}
-            />
+            <div className={styles["stat-icon-container"]}>
+                <Image src={icon} fill alt={name + ": " + value} />
+            </div>
             <div className={styles["summary-stat-info"]}>
                 <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>
                     {name}

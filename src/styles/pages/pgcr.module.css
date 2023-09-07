@@ -483,12 +483,13 @@
     height: 100%;
 }
 
-.stat-icon {
+.stat-icon-container {
+    position: relative;
     margin-right: 10px;
-    max-width: 50px;
-    max-height: 50px;
+
+    width: 50px;
+    height: 50px;
     aspect-ratio: 1/1;
-    flex: 1;
 }
 
 .summary-stat-info {
@@ -626,9 +627,9 @@
     .summary-stat-value {
         font-size: medium;
     }
-    .stat-icon {
-        max-width: 35px;
-        max-height: 35px;
+    .stat-icon-container {
+        width: 35px;
+        height: 35px;
     }
 }
 .settings-menu-container {
@@ -667,4 +668,11 @@
     height: 1px;
     width: 100%;
     background-color: #888888;
+}
+
+.weapon-icon {
+    max-height: 60px;
+    max-width: 60px;
+    border-radius: 4px;
+    border: 2px solid rgba(43, 42, 37, 0.979);
 }

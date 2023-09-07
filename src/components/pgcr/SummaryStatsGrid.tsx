@@ -73,13 +73,9 @@ const SummaryStatsGrid = () => {
             {statsData.map(({ icon, name, value }, idx) => (
                 <div key={idx} className={styles["summary-stat"]}>
                     <div className={styles["summary-stat-content"]}>
-                        <Image
-                            src={icon}
-                            width={30}
-                            height={30}
-                            alt={name + ": " + value}
-                            className={styles["stat-icon"]}
-                        />
+                        <div className={styles["stat-icon-container"]}>
+                            <Image src={icon} alt={name + ": " + value} fill />
+                        </div>
                         <div className={styles["summary-stat-info"]}>
                             <span
                                 className={[

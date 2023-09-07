@@ -1,6 +1,6 @@
+import styles from "~/styles/pages/pgcr.module.css"
 import Image, { StaticImageData } from "next/image"
 import { Question_Mark } from "../../images/icons"
-import styles from "../../styles/pages/pgcr.module.css"
 import { IPGCREntry, WeaponStatsValues } from "../../types/pgcr"
 import { useWeapon } from "../app/DestinyManifestManager"
 import Link from "next/link"
@@ -63,7 +63,7 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
                 alt={weapon?.name ?? ""}
                 width={96}
                 height={96}
-                style={{ maxHeight: "60px", maxWidth: "60px", borderRadius: "4px" }}
+                className={styles["weapon-icon"]}
             />
             <div className={styles["summary-stat-info"]}>
                 <Link
