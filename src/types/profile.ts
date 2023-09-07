@@ -22,7 +22,7 @@ export type InitialProfileProps = {
     destinyMembershipId: string
     destinyMembershipType: BungieMembershipType
 }
-export type Clan = GroupV2 & { clanBanner: ClanBannerData }
+export type Clan = GroupV2 & { clanBanner: ClanBannerData | null }
 export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
 export type MembershipWithCharacters = {
     destinyMembershipId: string

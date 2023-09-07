@@ -1,12 +1,17 @@
-import styles from "../../../styles/pages/profile/clan.module.css"
 import { ClanBannerData } from "../../../util/destiny/clanBanner"
 
-type ClanBannerProps = ClanBannerData
+type ClanBannerProps = ClanBannerData & { sx: number }
 
-const ClanBanner = ({ gonfalcons, decalTop, decalSecondary, decalPrimary }: ClanBannerProps) => {
+const ClanBanner = ({
+    gonfalcons,
+    decalTop,
+    decalSecondary,
+    decalPrimary,
+    sx
+}: ClanBannerProps) => {
     return (
         <svg
-            className={styles["clan-img"]}
+            style={{ width: `${9 * sx}px`, height: `${16 * sx}px` }}
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
             height="100%">
