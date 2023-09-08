@@ -2,10 +2,10 @@ import styles from "~/styles/pages/pgcr.module.css"
 import Image, { StaticImageData } from "next/image"
 import { Question_Mark } from "../../images/icons"
 import { IPGCREntry, WeaponStatsValues } from "../../types/pgcr"
-import { useWeapon } from "../app/DestinyManifestManager"
 import Link from "next/link"
 import StyledButton from "../reusable/StyledButton"
 import { useLocale } from "../app/LocaleManager"
+import { useItem } from "../app/DestinyManifestManager"
 
 type AbilityData = {
     name: string
@@ -51,7 +51,7 @@ const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) =>
 
 const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues }) => {
     const { strings } = useLocale()
-    const { data: weapon } = useWeapon(hash)
+    const { data: weapon } = useItem(hash)
 
     return (
         <div
@@ -59,8 +59,12 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
             className={styles["entry-card"]}>
             <Image
                 unoptimized
-                src={weapon?.icon ? `https://www.bungie.net${weapon.icon}` : Question_Mark}
-                alt={weapon?.name ?? ""}
+                src={
+                    weapon?.displayProperties.icon
+                        ? `https://www.bungie.net${weapon.displayProperties.icon}`
+                        : Question_Mark
+                }
+                alt={weapon?.displayProperties.name ?? ""}
                 width={96}
                 height={96}
                 className={styles["weapon-icon"]}
@@ -70,7 +74,7 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
                     className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}
                     href={`https://www.light.gg/db/items/${hash}/`}
                     target="_blank">
-                    {weapon?.name ?? strings.loading}
+                    {weapon?.displayProperties.name ?? strings.loading}
                 </Link>
                 <span
                     className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>

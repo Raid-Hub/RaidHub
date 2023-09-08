@@ -1,4 +1,3 @@
-import { Clan } from "~/types/profile"
 import { createContext, useContext } from "react"
 import { GetStaticProps, NextPage } from "next"
 import { useGroup } from "~/hooks/bungie/useGroup"
@@ -7,10 +6,7 @@ import { GroupMember, GroupResponse } from "bungie-net-core/models"
 import ClanComponent from "~/components/clan/Clan"
 
 const ClanContext = createContext<{
-    clan:
-        | (GroupResponse & { groupMembers: readonly GroupMember[]; detail: Clan })
-        | null
-        | undefined
+    clan: (GroupResponse & { groupMembers: readonly GroupMember[] }) | null | undefined
     isLoading: boolean
 }>({
     clan: null,

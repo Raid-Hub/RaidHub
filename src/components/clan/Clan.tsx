@@ -25,9 +25,7 @@ export default function Clan() {
                                 {clanName} [{clan.detail.clanInfo.clanCallsign}]
                             </h1>
                             <h3>{clan.detail.motto}</h3>
-                            {clan.detail.clanBanner && (
-                                <ClanBanner {...clan.detail.clanBanner} sx={20} />
-                            )}
+                            <ClanBanner data={clan.detail.clanInfo.clanBannerData} sx={20} />
                             <p>{urlHighlight(clan.detail.about)}</p>
                         </section>
 

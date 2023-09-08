@@ -1,27 +1,9 @@
 import { BungieClientProtocol } from "bungie-net-core"
 import { getDestinyInventoryItems } from "../../services/bungie/getDestinyInventoryItems"
 import { Hashed, indexDB } from "../dexie"
-import {
-    ClanBannerSource,
-    DestinyInventoryItemDefinition,
-    DestinyManifest
-} from "bungie-net-core/models"
+import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
 import { DestinyManifestLanguage } from "bungie-net-core/manifest"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
-import { weaponBuckets } from "./weapons"
-
-export type CachedEmblem = {
-    emblem: string
-    icon: string
-    iconTransparent: string
-    banner: string
-}
-
-export type CachedWeapon = {
-    name: string
-    icon: string
-    type: string
-}
 
 export type RGBA = {
     blue: number
@@ -67,10 +49,7 @@ export async function updateCachedManifest({
             language,
             client
         }).then(items =>
-            Promise.all([
-                indexDB.weapons.clear().then(() => indexDB.weapons.bulkPut(processWeapons(items))),
-                indexDB.emblems.clear().then(() => indexDB.emblems.bulkPut(processEmblems(items)))
-            ])
+            indexDB.items.clear().then(() => indexDB.items.bulkPut(Object.values(items)))
         ),
 
         getClanBannerSource(client)
@@ -103,38 +82,4 @@ export async function updateCachedManifest({
                 )
             })
     ])
-}
-
-function processWeapons(items: Record<string, DestinyInventoryItemDefinition>) {
-    return Object.entries(items)
-        .filter(
-            ([_, def]) =>
-                def.traitIds?.some(trait => trait.match(/^item\.weapon\.[A-Za-z0-9_]+$/)) &&
-                weaponBuckets.includes(def.inventory?.bucketTypeHash!)
-        )
-        .map(
-            ([hash, def]) =>
-                ({
-                    hash: Number(hash),
-                    name: def.displayProperties.name,
-                    icon: def.displayProperties.icon,
-                    type: def.itemTypeDisplayName ?? "Classified"
-                } as Hashed<CachedWeapon>)
-        )
-}
-
-function processEmblems(items: Record<string, DestinyInventoryItemDefinition>) {
-    return Object.entries(items)
-
-        .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
-        .map(
-            ([hash, def]) =>
-                ({
-                    hash: Number(hash),
-                    icon: def.displayProperties.icon,
-                    emblem: def.secondaryIcon,
-                    iconTransparent: def.secondaryOverlay,
-                    banner: def.secondarySpecial
-                } as Hashed<CachedEmblem>)
-        )
 }

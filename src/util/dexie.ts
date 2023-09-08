@@ -1,5 +1,6 @@
 import Dexie, { Table } from "dexie"
-import { CachedEmblem, CachedWeapon, RGBA, RawClanBannerData } from "./destiny/manifest"
+import { RGBA, RawClanBannerData } from "./destiny/manifest"
+import { DestinyInventoryItemDefinition } from "bungie-net-core/models"
 
 export type Hashed<T> = { hash: number } & T
 type ForegroundBackground = {
@@ -8,8 +9,7 @@ type ForegroundBackground = {
 }
 
 class CustomDexie extends Dexie implements Record<keyof RawClanBannerData, Table> {
-    weapons!: Table<Hashed<CachedWeapon>>
-    emblems!: Table<Hashed<CachedEmblem>>
+    items!: Table<DestinyInventoryItemDefinition>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
     clanBannerDecals!: Table<Hashed<ForegroundBackground>>
@@ -23,8 +23,7 @@ class CustomDexie extends Dexie implements Record<keyof RawClanBannerData, Table
     constructor() {
         super("app")
         this.version(1).stores({
-            weapons: "hash",
-            emblems: "hash",
+            items: "hash",
             clanBannerDecalPrimaryColors: "hash",
             clanBannerDecalSecondaryColors: "hash",
             clanBannerDecals: "hash",

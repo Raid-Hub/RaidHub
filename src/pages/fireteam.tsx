@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { useMemo } from "react"
 import FireteamMember from "~/components/fireteam/FireteamMember"
 import FireteamSidebar from "~/components/fireteam/FireteamSidebar"
+import FireteamHeader from "~/components/fireteam/FireteamHeader"
 
 const FireteamPage: NextPage<{}> = () => {
     const router = useRouter()
@@ -34,20 +35,18 @@ const FireteamPage: NextPage<{}> = () => {
     }, [router.query])
 
     return (
-        <>
-            <div className={styles["container"]}>
-                <FireteamSidebar />
-                <main>
-                    <h1>Live Fireteam View</h1>
+        <main className={styles["main"]}>
+            <FireteamSidebar />
 
-                    <section className={styles["players"]}>
-                        {members?.map((member, idx) => (
-                            <FireteamMember key={idx} member={member} />
-                        ))}
-                    </section>
-                </main>
-            </div>
-        </>
+            <section className={styles["primary-content"]}>
+                <FireteamHeader />
+                <div className={styles["players"]}>
+                    {members?.map((member, idx) => (
+                        <FireteamMember key={idx} member={member} />
+                    ))}
+                </div>
+            </section>
+        </main>
     )
 }
 

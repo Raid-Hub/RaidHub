@@ -1,17 +1,46 @@
-.container {
-    position: relative;
+.main {
     display: flex;
+    gap: 2em;
+}
+.header {
 }
 
 .sidebar {
-    position: absolute;
-    height: 100%;
+    min-width: 200px;
+    background-color: aquamarine;
 }
+
+.primary-content {
+    width: 100%;
+}
+
 .players {
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 2em;
 }
 
 .player {
+    padding: 2em;
+    background-color: var(--modal-background);
+    border-radius: 10px;
+}
+
+.weapons {
+    display: grid;
+    grid-template-columns: 1;
+    gap: 2em;
+}
+
+.weapon {
+    display: flex;
+    gap: 1em;
+}
+
+.weapon-icon {
+}
+
+.weapon-details {
+    flex: 1;
 }

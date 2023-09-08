@@ -3,16 +3,16 @@ import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
-import { useWeapon } from "../app/DestinyManifestManager"
 import { useMemo } from "react"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import { useItem } from "../app/DestinyManifestManager"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()
     const { pgcr } = usePGCRContext()
 
     const stats = useMemo(() => pgcr?.stats, [pgcr])
-    const { data: weapon } = useWeapon(stats?.mostUsedWeapon?.hash ?? null)
+    const { data: weapon } = useItem(stats?.mostUsedWeapon?.hash ?? 73015)
     const statsData: {
         icon: StaticImageData
         name: string
@@ -65,7 +65,7 @@ const SummaryStatsGrid = () => {
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: weapon?.name ?? strings.none
+            value: weapon?.displayProperties.name ?? strings.none
         }
     ]
     return (

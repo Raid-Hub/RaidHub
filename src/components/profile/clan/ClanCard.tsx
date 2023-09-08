@@ -22,12 +22,13 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
         membershipId,
         membershipType
     })
+
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />
     ) : clan ? (
         <Link href={`/clan/${clan.groupId}`} className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
-                {clan.clanBanner && <ClanBanner {...clan.clanBanner} sx={10} />}
+                <ClanBanner data={clan.clanInfo.clanBannerData} sx={10} />
             </div>
             <div className={styles["desc"]}>
                 <span className={styles["desc-title"]}>

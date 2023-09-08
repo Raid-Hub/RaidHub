@@ -1,15 +1,12 @@
-import { ClanBannerData } from "~/util/destiny/clanBanner"
+import { useClanBanner } from "../app/DestinyManifestManager"
+import { ClanBanner } from "bungie-net-core/models"
 
-type ClanBannerProps = ClanBannerData & { sx: number }
+type ClanBannerProps = { data: ClanBanner; sx: number }
 
-const ClanBanner = ({
-    gonfalcons,
-    decalTop,
-    decalSecondary,
-    decalPrimary,
-    sx
-}: ClanBannerProps) => {
-    return (
+const ClanBanner = ({ data, sx }: ClanBannerProps) => {
+    const { data: queryData } = useClanBanner(data)
+
+    return queryData ? (
         <svg
             style={{ width: `${9 * sx}px`, height: `${16 * sx}px` }}
             xmlns="http://www.w3.org/2000/svg"
@@ -20,14 +17,14 @@ const ClanBanner = ({
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${gonfalcons.path}`}
+                        xlinkHref={`https://bungie.net${queryData.gonfalcons.path}`}
                     />
                 </mask>
                 <mask id="topDecal">
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${decalTop.path}`}
+                        xlinkHref={`https://bungie.net${queryData.decalTop.path}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -35,7 +32,7 @@ const ClanBanner = ({
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${decalSecondary.path}`}
+                        xlinkHref={`https://bungie.net${queryData.decalSecondary.path}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -43,19 +40,39 @@ const ClanBanner = ({
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${decalPrimary.path}`}
+                        xlinkHref={`https://bungie.net${queryData.decalPrimary.path}`}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
             </defs>
             <g cx="50%" cy="50%">
-                <rect width="100%" height="100%" fill={gonfalcons.color} mask="url(#gonfalcons)" />
-                <rect width="100%" height="100%" fill={decalTop.color} mask="url(#topDecal)" />
-                <rect width="100%" height="100%" fill={decalSecondary.color} mask="url(#decal2)" />
-                <rect width="100%" height="100%" fill={decalPrimary.color} mask="url(#decal)" />
+                <rect
+                    width="100%"
+                    height="100%"
+                    fill={queryData.gonfalcons.color}
+                    mask="url(#gonfalcons)"
+                />
+                <rect
+                    width="100%"
+                    height="100%"
+                    fill={queryData.decalTop.color}
+                    mask="url(#topDecal)"
+                />
+                <rect
+                    width="100%"
+                    height="100%"
+                    fill={queryData.decalSecondary.color}
+                    mask="url(#decal2)"
+                />
+                <rect
+                    width="100%"
+                    height="100%"
+                    fill={queryData.decalPrimary.color}
+                    mask="url(#decal)"
+                />
             </g>
         </svg>
-    )
+    ) : null
 }
 
 export default ClanBanner

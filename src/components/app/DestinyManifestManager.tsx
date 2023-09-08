@@ -62,42 +62,22 @@ export default DestinyManifestManager
 
 const useManifestVersion = () => useContext(DestinyManifestContext)
 
-export function useEmblem(hash: number | null) {
+export function useItem(hash: number) {
     const manifestVersion = useManifestVersion()
 
-    const fetchData = async () => (hash ? indexDB.emblems.get({ hash }) : undefined)
-
-    const emblem = useQuery({
-        queryKey: ["emblem", hash, manifestVersion],
-        queryFn: () => fetchData(),
-        staleTime: Infinity
-    })
-
-    return emblem
-}
-
-export function useWeapon(hash: number | null) {
-    const manifestVersion = useManifestVersion()
-
-    const fetchData = async () => (hash ? indexDB.weapons.get({ hash }) : null)
-
-    const weapon = useQuery({
+    return useQuery({
         queryKey: ["weapon", hash, manifestVersion],
-        queryFn: () => fetchData(),
+        queryFn: () => indexDB.items.get({ hash }),
         staleTime: Infinity
     })
-
-    return weapon
 }
 
-export function useClanBanner(banner: ClanBanner | null) {
+export function useClanBanner(banner: ClanBanner) {
     const manifestVersion = useManifestVersion()
 
-    const clanBanners = useQuery({
+    return useQuery({
         queryKey: ["clanBanner", banner, manifestVersion],
-        queryFn: () => (banner ? resolveClanBanner(banner) : null),
+        queryFn: () => resolveClanBanner(banner),
         staleTime: Infinity
     })
-
-    return clanBanners
 }
