@@ -1,8 +1,33 @@
 .main {
     display: flex;
+    flex-direction: column;
     gap: 2em;
 }
 .header {
+}
+.search {
+    position: relative;
+}
+
+.search-results {
+    z-index: 5;
+    background-color: var(--modal-background-opaque);
+    position: absolute;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.search-result {
+    padding: 1em;
+
+    transition: background-color 0.1s ease-out;
+    cursor: pointer;
+}
+
+.search-result:hover {
+    background-color: var(--brand-orange);
 }
 
 .sidebar {
@@ -10,37 +35,87 @@
     background-color: aquamarine;
 }
 
-.primary-content {
-    width: 100%;
-}
-
 .players {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 0.5fr));
     gap: 2em;
 }
 
 .player {
+    min-height: 40vh;
+    position: relative;
     padding: 2em;
+    padding-top: 0;
     background-color: var(--modal-background);
     border-radius: 10px;
 }
 
-.weapons {
+.remove-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    padding: 3px 5px;
+
+    color: var(--primary-color);
+    background-color: var(--modal-background-opaque);
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.2s ease-out;
+
+    cursor: pointer;
+}
+
+.remove-btn:hover {
+    background-color: var(--brand-orange);
+}
+
+.items {
+    max-width: 100%;
     display: grid;
-    grid-template-columns: 1;
     gap: 2em;
 }
 
-.weapon {
+.item {
+}
+
+.item-main {
     display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    margin-bottom: 1em;
+}
+
+.item-icon {
+    border-radius: 10%;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details-name {
+    margin: 0;
+}
+
+.sockets {
+    max-width: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
     gap: 1em;
 }
+.socket {
+    display: flex;
+    gap: 0.3em;
 
-.weapon-icon {
+    align-items: center;
+
+    font-size: 0.75rem;
 }
 
-.weapon-details {
-    flex: 1;
+.socket img {
+    border-radius: 15%;
 }
