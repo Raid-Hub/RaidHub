@@ -1,0 +1,17 @@
+.container {
+    position: relative;
+    display: flex;
+}
+
+.sidebar {
+    position: absolute;
+    height: 100%;
+}
+.players {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2em;
+}
+
+.player {
+}

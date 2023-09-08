@@ -2,6 +2,10 @@ import { Collection } from "@discordjs/collection"
 import { DestinyHistoricalWeaponStats } from "bungie-net-core/models"
 import { PlayerWeapons } from "../../types/pgcr"
 
+export const weaponBuckets = [
+    /* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645
+]
+
 export function parseWeapons(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
     return new Collection(
         weapons.map(({ referenceId, values }) => {

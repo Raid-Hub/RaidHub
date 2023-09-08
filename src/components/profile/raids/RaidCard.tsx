@@ -134,8 +134,8 @@ const RaidCard = ({
                 <Image
                     className={styles["card-background"]}
                     priority
-                    width={640}
-                    height={360}
+                    width={960}
+                    height={540}
                     src={RaidCardBackground[raid]}
                     alt={strings.raidNames[raid]}
                 />

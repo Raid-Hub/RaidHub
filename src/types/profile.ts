@@ -142,3 +142,8 @@ export interface ActivityFilter {
 }
 
 export type zModifiableProfile = Partial<z.infer<typeof zModifiableProfile>>
+
+export type FireTeamMember = {
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+}

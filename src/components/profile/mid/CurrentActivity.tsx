@@ -61,7 +61,16 @@ const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: Current
     }, [profile, raidTuple, strings])
 
     return profile ? (
-        <div className={styles["current-activity"]}>
+        <Link
+            href={{
+                pathname: "/fireteam",
+                query: {
+                    members: profile.partyMembers
+                        .map(pm => pm.membershipType + "+" + pm.membershipId)
+                        .join(", ")
+                }
+            }}
+            className={styles["current-activity"]}>
             <div>
                 <span className={styles["current-activity-label"]}>{strings.inGame}</span>
                 <span className={styles["activity-name"]}>{activityName}</span>
@@ -94,7 +103,7 @@ const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: Current
                     />
                 </div>
             )}
-        </div>
+        </Link>
     ) : null
 }
 

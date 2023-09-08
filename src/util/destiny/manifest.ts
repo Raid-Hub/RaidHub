@@ -8,6 +8,7 @@ import {
 } from "bungie-net-core/models"
 import { DestinyManifestLanguage } from "bungie-net-core/manifest"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
+import { weaponBuckets } from "./weapons"
 
 export type CachedEmblem = {
     emblem: string
@@ -105,8 +106,6 @@ export async function updateCachedManifest({
 }
 
 function processWeapons(items: Record<string, DestinyInventoryItemDefinition>) {
-    const weaponBuckets = [/* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645]
-
     return Object.entries(items)
         .filter(
             ([_, def]) =>
