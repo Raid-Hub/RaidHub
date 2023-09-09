@@ -14,22 +14,19 @@ export default class BungieClient implements BungieClientProtocol {
         if (!apiKey) {
             throw new Error("Missing BUNGIE_API_KEY")
         }
-        const headers: Record<string, string> = {
-            ...config.headers
-        }
-
-        if (config.url.pathname.includes("Platform")) {
-            headers["X-API-KEY"] = apiKey
-        }
-
-        if (this.accessToken) {
-            headers["Authorization"] = `Bearer ${this.accessToken}`
-        }
 
         const payload = {
             method: config.method,
             body: config.body,
-            headers
+            headers: config.headers ?? {}
+        }
+
+        if (config.url.pathname.match(/\/Platform\//)) {
+            payload.headers["X-API-KEY"] = apiKey
+        }
+
+        if (this.accessToken) {
+            payload.headers["Authorization"] = `Bearer ${this.accessToken}`
         }
 
         const request = async (retry?: boolean) => {

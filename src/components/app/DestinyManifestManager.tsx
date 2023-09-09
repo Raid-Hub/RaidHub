@@ -16,12 +16,8 @@ const MANIFEST_VERSION_ID = "1"
 
 const DestinyManifestContext = createContext<string>("")
 
-type DestinyManifestManagerProps = {
-    children: ReactNode
-}
-
-const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
-    const [manifestVersion, setManifestVersion] = useState("")
+const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
+    const [manifestVersion, setManifestVersion] = useState("null")
     const client = useBungieClient()
     const { language } = useLocale()
 
