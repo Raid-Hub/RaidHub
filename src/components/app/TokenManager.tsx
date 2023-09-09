@@ -1,8 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query"
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 import BungieClient from "~/services/bungie/client"
 
-const BungieAccessTokenContext = createContext<string | null>(null)
+const BungieClientContext = createContext<BungieClient | null>(null)
 
 type TokenManagerProps = {
     setRefetchInterval(val: number): void
@@ -13,6 +14,9 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     const { data: sessionData, status } = useSession()
     const [accessToken, setAccessToken] = useState<string>("")
     const [failedTokenRequests, setFailedTokenRequests] = useState(0)
+
+    const queryClient = useQueryClient()
+    const [bungie] = useState(new BungieClient(queryClient))
 
     if (failedTokenRequests > 3) {
         signOut()
@@ -40,23 +44,21 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
             setRefetchInterval(timeRemaining >= 0 ? Math.ceil((timeRemaining + 1) / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
-    return (
-        <BungieAccessTokenContext.Provider value={accessToken}>
-            {children}
-        </BungieAccessTokenContext.Provider>
-    )
+
+    useEffect(() => {
+        if (accessToken) {
+            bungie.setToken(accessToken)
+        } else {
+            bungie.clearToken()
+        }
+    }, [bungie, accessToken])
+
+    return <BungieClientContext.Provider value={bungie}>{children}</BungieClientContext.Provider>
 }
 
-const client = new BungieClient()
 export const useBungieClient = () => {
-    const accessToken = useContext(BungieAccessTokenContext)
-    if (accessToken === null) throw Error("Cannot use BungieClient outside a child of TokenManager")
-
-    if (accessToken) {
-        client.setToken(accessToken)
-    } else {
-        client.clearToken()
-    }
+    const client = useContext(BungieClientContext)
+    if (client === null) throw Error("Cannot use BungieClient outside a child of TokenManager")
     return client
 }
 

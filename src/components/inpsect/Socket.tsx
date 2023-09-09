@@ -1,4 +1,4 @@
-import styles from "~/styles/pages/fireteam.module.css"
+import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
 import { DestinyItemSocketState } from "bungie-net-core/models"
 import { useItem } from "../app/DestinyManifestManager"

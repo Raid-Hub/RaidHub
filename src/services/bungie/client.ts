@@ -7,6 +7,8 @@ import { getProfile } from "./getProfile"
 import { getPGCR } from "./getPGCR"
 import { getActivityHistory } from "./getActivityHistory"
 import { getClan } from "./getClan"
+import { getLinkedProfiles } from "./getLinkedProfiles"
+import { QueryClient } from "@tanstack/react-query"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount,
@@ -15,6 +17,12 @@ const DONT_RETRY_CODES: PlatformErrorCodes[] = [
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
+    queryClient: QueryClient
+
+    constructor(queryClient: QueryClient) {
+        this.queryClient = queryClient
+    }
+
     async fetch<T>(config: BungieFetchConfig): Promise<T> {
         const apiKey = process.env.BUNGIE_API_KEY
         if (!apiKey) {
@@ -81,4 +89,5 @@ export default class BungieClient implements BungieClientProtocol {
     profile = this.query(getProfile)
     pgcr = this.query(getPGCR)
     activityHistory = this.query(getActivityHistory)
+    linkedProfiles = this.query(getLinkedProfiles)
 }

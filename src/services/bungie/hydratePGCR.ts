@@ -2,7 +2,6 @@ import { BungieClientProtocol } from "bungie-net-core"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import { Collection } from "@discordjs/collection"
 import { DestinyCharacterComponent, UserInfoCard } from "bungie-net-core/models"
-import { getLinkedDestinyProfile } from "./getLinkedDestinyProfile"
 import { getDestinyCharacter } from "./getDestinyCharacter"
 
 export async function hydratePGCR({
@@ -17,12 +16,12 @@ export async function hydratePGCR({
         await Promise.all(
             activity.entries.map(async entry => {
                 let destinyUserInfo = entry.player.destinyUserInfo
-                if (!entry.player.destinyUserInfo.membershipType) {
-                    destinyUserInfo = await getLinkedDestinyProfile({
-                        membershipId: entry.player.destinyUserInfo.membershipId,
-                        client
-                    })
-                }
+                // if (!entry.player.destinyUserInfo.membershipType) {
+                //     destinyUserInfo = await getLinkedDestinyProfile({
+                //         membershipId: entry.player.destinyUserInfo.membershipId,
+                //         client
+                //     })
+                // }
 
                 const character = await getDestinyCharacter({
                     destinyMembershipId: destinyUserInfo.membershipId,
@@ -35,6 +34,6 @@ export async function hydratePGCR({
             })
         )
     }
-    activity.hydrate(hydrationData)
+    // activity.hydrate(hydrationData)
     return activity
 }

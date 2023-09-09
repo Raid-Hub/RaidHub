@@ -196,10 +196,12 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return this.raid ? addModifiers(this.raid, this.tags, strings) : ""
     }
 
-    hydrate(data: Collection<string, [UserInfoCard, DestinyCharacterComponent | null]>) {
-        data.forEach((components, characterId) => {
-            this.entries.find(entry => entry.characterId === characterId)?.hydrate(components)
-        })
+    get needsHydration(): boolean {
+        return this.entries.length < 50 && this.entries.some(e => !e.membershipType)
+    }
+
+    hydrate(id: string, components: [UserInfoCard, DestinyCharacterComponent]) {
+        this.entries.find(entry => entry.characterId === id)?.hydrate(components)
     }
 
     /**

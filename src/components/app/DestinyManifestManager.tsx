@@ -71,6 +71,26 @@ export function useItem(hash: number) {
     })
 }
 
+export function useActivity(hash: number) {
+    const manifestVersion = useManifestVersion()
+
+    return useQuery({
+        queryKey: ["activity", hash, manifestVersion],
+        queryFn: () => indexDB.activities.get({ hash }) ?? null,
+        staleTime: Infinity
+    })
+}
+
+export function useActivityMode(hash: number) {
+    const manifestVersion = useManifestVersion()
+
+    return useQuery({
+        queryKey: ["activityMode", hash, manifestVersion],
+        queryFn: () => indexDB.activityModes.get({ hash }) ?? null,
+        staleTime: Infinity
+    })
+}
+
 export function useClanBanner(banner: ClanBanner) {
     const manifestVersion = useManifestVersion()
 

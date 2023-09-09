@@ -1,4 +1,4 @@
-import styles from "~/styles/pages/fireteam.module.css"
+import styles from "~/styles/pages/inpsect.module.css"
 import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/models"
 import UserName from "../profile/user/UserName"
 import Image from "next/image"
@@ -24,6 +24,7 @@ export default function PlayerHeader({
                 alt={""}
                 unoptimized
                 fill
+                style={{ userSelect: "none" }}
             />
         </div>
     )

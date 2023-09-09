@@ -1,30 +1,77 @@
-import styles from "~/styles/pages/fireteam.module.css"
-import { FireTeamMember } from "~/types/profile"
+import styles from "~/styles/pages/inpsect.module.css"
 import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/weapons"
 import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
 import { useBungieClient } from "../app/TokenManager"
-import { useMemo } from "react"
+import { ReactNode, useEffect, useMemo } from "react"
+import { InpsectionMemberData } from "~/types/profile"
+import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
+import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
+import Loader from "../reusable/Loader"
 
-export default function FireteamMember({
+export default function Player({
     member,
-    remove
+    remove,
+    addMembers
 }: {
-    member: FireTeamMember
+    member: InpsectionMemberData
     remove: () => void
+    addMembers: (members: InpsectionMemberData[]) => void
 }) {
     const bungie = useBungieClient()
-    const { data, isLoading } = bungie.profile.useQuery(
+    const { data: linkedProfiles } = bungie.linkedProfiles.useQuery(member, {
+        staleTime: Infinity
+    })
+    const primaryProfile = useMemo(
+        () => linkedProfiles?.profiles.find(isPrimaryCrossSave),
+        [linkedProfiles]
+    )
+
+    return primaryProfile ? (
+        <ResolvedPlayer primaryProfile={primaryProfile} member={member} addMembers={addMembers}>
+            <button className={styles["remove-btn"]} onClick={remove}>
+                X
+            </button>
+        </ResolvedPlayer>
+    ) : (
+        <Loading wrapperClass={styles["player"]} />
+    )
+}
+
+function ResolvedPlayer({
+    primaryProfile,
+    member,
+    addMembers,
+    children
+}: {
+    primaryProfile: DestinyProfileUserInfoCard
+    member: InpsectionMemberData
+    addMembers: (members: InpsectionMemberData[]) => void
+    children: ReactNode
+}) {
+    const bungie = useBungieClient()
+    const { data, isLoading, isRefetching } = bungie.profile.useQuery(
         {
-            destinyMembershipId: member.destinyMembershipId,
-            membershipType: member.destinyMembershipType
+            membershipType: primaryProfile.membershipType,
+            destinyMembershipId: primaryProfile.membershipId
         },
         {
             refetchOnWindowFocus: true,
             staleTime: 20000
         }
     )
+
+    useEffect(() => {
+        if (member.isFireteamIncluded && data?.profileTransitoryData.data?.partyMembers) {
+            addMembers(
+                data.profileTransitoryData.data.partyMembers.map(pm => ({
+                    membershipId: pm.membershipId,
+                    isFireteamIncluded: false
+                }))
+            )
+        }
+    }, [addMembers, data, member.isFireteamIncluded])
 
     const mostRecentCharacterId = useMemo(
         () =>
@@ -57,11 +104,14 @@ export default function FireteamMember({
     if (isLoading) return <Loading wrapperClass={styles["player"]} />
     return data ? (
         <div className={styles["player"]}>
-            <button className={styles["remove-btn"]} onClick={remove}>
-                X
-            </button>
             {data.profile.data && data.characters.data && (
                 <PlayerHeader profile={data.profile.data} characters={data.characters.data} />
+            )}
+            {children}
+            {isRefetching && (
+                <div className={styles["loader-container"]}>
+                    <Loader />
+                </div>
             )}
             {sockets && (
                 <div className={styles["items"]}>
@@ -104,7 +154,5 @@ export default function FireteamMember({
                 </div>
             )}
         </div>
-    ) : (
-        <></>
-    )
+    ) : null
 }

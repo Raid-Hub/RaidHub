@@ -1,8 +1,7 @@
 import { BungieClientProtocol } from "bungie-net-core"
-import { getDestinyInventoryItems } from "../../services/bungie/getDestinyInventoryItems"
 import { Hashed, indexDB } from "../dexie"
 import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
-import { DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
 
 export type RGBA = {
@@ -44,13 +43,38 @@ export async function updateCachedManifest({
     language: DestinyManifestLanguage
 }) {
     await Promise.all([
-        getDestinyInventoryItems({
-            manifest,
-            language,
-            client
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyInventoryItemDefinition",
+            language: language
         }).then(items =>
             indexDB.transaction("rw", indexDB.items, () =>
                 indexDB.items.bulkPut(Object.values(items))
+            )
+        ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyActivityDefinition",
+            language: language
+        })
+            .then(x => {
+                console.log(x)
+                return x
+            })
+            .then(items =>
+                indexDB.transaction("rw", indexDB.activities, () =>
+                    indexDB.activities.bulkPut(Object.values(items))
+                )
+            ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyActivityModeDefinition",
+            language: language
+        }).then(items =>
+            indexDB.transaction("rw", indexDB.activityModes, () =>
+                indexDB.activityModes.bulkPut(Object.values(items))
             )
         ),
 

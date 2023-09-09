@@ -1,11 +1,10 @@
 import { useSearch } from "~/hooks/bungie/useSearch"
-import styles from "~/styles/pages/fireteam.module.css"
+import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
 import { Question_Mark } from "~/images/icons"
 import { useEffect, useRef, useState } from "react"
-import { Member } from "~/pages/fireteam"
 
-export default function Search({ addMember }: { addMember: (member: Member) => void }) {
+export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
 
     const {
@@ -20,10 +19,7 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
         onSuccessfulExactSearch: userInfo => {
             if (userInfo) {
                 setIsShowingResults(false)
-                addMember({
-                    destinyMembershipId: userInfo.membershipId,
-                    destinyMembershipType: userInfo.membershipType
-                })
+                addMember(userInfo.membershipId)
             }
         }
     })
@@ -34,7 +30,7 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
     useEffect(() => {
         if (isShowingResults) {
             const handleClickOutside = (e: MouseEvent) => {
-                if (!ref.current?.contains(e.target as Node)) {
+                if (!ref.current?.parentNode?.contains(e.target as Node)) {
                     setIsShowingResults(false)
                 }
             }
@@ -79,10 +75,7 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
                             key={idx}
                             className={styles["search-result"]}
                             onClick={() => {
-                                addMember({
-                                    destinyMembershipId: membershipId,
-                                    destinyMembershipType: membershipType
-                                })
+                                addMember(membershipId)
                                 setIsShowingResults(false)
                             }}>
                             <Image width={45} height={45} alt={name} src={Question_Mark} />

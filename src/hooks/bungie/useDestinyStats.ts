@@ -3,20 +3,20 @@ import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStats } from "../../services/bungie/getDestinyStats"
-import { ProfileDetails } from "../../types/profile"
+import { ProfileDetail } from "../../types/profile"
 import { useQuery } from "@tanstack/react-query"
 
 export const useDestinyStats = ({
     destinyMemberships,
     errorHandler
 }: {
-    destinyMemberships: ProfileDetails[] | null
+    destinyMemberships: ProfileDetail[] | null
     errorHandler: ErrorHandler
 }) => {
     const client = useBungieClient()
 
     const fetchData = useCallback(
-        async (arr: ProfileDetails[]) => {
+        async (arr: ProfileDetail[]) => {
             const profileStats = await Promise.all(
                 arr.map(
                     async ({ destinyMembershipId, membershipType }) =>

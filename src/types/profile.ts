@@ -23,7 +23,7 @@ export type InitialProfileProps = {
     destinyMembershipType: BungieMembershipType
 }
 export type Clan = GroupV2 & { clanBanner: ClanBannerData | null }
-export type ProfileDetails = { destinyMembershipId: string; membershipType: BungieMembershipType }
+export type ProfileDetail = { destinyMembershipId: string; membershipType: BungieMembershipType }
 export type MembershipWithCharacters = {
     destinyMembershipId: string
     membershipType: BungieMembershipType
@@ -142,8 +142,4 @@ export interface ActivityFilter {
 }
 
 export type zModifiableProfile = Partial<z.infer<typeof zModifiableProfile>>
-
-export type FireTeamMember = {
-    destinyMembershipId: string
-    destinyMembershipType: BungieMembershipType
-}
+export type InpsectionMemberData = { membershipId: string; isFireteamIncluded: boolean }

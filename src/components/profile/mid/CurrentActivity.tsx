@@ -1,73 +1,56 @@
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { useEffect, useMemo, useState } from "react"
 import { secondsToHMS } from "../../../util/presentation/formatting"
-import { raidTupleFromHash, raidVersion } from "../../../util/destiny/raid"
 import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
-import { useProfileTransitory } from "../../../hooks/bungie/useProfileTransitory"
-import { BungieMembershipType } from "bungie-net-core/models"
+import {
+    DestinyCharacterActivitiesComponent,
+    DestinyProfileTransitoryComponent,
+    DestinyProfileTransitoryPartyMember
+} from "bungie-net-core/models"
+import { useBungieClient } from "~/components/app/TokenManager"
+import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
+import { useActivity, useActivityMode } from "~/components/app/DestinyManifestManager"
 
 type CurrentActivityParams = {
-    destinyMembershipId: string
-    destinyMembershipType: BungieMembershipType
+    transitoryComponent: DestinyProfileTransitoryComponent
+    activitiesComponent: DestinyCharacterActivitiesComponent
+    profileUpdatedAt: number
 }
 
-const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: CurrentActivityParams) => {
-    const { strings } = useLocale()
-    const {
-        profile,
-        isLoading,
-        lastRefresh: lastTransitoryRefresh
-    } = useProfileTransitory({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler: console.error
-    })
+const CurrentActivity = ({
+    transitoryComponent,
+    activitiesComponent,
+    profileUpdatedAt
+}: CurrentActivityParams) => {
+    const bungie = useBungieClient()
 
-    const raidTuple = useMemo(() => {
-        try {
-            return raidTupleFromHash(profile?.activityDefinition.hash?.toString() ?? "")
-        } catch {
-            return null
-        }
-    }, [profile?.activityDefinition.hash])
+    const { strings } = useLocale()
+
+    const { data: activity } = useActivity(activitiesComponent.currentActivityHash)
+
+    const { data: activityMode } = useActivityMode(activitiesComponent.currentActivityModeHash)
 
     const activityName = useMemo(() => {
-        if (profile?.activityDefinition.orbit) {
+        const activityName = activity?.displayProperties.name
+        const activityModeName = activityMode?.displayProperties.name
+        if (activity?.hash === 82913930) {
             return "Orbit"
-        } else if (raidTuple && profile?.transitory.currentActivity.startTime) {
-            return (
-                raidVersion(
-                    raidTuple,
-                    new Date(profile.transitory.currentActivity.startTime),
-                    new Date(),
-                    strings,
-                    false
-                ) +
-                " " +
-                strings.raidNames[raidTuple[0]]
-            )
-        } else if (profile?.activityDefinition && profile.activityModeDefinition) {
-            return (
-                profile.activityModeDefinition.displayProperties.name +
-                ": " +
-                profile.activityDefinition.displayProperties.name
-            )
-        } else if (profile?.activityDefinition) {
-            return profile?.activityDefinition.displayProperties.name
+        } else if (activityName && activityModeName) {
+            return activityModeName + ": " + activityName
+        } else if (activityName) {
+            return activityName
         } else {
             return null
         }
-    }, [profile, raidTuple, strings])
+    }, [activity, activityMode])
 
-    return profile ? (
+    return transitoryComponent ? (
         <Link
             href={{
-                pathname: "/fireteam",
+                pathname: "/inspect",
                 query: {
-                    members: profile.partyMembers
-                        .map(pm => pm.membershipType + "+" + pm.membershipId)
-                        .join(", ")
+                    members: transitoryComponent.partyMembers.map(pm => pm.membershipId).join(", ")
                 }
             }}
             className={styles["current-activity"]}>
@@ -78,28 +61,17 @@ const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: Current
             <div>
                 <span className={styles["current-activity-label"]}>{strings.fireteam}</span>
                 <div className={styles["fireteam-members"]}>
-                    {profile.partyMembers.map(
-                        ({
-                            bungieGlobalDisplayName,
-                            displayName,
-                            membershipId,
-                            membershipType
-                        }) => (
-                            <Link
-                                href={`/profile/${membershipType}/${membershipId}`}
-                                key={membershipId}>
-                                {bungieGlobalDisplayName ?? displayName}
-                            </Link>
-                        )
-                    )}
+                    {transitoryComponent.partyMembers.map(pm => (
+                        <PartyMember key={pm.membershipId} {...pm} />
+                    ))}
                 </div>
             </div>
-            {profile.transitory.currentActivity.startTime && (
+            {transitoryComponent.currentActivity.startTime && (
                 <div className={styles["timer-container"]}>
                     <span className={styles["current-activity-label"]}>{strings.elapsedTime}</span>
                     <Timer
-                        lastRefresh={lastTransitoryRefresh}
-                        startTime={new Date(profile.transitory.currentActivity.startTime)}
+                        lastRefresh={profileUpdatedAt}
+                        startTime={new Date(transitoryComponent.currentActivity.startTime)}
                     />
                 </div>
             )}
@@ -107,7 +79,21 @@ const CurrentActivity = ({ destinyMembershipId, destinyMembershipType }: Current
     ) : null
 }
 
-function Timer({ lastRefresh, startTime }: { lastRefresh: Date; startTime: Date }) {
+function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {
+    const bungie = useBungieClient()
+    const { data } = bungie.linkedProfiles.useQuery({ membershipId }, { staleTime: Infinity })
+    const primaryProfile = data ? data.profiles.find(isPrimaryCrossSave)! : null
+
+    return primaryProfile ? (
+        <Link href={`/profile/${primaryProfile.membershipType}/${primaryProfile.membershipId}`}>
+            {primaryProfile.bungieGlobalDisplayName ?? primaryProfile.displayName}
+        </Link>
+    ) : (
+        <span>{membershipId}</span>
+    )
+}
+
+function Timer({ lastRefresh, startTime }: { lastRefresh: number; startTime: Date }) {
     const [seconds, setSeconds] = useState(0)
 
     useEffect(() => {
@@ -122,7 +108,7 @@ function Timer({ lastRefresh, startTime }: { lastRefresh: Date; startTime: Date 
     }, [lastRefresh])
 
     const secondsSinceStart = useMemo(
-        () => Math.round((lastRefresh.getTime() - startTime.getTime()) / 1000),
+        () => Math.round((lastRefresh - startTime.getTime()) / 1000),
         [lastRefresh, startTime]
     )
 

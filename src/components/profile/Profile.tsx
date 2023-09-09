@@ -5,10 +5,9 @@ import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
 import PinnedActivity from "./mid/PinnedActivity"
 import { trpc } from "~/util/trpc"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useDestinyStats } from "~/hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "~/hooks/bungie/useCharacterStats"
-import { useBungieMemberships } from "~/hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "~/hooks/raidreport/useRaidReportData"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useActivityFilters } from "~/hooks/util/useActivityFilters"
@@ -33,32 +32,47 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             destinyMembershipId
         })
 
-    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
-        bungie.profile.useQuery(
-            {
-                destinyMembershipId,
-                membershipType: destinyMembershipType
-            },
-            { staleTime: 5 * 60000 }
-        )
+    const {
+        data: primaryDestinyProfile,
+        isLoading: isLoadingDestinyProfile,
+        dataUpdatedAt: profileUpdatedAt
+    } = bungie.profile.useQuery(
+        {
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        },
+        { staleTime: 5 * 60000 }
+    )
 
-    const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler
-    })
+    const { data: membershipsData, isLoading: isLoadingMemberships } =
+        bungie.linkedProfiles.useQuery({
+            membershipId: destinyMembershipId
+        })
 
+    // todo remove
+    const destinyMemberships = useMemo(
+        () =>
+            membershipsData?.profiles.map(p => ({
+                destinyMembershipId: p.membershipId,
+                membershipType: p.membershipType
+            })) ?? null,
+        [membershipsData]
+    )
+
+    // todo update hook
     const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
-        destinyMembershipIds: membershipsData?.destinyMemberships ?? null,
+        destinyMembershipIds: destinyMemberships,
         primaryMembershipId: destinyMembershipId,
         errorHandler
     })
 
+    // todo update hook
     const { data: destinyStats, isLoading: isLoadingDestinyStats } = useDestinyStats({
-        destinyMemberships: membershipsData?.destinyMemberships ?? null,
+        destinyMemberships,
         errorHandler
     })
 
+    // todo update hook
     const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         characterMemberships: destinyStats?.characterMemberships ?? null,
         errorHandler
@@ -95,9 +109,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         isLoadingDestinyProfile || isLoadingRaidHubProfile || isLoadingMemberships
                     }
                     userInfo={
-                        membershipsData?.bungieMembership
+                        membershipsData?.bnetMembership
                             ? {
-                                  ...membershipsData.bungieMembership,
+                                  ...membershipsData.bnetMembership,
                                   ...primaryDestinyProfile?.profile.data?.userInfo
                               }
                             : undefined
@@ -121,10 +135,20 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             </section>
 
             <section className={styles["mid"]}>
-                <CurrentActivity
-                    destinyMembershipId={destinyMembershipId}
-                    destinyMembershipType={destinyMembershipType}
-                />
+                {primaryDestinyProfile?.characterActivities.data &&
+                    primaryDestinyProfile.profileTransitoryData.data && (
+                        <CurrentActivity
+                            profileUpdatedAt={profileUpdatedAt}
+                            transitoryComponent={primaryDestinyProfile.profileTransitoryData.data}
+                            activitiesComponent={
+                                Object.values(primaryDestinyProfile.characterActivities.data).sort(
+                                    (a, b) =>
+                                        new Date(b.dateActivityStarted).getTime() -
+                                        new Date(a.dateActivityStarted).getTime()
+                                )[0]
+                            }
+                        />
+                    )}
                 {pinnedActivity ? (
                     <PinnedActivity
                         activityId={pinnedActivity}
