@@ -65,7 +65,7 @@ export const useSearch = ({
                 setIsPerformingExactSearch(false)
             }
         },
-        [client, router]
+        [client]
     )
 
     const fetchUsers = useCallback(async () => {

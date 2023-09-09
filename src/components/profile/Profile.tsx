@@ -8,7 +8,6 @@ import { trpc } from "~/util/trpc"
 import { useState } from "react"
 import { useDestinyStats } from "~/hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "~/hooks/bungie/useCharacterStats"
-import { useDestinyProfile } from "~/hooks/bungie/useDestinyProfile"
 import { useBungieMemberships } from "~/hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "~/hooks/raidreport/useRaidReportData"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
@@ -20,23 +19,28 @@ import { InitialProfileProps } from "~/types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
 import Loading from "../global/Loading"
+import { useBungieClient } from "../app/TokenManager"
 
 type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
+    const bungie = useBungieClient()
     // DATA HOOKS
     const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } =
         trpc.profile.getProfile.useQuery({
             destinyMembershipId
         })
 
-    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } = useDestinyProfile({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler
-    })
+    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } =
+        bungie.profile.useQuery(
+            {
+                destinyMembershipId,
+                membershipType: destinyMembershipType
+            },
+            { staleTime: 5 * 60000 }
+        )
 
     const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
         destinyMembershipId,
@@ -77,8 +81,8 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
     const [activeFilter, setActiveFilter, isLoadingFilters] = useActivityFilters()
 
     const name =
-        primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
-        primaryDestinyProfile?.userInfo.displayName
+        primaryDestinyProfile?.profile.data?.userInfo.bungieGlobalDisplayName ??
+        primaryDestinyProfile?.profile.data?.userInfo.displayName
 
     return (
         <main className={styles["main"]}>
@@ -94,13 +98,14 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         membershipsData?.bungieMembership
                             ? {
                                   ...membershipsData.bungieMembership,
-                                  ...primaryDestinyProfile?.userInfo
+                                  ...primaryDestinyProfile?.profile.data?.userInfo
                               }
                             : undefined
                     }
                     raidHubProfile={raidHubProfile ?? null}
                     emblemBackgroundPathSrc={`https://www.bungie.net/${
-                        primaryDestinyProfile?.emblemBackgroundPath ??
+                        Object.values(primaryDestinyProfile?.characters.data ?? {})[0]
+                            ?.emblemBackgroundPath ??
                         "common/destiny2_content/icons/2644a073545e566485629b95989b5f83.jpg"
                     }`}
                 />
@@ -142,7 +147,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             <section className={styles["raids"]}>
                 <Raids
                     membershipId={destinyMembershipId}
-                    characterMemberships={destinyStats?.characterMemberships ?? null}
+                    characterMemberships={destinyStats?.characterMemberships ?? []}
                     layout={layout}
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={characterStats ?? null}

@@ -1,5 +1,4 @@
 import styles from "../../../styles/pages/profile/clan.module.css"
-import { useClan } from "../../../hooks/bungie/useClan"
 import Loading from "../../global/Loading"
 import ClanBanner from "../../reusable/ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
@@ -7,6 +6,7 @@ import { BungieMembershipType } from "bungie-net-core/models"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 import Link from "next/link"
+import { useBungieClient } from "~/components/app/TokenManager"
 
 type ClanCardProps = {
     membershipId: string
@@ -14,14 +14,13 @@ type ClanCardProps = {
 }
 
 const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
+    const bungie = useBungieClient()
+
     const {
         data: clan,
         isLoading,
         error
-    } = useClan({
-        membershipId,
-        membershipType
-    })
+    } = bungie.clan.byMember.useQuery({ membershipId, membershipType }, { staleTime: 10 * 60000 })
 
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />

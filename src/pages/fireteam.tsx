@@ -41,10 +41,9 @@ const FireteamPage: NextPage<{}> = () => {
         })
     }
 
-    function addMember(member: Member) {
+    function addMembers(members: Member[]) {
         setMembers(old => {
-            if (old.find(o => o.destinyMembershipId === member.destinyMembershipId)) return old
-            const newMembers = [member, ...old]
+            const newMembers = Array.from(new Set([...members, ...old]))
             updateRouter(newMembers)
             return newMembers
         })
@@ -66,7 +65,7 @@ const FireteamPage: NextPage<{}> = () => {
 
     return (
         <main className={styles["main"]}>
-            <FireteamHeader addMember={addMember} />
+            <FireteamHeader addMembers={addMembers} />
             <div className={styles["players"]}>
                 {members?.map((member, idx) => (
                     <FireteamMember key={idx} member={member} remove={() => removeMember(member)} />

@@ -1,5 +1,4 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { useActivityHistory } from "../../../hooks/bungie/useActivityHistory"
 import { ListedRaids, Raid } from "../../../types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
@@ -9,10 +8,11 @@ import RaidReportDataCollection from "../../../models/profile/data/RaidReportDat
 
 import RecentRaids from "./RecentRaids"
 import { Layout } from "../mid/LayoutToggle"
+import { useBungieClient } from "~/components/app/TokenManager"
 
 type RaidsProps = {
     membershipId: string
-    characterMemberships: MembershipWithCharacters[] | null
+    characterMemberships: MembershipWithCharacters[]
     layout: Layout
     filter: FilterCallback<ExtendedActivity>
     raidMetrics: AllRaidStats | null
@@ -37,10 +37,11 @@ const Raids = ({
     setMostRecentActivity,
     errorHandler
 }: RaidsProps) => {
-    const { data, isLoading: isLoadingActivities } = useActivityHistory({
+    const bungie = useBungieClient()
+    const { data, isLoading: isLoadingActivities } = bungie.activityHistory.useQuery(
         characterMemberships,
-        errorHandler
-    })
+        { staleTime: 60_000, enabled: !!characterMemberships.length }
+    )
 
     useEffect(() => {
         if (data?.allActivities) {

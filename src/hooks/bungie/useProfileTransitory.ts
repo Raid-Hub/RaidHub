@@ -82,10 +82,7 @@ export const useProfileTransitory = ({
     })
 
     const transitoryPartyMembersQuery = useQuery({
-        queryKey: [
-            "profileTransitoryPartyMembers",
-            transitoryQuery.data?.current.currentActivityModeHash
-        ],
+        queryKey: ["profileTransitoryPartyMembers", transitoryQuery.data?.data.partyMembers],
         onError: e => CustomError.handle(errorHandler, e, ErrorCode.Transitory),
         queryFn: async () =>
             transitoryQuery.data
@@ -95,7 +92,7 @@ export const useProfileTransitory = ({
                       )
                   )
                 : null,
-        staleTime: Infinity
+        staleTime: 120000
     })
 
     return {

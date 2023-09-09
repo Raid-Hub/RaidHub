@@ -3,11 +3,11 @@ import Loading from "../../global/Loading"
 import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { ErrorHandler } from "../../../types/generic"
-import { useActivity } from "../../../hooks/bungie/useActivity"
 import { useLocale } from "../../app/LocaleManager"
 import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
+import { useBungieClient } from "~/components/app/TokenManager"
 
 type PinnedActivityProps = {
     activityId: string
@@ -24,7 +24,11 @@ const PinnedActivity = ({
     isLoadingActivities,
     isLoadingRaidHubProfile
 }: PinnedActivityProps) => {
-    const { data: pgcr, isLoading: isLoadingPGCR } = useActivity({ activityId, errorHandler })
+    const bungie = useBungieClient()
+    const { data: pgcr, isLoading: isLoadingPGCR } = bungie.pgcr.useQuery(
+        { activityId },
+        { staleTime: Infinity }
+    )
     const { locale, strings } = useLocale()
 
     return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (

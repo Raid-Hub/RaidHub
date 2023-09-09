@@ -1,10 +1,11 @@
 import styles from "~/styles/pages/fireteam.module.css"
-import { useLiveData } from "~/hooks/bungie/useLiveData"
 import { FireTeamMember } from "~/types/profile"
 import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/weapons"
 import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
+import { useBungieClient } from "../app/TokenManager"
+import { useMemo } from "react"
 
 export default function FireteamMember({
     member,
@@ -13,8 +14,34 @@ export default function FireteamMember({
     member: FireTeamMember
     remove: () => void
 }) {
-    const { data, isLoading } = useLiveData(member)
-    const items = data?.characterEquipment.data?.[data.mostRecentCharacterId].items
+    const bungie = useBungieClient()
+    const { data, isLoading } = bungie.profile.useQuery(
+        {
+            destinyMembershipId: member.destinyMembershipId,
+            membershipType: member.destinyMembershipType
+        },
+        {
+            refetchOnWindowFocus: true,
+            staleTime: 20000
+        }
+    )
+
+    const mostRecentCharacterId = useMemo(
+        () =>
+            data?.characters.data
+                ? Object.values(data.characters.data).reduce((base, current) =>
+                      new Date(current.dateLastPlayed).getTime() >
+                      new Date(base.dateLastPlayed).getTime()
+                          ? current
+                          : base
+                  ).characterId
+                : null,
+        [data]
+    )
+
+    const items = mostRecentCharacterId
+        ? data?.characterEquipment.data?.[mostRecentCharacterId].items
+        : undefined
     const sockets = data?.itemComponents.sockets.data
 
     const kinetic = findWeaponInBucket(items ?? [], "kinetic")
