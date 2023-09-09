@@ -8,6 +8,7 @@ import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
 import { useRouter } from "next/router"
 import { isPrimaryCrossSave } from "../../util/destiny/crossSave"
+import { UserInfoCard } from "bungie-net-core/models"
 
 const DEBOUNCE = 250
 
@@ -16,7 +17,7 @@ export const useSearch = ({
     onSuccessfulExactSearch
 }: {
     errorHandler: ErrorHandler
-    onSuccessfulExactSearch(): void
+    onSuccessfulExactSearch(userInfo: UserInfoCard): void
 }): {
     enteredText: string
     results: (CustomBungieSearchResult & { name: string })[]
@@ -46,21 +47,16 @@ export const useSearch = ({
     }, [])
 
     const doExactSearch = useCallback(
-        async (query: string): Promise<void> => {
+        async (query: string) => {
             setIsPerformingExactSearch(true)
 
             try {
                 const bungieName = BungieName.parse(query)
-                const { membershipType, membershipId } = await searchForBungieName({
+                return searchForBungieName({
                     displayName: bungieName.name,
                     displayNameCode: bungieName.code,
                     client
                 })
-
-                router.push(
-                    "/profile/[platform]/[membershipId]",
-                    `/profile/${membershipType}/${membershipId}`
-                )
             } catch (e: any) {
                 if (e.ErrorCode !== 217) {
                     throw e
@@ -153,10 +149,13 @@ export const useSearch = ({
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault()
             try {
-                await doExactSearch(enteredText)
+                const found = await doExactSearch(enteredText)
 
-                clearQuery()
-                onSuccessfulExactSearch()
+                if (found) {
+                    clearQuery()
+                    onSuccessfulExactSearch(found)
+                    setResults([])
+                }
             } catch (e: any) {
                 nextQuery.current = enteredText
                 setActiveQuery(enteredText)

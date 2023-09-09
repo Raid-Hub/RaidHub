@@ -13,7 +13,8 @@ export default function PlayerItem({
     item: DestinyItemComponent
     sockets: DestinyItemSocketState[]
 }) {
-    const { data } = useItem(item.itemHash)
+    const { data, isLoading } = useItem(item.itemHash)
+
     return data ? (
         <div className={styles["item"]} data-item-hash={item.itemHash}>
             <div className={styles["item-main"]}>

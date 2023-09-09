@@ -44,7 +44,7 @@ const FireteamPage: NextPage<{}> = () => {
     function addMember(member: Member) {
         setMembers(old => {
             if (old.find(o => o.destinyMembershipId === member.destinyMembershipId)) return old
-            const newMembers = [...old, member]
+            const newMembers = [member, ...old]
             updateRouter(newMembers)
             return newMembers
         })

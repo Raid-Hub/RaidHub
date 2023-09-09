@@ -48,9 +48,7 @@ export async function updateCachedManifest({
             manifest,
             language,
             client
-        }).then(items =>
-            indexDB.items.clear().then(() => indexDB.items.bulkPut(Object.values(items)))
-        ),
+        }).then(items => indexDB.items.bulkPut(Object.values(items))),
 
         getClanBannerSource(client)
             .then(res => res.Response as RawClanBannerData)
@@ -68,17 +66,12 @@ export async function updateCachedManifest({
                             : { hash: Number(hash), ...def }
                     )
 
-                const clearAndPut = async <K extends keyof RawClanBannerData>(key: K) => {
-                    indexDB[key]
-                        .clear()
-                        .catch(e => {})
-                        .then(() => {
-                            // @ts-expect-error
-                            indexDB[key].bulkPut(hash(key))
-                        })
-                }
                 return Promise.all(
-                    Object.keys(banners).map(table => clearAndPut(table as keyof RawClanBannerData))
+                    (Object.keys(banners) as (keyof RawClanBannerData)[]).map(key =>
+                        indexDB[key]
+                            // @ts-expect-error
+                            .bulkPut(hash(key))
+                    )
                 )
             })
     ])

@@ -17,7 +17,15 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
         clearQuery
     } = useSearch({
         errorHandler: console.error, // todo
-        onSuccessfulExactSearch: () => {}
+        onSuccessfulExactSearch: userInfo => {
+            if (userInfo) {
+                setIsShowingResults(false)
+                addMember({
+                    destinyMembershipId: userInfo.membershipId,
+                    destinyMembershipType: userInfo.membershipType
+                })
+            }
+        }
     })
 
     const [isShowingResults, setIsShowingResults] = useState(false)
@@ -65,7 +73,7 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
                 />
             </form>
             {isShowingResults && (
-                <div className={styles["search-results"]}>
+                <ol className={styles["search-results"]}>
                     {results.map(({ name, membershipId, membershipType }, idx) => (
                         <li
                             key={idx}
@@ -75,15 +83,13 @@ export default function Search({ addMember }: { addMember: (member: Member) => v
                                     destinyMembershipId: membershipId,
                                     destinyMembershipType: membershipType
                                 })
-                                clearQuery()
+                                setIsShowingResults(false)
                             }}>
-                            <div>
-                                <Image width={45} height={45} alt={name} src={Question_Mark} />
-                                <p>{name}</p>
-                            </div>
+                            <Image width={45} height={45} alt={name} src={Question_Mark} />
+                            <p>{name}</p>
                         </li>
                     ))}
-                </div>
+                </ol>
             )}
         </div>
     )

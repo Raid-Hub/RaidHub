@@ -5,25 +5,43 @@
 }
 .header {
 }
+.search-container {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+}
 .search {
     position: relative;
 }
 
 .search-results {
+    list-style: none;
+    padding-inline-start: 0;
+    margin-block: 0;
+
     z-index: 5;
     background-color: var(--modal-background-opaque);
     position: absolute;
 
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
     display: flex;
     flex-wrap: wrap;
-    gap: 1em;
 }
 
 .search-result {
+    flex: 1;
     padding: 1em;
+    max-width: 250px;
 
     transition: background-color 0.1s ease-out;
     cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    align-items: center;
 }
 
 .search-result:hover {
@@ -34,25 +52,45 @@
     min-width: 200px;
     background-color: aquamarine;
 }
-
 .players {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 0.5fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2em;
 }
 
 .player {
     min-height: 40vh;
     position: relative;
-    padding: 2em;
-    padding-top: 0;
     background-color: var(--modal-background);
     border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.player-header {
+    width: 100%;
+    aspect-ratio: 474/96;
+
+    position: relative;
+}
+.player-header h3 {
+    position: absolute;
+    z-index: 3;
+    left: 21%;
+
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+
+    background-color: var(--modal-background);
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .remove-btn {
     position: absolute;
+    z-index: 2;
     top: 0;
     right: 0;
 
@@ -75,17 +113,22 @@
     max-width: 100%;
     display: grid;
     gap: 2em;
+
+    padding: 1.5em;
 }
 
 .item {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    min-height: 60px;
 }
 
 .item-main {
     display: flex;
     flex-direction: row;
     gap: 1em;
-
-    margin-bottom: 1em;
 }
 
 .item-icon {

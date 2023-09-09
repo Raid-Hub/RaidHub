@@ -7,17 +7,19 @@ import { animate, AnimationSequence } from "framer-motion"
 import { useTypewriter } from "react-simple-typewriter"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
 import Link from "next/link"
+import { useRouter } from "next/router"
 
 type SearchModalProps = {}
 
 const SearchModal = ({}: SearchModalProps) => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)
-
     const [showingResults, setShowingResults] = useState(false)
 
     const containerDiv = useRef<HTMLDivElement>(null)
     const backgroundDiv = useRef<HTMLDivElement>(null)
     const animateModal = useRef<HTMLDivElement>(null)
+
+    const router = useRouter()
 
     const animateModalIn = () => {
         setShowingResults(true)
@@ -48,7 +50,13 @@ const SearchModal = ({}: SearchModalProps) => {
         clearQuery
     } = useSearch({
         errorHandler: console.error, // todo
-        onSuccessfulExactSearch: animateModalOut
+        onSuccessfulExactSearch: userInfo => {
+            animateModalOut()
+            router.push(
+                "/profile/[destinyMembershipType]/[destinyMembershipId]",
+                `/profile/${userInfo.membershipType}/${userInfo.membershipId}`
+            )
+        }
     })
 
     const handleK = useCallback(async () => {

@@ -22,7 +22,7 @@ class CustomDexie extends Dexie implements Record<keyof RawClanBannerData, Table
 
     constructor() {
         super("app")
-        this.version(1).stores({
+        this.version(2).stores({
             items: "hash",
             clanBannerDecalPrimaryColors: "hash",
             clanBannerDecalSecondaryColors: "hash",

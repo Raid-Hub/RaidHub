@@ -4,6 +4,7 @@ import { FireTeamMember } from "~/types/profile"
 import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/weapons"
 import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
+import PlayerHeader from "./PlayerHeader"
 
 export default function FireteamMember({
     member,
@@ -32,7 +33,9 @@ export default function FireteamMember({
             <button className={styles["remove-btn"]} onClick={remove}>
                 X
             </button>
-            <h2>{data.profile.data?.userInfo.bungieGlobalDisplayName}</h2>
+            {data.profile.data && data.characters.data && (
+                <PlayerHeader profile={data.profile.data} characters={data.characters.data} />
+            )}
             {sockets && (
                 <div className={styles["items"]}>
                     {kinetic?.itemInstanceId && (

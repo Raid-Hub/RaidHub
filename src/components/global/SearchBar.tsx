@@ -26,9 +26,13 @@ const SearchBar = ({}: SearchBarProps) => {
         clearQuery
     } = useSearch({
         errorHandler: console.error /** TODO: Handle search bar errors */,
-        onSuccessfulExactSearch: () => {
+        onSuccessfulExactSearch: userInfo => {
             setIsShowingResults(false)
             setIsRedirecting(true)
+            router.push(
+                "/profile/[destinyMembershipType]/[destinyMembershipId]",
+                `/profile/${userInfo.membershipType}/${userInfo.membershipId}`
+            )
         }
     })
     const [isShowingResults, setIsShowingResults] = useState(false)

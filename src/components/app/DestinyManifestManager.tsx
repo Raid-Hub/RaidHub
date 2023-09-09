@@ -3,13 +3,16 @@ import { updateCachedManifest } from "../../util/destiny/manifest"
 import { useBungieClient } from "./TokenManager"
 import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
-import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { ClanBanner } from "bungie-net-core/models"
-import { resolveClanBanner } from "../../util/destiny/clanBanner"
+import { resolveClanBanner } from "~/util/destiny/clanBanner"
 import { useQuery } from "@tanstack/react-query"
-import { indexDB } from "../../util/dexie"
+import { indexDB } from "~/util/dexie"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
+
+// edit this value if you change anything about the stored values
+const MANIFEST_VERSION_ID = "1"
 
 const DestinyManifestContext = createContext<string>("")
 
@@ -27,7 +30,7 @@ const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
         if (oldVersion) setManifestVersion(oldVersion)
         getDestinyManifest(client)
             .then(async ({ Response: manifest }) => {
-                const currentVersion = manifest.version + "-" + language
+                const currentVersion = [manifest.version, language, MANIFEST_VERSION_ID].join("-")
                 if (oldVersion !== currentVersion) {
                     await updateCachedManifest({ client, manifest, language }).then(() =>
                         localStorage.setItem(KEY_MANIFEST_VERSION, currentVersion)
@@ -66,8 +69,8 @@ export function useItem(hash: number) {
     const manifestVersion = useManifestVersion()
 
     return useQuery({
-        queryKey: ["weapon", hash, manifestVersion],
-        queryFn: () => indexDB.items.get({ hash }),
+        queryKey: ["item", hash, manifestVersion],
+        queryFn: () => indexDB.items.get({ hash }) ?? null,
         staleTime: Infinity
     })
 }
