@@ -1,17 +1,13 @@
 import { useCallback } from "react"
-import { ErrorHandler } from "../../types/generic"
-import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStats } from "../../services/bungie/getDestinyStats"
 import { ProfileDetail } from "../../types/profile"
 import { useQuery } from "@tanstack/react-query"
 
 export const useDestinyStats = ({
-    destinyMemberships,
-    errorHandler
+    destinyMemberships
 }: {
     destinyMemberships: ProfileDetail[] | null
-    errorHandler: ErrorHandler
 }) => {
     const client = useBungieClient()
 
@@ -47,7 +43,6 @@ export const useDestinyStats = ({
 
     return useQuery({
         queryKey: ["profileStats", destinyMemberships],
-        onError: e => CustomError.handle(errorHandler, e, ErrorCode.ProfileStats),
         queryFn: () => (destinyMemberships ? fetchData(destinyMemberships) : null),
         staleTime: 2 * 60000
     })

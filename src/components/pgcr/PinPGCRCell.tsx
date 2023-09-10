@@ -4,16 +4,22 @@ import { useLocale } from "../app/LocaleManager"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import DestinyPGCR from "~/models/pgcr/PGCR"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
+import { trpc } from "~/util/trpc"
 
 const PinPCRCell = () => {
-    const { strings } = useLocale()
-    const { pgcr } = usePGCRContext()
-    const { mutate, data: profile } = useOptimisticProfileUpdate()
+    const { data: pgcr } = usePGCRContext()
+    const { data: profile } = trpc.user.getProfile.useQuery()
+    const { mutate: updateProfile } = useOptimisticProfileUpdate()
 
     const handlePinClick = (pgcr: DestinyPGCR) =>
-        mutate({
-            pinnedActivityId: pgcr.activityDetails.instanceId
+        updateProfile({
+            pinnedActivityId:
+                profile?.pinnedActivityId !== pgcr.activityDetails.instanceId
+                    ? pgcr.activityDetails.instanceId
+                    : null
         })
+
+    const { strings } = useLocale()
 
     return profile && pgcr ? (
         <div>

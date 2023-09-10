@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { CustomBungieSearchResult, ErrorHandler } from "../../types/generic"
+import { ErrorHandler } from "../../types/generic"
 import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { searchForUsername } from "../../services/bungie/searchForUsername"
 import { searchForBungieName } from "../../services/bungie/searchForBungieName"
@@ -9,6 +9,7 @@ import { wait } from "../../util/wait"
 import { useRouter } from "next/router"
 import { isPrimaryCrossSave } from "../../util/destiny/crossSave"
 import { UserInfoCard } from "bungie-net-core/models"
+import { CustomBungieSearchResult } from "~/types/search"
 
 const DEBOUNCE = 250
 
@@ -122,7 +123,7 @@ export const useSearch = ({
     }, [client, activeQuery])
 
     useEffect(() => {
-        error && CustomError.handle(errorHandler, error, ErrorCode.Search)
+        error && errorHandler(CustomError.handle(error, ErrorCode.Search))
     }, [error, errorHandler])
 
     const debounceQuery = useCallback(

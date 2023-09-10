@@ -2,20 +2,10 @@ import {
     QueryObserverOptions,
     RefetchOptions,
     RefetchQueryFilters,
-    UseQueryOptions,
-    UseQueryResult,
     useQuery as tanstackUseQuery
 } from "@tanstack/react-query"
 import BungieClient from "./bungieClient"
 import { v4 } from "uuid"
-
-type UseBungieQuery<TParams, TData, TError = unknown> = (
-    params: TParams,
-    options?: Omit<
-        QueryObserverOptions<TData, TError, TData>,
-        "queryKey" | "queryFn" | "queryHash" | "queryKeyHashFn"
-    >
-) => UseQueryResult<TData, TError>
 
 export type QueryFn<TParams, TData> = (params: TParams) => Promise<TData>
 
@@ -29,13 +19,18 @@ export default class BungieQuery<TParams, TData> {
         this.queryFn = queryFn
     }
 
-    useQuery: UseBungieQuery<TParams, TData> = (params, options) => {
-        const opts: UseQueryOptions<TData, unknown, TData> = {
+    useQuery<TError = unknown>(
+        params: TParams,
+        options?: Omit<
+            QueryObserverOptions<TData, TError, TData>,
+            "queryKey" | "queryFn" | "queryHash" | "queryKeyHashFn"
+        >
+    ) {
+        return tanstackUseQuery<TData, TError>({
             ...options,
             queryFn: () => this.queryFn(params),
             queryKey: [this.queryId, this.client.getToken(), params]
-        }
-        return tanstackUseQuery(opts)
+        })
     }
 
     refetchQueries<TPageData = unknown>(

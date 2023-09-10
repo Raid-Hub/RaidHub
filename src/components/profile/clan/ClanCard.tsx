@@ -42,7 +42,7 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
     ) : error ? (
         <div className={styles["clan"]} style={{ flexDirection: "column", gap: "1em" }}>
             <div>Error Loading Clan</div>
-            <div>{CustomError.handle(e => e.message, error, ErrorCode.Clan)}</div>
+            <div>{CustomError.handle(error, ErrorCode.Clan).message}</div>
         </div>
     ) : null
 }

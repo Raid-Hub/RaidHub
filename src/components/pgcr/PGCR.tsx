@@ -19,7 +19,7 @@ const defaultPrefs = {
 }
 
 const PGCR = () => {
-    const { pgcr } = usePGCRContext()
+    const { data: pgcr } = usePGCRContext()
     const summaryCardRef = createRef<HTMLElement>()
     const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>(
         "pgcr_prefs",

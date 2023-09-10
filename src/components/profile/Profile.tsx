@@ -62,20 +62,17 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
     // todo update hook
     const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
         destinyMembershipIds: destinyMemberships,
-        primaryMembershipId: destinyMembershipId,
-        errorHandler
+        primaryMembershipId: destinyMembershipId
     })
 
     // todo update hook
     const { data: destinyStats, isLoading: isLoadingDestinyStats } = useDestinyStats({
-        destinyMemberships,
-        errorHandler
+        destinyMemberships
     })
 
     // todo update hook
     const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
-        characterMemberships: destinyStats?.characterMemberships ?? null,
-        errorHandler
+        characterMemberships: destinyStats?.characterMemberships ?? null
     })
 
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(

@@ -1,6 +1,4 @@
 import { useCallback } from "react"
-import { ErrorHandler } from "../../types/generic"
-import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { getDestinyStatsForCharacter } from "../../services/bungie/getDestinyStatsForCharacter"
 import { MembershipWithCharacters } from "../../types/profile"
@@ -8,11 +6,9 @@ import RaidStatsCollection from "../../models/profile/data/RaidStatsCollection"
 import { useQuery } from "@tanstack/react-query"
 
 export const useCharacterStats = ({
-    characterMemberships,
-    errorHandler
+    characterMemberships
 }: {
     characterMemberships: MembershipWithCharacters[] | null
-    errorHandler: ErrorHandler
 }) => {
     const client = useBungieClient()
 
@@ -41,7 +37,6 @@ export const useCharacterStats = ({
 
     return useQuery({
         queryKey: ["characterStats", characterMemberships],
-        onError: e => CustomError.handle(errorHandler, e, ErrorCode.CharacterStats),
         queryFn: () => (characterMemberships ? fetchData(characterMemberships) : null),
         staleTime: 2 * 60000 // character stats change often
     })

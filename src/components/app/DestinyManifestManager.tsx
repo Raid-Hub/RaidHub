@@ -34,20 +34,14 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
                 }
                 setManifestVersion(currentVersion)
             })
-            .catch(e =>
-                CustomError.handle(
-                    () =>
-                        console.error(
-                            `Failed to download Destiny 2 manifest: ${e.message} ${
-                                oldVersion
-                                    ? "Using cached version."
-                                    : "No cached version available."
-                            }`
-                        ),
-                    e,
-                    ErrorCode.Manifest
+            .catch(e => {
+                const ce = CustomError.handle(e, ErrorCode.Manifest)
+                console.error(
+                    `Failed to download Destiny 2 manifest: ${ce.message} ${
+                        oldVersion ? "Using cached version." : "No cached version available."
+                    }`
                 )
-            )
+            })
     }, [language, client])
 
     return (

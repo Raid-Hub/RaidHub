@@ -1,12 +1,11 @@
 import styles from "../../styles/pages/pgcr.module.css"
-import { Loading } from "../../types/generic"
 import { toCustomDateString } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import { Raid } from "../../types/raids"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 
 const ActivityHeader = () => {
-    const { pgcr, loadingState } = usePGCRContext()
+    const { data: pgcr, isLoading } = usePGCRContext()
     const { strings, locale } = useLocale()
 
     return (
@@ -15,15 +14,13 @@ const ActivityHeader = () => {
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
-                            {!loadingState && pgcr
+                            {!isLoading
                                 ? toCustomDateString(pgcr.completionDate, locale)
-                                : loadingState === Loading.LOADING
-                                ? "Loading..."
-                                : "Hydrating..."}
+                                : "Loading..."}
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
-                        {loadingState === Loading.LOADING || !pgcr ? (
+                        {isLoading ? (
                             <span>{strings.loading}</span>
                         ) : (
                             <span>{strings.raidNames[pgcr.raid ?? Raid.NA]}</span>

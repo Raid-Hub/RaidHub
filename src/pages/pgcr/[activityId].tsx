@@ -1,30 +1,35 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 import { GetStaticProps, NextPage } from "next"
-import CustomError from "../../models/errors/CustomError"
+import CustomError, { ErrorCode } from "../../models/errors/CustomError"
 import { z } from "zod"
-import { usePGCR } from "../../hooks/bungie/usePGCR"
 import DestinyPGCR from "../../models/pgcr/PGCR"
 import ErrorComponent from "../../components/global/Error"
 import PGCR from "../../components/pgcr/PGCR"
-import { Loading } from "../../types/generic"
+import { useBungieClient } from "~/components/app/TokenManager"
+import { QueryObserverLoadingResult, QueryObserverSuccessResult } from "@tanstack/react-query"
 
-const PgcrContext = createContext<{ pgcr: DestinyPGCR | null | undefined; loadingState: Loading }>({
-    pgcr: undefined,
-    loadingState: Loading.LOADING
-})
+const PgcrContext = createContext<
+    QueryObserverSuccessResult<DestinyPGCR> | QueryObserverLoadingResult<DestinyPGCR> | null
+>(null)
 
-export const usePGCRContext = () => useContext(PgcrContext)
+export const usePGCRContext = () => {
+    const ctx = useContext(PgcrContext)
+    if (!ctx) throw new Error("Cannot access pgcr out of context")
+    return ctx
+}
 
 type PGCRPageProps = {
     activityId: string
 }
 const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
-    const [error, setError] = useState<CustomError | null>(null)
-    const { data: pgcr, loadingState } = usePGCR({ activityId, errorHandler: setError })
+    const bungie = useBungieClient()
+    const query = bungie.pgcr.useQuery({ activityId }, { staleTime: Infinity })
 
-    return (
-        <PgcrContext.Provider value={{ pgcr, loadingState }}>
-            {error ? <ErrorComponent error={error} /> : <PGCR />}
+    return query.isError ? (
+        <ErrorComponent error={CustomError.handle(query.error, ErrorCode.PGCR)} />
+    ) : (
+        <PgcrContext.Provider value={query}>
+            <PGCR />
         </PgcrContext.Provider>
     )
 }
