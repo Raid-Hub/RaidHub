@@ -2,17 +2,17 @@ import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 import BungieQuery, { QueryFn } from "./clientQuery"
-import { getClanForMember } from "./getClanForMember"
 import { getProfile } from "./getProfile"
 import { getPGCR } from "./getPGCR"
 import { getActivityHistory } from "./getActivityHistory"
-import { getClan } from "./getClan"
+import { getClan, getClanForMember, getClanMembers } from "./getClan"
 import { getLinkedProfiles } from "./getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
-    217, //PlatformErrorCodes.UserCannotResolveCentralAccount,
-    5 //PlatformErrorCodes.SystemDisabled
+    217, //PlatformErrorCodes.UserCannotResolveCentralAccount
+    5, //PlatformErrorCodes.SystemDisabled
+    622 //PlatformErrorCodes.GroupNotFound
 ]
 
 export default class BungieClient implements BungieClientProtocol {
@@ -84,7 +84,8 @@ export default class BungieClient implements BungieClientProtocol {
 
     clan = {
         byMember: this.query(getClanForMember),
-        byId: this.query(getClan)
+        byId: this.query(getClan),
+        members: this.query(getClanMembers)
     }
     profile = this.query(getProfile)
     pgcr = this.query(getPGCR)

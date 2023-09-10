@@ -2,15 +2,38 @@ import styles from "~/styles/pages/pgcr.module.css"
 import Head from "next/head"
 import Link from "next/link"
 import { useMemo } from "react"
-import { useClanContext } from "~/pages/clan/[groupId]"
+import { ClanPageProps } from "~/pages/clan/[groupId]"
 import ClanBanner from "../reusable/ClanBanner"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
+import { useBungieClient } from "../app/TokenManager"
+import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import Custom404 from "~/pages/404"
+import Loading from "../global/Loading"
 
-export default function Clan() {
-    const { clan } = useClanContext()
+export default function Clan({ groupId }: ClanPageProps) {
+    const bungie = useBungieClient()
+    const {
+        data: clan,
+        isError,
+        error
+    } = bungie.clan.byId.useQuery(
+        { groupId },
+        { staleTime: 10 * 60000 /*clan does not update very often*/ }
+    )
+    const { data: clanMembers, isLoading: isLoadingClanMembers } = bungie.clan.members.useQuery(
+        { groupId },
+        { staleTime: 5 * 60000 }
+    )
 
     const clanName = useMemo(() => (clan ? fixClanName(clan.detail.name) : null), [clan])
+
+    if (isError) {
+        if (error instanceof BungieAPIError) {
+            error.ErrorCode === 622 // group not found
+            return <Custom404 error={error.Message} />
+        }
+    }
 
     return (
         <>
@@ -31,14 +54,19 @@ export default function Clan() {
 
                         <section>
                             <h2>Members</h2>
-                            {clan.groupMembers.map(member => (
-                                <div key={member.destinyUserInfo.membershipId}>
-                                    <Link
-                                        href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}>
-                                        {member.destinyUserInfo.bungieGlobalDisplayName}
-                                    </Link>
-                                </div>
-                            ))}
+                            {isLoadingClanMembers ? (
+                                <Loading wrapperClass="" />
+                            ) : (
+                                clanMembers &&
+                                clanMembers.map(member => (
+                                    <div key={member.destinyUserInfo.membershipId}>
+                                        <Link
+                                            href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}>
+                                            {member.destinyUserInfo.bungieGlobalDisplayName}
+                                        </Link>
+                                    </div>
+                                ))
+                            )}
                         </section>
 
                         <section>

@@ -58,10 +58,12 @@ const IconUploadForm = ({
     const { strings } = useLocale()
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={styles["form"]}>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className={[styles["form"], styles["glossy-bg"]].join(" ")}>
             <div className={styles["form-element"]}>
                 <div>
-                    <label>Username: </label>
+                    <label>Display Name: </label>
                     <Controller
                         name="username"
                         control={control}

@@ -46,7 +46,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                                 trickle: true,
                                 speed: 700
                             }}
-                            stopDelayMs={100}
+                            stopDelayMs={50}
                             height={3}
                             showOnShallow={false}
                             color={"orange"}

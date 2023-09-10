@@ -1,13 +1,41 @@
-import { getGroup as getBungieGroup, getMembersOfGroup } from "bungie-net-core/endpoints/GroupV2"
+import { getGroup, getGroupsForMember, getMembersOfGroup } from "bungie-net-core/endpoints/GroupV2"
 import BungieClient from "./client"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export const getClan =
     (client: BungieClient) =>
     async ({ groupId }: { groupId: string }) => {
-        const [group, groupMembers] = await Promise.all([
-            getBungieGroup(client, {
-                groupId
-            }),
+        const res = await getGroup(client, {
+            groupId
+        })
+        return res.Response
+    }
+
+export const getClanForMember =
+    (client: BungieClient) =>
+    async ({
+        membershipId,
+        membershipType
+    }: {
+        membershipId: string
+        membershipType: BungieMembershipType
+    }) => {
+        const res = await getGroupsForMember(client, {
+            filter: 0, // GroupsForMemberFilter.All
+            groupType: 1, // GroupType.Clan
+            membershipId,
+            membershipType
+        })
+        const clan = res.Response.results[0]
+        if (!clan) return null
+
+        return clan.group
+    }
+
+export const getClanMembers =
+    (client: BungieClient) =>
+    async ({ groupId }: { groupId: string }) => {
+        const responses = await Promise.all([
             getMembersOfGroup(client, {
                 groupId,
                 currentpage: 1
@@ -16,16 +44,7 @@ export const getClan =
                 groupId,
                 currentpage: 2
             })
-        ]).then(
-            ([groupRes, membersRes, membersRes2]) =>
-                [
-                    groupRes.Response,
-                    [...membersRes.Response.results, ...membersRes2.Response.results]
-                ] as const
-        )
+        ])
 
-        return {
-            ...group,
-            groupMembers
-        }
+        return responses.map(res => res.Response.results).flat()
     }

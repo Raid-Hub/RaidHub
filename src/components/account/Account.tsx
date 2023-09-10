@@ -8,6 +8,7 @@ import Connection from "./Connection"
 import { useMemo, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
+import { Socials } from "~/util/profile/socials"
 
 type AccountProps = {
     session: Session
@@ -44,7 +45,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
         <main>
             <h1>Welcome, {session.user.name}</h1>
             <section className={styles["section"]}>
-                <div className={styles["buttons"]}>
+                <div className={[styles["buttons"], styles["glossy-bg"]].join(" ")}>
                     <Link
                         href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
                         <button>View Profile</button>
@@ -76,6 +77,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             authorizationParams={{ prompt: "consent" }}
                             unlink={() => unlinkAccountFromUser({ providerId: "discord" })}
                             username={socialNames?.discordUsername ?? null}
+                            social={Socials.Discord}
                         />
                     )}
                     {twitterProvider && (
@@ -84,6 +86,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             authorizationParams={{ force_login: "true" }}
                             unlink={() => unlinkAccountFromUser({ providerId: "twitter" })}
                             username={socialNames?.twitterUsername ?? null}
+                            social={Socials.Twitter}
                         />
                     )}
                     {twitchProvider && (
@@ -92,6 +95,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             authorizationParams={{ force_verify: "true" }}
                             unlink={() => unlinkAccountFromUser({ providerId: "twitch" })}
                             username={socialNames?.twitchUsername ?? null}
+                            social={Socials.Twitch}
                         />
                     )}
                 </div>

@@ -9,6 +9,12 @@
     flex-wrap: wrap;
 }
 
+.glossy-bg {
+    border-radius: 10px;
+    padding: 2em;
+    background-color: var(--modal-background);
+}
+
 .buttons button,
 .form button {
     border-radius: 15px;
@@ -37,13 +43,11 @@
 }
 
 .form {
-    border-radius: 10px;
-    padding: 2em;
-    background-color: var(--modal-background);
-
     display: flex;
     flex-direction: row;
     gap: 2em;
+
+    width: max-content;
 
     align-items: center;
 }
@@ -61,17 +65,10 @@
     align-self: center;
 }
 .connections {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 450px));
 
     gap: 2em;
-}
-
-.connection {
-    border-radius: 10px;
-    padding: 2em;
-    background-color: var(--modal-background);
 }
 
 .connection-head {
@@ -80,8 +77,17 @@
     justify-content: flex-start;
 
     gap: 1em;
+    margin-bottom: 1em;
 }
 .connection-head h3 {
     margin: 0;
-    margin-bottom: 1em;
+}
+
+.social-icon-container {
+    margin-left: auto;
+
+    position: relative;
+
+    height: 30px;
+    aspect-ratio: 76/63;
 }
