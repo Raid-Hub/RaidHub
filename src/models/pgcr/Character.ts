@@ -1,17 +1,18 @@
 import {
     DestinyCharacterComponent,
+    DestinyClass,
     DestinyHistoricalStatsValue,
     DestinyPlayer,
     DestinyPostGameCarnageReportEntry,
     DestinyPostGameCarnageReportExtendedData,
     UserInfoCard
 } from "bungie-net-core/models"
-import { CharacterLogos, CharacterName, CharacterType } from "../../util/destiny/characters"
 import { parseWeapons } from "../../util/destiny/weapons"
 import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType } from "bungie-net-core/models"
+import { CharacterLogos } from "~/images/character-logos"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number
@@ -86,12 +87,21 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
         return !!this.values.completed.basic.value
     }
 
-    get className(): string {
-        return this.player.characterClass ?? CharacterName[3]
+    get classType(): DestinyClass {
+        switch (this.player.classHash) {
+            case 3655393761:
+                return 0 // DestinyClass.Titan
+            case 671679327:
+                return 1 // DestinyClass.Hunter
+            case 2271682572:
+                return 2 // DestinyClass.Warlock
+            default:
+                return 3 // DestinyClass.Unknown
+        }
     }
 
     get logo() {
-        return CharacterLogos[CharacterType[this.className ?? ""]]
+        return CharacterLogos[this.classType]
     }
 
     get banner(): number {
@@ -104,7 +114,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
             player: {
                 ...this.player,
                 ...character,
-                characterClass: CharacterName[character?.classType ?? 3],
+                classType: character?.classType ?? 3,
                 destinyUserInfo: {
                     ...this.player.bungieNetUserInfo,
                     ...userInfo

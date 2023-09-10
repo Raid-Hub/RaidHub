@@ -1,9 +1,10 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
-import { bannerEmblemFromCache } from "../../util/destiny/bungie-icons"
+import { bannerEmblem } from "../../util/destiny/bungie-icons"
 import PGCRCharacter from "../../models/pgcr/Character"
 import { useItem } from "../app/DestinyManifestManager"
+import { useLocale } from "../app/LocaleManager"
 
 type SelectedPlayerProps = {
     player: PGCRPlayer
@@ -13,11 +14,14 @@ type SelectedPlayerProps = {
 
 const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => {
     const { data: emblem } = useItem(character?.banner ?? player.banner)
+    const { strings } = useLocale()
 
     const displayName = player.displayName || player.membershipId
     const completionClass = player.didComplete ? "" : styles["dnf"]
 
-    const classString = character?.className ?? player.characters.map(c => c.className).join(" | ")
+    const classString = character?.classType
+        ? strings.characterNames[character.classType]
+        : player.characters.map(c => strings.characterNames[c.classType]).join(" | ")
 
     return (
         <button
@@ -30,7 +34,7 @@ const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => 
             onClick={onClick}>
             <Image
                 unoptimized
-                src={bannerEmblemFromCache(emblem ?? null)}
+                src={bannerEmblem(emblem ?? null)}
                 alt=""
                 fill
                 className={styles["emblem"]}

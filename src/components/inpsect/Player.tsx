@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/inpsect.module.css"
-import { findArmorInBucket, findWeaponInBucket, subclassBucket } from "~/util/destiny/weapons"
+import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
 import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
@@ -9,6 +9,7 @@ import { InpsectionMemberData } from "~/types/profile"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
 import Loader from "../reusable/Loader"
+import { subclassBucket } from "~/data/inventory-item-buckets"
 
 export default function Player({
     member,

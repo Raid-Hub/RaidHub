@@ -2,10 +2,10 @@ import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
 import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
-import { bannerEmblemFromCache } from "../../util/destiny/bungie-icons"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
+import { bannerEmblem } from "~/util/destiny/bungie-icons"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -28,7 +28,7 @@ const PlayerCell = ({
     showScore,
     onClick
 }: PlayerCellProps) => {
-    const { locale } = useLocale()
+    const { locale, strings } = useLocale()
     const dynamicCssClass = player.membershipId === selectedPlayerId ? styles["selected"] : ""
 
     const { data: emblem } = useItem(player.banner)
@@ -49,7 +49,7 @@ const PlayerCell = ({
             {!isLoadingEmblems && emblem ? (
                 <Image
                     unoptimized
-                    src={bannerEmblemFromCache(emblem)}
+                    src={bannerEmblem(emblem)}
                     alt=""
                     fill
                     className={styles["emblem"]}
@@ -63,7 +63,7 @@ const PlayerCell = ({
                 <div className={styles["class-logo-container"]}>
                     <Image
                         src={icon}
-                        alt={player.characters.first()!.className}
+                        alt={strings.characterNames[player.characters.first()!.classType]}
                         sizes="80px"
                         className={styles["class-logo"]}
                     />

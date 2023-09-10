@@ -1,6 +1,6 @@
 import { Hydrate, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
 import { getLeaderboard } from "../../../../../services/speedrun-com/getLeaderboard"
-import { ListedRaid, UrlPathsToRaid } from "../../../../../types/raids"
+import { ListedRaid } from "../../../../../types/raids"
 import Leaderboard, { ENTRIES_PER_PAGE } from "../../../../../components/leaderboards/Leaderboard"
 import { useMemo } from "react"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
@@ -13,6 +13,7 @@ import {
     SpeedrunVariableValues
 } from "../../../../../data/speedrun-com-mappings"
 import { LocalStrings } from "../../../../../util/presentation/localized-strings"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 
 type RTASpeedunLeaderboadProps = {
     raid: ListedRaid

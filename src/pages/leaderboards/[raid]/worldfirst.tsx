@@ -1,13 +1,8 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Leaderboard from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
-import {
-    ListedRaid,
-    RaidToUrlPaths,
-    RaidsWithReprisedContest,
-    UrlPathsToRaid
-} from "../../../types/raids"
-import { ReleaseDate } from "../../../util/destiny/raidUtils"
+import { ListedRaid, RaidsWithReprisedContest } from "../../../types/raids"
+import { RaidToUrlPaths, ReleaseDate, UrlPathsToRaid } from "../../../util/destiny/raidUtils"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { z } from "zod"

@@ -30,7 +30,7 @@ const SelectedPlayerHeader = ({
             />
             {selectedPlayer.characters.size > 1 && (
                 <div className={styles["class-button-container"]}>
-                    {selectedPlayer.characters.map(({ logo, className, characterId }) => (
+                    {selectedPlayer.characters.map(({ logo, characterId, classType }) => (
                         <button
                             key={characterId}
                             className={[
@@ -41,7 +41,12 @@ const SelectedPlayerHeader = ({
                                 styles["class-button"]
                             ].join(" ")}
                             onClick={() => updateCharacterId(characterId)}>
-                            <Image src={logo} alt={className} width={60} height={60} />
+                            <Image
+                                src={logo}
+                                alt={strings.characterNames[classType]}
+                                width={60}
+                                height={60}
+                            />
                         </button>
                     ))}
                 </div>

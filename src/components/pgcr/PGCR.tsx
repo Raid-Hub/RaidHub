@@ -8,10 +8,11 @@ import KebabMenu from "../reusable/KebabMenu"
 import ScreenshotContainer from "../reusable/ScreenshotContainer"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
-import { BackdropOpacity, Raid, Short } from "~/types/raids"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { createRef } from "react"
+import { BackdropOpacity, Short } from "~/util/destiny/raidUtils"
+import { Raid } from "~/types/raids"
 
 const defaultPrefs = {
     showScore: false
