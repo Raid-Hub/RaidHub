@@ -8,7 +8,7 @@ import {
 } from "bungie-net-core/models"
 import RaidReportDataCollection from "../models/profile/data/RaidReportDataCollection"
 import { RaidReportBannerTier } from "./raidreport"
-import { ClanBannerData } from "../util/destiny/clanBanner"
+import { ClanBannerData } from "../util/destiny/parseClanBanner"
 import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
 import { z } from "zod"

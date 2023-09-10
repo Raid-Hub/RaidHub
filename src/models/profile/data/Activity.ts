@@ -5,7 +5,7 @@ import {
     DestinyHistoricalStatsValue
 } from "bungie-net-core/models"
 import { ListedRaid, Difficulty } from "../../../types/raids"
-import { raidTupleFromHash } from "../../../util/destiny/raid"
+import { raidTupleFromHash } from "../../../util/destiny/raidUtils"
 
 export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     readonly period: string

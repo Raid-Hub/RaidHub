@@ -1,7 +1,7 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
-import { bannerEmblemFromCache } from "../../util/destiny/emblems"
+import { bannerEmblemFromCache } from "../../util/destiny/bungie-icons"
 import PGCRCharacter from "../../models/pgcr/Character"
 import { useItem } from "../app/DestinyManifestManager"
 

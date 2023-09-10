@@ -1,5 +1,5 @@
 import { getGroup, getGroupsForMember, getMembersOfGroup } from "bungie-net-core/endpoints/GroupV2"
-import BungieClient from "./client"
+import BungieClient from "../../util/bungieClient"
 import { BungieMembershipType } from "bungie-net-core/models"
 
 export const getClan =

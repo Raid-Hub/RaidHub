@@ -1,6 +1,6 @@
 import DestinyPGCR from "~/models/pgcr/PGCR"
 import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
-import BungieClient from "./client"
+import BungieClient from "../../util/bungieClient"
 
 export const getPGCR =
     (client: BungieClient) =>

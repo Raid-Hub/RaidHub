@@ -1,12 +1,12 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
-import BungieQuery, { QueryFn } from "./clientQuery"
-import { getProfile } from "./getProfile"
-import { getPGCR } from "./getPGCR"
-import { getActivityHistory } from "./getActivityHistory"
-import { getClan, getClanForMember, getClanMembers } from "./getClan"
-import { getLinkedProfiles } from "./getLinkedProfiles"
+import BungieQuery, { QueryFn } from "./bungieClientQuery"
+import { getProfile } from "../services/bungie/getProfile"
+import { getPGCR } from "../services/bungie/getPGCR"
+import { getActivityHistory } from "../services/bungie/getActivityHistory"
+import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
+import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [

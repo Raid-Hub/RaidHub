@@ -8,7 +8,7 @@ import {
     ReprisedRaid,
     UrlPathsToRaid
 } from "../../../types/raids"
-import { ReleaseDate } from "../../../util/destiny/raid"
+import { ReleaseDate } from "../../../util/destiny/raidUtils"
 import { useLocale } from "../../../components/app/LocaleManager"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { z } from "zod"

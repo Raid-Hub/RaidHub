@@ -7,7 +7,7 @@ import {
 } from "bungie-net-core/models"
 import PGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
-import { Seasons } from "../../util/destiny/dates"
+import { Seasons } from "../../data/destiny-dates"
 import {
     ListedRaid,
     ListedRaids,
@@ -19,7 +19,7 @@ import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tag
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats, WeaponStatsValues } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
-import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raid"
+import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raidUtils"
 import { Collection } from "@discordjs/collection"
 import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 

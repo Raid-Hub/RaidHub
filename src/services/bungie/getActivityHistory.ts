@@ -1,4 +1,4 @@
-import BungieClient from "./client"
+import BungieClient from "../../util/bungieClient"
 import { MembershipWithCharacters } from "~/types/profile"
 import { getAllCharacterRaids } from "./getAllCharacterRaids"
 import Activity from "~/models/profile/data/Activity"

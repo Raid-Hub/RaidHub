@@ -6,7 +6,7 @@ import {
     UseQueryResult,
     useQuery as tanstackUseQuery
 } from "@tanstack/react-query"
-import BungieClient from "./client"
+import BungieClient from "./bungieClient"
 import { v4 } from "uuid"
 
 type UseBungieQuery<TParams, TData, TError = unknown> = (

@@ -1,7 +1,7 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { useLocale } from "../../app/LocaleManager"
-import { raidVersion } from "../../../util/destiny/raid"
+import { raidVersion } from "../../../util/destiny/raidUtils"
 import Activity from "../../../models/profile/data/Activity"
 import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"

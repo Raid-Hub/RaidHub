@@ -1,6 +1,6 @@
 import { getProfile as bungieGetProfile } from "bungie-net-core/endpoints/Destiny2"
 import { BungieMembershipType } from "bungie-net-core/models"
-import BungieClient from "./client"
+import BungieClient from "../../util/bungieClient"
 
 export const getProfile =
     (client: BungieClient) =>

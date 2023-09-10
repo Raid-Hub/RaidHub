@@ -1,5 +1,5 @@
 import { getLinkedProfiles as getBungieLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
-import BungieClient from "./client"
+import BungieClient from "../../util/bungieClient"
 
 export const getLinkedProfiles =
     (client: BungieClient) =>

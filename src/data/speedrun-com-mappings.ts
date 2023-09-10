@@ -1,5 +1,5 @@
-import { ListedRaid, Raid } from "../../types/raids"
-import { LocalStrings } from "../presentation/localized-strings"
+import { ListedRaid, Raid } from "../types/raids"
+import { LocalStrings } from "../util/presentation/localized-strings"
 
 export const SpeedrunIds: Record<ListedRaid, string> = {
     [Raid.LEVIATHAN]: "jdzvzqvk",

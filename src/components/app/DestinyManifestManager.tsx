@@ -5,7 +5,7 @@ import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { ClanBanner } from "bungie-net-core/models"
-import { resolveClanBanner } from "~/util/destiny/clanBanner"
+import { resolveClanBanner } from "~/util/destiny/parseClanBanner"
 import { useQuery } from "@tanstack/react-query"
 import { indexDB } from "~/util/dexie"
 

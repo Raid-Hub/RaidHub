@@ -11,7 +11,7 @@ import { usePage } from "../../../../../hooks/util/usePage"
 import {
     SpeedrunVariableId,
     SpeedrunVariableValues
-} from "../../../../../util/speedrun-com/speedrun-ids"
+} from "../../../../../data/speedrun-com-mappings"
 import { LocalStrings } from "../../../../../util/presentation/localized-strings"
 
 type RTASpeedunLeaderboadProps = {

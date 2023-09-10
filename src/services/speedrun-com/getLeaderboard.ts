@@ -4,7 +4,7 @@ import {
     SpeedrunIds,
     SpeedrunVariableId,
     SpeedrunVariableValues
-} from "../../util/speedrun-com/speedrun-ids"
+} from "../../data/speedrun-com-mappings"
 
 const destiny2GameId = "4d7y5zd7"
 //
