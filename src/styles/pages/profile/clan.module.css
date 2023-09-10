@@ -24,11 +24,6 @@
     align-content: center;
 }
 
-.clan-img {
-    width: 90px;
-    height: 160px;
-}
-
 .desc {
     flex: 1;
     display: flex;

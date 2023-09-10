@@ -3,22 +3,21 @@ import { updateCachedManifest } from "../../util/destiny/manifest"
 import { useBungieClient } from "./TokenManager"
 import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
-import CustomError, { ErrorCode } from "../../models/errors/CustomError"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { ClanBanner } from "bungie-net-core/models"
-import { resolveClanBanner } from "../../util/destiny/clanBanner"
+import { resolveClanBanner } from "~/util/destiny/clanBanner"
 import { useQuery } from "@tanstack/react-query"
-import { indexDB } from "../../util/dexie"
+import { indexDB } from "~/util/dexie"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
 
+// edit this value if you change anything about the stored values
+const MANIFEST_VERSION_ID = "1"
+
 const DestinyManifestContext = createContext<string>("")
 
-type DestinyManifestManagerProps = {
-    children: ReactNode
-}
-
-const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
-    const [manifestVersion, setManifestVersion] = useState("")
+const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
+    const [manifestVersion, setManifestVersion] = useState("null")
     const client = useBungieClient()
     const { language } = useLocale()
 
@@ -27,7 +26,7 @@ const DestinyManifestManager = ({ children }: DestinyManifestManagerProps) => {
         if (oldVersion) setManifestVersion(oldVersion)
         getDestinyManifest(client)
             .then(async ({ Response: manifest }) => {
-                const currentVersion = manifest.version + "-" + language
+                const currentVersion = [manifest.version, language, MANIFEST_VERSION_ID].join("-")
                 if (oldVersion !== currentVersion) {
                     await updateCachedManifest({ client, manifest, language }).then(() =>
                         localStorage.setItem(KEY_MANIFEST_VERSION, currentVersion)
@@ -62,42 +61,42 @@ export default DestinyManifestManager
 
 const useManifestVersion = () => useContext(DestinyManifestContext)
 
-export function useEmblem(hash: number | null) {
+export function useItem(hash: number) {
     const manifestVersion = useManifestVersion()
 
-    const fetchData = async () => (hash ? indexDB.emblems.get({ hash }) : undefined)
-
-    const emblem = useQuery({
-        queryKey: ["emblem", hash, manifestVersion],
-        queryFn: () => fetchData(),
+    return useQuery({
+        queryKey: ["item", hash, manifestVersion],
+        queryFn: () => indexDB.items.get({ hash }) ?? null,
         staleTime: Infinity
     })
-
-    return emblem
 }
 
-export function useWeapon(hash: number | null) {
+export function useActivity(hash: number) {
     const manifestVersion = useManifestVersion()
 
-    const fetchData = async () => (hash ? indexDB.weapons.get({ hash }) : null)
-
-    const weapon = useQuery({
-        queryKey: ["weapon", hash, manifestVersion],
-        queryFn: () => fetchData(),
+    return useQuery({
+        queryKey: ["activity", hash, manifestVersion],
+        queryFn: () => indexDB.activities.get({ hash }) ?? null,
         staleTime: Infinity
     })
-
-    return weapon
 }
 
-export function useClanBanner(banner: ClanBanner | null) {
+export function useActivityMode(hash: number) {
     const manifestVersion = useManifestVersion()
 
-    const clanBanners = useQuery({
+    return useQuery({
+        queryKey: ["activityMode", hash, manifestVersion],
+        queryFn: () => indexDB.activityModes.get({ hash }) ?? null,
+        staleTime: Infinity
+    })
+}
+
+export function useClanBanner(banner: ClanBanner) {
+    const manifestVersion = useManifestVersion()
+
+    return useQuery({
         queryKey: ["clanBanner", banner, manifestVersion],
-        queryFn: () => (banner ? resolveClanBanner(banner) : null),
+        queryFn: () => resolveClanBanner(banner),
         staleTime: Infinity
     })
-
-    return clanBanners
 }

@@ -4,11 +4,10 @@ import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LocaleManager"
 import Image, { StaticImageData } from "next/image"
 import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark, Time } from "../../images/icons"
-import { useWeapon } from "../app/DestinyManifestManager"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import PlayerStatCell from "./PlayerStatCell"
 import PGCRPlayer from "../../models/pgcr/Player"
-import { useRouter } from "next/router"
+import { useItem } from "../app/DestinyManifestManager"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
@@ -17,9 +16,8 @@ type PlayerStatCellProps = {
 
 const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
-    const { data: weapon } = useWeapon(entry.weapons.first()?.hash ?? null)
+    const { data: weapon } = useItem(entry.weapons.first()?.hash ?? 73015)
     const { pgcr } = usePGCRContext()
-    const router = useRouter()
     const stats = entry.stats
 
     const statsData: {
@@ -55,7 +53,7 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
         {
             icon: Question_Mark,
             name: strings.mostUsedWeapon,
-            value: weapon?.name ?? strings.none
+            value: weapon?.displayProperties.name ?? strings.none
         }
     ]
 
@@ -76,13 +74,9 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
                 className={[styles["entry-card"], styles["character-stat"]].join(" ")}
                 style={{ cursor: "pointer" }}
                 onClick={showWeaponsDetails}>
-                <Image
-                    src={Question_Mark}
-                    width={30}
-                    height={30}
-                    alt={strings.killBreakdown}
-                    className={styles["stat-icon"]}
-                />
+                <div className={styles["stat-icon-container"]}>
+                    <Image src={Question_Mark} alt={strings.killBreakdown} fill />
+                </div>
                 <div className={styles["summary-stat-info"]}>
                     <span
                         className={[styles["summary-stat-name"], styles["contained-span"]].join(

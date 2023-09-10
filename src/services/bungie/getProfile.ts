@@ -1,38 +1,24 @@
-import { ProfileComponent } from "~/types/profile"
-import PrivateProfileError from "~/models/errors/PrivateProfileError"
-import { BungieClientProtocol } from "bungie-net-core"
-import { getProfile } from "bungie-net-core/endpoints/Destiny2"
+import { getProfile as bungieGetProfile } from "bungie-net-core/endpoints/Destiny2"
 import { BungieMembershipType } from "bungie-net-core/models"
+import BungieClient from "./client"
 
-export async function getDestinyProfile({
-    destinyMembershipId,
-    membershipType,
-    client
-}: {
-    destinyMembershipId: string
-    membershipType: BungieMembershipType
-    client: BungieClientProtocol
-}): Promise<ProfileComponent> {
-    const res = await getProfile(client, {
+export const getProfile =
+    (client: BungieClient) =>
+    async ({
         destinyMembershipId,
-        membershipType,
-        components: [100, 200 /**DestinyComponentType.Profiles, DestinyComponentType.Characters*/]
-    })
-    const { data: profileData, privacy: profilePrivacy } = res.Response.profile
-    const { data: charactersData, privacy: charactersPrivacy } = res.Response.characters
-    if (profilePrivacy > 1 || charactersPrivacy > 1) {
-        throw new PrivateProfileError({
+        membershipType
+    }: {
+        destinyMembershipId: string
+        membershipType: BungieMembershipType
+    }) => {
+        const { Response } = await bungieGetProfile(client, {
             destinyMembershipId,
             membershipType,
             components: [
-                100, 200 /**DestinyComponentType.Profiles, DestinyComponentType.Characters*/
+                100, 200 /*Characters*/, 205 /*DestinyComponentType.CharacterEquipment*/,
+                204 /*DestinyComponentType.CharacterActivities*/,
+                305 /*DestinyComponentType.ItemSockets */, 1000 /*DestinyComponentType.Transitory */
             ]
         })
-    } else if (!profileData || !charactersData) {
-        throw new Error("Missing data")
+        return Response
     }
-    return {
-        ...profileData,
-        emblemBackgroundPath: charactersData[profileData.characterIds[0]].emblemBackgroundPath
-    }
-}

@@ -3,9 +3,9 @@ import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
 import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
-import { useEmblem } from "../app/DestinyManifestManager"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
+import { useItem } from "../app/DestinyManifestManager"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -31,7 +31,7 @@ const PlayerCell = ({
     const { locale } = useLocale()
     const dynamicCssClass = player.membershipId === selectedPlayerId ? styles["selected"] : ""
 
-    const { data: emblem } = useEmblem(player.banner)
+    const { data: emblem } = useItem(player.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
     const icon = player.characters.first()!.logo
@@ -46,10 +46,10 @@ const PlayerCell = ({
                 completionClass
             ].join(" ")}
             onClick={onClick}>
-            {!isLoadingEmblems ? (
+            {!isLoadingEmblems && emblem ? (
                 <Image
                     unoptimized
-                    src={bannerEmblemFromCache(emblem ?? null)}
+                    src={bannerEmblemFromCache(emblem)}
                     alt=""
                     fill
                     className={styles["emblem"]}

@@ -244,6 +244,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         showScore: "Show Score",
         pinThisActivity: "Pin this PGCR",
         screenshot: "Screenshot",
-        noChallenge: "No Challenge Contest"
+        noChallenge: "Normal Contest"
     }
 }

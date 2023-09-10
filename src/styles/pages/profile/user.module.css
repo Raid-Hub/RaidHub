@@ -67,17 +67,16 @@
 
 .username > span {
     border-radius: 6px 0 0 6px;
-    padding: 0.5em 0 0.5em 0.5em;
+    padding: 0.5em 0;
     background-color: #00000077;
     white-space: nowrap;
     font-weight: 600;
     font-size: 18px;
 }
 
-.username .discrim {
+.discrim {
     border-radius: 0 6px 6px 0;
     padding-left: 0em;
-    padding-right: 0.5em;
     color: var(--bungie-blue);
 }
 

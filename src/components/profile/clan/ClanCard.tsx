@@ -1,10 +1,12 @@
 import styles from "../../../styles/pages/profile/clan.module.css"
-import { useClan } from "../../../hooks/bungie/useClan"
 import Loading from "../../global/Loading"
-import ClanBanner from "./ClanBanner"
+import ClanBanner from "../../reusable/ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
 import { BungieMembershipType } from "bungie-net-core/models"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import { urlHighlight } from "~/util/presentation/urlHighlight"
+import Link from "next/link"
+import { useBungieClient } from "~/components/app/TokenManager"
 
 type ClanCardProps = {
     membershipId: string
@@ -12,68 +14,37 @@ type ClanCardProps = {
 }
 
 const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
+    const bungie = useBungieClient()
+
     const {
         data: clan,
         isLoading,
         error
-    } = useClan({
-        membershipId,
-        membershipType
-    })
+    } = bungie.clan.byMember.useQuery({ membershipId, membershipType }, { staleTime: 10 * 60000 })
+
     return isLoading ? (
         <Loading wrapperClass={styles["card-loading"]} />
     ) : clan ? (
-        <div className={styles["clan"]}>
+        <Link href={`/clan/${clan.groupId}`} className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
-                {clan.clanBanner && <ClanBanner {...clan.clanBanner} />}
+                <ClanBanner data={clan.clanInfo.clanBannerData} sx={10} />
             </div>
             <div className={styles["desc"]}>
                 <span className={styles["desc-title"]}>
                     {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
                 </span>
-                <span className={styles["desc-subtitle"]}>
-                    {clan?.motto.replace("&#8217;", "'")}
-                </span>
+                <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                 <div className={styles["desc-text-wrapper"]}>
                     <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
                 </div>
             </div>
-        </div>
+        </Link>
     ) : error ? (
         <div className={styles["clan"]} style={{ flexDirection: "column", gap: "1em" }}>
             <div>Error Loading Clan</div>
             <div>{CustomError.handle(e => e.message, error, ErrorCode.Clan)}</div>
         </div>
     ) : null
-}
-
-const urlRegex =
-    /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim
-
-function urlHighlight(str: string): JSX.Element[] {
-    const elements: JSX.Element[] = []
-    let match
-    let lastIndex = 0
-    let key = 0
-    while ((match = urlRegex.exec(str))) {
-        // Capture the non-matching substring before the matched URL
-        if (match.index > lastIndex) {
-            elements.push(<span key={key++}>{str.substring(lastIndex, match.index)}</span>)
-        }
-        // Capture the matched URL
-        let url = match[0]
-        elements.push(
-            <a key={key++} href={url} target="_blank" rel="noopener noreferrer">
-                {url}
-            </a>
-        )
-        lastIndex = urlRegex.lastIndex
-    }
-    // Capture the final non-matching substring after the last matched URL
-    if (lastIndex < str.length) {
-        elements.push(<span key={lastIndex}>{str.substring(lastIndex)}</span>)
-    }
-    return elements
 }
 
 export default ClanCard

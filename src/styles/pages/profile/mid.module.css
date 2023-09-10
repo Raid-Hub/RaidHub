@@ -38,14 +38,11 @@
     gap: 0.2em;
 
     max-height: 14ch;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .fireteam-members > * {
     white-space: nowrap;
-}
-
-.timer-container {
 }
 
 .timer {
@@ -278,7 +275,7 @@
     list-style-type: none;
 
     max-height: 90%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .filter-selector-menu > *:hover {

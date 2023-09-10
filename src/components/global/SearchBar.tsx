@@ -5,6 +5,7 @@ import { Search } from "../../images/icons"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import Loader from "../reusable/Loader"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -26,9 +27,13 @@ const SearchBar = ({}: SearchBarProps) => {
         clearQuery
     } = useSearch({
         errorHandler: console.error /** TODO: Handle search bar errors */,
-        onSuccessfulExactSearch: () => {
+        onSuccessfulExactSearch: userInfo => {
             setIsShowingResults(false)
             setIsRedirecting(true)
+            router.push(
+                "/profile/[destinyMembershipType]/[destinyMembershipId]",
+                `/profile/${userInfo.membershipType}/${userInfo.membershipId}`
+            )
         }
     })
     const [isShowingResults, setIsShowingResults] = useState(false)
@@ -80,7 +85,7 @@ const SearchBar = ({}: SearchBarProps) => {
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
                 {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
-                    <div className={styles["loader"]} />
+                    <Loader />
                 ) : (
                     <Image
                         className={styles["search-img"]}

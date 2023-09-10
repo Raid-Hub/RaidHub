@@ -5,11 +5,9 @@ import UserCard from "./user/UserCard"
 import ClanCard from "./clan/ClanCard"
 import PinnedActivity from "./mid/PinnedActivity"
 import { trpc } from "~/util/trpc"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useDestinyStats } from "~/hooks/bungie/useDestinyStats"
 import { useCharacterStats } from "~/hooks/bungie/useCharacterStats"
-import { useDestinyProfile } from "~/hooks/bungie/useDestinyProfile"
-import { useBungieMemberships } from "~/hooks/bungie/useBungieMemberships"
 import { useRaidReport } from "~/hooks/raidreport/useRaidReportData"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useActivityFilters } from "~/hooks/util/useActivityFilters"
@@ -20,41 +18,61 @@ import { InitialProfileProps } from "~/types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
 import Loading from "../global/Loading"
+import { useBungieClient } from "../app/TokenManager"
 
 type ProfileProps = InitialProfileProps & {
     errorHandler: ErrorHandler
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: ProfileProps) => {
+    const bungie = useBungieClient()
     // DATA HOOKS
     const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } =
         trpc.profile.getProfile.useQuery({
             destinyMembershipId
         })
 
-    const { data: primaryDestinyProfile, isLoading: isLoadingDestinyProfile } = useDestinyProfile({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler
-    })
+    const {
+        data: primaryDestinyProfile,
+        isLoading: isLoadingDestinyProfile,
+        dataUpdatedAt: profileUpdatedAt
+    } = bungie.profile.useQuery(
+        {
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        },
+        { staleTime: 5 * 60000 }
+    )
 
-    const { data: membershipsData, isLoading: isLoadingMemberships } = useBungieMemberships({
-        destinyMembershipId,
-        destinyMembershipType,
-        errorHandler
-    })
+    const { data: membershipsData, isLoading: isLoadingMemberships } =
+        bungie.linkedProfiles.useQuery({
+            membershipId: destinyMembershipId
+        })
 
+    // todo remove
+    const destinyMemberships = useMemo(
+        () =>
+            membershipsData?.profiles.map(p => ({
+                destinyMembershipId: p.membershipId,
+                membershipType: p.membershipType
+            })) ?? null,
+        [membershipsData]
+    )
+
+    // todo update hook
     const { data: raidReportData, isLoading: isLoadingRaidReportData } = useRaidReport({
-        destinyMembershipIds: membershipsData?.destinyMemberships ?? null,
+        destinyMembershipIds: destinyMemberships,
         primaryMembershipId: destinyMembershipId,
         errorHandler
     })
 
+    // todo update hook
     const { data: destinyStats, isLoading: isLoadingDestinyStats } = useDestinyStats({
-        destinyMemberships: membershipsData?.destinyMemberships ?? null,
+        destinyMemberships,
         errorHandler
     })
 
+    // todo update hook
     const { data: characterStats, isLoading: isLoadingRaidMetrics } = useCharacterStats({
         characterMemberships: destinyStats?.characterMemberships ?? null,
         errorHandler
@@ -77,8 +95,8 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
     const [activeFilter, setActiveFilter, isLoadingFilters] = useActivityFilters()
 
     const name =
-        primaryDestinyProfile?.userInfo.bungieGlobalDisplayName ??
-        primaryDestinyProfile?.userInfo.displayName
+        primaryDestinyProfile?.profile.data?.userInfo.bungieGlobalDisplayName ??
+        primaryDestinyProfile?.profile.data?.userInfo.displayName
 
     return (
         <main className={styles["main"]}>
@@ -91,16 +109,17 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
                         isLoadingDestinyProfile || isLoadingRaidHubProfile || isLoadingMemberships
                     }
                     userInfo={
-                        membershipsData?.bungieMembership
+                        membershipsData?.bnetMembership
                             ? {
-                                  ...membershipsData.bungieMembership,
-                                  ...primaryDestinyProfile?.userInfo
+                                  ...membershipsData.bnetMembership,
+                                  ...primaryDestinyProfile?.profile.data?.userInfo
                               }
                             : undefined
                     }
                     raidHubProfile={raidHubProfile ?? null}
                     emblemBackgroundPathSrc={`https://www.bungie.net/${
-                        primaryDestinyProfile?.emblemBackgroundPath ??
+                        Object.values(primaryDestinyProfile?.characters.data ?? {})[0]
+                            ?.emblemBackgroundPath ??
                         "common/destiny2_content/icons/2644a073545e566485629b95989b5f83.jpg"
                     }`}
                 />
@@ -116,10 +135,20 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             </section>
 
             <section className={styles["mid"]}>
-                <CurrentActivity
-                    destinyMembershipId={destinyMembershipId}
-                    destinyMembershipType={destinyMembershipType}
-                />
+                {primaryDestinyProfile?.characterActivities.data &&
+                    primaryDestinyProfile.profileTransitoryData.data && (
+                        <CurrentActivity
+                            profileUpdatedAt={profileUpdatedAt}
+                            transitoryComponent={primaryDestinyProfile.profileTransitoryData.data}
+                            activitiesComponent={
+                                Object.values(primaryDestinyProfile.characterActivities.data).sort(
+                                    (a, b) =>
+                                        new Date(b.dateActivityStarted).getTime() -
+                                        new Date(a.dateActivityStarted).getTime()
+                                )[0]
+                            }
+                        />
+                    )}
                 {pinnedActivity ? (
                     <PinnedActivity
                         activityId={pinnedActivity}
@@ -142,7 +171,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType, errorHandler }: P
             <section className={styles["raids"]}>
                 <Raids
                     membershipId={destinyMembershipId}
-                    characterMemberships={destinyStats?.characterMemberships ?? null}
+                    characterMemberships={destinyStats?.characterMemberships ?? []}
                     layout={layout}
                     filter={activity => activeFilter?.predicate?.(activity) ?? true}
                     raidMetrics={characterStats ?? null}

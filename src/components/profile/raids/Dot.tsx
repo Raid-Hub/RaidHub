@@ -34,7 +34,7 @@ const Dot = ({
     setTooltip,
     tooltipData
 }: DotProps) => {
-    const ref = useRef<HTMLAnchorElement | null>(null)
+    const ref = useRef<SVGGElement | null>(null)
 
     const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
 
@@ -97,6 +97,7 @@ const Dot = ({
             }}
             legacyBehavior={true}>
             <g
+                ref={ref}
                 onMouseEnter={handleHover}
                 onMouseLeave={handleMouseLeave}
                 className={[styles["dot"], styles["dot-hover"]].join(" ")}>

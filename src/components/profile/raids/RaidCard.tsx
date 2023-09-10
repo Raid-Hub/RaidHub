@@ -22,6 +22,7 @@ import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
 import { ExtendedActivity, RaceTag } from "../../../types/profile"
+import RaceTagLabel from "./RaceTagLabel"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -102,13 +103,15 @@ const RaidCard = ({
     }, [allActivities, raid, report?.worldFirstPlacement])
 
     useEffect(() => {
-        // Set a new timeout
-        const timer = setTimeout(() => {
-            setHoveredTag(null)
-        }, 2500)
+        if (hoveredTag) {
+            // Set a new timeout
+            const timer = setTimeout(() => {
+                setHoveredTag(null)
+            }, 2500)
 
-        return () => {
-            clearTimeout(timer)
+            return () => {
+                clearTimeout(timer)
+            }
         }
     }, [hoveredTag])
 
@@ -131,35 +134,27 @@ const RaidCard = ({
                 <Image
                     className={styles["card-background"]}
                     priority
-                    width={640}
-                    height={360}
+                    width={960}
+                    height={540}
                     src={RaidCardBackground[raid]}
                     alt={strings.raidNames[raid]}
                 />
-                <div className={styles["img-overlay"]}>
-                    <div className={styles["tag-row"]}>
-                        {contestFirstClear && (
-                            <RaidTagLabel
-                                type="race"
-                                {...contestFirstClear}
-                                placement={report?.worldFirstPlacement ?? undefined}
-                                setActiveId={setHoveredTag}
-                            />
-                        )}
+                <div className={styles["tag-row"]}>
+                    {contestFirstClear && (
+                        <RaceTagLabel
+                            {...contestFirstClear}
+                            placement={report?.worldFirstPlacement ?? undefined}
+                            setActiveId={setHoveredTag}
+                        />
+                    )}
+                </div>
+                <div className={styles["img-overlay-bottom"]}>
+                    <div className={styles["card-challenge-tags"]}>
+                        {report?.tags()?.map((tag, key) => (
+                            <RaidTagLabel {...tag} key={key} setActiveId={setHoveredTag} />
+                        ))}
                     </div>
-                    <div className={styles["img-overlay-bottom"]}>
-                        <div className={styles["card-challenge-tags"]}>
-                            {report?.tags()?.map((tag, key) => (
-                                <RaidTagLabel
-                                    type="challenge"
-                                    {...tag}
-                                    key={key}
-                                    setActiveId={setHoveredTag}
-                                />
-                            ))}
-                        </div>
-                        <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
-                    </div>
+                    <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                 </div>
             </div>
             <div className={styles["card-content"]}>

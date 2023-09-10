@@ -1,6 +1,14 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
+import BungieQuery, { QueryFn } from "./clientQuery"
+import { getClanForMember } from "./getClanForMember"
+import { getProfile } from "./getProfile"
+import { getPGCR } from "./getPGCR"
+import { getActivityHistory } from "./getActivityHistory"
+import { getClan } from "./getClan"
+import { getLinkedProfiles } from "./getLinkedProfiles"
+import { QueryClient } from "@tanstack/react-query"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount,
@@ -9,27 +17,30 @@ const DONT_RETRY_CODES: PlatformErrorCodes[] = [
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
+    queryClient: QueryClient
+
+    constructor(queryClient: QueryClient) {
+        this.queryClient = queryClient
+    }
+
     async fetch<T>(config: BungieFetchConfig): Promise<T> {
         const apiKey = process.env.BUNGIE_API_KEY
         if (!apiKey) {
             throw new Error("Missing BUNGIE_API_KEY")
         }
-        const headers: Record<string, string> = {
-            ...config.headers
-        }
-
-        if (config.url.pathname.includes("Platform")) {
-            headers["X-API-KEY"] = apiKey
-        }
-
-        if (this.accessToken) {
-            headers["Authorization"] = `Bearer ${this.accessToken}`
-        }
 
         const payload = {
             method: config.method,
             body: config.body,
-            headers
+            headers: config.headers ?? {}
+        }
+
+        if (config.url.pathname.match(/\/Platform\//)) {
+            payload.headers["X-API-KEY"] = apiKey
+
+            if (this.accessToken) {
+                payload.headers["Authorization"] = `Bearer ${this.accessToken}`
+            }
         }
 
         const request = async (retry?: boolean) => {
@@ -55,6 +66,10 @@ export default class BungieClient implements BungieClientProtocol {
         }
     }
 
+    getToken() {
+        return this.accessToken
+    }
+
     setToken(value: string) {
         this.accessToken = value
     }
@@ -62,4 +77,17 @@ export default class BungieClient implements BungieClientProtocol {
     clearToken() {
         this.accessToken = null
     }
+
+    query<TParams, TData>(queryFn: (client: BungieClient) => QueryFn<TParams, TData>) {
+        return new BungieQuery(this, queryFn(this))
+    }
+
+    clan = {
+        byMember: this.query(getClanForMember),
+        byId: this.query(getClan)
+    }
+    profile = this.query(getProfile)
+    pgcr = this.query(getPGCR)
+    activityHistory = this.query(getActivityHistory)
+    linkedProfiles = this.query(getLinkedProfiles)
 }

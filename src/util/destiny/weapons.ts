@@ -1,6 +1,36 @@
 import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalWeaponStats } from "bungie-net-core/models"
+import { DestinyHistoricalWeaponStats, DestinyItemComponent } from "bungie-net-core/models"
 import { PlayerWeapons } from "../../types/pgcr"
+
+export const weaponBuckets = {
+    kinetic: 1498876634,
+    energy: 2465295065,
+    power: 953998645
+}
+
+export const armorBuckets = {
+    helmet: 3448274439,
+    arms: 3551918588,
+    chest: 14239492,
+    legs: 20886954,
+    classItem: 1585787867
+}
+
+export const subclassBucket = 3284755031
+
+export function findWeaponInBucket(
+    items: DestinyItemComponent[],
+    bucket: keyof typeof weaponBuckets
+) {
+    return items.find(item => item.bucketHash === weaponBuckets[bucket])
+}
+
+export function findArmorInBucket(
+    items: DestinyItemComponent[],
+    bucket: keyof typeof armorBuckets
+) {
+    return items.find(item => item.bucketHash === armorBuckets[bucket])
+}
 
 export function parseWeapons(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
     return new Collection(

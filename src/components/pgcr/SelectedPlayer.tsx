@@ -1,9 +1,9 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
-import { useEmblem } from "../app/DestinyManifestManager"
 import { bannerEmblemFromCache } from "../../util/destiny/emblems"
 import PGCRCharacter from "../../models/pgcr/Character"
+import { useItem } from "../app/DestinyManifestManager"
 
 type SelectedPlayerProps = {
     player: PGCRPlayer
@@ -12,7 +12,7 @@ type SelectedPlayerProps = {
 }
 
 const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => {
-    const { data: emblem } = useEmblem(character?.banner ?? player.banner)
+    const { data: emblem } = useItem(character?.banner ?? player.banner)
 
     const displayName = player.displayName || player.membershipId
     const completionClass = player.didComplete ? "" : styles["dnf"]

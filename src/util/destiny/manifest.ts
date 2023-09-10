@@ -1,26 +1,8 @@
 import { BungieClientProtocol } from "bungie-net-core"
-import { getDestinyInventoryItems } from "../../services/bungie/getDestinyInventoryItems"
 import { Hashed, indexDB } from "../dexie"
-import {
-    ClanBannerSource,
-    DestinyInventoryItemDefinition,
-    DestinyManifest
-} from "bungie-net-core/models"
-import { DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
+import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
-
-export type CachedEmblem = {
-    emblem: string
-    icon: string
-    iconTransparent: string
-    banner: string
-}
-
-export type CachedWeapon = {
-    name: string
-    icon: string
-    type: string
-}
 
 export type RGBA = {
     blue: number
@@ -61,15 +43,34 @@ export async function updateCachedManifest({
     language: DestinyManifestLanguage
 }) {
     await Promise.all([
-        getDestinyInventoryItems({
-            manifest,
-            language,
-            client
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyInventoryItemDefinition",
+            language: language
         }).then(items =>
-            Promise.all([
-                indexDB.weapons.clear().then(() => indexDB.weapons.bulkPut(processWeapons(items))),
-                indexDB.emblems.clear().then(() => indexDB.emblems.bulkPut(processEmblems(items)))
-            ])
+            indexDB.transaction("rw", indexDB.items, () =>
+                indexDB.items.bulkPut(Object.values(items))
+            )
+        ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyActivityDefinition",
+            language: language
+        }).then(items =>
+            indexDB.transaction("rw", indexDB.activities, () =>
+                indexDB.activities.bulkPut(Object.values(items))
+            )
+        ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyActivityModeDefinition",
+            language: language
+        }).then(items =>
+            indexDB.transaction("rw", indexDB.activityModes, () =>
+                indexDB.activityModes.bulkPut(Object.values(items))
+            )
         ),
 
         getClanBannerSource(client)
@@ -88,54 +89,23 @@ export async function updateCachedManifest({
                             : { hash: Number(hash), ...def }
                     )
 
-                const clearAndPut = async <K extends keyof RawClanBannerData>(key: K) => {
-                    indexDB[key]
-                        .clear()
-                        .catch(e => {})
-                        .then(() => {
-                            // @ts-expect-error
-                            indexDB[key].bulkPut(hash(key))
-                        })
-                }
-                return Promise.all(
-                    Object.keys(banners).map(table => clearAndPut(table as keyof RawClanBannerData))
+                const clanBannerTableKeys = Object.keys(banners) as (keyof RawClanBannerData)[]
+
+                return indexDB.transaction(
+                    "rw",
+                    clanBannerTableKeys.map(key => indexDB[key]),
+                    () =>
+                        Promise.all(
+                            clanBannerTableKeys.map(key => {
+                                const data = hash(key)
+                                return (
+                                    indexDB[key]
+                                        // @ts-expect-error
+                                        .bulkPut(data)
+                                )
+                            })
+                        )
                 )
             })
     ])
-}
-
-function processWeapons(items: Record<string, DestinyInventoryItemDefinition>) {
-    const weaponBuckets = [/* kinetic */ 1498876634, /* energy */ 2465295065, /* power */ 953998645]
-
-    return Object.entries(items)
-        .filter(
-            ([_, def]) =>
-                def.traitIds?.some(trait => trait.match(/^item\.weapon\.[A-Za-z0-9_]+$/)) &&
-                weaponBuckets.includes(def.inventory?.bucketTypeHash!)
-        )
-        .map(
-            ([hash, def]) =>
-                ({
-                    hash: Number(hash),
-                    name: def.displayProperties.name,
-                    icon: def.displayProperties.icon,
-                    type: def.itemTypeDisplayName ?? "Classified"
-                } as Hashed<CachedWeapon>)
-        )
-}
-
-function processEmblems(items: Record<string, DestinyInventoryItemDefinition>) {
-    return Object.entries(items)
-
-        .filter(([_, def]) => def.itemTypeDisplayName === "Emblem")
-        .map(
-            ([hash, def]) =>
-                ({
-                    hash: Number(hash),
-                    icon: def.displayProperties.icon,
-                    emblem: def.secondaryIcon,
-                    iconTransparent: def.secondaryOverlay,
-                    banner: def.secondarySpecial
-                } as Hashed<CachedEmblem>)
-        )
 }
