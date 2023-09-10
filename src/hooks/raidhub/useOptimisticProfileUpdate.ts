@@ -1,11 +1,16 @@
+import { inferProcedureOutput } from "@trpc/server"
 import { useSession } from "next-auth/react"
+import { AppRouter } from "~/server/trpc"
 import { trpc } from "~/util/trpc"
 
-export function useOptimisticProfileUpdate() {
+export function useOptimisticProfileUpdate(options?: {
+    onSuccess(data: inferProcedureOutput<AppRouter["user"]["updateProfile"]>): void
+}) {
     const { profile } = trpc.useContext()
     const { data: session } = useSession()
 
     return trpc.user.updateProfile.useMutation({
+        onSuccess: options?.onSuccess,
         async onMutate(newData) {
             // Cancel outgoing fetches (so they don't overwrite our optimistic update)
             if (session?.user) {

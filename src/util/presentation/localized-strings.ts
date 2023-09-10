@@ -83,6 +83,8 @@ export interface LocalStrings {
     pinThisActivity: string
     screenshot: string
     noChallenge: string
+    deleteAccount: string
+    confirmDelete: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -244,6 +246,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         showScore: "Show Score",
         pinThisActivity: "Pin this PGCR",
         screenshot: "Screenshot",
-        noChallenge: "Normal Contest"
+        noChallenge: "Normal Contest",
+        deleteAccount: "Delete Account",
+        confirmDelete: "Confirm Deletion"
     }
 }

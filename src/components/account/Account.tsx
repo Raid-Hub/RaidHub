@@ -1,10 +1,15 @@
-import styles from "../../styles/pages/account.module.css"
+import styles from "~/styles/pages/account.module.css"
 import { signIn, signOut } from "next-auth/react"
 import { Session } from "next-auth"
-import ImageUploadForm from "./ImageUploadForm"
-import { useProviders } from "../../hooks/app/useProviders"
-import Link from "next/link"
+import Form from "./Form"
+import { useProviders } from "~/hooks/app/useProviders"
 import { trpc } from "~/util/trpc"
+import Connection from "./Connection"
+import Twitter from "next-auth/providers/twitter"
+import { wait } from "~/util/wait"
+import { useMemo, useState } from "react"
+import { useLocale } from "../app/LocaleManager"
+import Link from "next/link"
 
 type AccountProps = {
     session: Session
@@ -13,56 +18,85 @@ type AccountProps = {
 
 const Account = ({ session, refreshSession }: AccountProps) => {
     const { providers } = useProviders()
+    const { data: socialNames, refetch: refetchSocials } = trpc.user.getSocial.useQuery()
+    const { mutate: unlinkAccountFromUser } = trpc.user.removeProvider.useMutation({
+        onSuccess() {
+            refetchSocials()
+        }
+    })
     const { mutate: deleteUserMutation } = trpc.user.deleteUser.useMutation()
-    const { mutate: unlinkAccountFromUser } = trpc.user.removeProvider.useMutation()
+
+    const [deleteOnClick, setDeleteOnClick] = useState(false)
     const deleteUser = () => {
         deleteUserMutation()
         signOut({ callbackUrl: "/" })
     }
 
+    const { discordProvider, twitchProvider, twitterProvider } = useMemo(
+        () => ({
+            discordProvider: providers?.get("discord"),
+            twitchProvider: providers?.get("twitch"),
+            twitterProvider: providers?.get("twitter")
+        }),
+        [providers]
+    )
+
+    const { strings } = useLocale()
     return (
         <main>
             <h1>Welcome, {session.user.name}</h1>
-            <section className={styles["content"]}>
+            <section className={styles["section"]}>
                 <div className={styles["buttons"]}>
-                    <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
-                    <button onClick={() => console.log(session)}>Print Session Data</button>
+                    <Link
+                        href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
+                        <button>View Profile</button>
+                    </Link>
                     <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                         Sign in with a different bungie account
                     </button>
-                    <button onClick={deleteUser}>Delete Account</button>
-                    {providers?.get("discord") && (
-                        <button onClick={() => signIn("discord", {}, { prompt: "consent" })}>
-                            Add discord account
-                        </button>
+                    <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
+                    {deleteOnClick && (
+                        <button onClick={() => setDeleteOnClick(false)}>{strings.cancel}</button>
                     )}
-                    {providers?.get("twitch") && (
-                        <button onClick={() => signIn("twitch", {}, { force_verify: "true" })}>
-                            Add twitch account
-                        </button>
+                    <button
+                        onClick={deleteOnClick ? deleteUser : () => setDeleteOnClick(true)}
+                        className={styles["destructive"]}>
+                        {deleteOnClick ? strings.confirmDelete : strings.deleteAccount}
+                    </button>
+                </div>
+            </section>
+            <section className={styles["section"]}>
+                <h2>Manage Account</h2>
+                <Form user={session.user} refreshSession={refreshSession} />
+            </section>
+            <section className={styles["section"]}>
+                <h2>Manage Connections</h2>
+                <div className={styles["connections"]}>
+                    {discordProvider && (
+                        <Connection
+                            provider={discordProvider}
+                            authorizationParams={{ prompt: "consent" }}
+                            unlink={() => unlinkAccountFromUser({ providerId: "discord" })}
+                            username={socialNames?.discordUsername ?? null}
+                        />
                     )}
-                    {providers?.get("twitter") && (
-                        <button onClick={() => signIn("twitter", {}, { force_login: "true" })}>
-                            Add twitter account
-                        </button>
+                    {twitterProvider && (
+                        <Connection
+                            provider={twitterProvider}
+                            authorizationParams={{ force_login: "true" }}
+                            unlink={() => unlinkAccountFromUser({ providerId: "twitter" })}
+                            username={socialNames?.twitterUsername ?? null}
+                        />
                     )}
-                    <button onClick={() => unlinkAccountFromUser({ providerId: "discord" })}>
-                        Unlink Discord
-                    </button>
-                    <button onClick={() => unlinkAccountFromUser({ providerId: "twitch" })}>
-                        Unlink Twitch
-                    </button>
-                    <button onClick={() => unlinkAccountFromUser({ providerId: "twitter" })}>
-                        Unlink Twitter
-                    </button>
-                    {session.user.destinyMembershipType && session.user.destinyMembershipId && (
-                        <Link
-                            href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
-                            <button>Take me home</button>
-                        </Link>
+                    {twitchProvider && (
+                        <Connection
+                            provider={twitchProvider}
+                            authorizationParams={{ force_verify: "true" }}
+                            unlink={() => unlinkAccountFromUser({ providerId: "twitch" })}
+                            username={socialNames?.twitchUsername ?? null}
+                        />
                     )}
                 </div>
-                <ImageUploadForm user={session.user} refreshSession={refreshSession} />
             </section>
         </main>
     )

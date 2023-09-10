@@ -1,7 +1,5 @@
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 3em;
+.section {
+    margin-bottom: 2em;
 }
 
 .buttons {
@@ -9,4 +7,81 @@
     gap: 1em;
 
     flex-wrap: wrap;
+}
+
+.buttons button,
+.form button {
+    border-radius: 15px;
+    border: none;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+    padding: 10px;
+    transition: background-color 0.2s ease-out;
+    cursor: pointer;
+}
+
+.buttons button:hover:not(:disabled) {
+    background-color: var(--brand-orange-light);
+    border-radius: 15px;
+    border: none;
+
+    text-transform: uppercase;
+    padding: 10px;
+}
+
+.destructive {
+    color: var(--primary-text);
+    background-color: rgba(160, 79, 79, 0.885);
+}
+
+.form {
+    border-radius: 10px;
+    padding: 2em;
+    background-color: var(--modal-background);
+
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+
+    align-items: center;
+}
+.form-element {
+    display: flex;
+    flex-direction: row;
+
+    gap: 1em;
+}
+.form-element > div {
+    display: flex;
+    flex-direction: column;
+}
+.form button {
+    align-self: center;
+}
+.connections {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    gap: 2em;
+}
+
+.connection {
+    border-radius: 10px;
+    padding: 2em;
+    background-color: var(--modal-background);
+}
+
+.connection-head {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    gap: 1em;
+}
+.connection-head h3 {
+    margin: 0;
+    margin-bottom: 1em;
 }
