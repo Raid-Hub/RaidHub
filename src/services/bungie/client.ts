@@ -37,10 +37,10 @@ export default class BungieClient implements BungieClientProtocol {
 
         if (config.url.pathname.match(/\/Platform\//)) {
             payload.headers["X-API-KEY"] = apiKey
-        }
 
-        if (this.accessToken) {
-            payload.headers["Authorization"] = `Bearer ${this.accessToken}`
+            if (this.accessToken) {
+                payload.headers["Authorization"] = `Bearer ${this.accessToken}`
+            }
         }
 
         const request = async (retry?: boolean) => {

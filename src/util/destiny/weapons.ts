@@ -16,6 +16,8 @@ export const armorBuckets = {
     classItem: 1585787867
 }
 
+export const subclassBucket = 3284755031
+
 export function findWeaponInBucket(
     items: DestinyItemComponent[],
     bucket: keyof typeof weaponBuckets

@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/inpsect.module.css"
-import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/weapons"
+import { findArmorInBucket, findWeaponInBucket, subclassBucket } from "~/util/destiny/weapons"
 import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
@@ -91,6 +91,8 @@ function ResolvedPlayer({
         : undefined
     const sockets = data?.itemComponents.sockets.data
 
+    const subclass = items?.find(i => i.bucketHash === subclassBucket)
+
     const kinetic = findWeaponInBucket(items ?? [], "kinetic")
     const energy = findWeaponInBucket(items ?? [], "energy")
     const power = findWeaponInBucket(items ?? [], "power")
@@ -115,6 +117,12 @@ function ResolvedPlayer({
             )}
             {sockets && (
                 <div className={styles["items"]}>
+                    {subclass?.itemInstanceId && (
+                        <PlayerItem
+                            item={subclass}
+                            sockets={sockets[subclass.itemInstanceId].sockets}
+                        />
+                    )}
                     {kinetic?.itemInstanceId && (
                         <PlayerItem
                             item={kinetic}

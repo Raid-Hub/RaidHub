@@ -14,7 +14,7 @@ export const appRouter = router({
     }),
     // public router for finding and loading profiles
     profile: router({
-        getProfile,
+        getProfile: getProfile,
         getVanity
     })
 })

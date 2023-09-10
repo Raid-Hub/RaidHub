@@ -57,16 +57,11 @@ export async function updateCachedManifest({
             destinyManifest: manifest,
             tableName: "DestinyActivityDefinition",
             language: language
-        })
-            .then(x => {
-                console.log(x)
-                return x
-            })
-            .then(items =>
-                indexDB.transaction("rw", indexDB.activities, () =>
-                    indexDB.activities.bulkPut(Object.values(items))
-                )
-            ),
+        }).then(items =>
+            indexDB.transaction("rw", indexDB.activities, () =>
+                indexDB.activities.bulkPut(Object.values(items))
+            )
+        ),
 
         getDestinyManifestComponent(client, {
             destinyManifest: manifest,
