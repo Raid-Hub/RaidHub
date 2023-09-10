@@ -1,6 +1,5 @@
 import { ClientSafeProvider, SignInAuthorizationParams, signIn } from "next-auth/react"
 import styles from "~/styles/pages/account.module.css"
-import { trpc } from "~/util/trpc"
 
 export default function Connection({
     provider,
@@ -14,8 +13,8 @@ export default function Connection({
     unlink: () => void
 }) {
     const name = provider.name
-
     const canLink = !username
+
     return (
         <div className={styles["connection"]}>
             <div className={styles["connection-head"]}>
