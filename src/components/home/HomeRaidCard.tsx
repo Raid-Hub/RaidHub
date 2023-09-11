@@ -4,8 +4,8 @@ import styles from "~/styles/pages/home.module.css"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { LocalStrings } from "~/util/presentation/localized-strings"
-import { SpeedrunVariableValues } from "~/data/speedrun-com-mappings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
+import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -36,9 +36,9 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["content-section"]}>
                     <h4>{strings.rtaSpeedrunLeaderboards}</h4>
                     <ul>
-                        {Object.keys(SpeedrunVariableValues[raid]).length ? (
-                            Object.entries(SpeedrunVariableValues[raid]).map(
-                                ([type, { id, name: key }]) => (
+                        {SpeedrunVariables[raid] ? (
+                            Object.entries(SpeedrunVariables[raid]!.values).map(
+                                ([type, { id, name: key }]: [string, SpeedData]) => (
                                     <li key={id}>
                                         <Link
                                             href={`/leaderboards/${

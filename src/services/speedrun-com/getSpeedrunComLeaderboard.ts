@@ -1,33 +1,58 @@
 import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
 import { ListedRaid } from "../../types/raids"
-import {
-    SpeedrunIds,
-    SpeedrunVariableId,
-    SpeedrunVariableValues
-} from "../../data/speedrun-com-mappings"
+import { SpeedrunBoardId, SpeedrunVariables, destiny2GameId } from "~/data/speedrun-com-mappings"
 
-const destiny2GameId = "4d7y5zd7"
-//
-export async function getLeaderboard<R extends ListedRaid>(
-    raid: R,
-    subCategory?: keyof (typeof SpeedrunVariableValues)[R]
-): Promise<LeaderboardEntry[]> {
-    if (!SpeedrunIds[raid]) {
+export const rtaSpeedrunQueryKey = "rta-leaderboards"
+
+export type SpeedrunQueryArgs<
+    R extends ListedRaid,
+    K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
+        ? keyof D
+        : (typeof SpeedrunVariables)[R] extends null
+        ? never
+        : string
+> = (typeof SpeedrunVariables)[R] extends null
+    ? {
+          raid: R
+      }
+    : {
+          raid: R
+          category?: K
+      }
+
+export async function getSpeedrunComLeaderboard<
+    R extends ListedRaid,
+    K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
+        ? keyof D
+        : (typeof SpeedrunVariables)[R] extends null
+        ? never
+        : string
+>(params: SpeedrunQueryArgs<R, K>): Promise<LeaderboardEntry[]> {
+    if (!SpeedrunBoardId[params.raid]) {
         return []
     }
 
     const url = new URL(
-        `https://www.speedrun.com/api/v1/leaderboards/${destiny2GameId}/category/${SpeedrunIds[raid]}?embed=players`
+        `https://www.speedrun.com/api/v1/leaderboards/${destiny2GameId}/category/${
+            SpeedrunBoardId[params.raid]
+        }`
     )
-    subCategory &&
-        url.searchParams.append(
-            `var-${SpeedrunVariableId[raid]}`,
-            SpeedrunVariableValues[raid][subCategory].id
-        )
+
+    const mappings = SpeedrunVariables[params.raid]
+    if (mappings && "category" in params && params.category) {
+        const key = `var-${mappings.variable}`
+        // @ts-ignore
+        const value = mappings.values[params.category].id
+
+        url.searchParams.append(key, value)
+    }
+
+    url.searchParams.append("embed", "players")
 
     const res = await fetch(url, {
         method: "GET"
     })
+
     if (res.ok) {
         const { data } = (await res.json()) as SpeedrunLeaderboardResponse
         return data.runs.map(
@@ -61,7 +86,8 @@ export async function getLeaderboard<R extends ListedRaid>(
                 } satisfies LeaderboardEntry)
         )
     } else {
-        throw await res.json()
+        console.error(await res.json())
+        throw new Error("Invalid response")
     }
 }
 
