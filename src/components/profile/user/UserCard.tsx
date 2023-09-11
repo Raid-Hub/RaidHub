@@ -1,64 +1,28 @@
 import styles from "~/styles/pages/profile/user.module.css"
-import { UserInfoCard } from "bungie-net-core/models"
 import SocialTag from "./SocialTag"
 import UserName from "./UserName"
 import Loading from "../../global/Loading"
 import Image from "next/image"
 import { useSession } from "next-auth/react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef } from "react"
 import { useLocale } from "../../app/LocaleManager"
 import { Socials } from "../../../util/profile/socials"
 import { ProfileSocialData } from "../../../types/profile"
-import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
-import { RouterOutput as TRPCRouterOutput } from "~/server/trpc"
+import { useBungieClient } from "~/components/app/TokenManager"
+import { useProfileProps } from "~/pages/profile/[destinyMembershipType]/[destinyMembershipId]"
+import { emblemUrl, iconUrl } from "~/util/destiny/bungie-icons"
+import { trpc } from "~/util/trpc"
+import { useProfileDecoration } from "~/hooks/raidhub/useProfileDecoration"
 
-const defaultEditInput = "black"
-
-type UserCardProps = {
-    isLoading: boolean
-    userInfo: UserInfoCard | undefined
-    raidHubProfile: TRPCRouterOutput["profile"]["getProfile"]
-    emblemBackgroundPathSrc: string
-}
-
-const UserCard = ({
-    isLoading,
-    userInfo,
-    raidHubProfile,
-    emblemBackgroundPathSrc
-}: UserCardProps) => {
-    const { data } = useSession()
-    const { strings } = useLocale()
-    const ref = useRef<HTMLDivElement>(null)
-    const [isEditing, setIsEditing] = useState(false)
-    const [inputStyling, setInputStyling] = useState<string>("")
-    const { mutate: mutateProfile } = useOptimisticProfileUpdate()
-
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.style.cssText =
-                "background: " +
-                inputStyling
-                    .split(";")
-                    .filter(Boolean)
-                    .map(
-                        line =>
-                            line.replace("background-image: ", "").replace("background: ", "") ??
-                            "".replace("\n: ", "").replace(/;$/, "")
-                    )[0]
-        }
-    }, [inputStyling, isLoading])
-
-    useEffect(() => {
-        setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)
-    }, [raidHubProfile?.profileDecoration])
-
-    const handleEditorInputSave = useCallback(() => {
-        mutateProfile({
-            profileDecoration: inputStyling
-        })
-        setIsEditing(false)
-    }, [inputStyling, mutateProfile])
+export default function UserCard() {
+    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
+    const bungie = useBungieClient()
+    const { data: session } = useSession()
+    const { data: bungieProfile, isLoading: isLoadingProfile } = bungie.profile.useQuery({
+        destinyMembershipId,
+        membershipType: destinyMembershipType
+    })
+    const { data: raidHubProfile } = trpc.user.getProfile.useQuery()
 
     const socials = useMemo(() => {
         if (!raidHubProfile) return null
@@ -93,7 +57,32 @@ const UserCard = ({
         return socials
     }, [raidHubProfile])
 
-    return isLoading ? (
+    const ref = useRef<HTMLDivElement>(null)
+    const {
+        isEditing,
+        handleCancel,
+        handleStartEditing,
+        handleEditorInputSave,
+        handleReset,
+        inputStyling,
+        setInputStyling
+    } = useProfileDecoration(ref)
+
+    const { strings } = useLocale()
+
+    const emblem = useMemo(
+        () =>
+            emblemUrl(
+                bungieProfile?.characters.data
+                    ? Object.values(bungieProfile.characters.data)[0]?.emblemBackgroundPath
+                    : undefined
+            ),
+        [bungieProfile?.characters.data]
+    )
+
+    const userInfo = bungieProfile?.profile.data?.userInfo
+
+    return isLoadingProfile ? (
         <Loading wrapperClass={styles["card-loading"]} />
     ) : (
         <div ref={ref} className={styles["card"]}>
@@ -101,7 +90,7 @@ const UserCard = ({
                 <Image
                     unoptimized
                     className={styles["image-background"]}
-                    src={emblemBackgroundPathSrc}
+                    src={emblem}
                     width={474}
                     height={96}
                     priority
@@ -112,8 +101,7 @@ const UserCard = ({
                     <Image
                         src={
                             raidHubProfile?.image ??
-                            "https://www.bungie.net" +
-                                (userInfo?.iconPath ?? "/img/profile/avatars/default_avatar.gif")
+                            iconUrl(bungieProfile?.profile.data?.userInfo?.iconPath)
                         }
                         unoptimized
                         width={80}
@@ -126,9 +114,9 @@ const UserCard = ({
                     </div>
                 </div>
                 {userInfo &&
-                    userInfo.membershipId === data?.user.destinyMembershipId &&
+                    userInfo.membershipId === session?.user.destinyMembershipId &&
                     !isEditing && (
-                        <button className={styles["edit-btn"]} onClick={() => setIsEditing(true)}>
+                        <button className={styles["edit-btn"]} onClick={handleStartEditing}>
                             {strings.edit}
                         </button>
                     )}
@@ -141,16 +129,9 @@ const UserCard = ({
             {isEditing && (
                 <div className={styles["edit-background-modal"]}>
                     <div className={styles["edit-background-btns"]}>
-                        <button onClick={() => setIsEditing(false)}>{strings.cancel}</button>
+                        <button onClick={handleCancel}>{strings.cancel}</button>
                         <button onClick={handleEditorInputSave}>{strings.save}</button>
-                        <button
-                            onClick={() => {
-                                setInputStyling(
-                                    raidHubProfile?.profileDecoration ?? defaultEditInput
-                                )
-                            }}>
-                            {strings.reset}
-                        </button>
+                        <button onClick={handleReset}>{strings.reset}</button>
                     </div>
                     <p className={styles["edit-background-info-text"]}>
                         Paste a valid value for the css <code>background</code> property here.{" "}
@@ -172,5 +153,3 @@ const UserCard = ({
         </div>
     )
 }
-
-export default UserCard

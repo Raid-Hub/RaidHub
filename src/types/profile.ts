@@ -6,8 +6,6 @@ import {
     DestinyProfileComponent,
     GroupV2
 } from "bungie-net-core/models"
-import RaidReportDataCollection from "../models/profile/data/RaidReportDataCollection"
-import { RaidReportBannerTier } from "./raidreport"
 import { ClanBannerData } from "../util/destiny/parseClanBanner"
 import Activity from "../models/profile/data/Activity"
 import { FilterCallback } from "./generic"
@@ -24,10 +22,10 @@ export type InitialProfileProps = {
 }
 export type Clan = GroupV2 & { clanBanner: ClanBannerData | null }
 export type ProfileDetail = { destinyMembershipId: string; membershipType: BungieMembershipType }
-export type MembershipWithCharacters = {
+export type CharacterWithMembership = {
     destinyMembershipId: string
     membershipType: BungieMembershipType
-    characterIds: string[]
+    characterId: string
 }
 export type AllRaidStats = Map<Raid, RaidStatsCollection>
 export interface IRaidStats {
@@ -43,16 +41,6 @@ export enum RankingBannerType {
     Speed,
     FullClears
 }
-export type RankingBannerData = {
-    type: RankingBannerType
-    tier: RaidReportBannerTier
-    secondary: string | number
-    value: number
-}
-export type AllRaidReportData = {
-    activities: Map<Raid, RaidReportDataCollection>
-    rankings: RankingBannerData[]
-}
 export interface RaidData<R> {
     readonly raid: Raid
     readonly difficulty: Difficulty
@@ -60,34 +48,6 @@ export interface RaidData<R> {
 }
 
 export type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
-
-export interface IRaidReportData {
-    fastestFullClear: {
-        instanceId: string
-        value: number
-    } | null
-    flawlessTriumphActivity: IRaidReportActivity | null
-    clears: number
-    flawlessActivities: Map<string, IRaidReportActivity>
-    lowmanActivities: Map<string, IRaidReportActivity>
-    fullClears: number
-    sherpaCount: number
-    worldFirstPlacement: number | null
-}
-export type IRaidReportActivity = {
-    instanceId: string
-    playerCount: number
-    difficulty: Difficulty
-    fresh: boolean | null
-}
-export type LowManActivity = IRaidReportActivity & {
-    flawless: boolean
-}
-export type SetOfLowmans = {
-    lowest: LowManActivity | null
-    lowestFresh: LowManActivity | null
-    lowestFlawless: LowManActivity | null
-}
 
 export type Placement = { number: number; activityId: string }
 export type RaidTag = {

@@ -8,6 +8,8 @@ import { getActivityHistory } from "../services/bungie/getActivityHistory"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
+import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
+import { getDestinyStats } from "~/services/bungie/getDestinyStats"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount
@@ -78,7 +80,7 @@ export default class BungieClient implements BungieClientProtocol {
         this.accessToken = null
     }
 
-    query<TParams, TData>(queryFn: (client: BungieClient) => QueryFn<TParams, TData>) {
+    private query<TParams, TData>(queryFn: (client: BungieClient) => QueryFn<TParams, TData>) {
         return BungieQuery(this, queryFn(this))
     }
 
@@ -91,4 +93,6 @@ export default class BungieClient implements BungieClientProtocol {
     pgcr = this.query(getPGCR)
     activityHistory = this.query(getActivityHistory)
     linkedProfiles = this.query(getLinkedProfiles)
+    stats = this.query(getDestinyStats)
+    characterStats = this.query(getDestinyStatsForCharacter)
 }

@@ -3,7 +3,6 @@ import { median } from "../../../util/math"
 import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import Loading from "../../global/Loading"
 import Activity from "../../../models/profile/data/Activity"
 import { Collection } from "@discordjs/collection"
@@ -42,7 +41,6 @@ export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
     activities: Collection<string, Activity>
-    report: RaidReportDataCollection | undefined
     targetDot: string | null
     isLoading: boolean
     filter: FilterCallback<ExtendedActivity>
@@ -55,23 +53,10 @@ const baseStats: Statistics = {
     total: 0
 }
 
-const DotGraphWrapper = ({
-    activities,
-    report,
-    targetDot,
-    isLoading,
-    filter
-}: DotGraphWrapperProps) => {
+const DotGraphWrapper = ({ activities, targetDot, isLoading, filter }: DotGraphWrapperProps) => {
     const activitiesFiltered = useMemo(() => {
-        if (activities && report) {
-            return activities
-                .map(a => report.eveythingFor(a))
-
-                .filter(filter)
-        } else {
-            return null
-        }
-    }, [filter, activities, report])
+        return null
+    }, [filter, activities])
 
     const getHeight = useMemo(() => {
         let { min, max, total } = activitiesFiltered?.reduce((soFar, { activity }) => {

@@ -3,7 +3,6 @@ import Loading from "../../global/Loading"
 import ActivityTile from "./ActivityTile"
 import { useState } from "react"
 import { Raid } from "../../../types/raids"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { useLocale } from "../../app/LocaleManager"
 import { ExtendedActivity } from "../../../types/profile"
 
@@ -11,11 +10,10 @@ const CARDS_PER_PAGE = 60
 
 type RecentRaidsProps = {
     isLoading: boolean
-    allActivitiesFiltered: ExtendedActivity[] | null | null
-    raidReport: Map<Raid, RaidReportDataCollection> | null
+    allActivitiesFiltered: ExtendedActivity[] | null
 }
 
-const RecentRaids = ({ isLoading, allActivitiesFiltered, raidReport }: RecentRaidsProps) => {
+const RecentRaids = ({ isLoading, allActivitiesFiltered }: RecentRaidsProps) => {
     const [pages, setPages] = useState<number>(1)
     const { strings } = useLocale()
 

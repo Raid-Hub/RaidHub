@@ -12,14 +12,12 @@ import { useBungieClient } from "~/components/app/TokenManager"
 type PinnedActivityProps = {
     activityId: string
     isPinned: boolean
-    errorHandler: ErrorHandler
     isLoadingActivities: boolean
     isLoadingRaidHubProfile: boolean
 }
 
 const PinnedActivity = ({
     activityId,
-    errorHandler,
     isPinned,
     isLoadingActivities,
     isLoadingRaidHubProfile

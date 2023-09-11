@@ -1,11 +1,24 @@
-import ProfileWrapper from "../../../components/profile/ProfileWrapper"
 import { GetStaticProps, NextPage } from "next"
-import { InitialProfileProps } from "../../../types/profile"
-import { zUniqueDestinyProfile } from "../../../util/zod"
-import prisma from "../../../server/prisma"
+import { InitialProfileProps } from "~/types/profile"
+import { zUniqueDestinyProfile } from "~/util/zod"
+import prisma from "~/server/prisma"
+import Profile from "~/components/profile/Profile"
+import { createContext, useContext } from "react"
+
+const PropsContext = createContext<InitialProfileProps | null>(null)
+
+export const useProfileProps = () => {
+    const ctx = useContext(PropsContext)
+    if (!ctx) throw Error("This hook must be used inside the profile")
+    return ctx
+}
 
 const ProfilePage: NextPage<InitialProfileProps> = props => {
-    return <ProfileWrapper {...props} />
+    return (
+        <PropsContext.Provider value={props}>
+            <Profile {...props} />
+        </PropsContext.Provider>
+    )
 }
 
 export const getStaticPaths = () => {

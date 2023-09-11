@@ -18,7 +18,6 @@ export enum ErrorCode {
     Placements = "Pigeon",
     Emblems = "Elephant",
     RaidHubProfile = "Rainbow",
-    RaidReport = "Reppo",
     Transitory = "Window",
     Manifest = "Mountain",
     Search = "Sapphire"

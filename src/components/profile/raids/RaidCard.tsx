@@ -11,7 +11,6 @@ import RaidStatsCollection from "../../../models/profile/data/RaidStatsCollectio
 import { useLocale } from "../../app/LocaleManager"
 import { useEffect, useMemo, useState } from "react"
 import BigNumberStatItem from "./BigNumberStatItem"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import { medianElement } from "../../../util/math"
 import RaidTagLabel from "./RaidTagLabel"
 import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raidUtils"
@@ -29,10 +28,8 @@ type RaidModalProps = {
     allActivities: ActivityCollection | null
     filter: FilterCallback<ExtendedActivity>
     stats: RaidStatsCollection | undefined
-    report: RaidReportDataCollection | undefined
     isLoadingDots: boolean
     isLoadingStats: boolean
-    isLoadingReport: boolean
 }
 
 const RaidCard = ({
@@ -40,24 +37,15 @@ const RaidCard = ({
     allActivities,
     filter,
     stats,
-    report,
     isLoadingDots,
-    isLoadingStats,
-    isLoadingReport
+    isLoadingStats
 }: RaidModalProps) => {
     const { strings } = useLocale()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
     const averageClear = useMemo(() => {
-        if (report?.fastestFullClear?.value && allActivities) {
-            const completions = allActivities.all
-                .filter(a => a.completed && a.durationSeconds >= report.fastestFullClear!.value)
-                .sort((a, b) => a.durationSeconds - b.durationSeconds)
-            return medianElement(completions)
-        } else {
-            return undefined
-        }
-    }, [allActivities, report])
+        return undefined
+    }, [allActivities])
 
     const contestFirstClear: (RaceTag & { instanceId?: string }) | null = useMemo(() => {
         const contestDifficulty:
