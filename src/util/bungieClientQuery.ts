@@ -2,7 +2,7 @@ import {
     QueryObserverOptions,
     RefetchOptions,
     RefetchQueryFilters,
-    useQuery as tanstackUseQuery
+    useQuery as useQueryT
 } from "@tanstack/react-query"
 import BungieClient from "./bungieClient"
 import { v4 } from "uuid"
@@ -26,10 +26,10 @@ export default class BungieQuery<TParams, TData> {
             "queryKey" | "queryFn" | "queryHash" | "queryKeyHashFn"
         >
     ) {
-        return tanstackUseQuery<TData, TError>({
+        return useQueryT<TData, TError>({
             ...options,
-            queryFn: () => this.queryFn(params),
-            queryKey: [this.queryId, this.client.getToken(), params]
+            queryKey: [this.queryId, this.client.getToken(), params],
+            queryFn: () => this.queryFn(params)
         })
     }
 
@@ -37,6 +37,9 @@ export default class BungieQuery<TParams, TData> {
         filters?: RefetchQueryFilters<TPageData>,
         options?: RefetchOptions
     ) {
-        this.client.queryClient.refetchQueries({ ...filters, queryKey: [this.queryId] }, options)
+        return this.client.queryClient.refetchQueries(
+            { ...filters, queryKey: [this.queryId] },
+            options
+        )
     }
 }

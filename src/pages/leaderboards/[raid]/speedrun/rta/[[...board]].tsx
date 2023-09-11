@@ -1,6 +1,6 @@
 import Head from "next/head"
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps, NextPage } from "next"
-import { Hydrate, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
 import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
@@ -13,6 +13,7 @@ import {
     getSpeedrunComLeaderboard,
     rtaSpeedrunQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
+import { createServerQueryClient } from "~/server/serverQueryClient"
 
 type RTASpeedunLeaderboadProps<
     K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
@@ -78,7 +79,7 @@ export const getStaticProps: GetStaticProps<
 
         const raid = UrlPathsToRaid[path]
 
-        const queryClient = new QueryClient()
+        const queryClient = createServerQueryClient()
 
         // we prefetch the first page at build time
         const staleTime = 60 * 60 * 1000 // 1 hour

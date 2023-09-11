@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { User as PrismaUser, Profile as PrismaProfile, Prisma } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
+import { UrlPathsToRaid } from "./destiny/raidUtils"
 
 // rather than importing the full enum, we make it ourselves
 const BungieMembershipEnum = z.nativeEnum({
@@ -84,4 +85,15 @@ export const zUniqueDestinyProfile = z.object({
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
     }
+}
+
+export function parseRaidFromParams(params: unknown) {
+    const { raid: path } = z
+        .object({
+            raid: z.string().refine(key => key in UrlPathsToRaid)
+        })
+        .parse(params) as {
+        raid: keyof typeof UrlPathsToRaid
+    }
+    return UrlPathsToRaid[path]
 }
