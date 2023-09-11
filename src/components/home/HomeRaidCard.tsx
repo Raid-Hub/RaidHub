@@ -18,7 +18,6 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-image-header"]}>
                 <Image
                     priority
-                    unoptimized={false}
                     width={320}
                     height={180}
                     src={RaidCardBackground[raid]}
@@ -75,7 +74,8 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     <ul>
                         {RaidsWithReprisedContest.includes(raid as ReprisedRaid) ? (
                             <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/nochallenge`}>
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/normal`}>
                                     {strings.noChallenge}
                                 </Link>
                             </li>

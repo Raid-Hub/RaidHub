@@ -1,11 +1,11 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import Head from "next/head"
-import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
-import Leaderboard from "~/components/leaderboards/Leaderboard"
+import { Hydrate, useQuery } from "@tanstack/react-query"
+import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
 import { useLocale } from "~/components/app/LocaleManager"
-import { RaidToUrlPaths, ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
-import { getLeaderboard, leaderbordQueryKey, wfKey } from "~/services/raidhub/getLeaderboard"
+import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
 import { usePage } from "~/hooks/util/usePage"
 import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
@@ -41,10 +41,24 @@ export const getStaticProps: GetStaticProps<
     try {
         const raid = parseRaidFromParams(params)
         if (!RaidsWithReprisedContest.includes(raid as ReprisedRaid)) {
-            return { notFound: true }
+            throw Error("raid does not have a reprised version")
         }
 
-        return prefetchLeaderboard(raid, [wfKey, "normal"], 2)
+        const { staleTime, dehydratedState } = await prefetchLeaderboard(
+            raid,
+            Leaderboard.WorldFirst,
+            ["normal"],
+            2
+        )
+
+        return {
+            props: {
+                raid,
+                dehydratedState
+            },
+            revalidate: staleTime / 1000
+            // revalidate takes seconds, so divide by 1000
+        }
     } catch (e) {
         console.error(e)
         return { notFound: true }
@@ -66,10 +80,10 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
     const raidName = strings.raidNames[raid]
-    const params = [wfKey, "normal"]
+    const params = ["normal"]
     const query = useQuery({
-        queryKey: leaderbordQueryKey(raid, params, page),
-        queryFn: () => getLeaderboard(raid, params, page)
+        queryKey: leaderbordQueryKey(raid, Leaderboard.WorldFirst, params, page),
+        queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
     })
 
     return (
@@ -78,7 +92,7 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
                 <title>{`${raidName} | Normal Contest Leaderboards`}</title>
             </Head>
 
-            <Leaderboard
+            <LeaderboardComponent
                 title={"Normal Contest " + raidName}
                 subtitle={toCustomDateString(ReleaseDate[raid], locale)}
                 raid={raid}

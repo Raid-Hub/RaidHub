@@ -1,16 +1,27 @@
-import { LeaderboardMeta } from "../../types/leaderboards"
+import { LeaderboardMeta } from "~/types/leaderboards"
 import { ListedRaid } from "~/types/raids"
 
-export const wfKey = "worldfirst"
-export function leaderbordQueryKey(raid: ListedRaid, paramStrings: string[], page: number) {
-    return ["leaderboard", raid, paramStrings, page] as const
+export enum Leaderboard {
+    WorldFirst = "worldfirst"
+}
+
+export function leaderbordQueryKey(
+    raid: ListedRaid,
+    board: Leaderboard,
+    paramStrings: string[],
+    page: number
+) {
+    return ["leaderboard", raid, board, paramStrings, page] as const
 }
 export async function getLeaderboard(
     raid: ListedRaid,
+    board: Leaderboard,
     params: string[],
     page: number
 ): Promise<LeaderboardMeta> {
     console.log(raid, params, page)
+
+    // todo: implement raidhub leaderboard query
     return {
         entries: []
     }
