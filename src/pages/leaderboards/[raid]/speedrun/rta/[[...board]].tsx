@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps, NextPage } from "next"
 import { Hydrate, QueryClient, dehydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
@@ -25,33 +25,44 @@ type RTASpeedunLeaderboadProps<
     dehydratedState: unknown
 }
 
-export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => ({
-    paths:
-        process.env.APP_ENV !== "local"
-            ? Object.entries(UrlPathsToRaid)
-                  .map(([basePath, raidValue]) => {
-                      const x = SpeedrunVariables[raidValue]
-                      return [
-                          ...(x
-                              ? Object.keys(x.values).map(path => ({
-                                    params: {
-                                        raid: basePath,
-                                        board: [encodeURIComponent(path)]
-                                    }
-                                }))
-                              : []),
-                          {
-                              params: {
-                                  raid: basePath,
-                                  board: []
-                              }
+const categoryPaths = (
+    vars: NonNullable<(typeof SpeedrunVariables)[ListedRaid]>,
+    basePath: string
+) =>
+    Object.keys(vars.values).map(path => ({
+        params: {
+            raid: basePath,
+            board: [encodeURIComponent(path)]
+        }
+    }))
+
+export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => {
+    return process.env.APP_ENV === "local"
+        ? {
+              paths: [],
+              fallback: "blocking"
+          }
+        : {
+              paths: Object.entries(UrlPathsToRaid)
+                  .map(([basePath, raidEnum]) => {
+                      const base = {
+                          params: {
+                              raid: basePath,
+                              board: new Array<string>()
                           }
-                      ]
+                      }
+
+                      const vars = SpeedrunVariables[raidEnum]
+                      if (vars) {
+                          return [base, categoryPaths(vars, basePath)]
+                      } else {
+                          return base
+                      }
                   })
-                  .flat()
-            : [],
-    fallback: "blocking"
-})
+                  .flat(2) satisfies GetStaticPathsResult["paths"],
+              fallback: false
+          }
+}
 
 export const getStaticProps: GetStaticProps<
     RTASpeedunLeaderboadProps<string, ListedRaid>,
@@ -78,8 +89,8 @@ export const getStaticProps: GetStaticProps<
             if (!plausibleKeys.includes(paths[0])) throw Error("Key not found for board")
         }
 
-        const category = paths ? paths[0] : undefined
-        await queryClient.prefetchQuery([rtaSpeedrunQueryKey, raid, category], () =>
+        const category = paths ? paths[0] : null
+        await queryClient.prefetchQuery(queryKey(raid, category), () =>
             getSpeedrunComLeaderboard({ raid, category })
         ),
             {
@@ -100,6 +111,10 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
+function queryKey(raid: ListedRaid, category: string | undefined | null) {
+    return [rtaSpeedrunQueryKey, raid, category ?? null] as const
+}
+
 const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
     raid,
     category,
@@ -108,7 +123,7 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
     const { strings } = useLocale()
     const [page, setPage] = usePage()
     const query = useQuery({
-        queryKey: ["rta-leaderboards", raid, category],
+        queryKey: queryKey(raid, category),
         queryFn: () => getSpeedrunComLeaderboard({ raid, category })
     })
 

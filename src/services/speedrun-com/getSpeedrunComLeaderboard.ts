@@ -17,7 +17,7 @@ export type SpeedrunQueryArgs<
       }
     : {
           raid: R
-          category?: K
+          category?: K | null
       }
 
 export async function getSpeedrunComLeaderboard<
