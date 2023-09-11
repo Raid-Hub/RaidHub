@@ -1,6 +1,6 @@
 import Head from "next/head"
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps, NextPage } from "next"
-import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
 import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
@@ -11,9 +11,10 @@ import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import {
     SpeedrunQueryArgs,
     getSpeedrunComLeaderboard,
-    rtaSpeedrunQueryKey
+    rtaQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
-import { createServerQueryClient } from "~/server/serverQueryClient"
+import { zRaidURIComponent } from "~/util/zod"
+import { prefetchSpeedrunComLeaderboard } from "~/server/serverQueryClient"
 
 type RTASpeedunLeaderboadProps<
     K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
@@ -70,39 +71,27 @@ export const getStaticProps: GetStaticProps<
     { raid: string; board: string[] }
 > = async ({ params }) => {
     try {
-        const { raid: path, board: paths } = z
+        const { raid, board: paths } = z
             .object({
-                raid: z.string().refine(key => key in UrlPathsToRaid),
                 board: z.array(z.string()).optional()
             })
-            .parse(params) as { raid: keyof typeof UrlPathsToRaid; board?: string[] }
-
-        const raid = UrlPathsToRaid[path]
-
-        const queryClient = createServerQueryClient()
-
-        // we prefetch the first page at build time
-        const staleTime = 60 * 60 * 1000 // 1 hour
+            .merge(zRaidURIComponent)
+            .parse(params)
 
         const dict = SpeedrunVariables[raid]?.values
         if (paths && dict) {
-            const plausibleKeys = Object.keys(dict)
-            if (!plausibleKeys.includes(paths[0])) throw Error("Key not found for board")
+            if (!Object.keys(dict).includes(paths[0])) throw Error("Key not found for board")
         }
 
         const category = paths ? paths[0] : null
-        await queryClient.prefetchQuery(queryKey(raid, category), () =>
-            getSpeedrunComLeaderboard({ raid, category })
-        ),
-            {
-                staleTime
-            }
+
+        const { staleTime, dehydratedState } = await prefetchSpeedrunComLeaderboard(raid, category)
 
         return {
             props: {
                 raid,
                 category,
-                dehydratedState: dehydrate(queryClient)
+                dehydratedState
             },
             revalidate: staleTime / 1000
         }
@@ -110,10 +99,6 @@ export const getStaticProps: GetStaticProps<
         console.error(e)
         return { notFound: true }
     }
-}
-
-function queryKey(raid: ListedRaid, category: string | undefined | null) {
-    return [rtaSpeedrunQueryKey, raid, category ?? null] as const
 }
 
 const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
@@ -124,7 +109,7 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
     const { strings } = useLocale()
     const [page, setPage] = usePage()
     const query = useQuery({
-        queryKey: queryKey(raid, category),
+        queryKey: rtaQueryKey(raid, category),
         queryFn: () => getSpeedrunComLeaderboard({ raid, category })
     })
 

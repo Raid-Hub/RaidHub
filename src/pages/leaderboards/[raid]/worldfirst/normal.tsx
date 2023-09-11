@@ -9,7 +9,7 @@ import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raid
 import { usePage } from "~/hooks/util/usePage"
 import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
-import { parseRaidFromParams } from "~/util/zod"
+import { zRaidURIComponent } from "~/util/zod"
 
 type NoChallengeContestLeaderboadProps = {
     raid: ListedRaid
@@ -39,7 +39,7 @@ export const getStaticProps: GetStaticProps<
     { raid: string }
 > = async ({ params }) => {
     try {
-        const raid = parseRaidFromParams(params)
+        const { raid } = zRaidURIComponent.parse(params)
         if (!RaidsWithReprisedContest.includes(raid as ReprisedRaid)) {
             throw Error("raid does not have a reprised version")
         }

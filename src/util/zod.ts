@@ -87,13 +87,9 @@ export const zUniqueDestinyProfile = z.object({
     }
 }
 
-export function parseRaidFromParams(params: unknown) {
-    const { raid: path } = z
-        .object({
-            raid: z.string().refine(key => key in UrlPathsToRaid)
-        })
-        .parse(params) as {
-        raid: keyof typeof UrlPathsToRaid
-    }
-    return UrlPathsToRaid[path]
-}
+export const zRaidURIComponent = z.object({
+    raid: z
+        .string()
+        .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
+        .transform(key => UrlPathsToRaid[key])
+})

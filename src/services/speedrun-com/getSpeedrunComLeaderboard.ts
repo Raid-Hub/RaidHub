@@ -2,8 +2,6 @@ import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leade
 import { ListedRaid } from "../../types/raids"
 import { SpeedrunBoardId, SpeedrunVariables, destiny2GameId } from "~/data/speedrun-com-mappings"
 
-export const rtaSpeedrunQueryKey = "rta-leaderboards"
-
 export type SpeedrunQueryArgs<
     R extends ListedRaid,
     K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
@@ -11,14 +9,14 @@ export type SpeedrunQueryArgs<
         : (typeof SpeedrunVariables)[R] extends null
         ? never
         : string
-> = (typeof SpeedrunVariables)[R] extends null
-    ? {
-          raid: R
-      }
-    : {
-          raid: R
-          category?: K | null
-      }
+> = {
+    raid: R
+    category?: K | null
+}
+
+export function rtaQueryKey(raid: ListedRaid, category: string | undefined | null) {
+    return ["rta-leaderboards", raid, category ?? null] as const
+}
 
 export async function getSpeedrunComLeaderboard<
     R extends ListedRaid,

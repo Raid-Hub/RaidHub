@@ -79,7 +79,7 @@ export default class BungieClient implements BungieClientProtocol {
     }
 
     query<TParams, TData>(queryFn: (client: BungieClient) => QueryFn<TParams, TData>) {
-        return new BungieQuery(this, queryFn(this))
+        return BungieQuery(this, queryFn(this))
     }
 
     clan = {

@@ -1,16 +1,15 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
-import LeaderboardComponent from "../../../components/leaderboards/Leaderboard"
 import Head from "next/head"
-import { ListedRaid, RaidsWithReprisedContest } from "../../../types/raids"
-import { RaidToUrlPaths, ReleaseDate, UrlPathsToRaid } from "../../../util/destiny/raidUtils"
-import { useLocale } from "../../../components/app/LocaleManager"
-import { toCustomDateString } from "../../../util/presentation/formatting"
-import { z } from "zod"
-import { QueryClient, Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, useQuery } from "@tanstack/react-query"
+import { useLocale } from "~/components/app/LocaleManager"
+import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
+import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { toCustomDateString } from "~/util/presentation/formatting"
 import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
-import { usePage } from "../../../hooks/util/usePage"
-import { parseRaidFromParams } from "~/util/zod"
+import { usePage } from "~/hooks/util/usePage"
+import { zRaidURIComponent } from "~/util/zod"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 
 type WorldsFirstLeaderboadProps = {
     raid: ListedRaid
@@ -37,7 +36,7 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     params
 }) => {
     try {
-        const raid = parseRaidFromParams(params)
+        const { raid } = zRaidURIComponent.parse(params)
 
         const paramStrings = [
             (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)

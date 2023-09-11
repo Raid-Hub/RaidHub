@@ -1,8 +1,12 @@
 import { QueryClient, dehydrate } from "@tanstack/react-query"
 import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
+import {
+    getSpeedrunComLeaderboard,
+    rtaQueryKey
+} from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { ListedRaid } from "~/types/raids"
 
-export function createServerQueryClient() {
+function createServerQueryClient() {
     return new QueryClient({
         defaultOptions: {
             queries: {
@@ -33,6 +37,24 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
             )
         )
     )
+
+    return {
+        staleTime,
+        dehydratedState: dehydrate(queryClient)
+    }
+}
+
+export async function prefetchSpeedrunComLeaderboard(raid: ListedRaid, category: string | null) {
+    // we prefetch the first page at build time
+    const staleTime = 60 * 60 * 1000 // 1 hour
+
+    const queryClient = createServerQueryClient()
+    await queryClient.prefetchQuery(rtaQueryKey(raid, category), () =>
+        getSpeedrunComLeaderboard({ raid, category })
+    ),
+        {
+            staleTime
+        }
 
     return {
         staleTime,
