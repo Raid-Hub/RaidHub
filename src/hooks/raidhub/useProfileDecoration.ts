@@ -1,31 +1,31 @@
 import { RefObject, useCallback, useEffect, useState } from "react"
 import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
-import { useSession } from "next-auth/react"
+import { useProfileProps } from "~/components/profile/Profile"
 
 const defaultEditInput = "black"
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
-    const { status } = useSession()
-    const { data: raidHubProfile } = trpc.user.getProfile.useQuery(undefined, {
-        enabled: status === "authenticated"
-    })
+    const { destinyMembershipId } = useProfileProps()
+    const { data: raidHubProfile } = trpc.profile.getProfile.useQuery({ destinyMembershipId })
+
     const [isEditing, setIsEditing] = useState(false)
     const [inputStyling, setInputStyling] = useState<string>("")
     const { mutate: mutateProfile } = useOptimisticProfileUpdate()
 
     useEffect(() => {
         if (ref.current) {
-            ref.current.style.cssText =
-                "background: " +
-                inputStyling
-                    .split(";")
-                    .filter(Boolean)
-                    .map(
-                        line =>
-                            line.replace("background-image: ", "").replace("background: ", "") ??
-                            "".replace("\n: ", "").replace(/;$/, "")
-                    )[0]
+            ref.current.style.cssText = inputStyling
+                ? "background: " +
+                  inputStyling
+                      .split(";")
+                      .filter(Boolean)
+                      .map(
+                          line =>
+                              line.replace("background-image: ", "").replace("background: ", "") ??
+                              "".replace("\n: ", "").replace(/;$/, "")
+                      )[0]
+                : ""
         }
     }, [inputStyling, ref])
 

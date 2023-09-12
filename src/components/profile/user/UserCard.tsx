@@ -84,73 +84,79 @@ export default function UserCard() {
 
     const userInfo = bungieProfile?.profile.data?.userInfo
 
-    return isLoadingProfile ? (
-        <Loading className={styles["card-loading"]} />
-    ) : (
+    return (
         <div ref={ref} className={styles["card"]}>
-            <div className={styles["banner"]}>
-                <Image
-                    unoptimized
-                    className={styles["image-background"]}
-                    src={emblem}
-                    width={474}
-                    height={96}
-                    priority
-                    alt="profile banner"
-                />
+            {isLoadingProfile ? (
+                <Loading className={styles["card-loading"]} />
+            ) : (
+                <>
+                    <div className={styles["banner"]}>
+                        <Image
+                            unoptimized
+                            className={styles["image-background"]}
+                            src={emblem}
+                            width={474}
+                            height={96}
+                            priority
+                            alt="profile banner"
+                        />
 
-                <div className={styles["details"]}>
-                    <Image
-                        src={
-                            raidHubProfile?.image ??
-                            iconUrl(bungieProfile?.profile.data?.userInfo?.iconPath)
-                        }
-                        unoptimized
-                        width={80}
-                        height={80}
-                        alt="profile picture"
-                    />
+                        <div className={styles["details"]}>
+                            <Image
+                                src={
+                                    raidHubProfile?.image ??
+                                    iconUrl(bungieProfile?.profile.data?.userInfo?.iconPath)
+                                }
+                                unoptimized
+                                width={80}
+                                height={80}
+                                alt="profile picture"
+                            />
 
-                    <div className={styles["profile-username"]}>
-                        {userInfo && <UserName {...userInfo} />}
+                            <div className={styles["profile-username"]}>
+                                {userInfo && <UserName {...userInfo} />}
+                            </div>
+                        </div>
+                        {userInfo &&
+                            userInfo.membershipId === session?.user.destinyMembershipId &&
+                            !isEditing && (
+                                <button className={styles["edit-btn"]} onClick={handleStartEditing}>
+                                    {strings.edit}
+                                </button>
+                            )}
                     </div>
-                </div>
-                {userInfo &&
-                    userInfo.membershipId === session?.user.destinyMembershipId &&
-                    !isEditing && (
-                        <button className={styles["edit-btn"]} onClick={handleStartEditing}>
-                            {strings.edit}
-                        </button>
+
+                    <div className={styles["icons"]}>
+                        {socials &&
+                            socials.map((social, key) => <SocialTag {...social} key={key} />)}
+                    </div>
+
+                    {isEditing && (
+                        <div className={styles["edit-background-modal"]}>
+                            <div className={styles["edit-background-btns"]}>
+                                <button onClick={handleCancel}>{strings.cancel}</button>
+                                <button onClick={handleEditorInputSave}>{strings.save}</button>
+                                <button onClick={handleReset}>{strings.reset}</button>
+                            </div>
+                            <p className={styles["edit-background-info-text"]}>
+                                Paste a valid value for the css <code>background</code> property
+                                here.{" "}
+                                <a
+                                    href="https://www.joshwcomeau.com/gradient-generator/"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    Online generator
+                                </a>
+                            </p>
+                            <textarea
+                                className={styles["edit-background-input"]}
+                                name={"background-editor"}
+                                onChange={e => setInputStyling(e.target.value)}
+                                value={inputStyling}
+                            />
+                        </div>
                     )}
-            </div>
-
-            <div className={styles["icons"]}>
-                {socials && socials.map((social, key) => <SocialTag {...social} key={key} />)}
-            </div>
-
-            {isEditing && (
-                <div className={styles["edit-background-modal"]}>
-                    <div className={styles["edit-background-btns"]}>
-                        <button onClick={handleCancel}>{strings.cancel}</button>
-                        <button onClick={handleEditorInputSave}>{strings.save}</button>
-                        <button onClick={handleReset}>{strings.reset}</button>
-                    </div>
-                    <p className={styles["edit-background-info-text"]}>
-                        Paste a valid value for the css <code>background</code> property here.{" "}
-                        <a
-                            href="https://www.joshwcomeau.com/gradient-generator/"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            Online generator
-                        </a>
-                    </p>
-                    <textarea
-                        className={styles["edit-background-input"]}
-                        name={"background-editor"}
-                        onChange={e => setInputStyling(e.target.value)}
-                        value={inputStyling}
-                    />
-                </div>
+                </>
             )}
         </div>
     )
