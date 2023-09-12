@@ -15,28 +15,34 @@ export const removeProvider = protectedProcedure
         const providerId = input.providerId
 
         try {
-            await Promise.all([
-                ctx.prisma.user.update({
-                    where: { id: userId },
-                    data: {
-                        profile: {
-                            update: {
-                                [providerIdToUsernamePropMap[providerId]]: null
-                            }
+            const { accounts } = await ctx.prisma.user.update({
+                where: { id: userId },
+                data: {
+                    profile: {
+                        update: {
+                            [providerIdToUsernamePropMap[providerId]]: null
                         }
                     }
-                }),
-                ctx.prisma.account
-                    .delete({
+                },
+                select: {
+                    accounts: {
                         where: {
-                            provider_userId: {
-                                provider: providerId,
-                                userId: userId
-                            }
+                            userId: userId,
+                            provider: providerId
                         }
-                    })
-                    .catch(console.error)
-            ])
+                    }
+                }
+            })
+            if (accounts.length) {
+                await ctx.prisma.account.delete({
+                    where: {
+                        provider_userId: {
+                            provider: providerId,
+                            userId: userId
+                        }
+                    }
+                })
+            }
         } catch (e: any) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",

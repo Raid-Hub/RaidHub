@@ -3,7 +3,7 @@ import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useProfileProps } from "~/components/profile/Profile"
 
-const defaultEditInput = "black"
+const defaultEditInput = ""
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
     const { destinyMembershipId } = useProfileProps()

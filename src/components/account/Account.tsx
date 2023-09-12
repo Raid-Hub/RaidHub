@@ -44,7 +44,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
     return (
         <main>
             <h1>Welcome, {session.user.name}</h1>
-            <section className={styles["section"]}>
+            <section className={[styles["section"], styles["flex"]].join(" ")}>
                 <div className={[styles["buttons"], styles["glossy-bg"]].join(" ")}>
                     <Link
                         href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
@@ -64,7 +64,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                     </button>
                 </div>
             </section>
-            <section className={styles["section"]}>
+            <section className={[styles["section"], styles["flex"]].join(" ")}>
                 <h2>Manage Account</h2>
                 <Form user={session.user} refreshSession={refreshSession} />
             </section>
