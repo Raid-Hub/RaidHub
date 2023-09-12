@@ -5,12 +5,13 @@ import Footer from "../components/global/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import TokenManager from "../components/app/TokenManager"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchModal from "~/components/global/SearchModal"
 import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
 import { trpc } from "~/util/trpc"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
@@ -22,6 +23,18 @@ type PageProps = {
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
+
+    const router = useRouter()
+
+    /* disables the prefetching behavior of next/link, except for profile pages */
+    useEffect(() => {
+        const prefetch = router.prefetch
+        router.prefetch = async (url, asPath, options) => {
+            if (url.match(/\/profile\//)) {
+                return prefetch(url, asPath, options)
+            }
+        }
+    }, [])
 
     return (
         <LocaleManager>
