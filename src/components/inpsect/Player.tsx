@@ -36,7 +36,7 @@ export default function Player({
             </button>
         </ResolvedPlayer>
     ) : (
-        <Loading wrapperClass={styles["player"]} />
+        <Loading className={styles["player"]} />
     )
 }
 
@@ -104,7 +104,7 @@ function ResolvedPlayer({
     const legs = findArmorInBucket(items ?? [], "legs")
     const classItem = findArmorInBucket(items ?? [], "classItem")
 
-    if (isLoading) return <Loading wrapperClass={styles["player"]} />
+    if (isLoading) return <Loading className={styles["player"]} />
     return data ? (
         <div className={styles["player"]}>
             {data.profile.data && data.characters.data && (

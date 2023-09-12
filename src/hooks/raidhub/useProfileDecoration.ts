@@ -1,11 +1,15 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { RefObject, useCallback, useEffect, useState } from "react"
 import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
+import { useSession } from "next-auth/react"
 
 const defaultEditInput = "black"
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
-    const { data: raidHubProfile } = trpc.user.getProfile.useQuery()
+    const { status } = useSession()
+    const { data: raidHubProfile } = trpc.user.getProfile.useQuery(undefined, {
+        enabled: status === "authenticated"
+    })
     const [isEditing, setIsEditing] = useState(false)
     const [inputStyling, setInputStyling] = useState<string>("")
     const { mutate: mutateProfile } = useOptimisticProfileUpdate()
@@ -23,7 +27,7 @@ export function useProfileDecoration(ref: RefObject<HTMLElement>) {
                             "".replace("\n: ", "").replace(/;$/, "")
                     )[0]
         }
-    }, [inputStyling, ref.current])
+    }, [inputStyling, ref])
 
     useEffect(() => {
         setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)

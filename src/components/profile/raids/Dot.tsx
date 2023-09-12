@@ -1,8 +1,8 @@
 import styles from "../../../styles/pages/profile/raids.module.css"
-import { MouseEvent, useCallback, useEffect, useMemo, useRef } from "react"
+import { MouseEvent, useCallback, useEffect, useRef } from "react"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
-import { Difficulty } from "../../../types/raids"
+import { ElevatedRaidDifficulties, ElevatedRaidDifficulty } from "../../../types/raids"
 import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raidUtils"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
@@ -36,7 +36,7 @@ const Dot = ({
 }: DotProps) => {
     const ref = useRef<SVGGElement | null>(null)
 
-    const details = useMemo(() => raidTupleFromHash(activity.hash), [activity])
+    const [raid, difficulty] = raidTupleFromHash(activity.hash)
 
     const handleHover = useCallback(
         ({ clientX, currentTarget }: MouseEvent) => {
@@ -112,8 +112,7 @@ const Dot = ({
                 {playerCount <= 3 ? (
                     <Star x={centerX} y={centerY} spinning={playerCount === 1} />
                 ) : (
-                    (isContest(details[0], activity.startDate) ||
-                        isDayOne(details[0], activity.endDate)) && (
+                    (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
                         <image
                             width={2 * SKULL_FACTOR * RADIUS}
                             height={2 * SKULL_FACTOR * RADIUS}
@@ -124,7 +123,7 @@ const Dot = ({
                         />
                     )
                 )}
-                {[Difficulty.MASTER, Difficulty.PRESTIGE].includes(details[1]) && (
+                {ElevatedRaidDifficulties.includes(difficulty as ElevatedRaidDifficulty) && (
                     <circle
                         fill="none"
                         stroke="white"

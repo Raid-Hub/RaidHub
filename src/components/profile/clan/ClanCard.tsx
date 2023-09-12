@@ -6,7 +6,8 @@ import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
-import { useProfileProps } from "~/pages/profile/[destinyMembershipType]/[destinyMembershipId]"
+import ErrorComponent from "~/components/global/Error"
+import { useProfileProps } from "../Profile"
 
 const ClanCard = () => {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
@@ -22,7 +23,7 @@ const ClanCard = () => {
     )
 
     return isLoading ? (
-        <Loading wrapperClass={styles["card-loading"]} />
+        <Loading className={styles["card-loading"]} />
     ) : clan ? (
         <Link href={`/clan/${clan.groupId}`} className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
@@ -39,10 +40,10 @@ const ClanCard = () => {
             </div>
         </Link>
     ) : error ? (
-        <div className={styles["clan"]} style={{ flexDirection: "column", gap: "1em" }}>
-            <div>Error Loading Clan</div>
-            <div>{CustomError.handle(error, ErrorCode.Clan).message}</div>
-        </div>
+        <ErrorComponent
+            error={CustomError.handle(error, ErrorCode.Clan)}
+            title={"Error Loading Clan"}
+        />
     ) : null
 }
 

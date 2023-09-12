@@ -84,7 +84,7 @@ const Leaderboard = ({
                     ))) ||
                     new Array(ENTRIES_PER_PAGE).fill(null).map((_, idx) => (
                         <Fragment key={idx}>
-                            <Loading wrapperClass={styles["leaderboard-entry-loading"]} />
+                            <Loading className={styles["leaderboard-entry-loading"]} />
                             {idx < ENTRIES_PER_PAGE - 1 && (
                                 <hr className={styles["leaderboard-divider"]} />
                             )}

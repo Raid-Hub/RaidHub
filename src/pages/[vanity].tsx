@@ -2,7 +2,6 @@ import { InitialProfileProps } from "~/types/profile"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import prisma from "~/server/prisma"
 import { z } from "zod"
-import { reactQueryClient } from "~/util/reactQueryClient"
 import Profile from "~/components/profile/Profile"
 
 const ProfileVanityPage: NextPage<InitialProfileProps> = props => {

@@ -15,7 +15,7 @@ export default function PlayerItem({
 }) {
     const { data, isLoading } = useItem(item.itemHash)
 
-    if (isLoading) return <Loading wrapperClass={styles["item"]} />
+    if (isLoading) return <Loading className={styles["item"]} />
 
     return data ? (
         <div className={styles["item"]} data-item-hash={item.itemHash}>

@@ -1,11 +1,8 @@
 import {
-    QueriesOptions,
-    QueryKey,
     QueryObserverOptions,
     RefetchOptions,
     RefetchQueryFilters,
     UseQueryOptions,
-    UseQueryResult,
     useQueries,
     useQuery
 } from "@tanstack/react-query"
@@ -39,7 +36,7 @@ export default function BungieQuery<TParams, TData>(
             T extends Omit<
                 QueryObserverOptions<TData, unknown, TData>,
                 "queryKey" | "queryFn" | "queryHash" | "queryKeyHashFn"
-            >[]
+            >
         >(queries: TParams[], options?: T, context?: UseQueryOptions["context"]) {
             return useQueries<UseQueryOptionsForUseQueries<TData, unknown, TData>[]>({
                 context,

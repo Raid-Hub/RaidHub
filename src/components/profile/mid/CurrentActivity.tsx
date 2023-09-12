@@ -11,6 +11,7 @@ import {
 import { useBungieClient } from "~/components/app/TokenManager"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { useActivity, useActivityMode } from "~/components/app/DestinyManifestManager"
+import Loading from "~/components/global/Loading"
 
 type CurrentActivityParams = {
     transitoryComponent: DestinyProfileTransitoryComponent
@@ -23,13 +24,12 @@ const CurrentActivity = ({
     activitiesComponent,
     profileUpdatedAt
 }: CurrentActivityParams) => {
-    const bungie = useBungieClient()
-
-    const { strings } = useLocale()
-
-    const { data: activity } = useActivity(activitiesComponent.currentActivityHash)
-
-    const { data: activityMode } = useActivityMode(activitiesComponent.currentActivityModeHash)
+    const { data: activity, isLoading: isLoadingActivity } = useActivity(
+        activitiesComponent.currentActivityHash
+    )
+    const { data: activityMode, isLoading: isLoadingActivityMode } = useActivityMode(
+        activitiesComponent.currentActivityModeHash
+    )
 
     const activityName = useMemo(() => {
         const activityName = activity?.displayProperties.name
@@ -45,7 +45,13 @@ const CurrentActivity = ({
         }
     }, [activity, activityMode])
 
-    return transitoryComponent ? (
+    const { strings } = useLocale()
+
+    if (isLoadingActivityMode || isLoadingActivity) {
+        return <Loading className={styles["current-activity"]} />
+    }
+
+    return (
         <Link
             href={{
                 pathname: "/inspect",
@@ -76,7 +82,7 @@ const CurrentActivity = ({
                 </div>
             )}
         </Link>
-    ) : null
+    )
 }
 
 function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {

@@ -55,7 +55,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                         <section>
                             <h2>Members</h2>
                             {isLoadingClanMembers ? (
-                                <Loading wrapperClass="" />
+                                <Loading className="" />
                             ) : (
                                 clanMembers &&
                                 clanMembers.map(member => (

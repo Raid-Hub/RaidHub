@@ -5,10 +5,14 @@ import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import DestinyPGCR from "~/models/pgcr/PGCR"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
+import { useSession } from "next-auth/react"
 
 const PinPCRCell = () => {
     const { data: pgcr } = usePGCRContext()
-    const { data: profile } = trpc.user.getProfile.useQuery()
+    const { status } = useSession()
+    const { data: profile } = trpc.user.getProfile.useQuery(undefined, {
+        enabled: status === "authenticated"
+    })
     const { mutate: updateProfile } = useOptimisticProfileUpdate()
 
     const handlePinClick = (pgcr: DestinyPGCR) =>

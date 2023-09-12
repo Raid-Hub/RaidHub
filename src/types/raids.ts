@@ -92,6 +92,9 @@ export const ReprisedContestRaidDifficulties = [
 ] as const
 export type ReprisedRaidChallengeMode = (typeof ReprisedContestRaidDifficulties)[number]
 
+export const ElevatedRaidDifficulties = [Difficulty.MASTER, Difficulty.PRESTIGE] as const
+export type ElevatedRaidDifficulty = (typeof ElevatedRaidDifficulties)[number]
+
 export const ReprisedContestDifficultyDictionary: Record<
     (typeof RaidsWithReprisedContest)[number],
     (typeof ReprisedContestRaidDifficulties)[number]

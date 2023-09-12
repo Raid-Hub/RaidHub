@@ -9,10 +9,10 @@ import { useLocale } from "../../app/LocaleManager"
 import { Socials } from "../../../util/profile/socials"
 import { ProfileSocialData } from "../../../types/profile"
 import { useBungieClient } from "~/components/app/TokenManager"
-import { useProfileProps } from "~/pages/profile/[destinyMembershipType]/[destinyMembershipId]"
 import { emblemUrl, iconUrl } from "~/util/destiny/bungie-icons"
 import { trpc } from "~/util/trpc"
 import { useProfileDecoration } from "~/hooks/raidhub/useProfileDecoration"
+import { useProfileProps } from "../Profile"
 
 export default function UserCard() {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
@@ -22,7 +22,9 @@ export default function UserCard() {
         destinyMembershipId,
         membershipType: destinyMembershipType
     })
-    const { data: raidHubProfile } = trpc.user.getProfile.useQuery()
+    const { data: raidHubProfile } = trpc.profile.getProfile.useQuery({
+        destinyMembershipId
+    })
 
     const socials = useMemo(() => {
         if (!raidHubProfile) return null
@@ -83,7 +85,7 @@ export default function UserCard() {
     const userInfo = bungieProfile?.profile.data?.userInfo
 
     return isLoadingProfile ? (
-        <Loading wrapperClass={styles["card-loading"]} />
+        <Loading className={styles["card-loading"]} />
     ) : (
         <div ref={ref} className={styles["card"]}>
             <div className={styles["banner"]}>
