@@ -85,10 +85,6 @@
     top: 50%;
     transform: translateY(-50%);
     margin: 0;
-
-    background-color: var(--modal-background);
-    padding: 5px;
-    border-radius: 5px;
 }
 
 .remove-btn {

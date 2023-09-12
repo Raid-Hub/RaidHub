@@ -9,7 +9,7 @@ import { Layout } from "../mid/LayoutToggle"
 import { useBungieClient } from "~/components/app/TokenManager"
 import { BungieMembershipType } from "bungie-net-core/models"
 import RaidStatsCollection from "~/models/profile/data/RaidStatsCollection"
-import ActivityCollection, { applyFilter } from "~/models/profile/data/ActivityCollection"
+import { applyFilter } from "~/models/profile/data/ActivityCollection"
 import { Collection } from "@discordjs/collection"
 
 type RaidsProps = {

@@ -4,7 +4,6 @@ import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
 import Loading from "../../global/Loading"
-import Activity from "../../../models/profile/data/Activity"
 import { Collection } from "@discordjs/collection"
 import { ExtendedActivity } from "~/types/profile"
 

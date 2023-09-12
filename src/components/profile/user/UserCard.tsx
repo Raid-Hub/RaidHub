@@ -111,7 +111,7 @@ export default function UserCard() {
                         alt="profile picture"
                     />
 
-                    <div className={styles["username"]}>
+                    <div className={styles["profile-username"]}>
                         {userInfo && <UserName {...userInfo} />}
                     </div>
                 </div>
