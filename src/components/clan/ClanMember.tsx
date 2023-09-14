@@ -2,10 +2,7 @@ import styles from "~/styles/pages/clan.module.css"
 import { GroupMember } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
-
-function bungieIcon(src: string) {
-    return "https://www.bungie.net" + src
-}
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 export default function ClanMember({ member }: { member: GroupMember }) {
     console.log(member)
@@ -15,7 +12,7 @@ export default function ClanMember({ member }: { member: GroupMember }) {
             className={styles["member"]}>
             <div className={styles["member-icon-container"]}>
                 <Image
-                    src={bungieIcon(member.bungieNetUserInfo.iconPath)}
+                    src={bungieIconUrl(member.bungieNetUserInfo.iconPath)}
                     alt="icon"
                     unoptimized
                     fill

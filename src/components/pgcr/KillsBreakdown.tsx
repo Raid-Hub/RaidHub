@@ -6,6 +6,7 @@ import Link from "next/link"
 import StyledButton from "../reusable/StyledButton"
 import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
+import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 
 type AbilityData = {
     name: string
@@ -61,7 +62,7 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
                 unoptimized
                 src={
                     weapon?.displayProperties.icon
-                        ? `https://www.bungie.net${weapon.displayProperties.icon}`
+                        ? bungieItemUrl(weapon.displayProperties.icon)
                         : Question_Mark
                 }
                 alt={weapon?.displayProperties.name ?? ""}

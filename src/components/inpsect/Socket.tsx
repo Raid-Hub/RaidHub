@@ -2,6 +2,7 @@ import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
 import { DestinyItemSocketState } from "bungie-net-core/models"
 import { useItem } from "../app/DestinyManifestManager"
+import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 
 export type EnabledDestinyItemSocketState = DestinyItemSocketState & {
     isEnabled: true
@@ -15,9 +16,9 @@ export default function Socket({ socket }: { socket: EnabledDestinyItemSocketSta
         <div className={styles["socket"]} data-socket-hash={socket.plugHash}>
             <Image
                 className={styles["weapon-icon"]}
-                src={`https://www.bungie.net${socketData.displayProperties.icon}`}
+                src={bungieItemUrl(socketData.displayProperties.icon)}
                 unoptimized
-                alt={socketData?.displayProperties.name ?? ""}
+                alt={socketData.displayProperties.name}
                 width={20}
                 height={20}
             />

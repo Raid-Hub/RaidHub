@@ -9,7 +9,7 @@ import { useLocale } from "../../app/LocaleManager"
 import { Socials } from "../../../util/profile/socials"
 import { ProfileSocialData } from "../../../types/profile"
 import { useBungieClient } from "~/components/app/TokenManager"
-import { emblemUrl, iconUrl } from "~/util/destiny/bungie-icons"
+import { emblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { trpc } from "~/util/trpc"
 import { useProfileDecoration } from "~/hooks/raidhub/useProfileDecoration"
 import { useProfileProps } from "../Profile"
@@ -103,7 +103,7 @@ export default function UserCard() {
 
                         <div className={styles["details"]}>
                             <Image
-                                src={raidHubProfile?.image ?? iconUrl(userInfo?.iconPath)}
+                                src={raidHubProfile?.image ?? bungieIconUrl(userInfo?.iconPath)}
                                 unoptimized
                                 width={80}
                                 height={80}
