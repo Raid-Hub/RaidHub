@@ -25,7 +25,7 @@ export default function Player({
         staleTime: Infinity
     })
     const primaryProfile = useMemo(
-        () => linkedProfiles?.profiles.find(isPrimaryCrossSave),
+        () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, member.membershipId)),
         [linkedProfiles]
     )
 

@@ -88,7 +88,9 @@ const CurrentActivity = ({
 function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {
     const bungie = useBungieClient()
     const { data } = bungie.linkedProfiles.useQuery({ membershipId }, { staleTime: Infinity })
-    const primaryProfile = data ? data.profiles.find(isPrimaryCrossSave)! : null
+    const primaryProfile = data
+        ? data.profiles.find(p => isPrimaryCrossSave(p, membershipId))!
+        : null
 
     return primaryProfile ? (
         <Link href={`/profile/${primaryProfile.membershipType}/${primaryProfile.membershipId}`}>
