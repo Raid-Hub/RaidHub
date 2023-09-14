@@ -5,25 +5,27 @@ import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import {
     DestinyCharacterActivitiesComponent,
-    DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
 import { useBungieClient } from "~/components/app/TokenManager"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { useActivity, useActivityMode } from "~/components/app/DestinyManifestManager"
 import Loading from "~/components/global/Loading"
+import { useProfileProps } from "../Profile"
 
 type CurrentActivityParams = {
-    transitoryComponent: DestinyProfileTransitoryComponent
     activitiesComponent: DestinyCharacterActivitiesComponent
     profileUpdatedAt: number
 }
 
-const CurrentActivity = ({
-    transitoryComponent,
-    activitiesComponent,
-    profileUpdatedAt
-}: CurrentActivityParams) => {
+const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActivityParams) => {
+    const bungie = useBungieClient()
+    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
+    const { data: transitoryComponent, isLoading: isLoadingTransitoryComponent } =
+        bungie.profileTransitory.useQuery({
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        })
     const { data: activity, isLoading: isLoadingActivity } = useActivity(
         activitiesComponent.currentActivityHash
     )
@@ -47,11 +49,11 @@ const CurrentActivity = ({
 
     const { strings } = useLocale()
 
-    if (isLoadingActivityMode || isLoadingActivity) {
+    if (isLoadingActivityMode || isLoadingActivity || isLoadingTransitoryComponent) {
         return <Loading className={styles["current-activity"]} />
     }
 
-    return (
+    return transitoryComponent?.currentActivity ? (
         <Link
             href={{
                 pathname: "/inspect",
@@ -82,7 +84,7 @@ const CurrentActivity = ({
                 </div>
             )}
         </Link>
-    )
+    ) : null
 }
 
 function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {

@@ -1,19 +1,38 @@
 import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { createServerSideHelpers } from "@trpc/react-query/server"
 import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
     getSpeedrunComLeaderboard,
     rtaQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { ListedRaid } from "~/types/raids"
+import { appRouter } from "./trpc/router"
+import prisma from "./prisma"
 
-function createServerQueryClient() {
-    return new QueryClient({
+const createServerQueryClient = () =>
+    new QueryClient({
         defaultOptions: {
             queries: {
                 staleTime: 0
             }
         }
     })
+
+const trpcServerSideHelpers = () =>
+    createServerSideHelpers({
+        router: appRouter,
+        ctx: { req: undefined, res: undefined, session: null, prisma },
+        queryClient: createServerQueryClient()
+    })
+
+export async function prefetchRaidHubProfile(destinyMembershipId: string) {
+    const helpers = trpcServerSideHelpers()
+
+    await helpers.profile.byDestinyMembershipId.prefetch({
+        destinyMembershipId
+    })
+
+    return helpers.dehydrate()
 }
 
 export async function prefetchLeaderboard<R extends ListedRaid>(

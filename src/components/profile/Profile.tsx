@@ -28,7 +28,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
     // DATA HOOKS
     const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } =
-        trpc.profile.getProfile.useQuery({
+        trpc.profile.byDestinyMembershipId.useQuery({
             destinyMembershipId
         })
 
@@ -71,14 +71,15 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
     const [activeFilter, setActiveFilter, isFilterMounted] = useActivityFilters()
 
-    const name =
+    const username =
+        raidHubProfile?.name ??
         primaryDestinyProfile?.profile.data?.userInfo.bungieGlobalDisplayName ??
         primaryDestinyProfile?.profile.data?.userInfo.displayName
 
     return (
         <>
             <Head>
-                <title key="title">{name ? `${name} | RaidHub` : "RaidHub"}</title>
+                <title key="title">{username ? `${username} | RaidHub` : "RaidHub"}</title>
             </Head>
             <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
                 <main className={styles["main"]}>
@@ -88,24 +89,20 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     </section>
 
                     <section className={styles["mid"]}>
-                        {primaryDestinyProfile?.characterActivities.data &&
-                            primaryDestinyProfile.profileTransitoryData.data && (
-                                <CurrentActivity
-                                    profileUpdatedAt={profileUpdatedAt}
-                                    transitoryComponent={
-                                        primaryDestinyProfile.profileTransitoryData.data
-                                    }
-                                    activitiesComponent={
-                                        Object.values(
-                                            primaryDestinyProfile.characterActivities.data
-                                        ).sort(
-                                            (a, b) =>
-                                                new Date(b.dateActivityStarted).getTime() -
-                                                new Date(a.dateActivityStarted).getTime()
-                                        )[0]
-                                    }
-                                />
-                            )}
+                        {primaryDestinyProfile?.characterActivities.data && (
+                            <CurrentActivity
+                                profileUpdatedAt={profileUpdatedAt}
+                                activitiesComponent={
+                                    Object.values(
+                                        primaryDestinyProfile.characterActivities.data
+                                    ).sort(
+                                        (a, b) =>
+                                            new Date(b.dateActivityStarted).getTime() -
+                                            new Date(a.dateActivityStarted).getTime()
+                                    )[0]
+                                }
+                            />
+                        )}
                         {pinnedActivityId ? (
                             <PinnedActivity
                                 activityId={pinnedActivityId}

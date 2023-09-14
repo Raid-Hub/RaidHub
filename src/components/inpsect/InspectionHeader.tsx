@@ -27,13 +27,19 @@ export default function InspectionHeader({
                 />
                 <Checkbox isChecked={isCheckboxChecked} setIsChecked={setIsCheckboxChecked} />
                 <button
-                    onClick={() =>
+                    onClick={() => {
                         bungie.profile.refetchQueries({
                             predicate(query) {
                                 return memberIds.some(id => query.queryHash.includes(id))
                             }
                         })
-                    }>
+
+                        bungie.profileTransitory.refetchQueries({
+                            predicate(query) {
+                                return memberIds.some(id => query.queryHash.includes(id))
+                            }
+                        })
+                    }}>
                     Refresh
                 </button>
                 <button onClick={clearAllMembers}>Clear</button>
@@ -50,7 +56,7 @@ function Checkbox({
     setIsChecked: Dispatch<SetStateAction<boolean>>
 }) {
     return (
-        <div className="checkbox-wrapper">
+        <div>
             <label htmlFor="locked-fireteam">Include fireteam?</label>
             <input
                 id="locked-fireteam"

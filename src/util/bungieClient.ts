@@ -10,6 +10,7 @@ import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
 import { getDestinyStats } from "~/services/bungie/getDestinyStats"
+import { getProfileTransitory } from "~/services/bungie/getProfileTransitory"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount
@@ -90,6 +91,7 @@ export default class BungieClient implements BungieClientProtocol {
         members: this.query(getClanMembers)
     }
     profile = this.query(getProfile)
+    profileTransitory = this.query(getProfileTransitory)
     pgcr = this.query(getPGCR)
     activityHistory = this.query(getActivityHistory)
     linkedProfiles = this.query(getLinkedProfiles)

@@ -7,7 +7,9 @@ const defaultEditInput = ""
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
     const { destinyMembershipId } = useProfileProps()
-    const { data: raidHubProfile } = trpc.profile.getProfile.useQuery({ destinyMembershipId })
+    const { data: raidHubProfile } = trpc.profile.byDestinyMembershipId.useQuery({
+        destinyMembershipId
+    })
 
     const [isEditing, setIsEditing] = useState(false)
     const [inputStyling, setInputStyling] = useState<string>("")

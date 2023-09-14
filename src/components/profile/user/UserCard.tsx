@@ -22,7 +22,7 @@ export default function UserCard() {
         destinyMembershipId,
         membershipType: destinyMembershipType
     })
-    const { data: raidHubProfile } = trpc.profile.getProfile.useQuery({
+    const { data: raidHubProfile } = trpc.profile.byDestinyMembershipId.useQuery({
         destinyMembershipId
     })
 
@@ -103,10 +103,7 @@ export default function UserCard() {
 
                         <div className={styles["details"]}>
                             <Image
-                                src={
-                                    raidHubProfile?.image ??
-                                    iconUrl(bungieProfile?.profile.data?.userInfo?.iconPath)
-                                }
+                                src={raidHubProfile?.image ?? iconUrl(userInfo?.iconPath)}
                                 unoptimized
                                 width={80}
                                 height={80}

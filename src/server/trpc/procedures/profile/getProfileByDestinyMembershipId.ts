@@ -2,7 +2,7 @@ import { z } from "zod"
 import { publicProcedure } from "../.."
 import { TRPCError } from "@trpc/server"
 
-export const getProfile = publicProcedure
+export const getProfileByDestinyMembershipId = publicProcedure
     .input(
         z.object({
             destinyMembershipId: z.string()

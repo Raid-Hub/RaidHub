@@ -3,6 +3,7 @@ import { InitialProfileProps } from "~/types/profile"
 import { zUniqueDestinyProfile } from "~/util/zod"
 import prisma from "~/server/prisma"
 import Profile from "~/components/profile/Profile"
+import { prefetchRaidHubProfile } from "~/server/serverQueryClient"
 
 const ProfilePage: NextPage<InitialProfileProps> = props => {
     return <Profile {...props} />
@@ -34,12 +35,18 @@ export const getStaticProps: GetStaticProps<InitialProfileProps> = async ({ para
                 }
             }
         } else {
+            const prefetchedState = await prefetchRaidHubProfile(props.destinyMembershipId)
+
             return {
                 revalidate: 3600 * 24,
-                props
+                props: {
+                    ...props,
+                    trpcState: prefetchedState
+                }
             }
         }
-    } catch {
+    } catch (e) {
+        console.error(e)
         return { notFound: true }
     }
 }

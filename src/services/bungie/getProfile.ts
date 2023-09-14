@@ -17,7 +17,7 @@ export const getProfile =
             components: [
                 100, 200 /*Characters*/, 205 /*DestinyComponentType.CharacterEquipment*/,
                 204 /*DestinyComponentType.CharacterActivities*/,
-                305 /*DestinyComponentType.ItemSockets */, 1000 /*DestinyComponentType.Transitory */
+                305 /*DestinyComponentType.ItemSockets */
             ]
         })
         return Response
