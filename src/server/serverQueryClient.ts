@@ -8,6 +8,7 @@ import {
 import { ListedRaid } from "~/types/raids"
 import { appRouter } from "./trpc/router"
 import prisma from "./prisma"
+import superjson from "superjson"
 
 const createServerQueryClient = () =>
     new QueryClient({
@@ -21,6 +22,7 @@ const createServerQueryClient = () =>
 const trpcServerSideHelpers = () =>
     createServerSideHelpers({
         router: appRouter,
+        transformer: superjson,
         ctx: { req: undefined, res: undefined, session: null, prisma },
         queryClient: createServerQueryClient()
     })
