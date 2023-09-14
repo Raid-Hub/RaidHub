@@ -88,24 +88,20 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     </section>
 
                     <section className={styles["mid"]}>
-                        {primaryDestinyProfile?.characterActivities.data &&
-                            primaryDestinyProfile.profileTransitoryData.data && (
-                                <CurrentActivity
-                                    profileUpdatedAt={profileUpdatedAt}
-                                    transitoryComponent={
-                                        primaryDestinyProfile.profileTransitoryData.data
-                                    }
-                                    activitiesComponent={
-                                        Object.values(
-                                            primaryDestinyProfile.characterActivities.data
-                                        ).sort(
-                                            (a, b) =>
-                                                new Date(b.dateActivityStarted).getTime() -
-                                                new Date(a.dateActivityStarted).getTime()
-                                        )[0]
-                                    }
-                                />
-                            )}
+                        {primaryDestinyProfile?.characterActivities.data && (
+                            <CurrentActivity
+                                profileUpdatedAt={profileUpdatedAt}
+                                activitiesComponent={
+                                    Object.values(
+                                        primaryDestinyProfile.characterActivities.data
+                                    ).sort(
+                                        (a, b) =>
+                                            new Date(b.dateActivityStarted).getTime() -
+                                            new Date(a.dateActivityStarted).getTime()
+                                    )[0]
+                                }
+                            />
+                        )}
                         {pinnedActivityId ? (
                             <PinnedActivity
                                 activityId={pinnedActivityId}

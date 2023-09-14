@@ -40,6 +40,10 @@ export default function Player({
     )
 }
 
+const queryOptions = {
+    refetchOnWindowFocus: true,
+    staleTime: 20000
+}
 function ResolvedPlayer({
     primaryProfile,
     member,
@@ -52,45 +56,57 @@ function ResolvedPlayer({
     children: ReactNode
 }) {
     const bungie = useBungieClient()
-    const { data, isLoading, isRefetching } = bungie.profile.useQuery(
+    const {
+        data: profileData,
+        isLoading: isLoadingProfile,
+        isRefetching: isRefetchingProfile
+    } = bungie.profile.useQuery(
         {
             membershipType: primaryProfile.membershipType,
             destinyMembershipId: primaryProfile.membershipId
         },
+        queryOptions
+    )
+    const {
+        data: transitoryComponent,
+        isLoading: isLoadingTransitoryComponent,
+        isRefetching: isRefetchingTransitoryComponent
+    } = bungie.profileTransitory.useQuery(
         {
-            refetchOnWindowFocus: true,
-            staleTime: 20000
-        }
+            membershipType: primaryProfile.membershipType,
+            destinyMembershipId: primaryProfile.membershipId
+        },
+        queryOptions
     )
 
     useEffect(() => {
-        if (member.isFireteamIncluded && data?.profileTransitoryData.data?.partyMembers) {
+        if (member.isFireteamIncluded && transitoryComponent?.partyMembers) {
             addMembers(
-                data.profileTransitoryData.data.partyMembers.map(pm => ({
+                transitoryComponent.partyMembers.map(pm => ({
                     membershipId: pm.membershipId,
                     isFireteamIncluded: false
                 }))
             )
         }
-    }, [addMembers, data, member.isFireteamIncluded])
+    }, [addMembers, transitoryComponent, member.isFireteamIncluded])
 
     const mostRecentCharacterId = useMemo(
         () =>
-            data?.characters.data
-                ? Object.values(data.characters.data).reduce((base, current) =>
+            profileData?.characters.data
+                ? Object.values(profileData.characters.data).reduce((base, current) =>
                       new Date(current.dateLastPlayed).getTime() >
                       new Date(base.dateLastPlayed).getTime()
                           ? current
                           : base
                   ).characterId
                 : null,
-        [data]
+        [profileData]
     )
 
     const items = mostRecentCharacterId
-        ? data?.characterEquipment.data?.[mostRecentCharacterId].items
+        ? profileData?.characterEquipment.data?.[mostRecentCharacterId].items
         : undefined
-    const sockets = data?.itemComponents.sockets.data
+    const sockets = profileData?.itemComponents.sockets.data
 
     const subclass = items?.find(i => i.bucketHash === subclassBucket)
 
@@ -104,14 +120,18 @@ function ResolvedPlayer({
     const legs = findArmorInBucket(items ?? [], "legs")
     const classItem = findArmorInBucket(items ?? [], "classItem")
 
-    if (isLoading) return <Loading className={styles["player"]} />
-    return data ? (
+    if (isLoadingProfile || isLoadingTransitoryComponent)
+        return <Loading className={styles["player"]} />
+    return profileData ? (
         <div className={styles["player"]}>
-            {data.profile.data && data.characters.data && (
-                <PlayerHeader profile={data.profile.data} characters={data.characters.data} />
+            {profileData.profile.data && profileData.characters.data && (
+                <PlayerHeader
+                    profile={profileData.profile.data}
+                    characters={profileData.characters.data}
+                />
             )}
             {children}
-            {isRefetching && (
+            {(isRefetchingProfile || isRefetchingTransitoryComponent) && (
                 <div className={styles["loader-container"]}>
                     <Loader />
                 </div>

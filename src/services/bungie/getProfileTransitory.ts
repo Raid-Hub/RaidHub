@@ -2,7 +2,7 @@ import { getProfile as bungieGetProfile } from "bungie-net-core/endpoints/Destin
 import { BungieMembershipType } from "bungie-net-core/models"
 import BungieClient from "../../util/bungieClient"
 
-export const getProfile =
+export const getProfileTransitory =
     (client: BungieClient) =>
     async ({
         destinyMembershipId,
@@ -14,11 +14,12 @@ export const getProfile =
         const { Response } = await bungieGetProfile(client, {
             destinyMembershipId,
             membershipType,
-            components: [
-                100, 200 /*Characters*/, 205 /*DestinyComponentType.CharacterEquipment*/,
-                204 /*DestinyComponentType.CharacterActivities*/,
-                305 /*DestinyComponentType.ItemSockets */
-            ]
+            components: [1000 /*DestinyComponentType.Transitory */]
         })
-        return Response
+
+        if (!Response.profileTransitoryData.data) {
+            console.error("OH NO")
+            throw Error("OH NO")
+        }
+        return Response.profileTransitoryData.data
     }

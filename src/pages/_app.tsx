@@ -34,7 +34,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 return prefetch(url, asPath, options)
             }
         }
-    }, [])
+    }, [router])
 
     return (
         <LocaleManager>
