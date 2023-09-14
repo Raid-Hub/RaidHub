@@ -18,7 +18,7 @@ export default function ClanMember({ member }: { member: GroupMember }) {
                     fill
                 />
             </div>
-            {member.destinyUserInfo.bungieGlobalDisplayName}
+            <span>{member.destinyUserInfo.bungieGlobalDisplayName}</span>
         </Link>
     )
 }

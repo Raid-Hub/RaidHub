@@ -58,7 +58,9 @@ export default function Clan({ groupId }: ClanPageProps) {
                             <div className={styles["overview-left"]}>
                                 <ClanBanner data={clan.detail.clanInfo.clanBannerData} sx={30} />
                             </div>
-                            <p className={styles["about"]}>{urlHighlight(clan.detail.about)}</p>
+                            <div className={styles["about"]}>
+                                <p>{urlHighlight(clan.detail.about)}</p>
+                            </div>
                         </section>
 
                         <section>

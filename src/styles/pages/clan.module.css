@@ -36,26 +36,33 @@
     justify-content: center;
     align-items: center;
 }
-
 .about {
     flex: 2;
     white-space: pre-line;
 }
 
+.about a {
+    color: var(--brand-orange-light);
+}
+
 .members {
+    --min: 250px;
     display: grid;
 
-    grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
+    grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
     gap: 2em;
 }
 
 .member {
+    min-width: var(--min);
     background-color: var(--modal-background);
 
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: max-content 2fr;
+
     gap: 1em;
     align-items: center;
+    text-align: start;
 }
 
 .member-icon-container {
