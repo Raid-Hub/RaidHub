@@ -2,7 +2,7 @@ import { publicProcedure } from "../.."
 import { TRPCError } from "@trpc/server"
 import { zUniqueDestinyProfile } from "~/util/zod"
 
-export const getVanity = publicProcedure
+export const getVanityByMembership = publicProcedure
     .input(zUniqueDestinyProfile)
     .mutation(async ({ input, ctx }) => {
         const { destinyMembershipId, destinyMembershipType } = input

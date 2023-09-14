@@ -28,7 +28,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
     // DATA HOOKS
     const { data: raidHubProfile, isLoading: isLoadingRaidHubProfile } =
-        trpc.profile.getProfile.useQuery({
+        trpc.profile.byDestinyMembershipId.useQuery({
             destinyMembershipId
         })
 
@@ -71,14 +71,15 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
     const [activeFilter, setActiveFilter, isFilterMounted] = useActivityFilters()
 
-    const name =
+    const username =
+        raidHubProfile?.name ??
         primaryDestinyProfile?.profile.data?.userInfo.bungieGlobalDisplayName ??
         primaryDestinyProfile?.profile.data?.userInfo.displayName
 
     return (
         <>
             <Head>
-                <title key="title">{name ? `${name} | RaidHub` : "RaidHub"}</title>
+                <title key="title">{username ? `${username} | RaidHub` : "RaidHub"}</title>
             </Head>
             <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
                 <main className={styles["main"]}>

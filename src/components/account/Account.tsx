@@ -17,13 +17,13 @@ type AccountProps = {
 
 const Account = ({ session, refreshSession }: AccountProps) => {
     const { providers } = useProviders()
-    const { data: socialNames, refetch: refetchSocials } = trpc.user.getSocial.useQuery()
-    const { mutate: unlinkAccountFromUser } = trpc.user.removeProvider.useMutation({
+    const { data: socialNames, refetch: refetchSocials } = trpc.user.socials.useQuery()
+    const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
         onSuccess() {
             refetchSocials()
         }
     })
-    const { mutate: deleteUserMutation } = trpc.user.deleteUser.useMutation()
+    const { mutate: deleteUserMutation } = trpc.user.delete.useMutation()
 
     const [deleteOnClick, setDeleteOnClick] = useState(false)
     const deleteUser = () => {

@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import prisma from "~/server/prisma"
 import { z } from "zod"
 import Profile from "~/components/profile/Profile"
+import { prefetchRaidHubProfile } from "~/server/serverQueryClient"
 
 const ProfileVanityPage: NextPage<InitialProfileProps> = props => {
     return <Profile {...props} />
@@ -49,7 +50,9 @@ export const getStaticProps: GetStaticProps<InitialProfileProps, { vanity: strin
         const details = await getVanity(vanityString)
 
         if (details?.destinyMembershipId && details.destinyMembershipType) {
-            return { props: details, revalidate: 24 * 3600 }
+            const prefetchedState = await prefetchRaidHubProfile(details.destinyMembershipId)
+
+            return { props: { ...details, trpcState: prefetchedState }, revalidate: 24 * 3600 }
         }
     } catch (e) {
         console.error(e)

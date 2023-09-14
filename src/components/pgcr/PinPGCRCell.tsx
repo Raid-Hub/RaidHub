@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react"
 const PinPCRCell = () => {
     const { data: pgcr } = usePGCRContext()
     const { status } = useSession()
-    const { data: profile } = trpc.user.getProfile.useQuery(undefined, {
+    const { data: profile } = trpc.user.profile.get.useQuery(undefined, {
         enabled: status === "authenticated"
     })
     const { mutate: updateProfile } = useOptimisticProfileUpdate()
