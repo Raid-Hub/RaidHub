@@ -1,7 +1,7 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import PGCRPlayer from "../../models/pgcr/Player"
 import Image from "next/image"
-import { bannerEmblem } from "../../util/destiny/bungie-icons"
+import { bannerEmblemUrl } from "../../util/destiny/bungie-icons"
 import PGCRCharacter from "../../models/pgcr/Character"
 import { useItem } from "../app/DestinyManifestManager"
 import { useLocale } from "../app/LocaleManager"
@@ -34,7 +34,7 @@ const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => 
             onClick={onClick}>
             <Image
                 unoptimized
-                src={bannerEmblem(emblem ?? null)}
+                src={bannerEmblemUrl(emblem ?? null)}
                 alt=""
                 fill
                 className={styles["emblem"]}

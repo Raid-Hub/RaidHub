@@ -5,7 +5,7 @@ import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
-import { bannerEmblem } from "~/util/destiny/bungie-icons"
+import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -49,7 +49,7 @@ const PlayerCell = ({
             {!isLoadingEmblems && emblem ? (
                 <Image
                     unoptimized
-                    src={bannerEmblem(emblem)}
+                    src={bannerEmblemUrl(emblem)}
                     alt=""
                     fill
                     className={styles["emblem"]}
