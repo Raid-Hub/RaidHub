@@ -8,6 +8,7 @@
 .controls {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 2em;
 }
 .controls button {
