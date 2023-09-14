@@ -70,7 +70,7 @@ export function useActivity(hash: number) {
 
     return useQuery({
         queryKey: ["activity", hash, manifestVersion],
-        queryFn: () => indexDB.activities.get({ hash }) ?? null,
+        queryFn: async () => (await indexDB.activities.get({ hash })) ?? null,
         staleTime: Infinity
     })
 }
@@ -80,7 +80,7 @@ export function useActivityMode(hash: number) {
 
     return useQuery({
         queryKey: ["activityMode", hash, manifestVersion],
-        queryFn: () => indexDB.activityModes.get({ hash }) ?? null,
+        queryFn: async () => (await indexDB.activityModes.get({ hash })) ?? null,
         staleTime: Infinity
     })
 }

@@ -80,7 +80,7 @@ function ResolvedPlayer({
     )
 
     useEffect(() => {
-        if (member.isFireteamIncluded && transitoryComponent?.partyMembers) {
+        if (member.isFireteamIncluded && transitoryComponent?.currentActivity) {
             addMembers(
                 transitoryComponent.partyMembers.map(pm => ({
                     membershipId: pm.membershipId,

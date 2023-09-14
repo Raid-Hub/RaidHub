@@ -53,7 +53,7 @@ const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActiv
         return <Loading className={styles["current-activity"]} />
     }
 
-    return transitoryComponent ? (
+    return transitoryComponent?.currentActivity ? (
         <Link
             href={{
                 pathname: "/inspect",
