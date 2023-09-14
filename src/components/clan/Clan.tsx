@@ -1,6 +1,5 @@
-import styles from "~/styles/pages/pgcr.module.css"
+import styles from "~/styles/pages/clan.module.css"
 import Head from "next/head"
-import Link from "next/link"
 import { useMemo } from "react"
 import { ClanPageProps } from "~/pages/clan/[groupId]"
 import ClanBanner from "../reusable/ClanBanner"
@@ -10,6 +9,7 @@ import { useBungieClient } from "../app/TokenManager"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import Custom404 from "~/pages/404"
 import Loading from "../global/Loading"
+import ClanMember from "./ClanMember"
 
 export default function Clan({ groupId }: ClanPageProps) {
     const bungie = useBungieClient()
@@ -43,13 +43,22 @@ export default function Clan({ groupId }: ClanPageProps) {
             <main className={styles["main"]}>
                 {clan && (
                     <>
-                        <section>
-                            <h1>
-                                {clanName} [{clan.detail.clanInfo.clanCallsign}]
+                        <div className={styles["name-and-motto"]}>
+                            <h1 className={styles["name"]}>
+                                {clanName}{" "}
+                                <span className={styles["call-sign"]}>
+                                    [{clan.detail.clanInfo.clanCallsign}]
+                                </span>
                             </h1>
-                            <h3>{clan.detail.motto}</h3>
-                            <ClanBanner data={clan.detail.clanInfo.clanBannerData} sx={20} />
-                            <p>{urlHighlight(clan.detail.about)}</p>
+                            <h3 className={styles["motto"]}>
+                                <i>{clan.detail.motto}</i>
+                            </h3>
+                        </div>
+                        <section className={styles["overview"]}>
+                            <div className={styles["overview-left"]}>
+                                <ClanBanner data={clan.detail.clanInfo.clanBannerData} sx={30} />
+                            </div>
+                            <p className={styles["about"]}>{urlHighlight(clan.detail.about)}</p>
                         </section>
 
                         <section>
@@ -57,15 +66,22 @@ export default function Clan({ groupId }: ClanPageProps) {
                             {isLoadingClanMembers ? (
                                 <Loading className="" />
                             ) : (
-                                clanMembers &&
-                                clanMembers.map(member => (
-                                    <div key={member.destinyUserInfo.membershipId}>
-                                        <Link
-                                            href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}>
-                                            {member.destinyUserInfo.bungieGlobalDisplayName}
-                                        </Link>
+                                clanMembers && (
+                                    <div className={styles["members"]}>
+                                        {clanMembers
+                                            .sort(
+                                                (m1, m2) =>
+                                                    new Date(m1.joinDate).getTime() -
+                                                    new Date(m2.joinDate).getTime()
+                                            )
+                                            .map(member => (
+                                                <ClanMember
+                                                    member={member}
+                                                    key={member.destinyUserInfo.membershipId}
+                                                />
+                                            ))}
                                     </div>
-                                ))
+                                )
                             )}
                         </section>
 

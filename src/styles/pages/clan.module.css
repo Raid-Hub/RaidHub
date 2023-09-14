@@ -1,0 +1,65 @@
+.name-and-motto {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    align-items: center;
+}
+.name {
+    /* display: inline-block; */
+    font-size: 2rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+}
+.call-sign {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+.motto {
+    color: var(--secondary-text);
+    font-size: 1.375rem;
+    font-weight: 400;
+}
+.overview {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    gap: 2em;
+}
+
+.overview-left {
+    flex: 1;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.about {
+    flex: 2;
+    white-space: pre-line;
+}
+
+.members {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(200px, 250px));
+    gap: 2em;
+}
+
+.member {
+    background-color: var(--modal-background);
+
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    align-items: center;
+}
+
+.member-icon-container {
+    position: relative;
+    width: 50px;
+    aspect-ratio: 1/1;
+}
