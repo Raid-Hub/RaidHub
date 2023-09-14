@@ -85,7 +85,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                             )}
                         </section>
 
-                        <section>
+                        {/* <section>
                             <h2>Progressions</h2>
                             {Object.values(clan.detail.clanInfo.d2ClanProgressions).map(
                                 progression => (
@@ -95,7 +95,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                                     </div>
                                 )
                             )}
-                        </section>
+                        </section> */}
                     </>
                 )}
             </main>
