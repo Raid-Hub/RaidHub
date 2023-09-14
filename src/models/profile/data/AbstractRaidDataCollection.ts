@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { Difficulty, Raid, RaidDifficultyTuple, ValidRaidHash } from "../../../types/raids"
 import { encoders } from "../../../util/encode"
-import { AllValidHashes, raidTupleFromHash } from "../../../util/destiny/raid"
+import { AllValidHashes, raidTupleFromHash } from "../../../util/destiny/raidUtils"
 import { RaidData } from "../../../types/profile"
 
 /**

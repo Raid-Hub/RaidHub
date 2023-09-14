@@ -1,5 +1,4 @@
 export type LeaderboardMeta = {
-    incomplete?: boolean
     entries: LeaderboardEntry[]
 }
 

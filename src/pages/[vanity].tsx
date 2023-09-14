@@ -1,12 +1,12 @@
-import ProfileWrapper from "../components/profile/ProfileWrapper"
-import { InitialProfileProps } from "../types/profile"
+import { InitialProfileProps } from "~/types/profile"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
-import prisma from "../server/prisma"
+import prisma from "~/server/prisma"
 import { z } from "zod"
-import { reactQueryClient } from "../util/reactQueryClient"
+import Profile from "~/components/profile/Profile"
+import { prefetchRaidHubProfile } from "~/server/serverQueryClient"
 
 const ProfileVanityPage: NextPage<InitialProfileProps> = props => {
-    return <ProfileWrapper {...props} />
+    return <Profile {...props} />
 }
 
 export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
@@ -47,19 +47,17 @@ export const getStaticProps: GetStaticProps<InitialProfileProps, { vanity: strin
                 }
             })
 
-        const details = await reactQueryClient.fetchQuery(
-            [vanityString],
-            () => getVanity(vanityString),
-            {
-                staleTime: 5 * 60000
-            }
-        )
+        const details = await getVanity(vanityString)
 
         if (details?.destinyMembershipId && details.destinyMembershipType) {
-            return { props: details, revalidate: 24 * 60 * 60 }
+            const prefetchedState = await prefetchRaidHubProfile(details.destinyMembershipId)
+
+            return { props: { ...details, trpcState: prefetchedState }, revalidate: 24 * 3600 }
         }
-    } catch {}
-    return { notFound: true, revalidate: 20 * 60 }
+    } catch (e) {
+        console.error(e)
+    }
+    return { notFound: true, revalidate: 24 * 3600 }
 }
 
 export default ProfileVanityPage

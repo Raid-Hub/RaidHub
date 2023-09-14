@@ -24,6 +24,10 @@ The project is organized into major parts as follows
 
 All React components should be placed here
 
+## Data
+
+Hash mappings, ids, and other static data for the app
+
 ## Hooks
 
 Advanced logic that can either be re-used or is too much to put into a single component. All hook files should start with "use" and export a single function.
@@ -36,9 +40,9 @@ Complex models can be placed here. Models are useful for handling logic outside 
 
 Every file in the directory is a Next.js page
 
-## Pages/api
+## Server
 
-Each file the api directory constitutes a protected internal route. These routes should deal with RaidHub specific routes such as memberships and authentication
+This file deals with code that will be run server side on a serverless function invocation
 
 ## Services
 

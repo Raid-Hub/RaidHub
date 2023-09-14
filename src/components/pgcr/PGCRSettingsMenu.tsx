@@ -15,10 +15,10 @@ type PGCRSettingsMenuProps = UseLocalStorage<PGCRSettings>
 
 const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
     const { data: sessionData } = useSession()
-    const { pgcr } = usePGCRContext()
+    const { data: pgcr, isLoading } = usePGCRContext()
     const { strings } = useLocale()
 
-    return (
+    return !isLoading ? (
         <div className={styles["settings-menu-dropdown"]}>
             <div>
                 <span>{strings.showScore}</span>
@@ -37,7 +37,7 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
             </div>
 
             {sessionData?.user.destinyMembershipId &&
-                pgcr?.players
+                pgcr.players
                     ?.map(p => p.membershipId)
                     .includes(sessionData.user.destinyMembershipId) && (
                     <>
@@ -46,7 +46,7 @@ const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
                     </>
                 )}
         </div>
-    )
+    ) : null
 }
 
 export default PGCRSettingsMenu

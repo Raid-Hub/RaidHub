@@ -1,4 +1,3 @@
-import { ErrorHandler } from "~/types/generic"
 import { BungieAPIError } from "./BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 
@@ -19,7 +18,6 @@ export enum ErrorCode {
     Placements = "Pigeon",
     Emblems = "Elephant",
     RaidHubProfile = "Rainbow",
-    RaidReport = "Reppo",
     Transitory = "Window",
     Manifest = "Mountain",
     Search = "Sapphire"
@@ -36,7 +34,7 @@ export default class CustomError extends Error {
         this.stack = stack
     }
 
-    static handle<R>(errorHandler: ErrorHandler<R>, e: unknown, code: ErrorCode) {
+    static handle(e: unknown, code: ErrorCode) {
         let newErr: CustomError
         if (e instanceof CustomError) {
             newErr = e
@@ -52,8 +50,8 @@ export default class CustomError extends Error {
             newErr = new CustomError(e.message, code, e.stack)
         } else {
             newErr = new CustomError(JSON.stringify(e), code, undefined)
-            Error.captureStackTrace(newErr, errorHandler)
+            Error.captureStackTrace(newErr)
         }
-        return errorHandler(newErr)
+        return newErr
     }
 }

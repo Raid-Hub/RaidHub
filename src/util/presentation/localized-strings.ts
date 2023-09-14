@@ -2,6 +2,7 @@ import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../../types/raids"
 import { RankingBannerType } from "../../types/profile"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
+import { DestinyClass } from "bungie-net-core/models"
 
 export enum SupportedLanguage {
     ENGLISH = "en"
@@ -83,6 +84,9 @@ export interface LocalStrings {
     pinThisActivity: string
     screenshot: string
     noChallenge: string
+    deleteAccount: string
+    confirmDelete: string
+    characterNames: { [key in DestinyClass]: string }
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -244,6 +248,14 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         showScore: "Show Score",
         pinThisActivity: "Pin this PGCR",
         screenshot: "Screenshot",
-        noChallenge: "Normal Contest"
+        noChallenge: "Normal Contest",
+        deleteAccount: "Delete Account",
+        confirmDelete: "Confirm Deletion",
+        characterNames: {
+            0: "Titan",
+            1: "Hunter",
+            2: "Warlock",
+            3: "Unknown"
+        }
     }
 }

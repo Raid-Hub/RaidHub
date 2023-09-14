@@ -10,7 +10,7 @@ export const useActivityFilters = (): [
     boolean
 ] => {
     const [activeFilter, setActiveFilter] = useState<ActivityFilter | null>(null)
-    const [isLoadingSavedFilter, setIsLoadingSavedFilter] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
         const allFilters = localStorage.getItem(KEY_ACTIVITY_FILTER)
@@ -20,7 +20,7 @@ export const useActivityFilters = (): [
         } else {
             setActiveFilter(DefaultActivityFilters)
         }
-        setIsLoadingSavedFilter(false)
+        setIsMounted(true)
     }, [])
 
     const saveFilter = (filter: ActivityFilter | null) => {
@@ -33,6 +33,6 @@ export const useActivityFilters = (): [
             setActiveFilter(filter)
             saveFilter(filter)
         },
-        isLoadingSavedFilter
+        isMounted
     ]
 }

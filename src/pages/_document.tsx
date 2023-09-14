@@ -10,6 +10,7 @@ export default function Document() {
                     href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro"
                     rel="stylesheet"
                 />
+                <meta name="color-scheme" content="dark" />
             </Head>
             <body>
                 <Main />

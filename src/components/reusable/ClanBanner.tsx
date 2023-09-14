@@ -1,3 +1,4 @@
+import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
 import { useClanBanner } from "../app/DestinyManifestManager"
 import { ClanBanner } from "bungie-net-core/models"
 
@@ -17,14 +18,14 @@ const ClanBanner = ({ data, sx }: ClanBannerProps) => {
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${queryData.gonfalcons.path}`}
+                        xlinkHref={clanBannerBannerLayerUrl(queryData.gonfalcons.path)}
                     />
                 </mask>
                 <mask id="topDecal">
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${queryData.decalTop.path}`}
+                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalTop.path)}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -32,7 +33,7 @@ const ClanBanner = ({ data, sx }: ClanBannerProps) => {
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${queryData.decalSecondary.path}`}
+                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalSecondary.path)}
                         mask="url(#gonfalcons)"
                     />
                 </mask>
@@ -40,7 +41,7 @@ const ClanBanner = ({ data, sx }: ClanBannerProps) => {
                     <image
                         width="100%"
                         height="100%"
-                        xlinkHref={`https://bungie.net${queryData.decalPrimary.path}`}
+                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalPrimary.path)}
                         mask="url(#gonfalcons)"
                     />
                 </mask>

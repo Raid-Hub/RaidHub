@@ -17,7 +17,7 @@ type PlayerStatCellProps = {
 const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => {
     const { locale, strings } = useLocale()
     const { data: weapon } = useItem(entry.weapons.first()?.hash ?? 73015)
-    const { pgcr } = usePGCRContext()
+    const { data: pgcr } = usePGCRContext()
     const stats = entry.stats
 
     const statsData: {

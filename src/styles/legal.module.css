@@ -1,5 +1,9 @@
 .main {
     letter-spacing: 0.05ch;
+
+    border-radius: 10px;
+    padding: 2em;
+    background-color: var(--modal-background);
 }
 
 .section a {

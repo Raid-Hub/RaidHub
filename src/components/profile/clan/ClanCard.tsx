@@ -2,28 +2,28 @@ import styles from "../../../styles/pages/profile/clan.module.css"
 import Loading from "../../global/Loading"
 import ClanBanner from "../../reusable/ClanBanner"
 import { fixClanName } from "../../../util/destiny/fixClanName"
-import { BungieMembershipType } from "bungie-net-core/models"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
+import ErrorComponent from "~/components/global/Error"
+import { useProfileProps } from "../Profile"
 
-type ClanCardProps = {
-    membershipId: string
-    membershipType: BungieMembershipType
-}
-
-const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
+const ClanCard = () => {
+    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
     const bungie = useBungieClient()
 
     const {
         data: clan,
         isLoading,
         error
-    } = bungie.clan.byMember.useQuery({ membershipId, membershipType }, { staleTime: 10 * 60000 })
+    } = bungie.clan.byMember.useQuery(
+        { membershipId: destinyMembershipId, membershipType: destinyMembershipType },
+        { staleTime: 10 * 60000 }
+    )
 
     return isLoading ? (
-        <Loading wrapperClass={styles["card-loading"]} />
+        <Loading className={styles["card-loading"]} />
     ) : clan ? (
         <Link href={`/clan/${clan.groupId}`} className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
@@ -40,10 +40,10 @@ const ClanCard = ({ membershipId, membershipType }: ClanCardProps) => {
             </div>
         </Link>
     ) : error ? (
-        <div className={styles["clan"]} style={{ flexDirection: "column", gap: "1em" }}>
-            <div>Error Loading Clan</div>
-            <div>{CustomError.handle(e => e.message, error, ErrorCode.Clan)}</div>
-        </div>
+        <ErrorComponent
+            error={CustomError.handle(error, ErrorCode.Clan)}
+            title={"Error Loading Clan"}
+        />
     ) : null
 }
 

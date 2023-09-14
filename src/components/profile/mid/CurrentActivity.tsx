@@ -5,31 +5,33 @@ import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import {
     DestinyCharacterActivitiesComponent,
-    DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
 import { useBungieClient } from "~/components/app/TokenManager"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { useActivity, useActivityMode } from "~/components/app/DestinyManifestManager"
+import Loading from "~/components/global/Loading"
+import { useProfileProps } from "../Profile"
 
 type CurrentActivityParams = {
-    transitoryComponent: DestinyProfileTransitoryComponent
     activitiesComponent: DestinyCharacterActivitiesComponent
     profileUpdatedAt: number
 }
 
-const CurrentActivity = ({
-    transitoryComponent,
-    activitiesComponent,
-    profileUpdatedAt
-}: CurrentActivityParams) => {
+const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActivityParams) => {
     const bungie = useBungieClient()
-
-    const { strings } = useLocale()
-
-    const { data: activity } = useActivity(activitiesComponent.currentActivityHash)
-
-    const { data: activityMode } = useActivityMode(activitiesComponent.currentActivityModeHash)
+    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
+    const { data: transitoryComponent, isLoading: isLoadingTransitoryComponent } =
+        bungie.profileTransitory.useQuery({
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        })
+    const { data: activity, isLoading: isLoadingActivity } = useActivity(
+        activitiesComponent.currentActivityHash
+    )
+    const { data: activityMode, isLoading: isLoadingActivityMode } = useActivityMode(
+        activitiesComponent.currentActivityModeHash
+    )
 
     const activityName = useMemo(() => {
         const activityName = activity?.displayProperties.name
@@ -45,7 +47,13 @@ const CurrentActivity = ({
         }
     }, [activity, activityMode])
 
-    return transitoryComponent ? (
+    const { strings } = useLocale()
+
+    if (isLoadingActivityMode || isLoadingActivity || isLoadingTransitoryComponent) {
+        return <Loading className={styles["current-activity"]} />
+    }
+
+    return transitoryComponent?.currentActivity ? (
         <Link
             href={{
                 pathname: "/inspect",
@@ -82,7 +90,9 @@ const CurrentActivity = ({
 function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {
     const bungie = useBungieClient()
     const { data } = bungie.linkedProfiles.useQuery({ membershipId }, { staleTime: Infinity })
-    const primaryProfile = data ? data.profiles.find(isPrimaryCrossSave)! : null
+    const primaryProfile = data
+        ? data.profiles.find(p => isPrimaryCrossSave(p, membershipId))!
+        : null
 
     return primaryProfile ? (
         <Link href={`/profile/${primaryProfile.membershipType}/${primaryProfile.membershipId}`}>

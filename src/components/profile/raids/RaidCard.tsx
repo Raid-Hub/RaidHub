@@ -1,106 +1,90 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
-import {
-    ListedRaid,
-    Difficulty,
-    ReprisedContestDifficultyDictionary,
-    ReprisedContestRaidDifficulties
-} from "../../../types/raids"
-import DotGraphWrapper from "./DotGraph"
-import { secondsToHMS } from "../../../util/presentation/formatting"
-import RaidStatsCollection from "../../../models/profile/data/RaidStatsCollection"
-import { useLocale } from "../../app/LocaleManager"
-import { useEffect, useMemo, useState } from "react"
-import BigNumberStatItem from "./BigNumberStatItem"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
-import { medianElement } from "../../../util/math"
-import RaidTagLabel from "./RaidTagLabel"
-import { isContest, isDayOne, isWeekOne } from "../../../util/destiny/raid"
-import { Collection } from "@discordjs/collection"
-import ActivityCollection from "../../../models/profile/data/ActivityCollection"
-import { FilterCallback } from "../../../types/generic"
+import styles from "~/styles/pages/profile/raids.module.css"
 import Image from "next/image"
-import RaidCardBackground from "../../../images/raid-backgrounds"
+import { useEffect, useMemo, useState } from "react"
 import { motion } from "framer-motion"
-import { ExtendedActivity, RaceTag } from "../../../types/profile"
-import RaceTagLabel from "./RaceTagLabel"
+import { Collection } from "@discordjs/collection"
+import { ListedRaid } from "~/types/raids"
+import RaidStatsCollection from "~/models/profile/data/RaidStatsCollection"
+import ActivityCollection, { applyFilter } from "~/models/profile/data/ActivityCollection"
+import RaidCardBackground from "~/images/raid-backgrounds"
+import { ExtendedActivity, RaceTag } from "~/types/profile"
+import { useLocale } from "~/components/app/LocaleManager"
+import DotGraphWrapper from "./DotGraph"
+import BigNumberStatItem from "./BigNumberStatItem"
+import { FilterCallback } from "~/types/generic"
+import Activity from "~/models/profile/data/Activity"
 
 type RaidModalProps = {
     raid: ListedRaid
-    allActivities: ActivityCollection | null
-    filter: FilterCallback<ExtendedActivity>
     stats: RaidStatsCollection | undefined
-    report: RaidReportDataCollection | undefined
-    isLoadingDots: boolean
     isLoadingStats: boolean
-    isLoadingReport: boolean
+    activities: ActivityCollection | null
+    isLoadingActivities: boolean
+    filter: FilterCallback<ExtendedActivity>
 }
 
-const RaidCard = ({
+export default function RaidCard({
     raid,
-    allActivities,
-    filter,
     stats,
-    report,
-    isLoadingDots,
     isLoadingStats,
-    isLoadingReport
-}: RaidModalProps) => {
-    const { strings } = useLocale()
+    activities,
+    isLoadingActivities,
+    filter
+}: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
+    const activitesFiltered = useMemo(
+        () => applyFilter(activities?.all ?? new Collection<string, Activity>(), filter, {}),
+        [activities, filter]
+    )
+
     const averageClear = useMemo(() => {
-        if (report?.fastestFullClear?.value && allActivities) {
-            const completions = allActivities.all
-                .filter(a => a.completed && a.durationSeconds >= report.fastestFullClear!.value)
-                .sort((a, b) => a.durationSeconds - b.durationSeconds)
-            return medianElement(completions)
-        } else {
-            return undefined
-        }
-    }, [allActivities, report])
+        return undefined
+    }, [])
 
     const contestFirstClear: (RaceTag & { instanceId?: string }) | null = useMemo(() => {
-        const contestDifficulty:
-            | (typeof ReprisedContestRaidDifficulties)[number]
-            | Difficulty.NORMAL =
-            // @ts-ignore
-            ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
-        const first = allActivities
-            ?.get(contestDifficulty)
-            ?.collection.reverse()
-            .find(a => !!a.completed)
-        const isChallenge = contestDifficulty !== Difficulty.NORMAL
-        if (!first) {
-            return report?.worldFirstPlacement
-                ? {
-                      raid,
-                      challenge: isChallenge,
-                      dayOne: false,
-                      contest: false,
-                      weekOne: false
-                  }
-                : null
-        }
-        const end = first.endDate
-        const start = first.startDate
-        const contest = isContest(raid, start)
-        const weekOne = isWeekOne(raid, end)
-        const dayOne = isDayOne(raid, end)
+        return null
+        // const contestDifficulty:
+        //     | (typeof ReprisedContestRaidDifficulties)[number]
+        //     | Difficulty.NORMAL =
+        //     // @ts-ignore
+        //     ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
+        // const first = allActivities
+        //     ?.get(contestDifficulty)
+        //     ?.collection.reverse()
+        //     .find(a => !!a.completed)
+        // const isChallenge = contestDifficulty !== Difficulty.NORMAL
+        // if (!first) {
+        //     return report?.worldFirstPlacement
+        //         ? {
+        //               raid,
+        //               challenge: isChallenge,
+        //               dayOne: false,
+        //               contest: false,
+        //               weekOne: false
+        //           }
+        //         : null
+        // }
+        // const end = first.endDate
+        // const start = first.startDate
+        // const contest = isContest(raid, start)
+        // const weekOne = isWeekOne(raid, end)
+        // const dayOne = isDayOne(raid, end)
 
-        if (!dayOne && !contest && !weekOne) {
-            return null
-        } else {
-            return {
-                raid,
-                dayOne: isDayOne(raid, end),
-                challenge: isChallenge,
-                contest,
-                weekOne,
-                asterisk: contest && !isContest(raid, end), // completed after contest was over
-                instanceId: first.instanceId
-            } as RaceTag & { instanceId: string }
-        }
-    }, [allActivities, raid, report?.worldFirstPlacement])
+        // if (!dayOne && !contest && !weekOne) {
+        //     return null
+        // } else {
+        //     return {
+        //         raid,
+        //         dayOne: isDayOne(raid, end),
+        //         challenge: isChallenge,
+        //         contest,
+        //         weekOne,
+        //         asterisk: contest && !isContest(raid, end), // completed after contest was over
+        //         instanceId: first.instanceId
+        //     } as RaceTag & { instanceId: string }
+        // }
+    }, [])
 
     useEffect(() => {
         if (hoveredTag) {
@@ -114,6 +98,8 @@ const RaidCard = ({
             }
         }
     }, [hoveredTag])
+
+    const { strings } = useLocale()
 
     return (
         <motion.div
@@ -140,19 +126,19 @@ const RaidCard = ({
                     alt={strings.raidNames[raid]}
                 />
                 <div className={styles["tag-row"]}>
-                    {contestFirstClear && (
+                    {/* {contestFirstClear && (
                         <RaceTagLabel
                             {...contestFirstClear}
                             placement={report?.worldFirstPlacement ?? undefined}
                             setActiveId={setHoveredTag}
                         />
-                    )}
+                    )} */}
                 </div>
                 <div className={styles["img-overlay-bottom"]}>
                     <div className={styles["card-challenge-tags"]}>
-                        {report?.tags()?.map((tag, key) => (
+                        {/* {report?.tags()?.map((tag, key) => (
                             <RaidTagLabel {...tag} key={key} setActiveId={setHoveredTag} />
-                        ))}
+                        ))} */}
                     </div>
                     <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                 </div>
@@ -160,10 +146,8 @@ const RaidCard = ({
             <div className={styles["card-content"]}>
                 <div className={styles["graph-content"]}>
                     <DotGraphWrapper
-                        isLoading={isLoadingDots}
-                        filter={filter}
-                        report={report}
-                        activities={allActivities?.all ?? new Collection()}
+                        isLoading={isLoadingActivities}
+                        activities={activitesFiltered}
                         targetDot={hoveredTag}
                     />
                     <div className={styles["graph-right"]}>
@@ -177,7 +161,7 @@ const RaidCard = ({
                 </div>
 
                 <div className={styles["timings"]}>
-                    <BigNumberStatItem
+                    {/* <BigNumberStatItem
                         displayValue={
                             report?.fastestFullClear
                                 ? secondsToHMS(report.fastestFullClear.value)
@@ -190,9 +174,9 @@ const RaidCard = ({
                                 ? `/pgcr/${report.fastestFullClear.instanceId}`
                                 : undefined
                         }
-                    />
+                    /> */}
 
-                    <BigNumberStatItem
+                    {/* <BigNumberStatItem
                         displayValue={
                             averageClear
                                 ? averageClear.values.activityDurationSeconds.basic.displayValue
@@ -205,17 +189,15 @@ const RaidCard = ({
                                 ? `/pgcr/${averageClear.activityDetails.instanceId}`
                                 : undefined
                         }
-                    />
+                    /> */}
 
-                    <BigNumberStatItem
+                    {/* <BigNumberStatItem
                         displayValue={report?.sherpaCount ? report.sherpaCount : 0}
                         isLoading={isLoadingReport}
                         name={strings.sherpas}
-                    />
+                    /> */}
                 </div>
             </div>
         </motion.div>
     )
 }
-
-export default RaidCard

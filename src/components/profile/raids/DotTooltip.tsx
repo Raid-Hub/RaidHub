@@ -4,7 +4,7 @@ import { getRelativeTime } from "../../../util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
 import { useLocale } from "../../app/LocaleManager"
 import { Green, Red, Teal } from "./Dot"
-import { raidVersion } from "../../../util/destiny/raid"
+import { raidVersion } from "../../../util/destiny/raidUtils"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
 

@@ -5,7 +5,7 @@ import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import { useLocale } from "./LocaleManager"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { ClanBanner } from "bungie-net-core/models"
-import { resolveClanBanner } from "~/util/destiny/clanBanner"
+import { resolveClanBanner } from "~/util/destiny/parseClanBanner"
 import { useQuery } from "@tanstack/react-query"
 import { indexDB } from "~/util/dexie"
 
@@ -34,20 +34,14 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
                 }
                 setManifestVersion(currentVersion)
             })
-            .catch(e =>
-                CustomError.handle(
-                    () =>
-                        console.error(
-                            `Failed to download Destiny 2 manifest: ${e.message} ${
-                                oldVersion
-                                    ? "Using cached version."
-                                    : "No cached version available."
-                            }`
-                        ),
-                    e,
-                    ErrorCode.Manifest
+            .catch(e => {
+                const ce = CustomError.handle(e, ErrorCode.Manifest)
+                console.error(
+                    `Failed to download Destiny 2 manifest: ${ce.message} ${
+                        oldVersion ? "Using cached version." : "No cached version available."
+                    }`
                 )
-            )
+            })
     }, [language, client])
 
     return (
@@ -76,7 +70,7 @@ export function useActivity(hash: number) {
 
     return useQuery({
         queryKey: ["activity", hash, manifestVersion],
-        queryFn: () => indexDB.activities.get({ hash }) ?? null,
+        queryFn: async () => (await indexDB.activities.get({ hash })) ?? null,
         staleTime: Infinity
     })
 }
@@ -86,7 +80,7 @@ export function useActivityMode(hash: number) {
 
     return useQuery({
         queryKey: ["activityMode", hash, manifestVersion],
-        queryFn: () => indexDB.activityModes.get({ hash }) ?? null,
+        queryFn: async () => (await indexDB.activityModes.get({ hash })) ?? null,
         staleTime: Infinity
     })
 }

@@ -3,12 +3,9 @@ import { median } from "../../../util/math"
 import Dot from "./Dot"
 import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import { useMemo, useState } from "react"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
 import Loading from "../../global/Loading"
-import Activity from "../../../models/profile/data/Activity"
 import { Collection } from "@discordjs/collection"
-import { FilterCallback } from "../../../types/generic"
-import { ExtendedActivity } from "../../../types/profile"
+import { ExtendedActivity } from "~/types/profile"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -41,94 +38,70 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
-    activities: Collection<string, Activity>
-    report: RaidReportDataCollection | undefined
+    activities: Collection<string, ExtendedActivity>
     targetDot: string | null
     isLoading: boolean
-    filter: FilterCallback<ExtendedActivity>
 }
 
-type Statistics = { min: number; max: number; total: number }
-const baseStats: Statistics = {
-    min: Number.MAX_SAFE_INTEGER,
-    max: 0,
-    total: 0
-}
-
-const DotGraphWrapper = ({
+export default function DotGraphWrapper({
     activities,
-    report,
     targetDot,
-    isLoading,
-    filter
-}: DotGraphWrapperProps) => {
-    const activitiesFiltered = useMemo(() => {
-        if (activities && report) {
-            return activities
-                .map(a => report.eveythingFor(a))
-
-                .filter(filter)
-        } else {
-            return null
-        }
-    }, [filter, activities, report])
-
+    isLoading
+}: DotGraphWrapperProps) {
     const getHeight = useMemo(() => {
-        let { min, max, total } = activitiesFiltered?.reduce((soFar, { activity }) => {
-            const cvTime = activity.durationSeconds
-            return {
-                min: Math.min(soFar.min, cvTime),
-                max: Math.max(soFar.max, cvTime),
-                total: soFar.total + cvTime
+        let { min, max } = activities.reduce(
+            (soFar, a) => {
+                const cvTime = a.activity.durationSeconds
+                return {
+                    min: Math.min(soFar.min, cvTime),
+                    max: Math.max(soFar.max, cvTime)
+                }
+            },
+            {
+                min: Number.MAX_SAFE_INTEGER,
+                max: 0
             }
-        }, baseStats) ?? {
-            min: 0,
-            max: 1,
-            total: 0
-        }
+        )
+
         if (activities.size === 1) {
             min -= 1
             max += 1
         }
 
         const orderedByDuration =
-            activitiesFiltered
-                ?.map(({ activity }) => activity.durationSeconds)
-                .sort((a, b) => a - b) ?? []
+            activities.map(a => a.activity.durationSeconds).sort((a, b) => a - b) ?? []
         const avg = median(orderedByDuration)
         return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
-    }, [activitiesFiltered, activities])
+    }, [activities])
 
     return (
         <DotGraph
             getHeight={getHeight}
-            {...{ dots: activitiesFiltered, targetDot, isLoading, filter }}
+            dots={activities}
+            targetDot={targetDot}
+            isLoading={isLoading}
         />
     )
 }
 
-export default DotGraphWrapper
-
 type DotGraphProps = {
     getHeight: (duration: number) => number
-    dots: ExtendedActivity[] | null
+    dots: Collection<string, ExtendedActivity>
     targetDot: string | null
     isLoading: boolean
-    filter: FilterCallback<ExtendedActivity>
 }
 
 function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
-    let index = 0
     return (
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
             {dotTooltipData && <DotTooltip {...dotTooltipData} />}
             {isLoading ? (
-                <Loading wrapperClass={styles["dots-svg-loading"]} />
+                <Loading className={styles["dots-svg-loading"]} />
             ) : (
                 <svg
                     style={{
-                        width: SPACING * (dots?.length ?? 200) + "px",
+                        width: SPACING * (dots?.size ?? 200) + "px",
                         height: FULL_HEIGHT,
                         minWidth: "100%"
                     }}>
@@ -139,17 +112,20 @@ function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
                         y2={LINE_Y}
                         style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                     />
-                    {dots?.map(({ activity, extended }, key) => (
+                    {dots?.toJSON().map((a, idx) => (
                         <Dot
-                            key={key}
-                            index={index++}
-                            activity={activity}
-                            flawless={extended.flawless ?? false}
-                            playerCount={extended.playerCount}
-                            centerY={getHeight(activity.durationSeconds)}
+                            key={idx}
+                            index={idx}
+                            activity={a.activity}
+                            flawless={false}
+                            playerCount={6}
+                            // TODO
+                            // flawless={extended.flawless ?? false}
+                            // playerCount={extended.playerCount}
+                            centerY={getHeight(a.activity.durationSeconds)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            isTargeted={targetDot === activity.instanceId}
+                            isTargeted={targetDot === a.activity.instanceId}
                         />
                     ))}
                 </svg>

@@ -2,9 +2,10 @@ import Image from "next/image"
 import Link from "next/link"
 import styles from "~/styles/pages/home.module.css"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import { ListedRaid, RaidToUrlPaths, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
+import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { LocalStrings } from "~/util/presentation/localized-strings"
-import { SpeedrunVariableValues } from "~/util/speedrun-com/speedrun-ids"
+import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
+import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -17,7 +18,6 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
             <div className={styles["card-image-header"]}>
                 <Image
                     priority
-                    unoptimized={false}
                     width={320}
                     height={180}
                     src={RaidCardBackground[raid]}
@@ -35,9 +35,9 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["content-section"]}>
                     <h4>{strings.rtaSpeedrunLeaderboards}</h4>
                     <ul>
-                        {Object.keys(SpeedrunVariableValues[raid]).length ? (
-                            Object.entries(SpeedrunVariableValues[raid]).map(
-                                ([type, { id, name: key }]) => (
+                        {SpeedrunVariables[raid] ? (
+                            Object.entries(SpeedrunVariables[raid]!.values).map(
+                                ([type, { id, name: key }]: [string, SpeedData]) => (
                                     <li key={id}>
                                         <Link
                                             href={`/leaderboards/${
@@ -74,7 +74,8 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     <ul>
                         {RaidsWithReprisedContest.includes(raid as ReprisedRaid) ? (
                             <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/nochallenge`}>
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/normal`}>
                                     {strings.noChallenge}
                                 </Link>
                             </li>

@@ -15,7 +15,7 @@ type ParticipantsProps = {
 
 const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
     const router = useRouter()
-    const { pgcr, loadingState } = usePGCRContext()
+    const { data: pgcr, isLoading } = usePGCRContext()
 
     const getQueryValue = useCallback(
         (key: string) => {
@@ -99,7 +99,7 @@ const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
                             key={id}
                             player={player}
                             selectedPlayerId={selectedPlayer?.membershipId ?? null}
-                            isLoadingEmblems={!!loadingState}
+                            isLoadingEmblems={isLoading}
                             dnf={pgcr.completed && !player.didComplete}
                             solo={pgcr.players.size === 1}
                             weightedScore={pgcr.weightedScores.get(id) ?? 0}

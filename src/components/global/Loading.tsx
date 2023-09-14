@@ -1,9 +1,5 @@
-type LoadingProps = {
-    wrapperClass: string
-}
-
-const Loading = ({ wrapperClass }: LoadingProps) => (
-    <div className={["loading-pulse", wrapperClass].join(" ")} />
+const Loading = ({ className }: { className: string }) => (
+    <div className={["loading-pulse", className].join(" ")} />
 )
 
 export default Loading

@@ -15,10 +15,10 @@ const UserName = ({
         try {
             const bungieName = new BungieName(bungieGlobalDisplayName, bungieGlobalDisplayNameCode)
             return (
-                <>
+                <span className={styles["username"]}>
                     <span>{bungieName.name}</span>
                     <span className={styles["discrim"]}>{"#" + bungieName.fixedBungieCode}</span>
-                </>
+                </span>
             )
         } catch {}
     }

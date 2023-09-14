@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { signOut, useSession } from "next-auth/react"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import BungieClient from "~/services/bungie/client"
+import BungieClient from "~/util/bungieClient"
 
 const BungieClientContext = createContext<BungieClient | null>(null)
 

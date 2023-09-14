@@ -1,47 +1,73 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
-import { ListedRaids, Raid } from "../../../types/raids"
+import styles from "~/styles/pages/profile/raids.module.css"
+import { ListedRaids } from "~/types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
-import { AllRaidStats, ExtendedActivity, MembershipWithCharacters } from "../../../types/profile"
-import { ErrorHandler, FilterCallback } from "../../../types/generic"
-import RaidReportDataCollection from "../../../models/profile/data/RaidReportDataCollection"
-
+import { ExtendedActivity } from "~/types/profile"
+import { FilterCallback } from "~/types/generic"
 import RecentRaids from "./RecentRaids"
 import { Layout } from "../mid/LayoutToggle"
 import { useBungieClient } from "~/components/app/TokenManager"
+import { BungieMembershipType } from "bungie-net-core/models"
+import RaidStatsCollection from "~/models/profile/data/RaidStatsCollection"
+import { applyFilter } from "~/models/profile/data/ActivityCollection"
+import { Collection } from "@discordjs/collection"
 
 type RaidsProps = {
-    membershipId: string
-    characterMemberships: MembershipWithCharacters[]
+    destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
+    areMembershipsFetched: boolean
     layout: Layout
     filter: FilterCallback<ExtendedActivity>
-    raidMetrics: AllRaidStats | null
-    raidReport: Map<Raid, RaidReportDataCollection> | null
-    isLoadingRaidMetrics: boolean
-    isLoadingRaidReport: boolean
-    isLoadingCharacters: boolean
     setMostRecentActivity: (id: string | null | undefined) => void
-    errorHandler: ErrorHandler
 }
 
 const Raids = ({
-    membershipId: destinyMembershipId,
-    characterMemberships,
+    destinyMemberships,
+    areMembershipsFetched,
     layout,
     filter,
-    raidMetrics,
-    raidReport,
-    isLoadingRaidMetrics,
-    isLoadingRaidReport,
-    isLoadingCharacters,
-    setMostRecentActivity,
-    errorHandler
+    setMostRecentActivity
 }: RaidsProps) => {
     const bungie = useBungieClient()
-    const { data, isLoading: isLoadingActivities } = bungie.activityHistory.useQuery(
-        characterMemberships,
-        { staleTime: 60_000, enabled: !!characterMemberships.length }
+
+    const statsQueries = bungie.stats.useQueries(destinyMemberships, {
+        enabled: areMembershipsFetched
+    })
+
+    const characters = useMemo(
+        () =>
+            statsQueries
+                .map(
+                    q =>
+                        q.data?.characters.map(({ characterId }) => ({
+                            destinyMembershipId: q.data.destinyMembershipId,
+                            membershipType: q.data.membershipType,
+                            characterId
+                        }))!
+                )
+                .filter(Boolean)
+                .flat(),
+        [statsQueries]
     )
+
+    const areCharactersAllFound = statsQueries.every(q => q.isFetched)
+
+    // todo: make sure we arent making this call many times
+    const { data, isLoading: isLoadingActivities } = bungie.activityHistory.useQuery(characters, {
+        staleTime: 60_000,
+        enabled: areMembershipsFetched && areCharactersAllFound
+    })
+
+    const characterQueries = bungie.characterStats.useQueries(characters, {
+        enabled: areMembershipsFetched && areCharactersAllFound
+    })
+
+    const characterStats = useMemo(() => {
+        if (characterQueries.every(q => q.data)) {
+            return RaidStatsCollection.groupActivities(
+                characterQueries.map(q => q.data!.activities).flat()
+            )
+        }
+    }, [characterQueries])
 
     useEffect(() => {
         if (data?.allActivities) {
@@ -53,43 +79,23 @@ const Raids = ({
         }
     }, [data?.allActivities, setMostRecentActivity])
 
-    const allActivitiesFiltered = useMemo(() => {
-        if (data?.allActivities && raidReport) {
-            return data.allActivities
-                .map(
-                    a =>
-                        raidReport.get(a.raid)?.eveythingFor(a) ?? {
-                            activity: a,
-                            extended: {
-                                fresh: false,
-                                playerCount: a.playerCount,
-                                flawless: false
-                            }
-                        }
-                )
-                .filter(filter)
-        } else {
-            return null
-        }
-    }, [filter, data?.allActivities, raidReport])
-
     switch (layout) {
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
-                    {ListedRaids.map((raid, idx) => (
+                    {ListedRaids.map(raid => (
                         <RaidCard
-                            stats={raidMetrics?.get(raid)}
-                            report={raidReport?.get(raid)}
-                            allActivities={data?.activitiesByRaid.get(raid) ?? null}
-                            filter={filter}
-                            isLoadingStats={isLoadingRaidMetrics}
-                            key={idx}
+                            key={raid}
                             raid={raid}
-                            isLoadingDots={
-                                !data?.allActivities || isLoadingActivities || isLoadingCharacters
+                            stats={characterStats?.get(raid)}
+                            isLoadingStats={
+                                !areMembershipsFetched ||
+                                !areCharactersAllFound ||
+                                characterQueries.some(q => q.isLoading)
                             }
-                            isLoadingReport={isLoadingRaidReport}
+                            activities={data?.activitiesByRaid.get(raid) ?? null}
+                            isLoadingActivities={isLoadingActivities}
+                            filter={filter}
                         />
                     ))}
                 </div>
@@ -97,9 +103,12 @@ const Raids = ({
         case Layout.RecentActivities:
             return (
                 <RecentRaids
-                    isLoading={isLoadingActivities || isLoadingCharacters}
-                    allActivitiesFiltered={allActivitiesFiltered}
-                    raidReport={raidReport}
+                    isLoading={isLoadingActivities}
+                    allActivitiesFiltered={applyFilter(
+                        data?.allActivities ?? new Collection(),
+                        filter,
+                        {}
+                    )}
                 />
             )
     }

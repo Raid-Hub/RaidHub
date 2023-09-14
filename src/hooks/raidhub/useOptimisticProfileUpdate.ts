@@ -1,42 +1,34 @@
-import { useSession } from "next-auth/react"
+import { inferProcedureOutput } from "@trpc/server"
+import { AppRouter } from "~/server/trpc"
 import { trpc } from "~/util/trpc"
 
-export function useOptimisticProfileUpdate() {
-    const { profile } = trpc.useContext()
-    const { data: session } = useSession()
+export function useOptimisticProfileUpdate(options?: {
+    onSuccess(data: inferProcedureOutput<AppRouter["user"]["profile"]["update"]>): void
+}) {
+    const { user } = trpc.useContext()
 
-    return trpc.user.updateProfile.useMutation({
+    return trpc.user.profile.update.useMutation({
+        onSuccess: options?.onSuccess,
         async onMutate(newData) {
             // Cancel outgoing fetches (so they don't overwrite our optimistic update)
-            if (session?.user) {
-                await profile.getProfile.cancel({
-                    destinyMembershipId: session.user.destinyMembershipId
-                })
-                // Get the data from the queryCache
-                const prevData = profile.getProfile.getData()
-                // Optimistically update the data with our new data
-                if (prevData) {
-                    profile.getProfile.setData(
-                        {
-                            destinyMembershipId: session.user.destinyMembershipId
-                        },
-                        () => ({ ...prevData, ...newData })
-                    )
-                }
-                // Return the previous data so we can revert if something goes wrong
-                return { prevData }
+
+            await user.profile.get.cancel()
+            // Get the data from the queryCache
+            const prevData = user.profile.get.getData()
+            // Optimistically update the data with our new data
+            if (prevData) {
+                user.profile.get.setData(undefined, () => ({ ...prevData, ...newData }))
             }
+            // Return the previous data so we can revert if something goes wrong
+            return { prevData }
         },
         onError(err, newData, ctx) {
-            if (session?.user && ctx) {
-                profile.getProfile.setData(
-                    { destinyMembershipId: session.user.destinyMembershipId },
-                    ctx.prevData
-                )
+            if (ctx) {
+                user.profile.get.setData(undefined, ctx.prevData)
             }
         },
         onSettled() {
-            profile.getProfile.invalidate()
+            user.profile.get.invalidate()
         }
     })
 }

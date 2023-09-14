@@ -9,7 +9,7 @@ import { useItem } from "../app/DestinyManifestManager"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()
-    const { pgcr } = usePGCRContext()
+    const { data: pgcr } = usePGCRContext()
 
     const stats = useMemo(() => pgcr?.stats, [pgcr])
     const { data: weapon } = useItem(stats?.mostUsedWeapon?.hash ?? 73015)

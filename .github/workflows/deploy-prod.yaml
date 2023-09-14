@@ -79,8 +79,8 @@ jobs:
             - name: Deploy Project Artifacts to Vercel
               run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-            # - name: Create Tag
-            #   run: |
-            #       git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
-            #       git push origin
-            #       git push --tags
+            - name: Create Tag
+              run: |
+                  git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
+                  git push origin
+                  git push --tags

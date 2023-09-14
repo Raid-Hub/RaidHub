@@ -2,7 +2,6 @@ import styles from "../../../styles/pages/profile/mid.module.css"
 import Loading from "../../global/Loading"
 import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"
-import { ErrorHandler } from "../../../types/generic"
 import { useLocale } from "../../app/LocaleManager"
 import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
@@ -12,14 +11,12 @@ import { useBungieClient } from "~/components/app/TokenManager"
 type PinnedActivityProps = {
     activityId: string
     isPinned: boolean
-    errorHandler: ErrorHandler
     isLoadingActivities: boolean
     isLoadingRaidHubProfile: boolean
 }
 
 const PinnedActivity = ({
     activityId,
-    errorHandler,
     isPinned,
     isLoadingActivities,
     isLoadingRaidHubProfile
@@ -32,7 +29,7 @@ const PinnedActivity = ({
     const { locale, strings } = useLocale()
 
     return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (
-        <Loading wrapperClass={styles["pinned-activity-loading"]} />
+        <Loading className={styles["pinned-activity-loading"]} />
     ) : pgcr ? (
         <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
             {pgcr.raid !== null && (

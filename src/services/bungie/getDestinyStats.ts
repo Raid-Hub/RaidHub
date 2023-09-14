@@ -1,19 +1,31 @@
-import { DestinyHistoricalStatsAccountResult, BungieMembershipType } from "bungie-net-core/models"
-import { BungieClientProtocol } from "bungie-net-core"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { getHistoricalStatsForAccount } from "bungie-net-core/endpoints/Destiny2"
+import BungieClient from "~/util/bungieClient"
 
-export async function getDestinyStats({
-    destinyMembershipId,
-    membershipType,
-    client
-}: {
-    destinyMembershipId: string
-    membershipType: BungieMembershipType
-    client: BungieClientProtocol
-}): Promise<DestinyHistoricalStatsAccountResult> {
-    const stats = await getHistoricalStatsForAccount(client, {
+export const getDestinyStats =
+    (client: BungieClient) =>
+    async ({
         destinyMembershipId,
         membershipType
-    })
-    return stats.Response
-}
+    }: {
+        destinyMembershipId: string
+        membershipType: BungieMembershipType
+    }) => {
+        const { Response } = await getHistoricalStatsForAccount(client, {
+            destinyMembershipId,
+            membershipType
+        })
+
+        return { destinyMembershipId, membershipType, ...Response }
+
+        // const characterMemberships = profileStats.map(
+        //     ([destinyMembershipId, membershipType, stats]) => ({
+        //         destinyMembershipId,
+        //         membershipType,
+        //         characterIds: stats.characters.map(c => c.characterId)
+        //     })
+        // )
+        // const historicalStats = profileStats.flatMap(([id, type, stats]) => stats.characters)
+
+        // return { characterMemberships, historicalStats }
+    }

@@ -1,22 +1,27 @@
-import { BungieClientProtocol } from "bungie-net-core"
-import { DestinyAggregateActivityResults, BungieMembershipType } from "bungie-net-core/models"
+import { BungieMembershipType } from "bungie-net-core/models"
 import { getDestinyAggregateActivityStats } from "bungie-net-core/endpoints/Destiny2"
+import BungieClient from "~/util/bungieClient"
 
-export async function getDestinyStatsForCharacter({
-    destinyMembershipId,
-    membershipType,
-    characterId,
-    client
-}: {
-    destinyMembershipId: string
-    membershipType: BungieMembershipType
-    characterId: string
-    client: BungieClientProtocol
-}): Promise<DestinyAggregateActivityResults> {
-    const stats = await getDestinyAggregateActivityStats(client, {
-        characterId,
+export const getDestinyStatsForCharacter =
+    (client: BungieClient) =>
+    async ({
         destinyMembershipId,
-        membershipType
-    })
-    return stats.Response
-}
+        membershipType,
+        characterId
+    }: {
+        destinyMembershipId: string
+        membershipType: BungieMembershipType
+        characterId: string
+    }) => {
+        const { Response } = await getDestinyAggregateActivityStats(client, {
+            characterId,
+            destinyMembershipId,
+            membershipType
+        })
+
+        return Response
+
+        // return RaidStatsCollection.groupActivities(
+        //     characterStats.flat().flatMap(stats => stats.activities)
+        // )
+    }

@@ -3,6 +3,7 @@ import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-c
 import UserName from "../profile/user/UserName"
 import Image from "next/image"
 import Link from "next/link"
+import { emblemUrl } from "~/util/destiny/bungie-icons"
 
 export default function PlayerHeader({
     profile,
@@ -20,7 +21,7 @@ export default function PlayerHeader({
                 </h3>
             </Link>
             <Image
-                src={`https://www.bungie.net${Object.values(characters)[0].emblemBackgroundPath}`}
+                src={emblemUrl(Object.values(characters)[0].emblemBackgroundPath)}
                 alt={""}
                 unoptimized
                 fill

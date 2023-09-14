@@ -45,11 +45,13 @@ export async function updateCachedManifest({
     await Promise.all([
         getDestinyManifestComponent(client, {
             destinyManifest: manifest,
-            tableName: "DestinyInventoryItemDefinition",
+            tableName: "DestinyInventoryItemLiteDefinition",
             language: language
         }).then(items =>
             indexDB.transaction("rw", indexDB.items, () =>
-                indexDB.items.bulkPut(Object.values(items))
+                indexDB.items.bulkPut(
+                    Object.entries(items).map(([hash, item]) => ({ ...item, hash: Number(hash) }))
+                )
             )
         ),
 
