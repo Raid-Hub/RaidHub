@@ -14,10 +14,6 @@ jobs:
             BUNGIE_CLIENT_ID: ${{ secrets.BUNGIE_CLIENT_ID }}
             BUNGIE_CLIENT_SECRET: ${{ secrets.BUNGIE_CLIENT_SECRET }}
         steps:
-            - uses: actions/checkout@v1
-            - name: install node v16.17
-              uses: actions/setup-node@v1
-              with:
-                  node-version: "16.17"
+            - uses: actions/checkout@v2
             - run: yarn install
             - run: yarn test
