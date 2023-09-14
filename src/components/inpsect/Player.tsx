@@ -26,7 +26,7 @@ export default function Player({
     })
     const primaryProfile = useMemo(
         () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, member.membershipId)),
-        [linkedProfiles]
+        [linkedProfiles, member.membershipId]
     )
 
     return primaryProfile ? (

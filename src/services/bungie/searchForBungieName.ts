@@ -22,5 +22,5 @@ export async function searchForBungieName({
             displayNameCode
         }
     )
-    return response.Response.filter(isPrimaryCrossSave)[0]
+    return response.Response.filter(p => isPrimaryCrossSave(p))[0]
 }
