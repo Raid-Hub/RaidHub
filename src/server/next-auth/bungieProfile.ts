@@ -1,4 +1,4 @@
-import { Role, User } from "@prisma/client"
+import { Role } from "@prisma/client"
 import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 import { TokenSet } from "next-auth"
 import { v4 } from "uuid"
