@@ -92,7 +92,7 @@ function ResolvedPlayer({
 
     const mostRecentCharacterId = useMemo(
         () =>
-            profileData?.characters.data
+            profileData?.characters?.data
                 ? Object.values(profileData.characters.data).reduce((base, current) =>
                       new Date(current.dateLastPlayed).getTime() >
                       new Date(base.dateLastPlayed).getTime()
@@ -104,9 +104,9 @@ function ResolvedPlayer({
     )
 
     const items = mostRecentCharacterId
-        ? profileData?.characterEquipment.data?.[mostRecentCharacterId].items
+        ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
         : undefined
-    const sockets = profileData?.itemComponents.sockets.data
+    const sockets = profileData?.itemComponents.sockets?.data
 
     const subclass = items?.find(i => i.bucketHash === subclassBucket)
 
@@ -124,7 +124,7 @@ function ResolvedPlayer({
         return <Loading className={styles["player"]} />
     return profileData ? (
         <div className={styles["player"]}>
-            {profileData.profile.data && profileData.characters.data && (
+            {profileData.profile?.data && profileData.characters?.data && (
                 <PlayerHeader
                     profile={profileData.profile.data}
                     characters={profileData.characters.data}

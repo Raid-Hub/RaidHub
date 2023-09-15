@@ -1,4 +1,4 @@
-import { QueryClient, dehydrate } from "@tanstack/react-query"
+import { DehydrateOptions, QueryClient, dehydrate } from "@tanstack/react-query"
 import { createServerSideHelpers } from "@trpc/react-query/server"
 import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
@@ -9,8 +9,13 @@ import { ListedRaid } from "~/types/raids"
 import { appRouter } from "./trpc/router"
 import prisma from "./prisma"
 import superjson from "superjson"
+import { BungieMembershipType } from "bungie-net-core/models"
+import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
+import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import BungieQuery, { QueryFn } from "~/util/bungieQuery"
+import { getBasicProfile } from "~/services/bungie/getProfile"
 
-const createServerQueryClient = () =>
+const createServerSideQueryClient = () =>
     new QueryClient({
         defaultOptions: {
             queries: {
@@ -19,16 +24,47 @@ const createServerQueryClient = () =>
         }
     })
 
-const trpcServerSideHelpers = () =>
+const createTrpcServerSideHelpers = () =>
     createServerSideHelpers({
         router: appRouter,
         transformer: superjson,
         ctx: { req: undefined, res: undefined, session: null, prisma },
-        queryClient: createServerQueryClient()
+        queryClient: createServerSideQueryClient()
     })
 
+const createBungieServerSideHelpers = () =>
+    new ServerSideBungieClient(createServerSideQueryClient())
+
+export async function prefetchDestinyProfile({
+    destinyMembershipId,
+    destinyMembershipType
+}: {
+    destinyMembershipId: string
+    destinyMembershipType: BungieMembershipType
+}) {
+    const helpers = createBungieServerSideHelpers()
+
+    await helpers.profile.prefetchQuery(
+        {
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        },
+        {
+            staleTime: 1000 * 3600 * 12 // keep in cache for 12 hrs
+        }
+    )
+    await helpers.queryClient.invalidateQueries({
+        queryKey: helpers.profile.queryKey({
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        })
+    }) // we prefetch but mark it as invalid. This allows SSR but it refetches on load
+
+    return helpers.dehydrate()
+}
+
 export async function prefetchRaidHubProfile(destinyMembershipId: string) {
-    const helpers = trpcServerSideHelpers()
+    const helpers = createTrpcServerSideHelpers()
 
     await helpers.profile.byDestinyMembershipId.prefetch({
         destinyMembershipId
@@ -43,7 +79,7 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
     params: string[],
     pages: number
 ) {
-    const queryClient = createServerQueryClient()
+    const queryClient = createServerSideQueryClient()
 
     // we prefetch the first page at build time
     const staleTime = 24 * 60 * 60 * 1000 // 24 hours
@@ -69,7 +105,7 @@ export async function prefetchSpeedrunComLeaderboard(raid: ListedRaid, category:
     // we prefetch the first page at build time
     const staleTime = 60 * 60 * 1000 // 1 hour
 
-    const queryClient = createServerQueryClient()
+    const queryClient = createServerSideQueryClient()
     await queryClient.prefetchQuery(rtaQueryKey(raid, category), () =>
         getSpeedrunComLeaderboard({ raid, category })
     ),
@@ -80,5 +116,57 @@ export async function prefetchSpeedrunComLeaderboard(raid: ListedRaid, category:
     return {
         staleTime,
         dehydratedState: dehydrate(queryClient)
+    }
+}
+
+class ServerSideBungieClient implements BungieClientProtocol {
+    queryClient: QueryClient
+
+    constructor(queryClient: QueryClient) {
+        this.queryClient = queryClient
+    }
+
+    private query<TParams, TData>({
+        fn,
+        key
+    }: {
+        fn: (client: BungieClientProtocol) => QueryFn<TParams, TData>
+        key: string
+    }) {
+        return BungieQuery<TParams, TData>(this.queryClient, fn(this), key)
+    }
+
+    get profile() {
+        return this.query(getBasicProfile)
+    }
+
+    dehydrate(options?: DehydrateOptions) {
+        return dehydrate(this.queryClient, options)
+    }
+
+    async fetch<T>(config: BungieFetchConfig): Promise<T> {
+        const apiKey = process.env.BUNGIE_API_KEY
+        if (!apiKey) {
+            throw new Error("Missing BUNGIE_API_KEY")
+        }
+
+        const payload = {
+            method: config.method,
+            body: config.body,
+            headers: config.headers ?? {}
+        }
+
+        if (config.url.pathname.match(/\/Platform\//)) {
+            payload.headers["X-API-KEY"] = apiKey
+        }
+
+        const res = await fetch(config.url, payload)
+        const data = await res.json()
+        if (data.ErrorCode && data.ErrorCode !== 1) {
+            throw new BungieAPIError(data)
+        } else if (!res.ok) {
+            throw new Error("Error parsing response")
+        }
+        return data as T
     }
 }

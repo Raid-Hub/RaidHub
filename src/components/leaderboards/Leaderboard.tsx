@@ -73,23 +73,23 @@ const Leaderboard = ({
                 </StyledButton>
             </section>
             <section className={styles["leaderboard-container"]}>
-                {(!isLoading &&
-                    entries.map((e, idx) => (
-                        <Fragment key={e.id}>
-                            <LeaderboardEntryComponent entry={e} />
-                            {idx < entries.length - 1 && (
-                                <hr className={styles["leaderboard-divider"]} />
-                            )}
-                        </Fragment>
-                    ))) ||
-                    new Array(ENTRIES_PER_PAGE).fill(null).map((_, idx) => (
-                        <Fragment key={idx}>
-                            <Loading className={styles["leaderboard-entry-loading"]} />
-                            {idx < ENTRIES_PER_PAGE - 1 && (
-                                <hr className={styles["leaderboard-divider"]} />
-                            )}
-                        </Fragment>
-                    ))}
+                {!isLoading
+                    ? entries.map((e, idx) => (
+                          <Fragment key={e.id}>
+                              <LeaderboardEntryComponent entry={e} />
+                              {idx < entries.length - 1 && (
+                                  <hr className={styles["leaderboard-divider"]} />
+                              )}
+                          </Fragment>
+                      ))
+                    : new Array(ENTRIES_PER_PAGE).fill(null).map((_, idx) => (
+                          <Fragment key={idx}>
+                              <Loading className={styles["leaderboard-entry-loading"]} />
+                              {idx < ENTRIES_PER_PAGE - 1 && (
+                                  <hr className={styles["leaderboard-divider"]} />
+                              )}
+                          </Fragment>
+                      ))}
             </section>
         </main>
     )

@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
 import { Hydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
@@ -23,9 +23,7 @@ type RTASpeedunLeaderboadProps<
         ? never
         : string,
     R extends ListedRaid = ListedRaid
-> = SpeedrunQueryArgs<R, K> & {
-    dehydratedState: unknown
-}
+> = SpeedrunQueryArgs<R, K>
 
 const categoryPaths = (
     vars: NonNullable<(typeof SpeedrunVariables)[ListedRaid]>,
@@ -101,11 +99,18 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
-const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
-    raid,
-    category,
-    dehydratedState
-}) => {
+export default function RtaLeaderboardPage({
+    dehydratedState,
+    ...props
+}: RTASpeedunLeaderboadProps<string> & { dehydratedState: unknown }) {
+    return (
+        <Hydrate state={dehydratedState}>
+            <RTASpeedunLeaderboad {...props} />
+        </Hydrate>
+    )
+}
+
+const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<string>) => {
     const { strings } = useLocale()
     const [page, setPage] = usePage()
     const query = useQuery({
@@ -122,28 +127,29 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
             : undefined
     const subtitle = subKey ? strings.leaderboards[subKey] : undefined
 
+    const pageTitle = `${raidName} | RTA Speedrun Leaderboards`
+    const description = `RTA Speedrun Leaderboards for ${raidName}`
     return (
         <>
             <Head>
-                <title>{`${raidName} | RTA Speedrun Leaderboards`}</title>
+                <title>{pageTitle}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={pageTitle} />
+                <meta key="og-descriptions" property="og:description" content={description} />
             </Head>
-            <Hydrate state={dehydratedState}>
-                <Leaderboard
-                    title={raidName + " RTA"}
-                    subtitle={subtitle}
-                    raid={raid}
-                    entries={(query.data ?? []).slice(
-                        ENTRIES_PER_PAGE * page,
-                        ENTRIES_PER_PAGE * (page + 1)
-                    )}
-                    isLoading={query.isLoading}
-                    type="RTA"
-                    page={page}
-                    setPage={setPage}
-                />
-            </Hydrate>
+            <Leaderboard
+                title={raidName + " RTA"}
+                subtitle={subtitle}
+                raid={raid}
+                entries={(query.data ?? []).slice(
+                    ENTRIES_PER_PAGE * page,
+                    ENTRIES_PER_PAGE * (page + 1)
+                )}
+                isLoading={query.isLoading}
+                type="RTA"
+                page={page}
+                setPage={setPage}
+            />
         </>
     )
 }
-
-export default RTASpeedunLeaderboad

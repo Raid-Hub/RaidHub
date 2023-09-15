@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
 import { Hydrate, useQuery } from "@tanstack/react-query"
 import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
@@ -65,10 +65,10 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
-const NoChallengeContestLeaderboadPage: NextPage<NoChallengeContestLeaderboadProps> = ({
+export default function NoChallengeContestLeaderboadPage({
     raid,
     dehydratedState
-}) => {
+}: NoChallengeContestLeaderboadProps) {
     return (
         <Hydrate state={dehydratedState}>
             <NoChallengeContestLeaderboad raid={raid} />
@@ -86,10 +86,17 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
     })
 
+    const title = `${raidName} | Normal Contest Leaderboards`
+    const raidDate = toCustomDateString(ReleaseDate[raid], locale)
+    const description = `Contest (Normal) Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
             <Head>
-                <title>{`${raidName} | Normal Contest Leaderboards`}</title>
+                <title>{title}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={title} />
+                <meta key="og-descriptions" property="og:description" content={description} />
+                <meta name="date" content={ReleaseDate[raid].toISOString().slice(0, 10)} />
             </Head>
 
             <LeaderboardComponent
@@ -105,5 +112,3 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         </>
     )
 }
-
-export default NoChallengeContestLeaderboadPage

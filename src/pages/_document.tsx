@@ -11,6 +11,7 @@ export default function Document() {
                     rel="stylesheet"
                 />
                 <meta name="color-scheme" content="dark" />
+                <meta name="robots" content="index" />
             </Head>
             <body>
                 <Main />

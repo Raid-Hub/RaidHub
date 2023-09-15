@@ -1,8 +1,8 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
-import BungieQuery, { QueryFn } from "./bungieClientQuery"
-import { getProfile } from "../services/bungie/getProfile"
+import BungieQuery, { QueryFn } from "./bungieQuery"
+import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
 import { getPGCR } from "../services/bungie/getPGCR"
 import { getActivityHistory } from "../services/bungie/getActivityHistory"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
@@ -10,7 +10,6 @@ import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
 import { getDestinyStats } from "~/services/bungie/getDestinyStats"
-import { getProfileTransitory } from "~/services/bungie/getProfileTransitory"
 
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount
@@ -81,8 +80,14 @@ export default class BungieClient implements BungieClientProtocol {
         this.accessToken = null
     }
 
-    private query<TParams, TData>(queryFn: (client: BungieClient) => QueryFn<TParams, TData>) {
-        return BungieQuery(this, queryFn(this))
+    private query<TParams, TData>({
+        fn,
+        key
+    }: {
+        fn: (client: BungieClientProtocol) => QueryFn<TParams, TData>
+        key: string
+    }) {
+        return BungieQuery<TParams, TData>(this.queryClient, fn(this), key)
     }
 
     clan = {
@@ -90,6 +95,7 @@ export default class BungieClient implements BungieClientProtocol {
         byId: this.query(getClan),
         members: this.query(getClanMembers)
     }
+    // we prefetch the profile missing some components
     profile = this.query(getProfile)
     profileTransitory = this.query(getProfileTransitory)
     pgcr = this.query(getPGCR)

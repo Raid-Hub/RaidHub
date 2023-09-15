@@ -5,14 +5,13 @@ import Link from "next/link"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 export default function ClanMember({ member }: { member: GroupMember }) {
-    console.log(member)
     return (
         <Link
             href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}
             className={styles["member"]}>
             <div className={styles["member-icon-container"]}>
                 <Image
-                    src={bungieIconUrl(member.bungieNetUserInfo.iconPath)}
+                    src={bungieIconUrl(member.bungieNetUserInfo?.iconPath)}
                     alt="icon"
                     unoptimized
                     fill

@@ -1,12 +1,21 @@
 import { InitialProfileProps } from "~/types/profile"
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType, NextPage } from "next"
 import prisma from "~/server/prisma"
 import { z } from "zod"
 import Profile from "~/components/profile/Profile"
-import { prefetchRaidHubProfile } from "~/server/serverQueryClient"
+import { prefetchDestinyProfile, prefetchRaidHubProfile } from "~/server/serverQueryClient"
+import { DehydratedState, Hydrate } from "@tanstack/react-query"
+import Head from "next/head"
 
-const ProfileVanityPage: NextPage<InitialProfileProps> = props => {
-    return <Profile {...props} />
+const ProfileVanityPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    return (
+        <Hydrate state={props.dehydratedState}>
+            <Head>
+                <link rel="canonical" />
+            </Head>
+            <Profile {...props} />
+        </Hydrate>
+    )
 }
 
 export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
@@ -31,9 +40,10 @@ export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
     }
 }
 
-export const getStaticProps: GetStaticProps<InitialProfileProps, { vanity: string }> = async ({
-    params
-}) => {
+export const getStaticProps: GetStaticProps<
+    InitialProfileProps & { dehydratedState: DehydratedState },
+    { vanity: string }
+> = async ({ params }) => {
     try {
         const vanityString = z.string().parse(params?.vanity)
         const getVanity = async (string: string) =>
@@ -50,9 +60,15 @@ export const getStaticProps: GetStaticProps<InitialProfileProps, { vanity: strin
         const details = await getVanity(vanityString)
 
         if (details?.destinyMembershipId && details.destinyMembershipType) {
-            const prefetchedState = await prefetchRaidHubProfile(details.destinyMembershipId)
+            const [trpcState, bungieState] = await Promise.all([
+                prefetchRaidHubProfile(details.destinyMembershipId),
+                prefetchDestinyProfile(details)
+            ])
 
-            return { props: { ...details, trpcState: prefetchedState }, revalidate: 24 * 3600 }
+            return {
+                props: { ...details, trpcState: trpcState, dehydratedState: bungieState },
+                revalidate: 24 * 3600
+            }
         }
     } catch (e) {
         console.error(e)
