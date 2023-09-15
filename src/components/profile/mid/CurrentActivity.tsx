@@ -15,13 +15,12 @@ import { useProfileProps } from "../Profile"
 
 type CurrentActivityParams = {
     activitiesComponent: DestinyCharacterActivitiesComponent
-    profileUpdatedAt: number
 }
 
-const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActivityParams) => {
+const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
     const bungie = useBungieClient()
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
-    const { data: transitoryComponent, isLoading: isLoadingTransitoryComponent } =
+    const { data: transitoryComponent, dataUpdatedAt: updatedAt } =
         bungie.profileTransitory.useQuery({
             destinyMembershipId,
             membershipType: destinyMembershipType
@@ -49,7 +48,7 @@ const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActiv
 
     const { strings } = useLocale()
 
-    if (isLoadingActivityMode || isLoadingActivity || isLoadingTransitoryComponent) {
+    if (isLoadingActivityMode || isLoadingActivity) {
         return <Loading className={styles["current-activity"]} />
     }
 
@@ -78,7 +77,7 @@ const CurrentActivity = ({ activitiesComponent, profileUpdatedAt }: CurrentActiv
                 <div className={styles["timer-container"]}>
                     <span className={styles["current-activity-label"]}>{strings.elapsedTime}</span>
                     <Timer
-                        lastRefresh={profileUpdatedAt}
+                        lastRefresh={updatedAt}
                         startTime={new Date(transitoryComponent.currentActivity.startTime)}
                     />
                 </div>

@@ -23,9 +23,7 @@ type RTASpeedunLeaderboadProps<
         ? never
         : string,
     R extends ListedRaid = ListedRaid
-> = SpeedrunQueryArgs<R, K> & {
-    dehydratedState: unknown
-}
+> = SpeedrunQueryArgs<R, K>
 
 const categoryPaths = (
     vars: NonNullable<(typeof SpeedrunVariables)[ListedRaid]>,
@@ -101,11 +99,18 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
-const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
-    raid,
-    category,
-    dehydratedState
-}) => {
+export default function RtaLeaderboardPage({
+    dehydratedState,
+    ...props
+}: RTASpeedunLeaderboadProps<string> & { dehydratedState: unknown }) {
+    return (
+        <Hydrate state={dehydratedState}>
+            <RTASpeedunLeaderboad {...props} />
+        </Hydrate>
+    )
+}
+
+const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<string>) => {
     const { strings } = useLocale()
     const [page, setPage] = usePage()
     const query = useQuery({
@@ -127,23 +132,19 @@ const RTASpeedunLeaderboad: NextPage<RTASpeedunLeaderboadProps<string>> = ({
             <Head>
                 <title>{`${raidName} | RTA Speedrun Leaderboards`}</title>
             </Head>
-            <Hydrate state={dehydratedState}>
-                <Leaderboard
-                    title={raidName + " RTA"}
-                    subtitle={subtitle}
-                    raid={raid}
-                    entries={(query.data ?? []).slice(
-                        ENTRIES_PER_PAGE * page,
-                        ENTRIES_PER_PAGE * (page + 1)
-                    )}
-                    isLoading={query.isLoading}
-                    type="RTA"
-                    page={page}
-                    setPage={setPage}
-                />
-            </Hydrate>
+            <Leaderboard
+                title={raidName + " RTA"}
+                subtitle={subtitle}
+                raid={raid}
+                entries={(query.data ?? []).slice(
+                    ENTRIES_PER_PAGE * page,
+                    ENTRIES_PER_PAGE * (page + 1)
+                )}
+                isLoading={query.isLoading}
+                type="RTA"
+                page={page}
+                setPage={setPage}
+            />
         </>
     )
 }
-
-export default RTASpeedunLeaderboad

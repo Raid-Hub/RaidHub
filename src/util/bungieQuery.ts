@@ -4,20 +4,24 @@ import {
     RefetchQueryFilters,
     UseQueryOptions,
     useQueries,
-    useQuery
+    useQuery,
+    FetchQueryOptions,
+    QueryClient
 } from "@tanstack/react-query"
-import BungieClient from "./bungieClient"
-import { v4 } from "uuid"
 import { UseQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries"
 
 export type QueryFn<TParams, TData> = (params: TParams) => Promise<TData>
 
 export default function BungieQuery<TParams, TData>(
-    client: BungieClient,
-    queryFn: QueryFn<TParams, TData>
+    queryClient: QueryClient,
+    queryFn: QueryFn<TParams, TData>,
+    queryId: string
 ) {
-    const queryId = v4()
     return {
+        queryKey(params: TParams) {
+            return ["bungie", queryId /*client.getToken()*/, , params] as const
+        },
+
         useQuery<TError = unknown>(
             params: TParams,
             options?: Omit<
@@ -27,7 +31,7 @@ export default function BungieQuery<TParams, TData>(
         ) {
             return useQuery<TData, TError>({
                 ...options,
-                queryKey: [queryId, client.getToken(), params],
+                queryKey: this.queryKey(params),
                 queryFn: () => queryFn(params)
             })
         },
@@ -42,23 +46,25 @@ export default function BungieQuery<TParams, TData>(
                 context,
                 queries: queries.map(params => ({
                     ...options,
-                    queryKey: [queryId, client.getToken(), params],
+                    queryKey: this.queryKey(params),
                     queryFn: () => queryFn(params)
                 }))
             })
         },
 
         getQueryData(params: TParams) {
-            return client.queryClient.getQueryData([queryId, client.getToken(), params]) as
-                | TData
-                | undefined
+            return queryClient.getQueryData(this.queryKey(params)) as TData | undefined
         },
 
         refetchQueries<TPageData = unknown>(
             filters?: RefetchQueryFilters<TPageData>,
             options?: RefetchOptions
         ) {
-            return client.queryClient.refetchQueries({ ...filters, queryKey: [queryId] }, options)
+            return queryClient.refetchQueries(filters, options)
+        },
+
+        prefetchQuery(params: TParams, options?: FetchQueryOptions<TData, unknown, TData>) {
+            return queryClient.prefetchQuery(this.queryKey(params), () => queryFn(params), options)
         }
     }
 }

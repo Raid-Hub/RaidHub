@@ -32,14 +32,13 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
             destinyMembershipId
         })
 
-    const { data: primaryDestinyProfile, dataUpdatedAt: profileUpdatedAt } =
-        bungie.profile.useQuery(
-            {
-                destinyMembershipId,
-                membershipType: destinyMembershipType
-            },
-            { staleTime: 5 * 60000 }
-        )
+    const { data: primaryDestinyProfile } = bungie.profile.useQuery(
+        {
+            destinyMembershipId,
+            membershipType: destinyMembershipType
+        },
+        { staleTime: 5 * 60000 }
+    )
 
     const { data: membershipsData, isFetched: areMembershipsFetched } =
         bungie.linkedProfiles.useQuery({
@@ -89,9 +88,8 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     </section>
 
                     <section className={styles["mid"]}>
-                        {primaryDestinyProfile?.characterActivities.data && (
+                        {primaryDestinyProfile?.characterActivities?.data && (
                             <CurrentActivity
-                                profileUpdatedAt={profileUpdatedAt}
                                 activitiesComponent={
                                     Object.values(
                                         primaryDestinyProfile.characterActivities.data

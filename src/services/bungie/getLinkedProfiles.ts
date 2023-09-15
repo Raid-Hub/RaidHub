@@ -1,12 +1,15 @@
 import { getLinkedProfiles as getBungieLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
-import BungieClient from "../../util/bungieClient"
+import { BungieClientProtocol } from "bungie-net-core"
 
-export const getLinkedProfiles =
-    (client: BungieClient) =>
-    async ({ membershipId }: { membershipId: string }) => {
-        const { Response } = await getBungieLinkedProfiles(client, {
-            membershipId,
-            membershipType: -1 // all
-        })
-        return Response
-    }
+export const getLinkedProfiles = {
+    key: "linked-profile",
+    fn:
+        (client: BungieClientProtocol) =>
+        async ({ membershipId }: { membershipId: string }) => {
+            const { Response } = await getBungieLinkedProfiles(client, {
+                membershipId,
+                membershipType: -1 // all
+            })
+            return Response
+        }
+}

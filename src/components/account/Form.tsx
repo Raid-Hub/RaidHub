@@ -39,8 +39,6 @@ const IconUploadForm = ({
     })
 
     const onSubmit: SubmitHandler<FormValues> = data => {
-        console.log(data)
-
         optimisticProfileUpdate({ name: data.username })
         if (data.image) {
             uploadIcon({ file: data.image })

@@ -65,10 +65,10 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     }
 }
 
-const WorldsFirstLeaderboadPage: NextPage<WorldsFirstLeaderboadProps> = ({
+export default function WorldsFirstLeaderboadPage({
     raid,
     dehydratedState
-}) => {
+}: WorldsFirstLeaderboadProps) {
     return (
         <Hydrate state={dehydratedState}>
             <WorldsFirstLeaderboad raid={raid} />
@@ -107,5 +107,3 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         </>
     )
 }
-
-export default WorldsFirstLeaderboadPage

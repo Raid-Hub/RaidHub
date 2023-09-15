@@ -1,11 +1,12 @@
 import { CharacterWithMembership } from "~/types/profile"
-import BungieClient from "../../util/bungieClient"
 import { getAllCharacterRaids } from "./getAllCharacterRaids"
 import Activity from "~/models/profile/data/Activity"
 import ActivityCollection from "~/models/profile/data/ActivityCollection"
+import { BungieClientProtocol } from "bungie-net-core"
 
-export const getActivityHistory =
-    (client: BungieClient) => async (memberships: CharacterWithMembership[]) => {
+export const getActivityHistory = {
+    key: "activity-history",
+    fn: (client: BungieClientProtocol) => async (memberships: CharacterWithMembership[]) => {
         const allActivities = await Promise.all(
             memberships.map(({ destinyMembershipId, membershipType, characterId }) =>
                 getAllCharacterRaids({
@@ -30,3 +31,4 @@ export const getActivityHistory =
 
         return { allActivities, activitiesByRaid }
     }
+}

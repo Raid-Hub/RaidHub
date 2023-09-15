@@ -1,12 +1,17 @@
-import { GetStaticProps, NextPage } from "next"
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next"
 import { InitialProfileProps } from "~/types/profile"
 import { zUniqueDestinyProfile } from "~/util/zod"
 import prisma from "~/server/prisma"
 import Profile from "~/components/profile/Profile"
-import { prefetchRaidHubProfile } from "~/server/serverQueryClient"
+import { prefetchDestinyProfile, prefetchRaidHubProfile } from "~/server/serverQueryClient"
+import { DehydratedState, Hydrate } from "@tanstack/react-query"
 
-const ProfilePage: NextPage<InitialProfileProps> = props => {
-    return <Profile {...props} />
+const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    return (
+        <Hydrate state={props.dehydratedState}>
+            <Profile {...props} />
+        </Hydrate>
+    )
 }
 
 export const getStaticPaths = () => {
@@ -16,7 +21,9 @@ export const getStaticPaths = () => {
     }
 }
 
-export const getStaticProps: GetStaticProps<InitialProfileProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<
+    InitialProfileProps & { dehydratedState: DehydratedState }
+> = async ({ params }) => {
     try {
         const props = zUniqueDestinyProfile.parse(params)
         const vanity = await prisma.vanity
@@ -35,13 +42,17 @@ export const getStaticProps: GetStaticProps<InitialProfileProps> = async ({ para
                 }
             }
         } else {
-            const prefetchedState = await prefetchRaidHubProfile(props.destinyMembershipId)
+            const [trpcState, bungieState] = await Promise.all([
+                prefetchRaidHubProfile(props.destinyMembershipId),
+                prefetchDestinyProfile(props)
+            ])
 
             return {
                 revalidate: 3600 * 24,
                 props: {
                     ...props,
-                    trpcState: prefetchedState
+                    dehydratedState: bungieState,
+                    trpcState: trpcState
                 }
             }
         }

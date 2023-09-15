@@ -65,10 +65,10 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
-const NoChallengeContestLeaderboadPage: NextPage<NoChallengeContestLeaderboadProps> = ({
+export default function NoChallengeContestLeaderboadPage({
     raid,
     dehydratedState
-}) => {
+}: NoChallengeContestLeaderboadProps) {
     return (
         <Hydrate state={dehydratedState}>
             <NoChallengeContestLeaderboad raid={raid} />
@@ -105,5 +105,3 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         </>
     )
 }
-
-export default NoChallengeContestLeaderboadPage
