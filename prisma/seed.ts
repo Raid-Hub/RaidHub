@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client"
+import { PrismaClient, Role, User } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/enums"
 
 const prisma = new PrismaClient()
@@ -53,6 +53,7 @@ async function seedFakeUsers() {
             .slice(0, MAX_FAKE_USERS)
             .map((name, idx) => ({
                 name,
+                role: Role.USER,
                 image: "https://picsum.photos/50",
                 id: idx.toString(),
                 bungieMembershipId: "s212" + randomNumber(10000, 99999),
@@ -62,12 +63,15 @@ async function seedFakeUsers() {
             }))
     }
 
-    async function createProfile({ id, name }: Omit<User, "emailVerified"> & { name: string }) {
+    async function createProfile({
+        destinyMembershipId,
+        name
+    }: Omit<User, "emailVerified"> & { name: string }) {
         return await prisma.profile.create({
             data: {
                 user: {
                     connect: {
-                        id
+                        destinyMembershipId
                     }
                 },
                 bungieUsername: name + "#" + randomNumber(0, 9999),
@@ -78,12 +82,12 @@ async function seedFakeUsers() {
         })
     }
 
-    async function createAccount({ id, destinyMembershipId }: Omit<User, "emailVerified">) {
+    async function createAccount({ destinyMembershipId }: Omit<User, "emailVerified">) {
         return await prisma.account.create({
             data: {
                 user: {
                     connect: {
-                        id
+                        destinyMembershipId
                     }
                 },
                 type: "oauth",
@@ -97,12 +101,12 @@ async function seedFakeUsers() {
         })
     }
 
-    async function createSession({ id }: Omit<User, "emailVerified">) {
+    async function createSession({ destinyMembershipId }: Omit<User, "emailVerified">) {
         return await prisma.session.create({
             data: {
                 user: {
                     connect: {
-                        id
+                        destinyMembershipId
                     }
                 },
                 sessionToken: genRandomString(40),

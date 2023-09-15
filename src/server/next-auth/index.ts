@@ -9,7 +9,7 @@ import DiscordProvider from "next-auth/providers/discord"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
 
-export const authOptions: AuthOptions = {
+export const nextAuthOptions: AuthOptions = {
     adapter: CustomPrismaAdapter(prisma),
     providers: getProviders(),
     pages: {

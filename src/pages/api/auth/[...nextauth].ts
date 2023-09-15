@@ -2,7 +2,7 @@ import { AccessToken, User as PrismaUser, RefreshToken } from "@prisma/client"
 import NextAuth from "next-auth/next"
 import { DefaultSession } from "next-auth"
 import { SessionUser } from "~/server/next-auth/sessionCallback"
-import { authOptions } from "~/server/next-auth"
+import { nextAuthOptions as authOptions } from "~/server/next-auth"
 
 type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 

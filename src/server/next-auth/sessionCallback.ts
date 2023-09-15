@@ -4,6 +4,7 @@ import { AdapterUser } from "next-auth/adapters"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { BungieFetchConfig } from "bungie-net-core"
+import { Role } from "@prisma/client"
 
 export type SessionUser = {
     id: string
@@ -11,6 +12,7 @@ export type SessionUser = {
     destinyMembershipType: BungieMembershipType
     name: string
     image: string
+    role: Role
     bungieAccessToken?: {
         value: string
         expires: number
@@ -24,6 +26,7 @@ function sessionUser(user: AdapterUser): SessionUser {
         destinyMembershipType: user.destinyMembershipType,
         image: user.image,
         name: user.name,
+        role: user.role,
         bungieAccessToken: user.bungieAccessToken
             ? {
                   value: user.bungieAccessToken.value,

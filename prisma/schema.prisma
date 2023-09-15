@@ -12,7 +12,7 @@ datasource db {
   relationMode = "prisma"
 }
 
-// do not edit these fields
+// Represents an OAuth account. Do not edit these fields.
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -34,6 +34,11 @@ model Account {
   @@index([userId])
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id                    String        @id @default(cuid())
   name                  String
@@ -45,6 +50,7 @@ model User {
   bungieRefreshToken    RefreshToken?
   email                 String        @unique @default("")
   emailVerified         DateTime?     @map("email_verified")
+  role                  Role          @default(USER)
   profile               Profile?
   accounts              Account[]
   sessions              Session[]

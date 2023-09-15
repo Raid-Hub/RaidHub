@@ -1,5 +1,5 @@
 import { Adapter, AdapterAccount } from "next-auth/adapters"
-import { Account, PrismaClient } from "@prisma/client"
+import { Account, PrismaClient, Role } from "@prisma/client"
 import { DiscordProfile } from "next-auth/providers/discord"
 import prisma from "../prisma"
 import { TwitterProfile } from "next-auth/providers/twitter"
