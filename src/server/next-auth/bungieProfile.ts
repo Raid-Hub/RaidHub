@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client"
 import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 import { TokenSet } from "next-auth"
 import { v4 } from "uuid"
@@ -40,6 +41,7 @@ export async function bungieProfile(
             value: tokens.refresh_token!,
             expires: new Date(Date.now() + 7_775_777_777) // <90 days
         },
+        role: Role.USER,
         email: "",
         emailVerified: null
     }

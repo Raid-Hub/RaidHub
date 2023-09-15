@@ -6,7 +6,7 @@ import { IncomingForm } from "formidable"
 import path, { join } from "path"
 import { v4 as uuidv4 } from "uuid"
 import { getServerSession } from "next-auth"
-import { authOptions as nextAuthOptions } from "~/server/next-auth"
+import { nextAuthOptions } from "~/server/next-auth"
 
 const s3 = new S3({
     accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,

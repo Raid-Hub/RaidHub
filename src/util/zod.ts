@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { User as PrismaUser, Profile as PrismaProfile, Prisma } from "@prisma/client"
+import { User as PrismaUser, Profile as PrismaProfile, Prisma, Role } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { UrlPathsToRaid } from "./destiny/raidUtils"
 
@@ -36,6 +36,7 @@ export const zUser = z.object({
     destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
     bungieMembershipId: z.string(),
+    role: z.nativeEnum(Role),
     email: z.string(),
     emailVerified: z.nullable(z.date())
 }) satisfies {
