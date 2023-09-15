@@ -2,7 +2,7 @@ import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 import BungieQuery, { QueryFn } from "./bungieQuery"
-import { getBasicProfile, getProfile, getProfileTransitory } from "../services/bungie/getProfile"
+import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
 import { getPGCR } from "../services/bungie/getPGCR"
 import { getActivityHistory } from "../services/bungie/getActivityHistory"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
@@ -96,7 +96,7 @@ export default class BungieClient implements BungieClientProtocol {
         members: this.query(getClanMembers)
     }
     // we prefetch the profile missing some components
-    profile = this.query(getProfile as unknown as typeof getBasicProfile)
+    profile = this.query(getProfile)
     profileTransitory = this.query(getProfileTransitory)
     pgcr = this.query(getPGCR)
     activityHistory = this.query(getActivityHistory)

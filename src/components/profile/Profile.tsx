@@ -75,65 +75,68 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
         primaryDestinyProfile?.profile.data?.userInfo.bungieGlobalDisplayName ??
         primaryDestinyProfile?.profile.data?.userInfo.displayName
 
+    const title = username ? `${username} | RaidHub` : "RaidHub"
+    const description = `View ${
+        username ? `${username}'s ` : ""
+    }raid stats, achievments, tags, and more`
     return (
-        <>
+        <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
             <Head>
-                <title key="title">{username ? `${username} | RaidHub` : "RaidHub"}</title>
+                <title key="title">{title}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={title} />
+                <meta key="og-descriptions" property="og:description" content={description} />
             </Head>
-            <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
-                <main className={styles["main"]}>
-                    <section className={styles["user-info"]}>
-                        <UserCard />
-                        <ClanCard />
-                    </section>
+            <main className={styles["main"]}>
+                <section className={styles["user-info"]}>
+                    <UserCard />
+                    <ClanCard />
+                </section>
 
-                    <section className={styles["mid"]}>
-                        {primaryDestinyProfile?.characterActivities?.data && (
-                            <CurrentActivity
-                                activitiesComponent={
-                                    Object.values(
-                                        primaryDestinyProfile.characterActivities.data
-                                    ).sort(
-                                        (a, b) =>
-                                            new Date(b.dateActivityStarted).getTime() -
-                                            new Date(a.dateActivityStarted).getTime()
-                                    )[0]
-                                }
-                            />
-                        )}
-                        {pinnedActivityId ? (
-                            <PinnedActivity
-                                activityId={pinnedActivityId}
-                                isLoadingActivities={mostRecentActivity === undefined}
-                                isLoadingRaidHubProfile={isLoadingRaidHubProfile}
-                                isPinned={pinnedActivityId === raidHubProfile?.pinnedActivityId}
-                            />
-                        ) : (
-                            pinnedActivityId === undefined && (
-                                <Loading className={styles["pinned-activity-loading"]} />
-                            )
-                        )}
-                        <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
-                        {isFilterMounted && (
-                            <FilterSelector
-                                activeFilter={activeFilter}
-                                setActiveFilter={setActiveFilter}
-                            />
-                        )}
-                    </section>
-
-                    <section className={styles["raids"]}>
-                        <Raids
-                            destinyMemberships={destinyMemberships}
-                            areMembershipsFetched={areMembershipsFetched}
-                            layout={layout}
-                            filter={activity => activeFilter?.predicate?.(activity) ?? true}
-                            setMostRecentActivity={setMostRecentActivity}
+                <section className={styles["mid"]}>
+                    {primaryDestinyProfile?.characterActivities?.data && (
+                        <CurrentActivity
+                            activitiesComponent={
+                                Object.values(primaryDestinyProfile.characterActivities.data).sort(
+                                    (a, b) =>
+                                        new Date(b.dateActivityStarted).getTime() -
+                                        new Date(a.dateActivityStarted).getTime()
+                                )[0]
+                            }
                         />
-                    </section>
-                </main>
-            </PropsContext.Provider>
-        </>
+                    )}
+                    {pinnedActivityId ? (
+                        <PinnedActivity
+                            activityId={pinnedActivityId}
+                            isLoadingActivities={mostRecentActivity === undefined}
+                            isLoadingRaidHubProfile={isLoadingRaidHubProfile}
+                            isPinned={pinnedActivityId === raidHubProfile?.pinnedActivityId}
+                        />
+                    ) : (
+                        pinnedActivityId === undefined && (
+                            <Loading className={styles["pinned-activity-loading"]} />
+                        )
+                    )}
+                    <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
+                    {isFilterMounted && (
+                        <FilterSelector
+                            activeFilter={activeFilter}
+                            setActiveFilter={setActiveFilter}
+                        />
+                    )}
+                </section>
+
+                <section className={styles["raids"]}>
+                    <Raids
+                        destinyMemberships={destinyMemberships}
+                        areMembershipsFetched={areMembershipsFetched}
+                        layout={layout}
+                        filter={activity => activeFilter?.predicate?.(activity) ?? true}
+                        setMostRecentActivity={setMostRecentActivity}
+                    />
+                </section>
+            </main>
+        </PropsContext.Provider>
     )
 }
 

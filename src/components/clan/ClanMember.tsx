@@ -11,7 +11,7 @@ export default function ClanMember({ member }: { member: GroupMember }) {
             className={styles["member"]}>
             <div className={styles["member-icon-container"]}>
                 <Image
-                    src={bungieIconUrl(member.bungieNetUserInfo.iconPath)}
+                    src={bungieIconUrl(member.bungieNetUserInfo?.iconPath)}
                     alt="icon"
                     unoptimized
                     fill

@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
 import { Hydrate, useQuery } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
@@ -88,15 +88,22 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
     })
 
+    const title = `${raidName} | World First Leaderboards`
+    const raidDate = toCustomDateString(ReleaseDate[raid], locale)
+    const description = `World First Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
             <Head>
-                <title>{`${raidName} | World First Leaderboards`}</title>
+                <title>{title}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={title} />
+                <meta key="og-descriptions" property="og:description" content={description} />
+                <meta name="date" content={ReleaseDate[raid].toISOString().slice(0, 10)} />
             </Head>
 
             <LeaderboardComponent
                 title={"World First " + raidName}
-                subtitle={toCustomDateString(ReleaseDate[raid], locale)}
+                subtitle={raidDate}
                 raid={raid}
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading}

@@ -21,6 +21,10 @@ type PageProps = {
     session: Session
 }
 
+const title = "RaidHub"
+const description =
+    "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
+
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
 
@@ -39,7 +43,11 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
     return (
         <LocaleManager>
             <Head>
-                <title key="title">RaidHub</title>
+                <title key="title">{title}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={title} />
+                <meta key="og-descriptions" property="og:description" content={description} />
+                <meta key="og-image" property="og:image" content="/logo.png" />
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"

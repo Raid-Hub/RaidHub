@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps, NextPage } from "next"
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
 import { Hydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
@@ -127,10 +127,15 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
             : undefined
     const subtitle = subKey ? strings.leaderboards[subKey] : undefined
 
+    const pageTitle = `${raidName} | RTA Speedrun Leaderboards`
+    const description = `RTA Speedrun Leaderboards for ${raidName}`
     return (
         <>
             <Head>
-                <title>{`${raidName} | RTA Speedrun Leaderboards`}</title>
+                <title>{pageTitle}</title>
+                <meta key="description" name="description" content={description} />
+                <meta key="og-title" property="og:title" content={pageTitle} />
+                <meta key="og-descriptions" property="og:description" content={description} />
             </Head>
             <Leaderboard
                 title={raidName + " RTA"}

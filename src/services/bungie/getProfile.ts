@@ -1,7 +1,6 @@
 import { getProfile as bungieGetProfile } from "bungie-net-core/endpoints/Destiny2"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { BungieClientProtocol } from "bungie-net-core"
-import { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
 
 export const getProfile = {
     key: "profile",

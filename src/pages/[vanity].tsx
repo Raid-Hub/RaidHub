@@ -5,10 +5,14 @@ import { z } from "zod"
 import Profile from "~/components/profile/Profile"
 import { prefetchDestinyProfile, prefetchRaidHubProfile } from "~/server/serverQueryClient"
 import { DehydratedState, Hydrate } from "@tanstack/react-query"
+import Head from "next/head"
 
 const ProfileVanityPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     return (
         <Hydrate state={props.dehydratedState}>
+            <Head>
+                <link rel="canonical" />
+            </Head>
             <Profile {...props} />
         </Hydrate>
     )
