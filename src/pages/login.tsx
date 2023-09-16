@@ -16,15 +16,18 @@ const Login: NextPage = () => {
 
     return (
         <main>
-            {error && <h2>{`Error: ${error}`}</h2>}
-            <button
-                onClick={() =>
-                    signIn("bungie", {
-                        callbackUrl
-                    })
-                }>
-                {strings.logIn}
-            </button>
+            {error ? (
+                <h2>{`Error: ${error}`}</h2>
+            ) : (
+                <button
+                    onClick={() =>
+                        signIn("bungie", {
+                            callbackUrl
+                        })
+                    }>
+                    {strings.logIn}
+                </button>
+            )}
         </main>
     )
 }
