@@ -10,6 +10,7 @@ import { usePage } from "~/hooks/util/usePage"
 import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
+import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 
 type NoChallengeContestLeaderboadProps = {
     raid: ListedRaid
@@ -100,15 +101,16 @@ const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
             </Head>
 
             <LeaderboardComponent
-                title={"Normal Contest " + raidName}
-                subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                raid={raid}
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading}
-                type={"API"}
                 page={page}
-                setPage={setPage}
-            />
+                setPage={setPage}>
+                <WorldFirstHeader
+                    title={"Normal Contest " + raidName}
+                    subtitle={toCustomDateString(ReleaseDate[raid], locale)}
+                    raid={raid}
+                />
+            </LeaderboardComponent>
         </>
     )
 }

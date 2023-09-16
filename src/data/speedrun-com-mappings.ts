@@ -32,7 +32,7 @@ export const SpeedrunVariables = {
     [Raid.SCOURGE_OF_THE_PAST]: {
         variable: "5ly7jpgl",
         values: {
-            "any%": { id: "mln32enq", name: "anyPercent" },
+            any: { id: "mln32enq", name: "anyPercent" },
             "no-major-glitches": { id: "4qy467dq", name: "noMajorGlitches" }
         }
     },
@@ -42,48 +42,48 @@ export const SpeedrunVariables = {
         values: {
             "all-encounters": { id: "8107wkol", name: "allEncounters" },
             trio: { id: "810292jq", name: "trioAllEncounters" },
-            "any%": { id: "9qjdxk7q", name: "anyPercent" }
+            any: { id: "9qjdxk7q", name: "anyPercent" }
         }
     },
     [Raid.GARDEN_OF_SALVATION]: {
         variable: "wl3d3gy8",
         values: {
-            "any%": { id: "4lxn3041", name: "anyPercent" },
+            any: { id: "4lxn3041", name: "anyPercent" },
             trio: { id: "814z3kvl", name: "trio" }
         }
     },
     [Raid.DEEP_STONE_CRYPT]: {
         variable: "789dj59n",
         values: {
-            "any%": { id: "zqo4dmx1", name: "anyPercent" },
+            any: { id: "zqo4dmx1", name: "anyPercent" },
             trio: { id: "013g3wxl", name: "trio" }
         }
     },
     [Raid.VAULT_OF_GLASS]: {
         variable: "e8mqrmwn",
         values: {
-            "any%": { id: "jqzj7eml", name: "anyPercent" },
+            any: { id: "jqzj7eml", name: "anyPercent" },
             trio: { id: "klrgw42q", name: "trio" }
         }
     },
     [Raid.VOW_OF_THE_DISCIPLE]: {
         variable: "gnx2yo48",
         values: {
-            "any%": { id: "q75vror1", name: "anyPercent" },
+            any: { id: "q75vror1", name: "anyPercent" },
             trio: { id: "1gnw26ol", name: "trio" }
         }
     },
     [Raid.KINGS_FALL]: {
         variable: "9l75odz8",
         values: {
-            "any%": { id: "192joekq", name: "anyPercent" },
+            any: { id: "192joekq", name: "anyPercent" },
             trio: { id: "12v6yjkq", name: "trio" }
         }
     },
     [Raid.ROOT_OF_NIGHTMARES]: {
         variable: "jlzxvz78",
         values: {
-            "any%": { id: "lx5v72r1", name: "anyPercent" },
+            any: { id: "lx5v72r1", name: "anyPercent" },
             trio: { id: "14o50mjq", name: "trio" }
         }
     },

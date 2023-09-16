@@ -7,7 +7,7 @@ import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderb
 import { useLocale } from "~/components/app/LocaleManager"
 import { usePage } from "~/hooks/util/usePage"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
+import { SpeedData, SpeedrunBoardId, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import {
     SpeedrunQueryArgs,
     getSpeedrunComLeaderboard,
@@ -15,6 +15,7 @@ import {
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { zRaidURIComponent } from "~/util/zod"
 import { prefetchSpeedrunComLeaderboard } from "~/server/serverQueryClient"
+import SpeedrunComBanner from "~/components/leaderboards/SpeedrunComBanner"
 
 type RTASpeedunLeaderboadProps<
     K extends (typeof SpeedrunVariables)[R] extends { values: infer D }
@@ -123,9 +124,9 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
     const subKey =
         category && vars
             ? // @ts-ignore
-              (SpeedrunVariables[raid]?.values[category] as SpeedData).name
+              (SpeedrunVariables[raid]?.values[category] as SpeedData)
             : undefined
-    const subtitle = subKey ? strings.leaderboards[subKey] : undefined
+    const subtitle = subKey ? strings.leaderboards[subKey.name] : undefined
 
     const pageTitle = `${raidName} | RTA Speedrun Leaderboards`
     const description = `RTA Speedrun Leaderboards for ${raidName}`
@@ -138,18 +139,33 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
                 <meta key="og-descriptions" property="og:description" content={description} />
             </Head>
             <Leaderboard
-                title={raidName + " RTA"}
-                subtitle={subtitle}
-                raid={raid}
                 entries={(query.data ?? []).slice(
                     ENTRIES_PER_PAGE * page,
                     ENTRIES_PER_PAGE * (page + 1)
                 )}
                 isLoading={query.isLoading}
-                type="RTA"
                 page={page}
-                setPage={setPage}
-            />
+                setPage={setPage}>
+                <SpeedrunComBanner
+                    title={raidName}
+                    subtitle={subtitle}
+                    raid={raid}
+                    raidId={SpeedrunBoardId[raid]!}
+                    category={
+                        subKey && category
+                            ? {
+                                  variable: category,
+                                  value: subKey.id
+                              }
+                            : undefined
+                    }
+                    others={
+                        SpeedrunVariables[raid]?.values
+                            ? (SpeedrunVariables[raid]!.values as Record<string, SpeedData>)
+                            : undefined
+                    }
+                />
+            </Leaderboard>
         </>
     )
 }

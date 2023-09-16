@@ -1,43 +1,6 @@
 .main {
     overflow-x: auto;
 }
-
-.leaderboard-header {
-    width: 80%;
-    margin: 0 auto;
-    height: 10em;
-
-    border-radius: 15px;
-    overflow: hidden;
-
-    margin-bottom: 0.5em;
-
-    position: relative;
-}
-.leaderboard-header h1 {
-    margin: 20px auto;
-    padding: 0 0.3em;
-    font-weight: 900;
-    font-size: 3rem;
-    text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.6);
-    text-align: center;
-}
-.leaderboard-header h3 {
-    margin: 20px auto;
-    padding: 0 0.3em;
-    font-weight: 600;
-    font-size: 2rem;
-    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.4);
-    text-align: center;
-}
-@media (max-width: 810px) {
-    .leaderboard-header h1 {
-        font-size: 2rem;
-    }
-    .leaderboard-header h3 {
-        font-size: 1.5rem;
-    }
-}
 .leaderboard-controls {
     display: flex;
     justify-content: right;
@@ -54,6 +17,7 @@
     gap: 1em;
 }
 .leaderboard-divider {
+    margin: 1em;
     width: 100%;
     border-color: var(--border);
 }
@@ -86,7 +50,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.3em;
+    gap: 0.5em;
 }
 .leaderboard-entry-user {
     flex: 3;
@@ -118,6 +82,100 @@
     flex: 1;
     white-space: nowrap;
     color: var(--secondary-text);
+    font-size: x-large;
+}
+
+.rta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+}
+
+.src-splash-container {
+    aspect-ratio: 16/9;
+    flex: 1;
+    position: relative;
+
+    flex-basis: 300px;
+
+    overflow: hidden;
+    border-radius: 20px;
+
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.03) 50%,
+        rgba(0, 0, 0, 0.8) 90%,
+        rgba(0, 0, 0, 1) 100%
+    );
+
+    text-align: center;
+}
+
+.src-splash-container > img {
+    z-index: -1;
+}
+
+.titles {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 100%;
+
+    font-size: xx-large;
+}
+
+.titles > * {
+    margin: 0;
+}
+
+.rta-info-links {
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+}
+
+.rta-info-link {
+    background-color: var(--modal-background);
+    border-radius: 10px;
+    text-transform: uppercase;
+
+    padding: 1em;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+
+    transition: background-color 0.2s;
+}
+.rta-info-link:hover {
+    background-color: var(--brand-orange);
+}
+.rta-info-link-child {
+    min-width: 30px;
+    aspect-ratio: 619/470;
+    position: relative;
+    flex: 1;
+}
+
+.other-rta-boards {
+}
+
+.other-rta-boards h4 {
+    margin: 0;
+    color: var(--secondary-text);
+    font-style: italic;
+    font-weight: 300;
 }
 
 @media (max-width: 500px) {
@@ -147,5 +205,70 @@
         width: 20px;
         height: 20px;
         aspect-ratio: 1/1;
+    }
+    .entry-time {
+        font-size: medium;
+    }
+    .src-splash-container {
+        flex-basis: 150px;
+    }
+    .titles {
+        font-size: large;
+    }
+    .rta-info-links {
+        gap: 1em;
+    }
+    .rta-info-link {
+        border-radius: 6px;
+        padding: 0.5em;
+        gap: 0.5em;
+
+        font-size: small;
+    }
+    .rta-info-link-child {
+        min-width: 20px;
+    }
+}
+
+.world-first-header {
+    width: 80%;
+    margin: 0 auto;
+    height: 10em;
+
+    border-radius: 15px;
+    overflow: hidden;
+
+    margin-bottom: 0.5em;
+
+    position: relative;
+}
+.world-first-header-image {
+    z-index: -1;
+    opacity: 0.6;
+    object-position: center;
+    object-fit: cover;
+}
+.world-first-header h1 {
+    margin: 20px auto;
+    padding: 0 0.3em;
+    font-weight: 900;
+    font-size: 3rem;
+    text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+.world-first-header h3 {
+    margin: 20px auto;
+    padding: 0 0.3em;
+    font-weight: 600;
+    font-size: 2rem;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+@media (max-width: 810px) {
+    .world-first-header h1 {
+        font-size: 2rem;
+    }
+    .world-first-header h3 {
+        font-size: 1.5rem;
     }
 }
