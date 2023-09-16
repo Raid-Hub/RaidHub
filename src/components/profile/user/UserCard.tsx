@@ -56,6 +56,14 @@ export default function UserCard() {
                 url: `https://twitch.tv/${raidHubProfile.twitchUsername}`
             })
         }
+
+        if (raidHubProfile.speedrunUsername) {
+            socials.push({
+                id: Socials.Bungie,
+                displayName: raidHubProfile.speedrunUsername,
+                url: `https://www.speedrun.com/users/${raidHubProfile.speedrunUsername}`
+            })
+        }
         return socials
     }, [raidHubProfile])
 

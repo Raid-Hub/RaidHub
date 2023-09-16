@@ -95,3 +95,46 @@
     height: 30px;
     aspect-ratio: 76/63;
 }
+
+.api-key-modal {
+    position: fixed;
+    z-index: 10;
+
+    background-color: var(--modal-background);
+    backdrop-filter: blur(25px);
+
+    max-width: 700px;
+}
+
+.api-key-modal button {
+    cursor: pointer;
+}
+
+.api-key-modal-close-button {
+    position: absolute;
+    top: 0.7em;
+    right: 0.7em;
+}
+
+.api-key-modal li {
+    padding: 0.5em;
+}
+
+.api-key-modal a {
+    color: var(--brand-orange-light);
+}
+
+.api-key-modal em {
+    font-weight: 500;
+}
+
+.api-key-modal form {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.api-key-modal-err {
+    color: red;
+}

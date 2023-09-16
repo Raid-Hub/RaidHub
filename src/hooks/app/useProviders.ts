@@ -1,20 +1,15 @@
 import { Collection } from "@discordjs/collection"
-import { ClientSafeProvider, getProviders } from "next-auth/react"
-import { useCallback, useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { getProviders } from "next-auth/react"
 
 export const useProviders = () => {
-    const [providers, setProviders] = useState<Collection<string, ClientSafeProvider>>()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const fetchData = useCallback(async () => {
-        setIsLoading(true)
-        const data = await getProviders()
-        setProviders(new Collection(Object.entries(data ?? {})))
-        setIsLoading(false)
-    }, [])
-
-    useEffect(() => {
-        fetchData()
-    }, [fetchData])
-
-    return { providers, isLoading }
+    const { data, ...query } = useQuery({
+        queryKey: ["providers"],
+        queryFn: () =>
+            getProviders().then(providers => new Collection(Object.entries(providers ?? {})))
+    })
+    return {
+        providers: data,
+        ...query
+    }
 }

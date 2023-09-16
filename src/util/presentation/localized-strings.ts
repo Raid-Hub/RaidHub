@@ -87,6 +87,7 @@ export interface LocalStrings {
     deleteAccount: string
     confirmDelete: string
     characterNames: { [key in DestinyClass]: string }
+    submit: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -256,6 +257,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             1: "Hunter",
             2: "Warlock",
             3: "Unknown"
-        }
+        },
+        submit: "Submit"
     }
 }
