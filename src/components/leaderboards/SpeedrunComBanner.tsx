@@ -76,7 +76,7 @@ export default function SpeedrunComBanner({
                     unoptimized
                 />
             </div>
-            <div>
+            <nav className={styles["rta-info-nav"]}>
                 <div className={styles["rta-info-links"]}>
                     <InfoLink href={raidRules({ raidId, category })} displayText={"Raid Rules"} />
                     <InfoLink
@@ -88,22 +88,24 @@ export default function SpeedrunComBanner({
                     </InfoLink>
                     <InfoLink href={gameRules()} displayText={"Game Rules"} />
                 </div>
-            </div>
-            {others && (
-                <div className={styles["other-rta-boards"]}>
-                    <h4>Other Boards</h4>
-                    {Object.entries(others)
-                        .filter(([_, { id }]) => id !== category?.value)
-                        .map(([key, { id, name }]) => (
-                            <InfoLink
-                                key={id}
-                                href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta/${key}`}
-                                displayText={strings.leaderboards[name]}
-                                target="_self"
-                            />
-                        ))}
-                </div>
-            )}
+                {others && (
+                    <div className={styles["other-rta-boards"]}>
+                        <h4>Other Boards</h4>
+                        <div className={styles["rta-info-links"]}>
+                            {Object.entries(others)
+                                .filter(([_, { id }]) => id !== category?.value)
+                                .map(([key, { id, name }]) => (
+                                    <InfoLink
+                                        key={id}
+                                        href={`/leaderboards/${RaidToUrlPaths[raid]}/src/${key}`}
+                                        displayText={strings.leaderboards[name]}
+                                        target="_self"
+                                    />
+                                ))}
+                        </div>
+                    </div>
+                )}
+            </nav>
         </div>
     )
 }

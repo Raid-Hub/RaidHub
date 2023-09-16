@@ -161,7 +161,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGE_KF]: "Regicide",
             [Difficulty.CHALLENGE_CROTA]: "Superior Swordplay"
         },
-        worldFirstLeaderboards: "World First Leaderboards",
+        worldFirstLeaderboards: "World First Race Leaderboards",
         otherLeaderboards: "Other Leaderboards",
         rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",
         apiSpeedrunLeaderboards: "API Speedrun Leaderboards",

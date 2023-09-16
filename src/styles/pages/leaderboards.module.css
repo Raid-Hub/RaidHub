@@ -98,7 +98,7 @@
     flex: 1;
     position: relative;
 
-    flex-basis: 300px;
+    flex-basis: min(300px, 40vw);
 
     overflow: hidden;
     border-radius: 20px;
@@ -112,6 +112,7 @@
     );
 
     text-align: center;
+    pointer-events: none;
 }
 
 .src-splash-container > img {
@@ -132,10 +133,19 @@
     margin: 0;
 }
 
-.rta-info-links {
+.rta-info-nav {
     display: flex;
     flex-direction: row;
+
     gap: 2em;
+}
+
+.rta-info-links {
+    flex: 5;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
 
     justify-content: center;
     align-items: center;
@@ -169,6 +179,7 @@
 }
 
 .other-rta-boards {
+    flex: 2;
 }
 
 .other-rta-boards h4 {
@@ -176,6 +187,7 @@
     color: var(--secondary-text);
     font-style: italic;
     font-weight: 300;
+    text-align: center;
 }
 
 @media (max-width: 500px) {

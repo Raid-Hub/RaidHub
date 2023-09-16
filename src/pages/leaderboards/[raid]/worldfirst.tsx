@@ -91,7 +91,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
 
     const title = `${raidName} | World First Leaderboards`
     const raidDate = toCustomDateString(ReleaseDate[raid], locale)
-    const description = `World First Leaderboards for ${raidName} on ${raidDate}`
+    const description = `World First Race Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
             <Head>
