@@ -42,8 +42,8 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
 
     get playerCount() {
         // todo
-        const count = 0 ?? this.values.playerCount.basic.value
-        return count < 0 ? Infinity : count
+        const count = this.values.playerCount.basic.value
+        return count <= 0 ? Infinity : count
     }
 
     get flawless() {

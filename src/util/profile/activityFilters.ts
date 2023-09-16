@@ -13,6 +13,7 @@ export enum FilterOption {
     TRIO = "Trio",
     DUO = "Duo",
     SOLO = "Solo",
+    CPB = "CP Bot",
     DIFFICULTY = "Difficulty",
     MIN_MINS_PLAYED = "MinMins"
 }
@@ -27,6 +28,7 @@ export const HighOrderActivityFilters = {
 export const SingleActivityFilters = {
     [FilterOption.SUCCESS]: (activity: Activity) => !!activity.completed,
     [FilterOption.FLAWLESS]: (activity: Activity) => !!activity.flawless,
+    [FilterOption.CPB]: (activity: Activity) => activity.playerCount > 50,
     [FilterOption.TRIO]: (activity: Activity) => activity.playerCount === 3,
     [FilterOption.DUO]: (activity: Activity) => activity.playerCount === 2,
     [FilterOption.SOLO]: (activity: Activity) => activity.playerCount === 1
@@ -43,6 +45,7 @@ export enum FilterListName {
     Solo,
     Duo,
     Trio,
+    Cpb,
     MinMinutes,
     Master,
     Prestige
@@ -66,6 +69,7 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER),
     [FilterListName.Prestige]: () =>
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE),
+    [FilterListName.Cpb]: () => new SingleActivityFilter(FilterOption.CPB),
     [FilterListName.Or]: () => new GroupActivityFilter("|", []),
     [FilterListName.And]: () => new GroupActivityFilter("&", []),
     [FilterListName.Not]: () => new NotActivityFilter(null)
@@ -79,7 +83,8 @@ export const DefaultActivityFilters = new GroupActivityFilter("|", [
     ]),
     new GroupActivityFilter("&", [
         FiltersToSelectFrom[FilterListName.MinMinutes](),
-        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]())
+        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]()),
+        new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])
 

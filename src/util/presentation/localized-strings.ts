@@ -204,6 +204,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterOption.TRIO]: "Trio",
             [FilterOption.DUO]: "Duo",
             [FilterOption.SOLO]: "Solo",
+            [FilterOption.CPB]: ">50 Players",
             [FilterOption.DIFFICULTY]: "Difficulty",
             [FilterOption.MIN_MINS_PLAYED]: "Min minutes played"
         },
@@ -219,6 +220,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.MinMinutes]: "Minimum Minutes Played",
             [FilterListName.Master]: "Master",
             [FilterListName.Prestige]: "Prestige",
+            [FilterListName.Cpb]: "Checkpoint Bot",
             [FilterListName.Or]: "Or Group",
             [FilterListName.And]: "And Group",
             [FilterListName.Not]: "Not Element"
