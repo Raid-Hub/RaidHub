@@ -21,10 +21,6 @@ export const getDestinyStatsForCharacter = {
                 membershipType
             })
 
-            return Response
-
-            // return RaidStatsCollection.groupActivities(
-            //     characterStats.flat().flatMap(stats => stats.activities)
-            // )
+            return { characterId, destinyMembershipId, membershipType, ...Response }
         }
 }

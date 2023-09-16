@@ -1,4 +1,3 @@
-import { Collection } from "@discordjs/collection"
 import {
     DestinyHistoricalStatsActivity,
     DestinyHistoricalStatsPeriodGroup,
@@ -6,6 +5,7 @@ import {
 } from "bungie-net-core/models"
 import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raidUtils"
+import { Collection } from "@discordjs/collection"
 
 export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     readonly period: string
@@ -41,12 +41,19 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     }
 
     get playerCount() {
-        const count = this.values.playerCount.basic.value
+        // todo
+        const count = 0 ?? this.values.playerCount.basic.value
         return count < 0 ? Infinity : count
     }
 
-    static collection(array: DestinyHistoricalStatsPeriodGroup[]): Collection<string, Activity> {
-        return new Collection(array.map(a => [a.activityDetails.instanceId, new Activity(a)]))
+    get flawless() {
+        // todo
+        return this.values.deaths.basic.value === 0
+    }
+
+    get fresh() {
+        // todo
+        return Number(this.instanceId) % 2 === 0
     }
 
     static combineCollections(x: Collection<string, Activity>, y: Collection<string, Activity>) {

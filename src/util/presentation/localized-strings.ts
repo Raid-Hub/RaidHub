@@ -1,6 +1,5 @@
 import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../../types/raids"
-import { RankingBannerType } from "../../types/profile"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
 import { DestinyClass } from "bungie-net-core/models"
 
@@ -42,7 +41,6 @@ export interface LocalStrings {
     apiSpeedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
-    bannerTitles: { [key in RankingBannerType]: string }
     totalClears: string
     fastestClear: string
     averageClear: string
@@ -168,10 +166,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         apiSpeedrunLeaderboards: "API Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
-        bannerTitles: {
-            [RankingBannerType.FullClears]: "Full Clears Rank",
-            [RankingBannerType.Speed]: "Speed Rank"
-        },
         totalClears: "Total Clears",
         fastestClear: "Fastest Clear",
         averageClear: "Average Clear",

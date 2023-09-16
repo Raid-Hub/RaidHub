@@ -1,7 +1,6 @@
 import { CharacterWithMembership } from "~/types/profile"
 import { getAllCharacterRaids } from "./getAllCharacterRaids"
 import Activity from "~/models/profile/data/Activity"
-import ActivityCollection from "~/models/profile/data/ActivityCollection"
 import { BungieClientProtocol } from "bungie-net-core"
 
 export const getActivityHistory = {
@@ -22,13 +21,6 @@ export const getActivityHistory = {
                 .sort((a, b) => b.endDate.getTime() - a.endDate.getTime())
         )
 
-        const activitiesByRaid = ActivityCollection.groupActivities(
-            allActivities.map(a => ({
-                activityHash: a.activityDetails.directorActivityHash,
-                values: a
-            }))
-        )
-
-        return { allActivities, activitiesByRaid }
+        return allActivities
     }
 }

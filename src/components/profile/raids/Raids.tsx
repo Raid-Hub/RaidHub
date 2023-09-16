@@ -2,21 +2,19 @@ import styles from "~/styles/pages/profile/raids.module.css"
 import { ListedRaids } from "~/types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
-import { ExtendedActivity } from "~/types/profile"
-import { FilterCallback } from "~/types/generic"
 import RecentRaids from "./RecentRaids"
 import { Layout } from "../mid/LayoutToggle"
 import { useBungieClient } from "~/components/app/TokenManager"
 import { BungieMembershipType } from "bungie-net-core/models"
-import RaidStatsCollection from "~/models/profile/data/RaidStatsCollection"
-import { applyFilter } from "~/models/profile/data/ActivityCollection"
 import { Collection } from "@discordjs/collection"
+import { partitionCollectionByRaid } from "~/util/destiny/partitionCollectionByRaid"
+import { partitionStatsByRaid } from "~/util/destiny/partitionStatsByRaid"
+import RaidStats from "~/models/profile/data/RaidStats"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
     areMembershipsFetched: boolean
     layout: Layout
-    filter: FilterCallback<ExtendedActivity>
     setMostRecentActivity: (id: string | null | undefined) => void
 }
 
@@ -24,7 +22,6 @@ const Raids = ({
     destinyMemberships,
     areMembershipsFetched,
     layout,
-    filter,
     setMostRecentActivity
 }: RaidsProps) => {
     const bungie = useBungieClient()
@@ -49,66 +46,85 @@ const Raids = ({
         [statsQueries]
     )
 
-    const areCharactersAllFound = statsQueries.every(q => q.isFetched)
-
-    // todo: make sure we arent making this call many times
-    const { data, isLoading: isLoadingActivities } = bungie.activityHistory.useQuery(characters, {
-        staleTime: 60_000,
-        enabled: areMembershipsFetched && areCharactersAllFound
-    })
+    const areAllCharactersFound = statsQueries.every(q => q.isFetched)
 
     const characterQueries = bungie.characterStats.useQueries(characters, {
-        enabled: areMembershipsFetched && areCharactersAllFound
+        enabled: areMembershipsFetched && areAllCharactersFound
     })
 
     const characterStats = useMemo(() => {
         if (characterQueries.every(q => q.data)) {
-            return RaidStatsCollection.groupActivities(
-                characterQueries.map(q => q.data!.activities).flat()
-            )
+            const data = characterQueries.map(q => q.data!)
+            return partitionStatsByRaid(data)
+        } else {
+            return null
         }
     }, [characterQueries])
 
+    const { data: activityHistory, isLoading: isLoadingActivities } =
+        bungie.activityHistory.useQuery(characters, {
+            staleTime: 60_000,
+            enabled: areMembershipsFetched && areAllCharactersFound
+        })
+
+    const activitiesByRaid = useMemo(() => {
+        if (!activityHistory) return null
+
+        return partitionCollectionByRaid(activityHistory, a => a.raid)
+    }, [activityHistory])
+
     useEffect(() => {
-        if (data?.allActivities) {
+        if (activityHistory) {
             setMostRecentActivity(
-                data.allActivities.find(a => a.completed)?.activityDetails.instanceId ?? null
+                activityHistory.find(a => a.completed)?.activityDetails.instanceId ?? null
             )
         } else {
             setMostRecentActivity(undefined)
         }
-    }, [data?.allActivities, setMostRecentActivity])
+    }, [activityHistory, setMostRecentActivity])
 
     switch (layout) {
         case Layout.DotCharts:
+            const isLoadingStats =
+                !areMembershipsFetched ||
+                !areAllCharactersFound ||
+                characterQueries.some(q => q.isLoading)
+
             return (
                 <div className={styles["cards"]}>
                     {ListedRaids.map(raid => (
                         <RaidCard
                             key={raid}
                             raid={raid}
-                            stats={characterStats?.get(raid)}
-                            isLoadingStats={
-                                !areMembershipsFetched ||
-                                !areCharactersAllFound ||
-                                characterQueries.some(q => q.isLoading)
-                            }
-                            activities={data?.activitiesByRaid.get(raid) ?? null}
-                            isLoadingActivities={isLoadingActivities}
-                            filter={filter}
+                            {...(isLoadingStats
+                                ? {
+                                      isLoadingStats: true,
+                                      stats: null
+                                  }
+                                : {
+                                      isLoadingStats: false,
+                                      stats: characterStats?.get(raid) ?? new RaidStats([], raid)
+                                  })}
+                            {...(isLoadingActivities
+                                ? {
+                                      isLoadingActivities: true,
+                                      activities: null
+                                  }
+                                : {
+                                      isLoadingActivities: false,
+                                      activities: activitiesByRaid?.get(raid) ?? new Collection()
+                                  })}
                         />
                     ))}
                 </div>
             )
         case Layout.RecentActivities:
-            return (
+            return isLoadingActivities ? (
+                <RecentRaids isLoading={isLoadingActivities} allActivities={null} />
+            ) : (
                 <RecentRaids
                     isLoading={isLoadingActivities}
-                    allActivitiesFiltered={applyFilter(
-                        data?.allActivities ?? new Collection(),
-                        filter,
-                        {}
-                    )}
+                    allActivities={activityHistory ?? new Collection()}
                 />
             )
     }

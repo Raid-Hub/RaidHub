@@ -1,9 +1,10 @@
-import { DestinyHistoricalStatsDictionary, IRaidStats, RaidData } from "../../../types/profile"
-import { Difficulty, Raid } from "../../../types/raids"
+import { DestinyHistoricalStatsValue } from "bungie-net-core/models"
+import { Raid } from "~/types/raids"
 
-export default class RaidStats implements RaidData<DestinyHistoricalStatsDictionary>, IRaidStats {
+type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
+
+export default class RaidStats {
     raid: Raid
-    difficulty: Difficulty
     raw: DestinyHistoricalStatsDictionary[]
     assists: number
     totalClears: number
@@ -12,10 +13,9 @@ export default class RaidStats implements RaidData<DestinyHistoricalStatsDiction
     precisionKills: number
     secondsPlayed: number
 
-    constructor(data: DestinyHistoricalStatsDictionary[], raid: Raid, difficulty: Difficulty) {
+    constructor(data: DestinyHistoricalStatsDictionary[], raid: Raid) {
         this.raw = data
         this.raid = raid
-        this.difficulty = difficulty
 
         const values = data.reduce(
             (base, current) => {

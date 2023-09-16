@@ -3,7 +3,7 @@ import { NextPage } from "next"
 import { z } from "zod"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { InpsectionMemberData } from "~/types/profile"
+import { InpsectionMemberData } from "~/types/inspect"
 import InspectionHeader from "~/components/inpsect/InspectionHeader"
 import Player from "~/components/inpsect/Player"
 

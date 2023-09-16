@@ -21,8 +21,7 @@
     color: white;
 
     overflow: hidden;
-    min-width: 320px;
-    max-width: 475px;
+    max-width: min(475px, 100%);
 }
 
 .banner {
