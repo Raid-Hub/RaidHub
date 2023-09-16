@@ -75,7 +75,7 @@ export default function UserCard() {
     const emblem = useMemo(
         () =>
             emblemUrl(
-                bungieProfile?.characters?.data
+                bungieProfile?.characters.data
                     ? Object.values(bungieProfile.characters.data)[0]?.emblemBackgroundPath
                     : undefined
             ),

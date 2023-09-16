@@ -48,7 +48,7 @@ const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
 
     const { strings } = useLocale()
 
-    if (isLoadingActivityMode || isLoadingActivity) {
+    if (transitoryComponent?.currentActivity && (isLoadingActivityMode || isLoadingActivity)) {
         return <Loading className={styles["current-activity"]} />
     }
 

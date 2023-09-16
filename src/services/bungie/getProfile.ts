@@ -40,7 +40,7 @@ export const getBasicProfile = {
             const { Response } = await bungieGetProfile(client, {
                 destinyMembershipId,
                 membershipType,
-                components: [100]
+                components: [100, 200]
             })
             return Response
         }

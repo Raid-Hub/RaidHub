@@ -92,7 +92,7 @@ function ResolvedPlayer({
 
     const mostRecentCharacterId = useMemo(
         () =>
-            profileData?.characters?.data
+            profileData?.characters.data
                 ? Object.values(profileData.characters.data).reduce((base, current) =>
                       new Date(current.dateLastPlayed).getTime() >
                       new Date(base.dateLastPlayed).getTime()

@@ -343,12 +343,12 @@
 
 .load-more {
     transition: transform 0.2s ease-in-out;
-    width: 100%;
+
     border: 1px solid var(--border);
     border-radius: 12px;
     background-color: #a5f6b455;
 
-    margin: 0 20%;
+    margin: 1em auto;
     flex-basis: 100%;
 
     display: flex;
@@ -361,7 +361,7 @@
 }
 
 .load-more > span {
-    padding: 1em;
+    padding: 1em 3em;
     color: #f0f1f0;
     text-align: center;
     text-transform: uppercase;

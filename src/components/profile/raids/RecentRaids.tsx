@@ -23,31 +23,29 @@ const RecentRaids = ({ isLoading, allActivitiesFiltered }: RecentRaidsProps) => 
     )
 
     return (
-        <div className={styles["recent"]}>
-            {isLoading ? (
-                Array(CARDS_PER_PAGE)
-                    .fill(null)
-                    .map((_, key) => <Loading key={key} className={styles["placeholder"]} />)
-            ) : (
-                <>
-                    {activities
-                        .slice(0, pages * CARDS_PER_PAGE)
-                        .map(({ activity, extended }, key) => (
-                            <ActivityTile
-                                key={key}
-                                activity={activity}
-                                playerCount={extended.playerCount}
-                                flawless={extended.flawless}
-                            />
-                        ))}
-                    {activities.length > pages * CARDS_PER_PAGE && (
-                        <button className={styles["load-more"]} onClick={() => setPages(pages + 1)}>
-                            <span>{strings.loadMore}</span>
-                        </button>
-                    )}
-                </>
+        <>
+            <div className={styles["recent"]}>
+                {isLoading
+                    ? Array(CARDS_PER_PAGE)
+                          .fill(null)
+                          .map((_, key) => <Loading key={key} className={styles["placeholder"]} />)
+                    : activities
+                          .slice(0, pages * CARDS_PER_PAGE)
+                          .map(({ activity, extended }, key) => (
+                              <ActivityTile
+                                  key={key}
+                                  activity={activity}
+                                  playerCount={extended.playerCount}
+                                  flawless={extended.flawless}
+                              />
+                          ))}
+            </div>
+            {activities.length > pages * CARDS_PER_PAGE && (
+                <button className={styles["load-more"]} onClick={() => setPages(pages + 1)}>
+                    <span>{strings.loadMore}</span>
+                </button>
             )}
-        </div>
+        </>
     )
 }
 
