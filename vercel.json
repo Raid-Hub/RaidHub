@@ -4,13 +4,13 @@
             "memory": 1024,
             "maxDuration": 10
         },
-        "pages/api/**/*.ts": {
+        "pages/api/[trpc].ts": {
             "memory": 512,
-            "maxDuration": 2
+            "maxDuration": 3
         },
         "pages/**/*.tsx": {
             "memory": 1024,
-            "maxDuration": 3
+            "maxDuration": 7
         }
     }
 }
