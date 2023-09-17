@@ -1,5 +1,5 @@
-import styles from "../../../styles/pages/profile/user.module.css"
-import { ProfileSocialData } from "../../../types/profile"
+import styles from "~/styles/pages/profile/user.module.css"
+import { ProfileSocialData } from "~/types/profile"
 
 type SocialTagProps = ProfileSocialData
 
@@ -34,12 +34,7 @@ const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
         </>
     )
     return url ? (
-        <a
-            id={styles[id]}
-            className={styles["social"]}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer">
+        <a className={styles["social"]} href={url} target="_blank" rel="noopener noreferrer">
             {inner}
         </a>
     ) : (
