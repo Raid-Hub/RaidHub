@@ -2,7 +2,7 @@
     "functions": {
         "pages/**/*.tsx": {
             "memory": 1024,
-            "maxDuration": 7
+            "maxDuration": 10
         },
         "pages/api/auth/[...nextauth].ts": {
             "memory": 1024,
@@ -10,11 +10,11 @@
         },
         "pages/api/[trpc].ts": {
             "memory": 512,
-            "maxDuration": 3
+            "maxDuration": 10
         },
         "pages/api/icon/upload.ts": {
-            "memory": 1024,
-            "maxDuration": 6
+            "memory": 1536,
+            "maxDuration": 10
         }
     }
 }

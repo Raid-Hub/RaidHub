@@ -1,0 +1,19 @@
+.deep-fill *[fill] {
+    fill: var(--fill-color);
+}
+
+.color-on-hover:hover {
+    fill: var(--icon-color);
+}
+
+.twitter {
+    --icon-color: #1da1f2;
+}
+
+.email {
+    --icon-color: #969696;
+}
+
+.discord {
+    --icon-color: #6876a7;
+}
