@@ -2,7 +2,6 @@ import Image from "next/image"
 import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Account, Question_Mark } from "../../images/icons"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 import { Variants, motion } from "framer-motion"
@@ -23,7 +22,8 @@ const AccountIcon = () => {
 
     // todo: replace question mark with loading
     const image = useMemo(
-        () => (status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account),
+        (/**status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account */) =>
+            "null",
         [sessionData, status]
     )
 

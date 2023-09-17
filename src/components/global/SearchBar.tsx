@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
-import { Search } from "../../images/icons"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -86,15 +85,15 @@ const SearchBar = ({}: SearchBarProps) => {
             <div className={styles["search-icon"]}>
                 {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
                     <Loader />
-                ) : (
-                    <Image
-                        className={styles["search-img"]}
-                        src={Search}
-                        alt="search"
-                        width={15}
-                        height={15}
-                    />
-                )}
+                ) : null
+                // <Image
+                //     className={styles["search-img"]}
+                //     src={Search}
+                //     alt="search"
+                //     width={15}
+                //     height={15}
+                // />
+                }
             </div>
             <form onSubmit={handleFormEnter}>
                 <input
