@@ -42,7 +42,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                                         <Link
                                             href={`/leaderboards/${
                                                 RaidToUrlPaths[raid]
-                                            }/speedrun/rta/${encodeURIComponent(type)}`}>
+                                            }/src/${encodeURIComponent(type)}`}>
                                             {strings.leaderboards[key]}
                                         </Link>
                                     </li>
@@ -50,7 +50,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                             )
                         ) : (
                             <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/speedrun/rta`}>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/src`}>
                                     {strings.leaderboards.anyPercent}
                                 </Link>
                             </li>

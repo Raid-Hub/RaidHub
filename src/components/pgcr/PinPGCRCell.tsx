@@ -1,8 +1,7 @@
 import Image from "next/image"
-import { Pin } from "../../images/icons"
+import { Pin } from "~/images/icons"
 import { useLocale } from "../app/LocaleManager"
-import { usePGCRContext } from "../../pages/pgcr/[activityId]"
-import DestinyPGCR from "~/models/pgcr/PGCR"
+import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
@@ -15,31 +14,29 @@ const PinPCRCell = () => {
     })
     const { mutate: updateProfile } = useOptimisticProfileUpdate()
 
-    const handlePinClick = (pgcr: DestinyPGCR) =>
+    const isPinned = profile?.pinnedActivityId !== pgcr?.activityDetails.instanceId
+
+    const handlePinClick = () =>
         updateProfile({
-            pinnedActivityId:
-                profile?.pinnedActivityId !== pgcr.activityDetails.instanceId
-                    ? pgcr.activityDetails.instanceId
-                    : null
+            pinnedActivityId: isPinned ? pgcr!.activityDetails.instanceId : null
         })
 
     const { strings } = useLocale()
 
     return profile && pgcr ? (
         <div>
-            <span>{strings.pinThisActivity}</span>
-            <div
+            <span>{isPinned ? strings.pinToProfile : strings.unPinFromProfile}</span>
+            <button
                 style={{ width: "50%", position: "relative", cursor: "pointer" }}
-                onClick={() => handlePinClick(pgcr)}>
+                onClick={() => handlePinClick()}>
                 <Image
-                    width={15}
-                    height={15}
+                    width={20}
+                    height={20}
                     src={Pin}
-                    alt={strings.pinThisActivity}
-                    fill
+                    alt={isPinned ? strings.pinToProfile : strings.unPinFromProfile}
                     style={{ objectFit: "contain" }}
                 />
-            </div>
+            </button>
         </div>
     ) : null
 }

@@ -4,41 +4,46 @@ import { useEffect, useMemo, useState } from "react"
 import { motion } from "framer-motion"
 import { Collection } from "@discordjs/collection"
 import { ListedRaid } from "~/types/raids"
-import RaidStatsCollection from "~/models/profile/data/RaidStatsCollection"
-import ActivityCollection, { applyFilter } from "~/models/profile/data/ActivityCollection"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import { ExtendedActivity, RaceTag } from "~/types/profile"
+import { RaceTag } from "~/types/profile"
 import { useLocale } from "~/components/app/LocaleManager"
-import DotGraphWrapper from "./DotGraph"
+import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
 import BigNumberStatItem from "./BigNumberStatItem"
-import { FilterCallback } from "~/types/generic"
 import Activity from "~/models/profile/data/Activity"
+import Loading from "~/components/global/Loading"
+import RaidStats from "~/models/profile/data/RaidStats"
 
 type RaidModalProps = {
     raid: ListedRaid
-    stats: RaidStatsCollection | undefined
-    isLoadingStats: boolean
-    activities: ActivityCollection | null
-    isLoadingActivities: boolean
-    filter: FilterCallback<ExtendedActivity>
-}
+} & (
+    | {
+          stats: RaidStats
+          isLoadingStats: false
+      }
+    | {
+          stats: null
+          isLoadingStats: true
+      }
+) &
+    (
+        | {
+              isLoadingActivities: false
+              activities: Collection<string, Activity>
+          }
+        | { isLoadingActivities: true; activities: null }
+    )
 
 export default function RaidCard({
     raid,
     stats,
     isLoadingStats,
     activities,
-    isLoadingActivities,
-    filter
+    isLoadingActivities
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
-    const activitesFiltered = useMemo(
-        () => applyFilter(activities?.all ?? new Collection<string, Activity>(), filter, {}),
-        [activities, filter]
-    )
-
     const averageClear = useMemo(() => {
+        // todo
         return undefined
     }, [])
 
@@ -145,11 +150,13 @@ export default function RaidCard({
             </div>
             <div className={styles["card-content"]}>
                 <div className={styles["graph-content"]}>
-                    <DotGraphWrapper
-                        isLoading={isLoadingActivities}
-                        activities={activitesFiltered}
-                        targetDot={hoveredTag}
-                    />
+                    {isLoadingActivities ? (
+                        <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
+                            <Loading className={styles["dots-svg-loading"]} />
+                        </div>
+                    ) : (
+                        <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
+                    )}
                     <div className={styles["graph-right"]}>
                         <BigNumberStatItem
                             displayValue={stats?.totalClears ? stats.totalClears : 0}

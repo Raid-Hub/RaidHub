@@ -1,10 +1,11 @@
-import GroupActivityFilter from "../../models/profile/filters/GroupActivityFilter"
-import HighOrderActivityFilter from "../../models/profile/filters/HighOrderActivityFilter"
-import NotActivityFilter from "../../models/profile/filters/NotActivityFilter"
-import SingleActivityFilter from "../../models/profile/filters/SingleActivityFilter"
-import { FilterCallback } from "../../types/generic"
-import { ActivityFilter, ExtendedActivity } from "../../types/profile"
-import { Difficulty } from "../../types/raids"
+import Activity from "~/models/profile/data/Activity"
+import GroupActivityFilter from "~/models/profile/filters/GroupActivityFilter"
+import HighOrderActivityFilter from "~/models/profile/filters/HighOrderActivityFilter"
+import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
+import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
+import { FilterCallback } from "~/types/generic"
+import { ActivityFilter } from "~/types/profile"
+import { Difficulty } from "~/types/raids"
 
 export enum FilterOption {
     SUCCESS = "Success",
@@ -12,28 +13,26 @@ export enum FilterOption {
     TRIO = "Trio",
     DUO = "Duo",
     SOLO = "Solo",
+    CPB = "CP Bot",
     DIFFICULTY = "Difficulty",
     MIN_MINS_PLAYED = "MinMins"
 }
 
 export const HighOrderActivityFilters = {
-    [FilterOption.DIFFICULTY]:
-        (difficulty: Difficulty) =>
-        ({ activity }: ExtendedActivity) =>
-            difficulty === activity.difficulty,
-    [FilterOption.MIN_MINS_PLAYED]:
-        (minutes: number) =>
-        ({ activity }: ExtendedActivity) =>
-            activity.durationSeconds >= minutes / 60
-} satisfies Record<string, (arg: any) => FilterCallback<ExtendedActivity>>
+    [FilterOption.DIFFICULTY]: (difficulty: Difficulty) => (activity: Activity) =>
+        difficulty === activity.difficulty,
+    [FilterOption.MIN_MINS_PLAYED]: (minutes: number) => (activity: Activity) =>
+        activity.durationSeconds >= minutes * 60
+} satisfies Record<string, (arg: any) => FilterCallback<Activity>>
 
 export const SingleActivityFilters = {
-    [FilterOption.SUCCESS]: ({ activity }: ExtendedActivity) => !!activity.completed,
-    [FilterOption.FLAWLESS]: ({ extended }: ExtendedActivity) => !!extended.flawless,
-    [FilterOption.TRIO]: ({ extended }: ExtendedActivity) => extended.playerCount === 3,
-    [FilterOption.DUO]: ({ extended }: ExtendedActivity) => extended.playerCount === 2,
-    [FilterOption.SOLO]: ({ extended }: ExtendedActivity) => extended.playerCount === 1
-} satisfies Record<string, FilterCallback<ExtendedActivity>>
+    [FilterOption.SUCCESS]: (activity: Activity) => !!activity.completed,
+    [FilterOption.FLAWLESS]: (activity: Activity) => !!activity.flawless,
+    [FilterOption.CPB]: (activity: Activity) => activity.playerCount > 50,
+    [FilterOption.TRIO]: (activity: Activity) => activity.playerCount === 3,
+    [FilterOption.DUO]: (activity: Activity) => activity.playerCount === 2,
+    [FilterOption.SOLO]: (activity: Activity) => activity.playerCount === 1
+} satisfies Partial<Record<FilterOption, FilterCallback<Activity>>>
 
 export enum FilterListName {
     Or,
@@ -46,6 +45,7 @@ export enum FilterListName {
     Solo,
     Duo,
     Trio,
+    Cpb,
     MinMinutes,
     Master,
     Prestige
@@ -69,6 +69,7 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER),
     [FilterListName.Prestige]: () =>
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE),
+    [FilterListName.Cpb]: () => new SingleActivityFilter(FilterOption.CPB),
     [FilterListName.Or]: () => new GroupActivityFilter("|", []),
     [FilterListName.And]: () => new GroupActivityFilter("&", []),
     [FilterListName.Not]: () => new NotActivityFilter(null)
@@ -82,7 +83,8 @@ export const DefaultActivityFilters = new GroupActivityFilter("|", [
     ]),
     new GroupActivityFilter("&", [
         FiltersToSelectFrom[FilterListName.MinMinutes](),
-        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]())
+        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]()),
+        new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])
 

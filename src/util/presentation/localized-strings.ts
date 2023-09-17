@@ -1,6 +1,5 @@
 import { Tag } from "../raidhub/tags"
 import { Difficulty, Raid } from "../../types/raids"
-import { RankingBannerType } from "../../types/profile"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
 import { DestinyClass } from "bungie-net-core/models"
 
@@ -42,7 +41,6 @@ export interface LocalStrings {
     apiSpeedrunLeaderboards: string
     clearsLeaderboards: string
     comingSoon: string
-    bannerTitles: { [key in RankingBannerType]: string }
     totalClears: string
     fastestClear: string
     averageClear: string
@@ -81,12 +79,14 @@ export interface LocalStrings {
     }
     score: string
     showScore: string
-    pinThisActivity: string
+    pinToProfile: string
+    unPinFromProfile: string
     screenshot: string
     noChallenge: string
     deleteAccount: string
     confirmDelete: string
     characterNames: { [key in DestinyClass]: string }
+    submit: string
 }
 
 export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
@@ -161,16 +161,12 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.CHALLENGE_KF]: "Regicide",
             [Difficulty.CHALLENGE_CROTA]: "Superior Swordplay"
         },
-        worldFirstLeaderboards: "World First Leaderboards",
+        worldFirstLeaderboards: "World First Race Leaderboards",
         otherLeaderboards: "Other Leaderboards",
         rtaSpeedrunLeaderboards: "RTA Speedrun Leaderboards",
         apiSpeedrunLeaderboards: "API Speedrun Leaderboards",
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
-        bannerTitles: {
-            [RankingBannerType.FullClears]: "Full Clears Rank",
-            [RankingBannerType.Speed]: "Speed Rank"
-        },
         totalClears: "Total Clears",
         fastestClear: "Fastest Clear",
         averageClear: "Average Clear",
@@ -208,6 +204,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterOption.TRIO]: "Trio",
             [FilterOption.DUO]: "Duo",
             [FilterOption.SOLO]: "Solo",
+            [FilterOption.CPB]: ">50 Players",
             [FilterOption.DIFFICULTY]: "Difficulty",
             [FilterOption.MIN_MINS_PLAYED]: "Min minutes played"
         },
@@ -223,6 +220,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.MinMinutes]: "Minimum Minutes Played",
             [FilterListName.Master]: "Master",
             [FilterListName.Prestige]: "Prestige",
+            [FilterListName.Cpb]: "Checkpoint Bot",
             [FilterListName.Or]: "Or Group",
             [FilterListName.And]: "And Group",
             [FilterListName.Not]: "Not Element"
@@ -246,7 +244,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         },
         score: "Score",
         showScore: "Show Score",
-        pinThisActivity: "Pin this PGCR",
+        pinToProfile: "Pin to Profile",
+        unPinFromProfile: "Un-pin from Profile",
         screenshot: "Screenshot",
         noChallenge: "Normal Contest",
         deleteAccount: "Delete Account",
@@ -256,6 +255,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             1: "Hunter",
             2: "Warlock",
             3: "Unknown"
-        }
+        },
+        submit: "Submit"
     }
 }

@@ -19,10 +19,11 @@ const BungieMembershipEnum = z.nativeEnum({
 
 export const zProfile = z.object({
     destinyMembershipId: z.string(),
-    destinyMembershipType: BungieMembershipEnum,
+    speedrunUsername: z.nullable(z.string()),
     bungieUsername: z.nullable(z.string()),
     discordUsername: z.nullable(z.string()),
     twitchUsername: z.nullable(z.string()),
+    destinyMembershipType: BungieMembershipEnum,
     twitterUsername: z.nullable(z.string()),
     pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
     profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))

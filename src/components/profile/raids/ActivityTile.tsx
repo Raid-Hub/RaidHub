@@ -9,16 +9,10 @@ import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
 import { motion } from "framer-motion"
 
-type ActivityTileProps = {
-    activity: Activity
-    playerCount: number | undefined
-    flawless: boolean | null | undefined
-}
+type ActivityTileProps = { activity: Activity }
 
 const ActivityTile = ({
-    activity: { startDate, raid, difficulty, endDate, instanceId, completed },
-    playerCount,
-    flawless
+    activity: { startDate, raid, difficulty, endDate, instanceId, completed, playerCount, flawless }
 }: ActivityTileProps) => {
     const { strings } = useLocale()
     const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings, false)

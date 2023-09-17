@@ -1,4 +1,4 @@
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next"
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType, NextPage } from "next"
 import { InitialProfileProps } from "~/types/profile"
 import { zUniqueDestinyProfile } from "~/util/zod"
 import prisma from "~/server/prisma"
@@ -6,15 +6,20 @@ import Profile from "~/components/profile/Profile"
 import { prefetchDestinyProfile, prefetchRaidHubProfile } from "~/server/serverQueryClient"
 import { DehydratedState, Hydrate } from "@tanstack/react-query"
 
-const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+    dehydratedState,
+    ...props
+}) => {
     return (
-        <Hydrate state={props.dehydratedState}>
+        <Hydrate state={dehydratedState}>
             <Profile {...props} />
         </Hydrate>
     )
 }
 
-export const getStaticPaths = () => {
+export default ProfilePage
+
+export const getStaticPaths: GetStaticPaths = () => {
     return {
         paths: [],
         fallback: "blocking"
@@ -48,7 +53,7 @@ export const getStaticProps: GetStaticProps<
             ])
 
             return {
-                revalidate: 3600 * 24,
+                revalidate: 3600 * 12,
                 props: {
                     ...props,
                     dehydratedState: bungieState,
@@ -61,5 +66,3 @@ export const getStaticProps: GetStaticProps<
         return { notFound: true }
     }
 }
-
-export default ProfilePage

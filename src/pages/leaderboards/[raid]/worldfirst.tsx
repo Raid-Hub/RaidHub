@@ -10,6 +10,7 @@ import { usePage } from "~/hooks/util/usePage"
 import { zRaidURIComponent } from "~/util/zod"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
 import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
+import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 
 type WorldsFirstLeaderboadProps = {
     raid: ListedRaid
@@ -90,7 +91,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
 
     const title = `${raidName} | World First Leaderboards`
     const raidDate = toCustomDateString(ReleaseDate[raid], locale)
-    const description = `World First Leaderboards for ${raidName} on ${raidDate}`
+    const description = `World First Race Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
             <Head>
@@ -102,15 +103,16 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
             </Head>
 
             <LeaderboardComponent
-                title={"World First " + raidName}
-                subtitle={raidDate}
-                raid={raid}
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading}
-                type={"API"}
                 page={page}
-                setPage={setPage}
-            />
+                setPage={setPage}>
+                <WorldFirstHeader
+                    title={"World First " + raidName}
+                    subtitle={raidDate}
+                    raid={raid}
+                />
+            </LeaderboardComponent>
         </>
     )
 }

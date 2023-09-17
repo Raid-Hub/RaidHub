@@ -1,12 +1,13 @@
 import { v4 } from "uuid"
-import { FilterCallback } from "../../../types/generic"
-import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
-import { HighOrderActivityFilters } from "../../../util/profile/activityFilters"
+import { FilterCallback } from "~/types/generic"
+import { ActivityFilter } from "~/types/profile"
+import { HighOrderActivityFilters } from "~/util/profile/activityFilters"
+import Activity from "../data/Activity"
 
 export default class HighOrderActivityFilter<T = any> implements ActivityFilter {
     key: keyof typeof HighOrderActivityFilters
     value: T
-    highOrderFunc: (arg: T) => FilterCallback<ExtendedActivity>
+    highOrderFunc: (arg: T) => FilterCallback<Activity>
     id: string
 
     constructor(key: keyof typeof HighOrderActivityFilters, value: T) {
@@ -17,7 +18,7 @@ export default class HighOrderActivityFilter<T = any> implements ActivityFilter 
         this.id = v4()
     }
 
-    predicate(a: ExtendedActivity) {
+    predicate(a: Activity) {
         return this.highOrderFunc(this.value)(a)
     }
 

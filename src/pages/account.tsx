@@ -12,7 +12,7 @@ const AccountPage: NextPage = () => {
     } = useSession({
         required: true,
         onUnauthenticated() {
-            signIn("bungie", { callbackUrl: "/account" }, "reauth=false")
+            signIn("bungie", undefined, "reauth=false")
         }
     })
     const { strings } = useLocale()

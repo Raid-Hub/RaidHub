@@ -56,6 +56,14 @@ export default function UserCard() {
                 url: `https://twitch.tv/${raidHubProfile.twitchUsername}`
             })
         }
+
+        if (raidHubProfile.speedrunUsername) {
+            socials.push({
+                id: Socials.Bungie,
+                displayName: raidHubProfile.speedrunUsername,
+                url: `https://www.speedrun.com/users/${raidHubProfile.speedrunUsername}`
+            })
+        }
         return socials
     }, [raidHubProfile])
 
@@ -75,7 +83,7 @@ export default function UserCard() {
     const emblem = useMemo(
         () =>
             emblemUrl(
-                bungieProfile?.characters?.data
+                bungieProfile?.characters.data
                     ? Object.values(bungieProfile.characters.data)[0]?.emblemBackgroundPath
                     : undefined
             ),

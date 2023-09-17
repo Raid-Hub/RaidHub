@@ -9,18 +9,27 @@ import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useActivityFilters } from "~/hooks/util/useActivityFilters"
 import Raids from "./raids/Raids"
 import CurrentActivity from "./mid/CurrentActivity"
-import { InitialProfileProps } from "~/types/profile"
+import { ActivityFilter, InitialProfileProps } from "~/types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
 import Loading from "../global/Loading"
 import { useBungieClient } from "../app/TokenManager"
+import Activity from "~/models/profile/data/Activity"
 
-const PropsContext = createContext<InitialProfileProps | null>(null)
+const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
+const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
 
 export const useProfileProps = () => {
     const ctx = useContext(PropsContext)
-    if (!ctx) throw Error("This hook must be used inside the profile")
+    if (ctx === undefined) throw Error("This hook must be used inside the profile")
     return ctx
+}
+
+export const useFilterContext = () => {
+    const ctx = useContext(FilterContext)
+    if (ctx === undefined)
+        throw Error("This hook must be used inside the raids part of the profile")
+    return (activity: Activity) => ctx?.predicate?.(activity) ?? true
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileProps) => {
@@ -127,13 +136,14 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 </section>
 
                 <section className={styles["raids"]}>
-                    <Raids
-                        destinyMemberships={destinyMemberships}
-                        areMembershipsFetched={areMembershipsFetched}
-                        layout={layout}
-                        filter={activity => activeFilter?.predicate?.(activity) ?? true}
-                        setMostRecentActivity={setMostRecentActivity}
-                    />
+                    <FilterContext.Provider value={activeFilter}>
+                        <Raids
+                            destinyMemberships={destinyMemberships}
+                            areMembershipsFetched={areMembershipsFetched}
+                            layout={layout}
+                            setMostRecentActivity={setMostRecentActivity}
+                        />
+                    </FilterContext.Provider>
                 </section>
             </main>
         </PropsContext.Provider>

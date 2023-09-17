@@ -1,6 +1,7 @@
 import { v4 } from "uuid"
-import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
+import { ActivityFilter } from "~/types/profile"
 import { Collection } from "@discordjs/collection"
+import Activity from "../data/Activity"
 
 export type ActivityFilterCombinator = "|" | "&"
 
@@ -17,23 +18,23 @@ export default class GroupActivityFilter implements ActivityFilter {
         this.id = v4()
     }
 
-    predicate(a: ExtendedActivity) {
+    predicate(a: Activity) {
         switch (this.combinator) {
             case "&":
                 return !this.children.size
                     ? true
                     : Array.from(this.children.values()).reduce(
-                          (base, filter) => (activity: ExtendedActivity) =>
+                          (base, filter) => activity =>
                               base(activity) && filter.predicate(activity),
-                          (_: ExtendedActivity) => true
+                          (_: Activity) => true
                       )(a)
             case "|":
                 return !this.children.size
                     ? true
                     : Array.from(this.children.values()).reduce(
-                          (base, filter) => (activity: ExtendedActivity) =>
+                          (base, filter) => activity =>
                               base(activity) || filter.predicate(activity),
-                          (_: ExtendedActivity) => false
+                          (_: Activity) => false
                       )(a)
         }
     }

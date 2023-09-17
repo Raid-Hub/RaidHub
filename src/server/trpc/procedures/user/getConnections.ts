@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
 
-export const getSocials = protectedProcedure.query(async ({ ctx }) => {
+export const getConnections = protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id
     try {
         const data = await ctx.prisma.user.findUnique({
@@ -14,7 +14,8 @@ export const getSocials = protectedProcedure.query(async ({ ctx }) => {
                         bungieUsername: true,
                         twitchUsername: true,
                         discordUsername: true,
-                        twitterUsername: true
+                        twitterUsername: true,
+                        speedrunUsername: true
                     }
                 }
             }

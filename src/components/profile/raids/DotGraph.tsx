@@ -1,11 +1,11 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
-import { median } from "../../../util/math"
-import Dot from "./Dot"
-import DotTooltip, { DotTooltipProps } from "./DotTooltip"
+import styles from "~/styles/pages/profile/raids.module.css"
 import { useMemo, useState } from "react"
-import Loading from "../../global/Loading"
 import { Collection } from "@discordjs/collection"
-import { ExtendedActivity } from "~/types/profile"
+import { median } from "~/util/math"
+import Activity from "~/models/profile/data/Activity"
+import DotTooltip, { DotTooltipProps } from "./DotTooltip"
+import Dot from "./Dot"
+import { useFilterContext } from "../Profile"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -38,20 +38,23 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 0.8
 
 type DotGraphWrapperProps = {
-    activities: Collection<string, ExtendedActivity>
+    activities: Collection<string, Activity>
     targetDot: string | null
-    isLoading: boolean
 }
 
 export default function DotGraphWrapper({
-    activities,
-    targetDot,
-    isLoading
+    activities: unfilteredActivities,
+    targetDot
 }: DotGraphWrapperProps) {
+    const filter = useFilterContext()
+    const activities = useMemo(
+        () => unfilteredActivities.filter(filter).reverse(),
+        [unfilteredActivities, filter]
+    )
     const getHeight = useMemo(() => {
         let { min, max } = activities.reduce(
             (soFar, a) => {
-                const cvTime = a.activity.durationSeconds
+                const cvTime = a.durationSeconds
                 return {
                     min: Math.min(soFar.min, cvTime),
                     max: Math.max(soFar.max, cvTime)
@@ -68,68 +71,55 @@ export default function DotGraphWrapper({
             max += 1
         }
 
-        const orderedByDuration =
-            activities.map(a => a.activity.durationSeconds).sort((a, b) => a - b) ?? []
+        const orderedByDuration = activities.map(a => a.durationSeconds).sort((a, b) => a - b) ?? []
         const avg = median(orderedByDuration)
         return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     }, [activities])
 
-    return (
-        <DotGraph
-            getHeight={getHeight}
-            dots={activities}
-            targetDot={targetDot}
-            isLoading={isLoading}
-        />
-    )
+    return <DotGraph getHeight={getHeight} dots={activities} targetDot={targetDot} />
 }
 
 type DotGraphProps = {
     getHeight: (duration: number) => number
-    dots: Collection<string, ExtendedActivity>
+    dots: Collection<string, Activity>
     targetDot: string | null
-    isLoading: boolean
 }
 
-function DotGraph({ dots, getHeight, targetDot, isLoading }: DotGraphProps) {
+function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
     return (
         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
             {dotTooltipData && <DotTooltip {...dotTooltipData} />}
-            {isLoading ? (
-                <Loading className={styles["dots-svg-loading"]} />
-            ) : (
-                <svg
-                    style={{
-                        width: SPACING * (dots?.size ?? 200) + "px",
-                        height: FULL_HEIGHT,
-                        minWidth: "100%"
-                    }}>
-                    <line
-                        x1="0%"
-                        y1={LINE_Y}
-                        x2="100%"
-                        y2={LINE_Y}
-                        style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
+            <svg
+                style={{
+                    width: SPACING * (dots?.size ?? 200) + "px",
+                    height: FULL_HEIGHT,
+                    minWidth: "100%"
+                }}>
+                <line
+                    x1="0%"
+                    y1={LINE_Y}
+                    x2="100%"
+                    y2={LINE_Y}
+                    style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
+                />
+                {dots?.toJSON().map((a, idx) => (
+                    <Dot
+                        key={idx}
+                        index={idx}
+                        activity={a}
+                        flawless={false}
+                        playerCount={6}
+                        // TODO
+                        // flawless={extended.flawless ?? false}
+                        // playerCount={extended.playerCount}
+                        centerY={getHeight(a.durationSeconds)}
+                        setTooltip={setDotTooltipData}
+                        tooltipData={dotTooltipData}
+                        isTargeted={targetDot === a.instanceId}
                     />
-                    {dots?.toJSON().map((a, idx) => (
-                        <Dot
-                            key={idx}
-                            index={idx}
-                            activity={a.activity}
-                            flawless={false}
-                            playerCount={6}
-                            // TODO
-                            // flawless={extended.flawless ?? false}
-                            // playerCount={extended.playerCount}
-                            centerY={getHeight(a.activity.durationSeconds)}
-                            setTooltip={setDotTooltipData}
-                            tooltipData={dotTooltipData}
-                            isTargeted={targetDot === a.activity.instanceId}
-                        />
-                    ))}
-                </svg>
-            )}
+                ))}
+            </svg>
         </div>
     )
 }

@@ -101,6 +101,7 @@ model Profile {
   discordUsername       String? @map("discord_username")
   twitchUsername        String? @map("twitch_username")
   twitterUsername       String? @map("twitter_username")
+  speedrunUsername      String? @map("speedrun_username")
   pinnedActivityId      String? @map("pinned_activity_id")
   pinnedPGCR            PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
   profileDecoration     String? @map("profile_decoration") @db.VarChar(512)

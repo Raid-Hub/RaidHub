@@ -79,7 +79,6 @@ export async function getSpeedrunComLeaderboard<
                             } satisfies LeaderboardEntryParticipant
                         }
                     }),
-                    videoURL: r.run.videos.links[0]?.uri,
                     timeInSeconds: r.run.times.primary_t
                 } satisfies LeaderboardEntry)
         )

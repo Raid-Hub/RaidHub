@@ -3,8 +3,6 @@ import LeaderboardEntryUser from "./LeaderboardEntryPlayer"
 import { secondsToHMS } from "../../util/presentation/formatting"
 import Link from "next/link"
 import { LeaderboardEntry } from "../../types/leaderboards"
-import YoutTube from "../../../public/social-icons/youtube.png"
-import Image from "next/image"
 
 const LeaderboardEntryComponent = ({ entry }: { entry: LeaderboardEntry }) => {
     return (
@@ -15,16 +13,6 @@ const LeaderboardEntryComponent = ({ entry }: { entry: LeaderboardEntry }) => {
                     <LeaderboardEntryUser key={usr.id} user={usr} />
                 ))}
             </div>
-            {entry.videoURL && (
-                <Link href={entry.videoURL} target="_blank">
-                    <Image
-                        src={YoutTube}
-                        alt={"watch video"}
-                        width={20}
-                        className={styles["youtube"]}
-                    />
-                </Link>
-            )}
             <Link
                 href={entry.url}
                 className={styles["entry-time"]}

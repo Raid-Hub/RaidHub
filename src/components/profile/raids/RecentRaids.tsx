@@ -3,51 +3,47 @@ import Loading from "../../global/Loading"
 import ActivityTile from "./ActivityTile"
 import { useMemo, useState } from "react"
 import { useLocale } from "../../app/LocaleManager"
-import { ExtendedActivity } from "../../../types/profile"
 import { Collection } from "@discordjs/collection"
+import Activity from "~/models/profile/data/Activity"
+import { useFilterContext } from "../Profile"
 
 const CARDS_PER_PAGE = 60
 
-type RecentRaidsProps = {
-    isLoading: boolean
-    allActivitiesFiltered: Collection<string, ExtendedActivity>
-}
+type RecentRaidsProps =
+    | {
+          isLoading: false
+          allActivities: Collection<string, Activity>
+      }
+    | { isLoading: true; allActivities: null }
 
-const RecentRaids = ({ isLoading, allActivitiesFiltered }: RecentRaidsProps) => {
+const RecentRaids = ({ isLoading, allActivities }: RecentRaidsProps) => {
     const [pages, setPages] = useState<number>(1)
-    const { strings } = useLocale()
+    const filter = useFilterContext()
 
     const activities = useMemo(
-        () => Array.from(allActivitiesFiltered.values()),
-        [allActivitiesFiltered]
+        () => Array.from(allActivities?.values() ?? []).filter(filter),
+        [allActivities, filter]
     )
 
+    const { strings } = useLocale()
+
     return (
-        <div className={styles["recent"]}>
-            {isLoading ? (
-                Array(CARDS_PER_PAGE)
-                    .fill(null)
-                    .map((_, key) => <Loading key={key} className={styles["placeholder"]} />)
-            ) : (
-                <>
-                    {activities
-                        .slice(0, pages * CARDS_PER_PAGE)
-                        .map(({ activity, extended }, key) => (
-                            <ActivityTile
-                                key={key}
-                                activity={activity}
-                                playerCount={extended.playerCount}
-                                flawless={extended.flawless}
-                            />
-                        ))}
-                    {activities.length > pages * CARDS_PER_PAGE && (
-                        <button className={styles["load-more"]} onClick={() => setPages(pages + 1)}>
-                            <span>{strings.loadMore}</span>
-                        </button>
-                    )}
-                </>
+        <>
+            <div className={styles["recent"]}>
+                {isLoading
+                    ? Array(CARDS_PER_PAGE)
+                          .fill(null)
+                          .map((_, key) => <Loading key={key} className={styles["placeholder"]} />)
+                    : activities
+                          .slice(0, pages * CARDS_PER_PAGE)
+                          .map((activity, key) => <ActivityTile key={key} activity={activity} />)}
+            </div>
+            {activities.length > pages * CARDS_PER_PAGE && (
+                <button className={styles["load-more"]} onClick={() => setPages(pages + 1)}>
+                    <span>{strings.loadMore}</span>
+                </button>
             )}
-        </div>
+        </>
     )
 }
 

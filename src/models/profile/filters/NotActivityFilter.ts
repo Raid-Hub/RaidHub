@@ -1,5 +1,6 @@
 import { v4 } from "uuid"
-import { ActivityFilter, ExtendedActivity } from "../../../types/profile"
+import { ActivityFilter } from "~/types/profile"
+import Activity from "../data/Activity"
 
 export default class NotActivityFilter implements ActivityFilter {
     child: ActivityFilter | null
@@ -10,7 +11,7 @@ export default class NotActivityFilter implements ActivityFilter {
         this.id = v4()
     }
 
-    predicate(a: ExtendedActivity) {
+    predicate(a: Activity) {
         return !(this.child?.predicate(a) ?? false)
     }
 

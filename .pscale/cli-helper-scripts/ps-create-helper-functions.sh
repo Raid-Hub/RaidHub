@@ -53,6 +53,8 @@ function create-deploy-request {
         exit 1
     fi
 
+    sleep 5
+
     local deploy_request="https://app.planetscale.com/${ORG_NAME}/${DB_NAME}/deploy-requests/${deploy_request_number}"
     echo "Check out the deploy request created at $deploy_request"
     # if CI variable is set, export the deploy request URL

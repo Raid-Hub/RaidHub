@@ -1,8 +1,8 @@
 import styles from "~/styles/pages/inpsect.module.css"
 import Search from "./Search"
 import { Dispatch, SetStateAction, useState } from "react"
-import { InpsectionMemberData } from "~/types/profile"
 import { useBungieClient } from "../app/TokenManager"
+import { InpsectionMemberData } from "~/types/inspect"
 
 export default function InspectionHeader({
     addMember,

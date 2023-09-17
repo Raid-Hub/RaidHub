@@ -1,41 +1,37 @@
-import { ClientSafeProvider, SignInAuthorizationParams, signIn } from "next-auth/react"
 import Image from "next/image"
 import styles from "~/styles/pages/account.module.css"
 import { Socials } from "~/util/profile/socials"
 
 export default function Connection({
-    provider,
     unlink,
-    authorizationParams,
+    link,
+    serviceName,
     username,
     social
 }: {
-    provider: ClientSafeProvider
-    authorizationParams?: SignInAuthorizationParams
     username: string | null
     social: Socials
+    serviceName: string
+    link: () => void
     unlink: () => void
 }) {
-    const name = provider.name
     const canLink = !username
 
     return (
         <div className={styles["glossy-bg"]}>
             <div className={styles["connection-head"]}>
-                <h3>{name}</h3>
+                <h3>{serviceName}</h3>
                 <i>{username}</i>
                 <div className={styles["social-icon-container"]}>
-                    <Image src={`/social-icons/${social}.png`} alt={provider.name} fill />
+                    <Image src={`/social-icons/${social}.png`} alt={serviceName} fill />
                 </div>
             </div>
             <div className={styles["buttons"]}>
-                <button
-                    onClick={() => signIn(provider.id, {}, authorizationParams)}
-                    disabled={!canLink}>
-                    Add {name}
+                <button onClick={link} disabled={!canLink}>
+                    Add {serviceName}
                 </button>
                 <button onClick={unlink} disabled={canLink}>
-                    Unlink {name}
+                    Unlink {serviceName}
                 </button>
             </div>
         </div>

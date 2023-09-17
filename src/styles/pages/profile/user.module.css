@@ -9,7 +9,6 @@
 .card {
     position: relative;
     flex: 1;
-    width: 100%;
 
     border: 1px solid var(--border);
     border-radius: 20px;
@@ -22,8 +21,7 @@
     color: white;
 
     overflow: hidden;
-    min-width: 320px;
-    max-width: 475px;
+    max-width: min(475px, 100%);
 }
 
 .banner {

@@ -5,7 +5,7 @@ import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
 import { useBungieClient } from "../app/TokenManager"
 import { ReactNode, useEffect, useMemo } from "react"
-import { InpsectionMemberData } from "~/types/profile"
+import { InpsectionMemberData } from "~/types/inspect"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
 import Loader from "../reusable/Loader"
@@ -92,7 +92,7 @@ function ResolvedPlayer({
 
     const mostRecentCharacterId = useMemo(
         () =>
-            profileData?.characters?.data
+            profileData?.characters.data
                 ? Object.values(profileData.characters.data).reduce((base, current) =>
                       new Date(current.dateLastPlayed).getTime() >
                       new Date(base.dateLastPlayed).getTime()

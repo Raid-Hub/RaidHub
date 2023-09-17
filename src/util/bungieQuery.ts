@@ -19,7 +19,7 @@ export default function BungieQuery<TParams, TData>(
 ) {
     return {
         queryKey(params: TParams) {
-            return ["bungie", queryId /*client.getToken()*/, , params] as const
+            return ["bungie", queryId, , params] as const
         },
 
         useQuery<TError = unknown>(

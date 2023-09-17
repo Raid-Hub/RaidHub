@@ -6,6 +6,8 @@
     padding: 1em;
     align-items: stretch;
     background-color: var(--modal-background);
+
+    max-width: 475px;
 }
 
 .card-loading {
