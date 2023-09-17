@@ -1,5 +1,9 @@
 {
     "functions": {
+        "pages/**/*.tsx": {
+            "memory": 1024,
+            "maxDuration": 7
+        },
         "pages/api/auth/[...nextauth].ts": {
             "memory": 1024,
             "maxDuration": 10
@@ -8,9 +12,9 @@
             "memory": 512,
             "maxDuration": 3
         },
-        "pages/**/*.tsx": {
+        "pages/api/icon/upload.ts": {
             "memory": 1024,
-            "maxDuration": 7
+            "maxDuration": 6
         }
     }
 }
