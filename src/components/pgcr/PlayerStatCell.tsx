@@ -1,19 +1,19 @@
-import Image, { StaticImageData } from "next/image"
 import styles from "../../styles/pages/pgcr.module.css"
+import { SVGComponent } from "../reusable/SVG"
 
 const PlayerStatCell = ({
-    icon,
+    icon: Icon,
     value,
     name
 }: {
-    icon: StaticImageData
+    icon: SVGComponent
     name: string
     value: number | string
 }) => {
     return (
         <div className={[styles["entry-card"], styles["character-stat"]].join(" ")}>
             <div className={styles["stat-icon-container"]}>
-                <Image src={icon} fill alt={name + ": " + value} />
+                <Icon sx={20} color="white" />
             </div>
             <div className={styles["summary-stat-info"]}>
                 <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>

@@ -1,32 +1,28 @@
+import { SVGComponent } from "~/components/reusable/SVG"
+import BungieShield from "~/images/icons/connections/BungieShield"
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import Email from "~/images/icons/connections/Email"
+import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
 import styles from "~/styles/pages/profile/user.module.css"
 import { ProfileSocialData } from "~/types/profile"
+import { Socials } from "~/util/profile/socials"
 
 type SocialTagProps = ProfileSocialData
+
+const socialsMap: Record<Socials, SVGComponent> = {
+    [Socials.Discord]: DiscordIcon,
+    [Socials.YouTube]: DiscordIcon,
+    [Socials.Twitch]: DiscordIcon,
+    [Socials.Twitter]: DiscordIcon,
+    [Socials.Bungie]: BungieShield,
+    [Socials.Mail]: Email,
+    [Socials.Speedrun]: SpeedrunIcon
+}
 
 const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
     const inner = (
         <>
-            <svg className={styles["img-social"]}>
-                <defs>
-                    <mask id={id}>
-                        <image
-                            x="0"
-                            y="0"
-                            width="100%"
-                            height="100%"
-                            xlinkHref={`/social-icons/${id}.png`}
-                        />
-                    </mask>
-                </defs>
-                <rect
-                    className={styles[`${id}-logo`]}
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
-                    mask={`url(#${id})`}
-                />
-            </svg>
+            {socialsMap[id]}
             <div className={styles["social-divider"]} />
             <div className={styles["social-text"]}>
                 <span>{username}</span>

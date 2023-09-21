@@ -1,10 +1,11 @@
 import Image from "next/image"
 import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 import { Variants, motion } from "framer-motion"
+import QuestionMark from "~/images/icons/QuestionMark"
 
 const variants = {
     open: {
@@ -19,13 +20,6 @@ const AccountIcon = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const { strings } = useLocale()
-
-    // todo: replace question mark with loading
-    const image = useMemo(
-        (/**status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account */) =>
-            "null",
-        [sessionData, status]
-    )
 
     const handleIconClick = () => {
         setIsDropdownOpen(old => !old)
@@ -58,7 +52,11 @@ const AccountIcon = () => {
                 className={styles["account-button"]}
                 role="button"
                 onClick={handleIconClick}>
-                <Image src={image} alt="profile" fill unoptimized />
+                {status === "authenticated" ? (
+                    <Image src={sessionData.user.image} alt="profile" fill unoptimized />
+                ) : (
+                    <QuestionMark sx={30} color="white" />
+                )}
             </div>
             <motion.div
                 className={styles["account-dropdown-content-container"]}

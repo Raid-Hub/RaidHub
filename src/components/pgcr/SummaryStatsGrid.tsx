@@ -1,11 +1,11 @@
 import styles from "../../styles/pages/pgcr.module.css"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
-import Image, { StaticImageData } from "next/image"
-import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark } from "../../images/icons"
 import { useMemo } from "react"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import { useItem } from "../app/DestinyManifestManager"
+import { SVGComponent } from "../reusable/SVG"
+import QuestionMark from "~/images/icons/QuestionMark"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()
@@ -14,67 +14,67 @@ const SummaryStatsGrid = () => {
     const stats = useMemo(() => pgcr?.stats, [pgcr])
     const { data: weapon } = useItem(stats?.mostUsedWeapon?.hash ?? 73015)
     const statsData: {
-        icon: StaticImageData
+        Icon: SVGComponent
         name: string
         value: number | string
     }[] = [
         ...(pgcr?.completed
             ? [
                   {
-                      icon: MVP,
+                      Icon: QuestionMark,
                       name: strings.mvp,
                       value: stats?.mvp ?? "???"
                   }
               ]
             : []),
         {
-            icon: Kills,
+            Icon: QuestionMark,
             name: strings.totalKills,
             value: formattedNumber(stats?.totalKills ?? 0, locale)
         },
         {
-            icon: Deaths,
+            Icon: QuestionMark,
             name: strings.totalDeaths,
             value: formattedNumber(stats?.totalDeaths ?? 0, locale)
         },
         {
-            icon: Assists,
+            Icon: QuestionMark,
             name: strings.totalAssists,
             value: formattedNumber(stats?.totalAssists ?? 0, locale)
         },
         {
-            icon: Abilities,
+            Icon: QuestionMark,
             name: strings.abilityKillsPercentage,
             value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
         },
         {
-            icon: Question_Mark,
+            Icon: QuestionMark,
             name: strings.overallKD,
             value: formattedNumber(stats?.overallKD ?? 0, locale)
         },
         {
-            icon: Question_Mark,
+            Icon: QuestionMark,
             name: strings.superKills,
             value: formattedNumber(stats?.totalSuperKills ?? 0, locale)
         },
         {
-            icon: Question_Mark,
+            Icon: QuestionMark,
             name: strings.totalCharactersUsed,
             value: stats?.totalCharactersUsed ?? 0
         },
         {
-            icon: Question_Mark,
+            Icon: QuestionMark,
             name: strings.mostUsedWeapon,
             value: weapon?.displayProperties.name ?? strings.none
         }
     ]
     return (
         <section className={styles["summary-stats"]}>
-            {statsData.map(({ icon, name, value }, idx) => (
+            {statsData.map(({ Icon, name, value }, idx) => (
                 <div key={idx} className={styles["summary-stat"]}>
                     <div className={styles["summary-stat-content"]}>
                         <div className={styles["stat-icon-container"]}>
-                            <Image src={icon} alt={name + ": " + value} fill />
+                            <Icon sx={40} color="white" />
                         </div>
                         <div className={styles["summary-stat-info"]}>
                             <span

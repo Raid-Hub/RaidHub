@@ -2,12 +2,12 @@ import styles from "../../styles/pages/pgcr.module.css"
 import { formattedNumber, secondsToHMS } from "../../util/presentation/formatting"
 import { IPGCREntry } from "../../types/pgcr"
 import { useLocale } from "../app/LocaleManager"
-import Image, { StaticImageData } from "next/image"
-import { Abilities, Assists, Deaths, Kills, MVP, Question_Mark, Time } from "../../images/icons"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import PlayerStatCell from "./PlayerStatCell"
 import PGCRPlayer from "../../models/pgcr/Player"
 import { useItem } from "../app/DestinyManifestManager"
+import { SVGComponent } from "../reusable/SVG"
+import QuestionMark from "~/images/icons/QuestionMark"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
@@ -21,37 +21,37 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
     const stats = entry.stats
 
     const statsData: {
-        icon: StaticImageData
+        icon: SVGComponent
         name: string
         value: number | string
     }[] = [
         {
-            icon: Kills,
+            icon: QuestionMark,
             name: strings.kills,
             value: formattedNumber(stats.kills, locale)
         },
         {
-            icon: Deaths,
+            icon: QuestionMark,
             name: strings.deaths,
             value: formattedNumber(stats.deaths, locale)
         },
         {
-            icon: Assists,
+            icon: QuestionMark,
             name: strings.assists,
             value: formattedNumber(stats.assists, locale)
         },
         {
-            icon: Abilities,
+            icon: QuestionMark,
             name: strings.abilityKills,
             value: formattedNumber(stats.abilityKills, locale)
         },
         {
-            icon: Time,
+            icon: QuestionMark,
             name: strings.timeSpent,
             value: secondsToHMS(stats.timePlayedSeconds)
         },
         {
-            icon: Question_Mark,
+            icon: QuestionMark,
             name: strings.mostUsedWeapon,
             value: weapon?.displayProperties.name ?? strings.none
         }
@@ -59,7 +59,7 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
 
     if (entry instanceof PGCRPlayer) {
         statsData.splice(3, 0, {
-            icon: MVP,
+            icon: QuestionMark,
             name: strings.score,
             value: formattedNumber(pgcr?.weightedScores.get(entry.membershipId) ?? 0, locale)
         })
@@ -75,7 +75,7 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
                 style={{ cursor: "pointer" }}
                 onClick={showWeaponsDetails}>
                 <div className={styles["stat-icon-container"]}>
-                    <Image src={Question_Mark} alt={strings.killBreakdown} fill />
+                    <QuestionMark sx={12} color="white" />
                 </div>
                 <div className={styles["summary-stat-info"]}>
                     <span

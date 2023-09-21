@@ -1,8 +1,8 @@
 import { useSearch } from "~/hooks/bungie/useSearch"
 import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
-import { Question_Mark } from "~/images/icons"
 import { useEffect, useRef, useState } from "react"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
@@ -70,7 +70,7 @@ export default function Search({ addMember }: { addMember: (membershipId: string
             </form>
             {isShowingResults && (
                 <ol className={styles["search-results"]}>
-                    {results.map(({ name, membershipId, membershipType }, idx) => (
+                    {results.map(({ name, membershipId }, idx) => (
                         <li
                             key={idx}
                             className={styles["search-result"]}
@@ -78,7 +78,12 @@ export default function Search({ addMember }: { addMember: (membershipId: string
                                 addMember(membershipId)
                                 setIsShowingResults(false)
                             }}>
-                            <Image width={45} height={45} alt={name} src={Question_Mark} />
+                            <Image
+                                width={45}
+                                height={45}
+                                alt={name}
+                                src={bungieIconUrl(undefined)}
+                            />
                             <p>{name}</p>
                         </li>
                     ))}

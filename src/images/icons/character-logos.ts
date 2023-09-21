@@ -1,8 +1,10 @@
 import { DestinyClass } from "bungie-net-core/models"
+import { SVGComponent } from "~/components/reusable/SVG"
+import QuestionMark from "./QuestionMark"
 
-export const CharacterLogos: { [key in DestinyClass]: StaticImageData } = {
-    0: "null" /**Titan*/,
-    1: "null" /**Hunter*/,
-    2: "null" /**Warlock*/,
-    3: "null" /**Question_Mark*/
+export const CharacterLogos: { [key in DestinyClass]: SVGComponent } = {
+    0: QuestionMark /**Titan*/,
+    1: QuestionMark /**Hunter*/,
+    2: QuestionMark /**Warlock*/,
+    3: QuestionMark /**Question_Mark*/
 }

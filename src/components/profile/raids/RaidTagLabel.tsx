@@ -2,12 +2,11 @@ import styles from "~/styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { Difficulty, Raid } from "~/types/raids"
 import { useLocale } from "~/components/app/LocaleManager"
-import { Diamond2 } from "~/images/icons"
 import { RaidTag } from "~/types/profile"
 import { LocalStrings } from "~/util/presentation/localized-strings"
 import { Tag } from "~/util/raidhub/tags"
-import Image from "next/image"
 import useHover from "~/hooks/util/useDebouncedHover"
+import QuestionMark from "~/images/icons/QuestionMark"
 
 type RaidTagLabelProps = {
     instanceId?: string
@@ -28,9 +27,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     function InnerTag() {
         return (
             <>
-                {props.bestPossible && (
-                    <Image src={Diamond2} alt="mastery diamond" width={15} height={15} />
-                )}
+                {props.bestPossible && <QuestionMark sx={15} color="white" />}
                 <span>{label}</span>
             </>
         )

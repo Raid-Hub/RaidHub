@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react"
 import styles from "../../styles/searchmodal.module.css"
-import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
 import { useTypewriter } from "react-simple-typewriter"
