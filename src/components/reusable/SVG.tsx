@@ -5,9 +5,9 @@ export type SVGProps = {
     color?: string
 } & React.SVGProps<SVGSVGElement>
 
-export default function SVG({ sx, color, children, ref, ...props }: SVGProps) {
+export default function SVG({ sx, color, children, ...props }: SVGProps) {
     return (
-        <svg fill={color} width={sx} ref={ref} xmlns="http://www.w3.org/2000/svg" {...props}>
+        <svg fill={color} width={sx} xmlns="http://www.w3.org/2000/svg" {...props}>
             {children}
         </svg>
     )

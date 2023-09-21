@@ -2,7 +2,7 @@ import React from "react"
 import SVG, { SVGProps } from "~/components/reusable/SVG"
 import styles from "~/styles/svg-icons.module.css"
 
-export default function DiscordIcon({ color, ...props }: SVGProps) {
+export default function SpeedrunIcon({ color, ...props }: SVGProps) {
     const styleProps = color
         ? {
               style: { "--fill-color": color } as {}, // tsx does not vars inlined
