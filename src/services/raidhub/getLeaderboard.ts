@@ -5,7 +5,7 @@ export enum Leaderboard {
     WorldFirst = "worldfirst"
 }
 
-export function leaderbordQueryKey(
+export function leaderboardQueryKey(
     raid: ListedRaid,
     board: Leaderboard,
     paramStrings: string[],

@@ -2,7 +2,17 @@ import Image from "next/image"
 import Link from "next/link"
 import styles from "~/styles/pages/home.module.css"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
+import {
+    Difficulty,
+    ListedRaid,
+    MasterRaid,
+    MasterRaids,
+    PrestigeRaid,
+    PrestigeRaids,
+    Raid,
+    RaidsWithReprisedContest,
+    ReprisedRaid
+} from "~/types/raids"
 import { LocalStrings } from "~/util/presentation/localized-strings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
@@ -72,16 +82,38 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["content-section"]}>
                     <h4>{strings.otherLeaderboards}</h4>
                     <ul>
-                        {RaidsWithReprisedContest.includes(raid as ReprisedRaid) ? (
+                        {RaidsWithReprisedContest.includes(raid as ReprisedRaid) && (
                             <li>
                                 <Link
                                     href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/normal`}>
                                     {strings.noChallenge}
                                 </Link>
                             </li>
-                        ) : (
-                            <li>{strings.comingSoon}</li>
                         )}
+                        {MasterRaids.includes(raid as MasterRaid) && (
+                            <li>
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/master`}>
+                                    {strings.difficulty[Difficulty.MASTER]}
+                                </Link>
+                            </li>
+                        )}
+                        {PrestigeRaids.includes(raid as PrestigeRaid) && (
+                            <li>
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/prestige`}>
+                                    {strings.difficulty[Difficulty.PRESTIGE]}
+                                </Link>
+                            </li>
+                        )}
+                        {raid === Raid.LEVIATHAN && (
+                            <li>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/pc`}>
+                                    PC
+                                </Link>
+                            </li>
+                        )}
+                        <li>{strings.comingSoon}</li>
                     </ul>
                 </div>
             </div>

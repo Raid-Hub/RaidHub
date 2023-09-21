@@ -1,15 +1,16 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import { Hydrate } from "@tanstack/react-query"
-import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { PrestigeRaid, PrestigeRaids } from "~/types/raids"
 import { includedIn } from "~/util/betterIncludes"
+import { PrestigeReleases } from "~/data/destiny-dates"
 
-type NormalWFPageProps = {
-    raid: ReprisedRaid
+type PrestigeWFPageProps = {
+    raid: PrestigeRaid
     dehydratedState: unknown
 }
 
@@ -17,7 +18,7 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
     return process.env.APP_ENV !== "local"
         ? {
               paths: Object.entries(UrlPathsToRaid)
-                  .filter(([_, raid]) => RaidsWithReprisedContest.includes(raid as ReprisedRaid))
+                  .filter(([_, raid]) => PrestigeRaids.includes(raid as PrestigeRaid))
                   .map(([path, _]) => ({
                       params: {
                           raid: path
@@ -31,19 +32,19 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
           }
 }
 
-export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }> = async ({
+export const getStaticProps: GetStaticProps<PrestigeWFPageProps, { raid: string }> = async ({
     params
 }) => {
     try {
         const { raid } = zRaidURIComponent.parse(params)
-        if (!includedIn(RaidsWithReprisedContest, raid)) {
-            throw Error("raid does not have a reprised challenge version")
+        if (!includedIn(PrestigeRaids, raid)) {
+            throw Error("raid does not have a prestige version")
         }
 
         const { staleTime, dehydratedState } = await prefetchLeaderboard(
             raid,
             Leaderboard.WorldFirst,
-            ["normal"],
+            ["prestige"],
             2
         )
 
@@ -61,14 +62,14 @@ export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }>
     }
 }
 
-export default function NormalWFPage({ raid, dehydratedState }: NormalWFPageProps) {
+export default function LeaderboadPage({ raid, dehydratedState }: PrestigeWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
             <MickeyMouseLeaderboard
                 raid={raid}
-                params={["normal"]}
-                descriptor="Normal Contest"
-                date={new Date()}
+                params={["prestige"]}
+                descriptor="Prestige"
+                date={PrestigeReleases[raid]}
             />
         </Hydrate>
     )

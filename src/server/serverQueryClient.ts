@@ -1,6 +1,6 @@
 import { DehydrateOptions, QueryClient, dehydrate } from "@tanstack/react-query"
 import { createServerSideHelpers } from "@trpc/react-query/server"
-import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
+import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
     getSpeedrunComLeaderboard,
     rtaQueryKey
@@ -86,7 +86,7 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
     await Promise.all(
         new Array(pages).fill(undefined).map((_, idx) =>
             queryClient.prefetchQuery(
-                leaderbordQueryKey(raid, board, params, idx),
+                leaderboardQueryKey(raid, board, params, idx),
                 () => getLeaderboard(raid, board, params, idx),
                 {
                     staleTime
