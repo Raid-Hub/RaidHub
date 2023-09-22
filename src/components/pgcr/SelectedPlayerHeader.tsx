@@ -1,9 +1,9 @@
-import styles from "../../styles/pages/pgcr.module.css"
-import PGCRPlayer from "../../models/pgcr/Player"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRPlayer from "~/models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
-import PGCRCharacter from "../../models/pgcr/Character"
+import PGCRCharacter from "~/models/pgcr/Character"
 import QuestionMark from "~/images/icons/QuestionMark"
 
 type SelectedPlayerHeaderProps = {
@@ -40,7 +40,7 @@ const SelectedPlayerHeader = ({
                                 styles["class-button"]
                             ].join(" ")}
                             onClick={() => updateCharacterId(characterId)}>
-                            <Logo sx={60} color="white" />
+                            <Logo color="white" />
                         </button>
                     ))}
                 </div>

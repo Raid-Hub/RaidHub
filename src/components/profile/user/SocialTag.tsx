@@ -1,4 +1,4 @@
-import { SVGComponent } from "~/components/reusable/SVG"
+import SVG from "~/components/reusable/SVG"
 import BungieShield from "~/images/icons/connections/BungieShield"
 import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import Email from "~/images/icons/connections/Email"

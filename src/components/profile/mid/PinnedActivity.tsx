@@ -6,6 +6,7 @@ import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
+import EagerEdge from "~/images/icons/destiny2/EagerEgde"
 
 type PinnedActivityProps = {
     activityId: string
@@ -55,13 +56,7 @@ const PinnedActivity = ({
                 <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
 
                 <div className={styles["pinned-activity-time"]}>
-                    {/* <Image
-                        src={Eager}
-                        alt=""
-                        style={{ width: "20px", height: "20px" }}
-                        width={20}
-                        height={20}
-                    /> */}
+                    <EagerEdge sx={20} color="white" />
                     <span>{pgcr.speed.string(strings)}</span>
                 </div>
             </div>

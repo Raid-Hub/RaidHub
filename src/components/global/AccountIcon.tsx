@@ -4,8 +4,9 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
-import { Variants, motion } from "framer-motion"
+import { Variants, m } from "framer-motion"
 import QuestionMark from "~/images/icons/QuestionMark"
+import UserIcon from "~/images/icons/UserIcon"
 
 const variants = {
     open: {
@@ -54,8 +55,10 @@ const AccountIcon = () => {
                 onClick={handleIconClick}>
                 {status === "authenticated" ? (
                     <Image src={sessionData.user.image} alt="profile" fill unoptimized />
+                ) : status === "loading" ? (
+                    <QuestionMark color="white" />
                 ) : (
-                    <QuestionMark sx={30} color="white" />
+                    <UserIcon color="white" />
                 )}
             </div>
             <m.div

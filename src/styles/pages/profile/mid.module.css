@@ -126,8 +126,8 @@
     align-items: center;
 }
 
-.pinned-activity-time img {
-    margin-right: 0.5em;
+.pinned-activity-time svg {
+    margin-right: 0.3em;
 }
 
 .pinned-activity-timer > span {

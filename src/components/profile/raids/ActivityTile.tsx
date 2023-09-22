@@ -38,6 +38,7 @@ const ActivityTile = ({
     return (
         <Link href={`/pgcr/${instanceId}`} className={styles["activity"]} legacyBehavior>
             <m.a
+                href={`/pgcr/${instanceId}`}
                 initial={{
                     y: 50,
                     opacity: 0
@@ -47,8 +48,8 @@ const ActivityTile = ({
                     opacity: 1
                 }}
                 viewport={{ once: true }}
-                transition={{
-                    duration: 0.6
+                whileHover={{
+                    scale: 1.035
                 }}
                 className={styles["activity"]}>
                 <Image

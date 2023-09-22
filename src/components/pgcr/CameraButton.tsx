@@ -1,5 +1,5 @@
 import styles from "../../styles/reusable-components/camera-button.module.css"
-import { Variant, motion } from "framer-motion"
+import { Variant, m } from "framer-motion"
 import { useState } from "react"
 import { useScreenshot } from "../reusable/ScreenshotContainer"
 

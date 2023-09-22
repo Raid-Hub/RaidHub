@@ -89,11 +89,6 @@
 
 .social-icon-container {
     margin-left: auto;
-
-    position: relative;
-
-    height: 30px;
-    aspect-ratio: 76/63;
 }
 
 .api-key-modal {

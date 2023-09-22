@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react"
 import styles from "../../styles/reusable-components/kebab-menu.module.css"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, m } from "framer-motion"
 import { wait } from "../../util/wait"
 
 const KebabMenu = ({

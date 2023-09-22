@@ -4,8 +4,8 @@ import { useLocale } from "../app/LocaleManager"
 import { useMemo } from "react"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import { useItem } from "../app/DestinyManifestManager"
-import { SVGComponent } from "../reusable/SVG"
 import QuestionMark from "~/images/icons/QuestionMark"
+import { SVGComponent } from "../reusable/SVG"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()

@@ -8,6 +8,8 @@ import { useItem } from "../app/DestinyManifestManager"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 import QuestionMark from "~/images/icons/QuestionMark"
 import { SVGComponent } from "../reusable/SVG"
+import Grenade from "~/images/icons/destiny2/Grenade"
+import Melee from "~/images/icons/destiny2/Melee"
 
 type AbilityData = {
     name: string
@@ -22,8 +24,8 @@ const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) =>
             value: entry.stats.superKills,
             icon: QuestionMark
         },
-        { name: strings.grenade, value: entry.stats.grenadeKills, icon: QuestionMark },
-        { name: strings.melee, value: entry.stats.meleeKills, icon: QuestionMark }
+        { name: strings.grenade, value: entry.stats.grenadeKills, icon: Grenade },
+        { name: strings.melee, value: entry.stats.meleeKills, icon: Melee }
     ]
 
     const allCellData = [...Array.from(entry.weapons.entries()), ...abilityCellData].sort(
@@ -92,7 +94,7 @@ const AbilityCell = ({ name, value, icon: Icon }: AbilityData) => {
         <div
             style={{ display: "flex", gap: "1em", padding: "1em" }}
             className={styles["entry-card"]}>
-            <Icon sx={60} />
+            <Icon sx={60} color="white" />
             <div className={styles["summary-stat-info"]}>
                 <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>
                     {name}

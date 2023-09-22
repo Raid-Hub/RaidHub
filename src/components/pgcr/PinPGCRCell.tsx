@@ -3,7 +3,7 @@ import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
-import QuestionMark from "~/images/icons/QuestionMark"
+import PinIcon from "~/images/icons/PinIcon"
 
 const PinPCRCell = () => {
     const { data: pgcr } = usePGCRContext()
@@ -26,7 +26,7 @@ const PinPCRCell = () => {
         <div>
             <span>{isPinned ? strings.pinToProfile : strings.unPinFromProfile}</span>
             <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>
-                <QuestionMark sx={20} color={isPinned ? "orange" : "white"} />
+                <PinIcon sx={20} color={isPinned ? "white" : "orange"} />
             </button>
         </div>
     ) : null

@@ -2,23 +2,23 @@ import React from "react"
 import styles from "~/styles/svg-icons.module.css"
 
 export type SVGProps = {
-    sx: number
+    sx?: number
     color?: string
 } & React.SVGProps<SVGSVGElement>
+
+export type SVGComponent = (props: SVGProps) => JSX.Element
 
 export default function SVG({
     sx,
     color,
     children,
-    ref,
     className,
     iconId,
     ...props
-}: { iconId: string } & SVGProps) {
-    const colorClass = styles[iconId]
+}: { iconId?: string } & SVGProps) {
+    const colorClass = iconId ? styles[iconId] : ""
     return (
         <svg
-            ref={ref}
             data-icon-id={iconId}
             width={sx}
             fill={color}

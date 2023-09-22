@@ -5,7 +5,7 @@ import styles from "~/styles/svg-icons.module.css"
 export default function SpeedrunIcon({ color, ...props }: SVGProps) {
     const styleProps = color
         ? {
-              style: { "--fill-color": color } as {}, // tsx does not vars inlined
+              style: { "--fill-color": color } as {}, // tsx does not like vars inlined
               className: styles["deep-fill"]
           }
         : undefined
