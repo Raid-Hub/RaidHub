@@ -7,6 +7,7 @@ import { FilterCallback } from "./generic"
 import { z } from "zod"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { zModifiableProfile } from "~/util/zod"
+import { SVGProps } from "~/components/reusable/SVG"
 
 export type InitialProfileProps = {
     destinyMembershipId: string
@@ -31,6 +32,7 @@ export type RaidHubProfile = {
 
 export type ProfileSocialData = {
     id: Socials
+    Icon: React.FC<SVGProps>
     displayName: string
     url?: string
 }

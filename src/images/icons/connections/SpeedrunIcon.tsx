@@ -2,7 +2,7 @@ import React from "react"
 import SVG, { SVGProps } from "~/components/reusable/SVG"
 import styles from "~/styles/svg-icons.module.css"
 
-export default function DiscordIcon({ color, ...props }: SVGProps) {
+export default function SpeedrunIcon({ color, ...props }: SVGProps) {
     const styleProps = color
         ? {
               style: { "--fill-color": color } as {}, // tsx does not vars inlined
@@ -10,8 +10,13 @@ export default function DiscordIcon({ color, ...props }: SVGProps) {
           }
         : undefined
     return (
-        <SVG viewBox="0 -6.5 102 102" fillRule="evenodd" {...styleProps} {...props}>
-            <g shape-rendering="crispEdges">
+        <SVG
+            viewBox="0 -6.5 102 102"
+            fillRule="evenodd"
+            iconId="speedrun"
+            {...styleProps}
+            {...props}>
+            <g shapeRendering="crispEdges">
                 <path
                     fill="#b55608"
                     d="M97.235 22.48h4.4v4.4h-4.4zM97.235 18.08h4.4v4.4h-4.4z"></path>

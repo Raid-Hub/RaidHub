@@ -1,32 +1,15 @@
 import styles from "~/styles/pages/profile/user.module.css"
+import iconStyles from "~/styles/svg-icons.module.css"
 import { ProfileSocialData } from "~/types/profile"
 
 type SocialTagProps = ProfileSocialData
 
-const SocialTag = ({ id, displayName: username, url }: SocialTagProps) => {
+const SocialTag = ({ id, displayName: username, url, Icon }: SocialTagProps) => {
     const inner = (
         <>
-            <svg className={styles["img-social"]}>
-                <defs>
-                    <mask id={id}>
-                        <image
-                            x="0"
-                            y="0"
-                            width="100%"
-                            height="100%"
-                            xlinkHref={`/social-icons/${id}.png`}
-                        />
-                    </mask>
-                </defs>
-                <rect
-                    className={styles[`${id}-logo`]}
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
-                    mask={`url(#${id})`}
-                />
-            </svg>
+            <div className={styles["img-social"]}>
+                <Icon sx={30} color="white" />
+            </div>
             <div className={styles["social-divider"]} />
             <div className={styles["social-text"]}>
                 <span>{username}</span>

@@ -10,21 +10,18 @@ import { SVGProps } from "~/components/reusable/SVG"
 
 const developers = ["Newo", "Bruce", "Theos"]
 const raidHubMailAddress = "admin@raidhub.app"
-const contactIcons: { url: string; Icon: React.FC<SVGProps>; colorClass: string }[] = [
+const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
     {
         url: `https://discord.gg/raidhub`,
-        Icon: DiscordIcon,
-        colorClass: iconStyles["discord"]
+        Icon: DiscordIcon
     },
     {
         url: "https://www.twitter.com/raidhubapp",
-        Icon: TwitterIcon,
-        colorClass: iconStyles["twitter"]
+        Icon: TwitterIcon
     },
     {
         url: `mailto:${raidHubMailAddress}`,
-        Icon: Email,
-        colorClass: iconStyles["email"]
+        Icon: Email
     }
 ]
 
@@ -49,17 +46,14 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className={styles["right"]}>
-                    {contactIcons.map(({ url, Icon, colorClass }, key) => (
+                    {contactIcons.map(({ url, Icon }, key) => (
                         <Link
                             key={key}
                             className={styles["img-social"]}
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer">
-                            <Icon
-                                sx={30}
-                                className={[colorClass, iconStyles["color-on-hover"]].join(" ")}
-                            />
+                            <Icon sx={30} className={iconStyles["color-on-hover"]} />
                         </Link>
                     ))}
                 </div>
