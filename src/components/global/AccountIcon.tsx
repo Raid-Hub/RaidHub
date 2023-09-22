@@ -58,7 +58,7 @@ const AccountIcon = () => {
                     <QuestionMark sx={30} color="white" />
                 )}
             </div>
-            <motion.div
+            <m.div
                 className={styles["account-dropdown-content-container"]}
                 initial={"closed"}
                 animate={animate}
@@ -98,7 +98,7 @@ const AccountIcon = () => {
                         </li>
                     )}
                 </ul>
-            </motion.div>
+            </m.div>
         </div>
     )
 }

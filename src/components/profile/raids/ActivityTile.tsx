@@ -7,7 +7,7 @@ import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"
 import Image from "next/image"
 import RaidCardBackground from "../../../images/raid-backgrounds"
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 
 type ActivityTileProps = { activity: Activity }
 
@@ -37,7 +37,7 @@ const ActivityTile = ({
 
     return (
         <Link href={`/pgcr/${instanceId}`} className={styles["activity"]} legacyBehavior>
-            <motion.a
+            <m.a
                 initial={{
                     y: 50,
                     opacity: 0
@@ -69,7 +69,7 @@ const ActivityTile = ({
                         {completed ? strings.success : strings.incompleteRaid}
                     </p>
                 </div>
-            </motion.a>
+            </m.a>
         </Link>
     )
 }

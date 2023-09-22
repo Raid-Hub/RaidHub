@@ -1,7 +1,7 @@
 import styles from "~/styles/pages/profile/raids.module.css"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
 import { ListedRaid } from "~/types/raids"
 import RaidCardBackground from "~/images/raid-backgrounds"
@@ -107,7 +107,7 @@ export default function RaidCard({
     const { strings } = useLocale()
 
     return (
-        <motion.div
+        <m.div
             initial={{
                 y: 50,
                 opacity: 0
@@ -205,6 +205,6 @@ export default function RaidCard({
                     /> */}
                 </div>
             </div>
-        </motion.div>
+        </m.div>
     )
 }

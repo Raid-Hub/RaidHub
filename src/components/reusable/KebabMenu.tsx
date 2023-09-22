@@ -53,7 +53,7 @@ const KebabMenu = ({
             </svg>
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
+                    <m.div
                         className={styles["kebab-menu-dropdown"]}
                         style={{ [alignmentSide]: 0, top: `${size * 0.5}px` }}
                         initial={{ opacity: 0 }}
@@ -61,7 +61,7 @@ const KebabMenu = ({
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.2, spring: 0.2 }}>
                         {children}
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
         </div>
