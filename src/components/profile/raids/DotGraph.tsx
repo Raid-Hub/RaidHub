@@ -35,7 +35,7 @@ export const STAR_OFFSETS = [
 ] as const
 
 // SKULL
-export const SKULL_FACTOR = 0.8
+export const SKULL_FACTOR = 1.15
 
 type DotGraphWrapperProps = {
     activities: Collection<string, Activity>

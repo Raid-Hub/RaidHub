@@ -8,6 +8,7 @@ import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
 import { animate } from "framer-motion"
 import Link from "next/link"
+import RaidSkull from "~/images/icons/destiny2/RaidSkull"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -113,11 +114,10 @@ const Dot = ({
                     <Star x={centerX} y={centerY} spinning={playerCount === 1} />
                 ) : (
                     (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
-                        <image
+                        <RaidSkull
+                            color="white"
                             width={2 * SKULL_FACTOR * RADIUS}
                             height={2 * SKULL_FACTOR * RADIUS}
-                            className={styles["contest-skull"]}
-                            href={"../../../../icons/skull.png"}
                             x={centerX - SKULL_FACTOR * RADIUS}
                             y={centerY - SKULL_FACTOR * RADIUS}
                         />
