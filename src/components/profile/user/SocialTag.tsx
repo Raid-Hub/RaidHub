@@ -1,12 +1,5 @@
-import SVG from "~/components/reusable/SVG"
-import BungieShield from "~/images/icons/connections/BungieShield"
-import DiscordIcon from "~/images/icons/connections/DiscordIcon"
-import Email from "~/images/icons/connections/Email"
-import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
 import styles from "~/styles/pages/profile/user.module.css"
-import iconStyles from "~/styles/svg-icons.module.css"
 import { ProfileSocialData } from "~/types/profile"
-import { Socials } from "~/util/profile/socials"
 
 type SocialTagProps = ProfileSocialData
 

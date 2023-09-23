@@ -1,6 +1,4 @@
-import Image from "next/image"
 import styles from "~/styles/pages/account.module.css"
-import { Socials } from "~/util/profile/socials"
 import { SVGComponent } from "../reusable/SVG"
 
 export default function Connection({
