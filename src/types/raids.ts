@@ -95,6 +95,18 @@ export type ReprisedRaidChallengeMode = (typeof ReprisedContestRaidDifficulties)
 export const ElevatedRaidDifficulties = [Difficulty.MASTER, Difficulty.PRESTIGE] as const
 export type ElevatedRaidDifficulty = (typeof ElevatedRaidDifficulties)[number]
 
+export const MasterRaids = [
+    Raid.VAULT_OF_GLASS,
+    Raid.VOW_OF_THE_DISCIPLE,
+    Raid.KINGS_FALL,
+    Raid.ROOT_OF_NIGHTMARES,
+    Raid.CROTAS_END
+] as const
+export type MasterRaid = (typeof MasterRaids)[number]
+
+export const PrestigeRaids = [Raid.LEVIATHAN, Raid.SPIRE_OF_STARS, Raid.EATER_OF_WORLDS] as const
+export type PrestigeRaid = (typeof PrestigeRaids)[number]
+
 export const ReprisedContestDifficultyDictionary: Record<
     (typeof RaidsWithReprisedContest)[number],
     (typeof ReprisedContestRaidDifficulties)[number]

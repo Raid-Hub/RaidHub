@@ -1,0 +1,39 @@
+.icon {
+    aspect-ratio: 1/1;
+}
+
+.deep-fill *[fill] {
+    fill: var(--fill-color);
+}
+
+.color-on-hover:hover {
+    fill: var(--icon-color);
+}
+
+.twitch {
+    --icon-color: #6441a5;
+}
+
+.twitter {
+    --icon-color: #1da1f2;
+}
+
+.youtube {
+    --icon-color: #f12d2d;
+}
+
+.bungie {
+    --icon-color: #9ad5ec;
+}
+
+.discord {
+    --icon-color: #6876a7;
+}
+
+.email {
+    --icon-color: #969696;
+}
+
+.speedrun {
+    --icon-color: gold;
+}

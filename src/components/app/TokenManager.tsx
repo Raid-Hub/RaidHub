@@ -35,13 +35,11 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
             signOut()
         } else if (status == "unauthenticated") {
             setRefetchInterval(0)
-        } else if (
-            sessionData?.user.bungieAccessToken?.value &&
-            sessionData.user.bungieAccessToken.expires
-        ) {
+        } else if (sessionData?.user.bungieAccessToken) {
+            setFailedTokenRequests(0)
             setAccessToken(sessionData.user.bungieAccessToken.value)
             const timeRemaining = sessionData.user.bungieAccessToken.expires - Date.now()
-            setRefetchInterval(timeRemaining >= 0 ? Math.ceil((timeRemaining + 1) / 1000) : 0)
+            setRefetchInterval(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
 

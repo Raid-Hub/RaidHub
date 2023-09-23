@@ -12,7 +12,7 @@ import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
 import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { CharacterLogos } from "~/images/character-logos"
+import { CharacterLogos } from "~/images/icons/character-logos"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number

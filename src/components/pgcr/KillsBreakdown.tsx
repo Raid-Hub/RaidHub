@@ -1,17 +1,21 @@
 import styles from "~/styles/pages/pgcr.module.css"
-import Image, { StaticImageData } from "next/image"
-import { Question_Mark } from "../../images/icons"
+import Image from "next/image"
 import { IPGCREntry, WeaponStatsValues } from "../../types/pgcr"
 import Link from "next/link"
 import StyledButton from "../reusable/StyledButton"
 import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import QuestionMark from "~/images/icons/QuestionMark"
+import { SVGComponent } from "../reusable/SVG"
+import Grenade from "~/images/icons/destiny2/Grenade"
+import Melee from "~/images/icons/destiny2/Melee"
+import Intellect from "~/images/icons/destiny2/Intellect"
 
 type AbilityData = {
     name: string
     value: number
-    icon: StaticImageData
+    icon: SVGComponent
 }
 const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) => {
     const { strings } = useLocale()
@@ -19,10 +23,10 @@ const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) =>
         {
             name: strings.super,
             value: entry.stats.superKills,
-            icon: Question_Mark
+            icon: Intellect
         },
-        { name: strings.grenade, value: entry.stats.grenadeKills, icon: Question_Mark },
-        { name: strings.melee, value: entry.stats.meleeKills, icon: Question_Mark }
+        { name: strings.grenade, value: entry.stats.grenadeKills, icon: Grenade },
+        { name: strings.melee, value: entry.stats.meleeKills, icon: Melee }
     ]
 
     const allCellData = [...Array.from(entry.weapons.entries()), ...abilityCellData].sort(
@@ -58,18 +62,18 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
         <div
             style={{ display: "flex", gap: "1em", padding: "1em" }}
             className={styles["entry-card"]}>
-            <Image
-                unoptimized
-                src={
-                    weapon?.displayProperties.icon
-                        ? bungieItemUrl(weapon.displayProperties.icon)
-                        : Question_Mark
-                }
-                alt={weapon?.displayProperties.name ?? ""}
-                width={96}
-                height={96}
-                className={styles["weapon-icon"]}
-            />
+            {weapon?.displayProperties.icon ? (
+                <Image
+                    unoptimized
+                    src={bungieItemUrl(weapon.displayProperties.icon)}
+                    alt={weapon?.displayProperties.name ?? ""}
+                    width={96}
+                    height={96}
+                    className={styles["weapon-icon"]}
+                />
+            ) : (
+                <QuestionMark sx={96} color="white" />
+            )}
             <div className={styles["summary-stat-info"]}>
                 <Link
                     className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}
@@ -86,27 +90,12 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
     )
 }
 
-const AbilityCell = ({
-    name,
-    value,
-    icon
-}: {
-    name: string
-    value: number
-    icon: StaticImageData
-}) => {
+const AbilityCell = ({ name, value, icon: Icon }: AbilityData) => {
     return (
         <div
             style={{ display: "flex", gap: "1em", padding: "1em" }}
             className={styles["entry-card"]}>
-            <Image
-                unoptimized
-                src={icon}
-                alt={name}
-                width={96}
-                height={96}
-                style={{ maxHeight: "60px", maxWidth: "60px", borderRadius: "4px" }}
-            />
+            <Icon sx={60} color="white" />
             <div className={styles["summary-stat-info"]}>
                 <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>
                     {name}

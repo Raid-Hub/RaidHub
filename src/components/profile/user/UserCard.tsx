@@ -13,6 +13,11 @@ import { emblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { trpc } from "~/util/trpc"
 import { useProfileDecoration } from "~/hooks/raidhub/useProfileDecoration"
 import { useProfileProps } from "../Profile"
+import BungieShield from "~/images/icons/connections/BungieShield"
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import TwitterIcon from "~/images/icons/connections/TwitterIcon"
+import TwitchIcon from "~/images/icons/connections/TwitchIcon"
+import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
 
 export default function UserCard() {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
@@ -32,6 +37,7 @@ export default function UserCard() {
         if (raidHubProfile.bungieUsername) {
             socials.push({
                 id: Socials.Bungie,
+                Icon: BungieShield,
                 displayName: raidHubProfile.bungieUsername,
                 url: `https://www.bungie.net/7/en/User/Profile/${raidHubProfile.destinyMembershipType}/${raidHubProfile.destinyMembershipId}`
             })
@@ -39,12 +45,14 @@ export default function UserCard() {
         if (raidHubProfile.discordUsername) {
             socials.push({
                 id: Socials.Discord,
+                Icon: DiscordIcon,
                 displayName: raidHubProfile.discordUsername
             })
         }
         if (raidHubProfile.twitterUsername) {
             socials.push({
                 id: Socials.Twitter,
+                Icon: TwitterIcon,
                 displayName: raidHubProfile.twitterUsername,
                 url: `https://twitter.com/${raidHubProfile.twitterUsername}`
             })
@@ -52,6 +60,7 @@ export default function UserCard() {
         if (raidHubProfile.twitchUsername) {
             socials.push({
                 id: Socials.Twitch,
+                Icon: TwitchIcon,
                 displayName: raidHubProfile.twitchUsername,
                 url: `https://twitch.tv/${raidHubProfile.twitchUsername}`
             })
@@ -59,7 +68,8 @@ export default function UserCard() {
 
         if (raidHubProfile.speedrunUsername) {
             socials.push({
-                id: Socials.Bungie,
+                id: Socials.Speedrun,
+                Icon: SpeedrunIcon,
                 displayName: raidHubProfile.speedrunUsername,
                 url: `https://www.speedrun.com/users/${raidHubProfile.speedrunUsername}`
             })

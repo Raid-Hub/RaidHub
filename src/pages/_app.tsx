@@ -13,9 +13,13 @@ import SearchModal from "~/components/global/SearchModal"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { trpc } from "~/util/trpc"
+import { LazyMotion } from "framer-motion"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() => import("../components/app/DestinyManifestManager"))
+
+/** Dynamically import framer-motion features */
+const lazyMotionFeatures = () => import("../util/framer-motion-features").then(imp => imp.default)
 
 type PageProps = {
     session: Session
@@ -59,22 +63,24 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 refetchOnWindowFocus={false}>
                 <TokenManager setRefetchInterval={setSessionRefetchInterval}>
                     <DestinyManifestManager>
-                        <Header />
-                        <ProgressBar
-                            options={{
-                                showSpinner: false,
-                                parent: "#header",
-                                trickle: true,
-                                speed: 700
-                            }}
-                            stopDelayMs={50}
-                            height={3}
-                            showOnShallow={false}
-                            color={"orange"}
-                        />
-                        <SearchModal />
-                        <Component {...pageProps} />
-                        <Footer />
+                        <LazyMotion features={lazyMotionFeatures} strict>
+                            <Header />
+                            <ProgressBar
+                                options={{
+                                    showSpinner: false,
+                                    parent: "#header",
+                                    trickle: true,
+                                    speed: 700
+                                }}
+                                stopDelayMs={50}
+                                height={3}
+                                showOnShallow={false}
+                                color={"orange"}
+                            />
+                            <SearchModal />
+                            <Component {...pageProps} />
+                            <Footer />
+                        </LazyMotion>
                     </DestinyManifestManager>
                 </TokenManager>
             </SessionProvider>

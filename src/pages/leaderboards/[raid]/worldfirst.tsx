@@ -5,7 +5,7 @@ import { useLocale } from "~/components/app/LocaleManager"
 import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
 import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
-import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
+import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import { usePage } from "~/hooks/util/usePage"
 import { zRaidURIComponent } from "~/util/zod"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
@@ -85,7 +85,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
         (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid) ? "challenge" : "normal"
     ]
     const query = useQuery({
-        queryKey: leaderbordQueryKey(raid, Leaderboard.WorldFirst, params, page),
+        queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
         queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
     })
 

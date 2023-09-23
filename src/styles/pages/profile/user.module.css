@@ -195,36 +195,11 @@
 }
 
 .img-social {
-    margin: 0.3em;
-    margin-left: 0.5em;
-    max-height: 30px;
-    max-width: 30px;
+    padding: 0.4em 0.5em;
+
+    display: flex;
 }
 
-.img-social rect {
-    fill: #ffffff;
-}
-
-.img-social rect:hover {
-    cursor: pointer;
-}
-
-#twitter:hover .twitter-logo {
-    fill: #1da1f2;
-}
-
-#discord:hover .discord-logo {
-    fill: #6876a7;
-}
-
-#youtube:hover .youtube-logo {
-    fill: #f12d2d;
-}
-
-#twitch:hover .twitch-logo {
-    fill: #6441a5;
-}
-
-#bungie:hover .bungie-logo {
-    fill: #9ad5ec;
+.social:hover svg {
+    fill: var(--icon-color);
 }

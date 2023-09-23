@@ -1,12 +1,12 @@
 import styles from "../../../styles/pages/profile/mid.module.css"
 import Loading from "../../global/Loading"
-import { Eager, Pin, Time } from "../../../images/icons"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { useLocale } from "../../app/LocaleManager"
 import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
+import EagerEdge from "~/images/icons/destiny2/EagerEgde"
 
 type PinnedActivityProps = {
     activityId: string
@@ -41,13 +41,14 @@ const PinnedActivity = ({
                     priority
                 />
             )}
-            <Image
+            {/* <Image
+                src={""}
                 src={isPinned ? Pin : Time}
                 width={20}
                 height={20}
                 className={styles[isPinned ? "pin-icon" : "recent-icon"]}
                 alt="pinned"
-            />
+            /> */}
             <div className={styles["pinned-activity-text"]}>
                 <p className={styles["pinned-activity-title"]}>{pgcr.title(strings)}</p>
             </div>
@@ -55,13 +56,7 @@ const PinnedActivity = ({
                 <p>{toCustomDateString(pgcr.completionDate, locale)}</p>
 
                 <div className={styles["pinned-activity-time"]}>
-                    <Image
-                        src={Eager}
-                        alt=""
-                        style={{ width: "20px", height: "20px" }}
-                        width={20}
-                        height={20}
-                    />
+                    <EagerEdge sx={20} color="white" />
                     <span>{pgcr.speed.string(strings)}</span>
                 </div>
             </div>

@@ -1,10 +1,9 @@
-import Image from "next/image"
-import { Pin } from "~/images/icons"
 import { useLocale } from "../app/LocaleManager"
 import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
+import PinIcon from "~/images/icons/PinIcon"
 
 const PinPCRCell = () => {
     const { data: pgcr } = usePGCRContext()
@@ -26,16 +25,8 @@ const PinPCRCell = () => {
     return profile && pgcr ? (
         <div>
             <span>{isPinned ? strings.pinToProfile : strings.unPinFromProfile}</span>
-            <button
-                style={{ width: "50%", position: "relative", cursor: "pointer" }}
-                onClick={() => handlePinClick()}>
-                <Image
-                    width={20}
-                    height={20}
-                    src={Pin}
-                    alt={isPinned ? strings.pinToProfile : strings.unPinFromProfile}
-                    style={{ objectFit: "contain" }}
-                />
+            <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>
+                <PinIcon sx={20} color={isPinned ? "white" : "orange"} />
             </button>
         </div>
     ) : null

@@ -7,9 +7,12 @@ import Connection from "./Connection"
 import { useMemo, useRef, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
-import { Socials } from "~/util/profile/socials"
 import { useProviders } from "~/hooks/app/useProviders"
 import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import TwitterIcon from "~/images/icons/connections/TwitterIcon"
+import TwitchIcon from "~/images/icons/connections/TwitchIcon"
+import BungieShield from "~/images/icons/connections/BungieShield"
 
 type AccountProps = {
     session: Session
@@ -85,7 +88,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             link={() => signIn(discordProvider.id, {}, { prompt: "consent" })}
                             serviceName={discordProvider.name}
                             username={socialNames?.discordUsername ?? null}
-                            social={Socials.Discord}
+                            Icon={DiscordIcon}
                         />
                     )}
                     {twitterProvider && (
@@ -94,7 +97,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             link={() => signIn(twitterProvider.id, {}, { force_login: "true" })}
                             serviceName={twitterProvider.name}
                             username={socialNames?.twitterUsername ?? null}
-                            social={Socials.Twitter}
+                            Icon={TwitterIcon}
                         />
                     )}
                     {twitchProvider && (
@@ -103,7 +106,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                             link={() => signIn(twitchProvider.id, {}, { force_verify: "true" })}
                             serviceName={twitchProvider.name}
                             username={socialNames?.twitchUsername ?? null}
-                            social={Socials.Twitch}
+                            Icon={TwitchIcon}
                         />
                     )}
                     <Connection
@@ -111,7 +114,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
                         link={() => speedrunAPIKeyModalRef.current?.showModal()}
                         serviceName="Speedrun.com"
                         username={socialNames?.speedrunUsername ?? null}
-                        social={Socials.Bungie}
+                        Icon={BungieShield}
                     />
                 </div>
             </section>

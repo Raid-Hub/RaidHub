@@ -1,5 +1,5 @@
 import styles from "../../styles/reusable-components/camera-button.module.css"
-import { Variant, motion } from "framer-motion"
+import { Variant, m } from "framer-motion"
 import { useState } from "react"
 import { useScreenshot } from "../reusable/ScreenshotContainer"
 
@@ -37,20 +37,16 @@ const CameraButton = () => {
 
     const animate = isLoading ? "loading" : isCopied ? "copied" : "normal"
     return (
-        <motion.button
+        <m.button
             className={styles["screenshot-button"]}
             onClick={handleClick}
             animate={animate}
             variants={variants.button}>
-            <motion.svg
-                preserveAspectRatio={"xMidYMid"}
-                viewBox={"0 0 24 24"}
-                height={20}
-                width={20}>
+            <m.svg preserveAspectRatio={"xMidYMid"} viewBox={"0 0 24 24"} height={20} width={20}>
                 {/* This is the default view */}
                 {/* TODO replace this with clipboard SVG */}
                 <g>
-                    <motion.circle
+                    <m.circle
                         stroke={"#FFFFFF"}
                         strokeWidth={"2"}
                         fill={"transparent"}
@@ -64,23 +60,23 @@ const CameraButton = () => {
                 </g>
 
                 {/* This is the loading view */}
-                <motion.g animate={animate} variants={variants.loader}>
-                    <motion.path
+                <m.g animate={animate} variants={variants.loader}>
+                    <m.path
                         opacity={0.2}
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
                         fill="#000000"
                     />
-                    <motion.path
+                    <m.path
                         d="M2 12C2 6.47715 6.47715 2 12 2V5C8.13401 5 5 8.13401 5 12H2Z"
                         fill="#AAAAAA"
                     />
-                </motion.g>
+                </m.g>
 
                 {/* This is the copied view */}
                 <g>
-                    <motion.circle
+                    <m.circle
                         stroke={"#FFFFFF"}
                         strokeWidth={"2"}
                         fill={"transparent"}
@@ -91,7 +87,7 @@ const CameraButton = () => {
                         animate={animate}
                         variants={variants.circle}
                     />
-                    <motion.path
+                    <m.path
                         stroke={"#FFFFFF"}
                         strokeWidth={"2"}
                         strokeLinecap={"round"}
@@ -102,8 +98,8 @@ const CameraButton = () => {
                         variants={variants.path}
                     />
                 </g>
-            </motion.svg>
-        </motion.button>
+            </m.svg>
+        </m.button>
     )
 }
 

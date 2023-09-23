@@ -1,11 +1,12 @@
 import Image from "next/image"
 import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
-import { useEffect, useMemo, useRef, useState } from "react"
-import { Account, Question_Mark } from "../../images/icons"
+import { useEffect, useRef, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
-import { Variants, motion } from "framer-motion"
+import { Variants, m } from "framer-motion"
+import QuestionMark from "~/images/icons/QuestionMark"
+import UserIcon from "~/images/icons/UserIcon"
 
 const variants = {
     open: {
@@ -20,12 +21,6 @@ const AccountIcon = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const { strings } = useLocale()
-
-    // todo: replace question mark with loading
-    const image = useMemo(
-        () => (status === "loading" ? Question_Mark : sessionData?.user?.image ?? Account),
-        [sessionData, status]
-    )
 
     const handleIconClick = () => {
         setIsDropdownOpen(old => !old)
@@ -58,9 +53,15 @@ const AccountIcon = () => {
                 className={styles["account-button"]}
                 role="button"
                 onClick={handleIconClick}>
-                <Image src={image} alt="profile" fill unoptimized />
+                {status === "authenticated" ? (
+                    <Image src={sessionData.user.image} alt="profile" fill unoptimized />
+                ) : status === "loading" ? (
+                    <QuestionMark color="white" />
+                ) : (
+                    <UserIcon color="white" />
+                )}
             </div>
-            <motion.div
+            <m.div
                 className={styles["account-dropdown-content-container"]}
                 initial={"closed"}
                 animate={animate}
@@ -100,7 +101,7 @@ const AccountIcon = () => {
                         </li>
                     )}
                 </ul>
-            </motion.div>
+            </m.div>
         </div>
     )
 }

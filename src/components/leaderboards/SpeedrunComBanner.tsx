@@ -4,8 +4,9 @@ import Image from "next/image"
 import { HTMLAttributeAnchorTarget, ReactNode } from "react"
 import { SpeedData } from "~/data/speedrun-com-mappings"
 import { useLocale } from "../app/LocaleManager"
-import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { ListedRaid } from "~/types/raids"
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
 
 type CategoryData = {
     raidId: string
@@ -63,49 +64,51 @@ export default function SpeedrunComBanner({
         <div className={styles["rta-info"]}>
             <div className={styles["src-splash-container"]}>
                 <div className={styles["titles"]}>
-                    <h1>{title}</h1>
-                    <h2>{subtitle}</h2>
+                    <h1 className={styles["rta"]}>RTA Speedrun Leaderboards</h1>
+                    <h1 className={styles["primary-title"]}>{title}</h1>
+                    <h1 className={styles["primary-title"]}>{subtitle}</h1>
                 </div>
                 <Image
                     priority
                     src={
-                        "https://cdn.discordapp.com/banners/584802382819491841/7b817a3bf93d2d9d3293390c70c03fdf.webp?size=1024"
+                        "https://cdn.discordapp.com/attachments/1136751502912934060/1154485702755631165/SRC_SERVER_BANNER.png?size=1024"
                     }
                     alt="Destiny 2 on Speedrun.com"
                     fill
                     unoptimized
                 />
             </div>
-            <nav className={styles["rta-info-nav"]}>
-                <div className={styles["rta-info-links"]}>
-                    <InfoLink href={raidRules({ raidId, category })} displayText={"Raid Rules"} />
-                    <InfoLink
-                        href={submitRunURL({ raidId, category })}
-                        displayText={"Submit Run"}
-                    />
-                    <InfoLink href="https://discord.gg/d2speedrun" displayText={"SRC Discord"}>
-                        <Image src={"/social-icons/discord.png"} alt="discord" fill />
-                    </InfoLink>
-                    <InfoLink href={gameRules()} displayText={"Game Rules"} />
-                </div>
-                {others && (
-                    <div className={styles["other-rta-boards"]}>
-                        <h4>Other Boards</h4>
-                        <div className={styles["rta-info-links"]}>
-                            {Object.entries(others)
-                                .filter(([_, { id }]) => id !== category?.value)
-                                .map(([key, { id, name }]) => (
-                                    <InfoLink
-                                        key={id}
-                                        href={`/leaderboards/${RaidToUrlPaths[raid]}/src/${key}`}
-                                        displayText={strings.leaderboards[name]}
-                                        target="_self"
-                                    />
-                                ))}
-                        </div>
-                    </div>
-                )}
+            <nav className={styles["rta-info-links"]}>
+                <InfoLink href={gameRules()} displayText={"Game Rules"}>
+                    <SpeedrunIcon sx={25} />
+                </InfoLink>
+                <InfoLink href={raidRules({ raidId, category })} displayText={"Raid Rules"}>
+                    <SpeedrunIcon sx={25} />
+                </InfoLink>
+                <InfoLink href="https://discord.gg/d2speedrun" displayText={"SRC Discord"}>
+                    <DiscordIcon sx={25} color="white" />
+                </InfoLink>
+                <InfoLink href={submitRunURL({ raidId, category })} displayText={"Submit Run"}>
+                    <SpeedrunIcon sx={25} />
+                </InfoLink>
             </nav>
+            {/* {others && (
+                <div className={styles["other-rta-boards"]}>
+                    <h4>Other Boards</h4>
+                    <div className={styles["rta-info-links"]}>
+                        {Object.entries(others)
+                            .filter(([_, { id }]) => id !== category?.value)
+                            .map(([key, { id, name }]) => (
+                                <InfoLink
+                                    key={id}
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/src/${key}`}
+                                    displayText={strings.leaderboards[name]}
+                                    target="_self"
+                                />
+                            ))}
+                    </div>
+                </div>
+            )} */}
         </div>
     )
 }

@@ -84,7 +84,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     ...newUser,
                     bungieAccessToken: {
                         value: tokens.access_token,
-                        expires: tokens.expires_in * 1000
+                        expires: Date.now() + tokens.expires_in * 1000
                     }
                 }
             } satisfies Session

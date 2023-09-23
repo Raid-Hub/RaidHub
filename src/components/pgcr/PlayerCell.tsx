@@ -1,11 +1,14 @@
-import styles from "../../styles/pages/pgcr.module.css"
-import PGCRPlayer from "../../models/pgcr/Player"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRPlayer from "~/models/pgcr/Player"
 import Image from "next/image"
-import { Assists, Deaths, Diamond1, Kills } from "../../images/icons"
-import { formattedNumber } from "../../util/presentation/formatting"
+import { formattedNumber } from "~/util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
 import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
+import Kill from "~/images/icons/destiny2/Kill"
+import SplitHeart from "~/images/icons/SplitHeart"
+import Death from "~/images/icons/destiny2/Death"
+import BasicDiamond from "~/images/icons/BasicDiamond"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -34,7 +37,7 @@ const PlayerCell = ({
     const { data: emblem } = useItem(player.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
-    const icon = player.characters.first()!.logo
+    const Icon = player.characters.first()!.logo
     const displayName = player.displayName || player.membershipId
 
     return (
@@ -61,12 +64,7 @@ const PlayerCell = ({
 
             {player.characters.size && (
                 <div className={styles["class-logo-container"]}>
-                    <Image
-                        src={icon}
-                        alt={strings.characterNames[player.characters.first()!.classType]}
-                        sizes="80px"
-                        className={styles["class-logo"]}
-                    />
+                    <Icon sx={80} color="white" />
                 </div>
             )}
 
@@ -75,13 +73,7 @@ const PlayerCell = ({
             </div>
             <div className={styles["quick-stats-container"]}>
                 {solo ? (
-                    <Image
-                        width={40}
-                        height={40}
-                        className={styles["flawless-diamond"]}
-                        src={Diamond1}
-                        alt={player.displayName + " went flawless this raid"}
-                    />
+                    <BasicDiamond sx={50} color="white" />
                 ) : showScore ? (
                     <span className={styles["score-only"]}>
                         {formattedNumber(weightedScore, locale)}
@@ -89,15 +81,15 @@ const PlayerCell = ({
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Kills} alt={"Kills"} width={12} height={12} />}
+                            <Kill sx={12} color="white" />
                             <span>{player.stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Assists} alt={"Assists"} width={12} height={12} />}
+                            <SplitHeart sx={12} color="white" />
                             <span>{player.stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            {<Image src={Deaths} alt={"Deaths"} width={12} height={12} />}
+                            <Death sx={12} color="white" />
                             <span>{player.stats.deaths}</span>
                         </div>
                     </div>

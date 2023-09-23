@@ -1,7 +1,5 @@
 import { useCallback, useRef, useState } from "react"
 import styles from "../../styles/searchmodal.module.css"
-import { Question_Mark, Search } from "../../images/icons"
-import Image from "next/image"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
 import { useTypewriter } from "react-simple-typewriter"
@@ -95,7 +93,7 @@ const SearchModal = ({}: SearchModalProps) => {
                             />
                         </form>
                         <div className={styles["search-top-right"]}>
-                            <Image src={Search} alt="search" width={20} height={20} />
+                            {/* <Image src={Search } alt="search" width={20} height={20} /> */}
                         </div>
                     </div>
                     <hr />
@@ -114,12 +112,12 @@ const SearchModal = ({}: SearchModalProps) => {
                                         }}>
                                         <li>
                                             <div className={styles["individual-result"]}>
-                                                <Image
+                                                {/* <Image
                                                     width={45}
                                                     height={45}
                                                     alt={name}
                                                     src={Question_Mark}
-                                                />
+                                                /> */}
                                                 <p>{name}</p>
                                             </div>
                                         </li>

@@ -1,19 +1,18 @@
-import Image from "next/image"
 import styles from "~/styles/pages/account.module.css"
-import { Socials } from "~/util/profile/socials"
+import { SVGComponent } from "../reusable/SVG"
 
 export default function Connection({
     unlink,
     link,
     serviceName,
     username,
-    social
+    Icon
 }: {
     username: string | null
-    social: Socials
     serviceName: string
     link: () => void
     unlink: () => void
+    Icon: SVGComponent
 }) {
     const canLink = !username
 
@@ -23,7 +22,7 @@ export default function Connection({
                 <h3>{serviceName}</h3>
                 <i>{username}</i>
                 <div className={styles["social-icon-container"]}>
-                    <Image src={`/social-icons/${social}.png`} alt={serviceName} fill />
+                    <Icon color="white" sx={35} />
                 </div>
             </div>
             <div className={styles["buttons"]}>

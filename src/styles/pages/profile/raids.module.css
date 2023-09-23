@@ -290,11 +290,6 @@
     position: relative;
 }
 
-.activity:hover {
-    cursor: pointer;
-    transform: scale(1.035);
-}
-
 .activity-content-img {
     width: 100%;
     height: 100%;

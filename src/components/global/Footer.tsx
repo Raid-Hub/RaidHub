@@ -1,29 +1,31 @@
 import React from "react"
-import styles from "../../styles/footer.module.css"
-import { Socials } from "../../util/profile/socials"
+import styles from "~/styles/footer.module.css"
+import iconStyles from "~/styles/svg-icons.module.css"
 import Link from "next/link"
 import manifest from "../../../public/manifest.json"
-
-type FooterProps = {}
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import TwitterIcon from "~/images/icons/connections/TwitterIcon"
+import Email from "~/images/icons/connections/Email"
+import { SVGProps } from "~/components/reusable/SVG"
 
 const developers = ["Newo", "Bruce", "Theos"]
 const raidHubMailAddress = "admin@raidhub.app"
-const contactIcons: { url: string; id: Socials }[] = [
+const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
     {
         url: `https://discord.gg/raidhub`,
-        id: Socials.Discord
+        Icon: DiscordIcon
     },
     {
         url: "https://www.twitter.com/raidhubapp",
-        id: Socials.Twitter
+        Icon: TwitterIcon
     },
     {
         url: `mailto:${raidHubMailAddress}`,
-        id: Socials.Mail
+        Icon: Email
     }
 ]
 
-const Footer = ({}: FooterProps) => {
+const Footer = () => {
     const { version } = manifest
     return (
         <footer id="footer" className={styles["footer"]}>
@@ -44,34 +46,14 @@ const Footer = ({}: FooterProps) => {
                     </div>
                 </div>
                 <div className={styles["right"]}>
-                    {contactIcons.map(({ url, id }, key) => (
+                    {contactIcons.map(({ url, Icon }, key) => (
                         <Link
                             key={key}
                             className={styles["img-social"]}
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer">
-                            <svg width="100%" height="100%">
-                                <defs>
-                                    <mask id={id}>
-                                        <image
-                                            x="0"
-                                            y="0"
-                                            width="100%"
-                                            height="100%"
-                                            xlinkHref={`/social-icons/${id}.png`}
-                                        />
-                                    </mask>
-                                </defs>
-                                <rect
-                                    className={styles[`${id}-logo`]}
-                                    x="0"
-                                    y="0"
-                                    width="100%"
-                                    height="100%"
-                                    mask={`url(#${id})`}
-                                />
-                            </svg>
+                            <Icon sx={30} className={iconStyles["color-on-hover"]} />
                         </Link>
                     ))}
                 </div>

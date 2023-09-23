@@ -72,7 +72,7 @@
 }
 .username {
     display: block;
-    min-width: 15ch;
+    width: 15ch;
 }
 .username p {
     margin: 0;
@@ -94,11 +94,10 @@
 }
 
 .src-splash-container {
-    aspect-ratio: 16/9;
-    flex: 1;
+    aspect-ratio: 33/9;
     position: relative;
 
-    flex-basis: min(300px, 40vw);
+    width: min(750px, 80vw);
 
     overflow: hidden;
     border-radius: 20px;
@@ -117,6 +116,8 @@
 
 .src-splash-container > img {
     z-index: -1;
+    object-fit: cover;
+    object-position: 20% center;
 }
 
 .titles {
@@ -129,8 +130,20 @@
     font-size: xx-large;
 }
 
-.titles > * {
+.titles h1 {
     margin: 0;
+}
+
+.titles > .primary-title {
+    text-shadow: 3px 0px 7px rgba(81, 67, 21, 0.8), -3px 0px 7px rgba(81, 67, 21, 0.8),
+        0px 4px 7px rgba(81, 67, 21, 0.8);
+}
+
+.rta {
+    font-style: italic;
+    color: rgb(244, 244, 244);
+    font-size: x-large;
+    text-shadow: -2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 .rta-info-nav {
@@ -172,22 +185,8 @@
     background-color: var(--brand-orange);
 }
 .rta-info-link-child {
-    min-width: 30px;
-    aspect-ratio: 619/470;
-    position: relative;
-    flex: 1;
-}
-
-.other-rta-boards {
-    flex: 2;
-}
-
-.other-rta-boards h4 {
-    margin: 0;
-    color: var(--secondary-text);
-    font-style: italic;
-    font-weight: 300;
-    text-align: center;
+    display: flex;
+    align-items: center;
 }
 
 @media (max-width: 500px) {
@@ -208,9 +207,8 @@
         flex-basis: unset;
     }
     .username {
-        max-width: 10ch;
+        width: 14ch;
         font-size: x-small;
-        min-width: 10ch;
     }
     .user-icon-container {
         border-radius: 3px;
@@ -236,9 +234,6 @@
         gap: 0.5em;
 
         font-size: small;
-    }
-    .rta-info-link-child {
-        min-width: 20px;
     }
 }
 

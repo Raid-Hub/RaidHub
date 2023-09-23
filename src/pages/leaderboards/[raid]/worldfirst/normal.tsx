@@ -1,19 +1,15 @@
 import { GetStaticPaths, GetStaticProps } from "next"
-import Head from "next/head"
-import { Hydrate, useQuery } from "@tanstack/react-query"
-import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
-import { useLocale } from "~/components/app/LocaleManager"
-import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { toCustomDateString } from "~/util/presentation/formatting"
-import { Leaderboard, getLeaderboard, leaderbordQueryKey } from "~/services/raidhub/getLeaderboard"
-import { usePage } from "~/hooks/util/usePage"
-import { ListedRaid, RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
+import { Hydrate } from "@tanstack/react-query"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { Leaderboard } from "~/services/raidhub/getLeaderboard"
+import { RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
 import { prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
-import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
+import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
+import { includedIn } from "~/util/betterIncludes"
 
-type NoChallengeContestLeaderboadProps = {
-    raid: ListedRaid
+type NormalWFPageProps = {
+    raid: ReprisedRaid
     dehydratedState: unknown
 }
 
@@ -35,14 +31,13 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
           }
 }
 
-export const getStaticProps: GetStaticProps<
-    NoChallengeContestLeaderboadProps,
-    { raid: string }
-> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }> = async ({
+    params
+}) => {
     try {
         const { raid } = zRaidURIComponent.parse(params)
-        if (!RaidsWithReprisedContest.includes(raid as ReprisedRaid)) {
-            throw Error("raid does not have a reprised version")
+        if (!includedIn(RaidsWithReprisedContest, raid)) {
+            throw Error("raid does not have a reprised challenge version")
         }
 
         const { staleTime, dehydratedState } = await prefetchLeaderboard(
@@ -66,51 +61,15 @@ export const getStaticProps: GetStaticProps<
     }
 }
 
-export default function NoChallengeContestLeaderboadPage({
-    raid,
-    dehydratedState
-}: NoChallengeContestLeaderboadProps) {
+export default function NormalWFPage({ raid, dehydratedState }: NormalWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <NoChallengeContestLeaderboad raid={raid} />
+            <MickeyMouseLeaderboard
+                raid={raid}
+                params={["normal"]}
+                descriptor="Normal Contest"
+                date={new Date()}
+            />
         </Hydrate>
-    )
-}
-
-const NoChallengeContestLeaderboad = ({ raid }: { raid: ListedRaid }) => {
-    const { strings, locale } = useLocale()
-    const [page, setPage] = usePage()
-    const raidName = strings.raidNames[raid]
-    const params = ["normal"]
-    const query = useQuery({
-        queryKey: leaderbordQueryKey(raid, Leaderboard.WorldFirst, params, page),
-        queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
-    })
-
-    const title = `${raidName} | Normal Contest Leaderboards`
-    const raidDate = toCustomDateString(ReleaseDate[raid], locale)
-    const description = `Contest (Normal) Leaderboards for ${raidName} on ${raidDate}`
-    return (
-        <>
-            <Head>
-                <title>{title}</title>
-                <meta key="description" name="description" content={description} />
-                <meta key="og-title" property="og:title" content={title} />
-                <meta key="og-descriptions" property="og:description" content={description} />
-                <meta name="date" content={ReleaseDate[raid].toISOString().slice(0, 10)} />
-            </Head>
-
-            <LeaderboardComponent
-                entries={query.data?.entries ?? []}
-                isLoading={query.isLoading}
-                page={page}
-                setPage={setPage}>
-                <WorldFirstHeader
-                    title={"Normal Contest " + raidName}
-                    subtitle={toCustomDateString(ReleaseDate[raid], locale)}
-                    raid={raid}
-                />
-            </LeaderboardComponent>
-        </>
     )
 }

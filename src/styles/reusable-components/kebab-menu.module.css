@@ -3,13 +3,13 @@
     position: relative;
 }
 
-.kebab-menu svg {
+.kebab-menu > svg {
     fill: #777777;
     transition: fill ease-in-out 0.2;
     cursor: pointer;
 }
 
-.kebab-menu:hover svg {
+.kebab-menu:hover > svg {
     fill: #aaaaaa;
 }
 
