@@ -6,7 +6,7 @@ import { RaidTag } from "~/types/profile"
 import { LocalStrings } from "~/util/presentation/localized-strings"
 import { Tag } from "~/util/raidhub/tags"
 import useHover from "~/hooks/util/useDebouncedHover"
-import QuestionMark from "~/images/icons/QuestionMark"
+import BasicDiamond from "~/images/icons/BasicDiamond"
 
 type RaidTagLabelProps = {
     instanceId?: string
@@ -27,7 +27,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     function InnerTag() {
         return (
             <>
-                {props.bestPossible && <QuestionMark sx={15} color="white" />}
+                {props.bestPossible && <BasicDiamond sx={15} color="white" />}
                 <span>{label}</span>
             </>
         )

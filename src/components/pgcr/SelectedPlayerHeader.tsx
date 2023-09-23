@@ -4,7 +4,7 @@ import SelectedPlayer from "./SelectedPlayer"
 import { useLocale } from "../app/LocaleManager"
 import Link from "next/link"
 import PGCRCharacter from "~/models/pgcr/Character"
-import QuestionMark from "~/images/icons/QuestionMark"
+import ExternalLink from "~/images/icons/ExternalLink"
 
 type SelectedPlayerHeaderProps = {
     selectedPlayer: PGCRPlayer
@@ -48,8 +48,8 @@ const SelectedPlayerHeader = ({
             <Link
                 href={`/profile/${selectedPlayer.membershipType}/${selectedPlayer.membershipId}`}
                 className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
-                <QuestionMark sx={30} color="white" />
                 <span>{strings.viewProfile}</span>
+                <ExternalLink sx={30} color="white" />
             </Link>
         </div>
     )

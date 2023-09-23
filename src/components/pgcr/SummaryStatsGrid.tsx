@@ -4,8 +4,16 @@ import { useLocale } from "../app/LocaleManager"
 import { useMemo } from "react"
 import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import { useItem } from "../app/DestinyManifestManager"
-import QuestionMark from "~/images/icons/QuestionMark"
 import { SVGComponent } from "../reusable/SVG"
+import SplitHeart from "~/images/icons/SplitHeart"
+import Death from "~/images/icons/destiny2/Death"
+import Crown from "~/images/icons/Crown"
+import Kill from "~/images/icons/destiny2/Kill"
+import Ability from "~/images/icons/destiny2/Ability"
+import Intellect from "~/images/icons/destiny2/Intellect"
+import Ammo from "~/images/icons/destiny2/Ammo"
+import Users from "~/images/icons/Users"
+import Crosshairs from "~/images/icons/Crosshairs"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()
@@ -21,49 +29,49 @@ const SummaryStatsGrid = () => {
         ...(pgcr?.completed
             ? [
                   {
-                      Icon: QuestionMark,
+                      Icon: Crown,
                       name: strings.mvp,
                       value: stats?.mvp ?? "???"
                   }
               ]
             : []),
         {
-            Icon: QuestionMark,
+            Icon: Kill,
             name: strings.totalKills,
             value: formattedNumber(stats?.totalKills ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: Death,
             name: strings.totalDeaths,
             value: formattedNumber(stats?.totalDeaths ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: SplitHeart,
             name: strings.totalAssists,
             value: formattedNumber(stats?.totalAssists ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: Ability,
             name: strings.abilityKillsPercentage,
             value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: Crosshairs,
             name: strings.overallKD,
             value: formattedNumber(stats?.overallKD ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: Intellect,
             name: strings.superKills,
             value: formattedNumber(stats?.totalSuperKills ?? 0, locale)
         },
         {
-            Icon: QuestionMark,
+            Icon: Users,
             name: strings.totalCharactersUsed,
             value: stats?.totalCharactersUsed ?? 0
         },
         {
-            Icon: QuestionMark,
+            Icon: Ammo,
             name: strings.mostUsedWeapon,
             value: weapon?.displayProperties.name ?? strings.none
         }

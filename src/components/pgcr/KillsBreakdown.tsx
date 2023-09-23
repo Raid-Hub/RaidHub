@@ -10,6 +10,7 @@ import QuestionMark from "~/images/icons/QuestionMark"
 import { SVGComponent } from "../reusable/SVG"
 import Grenade from "~/images/icons/destiny2/Grenade"
 import Melee from "~/images/icons/destiny2/Melee"
+import Intellect from "~/images/icons/destiny2/Intellect"
 
 type AbilityData = {
     name: string
@@ -22,7 +23,7 @@ const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) =>
         {
             name: strings.super,
             value: entry.stats.superKills,
-            icon: QuestionMark
+            icon: Intellect
         },
         { name: strings.grenade, value: entry.stats.grenadeKills, icon: Grenade },
         { name: strings.melee, value: entry.stats.meleeKills, icon: Melee }

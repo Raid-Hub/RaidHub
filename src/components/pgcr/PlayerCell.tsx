@@ -6,6 +6,10 @@ import { useLocale } from "../app/LocaleManager"
 import { useItem } from "../app/DestinyManifestManager"
 import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
 import QuestionMark from "~/images/icons/QuestionMark"
+import Kill from "~/images/icons/destiny2/Kill"
+import SplitHeart from "~/images/icons/SplitHeart"
+import Death from "~/images/icons/destiny2/Death"
+import BasicDiamond from "~/images/icons/BasicDiamond"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -70,7 +74,7 @@ const PlayerCell = ({
             </div>
             <div className={styles["quick-stats-container"]}>
                 {solo ? (
-                    <QuestionMark sx={50} color="white" />
+                    <BasicDiamond sx={50} color="white" />
                 ) : showScore ? (
                     <span className={styles["score-only"]}>
                         {formattedNumber(weightedScore, locale)}
@@ -78,15 +82,15 @@ const PlayerCell = ({
                 ) : (
                     <div className={styles["quick-stats"]}>
                         <div className={styles["quick-stat"]}>
-                            <QuestionMark sx={12} color="white" />
+                            <Kill sx={12} color="white" />
                             <span>{player.stats.kills}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            <QuestionMark sx={12} color="white" />
+                            <SplitHeart sx={12} color="white" />
                             <span>{player.stats.assists}</span>
                         </div>
                         <div className={styles["quick-stat"]}>
-                            <QuestionMark sx={12} color="white" />
+                            <Death sx={12} color="white" />
                             <span>{player.stats.deaths}</span>
                         </div>
                     </div>

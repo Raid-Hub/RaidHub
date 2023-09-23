@@ -13,7 +13,7 @@ const PlayerStatCell = ({
     return (
         <div className={[styles["entry-card"], styles["character-stat"]].join(" ")}>
             <div className={styles["stat-icon-container"]}>
-                <Icon sx={20} color="white" />
+                <Icon color="white" />
             </div>
             <div className={styles["summary-stat-info"]}>
                 <span className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}>
