@@ -7,6 +7,7 @@ import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfile
 import { useMutation } from "@tanstack/react-query"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useLocale } from "../app/LocaleManager"
+import { trpc } from "~/util/trpc"
 
 type FormValues = {
     username: string
@@ -26,11 +27,16 @@ const IconUploadForm = ({
             refreshSession()
         }
     })
-    const { mutate: uploadIcon } = useMutation(uploadProfileIcon, {
-        onSuccess({ imageUrl }) {
-            optimisticProfileUpdate({ image: imageUrl })
+    const imgSrcParts = imageSrc?.split(".")
+    const extension = imgSrcParts ? imgSrcParts[imgSrcParts.length - 1] : ""
+    const { data: signedUrl } = trpc.user.account.s3SignedUrl.useQuery(
+        { fileExtension: extension },
+        {
+            enabled: !!imageSrc,
+            refetchInterval: 55_000,
+            refetchOnWindowFocus: true
         }
-    })
+    )
 
     const { handleSubmit, control, setValue } = useForm<FormValues>({
         defaultValues: {
@@ -38,10 +44,18 @@ const IconUploadForm = ({
         }
     })
 
-    const onSubmit: SubmitHandler<FormValues> = data => {
-        optimisticProfileUpdate({ name: data.username })
-        if (data.image) {
-            uploadIcon({ file: data.image })
+    const onSubmit: SubmitHandler<FormValues> = async data => {
+        try {
+            if (data.image) {
+                if (!signedUrl) {
+                    throw new Error("No signed URL")
+                }
+                const res = await uploadProfileIcon({ file: data.image, signedURL: signedUrl })
+            } else {
+                optimisticProfileUpdate({ name: data.username })
+            }
+        } catch (e) {
+            console.error(e)
         }
     }
 
@@ -77,7 +91,9 @@ const IconUploadForm = ({
                     <input type="file" accept="image/*" onChange={handleFileChange} />
                 </div>
             </div>
-            <button type="submit">{strings.save}</button>
+            <button type="submit" disabled={!!imageSrc && !signedUrl}>
+                {strings.save}
+            </button>
         </form>
     )
 }
