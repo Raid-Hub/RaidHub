@@ -1,5 +1,3 @@
-import AppError from "~/models/errors/AppError"
-
 export const uploadProfileIcon = async ({ file, signedURL }: { file: File; signedURL: string }) => {
     const res = await fetch(signedURL, {
         method: "PUT",
