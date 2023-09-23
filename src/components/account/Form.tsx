@@ -22,23 +22,24 @@ const IconUploadForm = ({
     refreshSession(): void
 }) => {
     const [imageSrc, setImageSrc] = useState<string | null>(null)
-    const { mutate: optimisticProfileUpdate } = useOptimisticProfileUpdate({
+    const [fileType, setFileType] = useState<string | null>(null)
+    const [err, setErr] = useState<Error | null>(null)
+    const { mutate: optimisticProfileUpdate, isLoading } = useOptimisticProfileUpdate({
         onSuccess() {
             refreshSession()
         }
     })
-    const imgSrcParts = imageSrc?.split(".")
-    const extension = imgSrcParts ? imgSrcParts[imgSrcParts.length - 1] : ""
+
     const { data: signedUrl } = trpc.user.account.s3SignedUrl.useQuery(
-        { fileExtension: extension },
+        { fileType: fileType ?? "image/png" },
         {
-            enabled: !!imageSrc,
+            enabled: !!imageSrc && !!fileType,
             refetchInterval: 55_000,
             refetchOnWindowFocus: true
         }
     )
 
-    const { handleSubmit, control, setValue } = useForm<FormValues>({
+    const { handleSubmit, control, setValue, resetField } = useForm<FormValues>({
         defaultValues: {
             username: user.name
         }
@@ -48,9 +49,24 @@ const IconUploadForm = ({
         try {
             if (data.image) {
                 if (!signedUrl) {
-                    throw new Error("No signed URL")
+                    setErr(new Error("Please try again"))
+                    return
                 }
-                const res = await uploadProfileIcon({ file: data.image, signedURL: signedUrl })
+
+                const successfulUpload = await uploadProfileIcon({
+                    file: data.image,
+                    signedURL: signedUrl
+                })
+                if (!successfulUpload) {
+                    setErr(new Error("Failed to upload Image"))
+                    return
+                }
+                const url = new URL(signedUrl)
+
+                optimisticProfileUpdate({
+                    name: data.username,
+                    image: url.origin + url.pathname
+                })
             } else {
                 optimisticProfileUpdate({ name: data.username })
             }
@@ -62,8 +78,16 @@ const IconUploadForm = ({
     const handleFileChange: ChangeEventHandler<HTMLInputElement> = event => {
         const file = event.target.files?.[0]
         if (file) {
+            if (file.size > 102400 /** 100 KB */) {
+                setErr(new Error("File too large. Max: 100kb"))
+                resetField("image")
+                setImageSrc(null)
+                setFileType(null)
+                return
+            }
             setValue("image", file)
             setImageSrc(URL.createObjectURL(file))
+            setFileType(file.type)
         }
     }
 
@@ -91,7 +115,8 @@ const IconUploadForm = ({
                     <input type="file" accept="image/*" onChange={handleFileChange} />
                 </div>
             </div>
-            <button type="submit" disabled={!!imageSrc && !signedUrl}>
+            {err && <div style={{ color: "red" }}>{err.message}</div>}
+            <button type="submit" disabled={isLoading || (!!imageSrc && !signedUrl)}>
                 {strings.save}
             </button>
         </form>

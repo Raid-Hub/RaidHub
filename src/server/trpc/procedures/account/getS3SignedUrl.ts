@@ -7,7 +7,6 @@ import { z } from "zod"
 const s3 = new S3({
     accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
-    // region: "us-east-1",
     signatureVersion: "v4"
 })
 
@@ -15,7 +14,7 @@ const s3 = new S3({
 export const getS3SignedUrl = protectedProcedure
     .input(
         z.object({
-            fileExtension: z.string()
+            fileType: z.string()
         })
     )
     .query(async ({ input, ctx }) => {
@@ -27,7 +26,7 @@ export const getS3SignedUrl = protectedProcedure
                 Bucket: process.env.AWS_S3_BUCKET_NAME!,
                 Key: `profile/${userId}/${uuid}.png`,
                 Expires: 60,
-                ContentType: `image/${input.fileExtension}`
+                ContentType: input.fileType
             })
             return url
         } catch (e: any) {
