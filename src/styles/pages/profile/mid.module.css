@@ -85,20 +85,9 @@
 }
 
 .pin-icon {
-    z-index: -1;
+    left: 1em;
+    top: 0.6em;
     position: absolute;
-    top: 0.8em;
-    left: 1.5em;
-    width: 20px;
-    height: auto;
-}
-
-.recent-icon {
-    position: absolute;
-    top: 0.8em;
-    left: 0.8em;
-    width: 20px;
-    height: auto;
 }
 
 .pinned-activity-text {

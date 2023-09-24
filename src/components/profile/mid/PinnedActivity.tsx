@@ -7,6 +7,7 @@ import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
 import EagerEdge from "~/images/icons/destiny2/EagerEgde"
+import PinIcon from "~/images/icons/PinIcon"
 
 type PinnedActivityProps = {
     activityId: string
@@ -41,14 +42,7 @@ const PinnedActivity = ({
                     priority
                 />
             )}
-            {/* <Image
-                src={""}
-                src={isPinned ? Pin : Time}
-                width={20}
-                height={20}
-                className={styles[isPinned ? "pin-icon" : "recent-icon"]}
-                alt="pinned"
-            /> */}
+            {isPinned && <PinIcon sx={20} color="white" className={styles["pin-icon"]} />}
             <div className={styles["pinned-activity-text"]}>
                 <p className={styles["pinned-activity-title"]}>{pgcr.title(strings)}</p>
             </div>
