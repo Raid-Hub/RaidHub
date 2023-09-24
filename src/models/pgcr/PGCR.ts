@@ -12,8 +12,7 @@ import {
     ListedRaid,
     ListedRaids,
     Difficulty,
-    ReprisedContestRaidDifficulties,
-    ReprisedRaidChallengeMode
+    ReprisedContestRaidDifficulties
 } from "../../types/raids"
 import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tags"
 import { LocalStrings } from "../../util/presentation/localized-strings"
@@ -22,6 +21,7 @@ import { secondsToHMS } from "../../util/presentation/formatting"
 import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raidUtils"
 import { Collection } from "@discordjs/collection"
 import { nonParticipant } from "../../util/destiny/filterNonParticipants"
+import { includedIn } from "~/util/betterIncludes"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -155,12 +155,8 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         if (!ListedRaids.includes(this.raid)) return []
         if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
         if (isContest(this.raid, this.startDate)) {
-            if (
-                ReprisedContestRaidDifficulties.includes(
-                    this.difficulty as ReprisedRaidChallengeMode
-                )
-            ) {
-                tags.push(TagForReprisedContest[this.difficulty as ReprisedRaidChallengeMode])
+            if (includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
+                tags.push(TagForReprisedContest[this.difficulty])
             }
             tags.push(Tag.CONTEST)
         }
