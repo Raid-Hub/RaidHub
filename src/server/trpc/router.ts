@@ -8,7 +8,7 @@ import { removeProvider } from "./procedures/account/removeProvider"
 import { updateProfile } from "./procedures/user/updateProfile"
 import { addByAPIKey } from "./procedures/account/speedrun-com/addByAPIKey"
 import { removeSrcName } from "./procedures/account/speedrun-com/removeSrcName"
-import { getS3SignedUrl } from "./procedures/account/getS3SignedUrl"
+import { createPresignedProfilePicURL } from "./procedures/account/createPresignedProfilePicURL"
 
 export const appRouter = router({
     // protected router for a user logged in with a session
@@ -20,7 +20,7 @@ export const appRouter = router({
             get: getAuthenticatedProfile
         }),
         account: router({
-            s3SignedUrl: getS3SignedUrl,
+            profileIcon: createPresignedProfilePicURL,
             removeById: removeProvider,
             speedrunCom: router({
                 addByAPIKey: addByAPIKey,

@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps<
             ])
 
             return {
-                revalidate: 3600 * 12,
+                revalidate: 3600 * 12, //12 hours
                 props: {
                     ...props,
                     dehydratedState: bungieState,

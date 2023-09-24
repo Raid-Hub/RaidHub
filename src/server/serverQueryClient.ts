@@ -44,15 +44,10 @@ export async function prefetchDestinyProfile({
 }) {
     const helpers = createBungieServerSideHelpers()
 
-    await helpers.profile.prefetchQuery(
-        {
-            destinyMembershipId,
-            membershipType: destinyMembershipType
-        },
-        {
-            staleTime: 1000 * 3600 * 12 // keep in cache for 12 hrs
-        }
-    )
+    await helpers.profile.prefetchQuery({
+        destinyMembershipId,
+        membershipType: destinyMembershipType
+    })
     await helpers.queryClient.invalidateQueries({
         queryKey: helpers.profile.queryKey({
             destinyMembershipId,

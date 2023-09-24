@@ -7,36 +7,21 @@ import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfile
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useLocale } from "../app/LocaleManager"
 import { trpc } from "~/util/trpc"
+import { useSession } from "next-auth/react"
 
 type FormValues = {
     username: string
     image: File
 }
 
-const IconUploadForm = ({
-    user,
-    refreshSession
-}: {
-    user: SessionUser
-    refreshSession(): void
-}) => {
+const IconUploadForm = ({ user }: { user: SessionUser }) => {
+    const { update: updateSession } = useSession()
     const [imageSrc, setImageSrc] = useState<string | null>(null)
-    const [fileType, setFileType] = useState<string | null>(null)
+    const { mutateAsync: createPresignedURL } = trpc.user.account.profileIcon.useMutation()
     const [err, setErr] = useState<Error | null>(null)
     const { mutate: optimisticProfileUpdate, isLoading } = useOptimisticProfileUpdate({
-        onSuccess() {
-            refreshSession()
-        }
+        onSuccess: () => updateSession()
     })
-
-    const { data: signedUrl } = trpc.user.account.s3SignedUrl.useQuery(
-        { fileType: fileType ?? "image/png" },
-        {
-            enabled: !!imageSrc && !!fileType,
-            refetchInterval: 55_000,
-            refetchOnWindowFocus: true
-        }
-    )
 
     const { handleSubmit, control, setValue, resetField } = useForm<FormValues>({
         defaultValues: {
@@ -47,24 +32,26 @@ const IconUploadForm = ({
     const onSubmit: SubmitHandler<FormValues> = async data => {
         try {
             if (data.image) {
-                if (!signedUrl) {
+                const fileType = data.image.type
+                if (!fileType) {
                     setErr(new Error("Please try again"))
                     return
                 }
+                const signedURL = await createPresignedURL({ fileType: fileType })
 
                 const successfulUpload = await uploadProfileIcon({
                     file: data.image,
-                    signedURL: signedUrl
+                    signedURL: signedURL
                 })
+
                 if (!successfulUpload) {
                     setErr(new Error("Failed to upload Image"))
                     return
                 }
-                const url = new URL(signedUrl)
 
                 optimisticProfileUpdate({
                     name: data.username,
-                    image: url.origin + url.pathname
+                    image: signedURL.url + signedURL.fields.key
                 })
             } else {
                 optimisticProfileUpdate({ name: data.username })
@@ -81,12 +68,10 @@ const IconUploadForm = ({
                 setErr(new Error("File too large. Max: 100kb"))
                 resetField("image")
                 setImageSrc(null)
-                setFileType(null)
                 return
             }
             setValue("image", file)
             setImageSrc(URL.createObjectURL(file))
-            setFileType(file.type)
         }
     }
 
@@ -115,7 +100,7 @@ const IconUploadForm = ({
                 </div>
             </div>
             {err && <div style={{ color: "red" }}>{err.message}</div>}
-            <button type="submit" disabled={isLoading || (!!imageSrc && !signedUrl)}>
+            <button type="submit" disabled={isLoading}>
                 {strings.save}
             </button>
         </form>

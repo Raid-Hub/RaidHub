@@ -1,7 +1,7 @@
 import styles from "~/styles/pages/account.module.css"
 import { signIn, signOut } from "next-auth/react"
 import { Session } from "next-auth"
-import Form from "./Form"
+import IconUploadForm from "./IconUploadForm"
 import { trpc } from "~/util/trpc"
 import Connection from "./Connection"
 import { useMemo, useRef, useState } from "react"
@@ -16,10 +16,9 @@ import BungieShield from "~/images/icons/connections/BungieShield"
 
 type AccountProps = {
     session: Session
-    refreshSession(): void
 }
 
-const Account = ({ session, refreshSession }: AccountProps) => {
+const Account = ({ session }: AccountProps) => {
     const { providers } = useProviders()
     const { data: socialNames, refetch: refetchSocials } = trpc.user.connections.useQuery()
     const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
@@ -77,7 +76,7 @@ const Account = ({ session, refreshSession }: AccountProps) => {
             </section>
             <section className={[styles["section"], styles["flex"]].join(" ")}>
                 <h2>Manage Account</h2>
-                <Form user={session.user} refreshSession={refreshSession} />
+                <IconUploadForm user={session.user} />
             </section>
             <section className={styles["section"]}>
                 <h2>Manage Connections</h2>
