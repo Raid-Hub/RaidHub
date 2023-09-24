@@ -37,21 +37,20 @@ const IconUploadForm = ({ user }: { user: SessionUser }) => {
                     setErr(new Error("Please try again"))
                     return
                 }
+
                 const signedURL = await createPresignedURL({ fileType: fileType })
 
-                const successfulUpload = await uploadProfileIcon({
-                    file: data.image,
-                    signedURL: signedURL
-                })
-
+                const successfulUpload = await uploadProfileIcon(data.image, signedURL)
                 if (!successfulUpload) {
                     setErr(new Error("Failed to upload Image"))
                     return
                 }
 
+                const newIconUrl = signedURL.url + signedURL.fields.key
+
                 optimisticProfileUpdate({
                     name: data.username,
-                    image: signedURL.url + signedURL.fields.key
+                    image: newIconUrl
                 })
             } else {
                 optimisticProfileUpdate({ name: data.username })

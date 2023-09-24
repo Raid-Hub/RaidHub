@@ -1,12 +1,6 @@
 import type { PresignedPost } from "@aws-sdk/s3-presigned-post"
 
-export const uploadProfileIcon = async ({
-    file,
-    signedURL
-}: {
-    file: File
-    signedURL: PresignedPost
-}) => {
+export const uploadProfileIcon = async (file: File, signedURL: PresignedPost) => {
     const formData = new FormData()
     Object.entries(signedURL.fields).map(([key, value]) => {
         formData.append(key, value)
@@ -18,5 +12,5 @@ export const uploadProfileIcon = async ({
         body: formData
     })
 
-    return res
+    return res.ok
 }
