@@ -16,7 +16,7 @@ export const SpeedrunBoardId: Record<ListedRaid, string | null> = {
     [Raid.VOW_OF_THE_DISCIPLE]: "7kj909n2",
     [Raid.KINGS_FALL]: "9kvlp902",
     [Raid.ROOT_OF_NIGHTMARES]: "9d88x6ld",
-    [Raid.CROTAS_END]: null
+    [Raid.CROTAS_END]: "wdm1pm3d"
 }
 
 export const SpeedrunVariables = {
@@ -88,7 +88,13 @@ export const SpeedrunVariables = {
         }
     },
 
-    [Raid.CROTAS_END]: null
+    [Raid.CROTAS_END]: {
+        variable: "onv91378",
+        values: {
+            any: { id: "1py4nxg1", name: "anyPercent" },
+            trio: { id: "qke98znq", name: "trio" }
+        }
+    }
 } as const satisfies Record<
     ListedRaid,
     {

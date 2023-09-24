@@ -97,21 +97,15 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
 }
 
 export async function prefetchSpeedrunComLeaderboard(raid: ListedRaid, category: string | null) {
-    // we prefetch the first page at build time
-    const staleTime = 60 * 60 * 1000 // 1 hour
-
     const queryClient = createServerSideQueryClient()
     await queryClient.prefetchQuery(rtaQueryKey(raid, category), () =>
         getSpeedrunComLeaderboard({ raid, category })
     ),
         {
-            staleTime
+            staleTime: 120 * 1000 // 2 minutes
         }
 
-    return {
-        staleTime,
-        dehydratedState: dehydrate(queryClient)
-    }
+    return dehydrate(queryClient)
 }
 
 class ServerSideBungieClient implements BungieClientProtocol {
