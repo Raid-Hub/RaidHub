@@ -20,7 +20,7 @@ export const appRouter = router({
             get: getAuthenticatedProfile
         }),
         account: router({
-            profileIcon: createPresignedProfilePicURL,
+            presignedIconURL: createPresignedProfilePicURL,
             removeById: removeProvider,
             speedrunCom: router({
                 addByAPIKey: addByAPIKey,

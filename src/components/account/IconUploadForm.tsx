@@ -17,8 +17,8 @@ type FormValues = {
 const IconUploadForm = ({ user }: { user: SessionUser }) => {
     const { update: updateSession } = useSession()
     const [imageSrc, setImageSrc] = useState<string | null>(null)
-    const { mutateAsync: createPresignedURL } = trpc.user.account.profileIcon.useMutation()
     const [err, setErr] = useState<Error | null>(null)
+    const { mutateAsync: createPresignedURL } = trpc.user.account.presignedIconURL.useMutation()
     const { mutate: optimisticProfileUpdate, isLoading } = useOptimisticProfileUpdate({
         onSuccess: () => updateSession()
     })
