@@ -1,6 +1,5 @@
 import { router } from "."
 import { getProfileByDestinyMembershipId } from "./procedures/profile/getProfileByDestinyMembershipId"
-import { getVanityByMembership } from "./procedures/profile/getVanityByMembership"
 import { deleteUser } from "./procedures/user/delete"
 import { getAuthenticatedProfile } from "./procedures/user/getAuthenticatedProfile"
 import { getConnections } from "./procedures/user/getConnections"
@@ -32,10 +31,6 @@ export const appRouter = router({
     // public router for finding and loading profiles
     profile: router({
         byDestinyMembershipId: getProfileByDestinyMembershipId
-    }),
-    // resolving vanities
-    vanity: router({
-        byMember: getVanityByMembership
     }),
     // admin tools
     admin: router({

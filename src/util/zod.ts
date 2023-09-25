@@ -83,7 +83,7 @@ export const zUniqueDestinyProfile = z.object({
     ]),
     destinyMembershipId: z.string().regex(/^\d+$/)
 }) satisfies {
-    _output: Prisma.VanityDestinyMembershipIdDestinyMembershipTypeCompoundUniqueInput & {
+    _output: Prisma.ProfileDestinyMembershipIdDestinyMembershipTypeCompoundUniqueInput & {
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
     }

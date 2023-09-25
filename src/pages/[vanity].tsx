@@ -52,21 +52,25 @@ export const getStaticProps: GetStaticProps<
                     string
                 },
                 select: {
-                    destinyMembershipId: true,
-                    destinyMembershipType: true
+                    profile: {
+                        select: {
+                            destinyMembershipId: true,
+                            destinyMembershipType: true
+                        }
+                    }
                 }
             })
 
-        const details = await getVanity(vanityString)
+        const vanity = await getVanity(vanityString)
 
-        if (details?.destinyMembershipId && details.destinyMembershipType) {
+        if (vanity?.profile?.destinyMembershipId && vanity.profile.destinyMembershipType) {
             const [trpcState, bungieState] = await Promise.all([
-                prefetchRaidHubProfile(details.destinyMembershipId),
-                prefetchDestinyProfile(details)
+                prefetchRaidHubProfile(vanity.profile.destinyMembershipId),
+                prefetchDestinyProfile(vanity.profile)
             ])
 
             return {
-                props: { ...details, trpcState: trpcState, dehydratedState: bungieState },
+                props: { ...vanity.profile, trpcState: trpcState, dehydratedState: bungieState },
                 revalidate: 24 * 3600
             }
         }

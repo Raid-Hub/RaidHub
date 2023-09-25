@@ -6,8 +6,6 @@ export const createVanity = adminProcedure.input(zCreateVanity).mutation(async (
     try {
         const vanity = await ctx.prisma.vanity.create({
             data: {
-                destinyMembershipId: input.destinyMembershipId,
-                destinyMembershipType: input.destinyMembershipType,
                 string: input.string,
                 profile: {
                     connect: {

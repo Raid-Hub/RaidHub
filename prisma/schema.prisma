@@ -111,15 +111,10 @@ model Profile {
 }
 
 model Vanity {
-  id                    String   @id @default(cuid())
-  string                String   @unique
-  destinyMembershipId   String   @map("destiny_membership_id")
-  destinyMembershipType Int      @map("destiny_membership_type")
-  profileId             String?  @unique @map("profile_id")
-  profile               Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@unique([destinyMembershipId, destinyMembershipType])
-  @@index([destinyMembershipId, destinyMembershipType])
+  id        String   @id @default(cuid())
+  string    String   @unique
+  profileId String?  @unique @map("profile_id")
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model PGCR {

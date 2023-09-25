@@ -17,7 +17,6 @@ main()
 async function main() {
     // create fake users
     await seedFakeUsers()
-    await addStaticVanity()
 }
 
 async function seedFakeUsers() {
@@ -115,53 +114,6 @@ async function seedFakeUsers() {
         })
     }
     console.log(`Seeded ${count} users.`)
-}
-
-async function addStaticVanity() {
-    const existing = await prisma.vanity
-        .findMany({
-            select: {
-                string: true,
-                destinyMembershipId: true,
-                destinyMembershipType: true
-            }
-        })
-        .then(data => data.map(v => v.string))
-
-    await prisma.vanity.createMany({
-        data: [
-            {
-                string: "Newo",
-                destinyMembershipType: BungieMembershipType.TigerSteam,
-                destinyMembershipId: "4611686018488107374"
-            },
-            {
-                string: "Bruce",
-                destinyMembershipType: BungieMembershipType.TigerSteam,
-                destinyMembershipId: "4611686018493378282"
-            },
-            {
-                string: "Theos",
-                destinyMembershipType: BungieMembershipType.TigerSteam,
-                destinyMembershipId: "4611686018474149055"
-            },
-            {
-                string: "MJ",
-                destinyMembershipType: BungieMembershipType.TigerPsn,
-                destinyMembershipId: "4611686018478899141"
-            },
-            {
-                string: "Whiz",
-                destinyMembershipType: BungieMembershipType.TigerSteam,
-                destinyMembershipId: "4611686018470577804"
-            },
-            {
-                string: "Saltagreppo",
-                destinyMembershipType: BungieMembershipType.TigerXbox,
-                destinyMembershipId: "4611686018432786508"
-            }
-        ].filter(v => !existing.includes(v.string))
-    })
 }
 
 function genRandomString(length: number) {
