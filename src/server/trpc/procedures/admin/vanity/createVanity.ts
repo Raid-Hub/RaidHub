@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server"
 import { adminProcedure } from "../../../middleware"
-import { z } from "zod"
 import { zCreateVanity } from "~/util/zod"
 
 export const createVanity = adminProcedure.input(zCreateVanity).mutation(async ({ input, ctx }) => {
