@@ -17,7 +17,7 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
     return process.env.APP_ENV !== "local"
         ? {
               paths: Object.entries(UrlPathsToRaid)
-                  .filter(([_, raid]) => RaidsWithReprisedContest.includes(raid as ReprisedRaid))
+                  .filter(([_, raid]) => includedIn(RaidsWithReprisedContest, raid))
                   .map(([path, _]) => ({
                       params: {
                           raid: path

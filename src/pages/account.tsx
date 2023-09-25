@@ -5,11 +5,7 @@ import Account from "../components/account/Account"
 import Head from "next/head"
 
 const AccountPage: NextPage = () => {
-    const {
-        status,
-        data: sessionData,
-        update: updateSession
-    } = useSession({
+    const { status, data: sessionData } = useSession({
         required: true,
         onUnauthenticated() {
             signIn("bungie", undefined, "reauth=false")
@@ -27,7 +23,7 @@ const AccountPage: NextPage = () => {
                     <h2>{strings.loading}</h2>
                 </main>
             ) : (
-                <Account session={sessionData} refreshSession={updateSession} />
+                <Account session={sessionData} />
             )}
         </>
     )

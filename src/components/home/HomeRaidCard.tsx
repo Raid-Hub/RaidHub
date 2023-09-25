@@ -5,17 +5,15 @@ import RaidCardBackground from "~/images/raid-backgrounds"
 import {
     Difficulty,
     ListedRaid,
-    MasterRaid,
     MasterRaids,
-    PrestigeRaid,
     PrestigeRaids,
     Raid,
-    RaidsWithReprisedContest,
-    ReprisedRaid
+    RaidsWithReprisedContest
 } from "~/types/raids"
 import { LocalStrings } from "~/util/presentation/localized-strings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
+import { includedIn } from "~/util/betterIncludes"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -82,7 +80,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["content-section"]}>
                     <h4>{strings.otherLeaderboards}</h4>
                     <ul>
-                        {RaidsWithReprisedContest.includes(raid as ReprisedRaid) && (
+                        {includedIn(RaidsWithReprisedContest, raid) && (
                             <li>
                                 <Link
                                     href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/normal`}>
@@ -90,7 +88,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                                 </Link>
                             </li>
                         )}
-                        {MasterRaids.includes(raid as MasterRaid) && (
+                        {includedIn(MasterRaids, raid) && (
                             <li>
                                 <Link
                                     href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/master`}>
@@ -98,7 +96,7 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                                 </Link>
                             </li>
                         )}
-                        {PrestigeRaids.includes(raid as PrestigeRaid) && (
+                        {includedIn(PrestigeRaids, raid) && (
                             <li>
                                 <Link
                                     href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/prestige`}>

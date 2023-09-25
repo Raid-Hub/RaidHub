@@ -83,7 +83,7 @@ export const zUniqueDestinyProfile = z.object({
     ]),
     destinyMembershipId: z.string().regex(/^\d+$/)
 }) satisfies {
-    _output: Prisma.VanityDestinyMembershipIdDestinyMembershipTypeCompoundUniqueInput & {
+    _output: Prisma.ProfileDestinyMembershipIdDestinyMembershipTypeCompoundUniqueInput & {
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
     }
@@ -94,4 +94,10 @@ export const zRaidURIComponent = z.object({
         .string()
         .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
         .transform(key => UrlPathsToRaid[key])
+})
+
+export const zCreateVanity = z.object({
+    destinyMembershipId: z.string(),
+    destinyMembershipType: BungieMembershipEnum,
+    string: z.string()
 })

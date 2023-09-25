@@ -1,14 +1,15 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
+import styles from "~/styles/pages/profile/raids.module.css"
 import { MouseEvent, useCallback, useEffect, useRef } from "react"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
-import { ElevatedRaidDifficulties, ElevatedRaidDifficulty } from "../../../types/raids"
-import { isContest, isDayOne, raidTupleFromHash } from "../../../util/destiny/raidUtils"
-import { Tag } from "../../../util/raidhub/tags"
-import Activity from "../../../models/profile/data/Activity"
+import { ElevatedRaidDifficulties } from "~/types/raids"
+import { isContest, isDayOne, raidTupleFromHash } from "~/util/destiny/raidUtils"
+import { Tag } from "~/util/raidhub/tags"
+import Activity from "~/models/profile/data/Activity"
 import { animate } from "framer-motion"
 import Link from "next/link"
 import RaidSkull from "~/images/icons/destiny2/RaidSkull"
+import { includedIn } from "~/util/betterIncludes"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -123,7 +124,7 @@ const Dot = ({
                         />
                     )
                 )}
-                {ElevatedRaidDifficulties.includes(difficulty as ElevatedRaidDifficulty) && (
+                {includedIn(ElevatedRaidDifficulties, difficulty) && (
                     <circle
                         fill="none"
                         stroke="white"

@@ -9,11 +9,7 @@
             "maxDuration": 10
         },
         "pages/api/[trpc].ts": {
-            "memory": 512,
-            "maxDuration": 10
-        },
-        "pages/api/icon/upload.ts": {
-            "memory": 1536,
+            "memory": 1024,
             "maxDuration": 10
         }
     }

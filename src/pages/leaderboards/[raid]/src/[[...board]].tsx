@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps<
 
         const category = paths ? paths[0] : null
 
-        const { staleTime, dehydratedState } = await prefetchSpeedrunComLeaderboard(raid, category)
+        const dehydratedState = await prefetchSpeedrunComLeaderboard(raid, category)
 
         return {
             props: {
@@ -92,7 +92,7 @@ export const getStaticProps: GetStaticProps<
                 category,
                 dehydratedState
             },
-            revalidate: staleTime / 1000
+            revalidate: 3600 // 1 hour
         }
     } catch (e) {
         console.error(e)

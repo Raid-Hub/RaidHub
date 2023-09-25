@@ -24,6 +24,8 @@
         "seed": "ts-node prisma/seed.ts"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.418.0",
+        "@aws-sdk/s3-presigned-post": "^3.418.0",
         "@discordjs/collection": "^1.5.1",
         "@hookform/resolvers": "^3.1.1",
         "@prisma/client": "^5.3.1",
@@ -32,10 +34,8 @@
         "@trpc/next": "^10.38.1",
         "@trpc/react-query": "^10.38.1",
         "@trpc/server": "^10.38.1",
-        "aws-sdk": "^2.1417",
         "bungie-net-core": "^2.1.1",
         "dexie": "^3.2.4",
-        "formidable": "^3.5.0",
         "framer-motion": "^10.13.0",
         "html2canvas": "^1.4.1",
         "next": "^13.1.6",
