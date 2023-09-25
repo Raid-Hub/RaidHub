@@ -95,3 +95,9 @@ export const zRaidURIComponent = z.object({
         .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
         .transform(key => UrlPathsToRaid[key])
 })
+
+export const zCreateVanity = z.object({
+    destinyMembershipId: z.string(),
+    destinyMembershipType: BungieMembershipEnum,
+    string: z.string()
+})

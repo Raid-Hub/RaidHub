@@ -1,0 +1,11 @@
+.form-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.form-element {
+    display: flex;
+    flex-direction: column;
+}
