@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps<
             return {
                 redirect: {
                     permanent: true,
-                    destination: `/${profile.vanity.string.toLowerCase()}`
+                    destination: `/${profile.vanity.string}`
                 }
             }
         } else {
@@ -63,7 +63,6 @@ export const getStaticProps: GetStaticProps<
             }
         }
     } catch (e) {
-        console.error(e)
         return { notFound: true }
     }
 }

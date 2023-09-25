@@ -97,7 +97,7 @@ export const zRaidURIComponent = z.object({
 })
 
 export const zCreateVanity = z.object({
-    destinyMembershipId: z.string(),
+    destinyMembershipId: z.string().transform(s => s.toLowerCase()),
     destinyMembershipType: BungieMembershipEnum,
     string: z.string()
 })
