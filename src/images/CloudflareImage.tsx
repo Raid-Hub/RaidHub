@@ -39,7 +39,8 @@ const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
 
 export default function CloudflareImage({
     cloudflareId,
+    alt,
     ...props
 }: { cloudflareId: string } & Omit<ComponentPropsWithoutRef<typeof Image>, "src" | "loader">) {
-    return <Image src={cloudflareId} loader={cloudflareImageLoader} {...props} />
+    return <Image alt={alt ?? ""} src={cloudflareId} loader={cloudflareImageLoader} {...props} />
 }

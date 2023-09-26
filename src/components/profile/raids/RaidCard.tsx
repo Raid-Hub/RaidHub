@@ -1,5 +1,4 @@
 import styles from "~/styles/pages/profile/raids.module.css"
-import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
