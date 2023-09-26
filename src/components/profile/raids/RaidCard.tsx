@@ -12,6 +12,7 @@ import BigNumberStatItem from "./BigNumberStatItem"
 import Activity from "~/models/profile/data/Activity"
 import Loading from "~/components/global/Loading"
 import RaidStats from "~/models/profile/data/RaidStats"
+import CloudflareImage from "~/images/CloudflareImage"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -122,12 +123,12 @@ export default function RaidCard({
             }}
             className={styles["card"]}>
             <div className={styles["card-img-container"]}>
-                <Image
+                <CloudflareImage
                     className={styles["card-background"]}
                     priority
                     width={960}
                     height={540}
-                    src={RaidCardBackground[raid]}
+                    cloudflareId={RaidCardBackground[raid]}
                     alt={strings.raidNames[raid]}
                 />
                 <div className={styles["tag-row"]}>

@@ -31,14 +31,16 @@ export const getStaticProps: GetStaticProps<
 > = async ({ params }) => {
     try {
         const props = zUniqueDestinyProfile.parse(params)
-        const profile = await prisma.profile.findUnique({
-            where: {
-                destinyMembershipId_destinyMembershipType: props
-            },
-            select: {
-                vanity: true
-            }
-        })
+        const profile = await prisma.profile
+            .findUnique({
+                where: {
+                    destinyMembershipId_destinyMembershipType: props
+                },
+                select: {
+                    vanity: true
+                }
+            })
+            .catch(console.error)
 
         if (profile?.vanity?.string) {
             return {
