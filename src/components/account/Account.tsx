@@ -113,7 +113,7 @@ const Account = ({ session }: AccountProps) => {
                     {googleProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "google" })}
-                            link={() => signIn(googleProvider.id, {}, { force_verify: "true" })}
+                            link={() => signIn(googleProvider.id, {}, { prompt: "select_account" })}
                             serviceName={googleProvider.name}
                             username={socialNames?.youtubeUsername ?? null}
                             Icon={YoutubeIcon}
