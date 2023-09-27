@@ -5,7 +5,7 @@ import BungieQuery, { QueryFn } from "./bungieQuery"
 import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
 import { getPGCR } from "../services/bungie/getPGCR"
 import { getActivityHistory } from "../services/bungie/getActivityHistory"
-import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
+import { getClan, getClanForMember, getClanFounders, getClanMembers } from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
@@ -93,7 +93,8 @@ export default class BungieClient implements BungieClientProtocol {
     clan = {
         byMember: this.query(getClanForMember),
         byId: this.query(getClan),
-        members: this.query(getClanMembers)
+        members: this.query(getClanMembers),
+        founders: this.query(getClanFounders)
     }
     // we prefetch the profile missing some components
     profile = this.query(getProfile)

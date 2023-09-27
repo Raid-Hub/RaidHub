@@ -26,6 +26,11 @@ export default function Clan({ groupId }: ClanPageProps) {
         { staleTime: 5 * 60000 }
     )
 
+    const { data: clanFounders, isLoading: isLoadingFounders } = bungie.clan.founders.useQuery(
+        { groupId },
+        { staleTime: 5 * 60000 }
+    )
+
     const clanName = useMemo(() => (clan ? fixClanName(clan.detail.name) : null), [clan])
 
     if (isError) {
@@ -64,12 +69,12 @@ export default function Clan({ groupId }: ClanPageProps) {
                         </section>
 
                         <section>
-                            <h2>Members</h2>
-                            {isLoadingClanMembers ? (
+                            {isLoadingClanMembers || isLoadingFounders ? (
                                 <Loading className="" />
                             ) : (
-                                clanMembers && (
-                                    <div className={styles["members"]}>
+                                clanMembers && ([
+                                        <h2 key={'title'}>Members ({clanMembers.length} / 100)</h2>,
+                                    <div key={'members'} className={styles["members"]}>
                                         {clanMembers
                                             .sort(
                                                 (m1, m2) =>
@@ -79,10 +84,12 @@ export default function Clan({ groupId }: ClanPageProps) {
                                             .map(member => (
                                                 <ClanMember
                                                     member={member}
+                                                    isFounder={member.destinyUserInfo.membershipId == clanFounders![0].destinyUserInfo.membershipId}
                                                     key={member.destinyUserInfo.membershipId}
                                                 />
                                             ))}
                                     </div>
+                                    ]
                                 )
                             )}
                         </section>
