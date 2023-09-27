@@ -13,6 +13,7 @@ import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import TwitterIcon from "~/images/icons/connections/TwitterIcon"
 import TwitchIcon from "~/images/icons/connections/TwitchIcon"
 import BungieShield from "~/images/icons/connections/BungieShield"
+import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
 
 type AccountProps = {
     session: Session
@@ -115,7 +116,7 @@ const Account = ({ session }: AccountProps) => {
                             link={() => signIn(googleProvider.id, {}, { force_verify: "true" })}
                             serviceName={googleProvider.name}
                             username={socialNames?.youtubeUsername ?? null}
-                            Icon={TwitchIcon}
+                            Icon={YoutubeIcon}
                         />
                     )}
                     <Connection
