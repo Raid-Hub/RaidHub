@@ -57,18 +57,3 @@ export const getClanMembers = {
             return responses.map(res => res.Response.results).flat()
         }
 }
-
-export const getClanFounders = {
-    key: "clan-founder",
-    fn:
-        (client: BungieClientProtocol) =>
-        async ({ groupId }: { groupId: string }) => {
-            const response = await getMembersOfGroup(client, {
-                groupId,
-                currentpage: 1,
-                memberType: 5 // clan founder
-            })
-
-            return response.Response.results
-        }
-}

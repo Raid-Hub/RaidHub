@@ -26,11 +26,6 @@ export default function Clan({ groupId }: ClanPageProps) {
         { staleTime: 5 * 60000 }
     )
 
-    const { data: clanFounders, isLoading: isLoadingFounders } = bungie.clan.founders.useQuery(
-        { groupId },
-        { staleTime: 5 * 60000 }
-    )
-
     const clanName = useMemo(() => (clan ? fixClanName(clan.detail.name) : null), [clan])
 
     if (isError) {
@@ -69,7 +64,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                         </section>
 
                         <section>
-                            {isLoadingClanMembers || isLoadingFounders ? (
+                            {isLoadingClanMembers ? (
                                 <Loading className="" />
                             ) : (
                                 clanMembers && [
@@ -84,11 +79,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                                             .map(member => (
                                                 <ClanMember
                                                     member={member}
-                                                    isFounder={
-                                                        member.destinyUserInfo.membershipId ==
-                                                        clanFounders![0].destinyUserInfo
-                                                            .membershipId
-                                                    }
+                                                    isFounder={member.memberType == 5}
                                                     key={member.destinyUserInfo.membershipId}
                                                 />
                                             ))}
