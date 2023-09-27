@@ -72,9 +72,9 @@ export default function Clan({ groupId }: ClanPageProps) {
                             {isLoadingClanMembers || isLoadingFounders ? (
                                 <Loading className="" />
                             ) : (
-                                clanMembers && ([
-                                        <h2 key={'title'}>Members ({clanMembers.length} / 100)</h2>,
-                                    <div key={'members'} className={styles["members"]}>
+                                clanMembers && [
+                                    <h2 key={"title"}>Members ({clanMembers.length} / 100)</h2>,
+                                    <div key={"members"} className={styles["members"]}>
                                         {clanMembers
                                             .sort(
                                                 (m1, m2) =>
@@ -84,13 +84,16 @@ export default function Clan({ groupId }: ClanPageProps) {
                                             .map(member => (
                                                 <ClanMember
                                                     member={member}
-                                                    isFounder={member.destinyUserInfo.membershipId == clanFounders![0].destinyUserInfo.membershipId}
+                                                    isFounder={
+                                                        member.destinyUserInfo.membershipId ==
+                                                        clanFounders![0].destinyUserInfo
+                                                            .membershipId
+                                                    }
                                                     key={member.destinyUserInfo.membershipId}
                                                 />
                                             ))}
                                     </div>
-                                    ]
-                                )
+                                ]
                             )}
                         </section>
 

@@ -5,7 +5,12 @@ import BungieQuery, { QueryFn } from "./bungieQuery"
 import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
 import { getPGCR } from "../services/bungie/getPGCR"
 import { getActivityHistory } from "../services/bungie/getActivityHistory"
-import { getClan, getClanForMember, getClanFounders, getClanMembers } from "../services/bungie/getClan"
+import {
+    getClan,
+    getClanForMember,
+    getClanFounders,
+    getClanMembers
+} from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
 import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
