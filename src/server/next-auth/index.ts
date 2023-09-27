@@ -8,6 +8,7 @@ import { Provider } from "next-auth/providers"
 import DiscordProvider from "next-auth/providers/discord"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
+import GoogleProvider from "next-auth/providers/google"
 
 export const nextAuthOptions: AuthOptions = {
     adapter: CustomPrismaAdapter(prisma),
@@ -80,6 +81,21 @@ function getProviders(): Provider[] {
                 version: "2.0",
                 clientId: process.env.TWITTER_CLIENT_ID,
                 clientSecret: process.env.TWITTER_CLIENT_SECRET
+            })
+        )
+    }
+
+    if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+        providers.push(
+            GoogleProvider({
+                name: "YouTube",
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                authorization: {
+                    params: {
+                        scope: "openid profile https://www.googleapis.com/auth/youtube.readonly"
+                    }
+                }
             })
         )
     }

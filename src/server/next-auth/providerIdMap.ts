@@ -5,5 +5,6 @@ export const providerIdToUsernamePropMap = {
     bungie: "bungieUsername",
     discord: "discordUsername",
     twitter: "twitterUsername",
-    twitch: "twitchUsername"
+    twitch: "twitchUsername",
+    google: "youtubeUsername"
 } satisfies Record<string, keyof z.infer<typeof zUsernames>>

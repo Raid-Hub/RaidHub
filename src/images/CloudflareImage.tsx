@@ -28,7 +28,6 @@ const cloudflareVariants: { name: string; w: number; h: number }[] = [
 const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
     const minWidth = (width * (quality || 75)) / 100
 
-    console.log({ src, width, quality })
     const variant = (
         cloudflareVariants.find(item => item.w >= minWidth) ??
         cloudflareVariants[cloudflareVariants.length - 1]
