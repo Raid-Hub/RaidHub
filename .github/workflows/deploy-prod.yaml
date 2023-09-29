@@ -47,7 +47,7 @@ jobs:
 
             - name: Clone Repo
               working-directory: ./
-              run: git clone git@github.com:Raid-Hub/RaidHub.git
+              run: git clone -b test-prod-actions git@github.com:Raid-Hub/RaidHub.git
 
             - name: Bump Version
               run: |
