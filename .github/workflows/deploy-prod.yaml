@@ -51,13 +51,14 @@ jobs:
 
             - name: Bump Version
               run: |
-                  git fetch origin
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   echo "VERSION=$VERSION" >> $GITHUB_ENV
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Bump $VERSION"
+            - name: temp
+              run: ls
 
             - name: Merge latest PlanetScale deployment request
               timeout-minutes: 2
