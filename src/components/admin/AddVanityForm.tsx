@@ -19,7 +19,6 @@ const AddVanityForm = () => {
     } = trpc.admin.vanity.create.useMutation()
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
-        console.log(data)
         create(data)
     }
     const { strings } = useLocale()

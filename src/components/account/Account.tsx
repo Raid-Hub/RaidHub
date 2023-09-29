@@ -13,6 +13,7 @@ import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import TwitterIcon from "~/images/icons/connections/TwitterIcon"
 import TwitchIcon from "~/images/icons/connections/TwitchIcon"
 import BungieShield from "~/images/icons/connections/BungieShield"
+import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
 
 type AccountProps = {
     session: Session
@@ -40,11 +41,12 @@ const Account = ({ session }: AccountProps) => {
         signOut({ callbackUrl: "/" })
     }
 
-    const { discordProvider, twitchProvider, twitterProvider } = useMemo(
+    const { discordProvider, twitchProvider, twitterProvider, googleProvider } = useMemo(
         () => ({
             discordProvider: providers?.get("discord"),
             twitchProvider: providers?.get("twitch"),
-            twitterProvider: providers?.get("twitter")
+            twitterProvider: providers?.get("twitter"),
+            googleProvider: providers?.get("google")
         }),
         [providers]
     )
@@ -106,6 +108,15 @@ const Account = ({ session }: AccountProps) => {
                             serviceName={twitchProvider.name}
                             username={socialNames?.twitchUsername ?? null}
                             Icon={TwitchIcon}
+                        />
+                    )}
+                    {googleProvider && (
+                        <Connection
+                            unlink={() => unlinkAccountFromUser({ providerId: "google" })}
+                            link={() => signIn(googleProvider.id, {}, { prompt: "select_account" })}
+                            serviceName={googleProvider.name}
+                            username={socialNames?.youtubeUsername ?? null}
+                            Icon={YoutubeIcon}
                         />
                     )}
                     <Connection

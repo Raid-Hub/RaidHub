@@ -18,6 +18,7 @@ import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import TwitterIcon from "~/images/icons/connections/TwitterIcon"
 import TwitchIcon from "~/images/icons/connections/TwitchIcon"
 import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
+import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
 
 export default function UserCard() {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
@@ -55,6 +56,14 @@ export default function UserCard() {
                 Icon: TwitterIcon,
                 displayName: raidHubProfile.twitterUsername,
                 url: `https://twitter.com/${raidHubProfile.twitterUsername}`
+            })
+        }
+        if (raidHubProfile.youtubeUsername) {
+            socials.push({
+                id: Socials.YouTube,
+                Icon: YoutubeIcon,
+                displayName: raidHubProfile.youtubeUsername,
+                url: `https://youtube.com/${raidHubProfile.youtubeUsername}`
             })
         }
         if (raidHubProfile.twitchUsername) {

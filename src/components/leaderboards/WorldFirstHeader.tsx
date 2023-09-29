@@ -1,8 +1,8 @@
-import Image from "next/image"
 import RaidBanners from "~/images/raid-banners"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { ListedRaid } from "~/types/raids"
 import { useLocale } from "../app/LocaleManager"
+import CloudflareImage from "~/images/CloudflareImage"
 
 export default function WorldFirstHeader({
     title,
@@ -18,9 +18,9 @@ export default function WorldFirstHeader({
         <section className={styles["world-first-header"]}>
             <h1>{title}</h1>
             {subtitle && <h3>{subtitle}</h3>}
-            <Image
+            <CloudflareImage
                 priority
-                src={RaidBanners[raid]}
+                cloudflareId={RaidBanners[raid]}
                 alt={strings.raidNames[raid]}
                 fill
                 className={styles["world-first-header-image"]}

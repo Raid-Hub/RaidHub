@@ -13,8 +13,8 @@ const nextConfig = {
             /** Only optimize images from our cdn */
             {
                 protocol: "https",
-                hostname: "cdn.discordapp.com",
-                pathname: "/attachments/1136751502912934060/*/*.*"
+                hostname: "cdn.raidhub.app",
+                pathname: "/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/*"
             }
         ]
     },

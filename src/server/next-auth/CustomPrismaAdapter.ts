@@ -1,10 +1,10 @@
 import { Adapter, AdapterAccount } from "next-auth/adapters"
 import { Account, PrismaClient } from "@prisma/client"
-import { DiscordProfile } from "next-auth/providers/discord"
 import prisma from "../prisma"
-import { TwitterProfile } from "next-auth/providers/twitter"
 import { z } from "zod"
 import { zUser, zUsernames } from "~/util/zod"
+import { DiscordProfile } from "next-auth/providers/discord"
+import { TwitterProfile } from "next-auth/providers/twitter"
 
 export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     return {
@@ -70,6 +70,8 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 await addTwitchAccountToUser(account)
             } else if (account.provider === "twitter") {
                 await addTwitterAccountToUser(account)
+            } else if (account.provider === "google") {
+                await addYoutubeAccountToUser(account)
             }
 
             // cleans properties that shouldnt be here
@@ -220,6 +222,63 @@ async function addTwitterAccountToUser(account: AdapterAccount) {
                 update: {
                     data: {
                         twitterUsername: profile.username
+                    }
+                }
+            }
+        }
+    })
+}
+
+async function addYoutubeAccountToUser(account: AdapterAccount) {
+    const url = new URL("https://www.googleapis.com/youtube/v3/channels")
+    url.searchParams.set("part", "snippet")
+    url.searchParams.set("mine", "true")
+
+    const profile = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${account.access_token}`
+        }
+    }).then(async res => {
+        const data = await res.json()
+        if (res.ok) {
+            return data as {
+                kind: string
+                etag: string
+                pageInfo: { totalResults: number; resultsPerPage: number }
+                items: {
+                    kind: string
+                    etag: string
+                    id: string
+                    snippet: {
+                        title: string
+                        description: string
+                        customUrl?: string
+                        publishedAt: string
+                        thumbnails: { default: Object; medium: Object; high: Object }
+                        localized: {
+                            title: string
+                            description: string
+                        }
+                        country: string
+                    }
+                }[]
+            }
+        } else {
+            throw data
+        }
+    })
+
+    const username = profile.items.find(i => i.kind === "youtube#channel")!.snippet.customUrl!
+
+    return prisma.user.update({
+        where: {
+            id: account.userId
+        },
+        data: {
+            profile: {
+                update: {
+                    data: {
+                        youtubeUsername: username
                     }
                 }
             }

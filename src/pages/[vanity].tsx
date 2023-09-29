@@ -61,7 +61,7 @@ export const getStaticProps: GetStaticProps<
                 }
             })
 
-        const vanity = await getVanity(vanityString)
+        const vanity = await getVanity(vanityString.toLowerCase())
 
         if (vanity?.profile?.destinyMembershipId && vanity.profile.destinyMembershipType) {
             const [trpcState, bungieState] = await Promise.all([

@@ -15,7 +15,8 @@ export const getConnections = protectedProcedure.query(async ({ ctx }) => {
                         twitchUsername: true,
                         discordUsername: true,
                         twitterUsername: true,
-                        speedrunUsername: true
+                        speedrunUsername: true,
+                        youtubeUsername: true
                     }
                 }
             }

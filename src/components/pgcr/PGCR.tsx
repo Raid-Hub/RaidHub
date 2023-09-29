@@ -1,5 +1,4 @@
 import styles from "~/styles/pages/pgcr.module.css"
-import Image from "next/image"
 import ParticipantsSection from "./ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
 import ActivityHeader from "./ActivityHeader"
@@ -12,6 +11,7 @@ import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { createRef } from "react"
 import { BackdropOpacity } from "~/util/destiny/raidUtils"
 import { Raid } from "~/types/raids"
+import CloudflareImage from "~/images/CloudflareImage"
 
 const defaultPrefs = {
     showScore: false
@@ -36,13 +36,13 @@ const PGCR = () => {
                 }}>
                 <section className={styles["summary-card"]} ref={summaryCardRef}>
                     {typeof pgcr?.raid === "number" && (
-                        <Image
+                        <CloudflareImage
                             priority
                             className={[
                                 styles["summary-card-background"],
                                 pgcr?.completed ?? true ? "" : styles["summary-card-dnf"]
                             ].join(" ")}
-                            src={RaidCardBackground[pgcr.raid]}
+                            cloudflareId={RaidCardBackground[pgcr.raid]}
                             alt="background image"
                             fill
                             style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}

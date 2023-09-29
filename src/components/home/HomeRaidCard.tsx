@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import styles from "~/styles/pages/home.module.css"
 import RaidCardBackground from "~/images/raid-backgrounds"
@@ -14,6 +13,7 @@ import { LocalStrings } from "~/util/presentation/localized-strings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { includedIn } from "~/util/betterIncludes"
+import CloudflareImage from "~/images/CloudflareImage"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -24,11 +24,11 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
     return (
         <div id={RaidToUrlPaths[raid]} className={styles["home-raid-card"]}>
             <div className={styles["card-image-header"]}>
-                <Image
+                <CloudflareImage
                     priority
-                    width={320}
-                    height={180}
-                    src={RaidCardBackground[raid]}
+                    width={640}
+                    height={360}
+                    cloudflareId={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
                 <h3>{strings.raidNames[raid]}</h3>
