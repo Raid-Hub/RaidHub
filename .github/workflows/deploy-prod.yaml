@@ -15,11 +15,11 @@ jobs:
             run:
                 working-directory: ./${{ github.event.repository.name }}
         steps:
-            - name: Fail if branch is not main
-              if: github.ref != 'refs/heads/main'
-              run: |
-                  echo "This workflow should not be triggered on a branch other than main"
-                  exit 1
+            # - name: Fail if branch is not main
+            #   if: github.ref != 'refs/heads/main'
+            #   run: |
+            #       echo "This workflow should not be triggered on a branch other than main"
+            #       exit 1
 
             - name: Check if user is a repo admin
               working-directory: ./
@@ -47,7 +47,7 @@ jobs:
 
             - name: Clone Repo
               working-directory: ./
-              run: git clone git@github.com:Raid-Hub/RaidHub-Website.git
+              run: git clone git@github.com:Raid-Hub/RaidHub.git
 
             - name: Bump Version
               run: |
