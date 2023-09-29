@@ -3,7 +3,7 @@ name: Deploy to Production
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-    pscale_base_directory: .pscale
+    pscale_base_directory: .pscale/cli-helper-scripts
 
 on:
     workflow_dispatch:
@@ -47,11 +47,10 @@ jobs:
 
             - name: Clone Repo
               working-directory: ./
-              run: git clone git@github.com:Raid-Hub/RaidHub-Website.git
+              run: git clone git@github.com:Raid-Hub/${{ github.event.repository.name }}.git
 
             - name: Bump Version
               run: |
-                  git fetch origin
                   VERSION=$(./bump.sh)
                   echo "Version: $VERSION"
                   echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -67,7 +66,7 @@ jobs:
                   ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
-              working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
+              working-directory: ./${{ github.event.repository.name }}/${{env.pscale_base_directory}}
               run: ./merge-latest-open-deploy-request.sh
 
             - name: Pull Vercel Environment Information

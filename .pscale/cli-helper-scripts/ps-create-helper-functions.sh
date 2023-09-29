@@ -36,6 +36,18 @@ function create-db-branch {
     fi
 }
 
+function close-deploy-request {
+    local DB_NAME=$1
+    local ORG_NAME=$2
+    local deploy_request_number=$3
+
+    local raw_output=`pscale deploy-request close "$DB_NAME" "$deploy_request_number" --org "$ORG_NAME" --format json`
+    if [ $? -ne 0 ]; then
+        echo "Deploy request could not be closed: $raw_output"
+        exit 1
+    fi
+}
+
 function create-deploy-request {
     local DB_NAME=$1
     local BRANCH_NAME=$2

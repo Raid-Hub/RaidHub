@@ -18,6 +18,8 @@ output=`echo $raw_output | jq "[.[] | select(.state == \"open\") ] | .[0].number
 # test whether the output is a number
 if [[ $output =~ ^[0-9]+$ ]]; then
     create-deployment "$DB_NAME" "$ORG_NAME" "$output"
+    close-deploy-request "$DB_NAME" "$ORG_NAME" "$output"
+
 else
     echo "No open deployment request found: $raw_output"
     exit 0
