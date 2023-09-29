@@ -61,6 +61,7 @@ jobs:
               run: |
                   ls -a
                   cd ${{env.pscale_base_directory}}
+                  ls -a
 
             - name: Merge latest PlanetScale deployment request
               timeout-minutes: 2
