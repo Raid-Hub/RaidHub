@@ -47,7 +47,7 @@ jobs:
 
             - name: Clone Repo
               working-directory: ./
-              run: git clone -b test-prod-actions git@github.com:Raid-Hub/RaidHub.git
+              run: git clone -b test-prod-actions git@github.com:Raid-Hub/${{ github.event.repository.name }}.git
 
             - name: Bump Version
               run: |
@@ -57,11 +57,6 @@ jobs:
                   git add package.json
                   git add public/manifest.json
                   git commit -m "Bump $VERSION"
-            - name: temp
-              run: |
-                  ls -a
-                  cd ${{env.pscale_base_directory}}
-                  ls -a
 
             - name: Merge latest PlanetScale deployment request
               timeout-minutes: 2
@@ -71,7 +66,7 @@ jobs:
                   ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
                   DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
                   GITHUB_USER: ${{github.actor}}
-              working-directory: ${{env.pscale_base_directory}}
+              working-directory: ./${{ github.event.repository.name }}/${{env.pscale_base_directory}}
               run: ./merge-latest-open-deploy-request.sh
 
             - name: Pull Vercel Environment Information
