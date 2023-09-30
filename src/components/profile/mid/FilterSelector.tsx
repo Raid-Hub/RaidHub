@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
 import GroupActivityFilter from "../../../models/profile/filters/GroupActivityFilter"
@@ -9,6 +9,9 @@ import FilterSelectorMenu from "./FilterSelectorMenu"
 import { useLocale } from "../../app/LocaleManager"
 import { DefaultActivityFilters } from "../../../util/profile/activityFilters"
 import { useForm } from "react-hook-form"
+import { usePortal } from "~/components/reusable/Portal"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 type FilterSelectorProps = {
     activeFilter: ActivityFilter | null
@@ -32,33 +35,26 @@ const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) 
         } else {
             setCurrentFilter(activeFilter?.deepClone() ?? null)
         }
-        setIsEditing(false)
+        ref.current?.close()
     }
 
     const refreshCurrentFilter = () => setCurrentFilter(old => old?.deepClone() ?? null)
 
-    const [isEditing, setIsEditing] = useState(false)
-
     const removeFilter = () => setCurrentFilter(null)
 
-    const activeFilterStr = useMemo(() => {
-        const str = activeFilter?.stringify() ?? strings.none
-        if (str.length > 20) {
-            return strings.clickToView
-        } else {
-            return str
-        }
-    }, [activeFilter, strings])
+    const ref = useRef<HTMLDialogElement | null>(null)
+    const { sendThroughPortal } = usePortal()
 
     return (
-        <div className={styles["filter-view"]} onClick={() => !isEditing && setIsEditing(true)}>
-            <div className={styles["filter-view-content"]}>
-                <h3>{strings.activeFilters}</h3>
-                <div className={styles["filter-view-desc"]}>{activeFilterStr}</div>
+        <div className={styles["filter-view"]}>
+            <div
+                className={styles["filter-view-content"]}
+                onClick={() => !ref.current?.open && ref.current?.showModal()}>
+                <h4>{strings.manageFilters}</h4>
             </div>
 
-            {isEditing && (
-                <div className={styles["filter-selector"]}>
+            {sendThroughPortal(
+                <dialog className={styles["filter-selector"]} ref={ref}>
                     <div className={styles["filter-selector-buttons"]}>
                         <button onClick={() => handleCloseEditModal(true)}>Save</button>
                         <button onClick={() => handleCloseEditModal(false)}>Cancel</button>
@@ -98,7 +94,7 @@ const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) 
                             handleClickAway={() => setHandleSelect(null)}
                         />
                     )}
-                </div>
+                </dialog>
             )}
         </div>
     )
@@ -228,13 +224,15 @@ const HighOrderFilterComponent = ({
     removeFromParent
 }: GenericFilterComponentProps<HighOrderActivityFilter>) => {
     const { strings } = useLocale()
-    const { handleSubmit, register } = useForm({
+    const { handleSubmit, register, formState } = useForm({
         defaultValues: {
             value: filter.value
-        }
+        },
+        resolver: zodResolver(z.object({ value: filter.schema }))
     })
-    const enteredValue = async ({ value }: { value: any }) => {
-        filter.value = Number(value)
+    const enteredValue = async ({ value }: { value: unknown }) => {
+        filter.value = value
+        console.log(value)
     }
 
     return (
@@ -246,7 +244,12 @@ const HighOrderFilterComponent = ({
             )}
             <p>{strings.activityFilters[filter.key]}</p>
             <form onSubmit={handleSubmit(enteredValue)}>
-                <input type="number" id="value" inputMode="numeric" {...register("value")} />
+                <input
+                    type={filter.inputType}
+                    inputMode={filter.inputMode}
+                    id="value"
+                    {...register("value")}
+                />
                 <button type="submit">save</button>
             </form>
         </div>

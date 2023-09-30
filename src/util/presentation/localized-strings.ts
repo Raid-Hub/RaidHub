@@ -58,7 +58,7 @@ export interface LocalStrings {
     logOut: string
     logInWith: string
     activityFilters: { [key in FilterOption]: string }
-    activeFilters: string
+    manageFilters: string
     filterNames: { [key in FilterListName]: string }
     clickToView: string
     loginToAccess: string
@@ -206,9 +206,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterOption.SOLO]: "Solo",
             [FilterOption.CPB]: ">50 Players",
             [FilterOption.DIFFICULTY]: "Difficulty",
-            [FilterOption.MIN_MINS_PLAYED]: "Min minutes played"
+            [FilterOption.MIN_MINS_PLAYED]: "Min minutes played",
+            [FilterOption.PLAYED_WITH]: "Played with"
         },
-        activeFilters: "Active Filters",
+        manageFilters: "Manage Filters",
         filterNames: {
             [FilterListName.Success]: "Complete",
             [FilterListName.Incomplete]: "Incomplete",
@@ -223,7 +224,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.Cpb]: "Checkpoint Bot",
             [FilterListName.Or]: "Or Group",
             [FilterListName.And]: "And Group",
-            [FilterListName.Not]: "Not Element"
+            [FilterListName.Not]: "Not Element",
+            [FilterListName.PlayedWith]: "Played With"
         },
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
