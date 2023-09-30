@@ -2,20 +2,21 @@ import React from "react"
 import SVG, { SVGProps } from "~/components/reusable/SVG"
 import styles from "~/styles/svg-icons.module.css"
 
-export default function SpeedrunIcon({ color, ...props }: SVGProps) {
+export default function SpeedrunIcon({ color, className, ...props }: SVGProps) {
     const styleProps = color
-        ? {
-              style: { "--fill-color": color } as {}, // tsx does not like vars inlined
-              className: styles["deep-fill"]
-          }
+        ? ({
+              className: [className, styles["deep-fill"]].filter(Boolean).join(" "),
+              style: { "--fill-color": color },
+              color
+          } as {})
         : undefined
     return (
         <SVG
             viewBox="0 -6.5 102 102"
             fillRule="evenodd"
             iconId="speedrun"
-            {...styleProps}
-            {...props}>
+            {...props}
+            {...styleProps}>
             <g shapeRendering="crispEdges">
                 <path
                     fill="#b55608"
