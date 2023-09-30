@@ -7,19 +7,19 @@ import { isContest, isDayOne, raidTupleFromHash } from "~/util/destiny/raidUtils
 import { Tag } from "~/util/raidhub/tags"
 import Activity from "~/models/profile/data/Activity"
 import { animate } from "framer-motion"
-import Link from "next/link"
 import RaidSkull from "~/images/icons/destiny2/RaidSkull"
 import { includedIn } from "~/util/betterIncludes"
+import { useRouter } from "next/router"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
 export const Teal = "#36c9bd"
 
 type DotProps = {
-    index: number
     activity: Activity
     flawless: boolean
     playerCount: number
+    centerX: number
     centerY: number
     isTargeted: boolean
     tooltipData: DotTooltipProps | null
@@ -27,7 +27,7 @@ type DotProps = {
 }
 
 const Dot = ({
-    index,
+    centerX,
     activity,
     flawless,
     playerCount,
@@ -36,7 +36,7 @@ const Dot = ({
     setTooltip,
     tooltipData
 }: DotProps) => {
-    const ref = useRef<SVGGElement | null>(null)
+    const ref = useRef<HTMLAnchorElement | null>(null)
 
     const [raid, difficulty] = raidTupleFromHash(activity.hash)
 
@@ -90,52 +90,54 @@ const Dot = ({
         }
     }, [isTargeted])
 
-    const centerX = SPACING / 2 + SPACING * index
+    const router = useRouter()
+
     return (
-        <Link
-            href={{
-                pathname: "/pgcr/[activityId]",
-                query: { activityId: activity.instanceId }
+        <a
+            href={`/pgcr/${activity.instanceId}`}
+            onClick={e => {
+                e.preventDefault()
+                router.push({
+                    pathname: "/pgcr/[activityId]",
+                    query: { activityId: activity.instanceId }
+                })
             }}
-            legacyBehavior={true}>
-            <g
-                ref={ref}
-                onMouseEnter={handleHover}
-                onMouseLeave={handleMouseLeave}
-                className={[styles["dot"], styles["dot-hover"]].join(" ")}>
+            ref={ref}
+            onMouseEnter={handleHover}
+            onMouseLeave={handleMouseLeave}
+            className={[styles["dot"], styles["dot-hover"]].join(" ")}>
+            <circle
+                fill={activity.completed ? (flawless ? Teal : Green) : Red}
+                fillOpacity={0.978}
+                r={RADIUS}
+                cx={centerX}
+                cy={centerY}
+            />
+
+            {playerCount <= 3 ? (
+                <Star x={centerX} y={centerY} spinning={playerCount === 1} />
+            ) : (
+                (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
+                    <RaidSkull
+                        color="white"
+                        width={2 * SKULL_FACTOR * RADIUS}
+                        height={2 * SKULL_FACTOR * RADIUS}
+                        x={centerX - SKULL_FACTOR * RADIUS}
+                        y={centerY - SKULL_FACTOR * RADIUS}
+                    />
+                )
+            )}
+            {includedIn(ElevatedRaidDifficulties, difficulty) && (
                 <circle
-                    fill={activity.completed ? (flawless ? Teal : Green) : Red}
-                    fillOpacity={0.978}
-                    r={RADIUS}
+                    fill="none"
+                    stroke="white"
+                    strokeWidth={RADIUS / 10}
+                    r={RADIUS * 0.95}
                     cx={centerX}
                     cy={centerY}
                 />
-
-                {playerCount <= 3 ? (
-                    <Star x={centerX} y={centerY} spinning={playerCount === 1} />
-                ) : (
-                    (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
-                        <RaidSkull
-                            color="white"
-                            width={2 * SKULL_FACTOR * RADIUS}
-                            height={2 * SKULL_FACTOR * RADIUS}
-                            x={centerX - SKULL_FACTOR * RADIUS}
-                            y={centerY - SKULL_FACTOR * RADIUS}
-                        />
-                    )
-                )}
-                {includedIn(ElevatedRaidDifficulties, difficulty) && (
-                    <circle
-                        fill="none"
-                        stroke="white"
-                        strokeWidth={RADIUS / 10}
-                        r={RADIUS * 0.95}
-                        cx={centerX}
-                        cy={centerY}
-                    />
-                )}
-            </g>
-        </Link>
+            )}
+        </a>
     )
 }
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { ActivityFilter } from "../../../types/profile"
 import GroupActivityFilter from "../../../models/profile/filters/GroupActivityFilter"
@@ -232,7 +232,6 @@ const HighOrderFilterComponent = ({
     })
     const enteredValue = async ({ value }: { value: unknown }) => {
         filter.value = value
-        console.log(value)
     }
 
     return (
