@@ -9,7 +9,6 @@ import useHover from "~/hooks/util/useDebouncedHover"
 import BasicDiamond from "~/images/icons/BasicDiamond"
 
 type RaidTagLabelProps = {
-    instanceId?: string
     setActiveId: (instanceId: string) => void
 } & RaidTag
 

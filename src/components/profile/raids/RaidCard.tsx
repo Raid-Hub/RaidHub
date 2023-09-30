@@ -2,7 +2,7 @@ import styles from "~/styles/pages/profile/raids.module.css"
 import { useEffect, useMemo, useState } from "react"
 import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
-import { ListedRaid } from "~/types/raids"
+import { Difficulty, ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import { RaceTag } from "~/types/profile"
 import { useLocale } from "~/components/app/LocaleManager"
@@ -12,6 +12,10 @@ import Activity from "~/models/profile/data/Activity"
 import Loading from "~/components/global/Loading"
 import RaidStats from "~/models/profile/data/RaidStats"
 import CloudflareImage from "~/images/CloudflareImage"
+import { secondsToHMS } from "~/util/presentation/formatting"
+import RaidTagLabel from "./RaidTagLabel"
+import RaceTagLabel from "./RaceTagLabel"
+import { includedIn } from "~/util/betterIncludes"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -33,6 +37,43 @@ type RaidModalProps = {
         | { isLoadingActivities: true; activities: null }
     )
 
+const report = {
+    fastestFullClear: {
+        value: 1442,
+        instanceId: "1"
+    },
+    averageFullClear: {
+        value: 4891,
+        instanceId: "1"
+    },
+    sherpaCount: 999,
+    tags: [
+        {
+            instanceId: "1",
+            flawless: true,
+            fresh: true,
+            difficulty: Difficulty.NORMAL,
+            bestPossible: true,
+            playerCount: 2
+        },
+        {
+            instanceId: "1",
+            flawless: false,
+            fresh: false,
+            difficulty: Difficulty.MASTER,
+            bestPossible: false,
+            playerCount: 3
+        }
+    ],
+    contestFirstClear: {
+        dayOne: true,
+        contest: true,
+        weekOne: true,
+        placement: 69
+    }
+}
+const isLoadingReport = false
+
 export default function RaidCard({
     raid,
     stats,
@@ -41,55 +82,6 @@ export default function RaidCard({
     isLoadingActivities
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-
-    const averageClear = useMemo(() => {
-        // todo
-        return undefined
-    }, [])
-
-    const contestFirstClear: (RaceTag & { instanceId?: string }) | null = useMemo(() => {
-        return null
-        // const contestDifficulty:
-        //     | (typeof ReprisedContestRaidDifficulties)[number]
-        //     | Difficulty.NORMAL =
-        //     // @ts-ignore
-        //     ReprisedContestDifficultyDictionary[raid] ?? Difficulty.NORMAL
-        // const first = allActivities
-        //     ?.get(contestDifficulty)
-        //     ?.collection.reverse()
-        //     .find(a => !!a.completed)
-        // const isChallenge = contestDifficulty !== Difficulty.NORMAL
-        // if (!first) {
-        //     return report?.worldFirstPlacement
-        //         ? {
-        //               raid,
-        //               challenge: isChallenge,
-        //               dayOne: false,
-        //               contest: false,
-        //               weekOne: false
-        //           }
-        //         : null
-        // }
-        // const end = first.endDate
-        // const start = first.startDate
-        // const contest = isContest(raid, start)
-        // const weekOne = isWeekOne(raid, end)
-        // const dayOne = isDayOne(raid, end)
-
-        // if (!dayOne && !contest && !weekOne) {
-        //     return null
-        // } else {
-        //     return {
-        //         raid,
-        //         dayOne: isDayOne(raid, end),
-        //         challenge: isChallenge,
-        //         contest,
-        //         weekOne,
-        //         asterisk: contest && !isContest(raid, end), // completed after contest was over
-        //         instanceId: first.instanceId
-        //     } as RaceTag & { instanceId: string }
-        // }
-    }, [])
 
     useEffect(() => {
         if (hoveredTag) {
@@ -131,19 +123,26 @@ export default function RaidCard({
                     alt={strings.raidNames[raid]}
                 />
                 <div className={styles["tag-row"]}>
-                    {/* {contestFirstClear && (
+                    {report?.contestFirstClear && (
                         <RaceTagLabel
-                            {...contestFirstClear}
-                            placement={report?.worldFirstPlacement ?? undefined}
+                            {...report.contestFirstClear}
+                            challenge={includedIn(RaidsWithReprisedContest, raid)}
+                            raid={raid}
+                            placement={report.contestFirstClear.placement ?? undefined}
                             setActiveId={setHoveredTag}
                         />
-                    )} */}
+                    )}
                 </div>
                 <div className={styles["img-overlay-bottom"]}>
                     <div className={styles["card-challenge-tags"]}>
-                        {/* {report?.tags()?.map((tag, key) => (
-                            <RaidTagLabel {...tag} key={key} setActiveId={setHoveredTag} />
-                        ))} */}
+                        {report?.tags?.map((tag, key) => (
+                            <RaidTagLabel
+                                {...tag}
+                                raid={raid}
+                                key={key}
+                                setActiveId={setHoveredTag}
+                            />
+                        ))}
                     </div>
                     <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                 </div>
@@ -168,7 +167,7 @@ export default function RaidCard({
                 </div>
 
                 <div className={styles["timings"]}>
-                    {/* <BigNumberStatItem
+                    <BigNumberStatItem
                         displayValue={
                             report?.fastestFullClear
                                 ? secondsToHMS(report.fastestFullClear.value)
@@ -181,28 +180,26 @@ export default function RaidCard({
                                 ? `/pgcr/${report.fastestFullClear.instanceId}`
                                 : undefined
                         }
-                    /> */}
-
-                    {/* <BigNumberStatItem
+                    />
+                    <BigNumberStatItem
                         displayValue={
-                            averageClear
-                                ? averageClear.values.activityDurationSeconds.basic.displayValue
+                            report?.averageFullClear
+                                ? secondsToHMS(report.averageFullClear.value)
                                 : strings.na
                         }
-                        isLoading={isLoadingDots}
+                        isLoading={isLoadingReport}
                         name={strings.averageClear}
                         href={
-                            averageClear
-                                ? `/pgcr/${averageClear.activityDetails.instanceId}`
+                            report?.averageFullClear
+                                ? `/pgcr/${report.averageFullClear.instanceId}`
                                 : undefined
                         }
-                    /> */}
-
-                    {/* <BigNumberStatItem
+                    />
+                    <BigNumberStatItem
                         displayValue={report?.sherpaCount ? report.sherpaCount : 0}
                         isLoading={isLoadingReport}
                         name={strings.sherpas}
-                    /> */}
+                    />
                 </div>
             </div>
         </m.div>
