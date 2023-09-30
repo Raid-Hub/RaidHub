@@ -157,9 +157,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.PRESTIGE]: "Prestige",
             [Difficulty.MASTER]: "Master",
             [Difficulty.CONTEST]: "Contest",
-            [Difficulty.CHALLENGE_VOG]: "Tempo's Edge",
-            [Difficulty.CHALLENGE_KF]: "Regicide",
-            [Difficulty.CHALLENGE_CROTA]: "Superior Swordplay"
+            [Difficulty.CHALLENGE_VOG]: "Challenge",
+            [Difficulty.CHALLENGE_KF]: "Challenge",
+            [Difficulty.CHALLENGE_CROTA]: "Challenge"
         },
         worldFirstLeaderboards: "World First Race Leaderboards",
         otherLeaderboards: "Other Leaderboards",
