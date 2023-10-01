@@ -90,6 +90,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
     const description = `View ${
         username ? `${username}'s ` : ""
     }raid stats, achievements, tags, and more`
+
     return (
         <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
             <Head>

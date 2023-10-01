@@ -10,6 +10,9 @@ import { Collection } from "@discordjs/collection"
 import { partitionCollectionByRaid } from "~/util/destiny/partitionCollectionByRaid"
 import { partitionStatsByRaid } from "~/util/destiny/partitionStatsByRaid"
 import RaidStats from "~/models/profile/data/RaidStats"
+import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
+import { useQueryParamState } from "~/hooks/util/useQueryParamState"
+import { zRaidURIComponent } from "~/util/zod"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -83,6 +86,30 @@ const Raids = ({
         }
     }, [activityHistory, setMostRecentActivity])
 
+    const {
+        value: expandedRaid,
+        clear: clearExpandedRaid,
+        set: setExpandedRaid
+    } = useQueryParamState("raid", {
+        decoder: value => zRaidURIComponent.optional().parse(value),
+        encoder: raid => RaidToUrlPaths[raid]
+    })
+
+    if (expandedRaid) {
+        return (
+            <div
+                style={{
+                    backgroundColor: "var(--modal-background)",
+                    minHeight: "700px",
+                    borderRadius: "10px",
+                    border: "1px solid var(--border)",
+                    padding: "1em"
+                }}>
+                <button onClick={clearExpandedRaid}>close</button> <h2>coming soon...</h2>
+            </div>
+        )
+    }
+
     switch (layout) {
         case Layout.DotCharts:
             const isLoadingStats =
@@ -96,6 +123,7 @@ const Raids = ({
                         <RaidCard
                             key={raid}
                             raid={raid}
+                            expand={() => setExpandedRaid(raid)}
                             {...(isLoadingStats
                                 ? {
                                       isLoadingStats: true,

@@ -37,7 +37,7 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
     params
 }) => {
     try {
-        const { raid } = zRaidURIComponent.parse(params)
+        const raid = zRaidURIComponent.parse(params?.raid)
 
         const paramStrings = [
             (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid)

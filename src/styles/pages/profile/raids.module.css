@@ -49,6 +49,13 @@
     opacity: 0;
     transition: opacity 0.2s;
 }
+
+@media (max-width: 768px) {
+    .visible-on-card-hover {
+        opacity: 1;
+    }
+}
+
 .card:hover .visible-on-card-hover {
     opacity: 1;
 }

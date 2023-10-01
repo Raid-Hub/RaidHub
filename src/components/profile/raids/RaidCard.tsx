@@ -16,11 +16,10 @@ import RaidTagLabel from "./RaidTagLabel"
 import RaceTagLabel from "./RaceTagLabel"
 import { includedIn } from "~/util/betterIncludes"
 import Expand from "~/images/icons/Expand"
-import { useRouter } from "next/router"
-import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 
 type RaidModalProps = {
     raid: ListedRaid
+    expand: () => void
 } & (
     | {
           stats: RaidStats
@@ -78,28 +77,13 @@ const isLoadingReport = false
 
 export default function RaidCard({
     raid,
+    expand,
     stats,
     isLoadingStats,
     activities,
     isLoadingActivities
 }: RaidModalProps) {
-    const router = useRouter()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-
-    const expand = () => {
-        router.push(
-            {
-                query: {
-                    ...router.query,
-                    raid: RaidToUrlPaths[raid]
-                }
-            },
-            undefined,
-            {
-                shallow: true
-            }
-        )
-    }
 
     useEffect(() => {
         if (hoveredTag) {

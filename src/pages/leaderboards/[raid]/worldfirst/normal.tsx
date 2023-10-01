@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }>
     params
 }) => {
     try {
-        const { raid } = zRaidURIComponent.parse(params)
+        const raid = zRaidURIComponent.parse(params?.raid)
         if (!includedIn(RaidsWithReprisedContest, raid)) {
             throw Error("raid does not have a reprised challenge version")
         }

@@ -91,12 +91,10 @@ export const zUniqueDestinyProfile = z.object({
     }
 }
 
-export const zRaidURIComponent = z.object({
-    raid: z
-        .string()
-        .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
-        .transform(key => UrlPathsToRaid[key])
-})
+export const zRaidURIComponent = z
+    .string()
+    .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
+    .transform(key => UrlPathsToRaid[key])
 
 export const zCreateVanity = z.object({
     destinyMembershipId: z.string().transform(s => s.toLowerCase()),
