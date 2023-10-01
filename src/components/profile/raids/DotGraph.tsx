@@ -106,9 +106,6 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
         }
     }
 
-    // update visible canvas when dots change
-    useEffect(updateVisibleCanvas, [dots])
-
     // update visible canvas when size of canvas changes
     useEffect(() => {
         const observer = new ResizeObserver(updateVisibleCanvas)
@@ -128,6 +125,11 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
             }
         }
     }, [containerRef, svgRef])
+
+    // update visible canvas when dots change
+    useEffect(updateVisibleCanvas, [dots])
+
+    const targetted = targetDot ? dots.get(targetDot) : null
 
     return (
         <div
@@ -152,26 +154,32 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                 {dots
                     ?.toJSON()
                     .slice(dotRange[0], dotRange[1])
-                    .map((a, idx) => {
-                        const centerX = SPACING / 2 + SPACING * (idx + dotRange[0])
-
-                        return (
-                            <Dot
-                                key={idx}
-                                centerX={centerX}
-                                activity={a}
-                                flawless={false}
-                                playerCount={6}
-                                // TODO
-                                // flawless={extended.flawless ?? false}
-                                // playerCount={extended.playerCount}
-                                centerY={getHeight(a.durationSeconds)}
-                                setTooltip={setDotTooltipData}
-                                tooltipData={dotTooltipData}
-                                isTargeted={targetDot === a.instanceId}
-                            />
-                        )
-                    })}
+                    .map((a, idx) => (
+                        <Dot
+                            key={a.instanceId}
+                            centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
+                            activity={a}
+                            centerY={getHeight(a.durationSeconds)}
+                            setTooltip={setDotTooltipData}
+                            tooltipData={dotTooltipData}
+                            isTargeted={a.instanceId === targetDot}
+                        />
+                    ))}
+                {/* Ensure the target dot is rendered */}
+                {targetted && (
+                    <Dot
+                        key={targetted.instanceId}
+                        centerX={
+                            SPACING / 2 +
+                            SPACING * dots.toJSON().findIndex(a => a.instanceId === targetDot)
+                        }
+                        activity={targetted}
+                        centerY={getHeight(targetted.durationSeconds)}
+                        setTooltip={setDotTooltipData}
+                        tooltipData={dotTooltipData}
+                        isTargeted={true}
+                    />
+                )}
             </svg>
         </div>
     )

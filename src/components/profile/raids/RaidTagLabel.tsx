@@ -49,17 +49,6 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     ) : null
 }
 
-// function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
-//     const tag = wfRaceMode(props)
-//     if (tag) {
-//         return `${strings.tags[tag]}${props.asterisk ? "*" : ""}${
-//             props.placement ? ` #${props.placement}` : ""
-//         }`
-//     } else {
-//         return null
-//     }
-// }
-
 function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string | null {
     // special cases
     let wishWall = false

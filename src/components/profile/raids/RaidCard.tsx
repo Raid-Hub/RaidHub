@@ -4,7 +4,6 @@ import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
 import { Difficulty, ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import { RaceTag } from "~/types/profile"
 import { useLocale } from "~/components/app/LocaleManager"
 import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
 import BigNumberStatItem from "./BigNumberStatItem"
@@ -16,6 +15,9 @@ import { secondsToHMS } from "~/util/presentation/formatting"
 import RaidTagLabel from "./RaidTagLabel"
 import RaceTagLabel from "./RaceTagLabel"
 import { includedIn } from "~/util/betterIncludes"
+import Expand from "~/images/icons/Expand"
+import { useRouter } from "next/router"
+import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -49,7 +51,7 @@ const report = {
     sherpaCount: 999,
     tags: [
         {
-            instanceId: "1",
+            instanceId: "12869660000",
             flawless: true,
             fresh: true,
             difficulty: Difficulty.NORMAL,
@@ -81,7 +83,23 @@ export default function RaidCard({
     activities,
     isLoadingActivities
 }: RaidModalProps) {
+    const router = useRouter()
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
+
+    const expand = () => {
+        router.push(
+            {
+                query: {
+                    ...router.query,
+                    raid: RaidToUrlPaths[raid]
+                }
+            },
+            undefined,
+            {
+                shallow: true
+            }
+        )
+    }
 
     useEffect(() => {
         if (hoveredTag) {
@@ -95,6 +113,8 @@ export default function RaidCard({
             }
         }
     }, [hoveredTag])
+
+    const recentClear = useMemo(() => activities?.find(a => a.completed && a.fresh), [activities])
 
     const { strings } = useLocale()
 
@@ -122,7 +142,7 @@ export default function RaidCard({
                     cloudflareId={RaidCardBackground[raid]}
                     alt={strings.raidNames[raid]}
                 />
-                <div className={styles["tag-row"]}>
+                <div className={styles["card-top"]}>
                     {report?.contestFirstClear && (
                         <RaceTagLabel
                             {...report.contestFirstClear}
@@ -132,6 +152,12 @@ export default function RaidCard({
                             setActiveId={setHoveredTag}
                         />
                     )}
+                    <div
+                        className={[styles["card-top-right"], styles["visible-on-card-hover"]].join(
+                            " "
+                        )}>
+                        <Expand color="white" sx={25} onClick={expand} />
+                    </div>
                 </div>
                 <div className={styles["img-overlay-bottom"]}>
                     <div className={styles["card-challenge-tags"]}>
@@ -169,6 +195,14 @@ export default function RaidCard({
                 <div className={styles["timings"]}>
                     <BigNumberStatItem
                         displayValue={
+                            recentClear ? secondsToHMS(recentClear.durationSeconds) : strings.na
+                        }
+                        isLoading={isLoadingActivities}
+                        name="Recent"
+                        href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
+                    />
+                    <BigNumberStatItem
+                        displayValue={
                             report?.fastestFullClear
                                 ? secondsToHMS(report.fastestFullClear.value)
                                 : strings.na
@@ -195,11 +229,21 @@ export default function RaidCard({
                                 : undefined
                         }
                     />
-                    <BigNumberStatItem
+                    {/* <BigNumberStatItem
                         displayValue={report?.sherpaCount ? report.sherpaCount : 0}
                         isLoading={isLoadingReport}
                         name={strings.sherpas}
                     />
+                    <BigNumberStatItem
+                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
+                        isLoading={isLoadingReport}
+                        name="Master Clears"
+                    />
+                    <BigNumberStatItem
+                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
+                        isLoading={isLoadingReport}
+                        name="Lowman Clears"
+                    /> */}
                 </div>
             </div>
         </m.div>

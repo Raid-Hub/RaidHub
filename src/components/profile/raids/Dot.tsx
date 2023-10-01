@@ -17,8 +17,6 @@ export const Teal = "#36c9bd"
 
 type DotProps = {
     activity: Activity
-    flawless: boolean
-    playerCount: number
     centerX: number
     centerY: number
     isTargeted: boolean
@@ -26,45 +24,39 @@ type DotProps = {
     setTooltip(data: DotTooltipProps | null): void
 }
 
-const Dot = ({
-    centerX,
-    activity,
-    flawless,
-    playerCount,
-    centerY,
-    isTargeted,
-    setTooltip,
-    tooltipData
-}: DotProps) => {
+const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
 
     const [raid, difficulty] = raidTupleFromHash(activity.hash)
 
     const handleHover = useCallback(
         ({ clientX, currentTarget }: MouseEvent) => {
+            // if anything breaks with the tooltip, check this first
             const containerToEdge =
                 currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
             const xOffset = clientX - containerToEdge + SPACING
 
+            console.log(containerToEdge, clientX)
             setTooltip({
                 isShowing: true,
                 activity,
-                flawless,
-                lowman:
-                    playerCount === 1
+                flawless: activity.flawless,
+                lowman: activity.completed
+                    ? activity.playerCount === 1
                         ? Tag.SOLO
-                        : playerCount === 2
+                        : activity.playerCount === 2
                         ? Tag.DUO
-                        : playerCount === 3
+                        : activity.playerCount === 3
                         ? Tag.TRIO
-                        : null,
+                        : null
+                    : null,
                 offset: {
                     x: xOffset,
                     y: centerY
                 }
             })
         },
-        [activity, centerY, flawless, playerCount, setTooltip]
+        [activity, centerY, setTooltip]
     )
 
     const handleMouseLeave = useCallback(
@@ -107,15 +99,15 @@ const Dot = ({
             onMouseLeave={handleMouseLeave}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}>
             <circle
-                fill={activity.completed ? (flawless ? Teal : Green) : Red}
+                fill={activity.completed ? (activity.flawless ? Teal : Green) : Red}
                 fillOpacity={0.978}
                 r={RADIUS}
                 cx={centerX}
                 cy={centerY}
             />
 
-            {playerCount <= 3 ? (
-                <Star x={centerX} y={centerY} spinning={playerCount === 1} />
+            {activity.completed && activity.playerCount <= 3 ? (
+                <Star x={centerX} y={centerY} spinning={activity.playerCount === 1} />
             ) : (
                 (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
                     <RaidSkull

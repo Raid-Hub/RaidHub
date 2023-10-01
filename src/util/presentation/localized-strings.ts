@@ -168,8 +168,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
         totalClears: "Total Clears",
-        fastestClear: "Fastest Clear",
-        averageClear: "Average Clear",
+        fastestClear: "Fastest",
+        averageClear: "Average",
         sherpas: "Sherpas",
         na: "N/A",
         checkpoints: {

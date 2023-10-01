@@ -30,11 +30,27 @@
     opacity: 0.95;
 }
 
-.tag-row {
+.card-top {
     position: absolute;
+    width: 100%;
     top: 0;
-    left: 0;
-    display: flex;
+}
+
+.card-top-right {
+    position: absolute;
+    right: 0;
+
+    padding: 0.6em;
+
+    cursor: pointer;
+}
+
+.visible-on-card-hover {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.card:hover .visible-on-card-hover {
+    opacity: 1;
 }
 
 .clickable-tag {
@@ -63,8 +79,9 @@
 }
 
 .race-tag {
+    position: absolute;
     cursor: pointer;
-    height: 100%;
+    height: min-content;
 
     color: white;
 
@@ -119,6 +136,7 @@
 
 .graph-right {
     flex: 0;
+    margin-left: 1em;
 }
 
 .dots-container {
@@ -217,15 +235,20 @@
 
 .timings {
     border-top: 1px solid var(--border);
+    padding: 1em;
+
     display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
     justify-content: center;
-    text-align: center;
     align-items: flex-start;
-    padding: 0;
+
+    text-align: center;
 }
 
 .timing {
-    margin: 1em;
+    flex: 1;
+    flex-basis: 69px;
     text-align: center;
 }
 
