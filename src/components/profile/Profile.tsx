@@ -34,7 +34,7 @@ export const useFilterContext = () => {
         try {
             return ctx?.predicate?.(activity) ?? true
         } catch (e) {
-            // we've hit an error with out filter
+            // we've hit an error with the saved filter
             return true
         }
     }

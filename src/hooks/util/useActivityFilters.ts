@@ -12,12 +12,12 @@ export const useActivityFilters = () => {
         const allFilters = localStorage.getItem(KEY_ACTIVITY_FILTER)
         if (allFilters !== null) {
             const cached = decodeFilters(JSON.parse(allFilters))
-            setActiveFilter(cached)
+            setFilter(cached)
         } else {
-            setActiveFilter(DefaultActivityFilters)
+            setFilter(DefaultActivityFilters)
         }
         setIsMounted(true)
-    }, [])
+    }, [setFilter])
 
     const saveFilter = (filter: ActivityFilter | null) => {
         localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter ? filter.encode() : null))
