@@ -7,7 +7,7 @@ import { providerIdToUsernamePropMap } from "~/server/next-auth/providerIdMap"
 export const removeProvider = protectedProcedure
     .input(
         z.object({
-            providerId: z.enum(["discord", "twitch", "twitter"])
+            providerId: z.enum(["discord", "twitch", "twitter", "google"])
         })
     )
     .mutation(async ({ input, ctx }) => {

@@ -23,9 +23,7 @@ export async function bungieProfile(
               "#" +
               primaryDestinyMembership.bungieGlobalDisplayNameCode
             : null,
-        discordUsername: null,
         twitchUsername: bungieNetUser.twitchDisplayName ?? null,
-        twitterUsername: null,
         image: `https://www.bungie.net${
             bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
         }${bungieNetUser.profilePicturePath}`,

@@ -2,12 +2,12 @@ import styles from "../../../styles/pages/profile/mid.module.css"
 import Loading from "../../global/Loading"
 import { toCustomDateString } from "../../../util/presentation/formatting"
 import { useLocale } from "../../app/LocaleManager"
-import Image from "next/image"
 import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
 import EagerEdge from "~/images/icons/destiny2/EagerEgde"
 import PinIcon from "~/images/icons/PinIcon"
+import CloudflareImage from "~/images/CloudflareImage"
 
 type PinnedActivityProps = {
     activityId: string
@@ -34,9 +34,9 @@ const PinnedActivity = ({
     ) : pgcr ? (
         <Link href={`/pgcr/${activityId}`} className={styles["pinned-activity"]}>
             {pgcr.raid !== null && (
-                <Image
+                <CloudflareImage
                     className={styles["pinned-background"]}
-                    src={RaidBanners[pgcr.raid]}
+                    cloudflareId={RaidBanners[pgcr.raid]}
                     alt="Pinned activity"
                     fill
                     priority

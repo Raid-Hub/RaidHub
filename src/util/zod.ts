@@ -19,10 +19,11 @@ const BungieMembershipEnum = z.nativeEnum({
 
 export const zProfile = z.object({
     destinyMembershipId: z.string(),
-    speedrunUsername: z.nullable(z.string()),
-    bungieUsername: z.nullable(z.string()),
-    discordUsername: z.nullable(z.string()),
-    twitchUsername: z.nullable(z.string()),
+    speedrunUsername: z.string().nullable().default(null),
+    bungieUsername: z.string(),
+    discordUsername: z.string().nullable().default(null),
+    twitchUsername: z.string().nullable().default(null),
+    youtubeUsername: z.string().nullable().default(null),
     destinyMembershipType: BungieMembershipEnum,
     twitterUsername: z.nullable(z.string()),
     pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
@@ -65,10 +66,11 @@ export const zModifiableProfile = z
 }
 
 export const zUsernames = z.object({
-    bungieUsername: z.string().nullable(),
-    discordUsername: z.string().nullable(),
-    twitterUsername: z.string().nullable(),
-    twitchUsername: z.string().nullable()
+    bungieUsername: z.string(),
+    discordUsername: z.string().nullable().default(null),
+    twitterUsername: z.string().nullable().default(null),
+    twitchUsername: z.string().nullable().default(null),
+    youtubeUsername: z.string().nullable().default(null)
 }) satisfies {
     _output: Partial<z.infer<typeof zProfile>>
 }
@@ -89,12 +91,10 @@ export const zUniqueDestinyProfile = z.object({
     }
 }
 
-export const zRaidURIComponent = z.object({
-    raid: z
-        .string()
-        .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
-        .transform(key => UrlPathsToRaid[key])
-})
+export const zRaidURIComponent = z
+    .string()
+    .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
+    .transform(key => UrlPathsToRaid[key])
 
 export const zCreateVanity = z.object({
     destinyMembershipId: z.string().transform(s => s.toLowerCase()),

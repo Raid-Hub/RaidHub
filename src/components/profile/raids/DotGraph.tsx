@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/profile/raids.module.css"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Collection } from "@discordjs/collection"
 import { median } from "~/util/math"
 import Activity from "~/models/profile/data/Activity"
@@ -87,10 +87,58 @@ type DotGraphProps = {
 
 function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const svgRef = useRef<SVGSVGElement>(null)
+
+    const [dotRange, setDotRange] = useState([0, 0])
+
+    const updateVisibleCanvas = () => {
+        if (svgRef.current && containerRef.current) {
+            const { left, right } = containerRef.current.getBoundingClientRect()
+            const { x } = svgRef.current.getBoundingClientRect()
+            const min = (left - x - SPACING / 2) / SPACING
+            const max = (right - x - SPACING / 2) / SPACING
+
+            setDotRange([
+                Math.max(0, Math.round(min - 12)),
+                Math.min(Math.round(max + 12), dots.size)
+            ])
+        }
+    }
+
+    // update visible canvas when size of canvas changes
+    useEffect(() => {
+        const observer = new ResizeObserver(updateVisibleCanvas)
+        containerRef.current && observer.observe(containerRef.current)
+        return () => {
+            observer.disconnect()
+        }
+    }, [containerRef.current])
+
+    // update visible canvas when scrolling
+    useEffect(() => {
+        const currRef = containerRef.current
+        if (currRef) {
+            currRef.addEventListener("scroll", updateVisibleCanvas)
+            return () => {
+                currRef.removeEventListener("scroll", updateVisibleCanvas)
+            }
+        }
+    }, [containerRef, svgRef])
+
+    // update visible canvas when dots change
+    useEffect(updateVisibleCanvas, [dots])
+
+    const targetted = targetDot ? dots.get(targetDot) : null
+
     return (
-        <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
+        <div
+            ref={containerRef}
+            className={styles["dots-container"]}
+            style={{ height: FULL_HEIGHT }}>
             {dotTooltipData && <DotTooltip {...dotTooltipData} />}
             <svg
+                ref={svgRef}
                 style={{
                     width: SPACING * (dots?.size ?? 200) + "px",
                     height: FULL_HEIGHT,
@@ -103,22 +151,35 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                     y2={LINE_Y}
                     style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                 />
-                {dots?.toJSON().map((a, idx) => (
+                {dots
+                    ?.toJSON()
+                    .slice(dotRange[0], dotRange[1])
+                    .map((a, idx) => (
+                        <Dot
+                            key={a.instanceId}
+                            centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
+                            activity={a}
+                            centerY={getHeight(a.durationSeconds)}
+                            setTooltip={setDotTooltipData}
+                            tooltipData={dotTooltipData}
+                            isTargeted={a.instanceId === targetDot}
+                        />
+                    ))}
+                {/* Ensure the target dot is rendered */}
+                {targetted && (
                     <Dot
-                        key={idx}
-                        index={idx}
-                        activity={a}
-                        flawless={false}
-                        playerCount={6}
-                        // TODO
-                        // flawless={extended.flawless ?? false}
-                        // playerCount={extended.playerCount}
-                        centerY={getHeight(a.durationSeconds)}
+                        key={targetted.instanceId}
+                        centerX={
+                            SPACING / 2 +
+                            SPACING * dots.toJSON().findIndex(a => a.instanceId === targetDot)
+                        }
+                        activity={targetted}
+                        centerY={getHeight(targetted.durationSeconds)}
                         setTooltip={setDotTooltipData}
                         tooltipData={dotTooltipData}
-                        isTargeted={targetDot === a.instanceId}
+                        isTargeted={true}
                     />
-                ))}
+                )}
             </svg>
         </div>
     )

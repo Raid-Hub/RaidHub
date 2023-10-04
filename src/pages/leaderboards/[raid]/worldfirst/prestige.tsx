@@ -36,7 +36,7 @@ export const getStaticProps: GetStaticProps<PrestigeWFPageProps, { raid: string 
     params
 }) => {
     try {
-        const { raid } = zRaidURIComponent.parse(params)
+        const raid = zRaidURIComponent.parse(params?.raid)
         if (!includedIn(PrestigeRaids, raid)) {
             throw Error("raid does not have a prestige version")
         }

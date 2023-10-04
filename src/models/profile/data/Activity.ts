@@ -46,14 +46,19 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
         return count <= 0 ? Infinity : count
     }
 
-    get flawless() {
-        // todo
-        return this.values.deaths.basic.value === 0
-    }
-
     get fresh() {
         // todo
         return Number(this.instanceId) % 2 === 0
+    }
+
+    get flawless() {
+        // todo
+        return this.completed && this.fresh && this.values.deaths.basic.value === 0
+    }
+
+    get playerIds() {
+        // todo
+        return ["123", "456"]
     }
 
     static combineCollections(x: Collection<string, Activity>, y: Collection<string, Activity>) {

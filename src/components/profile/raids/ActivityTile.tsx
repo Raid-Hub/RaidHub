@@ -5,9 +5,9 @@ import { raidVersion } from "../../../util/destiny/raidUtils"
 import Activity from "../../../models/profile/data/Activity"
 import { useMemo } from "react"
 import { Tag } from "../../../util/raidhub/tags"
-import Image from "next/image"
-import RaidCardBackground from "../../../images/raid-backgrounds"
 import { m } from "framer-motion"
+import RaidCardBackground from "~/images/raid-backgrounds"
+import CloudflareImage from "~/images/CloudflareImage"
 
 type ActivityTileProps = { activity: Activity }
 
@@ -52,8 +52,8 @@ const ActivityTile = ({
                     scale: 1.035
                 }}
                 className={styles["activity"]}>
-                <Image
-                    src={RaidCardBackground[raid]}
+                <CloudflareImage
+                    cloudflareId={RaidCardBackground[raid]}
                     alt={`Raid card for ${strings.raidNames[raid]}`}
                     fill
                     sizes="160px"

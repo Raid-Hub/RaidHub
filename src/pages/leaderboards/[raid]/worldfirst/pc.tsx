@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps<
     { raid: string }
 > = async ({ params }) => {
     try {
-        const { raid } = zRaidURIComponent.parse(params)
+        const raid = zRaidURIComponent.parse(params?.raid)
         if (raid !== Raid.LEVIATHAN) {
             throw Error("raid released on pc and console at the same time")
         }
