@@ -24,6 +24,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: center;
+    position: relative;
 }
 
 .desc {
@@ -79,4 +80,11 @@
 .desc-text a {
     text-decoration: underline;
     color: #c56f24;
+}
+
+.clan-banner-mast {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
 }
