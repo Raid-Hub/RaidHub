@@ -17,11 +17,6 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "cdn.raidhub.app",
                 pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
-            },
-            {
-                protocol: "https",
-                hostname: "imagedelivery.net",
-                pathname: `/${cloudflareHost}/*`
             }
         ]
     },
