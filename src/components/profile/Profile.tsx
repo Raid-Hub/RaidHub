@@ -30,7 +30,14 @@ export const useFilterContext = () => {
     const ctx = useContext(FilterContext)
     if (ctx === undefined)
         throw Error("This hook must be used inside the raids part of the profile")
-    return (activity: Activity) => ctx?.predicate?.(activity) ?? true
+    return (activity: Activity) => {
+        try {
+            return ctx?.predicate?.(activity) ?? true
+        } catch (e) {
+            // we've hit an error with out filter
+            return true
+        }
+    }
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileProps) => {
@@ -79,7 +86,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
         setLayout(newState)
     }
 
-    const [activeFilter, setActiveFilter, isFilterMounted] = useActivityFilters()
+    const { activeFilter, setActiveFilter, isFilterMounted } = useActivityFilters()
 
     const username =
         raidHubProfile?.name ??

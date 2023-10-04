@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/profile/raids.module.css"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Collection } from "@discordjs/collection"
 import { median } from "~/util/math"
 import Activity from "~/models/profile/data/Activity"
@@ -92,7 +92,7 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
 
     const [dotRange, setDotRange] = useState([0, 0])
 
-    const updateVisibleCanvas = () => {
+    const updateVisibleCanvas = useCallback(() => {
         if (svgRef.current && containerRef.current) {
             const { left, right } = containerRef.current.getBoundingClientRect()
             const { x } = svgRef.current.getBoundingClientRect()
@@ -104,7 +104,7 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                 Math.min(Math.round(max + 12), dots.size)
             ])
         }
-    }
+    }, [dots])
 
     // update visible canvas when size of canvas changes
     useEffect(() => {
@@ -113,7 +113,7 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
         return () => {
             observer.disconnect()
         }
-    }, [containerRef.current])
+    }, [updateVisibleCanvas])
 
     // update visible canvas when scrolling
     useEffect(() => {
@@ -124,10 +124,10 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                 currRef.removeEventListener("scroll", updateVisibleCanvas)
             }
         }
-    }, [containerRef, svgRef])
+    }, [containerRef, svgRef, updateVisibleCanvas])
 
     // update visible canvas when dots change
-    useEffect(updateVisibleCanvas, [dots])
+    useEffect(updateVisibleCanvas, [dots, updateVisibleCanvas])
 
     const targetted = targetDot ? dots.get(targetDot) : null
 

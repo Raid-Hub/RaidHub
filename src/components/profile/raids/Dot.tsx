@@ -36,7 +36,6 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                 currentTarget.parentElement!.parentElement!.getBoundingClientRect().left
             const xOffset = clientX - containerToEdge + SPACING
 
-            console.log(containerToEdge, clientX)
             setTooltip({
                 isShowing: true,
                 activity,
