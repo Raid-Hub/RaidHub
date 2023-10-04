@@ -74,7 +74,7 @@ export const getStaticProps: GetStaticProps<
             .object({
                 board: z.array(z.string()).optional()
             })
-            .merge(zRaidURIComponent)
+            .merge(z.object({ raid: zRaidURIComponent }))
             .parse(params)
 
         const dict = SpeedrunVariables[raid]?.values

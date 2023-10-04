@@ -1,3 +1,4 @@
+import { ZodType, z } from "zod"
 import Activity from "~/models/profile/data/Activity"
 import GroupActivityFilter from "~/models/profile/filters/GroupActivityFilter"
 import HighOrderActivityFilter from "~/models/profile/filters/HighOrderActivityFilter"
@@ -5,7 +6,8 @@ import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
 import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
 import { FilterCallback } from "~/types/generic"
 import { ActivityFilter } from "~/types/profile"
-import { Difficulty } from "~/types/raids"
+import { CommonRaidDifficulties, Difficulty } from "~/types/raids"
+import { includedIn } from "../betterIncludes"
 
 export enum FilterOption {
     SUCCESS = "Success",
@@ -15,15 +17,24 @@ export enum FilterOption {
     SOLO = "Solo",
     CPB = "CP Bot",
     DIFFICULTY = "Difficulty",
-    MIN_MINS_PLAYED = "MinMins"
+    MIN_MINS_PLAYED = "Min Mins",
+    PLAYED_WITH = "Played With"
 }
 
 export const HighOrderActivityFilters = {
     [FilterOption.DIFFICULTY]: (difficulty: Difficulty) => (activity: Activity) =>
         difficulty === activity.difficulty,
     [FilterOption.MIN_MINS_PLAYED]: (minutes: number) => (activity: Activity) =>
-        activity.durationSeconds >= minutes * 60
+        activity.durationSeconds >= minutes * 60,
+    [FilterOption.PLAYED_WITH]: (playerIds: string[]) => (activity: Activity) =>
+        playerIds.every(id => activity.playerIds.includes(id))
 } satisfies Record<string, (arg: any) => FilterCallback<Activity>>
+
+export const HighOrderActivityFilterSchema = {
+    [FilterOption.DIFFICULTY]: z.number().refine(n => includedIn(CommonRaidDifficulties, n)),
+    [FilterOption.MIN_MINS_PLAYED]: z.number().min(0),
+    [FilterOption.PLAYED_WITH]: z.string().transform(s => s.split(",").map(ss => ss.trim()))
+} satisfies Record<keyof typeof HighOrderActivityFilters, ZodType>
 
 export const SingleActivityFilters = {
     [FilterOption.SUCCESS]: (activity: Activity) => !!activity.completed,
@@ -48,7 +59,8 @@ export enum FilterListName {
     Cpb,
     MinMinutes,
     Master,
-    Prestige
+    Prestige,
+    PlayedWith
 }
 export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> = {
     [FilterListName.Success]: () => new SingleActivityFilter(FilterOption.SUCCESS),
@@ -56,10 +68,13 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
         new NotActivityFilter(new SingleActivityFilter(FilterOption.SUCCESS)),
     [FilterListName.Flawless]: () => new SingleActivityFilter(FilterOption.FLAWLESS),
     [FilterListName.AnyLowman]: () =>
-        new GroupActivityFilter("|", [
-            new SingleActivityFilter(FilterOption.SOLO),
-            new SingleActivityFilter(FilterOption.DUO),
-            new SingleActivityFilter(FilterOption.TRIO)
+        new GroupActivityFilter("&", [
+            new SingleActivityFilter(FilterOption.SUCCESS),
+            new GroupActivityFilter("|", [
+                new SingleActivityFilter(FilterOption.SOLO),
+                new SingleActivityFilter(FilterOption.DUO),
+                new SingleActivityFilter(FilterOption.TRIO)
+            ])
         ]),
     [FilterListName.Solo]: () => new SingleActivityFilter(FilterOption.SOLO),
     [FilterListName.Duo]: () => new SingleActivityFilter(FilterOption.DUO),
@@ -70,6 +85,7 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
     [FilterListName.Prestige]: () =>
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.PRESTIGE),
     [FilterListName.Cpb]: () => new SingleActivityFilter(FilterOption.CPB),
+    [FilterListName.PlayedWith]: () => new HighOrderActivityFilter(FilterOption.PLAYED_WITH, []),
     [FilterListName.Or]: () => new GroupActivityFilter("|", []),
     [FilterListName.And]: () => new GroupActivityFilter("&", []),
     [FilterListName.Not]: () => new NotActivityFilter(null)
@@ -77,24 +93,13 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
 
 // min 5 mins played or lowman
 export const DefaultActivityFilters = new GroupActivityFilter("|", [
-    new GroupActivityFilter("&", [
-        FiltersToSelectFrom[FilterListName.AnyLowman](),
-        FiltersToSelectFrom[FilterListName.Success]()
-    ]),
+    FiltersToSelectFrom[FilterListName.AnyLowman](),
     new GroupActivityFilter("&", [
         FiltersToSelectFrom[FilterListName.MinMinutes](),
         new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]()),
         new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])
-
-const brackets = ["<", ">", "[", "]", "{", "}", "(", ")"]
-const bracketInverse = {
-    ">": "<",
-    "]": "[",
-    "}": "{",
-    ")": "("
-} as Record<string, string>
 
 export function decodeFilters(json: any): ActivityFilter | null {
     if (!json) return null

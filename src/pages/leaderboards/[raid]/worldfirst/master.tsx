@@ -36,7 +36,7 @@ export const getStaticProps: GetStaticProps<MasterWFPageProps, { raid: string }>
     params
 }) => {
     try {
-        const { raid } = zRaidURIComponent.parse(params)
+        const raid = zRaidURIComponent.parse(params?.raid)
         if (!includedIn(MasterRaids, raid)) {
             throw Error("raid does not have a master version")
         }

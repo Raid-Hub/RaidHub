@@ -4,35 +4,34 @@ import { ActivityFilter } from "../../types/profile"
 
 export const KEY_ACTIVITY_FILTER = "profile_activity_filter"
 
-export const useActivityFilters = (): [
-    ActivityFilter | null,
-    (filter: ActivityFilter | null) => void,
-    boolean
-] => {
-    const [activeFilter, setActiveFilter] = useState<ActivityFilter | null>(null)
+export const useActivityFilters = () => {
+    const [activeFilter, setFilter] = useState<ActivityFilter | null>(null)
     const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
         const allFilters = localStorage.getItem(KEY_ACTIVITY_FILTER)
         if (allFilters !== null) {
             const cached = decodeFilters(JSON.parse(allFilters))
-            setActiveFilter(cached)
+            setFilter(cached)
         } else {
-            setActiveFilter(DefaultActivityFilters)
+            setFilter(DefaultActivityFilters)
         }
         setIsMounted(true)
-    }, [])
+    }, [setFilter])
 
     const saveFilter = (filter: ActivityFilter | null) => {
         localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter ? filter.encode() : null))
     }
 
-    return [
+    const setActiveFilter = (filter: ActivityFilter | null) => {
+        setFilter(filter)
+        saveFilter(filter)
+    }
+
+    return {
         activeFilter,
-        filter => {
-            setActiveFilter(filter)
-            saveFilter(filter)
-        },
-        isMounted
-    ]
+        setActiveFilter,
+        isFilterMounted: isMounted,
+        clear: () => localStorage.removeItem(KEY_ACTIVITY_FILTER)
+    }
 }

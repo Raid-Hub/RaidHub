@@ -58,7 +58,7 @@ export interface LocalStrings {
     logOut: string
     logInWith: string
     activityFilters: { [key in FilterOption]: string }
-    activeFilters: string
+    manageFilters: string
     filterNames: { [key in FilterListName]: string }
     clickToView: string
     loginToAccess: string
@@ -157,9 +157,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [Difficulty.PRESTIGE]: "Prestige",
             [Difficulty.MASTER]: "Master",
             [Difficulty.CONTEST]: "Contest",
-            [Difficulty.CHALLENGE_VOG]: "Tempo's Edge",
-            [Difficulty.CHALLENGE_KF]: "Regicide",
-            [Difficulty.CHALLENGE_CROTA]: "Superior Swordplay"
+            [Difficulty.CHALLENGE_VOG]: "Challenge",
+            [Difficulty.CHALLENGE_KF]: "Challenge",
+            [Difficulty.CHALLENGE_CROTA]: "Challenge"
         },
         worldFirstLeaderboards: "World First Race Leaderboards",
         otherLeaderboards: "Other Leaderboards",
@@ -168,8 +168,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         clearsLeaderboards: "Clears Leaderboards",
         comingSoon: "Coming soon...",
         totalClears: "Total Clears",
-        fastestClear: "Fastest Clear",
-        averageClear: "Average Clear",
+        fastestClear: "Fastest",
+        averageClear: "Average",
         sherpas: "Sherpas",
         na: "N/A",
         checkpoints: {
@@ -206,9 +206,10 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterOption.SOLO]: "Solo",
             [FilterOption.CPB]: ">50 Players",
             [FilterOption.DIFFICULTY]: "Difficulty",
-            [FilterOption.MIN_MINS_PLAYED]: "Min minutes played"
+            [FilterOption.MIN_MINS_PLAYED]: "Min minutes played",
+            [FilterOption.PLAYED_WITH]: "Played with"
         },
-        activeFilters: "Active Filters",
+        manageFilters: "Manage Filters",
         filterNames: {
             [FilterListName.Success]: "Complete",
             [FilterListName.Incomplete]: "Incomplete",
@@ -223,7 +224,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.Cpb]: "Checkpoint Bot",
             [FilterListName.Or]: "Or Group",
             [FilterListName.And]: "And Group",
-            [FilterListName.Not]: "Not Element"
+            [FilterListName.Not]: "Not Element",
+            [FilterListName.PlayedWith]: "Played With"
         },
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
