@@ -2,76 +2,98 @@ import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
 import { useClanBanner } from "../app/DestinyManifestManager"
 import { ClanBanner } from "bungie-net-core/models"
 
+const mast =
+    "https://cdn.raidhub.app/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"
+
 type ClanBannerProps = { data: ClanBanner; sx: number }
 
 const ClanBanner = ({ data, sx }: ClanBannerProps) => {
-    const { data: queryData } = useClanBanner(data)
+    const { data: bannerData } = useClanBanner(data)
 
-    return queryData ? (
+    const mastWidthRaw = 9.4 * sx
+    const mastWidth = `${mastWidthRaw}px`
+    const mastHeight = `${mastWidthRaw * (768 / 368)}px`
+
+    const bannerWidthRaw = 9 * sx
+    const bannerWidth = `${bannerWidthRaw}px`
+    const bannerHeight = `${bannerWidthRaw * (16 / 9)}px`
+
+    const bannerOffset = `${-0.41 * sx}px`
+    const bannerCentering = `translate(${(mastWidthRaw - bannerWidthRaw) / 2})`
+
+    return bannerData ? (
         <svg
-            style={{ width: `${9 * sx}px`, height: `${16 * sx}px` }}
-            xmlns="http://www.w3.org/2000/svg"
-            width="100%"
-            height="100%">
-            <defs>
-                <mask id="gonfalcons">
-                    <image
-                        width="100%"
-                        height="100%"
-                        xlinkHref={clanBannerBannerLayerUrl(queryData.gonfalcons.path)}
-                    />
-                </mask>
-                <mask id="topDecal">
-                    <image
-                        width="100%"
-                        height="100%"
-                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalTop.path)}
-                        mask="url(#gonfalcons)"
-                    />
-                </mask>
-                <mask id="decal2">
-                    <image
-                        width="100%"
-                        height="100%"
-                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalSecondary.path)}
-                        mask="url(#gonfalcons)"
-                    />
-                </mask>
-                <mask id="decal">
-                    <image
-                        width="100%"
-                        height="100%"
-                        xlinkHref={clanBannerBannerLayerUrl(queryData.decalPrimary.path)}
-                        mask="url(#gonfalcons)"
-                    />
-                </mask>
-            </defs>
-            <g cx="50%" cy="50%">
+            key={"banner"}
+            style={{ width: mastWidth, height: mastHeight }}
+            xmlns="http://www.w3.org/2000/svg">
+            <g transform={bannerCentering}>
+                <defs>
+                    <mask id="gonfalcons">
+                        <image
+                            y={bannerOffset}
+                            width={bannerWidth}
+                            height={bannerHeight}
+                            xlinkHref={clanBannerBannerLayerUrl(bannerData.gonfalcons.path)}
+                        />
+                    </mask>
+                    <mask id="topDecal">
+                        <image
+                            y={bannerOffset}
+                            width={bannerWidth}
+                            height={bannerHeight}
+                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalTop.path)}
+                            mask="url(#gonfalcons)"
+                        />
+                    </mask>
+                    <mask id="decal2">
+                        <image
+                            y={bannerOffset}
+                            width={bannerWidth}
+                            height={bannerHeight}
+                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalSecondary.path)}
+                            mask="url(#gonfalcons)"
+                        />
+                    </mask>
+                    <mask id="decal">
+                        <image
+                            y={bannerOffset}
+                            width={bannerWidth}
+                            height={bannerHeight}
+                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalPrimary.path)}
+                            mask="url(#gonfalcons)"
+                        />
+                    </mask>
+                </defs>
                 <rect
-                    width="100%"
-                    height="100%"
-                    fill={queryData.gonfalcons.color}
+                    y={bannerOffset}
+                    width={bannerWidth}
+                    height={bannerHeight}
+                    fill={bannerData.gonfalcons.color}
                     mask="url(#gonfalcons)"
                 />
                 <rect
-                    width="100%"
-                    height="100%"
-                    fill={queryData.decalTop.color}
+                    y={bannerOffset}
+                    width={bannerWidth}
+                    height={bannerHeight}
+                    fill={bannerData.decalTop.color}
                     mask="url(#topDecal)"
                 />
                 <rect
-                    width="100%"
-                    height="100%"
-                    fill={queryData.decalSecondary.color}
+                    y={bannerOffset}
+                    width={bannerWidth}
+                    height={bannerHeight}
+                    fill={bannerData.decalSecondary.color}
                     mask="url(#decal2)"
                 />
                 <rect
-                    width="100%"
-                    height="100%"
-                    fill={queryData.decalPrimary.color}
+                    y={bannerOffset}
+                    width={bannerWidth}
+                    height={bannerHeight}
+                    fill={bannerData.decalPrimary.color}
                     mask="url(#decal)"
                 />
             </g>
+            <image xlinkHref={mast} width="100%" height="100%" />
         </svg>
     ) : null
 }

@@ -1,6 +1,8 @@
 /** @type {import('./src/util/presentation/localized-strings').SupportedLanguage[]} */
 const locales = ["en"]
 
+const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
@@ -14,7 +16,7 @@ const nextConfig = {
             {
                 protocol: "https",
                 hostname: "cdn.raidhub.app",
-                pathname: "/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/*"
+                pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
             }
         ]
     },
