@@ -81,10 +81,3 @@
     text-decoration: underline;
     color: #c56f24;
 }
-
-.clan-banner-mast {
-    position: absolute;
-    left: 50%;
-    top: 52%;
-    transform: translate(-50%, -50%);
-}

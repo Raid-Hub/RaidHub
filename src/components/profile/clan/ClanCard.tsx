@@ -27,7 +27,7 @@ const ClanCard = () => {
     ) : clan ? (
         <Link href={`/clan/${clan.groupId}`} className={styles["clan"]}>
             <div className={styles["clan-banner-container"]}>
-                <ClanBanner data={clan.clanInfo.clanBannerData} isClanPage={false} sx={10} />
+                <ClanBanner data={clan.clanInfo.clanBannerData} sx={10} />
             </div>
             <div className={styles["desc"]}>
                 <span className={styles["desc-title"]}>
