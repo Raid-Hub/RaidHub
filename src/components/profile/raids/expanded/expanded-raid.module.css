@@ -1,0 +1,59 @@
+.expanded-raid {
+    background-color: var(--modal-background);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 1em;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bungie-stats {
+    flex: 0 0 70%;
+    max-width: 70%;
+}
+
+.table {
+    border-collapse: collapse;
+    margin: 20px;
+}
+
+.table th,
+.table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: center;
+}
+
+.history {
+    flex: 0 0 30%;
+    max-width: 30%;
+}
+
+.history-activities {
+    overflow: auto;
+    max-height: 400px;
+}
+
+.activity {
+    transition: color 0.2s ease-out;
+}
+
+.activity:hover {
+    color: var(--brand-orange-light);
+}
+
+.activity h5 {
+    margin: 0;
+    padding: 0.3em;
+}
+
+@media (max-width: 768px) {
+    .bungie-stats,
+    .history {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

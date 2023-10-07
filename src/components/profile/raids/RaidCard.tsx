@@ -213,21 +213,6 @@ export default function RaidCard({
                                 : undefined
                         }
                     />
-                    {/* <BigNumberStatItem
-                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
-                        isLoading={isLoadingReport}
-                        name={strings.sherpas}
-                    />
-                    <BigNumberStatItem
-                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
-                        isLoading={isLoadingReport}
-                        name="Master Clears"
-                    />
-                    <BigNumberStatItem
-                        displayValue={report?.sherpaCount ? report.sherpaCount : 0}
-                        isLoading={isLoadingReport}
-                        name="Lowman Clears"
-                    /> */}
                 </div>
             </div>
         </m.div>
