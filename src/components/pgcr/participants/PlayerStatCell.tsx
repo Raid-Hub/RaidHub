@@ -1,5 +1,5 @@
-import styles from "../../styles/pages/pgcr.module.css"
-import { SVGComponent } from "../reusable/SVG"
+import styles from "~/styles/pages/pgcr.module.css"
+import { SVGComponent } from "../../reusable/SVG"
 
 const PlayerStatCell = ({
     icon: Icon,

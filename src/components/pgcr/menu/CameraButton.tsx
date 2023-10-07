@@ -1,7 +1,7 @@
-import styles from "../../styles/reusable-components/camera-button.module.css"
+import styles from "~/styles/reusable-components/camera-button.module.css"
 import { Variant, m } from "framer-motion"
 import { useState } from "react"
-import { useScreenshot } from "../reusable/ScreenshotContainer"
+import { useScreenshot } from "~/components/reusable/ScreenshotContainer"
 
 const CameraButton = () => {
     const [isLoading, setIsLoading] = useState(false)

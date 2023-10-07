@@ -11,6 +11,7 @@
 # next.js
 /.next/
 /out/
+/analyze/
 
 # production
 /build
@@ -39,9 +40,6 @@ yarn-error.log*
 
 # docker
 raidhub-app-db/
-
-# artifacts
-public/profile-*
 
 # test page
 src/pages/test.tsx

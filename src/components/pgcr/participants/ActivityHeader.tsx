@@ -1,8 +1,8 @@
-import styles from "../../styles/pages/pgcr.module.css"
-import { toCustomDateString } from "../../util/presentation/formatting"
-import { useLocale } from "../app/LocaleManager"
-import { Raid } from "../../types/raids"
-import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import styles from "~/styles/pages/pgcr.module.css"
+import { toCustomDateString } from "~/util/presentation/formatting"
+import { useLocale } from "~/components/app/LocaleManager"
+import { Raid } from "~/types/raids"
+import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 
 const ActivityHeader = () => {
     const { data: pgcr, isLoading } = usePGCRContext()

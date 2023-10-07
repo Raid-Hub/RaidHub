@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react"
-import { UseLocalStorage } from "../../hooks/util/useLocalStorage"
-import styles from "../../styles/pages/pgcr.module.css"
-import { useLocale } from "../app/LocaleManager"
-import ToggleSwitch from "../reusable/ToggleSwitch"
+import { UseLocalStorage } from "~/hooks/util/useLocalStorage"
+import styles from "~/styles/pages/pgcr.module.css"
+import { useLocale } from "~/components/app/LocaleManager"
+import ToggleSwitch from "~/components/reusable/ToggleSwitch"
 import PinPCRCell from "./PinPGCRCell"
-import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import CameraButton from "./CameraButton"
 
 export type PGCRSettings = {

@@ -1,10 +1,10 @@
-import styles from "../../styles/pages/pgcr.module.css"
-import PGCRPlayer from "../../models/pgcr/Player"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRPlayer from "../../../models/pgcr/Player"
 import Image from "next/image"
-import { bannerEmblemUrl } from "../../util/destiny/bungie-icons"
-import PGCRCharacter from "../../models/pgcr/Character"
-import { useItem } from "../app/DestinyManifestManager"
-import { useLocale } from "../app/LocaleManager"
+import { bannerEmblemUrl } from "../../../util/destiny/bungie-icons"
+import PGCRCharacter from "../../../models/pgcr/Character"
+import { useItem } from "../../app/DestinyManifestManager"
+import { useLocale } from "../../app/LocaleManager"
 
 type SelectedPlayerProps = {
     player: PGCRPlayer

@@ -1,17 +1,17 @@
 import styles from "~/styles/pages/pgcr.module.css"
-import ParticipantsSection from "./ParticipantsSection"
+import ParticipantsSection from "./participants/ParticipantsSection"
 import SummaryStatsGrid from "./SummaryStatsGrid"
-import ActivityHeader from "./ActivityHeader"
+import ActivityHeader from "./participants/ActivityHeader"
 import KebabMenu from "../reusable/KebabMenu"
 import ScreenshotContainer from "../reusable/ScreenshotContainer"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import PGCRSettingsMenu, { PGCRSettings } from "./PGCRSettingsMenu"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { createRef } from "react"
 import { BackdropOpacity } from "~/util/destiny/raidUtils"
 import { Raid } from "~/types/raids"
 import CloudflareImage from "~/images/CloudflareImage"
+import PGCRSettingsMenu, { PGCRSettings } from "./menu/PGCRSettingsMenu"
 
 const defaultPrefs = {
     showScore: false
