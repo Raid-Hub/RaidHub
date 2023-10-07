@@ -18,6 +18,8 @@
 .table {
     border-collapse: collapse;
     margin: 20px;
+
+    overflow-x: auto;
 }
 
 .table th,
@@ -51,6 +53,9 @@
 }
 
 @media (max-width: 768px) {
+    .table {
+        display: block;
+    }
     .bungie-stats,
     .history {
         flex: 0 0 100%;
