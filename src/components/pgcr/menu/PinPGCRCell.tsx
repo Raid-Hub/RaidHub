@@ -1,4 +1,4 @@
-import { useLocale } from "../app/LocaleManager"
+import { useLocale } from "../../app/LocaleManager"
 import { usePGCRContext } from "~/pages/pgcr/[activityId]"
 import { useOptimisticProfileUpdate } from "~/hooks/raidhub/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"

@@ -12,6 +12,7 @@
 
 .card-loading {
     min-height: 30vh;
+    max-width: 475px;
 
     border-radius: 15px;
     border: 1px solid var(--border);

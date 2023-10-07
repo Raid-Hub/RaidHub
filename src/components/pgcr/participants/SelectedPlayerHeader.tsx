@@ -1,7 +1,7 @@
 import styles from "~/styles/pages/pgcr.module.css"
 import PGCRPlayer from "~/models/pgcr/Player"
 import SelectedPlayer from "./SelectedPlayer"
-import { useLocale } from "../app/LocaleManager"
+import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import PGCRCharacter from "~/models/pgcr/Character"
 import ExternalLink from "~/images/icons/ExternalLink"

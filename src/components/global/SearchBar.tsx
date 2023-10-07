@@ -4,6 +4,7 @@ import { useSearch } from "../../hooks/bungie/useSearch"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import Loader from "../reusable/Loader"
+import Search from "~/images/icons/Search"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -82,16 +83,11 @@ const SearchBar = ({}: SearchBarProps) => {
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
-                {
-                    isPerformingExactSearch || isLoadingResults || isRedirecting ? <Loader /> : null
-                    // <Image
-                    //     className={styles["search-img"]}
-                    //     src={Search}
-                    //     alt="search"
-                    //     width={15}
-                    //     height={15}
-                    // />
-                }
+                {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
+                    <Loader stroke={2} />
+                ) : (
+                    <Search color="white" />
+                )}
             </div>
             <form onSubmit={handleFormEnter}>
                 <input

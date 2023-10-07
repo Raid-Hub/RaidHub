@@ -84,7 +84,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
     }
 
     get didComplete(): boolean {
-        return !!this.values.completed.basic.value
+        return !!this.values.completed.basic.value && this.values.completionReason.basic.value === 0
     }
 
     get classType(): DestinyClass {

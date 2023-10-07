@@ -29,7 +29,7 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
     }
 
     get completed() {
-        return !!this.values.completed.basic.value
+        return !!this.values.completed.basic.value && this.values.completionReason.basic.value === 0
     }
 
     get durationSeconds() {

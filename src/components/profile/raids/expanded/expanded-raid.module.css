@@ -1,0 +1,90 @@
+.expanded-raid {
+    background-color: var(--modal-background);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 1em;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bungie-stats {
+    flex: 0 0 70%;
+    max-width: 70%;
+}
+
+.table {
+    border-collapse: collapse;
+    margin: 20px;
+
+    overflow-x: auto;
+}
+
+.table th,
+.table td {
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: center;
+}
+
+.history {
+    flex: 0 0 30%;
+    max-width: 30%;
+}
+
+.history-activities {
+    overflow: auto;
+    max-height: 400px;
+}
+
+.activity {
+    transition: color 0.2s ease-out;
+}
+
+.activity:hover {
+    color: var(--brand-orange-light);
+}
+
+.activity h5 {
+    margin: 0;
+    padding: 0.3em;
+}
+
+.weekly-progress {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.character-progress-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+    align-items: center;
+}
+
+.character-progress-header .image-container {
+    position: relative;
+    aspect-ratio: 1/1;
+    width: 48px;
+}
+
+.progress-boxes {
+    display: grid;
+    gap: 0.4em;
+}
+
+@media (max-width: 768px) {
+    .table {
+        display: block;
+    }
+    .bungie-stats,
+    .history {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

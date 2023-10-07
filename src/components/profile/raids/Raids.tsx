@@ -13,6 +13,7 @@ import RaidStats from "~/models/profile/data/RaidStats"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
+import ExpandedRaidView from "./expanded/ExpandedRaidView"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -95,28 +96,33 @@ const Raids = ({
         encoder: raid => RaidToUrlPaths[raid]
     })
 
+    const isLoadingStats =
+        !areMembershipsFetched || !areAllCharactersFound || characterQueries.some(q => q.isLoading)
+
     if (expandedRaid) {
         return (
-            <div
-                style={{
-                    backgroundColor: "var(--modal-background)",
-                    minHeight: "700px",
-                    borderRadius: "10px",
-                    border: "1px solid var(--border)",
-                    padding: "1em"
-                }}>
-                <button onClick={clearExpandedRaid}>close</button> <h2>coming soon...</h2>
-            </div>
+            <ExpandedRaidView
+                raid={expandedRaid}
+                dismiss={clearExpandedRaid}
+                {...(isLoadingStats
+                    ? { stats: undefined, isLoadingStats: true }
+                    : {
+                          stats:
+                              characterStats?.get(expandedRaid) ?? new RaidStats([], expandedRaid),
+                          isLoadingStats: false
+                      })}
+                {...(isLoadingActivities
+                    ? { activities: undefined, isLoadingActivities: true }
+                    : {
+                          activities: activitiesByRaid?.get(expandedRaid) ?? new Collection(),
+                          isLoadingActivities: false
+                      })}
+            />
         )
     }
 
     switch (layout) {
         case Layout.DotCharts:
-            const isLoadingStats =
-                !areMembershipsFetched ||
-                !areAllCharactersFound ||
-                characterQueries.some(q => q.isLoading)
-
             return (
                 <div className={styles["cards"]}>
                     {ListedRaids.map(raid => (

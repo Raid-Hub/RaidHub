@@ -1,12 +1,12 @@
-import styles from "../../styles/pages/pgcr.module.css"
+import styles from "~/styles/pages/pgcr.module.css"
 import { useCallback } from "react"
-import PGCRPlayer from "../../models/pgcr/Player"
+import PGCRPlayer from "../../../models/pgcr/Player"
 import PlayerCell from "./PlayerCell"
 import SelectedPlayerHeader from "./SelectedPlayerHeader"
 import { useRouter } from "next/router"
-import { usePGCRContext } from "../../pages/pgcr/[activityId]"
+import { usePGCRContext } from "../../../pages/pgcr/[activityId]"
 import PlayerStatCells from "./PlayerStatCells"
-import DestinyPGCRCharacter from "../../models/pgcr/Character"
+import DestinyPGCRCharacter from "../../../models/pgcr/Character"
 import KillsBreakdown from "./KillsBreakdown"
 
 type ParticipantsProps = {

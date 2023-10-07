@@ -207,7 +207,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterOption.CPB]: ">50 Players",
             [FilterOption.DIFFICULTY]: "Difficulty",
             [FilterOption.MIN_MINS_PLAYED]: "Min minutes played",
-            [FilterOption.PLAYED_WITH]: "Played with"
+            [FilterOption.PLAYED_WITH]: "Played with",
+            [FilterOption.NONLOWMAN]: "Not lowman"
         },
         manageFilters: "Manage Filters",
         filterNames: {
@@ -225,7 +226,8 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.Or]: "Or Group",
             [FilterListName.And]: "And Group",
             [FilterListName.Not]: "Not Element",
-            [FilterListName.PlayedWith]: "Played With"
+            [FilterListName.PlayedWith]: "Played With",
+            [FilterListName.NonLowman]: "Not Lowman"
         },
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
