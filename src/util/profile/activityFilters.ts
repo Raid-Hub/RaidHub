@@ -97,7 +97,13 @@ export const DefaultActivityFilters = new GroupActivityFilter("|", [
     FiltersToSelectFrom[FilterListName.AnyLowman](),
     new GroupActivityFilter("&", [
         FiltersToSelectFrom[FilterListName.MinMinutes](),
-        new NotActivityFilter(FiltersToSelectFrom[FilterListName.AnyLowman]()),
+        new NotActivityFilter(
+            new GroupActivityFilter("|", [
+                new SingleActivityFilter(FilterOption.SOLO),
+                new SingleActivityFilter(FilterOption.DUO),
+                new SingleActivityFilter(FilterOption.TRIO)
+            ])
+        ),
         new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])
