@@ -1,4 +1,4 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
+import styles from "~/styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { useLocale } from "../../app/LocaleManager"
 import { raidVersion } from "../../../util/destiny/raidUtils"
@@ -8,13 +8,14 @@ import { Tag } from "../../../util/raidhub/tags"
 import { m } from "framer-motion"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"
+import { toCustomDateString } from "~/util/presentation/formatting"
 
 type ActivityTileProps = { activity: Activity }
 
 const ActivityTile = ({
     activity: { startDate, raid, difficulty, endDate, instanceId, completed, playerCount, flawless }
 }: ActivityTileProps) => {
-    const { strings } = useLocale()
+    const { strings, locale } = useLocale()
     const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings, false)
     const lowManString = useMemo(() => {
         switch (playerCount) {
@@ -59,6 +60,7 @@ const ActivityTile = ({
                     sizes="160px"
                     className={styles["activity-content-img"]}
                 />
+                <div className={styles["hover-date"]}>{toCustomDateString(endDate, locale)}</div>
                 <p className={styles["activity-title"]}>
                     {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
                         .filter(Boolean) // filters out falsy values
