@@ -17,7 +17,8 @@ export const getProfile = {
                 destinyMembershipId,
                 membershipType,
                 components: [
-                    100, 200 /*Characters*/, 205 /*DestinyComponentType.CharacterEquipment*/,
+                    100, 200 /*Characters*/, 202 /*CharacterProgressions*/,
+                    205 /*DestinyComponentType.CharacterEquipment*/,
                     204 /*DestinyComponentType.CharacterActivities*/,
                     305 /*DestinyComponentType.ItemSockets */
                 ]

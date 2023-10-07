@@ -1,4 +1,4 @@
-import { ListedRaid } from "~/types/raids"
+import { ListedRaid, SunsetRaids } from "~/types/raids"
 import styles from "./expanded-raid.module.css"
 import { useLocale } from "~/components/app/LocaleManager"
 import RaidStats from "~/models/profile/data/RaidStats"
@@ -6,6 +6,8 @@ import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting
 import { Collection } from "@discordjs/collection"
 import Activity from "~/models/profile/data/Activity"
 import Link from "next/link"
+import WeeklyProgress from "./WeeklyProgress"
+import { includedIn } from "~/util/betterIncludes"
 
 type StatsProps =
     | {
@@ -48,24 +50,33 @@ export default function ExpandedRaidView({
                     <h3>Bungie Stats</h3>
                     {!isLoadingStats && (
                         <table className={styles["table"]}>
-                            <tr>
-                                <th>Kills</th>
-                                <th>Deaths</th>
-                                <th>Assists</th>
-                                <th>Precision Kills</th>
-                                <th>Time Played</th>
-                                <th>Total Clears</th>
-                            </tr>
-                            <tr>
-                                <td>{stats.kills}</td>
-                                <td>{stats.deaths}</td>
-                                <td>{stats.assists}</td>
-                                <td>{stats.precisionKills}</td>
-                                <td>{secondsToHMS(stats.secondsPlayed, true)}</td>
-                                <td>{stats.totalClears}</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Kills</th>
+                                    <th>Deaths</th>
+                                    <th>Assists</th>
+                                    <th>Precision Kills</th>
+                                    <th>Time Played</th>
+                                    <th>Total Clears</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{stats.kills}</td>
+                                    <td>{stats.deaths}</td>
+                                    <td>{stats.assists}</td>
+                                    <td>{stats.precisionKills}</td>
+                                    <td>{secondsToHMS(stats.secondsPlayed, true)}</td>
+                                    <td>{stats.totalClears}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     )}
+
+                    <div>
+                        <h3>Weekly Progress</h3>
+                        {!includedIn(SunsetRaids, raid) && <WeeklyProgress raid={raid} />}
+                    </div>
                 </div>
                 <div className={styles["history"]}>
                     <h3>History</h3>
@@ -76,7 +87,7 @@ export default function ExpandedRaidView({
                                     key={a.instanceId}
                                     href={`/pgcr/${a.instanceId}`}
                                     className={styles["activity"]}>
-                                    <h5>{toCustomDateString(a.endDate, locale)}</h5>
+                                    <div>{toCustomDateString(a.endDate, locale)}</div>
                                 </Link>
                             ))}
                         </div>

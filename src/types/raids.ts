@@ -123,3 +123,12 @@ export type AllRaidHashesForRaid<R extends ListedRaid> = Flatten<
 export type ValidRaidHash = {
     [R in ListedRaid]: AllRaidHashesForRaid<R>
 }[ListedRaid]
+
+export const SunsetRaids = [
+    Raid.LEVIATHAN,
+    Raid.EATER_OF_WORLDS,
+    Raid.SPIRE_OF_STARS,
+    Raid.SCOURGE_OF_THE_PAST,
+    Raid.CROWN_OF_SORROW
+] as const
+export type SunsetRaid = (typeof SunsetRaids)[number]
