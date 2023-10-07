@@ -83,20 +83,11 @@ const SearchBar = ({}: SearchBarProps) => {
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
-                {
-                    isPerformingExactSearch || isLoadingResults || isRedirecting ? (
-                        <Loader stroke={2} />
-                    ) : (
-                        <Search color="white" />
-                    )
-                    // <Image
-                    //     className={styles["search-img"]}
-                    //     src={Search}
-                    //     alt="search"
-                    //     width={15}
-                    //     height={15}
-                    // />
-                }
+                {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
+                    <Loader stroke={2} />
+                ) : (
+                    <Search color="white" />
+                )}
             </div>
             <form onSubmit={handleFormEnter}>
                 <input

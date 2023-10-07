@@ -579,6 +579,9 @@
     .quick-stats {
         padding: 0.2em 0;
     }
+    .quick-stat {
+        padding: 1px 2px;
+    }
     .quick-stat span {
         font-size: small;
     }
