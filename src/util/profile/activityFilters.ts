@@ -79,7 +79,8 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
     [FilterListName.Solo]: () => new SingleActivityFilter(FilterOption.SOLO),
     [FilterListName.Duo]: () => new SingleActivityFilter(FilterOption.DUO),
     [FilterListName.Trio]: () => new SingleActivityFilter(FilterOption.TRIO),
-    [FilterListName.MinMinutes]: () => new HighOrderActivityFilter(FilterOption.MIN_MINS_PLAYED, 5),
+    [FilterListName.MinMinutes]: () =>
+        new HighOrderActivityFilter(FilterOption.MIN_MINS_PLAYED, 15),
     [FilterListName.Master]: () =>
         new HighOrderActivityFilter(FilterOption.DIFFICULTY, Difficulty.MASTER),
     [FilterListName.Prestige]: () =>
@@ -91,7 +92,7 @@ export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> =
     [FilterListName.Not]: () => new NotActivityFilter(null)
 }
 
-// min 5 mins played or lowman
+// min 15 mins played or lowman
 export const DefaultActivityFilters = new GroupActivityFilter("|", [
     FiltersToSelectFrom[FilterListName.AnyLowman](),
     new GroupActivityFilter("&", [
