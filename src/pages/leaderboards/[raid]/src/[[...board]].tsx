@@ -1,6 +1,6 @@
 import Head from "next/head"
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
-import { Hydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import { ListedRaid } from "~/types/raids"
 import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
@@ -14,7 +14,10 @@ import {
     rtaQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { zRaidURIComponent } from "~/util/zod"
-import { prefetchSpeedrunComLeaderboard } from "~/server/serverQueryClient"
+import {
+    createServerSideQueryClient,
+    prefetchSpeedrunComLeaderboard
+} from "~/server/serverQueryClient"
 import SpeedrunComBanner from "~/components/leaderboards/SpeedrunComBanner"
 
 type RTASpeedunLeaderboadProps<
@@ -84,13 +87,14 @@ export const getStaticProps: GetStaticProps<
 
         const category = paths ? paths[0] : null
 
-        const dehydratedState = await prefetchSpeedrunComLeaderboard(raid, category)
+        const queryClient = createServerSideQueryClient()
+        await prefetchSpeedrunComLeaderboard({ raid, category }, queryClient)
 
         return {
             props: {
                 raid,
                 category,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
             revalidate: 3600 // 1 hour
         }
