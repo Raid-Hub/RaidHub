@@ -14,8 +14,9 @@ import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import BungieQuery, { QueryFn } from "~/util/bungieQuery"
 import { getBasicProfile } from "~/services/bungie/getProfile"
+import { getPlayer, playerQueryKey } from "~/services/raidhub/getPlayer"
 
-const createServerSideQueryClient = () =>
+export const createServerSideQueryClient = () =>
     new QueryClient({
         defaultOptions: {
             queries: {
@@ -24,7 +25,7 @@ const createServerSideQueryClient = () =>
         }
     })
 
-const createTrpcServerSideHelpers = () =>
+export const createTrpcServerSideHelpers = () =>
     createServerSideHelpers({
         router: appRouter,
         transformer: superjson,
@@ -32,17 +33,20 @@ const createTrpcServerSideHelpers = () =>
         queryClient: createServerSideQueryClient()
     })
 
-const createBungieServerSideHelpers = () =>
-    new ServerSideBungieClient(createServerSideQueryClient())
+const createBungieServerSideHelpers = (queryClient: QueryClient) =>
+    new ServerSideBungieClient(queryClient)
 
-export async function prefetchDestinyProfile({
-    destinyMembershipId,
-    destinyMembershipType
-}: {
-    destinyMembershipId: string
-    destinyMembershipType: BungieMembershipType
-}) {
-    const helpers = createBungieServerSideHelpers()
+export async function prefetchDestinyProfile(
+    {
+        destinyMembershipId,
+        destinyMembershipType
+    }: {
+        destinyMembershipId: string
+        destinyMembershipType: BungieMembershipType
+    },
+    queryClient: QueryClient
+) {
+    const helpers = createBungieServerSideHelpers(queryClient)
 
     await helpers.profile.prefetchQuery({
         destinyMembershipId,
@@ -58,46 +62,52 @@ export async function prefetchDestinyProfile({
     return helpers.dehydrate()
 }
 
-export async function prefetchRaidHubProfile(destinyMembershipId: string) {
-    const helpers = createTrpcServerSideHelpers()
-
+export async function prefetchRaidHubProfile(
+    destinyMembershipId: string,
+    helpers: ReturnType<typeof createTrpcServerSideHelpers>
+) {
     await helpers.profile.byDestinyMembershipId.prefetch({
         destinyMembershipId
     })
+}
 
-    return helpers.dehydrate()
+export async function prefetchRaidHubPlayer(destinyMembershipId: string, queryClient: QueryClient) {
+    await queryClient.prefetchQuery(playerQueryKey(destinyMembershipId), () =>
+        getPlayer(destinyMembershipId)
+    )
+
+    return dehydrate(queryClient)
 }
 
 export async function prefetchLeaderboard<R extends ListedRaid>(
-    raid: R,
-    board: Leaderboard,
-    params: string[],
-    pages: number
+    {
+        raid,
+        board,
+        params,
+        pages
+    }: { raid: R; board: Leaderboard; params: string[]; pages: number },
+    queryClient: QueryClient
 ) {
-    const queryClient = createServerSideQueryClient()
-
     // we prefetch the first page at build time
-    const staleTime = 24 * 60 * 60 * 1000 // 24 hours
     await Promise.all(
         new Array(pages).fill(undefined).map((_, idx) =>
             queryClient.prefetchQuery(
                 leaderboardQueryKey(raid, board, params, idx),
                 () => getLeaderboard(raid, board, params, idx),
                 {
-                    staleTime
+                    staleTime: 2 * 60000 // 2 minutes
                 }
             )
         )
     )
 
-    return {
-        staleTime,
-        dehydratedState: dehydrate(queryClient)
-    }
+    return dehydrate(queryClient)
 }
 
-export async function prefetchSpeedrunComLeaderboard(raid: ListedRaid, category: string | null) {
-    const queryClient = createServerSideQueryClient()
+export async function prefetchSpeedrunComLeaderboard(
+    { raid, category }: { raid: ListedRaid; category: string | null },
+    queryClient: QueryClient
+) {
     await queryClient.prefetchQuery(rtaQueryKey(raid, category), () =>
         getSpeedrunComLeaderboard({ raid, category })
     ),

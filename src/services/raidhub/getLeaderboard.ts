@@ -11,7 +11,7 @@ export function leaderboardQueryKey(
     paramStrings: string[],
     page: number
 ) {
-    return ["leaderboard", raid, board, paramStrings, page] as const
+    return ["raidhub-leaderboard", raid, board, paramStrings, page] as const
 }
 export async function getLeaderboard(
     raid: ListedRaid,
