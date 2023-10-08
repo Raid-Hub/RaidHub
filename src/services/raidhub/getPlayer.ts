@@ -3,7 +3,8 @@ export function playerQueryKey(membershipId: string) {
 }
 export async function getPlayer(membershipId: string): Promise<{ data: unknown }> {
     // todo: implement raidhub api
+    await new Promise(resolve => setTimeout(resolve, 500))
     return {
-        data: []
+        data: membershipId
     }
 }
