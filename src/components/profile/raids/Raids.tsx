@@ -14,6 +14,8 @@ import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
+import { useQueries } from "@tanstack/react-query"
+import { activitiesQueryKey, getActivities } from "~/services/raidhub/getActivities"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -50,6 +52,14 @@ const Raids = ({
         [statsQueries]
     )
 
+    const raidhubActivityQueries = useQueries({
+        queries: destinyMemberships.map(({ destinyMembershipId }) => ({
+            queryFn: () => getActivities(destinyMembershipId),
+            queryKey: activitiesQueryKey(destinyMembershipId),
+            enabled: areMembershipsFetched
+        }))
+    })
+
     const areAllCharactersFound = statsQueries.every(q => q.isFetched)
 
     const characterQueries = bungie.characterStats.useQueries(characters, {
@@ -57,7 +67,7 @@ const Raids = ({
     })
 
     const characterStats = useMemo(() => {
-        if (characterQueries.every(q => q.data)) {
+        if (characterQueries.every(q => q.isSuccess)) {
             const data = characterQueries.map(q => q.data!)
             return partitionStatsByRaid(data)
         } else {
@@ -71,11 +81,22 @@ const Raids = ({
             enabled: areMembershipsFetched && areAllCharactersFound
         })
 
+    const hasLoadedRaidhubActivities = raidhubActivityQueries.every(q => q.isSuccess)
+    const raidhubActivities = useMemo(
+        () =>
+            new Collection(
+                raidhubActivityQueries.flatMap(q => q.data ?? []).map(a => [a.activityId, a])
+            ),
+        [raidhubActivityQueries]
+    )
+
     const activitiesByRaid = useMemo(() => {
-        if (!activityHistory) return null
+        if (!activityHistory || !hasLoadedRaidhubActivities) return null
+
+        raidhubActivities.forEach((activity, id) => activityHistory.get(id)?.addData(activity))
 
         return partitionCollectionByRaid(activityHistory, a => a.raid)
-    }, [activityHistory])
+    }, [activityHistory, hasLoadedRaidhubActivities, raidhubActivities])
 
     useEffect(() => {
         if (activityHistory) {

@@ -28,6 +28,11 @@ export default class Activity implements DestinyHistoricalStatsPeriodGroup {
         ;[this.raid, this.difficulty] = raidTupleFromHash(this.hash)
     }
 
+    addData(data: any) {
+        // todo: add api data
+        console.log({ adding: data })
+    }
+
     get completed() {
         return !!this.values.completed.basic.value && this.values.completionReason.basic.value === 0
     }
