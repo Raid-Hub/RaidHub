@@ -19,7 +19,6 @@ const SearchModal = ({}: SearchModalProps) => {
     const animateModal = useRef<HTMLDivElement>(null)
 
     const router = useRouter()
-    const loadingRef = useRef(null)
 
     const animateModalIn = () => {
         setShowingResults(true)
