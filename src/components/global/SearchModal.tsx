@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import styles from "../../styles/searchmodal.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
@@ -7,7 +7,6 @@ import { useKeyPress } from "../../hooks/util/useKeyPress"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import Loader from "~/components/reusable/Loader"
-import Search from "~/images/icons/Search"
 type SearchModalProps = {}
 
 const SearchModal = ({}: SearchModalProps) => {
