@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import styles from "../../styles/searchmodal.module.css"
 import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
@@ -6,18 +6,21 @@ import { useTypewriter } from "react-simple-typewriter"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
 import Link from "next/link"
 import { useRouter } from "next/router"
-
+import Loader from "~/components/reusable/Loader"
+import Search from "~/images/icons/Search"
 type SearchModalProps = {}
 
 const SearchModal = ({}: SearchModalProps) => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)
     const [showingResults, setShowingResults] = useState(false)
+    const [isRedirecting, setIsRedirecting] = useState(false)
 
     const containerDiv = useRef<HTMLDivElement>(null)
     const backgroundDiv = useRef<HTMLDivElement>(null)
     const animateModal = useRef<HTMLDivElement>(null)
 
     const router = useRouter()
+    const loadingRef = useRef(null)
 
     const animateModalIn = () => {
         setShowingResults(true)
@@ -43,12 +46,15 @@ const SearchModal = ({}: SearchModalProps) => {
         enteredText,
         results,
         isLoading: isLoadingResults,
+        isPerformingExactSearch: isPerformingExactSearch,
         handleFormEnter,
         handleInputChange,
         clearQuery
     } = useSearch({
-        errorHandler: console.error, // todo
+        errorHandler: console.error /** TODO: Handle search bar errors */,
         onSuccessfulExactSearch: userInfo => {
+            setShowingResults(false)
+            setIsRedirecting(true)
             animateModalOut()
             router.push(
                 "/profile/[destinyMembershipType]/[destinyMembershipId]",
@@ -57,8 +63,19 @@ const SearchModal = ({}: SearchModalProps) => {
         }
     })
 
+    useEffect(() => {
+        const sequence: AnimationSequence = [
+            [loadingRef.current!, { opacity: [0, 1, 0] }, { type: "spring", duration: 3 }]
+        ]
+
+        if (results.length < 1) {
+            console.log("loading")
+            animate(sequence)
+        }
+    }, [results])
+
     const handleK = useCallback(async () => {
-        if (isDivDisplayed == true) {
+        if (isDivDisplayed) {
             await animateModalOut()
         } else {
             animateModalIn()
@@ -92,6 +109,11 @@ const SearchModal = ({}: SearchModalProps) => {
                                 handleInputChange={handleInputChange}
                             />
                         </form>
+                        <div className={styles["search-loading-indicator"]}>
+                            {(isPerformingExactSearch || isRedirecting || isLoadingResults) && (
+                                <Loader stroke={2} />
+                            )}
+                        </div>
                         <div className={styles["search-top-right"]}>
                             {/* <Image src={Search } alt="search" width={20} height={20} /> */}
                         </div>
