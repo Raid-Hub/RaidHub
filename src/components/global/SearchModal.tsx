@@ -63,17 +63,6 @@ const SearchModal = ({}: SearchModalProps) => {
         }
     })
 
-    useEffect(() => {
-        const sequence: AnimationSequence = [
-            [loadingRef.current!, { opacity: [0, 1, 0] }, { type: "spring", duration: 3 }]
-        ]
-
-        if (results.length < 1) {
-            console.log("loading")
-            animate(sequence)
-        }
-    }, [results])
-
     const handleK = useCallback(async () => {
         if (isDivDisplayed) {
             await animateModalOut()
