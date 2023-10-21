@@ -83,6 +83,7 @@ export default function RaidCard({
     activities,
     isLoadingActivities
 }: RaidModalProps) {
+    // console.log(isLoadingActivities, activities)
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
     useEffect(() => {
@@ -183,7 +184,7 @@ export default function RaidCard({
                         }
                         isLoading={isLoadingActivities}
                         name="Recent"
-                        href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
+                        href={recentClear ? `/pgcr/${recentClear.activityId}` : undefined}
                     />
                     <BigNumberStatItem
                         displayValue={

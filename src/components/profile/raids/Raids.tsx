@@ -14,8 +14,7 @@ import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
-import { useQueries } from "@tanstack/react-query"
-import { activitiesQueryKey, getActivities } from "~/services/raidhub/getActivities"
+import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -75,11 +74,9 @@ const Raids = ({
         }
     }, [characterQueries])
 
-    const { data: activityHistory, isLoading: isLoadingActivities } =
-        bungie.activityHistory.useQuery(characters, {
-            staleTime: 60_000,
-            enabled: areMembershipsFetched && areAllCharactersFound
-        })
+    const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(
+        destinyMemberships.map(dm => dm.destinyMembershipId)
+    )
 
     const hasLoadedRaidhubActivities = raidhubActivityQueries.every(q => q.isSuccess)
     const raidhubActivities = useMemo(
@@ -91,22 +88,18 @@ const Raids = ({
     )
 
     const activitiesByRaid = useMemo(() => {
-        if (!activityHistory || !hasLoadedRaidhubActivities) return null
+        if (isLoadingActivities) return null
 
-        raidhubActivities.forEach((activity, id) => activityHistory.get(id)?.addData(activity))
-
-        return partitionCollectionByRaid(activityHistory, a => a.raid)
-    }, [activityHistory, hasLoadedRaidhubActivities, raidhubActivities])
+        return partitionCollectionByRaid(activities, a => a.raid)
+    }, [activities, isLoadingActivities])
 
     useEffect(() => {
-        if (activityHistory) {
-            setMostRecentActivity(
-                activityHistory.find(a => a.completed)?.activityDetails.instanceId ?? null
-            )
+        if (!isLoadingActivities) {
+            setMostRecentActivity(activities.find(a => a.completed)?.activityId ?? null)
         } else {
             setMostRecentActivity(undefined)
         }
-    }, [activityHistory, setMostRecentActivity])
+    }, [activities, isLoadingActivities, setMostRecentActivity])
 
     const {
         value: expandedRaid,
@@ -179,7 +172,7 @@ const Raids = ({
             ) : (
                 <RecentRaids
                     isLoading={isLoadingActivities}
-                    allActivities={activityHistory ?? new Collection()}
+                    allActivities={activities ?? new Collection()}
                 />
             )
     }

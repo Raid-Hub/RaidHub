@@ -34,6 +34,7 @@
     display: flex;
     align-items: center;
     gap: 0.5em;
+    padding-left: 1em;
 }
 
 .individual-result img {
@@ -120,6 +121,7 @@
 
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 116, 24, 0.397) rgba(0, 0, 0, 0.082);
+    padding-left: 25px;
 }
 
 @media (max-width: 550px) {
@@ -129,4 +131,10 @@
         min-height: 80%;
         min-width: 90%;
     }
+}
+
+.search-loading-indicator {
+    width: 20px;
+    height: 20px;
+    position: relative;
 }
