@@ -4,7 +4,6 @@ import { PlatformErrorCodes } from "bungie-net-core/models"
 import BungieQuery, { QueryFn } from "./bungieQuery"
 import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
 import { getPGCR } from "../services/bungie/getPGCR"
-import { getActivityHistory } from "../services/bungie/getActivityHistory"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
@@ -99,7 +98,6 @@ export default class BungieClient implements BungieClientProtocol {
     profile = this.query(getProfile)
     profileTransitory = this.query(getProfileTransitory)
     pgcr = this.query(getPGCR)
-    activityHistory = this.query(getActivityHistory)
     linkedProfiles = this.query(getLinkedProfiles)
     stats = this.query(getDestinyStats)
     characterStats = this.query(getDestinyStatsForCharacter)

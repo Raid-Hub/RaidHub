@@ -13,10 +13,25 @@ import { toCustomDateString } from "~/util/presentation/formatting"
 type ActivityTileProps = { activity: Activity }
 
 const ActivityTile = ({
-    activity: { startDate, raid, difficulty, endDate, instanceId, completed, playerCount, flawless }
+    activity: {
+        dateStarted,
+        raid,
+        difficulty,
+        dateCompleted,
+        activityId,
+        completed,
+        playerCount,
+        flawless
+    }
 }: ActivityTileProps) => {
     const { strings, locale } = useLocale()
-    const difficultyString = raidVersion([raid, difficulty], startDate, endDate, strings, false)
+    const difficultyString = raidVersion(
+        [raid, difficulty],
+        dateStarted,
+        dateCompleted,
+        strings,
+        false
+    )
     const lowManString = useMemo(() => {
         switch (playerCount) {
             case 1:
@@ -37,9 +52,9 @@ const ActivityTile = ({
     }, [flawless, strings])
 
     return (
-        <Link href={`/pgcr/${instanceId}`} className={styles["activity"]} legacyBehavior>
+        <Link href={`/pgcr/${activityId}`} className={styles["activity"]} legacyBehavior>
             <m.a
-                href={`/pgcr/${instanceId}`}
+                href={`/pgcr/${activityId}`}
                 initial={{
                     y: 50,
                     opacity: 0
@@ -60,7 +75,9 @@ const ActivityTile = ({
                     sizes="160px"
                     className={styles["activity-content-img"]}
                 />
-                <div className={styles["hover-date"]}>{toCustomDateString(endDate, locale)}</div>
+                <div className={styles["hover-date"]}>
+                    {toCustomDateString(dateCompleted, locale)}
+                </div>
                 <p className={styles["activity-title"]}>
                     {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
                         .filter(Boolean) // filters out falsy values

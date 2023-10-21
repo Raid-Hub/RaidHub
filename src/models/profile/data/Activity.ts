@@ -1,64 +1,33 @@
-import {
-    DestinyHistoricalStatsActivity,
-    DestinyHistoricalStatsPeriodGroup,
-    DestinyHistoricalStatsValue
-} from "bungie-net-core/models"
 import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raidUtils"
 import { Collection } from "@discordjs/collection"
+import { RaidHubActivity } from "~/types/raidhub-api"
 
-export default class Activity implements DestinyHistoricalStatsPeriodGroup {
-    readonly period: string
-    readonly activityDetails: DestinyHistoricalStatsActivity
-    readonly values: { [key: string]: DestinyHistoricalStatsValue }
-
-    readonly startDate: Date
-    readonly endDate: Date
-    readonly hash: string
+export default class Activity {
+    readonly activityId: string
     readonly raid: ListedRaid
     readonly difficulty: Difficulty
-    constructor(data: DestinyHistoricalStatsPeriodGroup) {
-        this.period = data.period
-        this.activityDetails = data.activityDetails
-        this.values = data.values
-
-        this.startDate = new Date(data.period)
-        this.endDate = new Date(this.startDate.getTime() + this.durationSeconds * 1000)
-        this.hash = this.activityDetails.directorActivityHash.toString()
-        ;[this.raid, this.difficulty] = raidTupleFromHash(this.hash)
-    }
-
-    get completed() {
-        return !!this.values.completed.basic.value && this.values.completionReason.basic.value === 0
+    readonly flawless: boolean
+    readonly completed: boolean
+    readonly fresh: boolean
+    readonly playerCount: number
+    readonly dateStarted: Date
+    readonly dateCompleted: Date
+    readonly didMemberComplete: boolean
+    constructor(data: RaidHubActivity) {
+        this.activityId = data.activityId
+        this.flawless = !!data.flawless
+        this.completed = data.completed
+        this.fresh = !!data.fresh
+        this.playerCount = data.playerCount
+        this.dateStarted = new Date(data.dateStarted)
+        this.dateCompleted = new Date(data.dateCompleted)
+        this.didMemberComplete = data.didMemberComplete
+        ;[this.raid, this.difficulty] = raidTupleFromHash(data.raidHash)
     }
 
     get durationSeconds() {
-        return this.values.activityDurationSeconds.basic.value
-    }
-
-    get instanceId() {
-        return this.activityDetails.instanceId
-    }
-
-    get playerCount() {
-        // todo
-        const count = this.values.playerCount.basic.value
-        return count <= 0 ? Infinity : count
-    }
-
-    get fresh() {
-        // todo
-        return Number(this.instanceId) % 2 === 0
-    }
-
-    get flawless() {
-        // todo
-        return this.completed && this.fresh && this.values.deaths.basic.value === 0
-    }
-
-    get playerIds() {
-        // todo
-        return ["123", "456"]
+        return Math.floor((this.dateCompleted.getTime() - this.dateStarted.getTime()) / 1000)
     }
 
     static combineCollections(x: Collection<string, Activity>, y: Collection<string, Activity>) {
