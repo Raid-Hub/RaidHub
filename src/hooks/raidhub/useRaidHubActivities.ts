@@ -16,8 +16,6 @@ export function useRaidHubActivities(membershipIds: string[]) {
     )
     const isLoading = queries.some(q => q.isLoading)
 
-    console.log(isLoading)
-
     return {
         activities,
         isLoading

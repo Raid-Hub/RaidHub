@@ -76,7 +76,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     membershipType: destinyMembershipType
                 }
             ],
-        [membershipsData]
+        [membershipsData, destinyMembershipId, destinyMembershipType]
     )
 
     // TODO implement player data from raidhub api
