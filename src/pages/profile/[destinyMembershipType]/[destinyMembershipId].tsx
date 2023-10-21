@@ -3,8 +3,14 @@ import { InitialProfileProps } from "~/types/profile"
 import { zUniqueDestinyProfile } from "~/util/zod"
 import prisma from "~/server/prisma"
 import Profile from "~/components/profile/Profile"
-import { prefetchDestinyProfile, prefetchRaidHubProfile } from "~/server/serverQueryClient"
-import { DehydratedState, Hydrate } from "@tanstack/react-query"
+import {
+    createServerSideQueryClient,
+    createTrpcServerSideHelpers,
+    prefetchDestinyProfile,
+    prefetchRaidHubPlayer,
+    prefetchRaidHubProfile
+} from "~/server/serverQueryClient"
+import { DehydratedState, Hydrate, dehydrate } from "@tanstack/react-query"
 
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     dehydratedState,
@@ -50,17 +56,20 @@ export const getStaticProps: GetStaticProps<
                 }
             }
         } else {
-            const [trpcState, bungieState] = await Promise.all([
-                prefetchRaidHubProfile(props.destinyMembershipId),
-                prefetchDestinyProfile(props)
+            const queryClient = createServerSideQueryClient()
+            const helpers = createTrpcServerSideHelpers()
+            await Promise.all([
+                prefetchDestinyProfile(props, queryClient),
+                prefetchRaidHubPlayer(props.destinyMembershipId, queryClient),
+                prefetchRaidHubProfile(props.destinyMembershipId, helpers)
             ])
 
             return {
                 revalidate: 3600 * 12, //12 hours
                 props: {
                     ...props,
-                    dehydratedState: bungieState,
-                    trpcState: trpcState
+                    dehydratedState: dehydrate(queryClient),
+                    trpcState: helpers.dehydrate()
                 }
             }
         }

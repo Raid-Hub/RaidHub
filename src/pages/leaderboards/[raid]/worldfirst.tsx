@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { Hydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
 import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
 import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
@@ -8,7 +8,7 @@ import { toCustomDateString } from "~/util/presentation/formatting"
 import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import { usePage } from "~/hooks/util/usePage"
 import { zRaidURIComponent } from "~/util/zod"
-import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 
@@ -45,20 +45,23 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
                 : "normal"
         ]
 
-        const { staleTime, dehydratedState } = await prefetchLeaderboard(
-            raid,
-            Leaderboard.WorldFirst,
-            paramStrings,
-            2
+        const queryClient = createServerSideQueryClient()
+        await prefetchLeaderboard(
+            {
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params: paramStrings,
+                pages: 2
+            },
+            queryClient
         )
 
         return {
             props: {
                 raid,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
-            revalidate: staleTime / 1000
-            // revalidate takes seconds, so divide by 1000
+            revalidate: 3600 * 24 // 24 hours
         }
     } catch (e) {
         console.error(e)

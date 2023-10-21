@@ -7,6 +7,7 @@ export const getLinkedProfiles = {
         (client: BungieClientProtocol) =>
         async ({ membershipId }: { membershipId: string }) => {
             const { Response } = await getBungieLinkedProfiles(client, {
+                getAllMemberships: true,
                 membershipId,
                 membershipType: -1 // all
             })

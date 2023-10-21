@@ -106,7 +106,7 @@ function ResolvedPlayer({
     const items = mostRecentCharacterId
         ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
         : undefined
-    const sockets = profileData?.itemComponents.sockets?.data
+    const sockets = profileData?.itemComponents?.sockets?.data
 
     const subclass = items?.find(i => i.bucketHash === subclassBucket)
 

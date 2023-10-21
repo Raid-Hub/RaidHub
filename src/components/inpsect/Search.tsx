@@ -7,14 +7,7 @@ import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
 
-    const {
-        enteredText,
-        results,
-        isLoading: isLoadingResults,
-        handleFormEnter,
-        handleInputChange,
-        clearQuery
-    } = useSearch({
+    const { enteredText, results, handleFormEnter, handleInputChange } = useSearch({
         errorHandler: console.error, // todo
         onSuccessfulExactSearch: userInfo => {
             if (userInfo) {

@@ -51,6 +51,14 @@ const Raids = ({
         [statsQueries]
     )
 
+    const raidhubActivityQueries = useQueries({
+        queries: destinyMemberships.map(({ destinyMembershipId }) => ({
+            queryFn: () => getActivities(destinyMembershipId),
+            queryKey: activitiesQueryKey(destinyMembershipId),
+            enabled: areMembershipsFetched
+        }))
+    })
+
     const areAllCharactersFound = statsQueries.every(q => q.isFetched)
 
     const characterQueries = bungie.characterStats.useQueries(characters, {
@@ -58,7 +66,7 @@ const Raids = ({
     })
 
     const characterStats = useMemo(() => {
-        if (characterQueries.every(q => q.data)) {
+        if (characterQueries.every(q => q.isSuccess)) {
             const data = characterQueries.map(q => q.data!)
             return partitionStatsByRaid(data)
         } else {
@@ -68,6 +76,15 @@ const Raids = ({
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(
         destinyMemberships.map(dm => dm.destinyMembershipId)
+    )
+
+    const hasLoadedRaidhubActivities = raidhubActivityQueries.every(q => q.isSuccess)
+    const raidhubActivities = useMemo(
+        () =>
+            new Collection(
+                raidhubActivityQueries.flatMap(q => q.data ?? []).map(a => [a.activityId, a])
+            ),
+        [raidhubActivityQueries]
     )
 
     const activitiesByRaid = useMemo(() => {
