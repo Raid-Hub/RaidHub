@@ -1,17 +1,5 @@
 import { MasterRaid, PrestigeRaid, Raid } from "~/types/raids"
 
-export const Seasons = {
-    Hunt: {
-        start: new Date("November 10, 2020 9:00:00 AM PST")
-    },
-    Risen: {
-        start: new Date("February 22, 2022 9:00:00 AM PST")
-    },
-    Haunted: {
-        start: new Date("May 24, 2022 10:00:00 AM PDT")
-    }
-}
-
 export const MasterReleases: Record<MasterRaid, Date> = {
     [Raid.VAULT_OF_GLASS]: new Date("July 6, 2021 1:00:00 PM EDT"),
     [Raid.VOW_OF_THE_DISCIPLE]: new Date("April 19, 2022 1:00:00 PM EDT"),

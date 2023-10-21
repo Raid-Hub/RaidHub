@@ -1,5 +1,6 @@
 import Activity from "~/models/profile/data/Activity"
 import { RaidHubAPIResponse, RaidHubActivitiesResponse } from "~/types/raidhub-api"
+import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 
 export function activitiesQueryKey(membershipId: string) {
     return ["raidhub-activities", membershipId] as const
@@ -23,9 +24,7 @@ async function getActivities({
     membershipId: string
     cursor?: string
 }): Promise<RaidHubActivitiesResponse> {
-    const url = new URL(
-        (process.env.RAIDHUB_API_URL ?? "https://api.raidhub.app") + `/activities/${membershipId}`
-    )
+    const url = new URL(getRaidHubBaseUrl() + `/activities/${membershipId}`)
 
     if (cursor) {
         url.searchParams.set("cursor", cursor)

@@ -45,7 +45,7 @@ const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotToolti
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activity.completed ? (flawless ? Teal : Green) : Red
+                borderColor: activity.didMemberComplete ? (flawless ? Teal : Green) : Red
             }}>
             <div>{secondsToHMS(activity.durationSeconds)}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>

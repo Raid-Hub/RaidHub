@@ -2,7 +2,7 @@ import styles from "~/styles/pages/profile/raids.module.css"
 import { useEffect, useMemo, useState } from "react"
 import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
-import { Difficulty, ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
+import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import { useLocale } from "~/components/app/LocaleManager"
 import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
@@ -16,6 +16,7 @@ import RaidTagLabel from "./RaidTagLabel"
 import RaceTagLabel from "./RaceTagLabel"
 import { includedIn } from "~/util/betterIncludes"
 import Expand from "~/images/icons/Expand"
+import { findTags } from "~/util/raidhub/tags"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -48,24 +49,6 @@ const report = {
         instanceId: "1"
     },
     sherpaCount: 999,
-    tags: [
-        {
-            instanceId: "12869660000",
-            flawless: true,
-            fresh: true,
-            difficulty: Difficulty.NORMAL,
-            bestPossible: true,
-            playerCount: 2
-        },
-        {
-            instanceId: "1",
-            flawless: false,
-            fresh: false,
-            difficulty: Difficulty.MASTER,
-            bestPossible: false,
-            playerCount: 3
-        }
-    ],
     contestFirstClear: {
         dayOne: true,
         contest: true,
@@ -99,7 +82,12 @@ export default function RaidCard({
         }
     }, [hoveredTag])
 
-    const recentClear = useMemo(() => activities?.find(a => a.completed && a.fresh), [activities])
+    const recentClear = useMemo(
+        () => activities?.find(a => a.didMemberComplete && a.fresh),
+        [activities]
+    )
+
+    const tags = useMemo(() => findTags(Array.from(activities?.values() ?? [])), [activities])
 
     const { strings } = useLocale()
 
@@ -146,7 +134,7 @@ export default function RaidCard({
                 </div>
                 <div className={styles["img-overlay-bottom"]}>
                     <div className={styles["card-challenge-tags"]}>
-                        {report?.tags?.map((tag, key) => (
+                        {tags?.map((tag, key) => (
                             <RaidTagLabel
                                 {...tag}
                                 raid={raid}

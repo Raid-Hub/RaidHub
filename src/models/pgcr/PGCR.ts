@@ -7,7 +7,6 @@ import {
 } from "bungie-net-core/models"
 import PGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
-import { Seasons } from "../../data/destiny-dates"
 import {
     ListedRaid,
     ListedRaids,
@@ -39,6 +38,17 @@ type SummaryStats = {
     killsPerMinute: number
     totalCharactersUsed: number
     mostUsedWeapon: WeaponStatsValues | null
+}
+
+type ExtraData = {
+    activityId: string
+    raidHash: string
+    flawless: boolean | null
+    completed: boolean
+    fresh: boolean | null
+    playerCount: number
+    dateStarted: string
+    dateCompleted: string
 }
 
 export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
@@ -130,10 +140,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return this.entries.some(e => e.didComplete)
     }
 
-    get flawless(): boolean {
-        return this.completed && this.players.every(p => p.deathless)
-    }
-
     get playerCount(): number {
         return this.players.size
     }
@@ -147,31 +153,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
                 return secondsToHMS(this.value / 1000)
             }
         }
-    }
-
-    get tags(): Tag[] {
-        const tags = new Array<Tag>()
-        if (!this.raid) return tags
-        if (!ListedRaids.includes(this.raid)) return []
-        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
-        if (isContest(this.raid, this.startDate)) {
-            if (includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
-                tags.push(TagForReprisedContest[this.difficulty])
-            }
-            tags.push(Tag.CONTEST)
-        }
-        if (this.wasFresh() === false) tags.push(Tag.CHECKPOINT)
-        if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
-        if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
-        if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push(Tag.GUIDEDGAMES)
-        if (this.playerCount === 1) tags.push(Tag.SOLO)
-        else if (this.playerCount === 2) tags.push(Tag.DUO)
-        else if (this.playerCount === 3) tags.push(Tag.TRIO)
-        if (this.wasFresh() && this.completed) {
-            if (this.flawless) tags.push(Tag.FLAWLESS)
-            if (this.stats.totalWeaponKills === 0) tags.push(Tag.ABILITIES_ONLY)
-        }
-        return tags
     }
 
     get weightedScores(): Collection<string, number> {
@@ -188,10 +169,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         )
     }
 
-    title(strings: LocalStrings): string {
-        return this.raid ? addModifiers(this.raid, this.tags, strings) : ""
-    }
-
     get needsHydration(): boolean {
         return this.entries.length < 50 && this.entries.some(e => !e.membershipType)
     }
@@ -200,25 +177,33 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.entries.find(entry => entry.characterId === id)?.hydrate(components)
     }
 
-    /**
-     * Given a report, determines if it was completed from the start
-     * @returns null if it cannot be determined
-     */
-    wasFresh(): boolean | null {
-        if (this.completionDate.getTime() < Seasons.Hunt.start.getTime()) {
-            /* pre-BL -- startingPhaseIndex working as intended */
-            return this.startingPhaseIndex === 0
-        } else if (this.completionDate.getTime() < Seasons.Risen.start.getTime()) {
-            /* beyond light -- startingPhaseIndex reporting 0 always */
-            return null
-        } else if (this.completionDate.getTime() < Seasons.Haunted.start.getTime()) {
-            /* season of the risen -- activityWasStartedFromBeginning added but not populating properly
-       because a wipe made it not fresh */
-            return this.activityWasStartedFromBeginning || null
-        } else {
-            /* modern era -- working as intended with activityWasStartedFromBeginning */
-            return !!this.activityWasStartedFromBeginning
+    tags(data: ExtraData): Tag[] {
+        if (!includedIn(ListedRaids, this.raid)) return []
+
+        const tags = new Array<Tag>()
+        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
+        if (isContest(this.raid, this.startDate)) {
+            if (includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
+                tags.push(TagForReprisedContest[this.difficulty])
+            }
+            tags.push(Tag.CONTEST)
         }
+        if (data.fresh === false) tags.push(Tag.CHECKPOINT)
+        if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
+        if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
+        if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push(Tag.GUIDEDGAMES)
+        if (this.playerCount === 1) tags.push(Tag.SOLO)
+        else if (this.playerCount === 2) tags.push(Tag.DUO)
+        else if (this.playerCount === 3) tags.push(Tag.TRIO)
+        if (data.fresh && this.completed) {
+            if (data.flawless) tags.push(Tag.FLAWLESS)
+            if (this.stats.totalWeaponKills === 0) tags.push(Tag.ABILITIES_ONLY)
+        }
+        return tags
+    }
+
+    title(strings: LocalStrings, data: ExtraData): string {
+        return this.raid ? addModifiers(this.raid, this.tags(data), strings) : ""
     }
 }
 

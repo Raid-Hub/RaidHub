@@ -12,10 +12,13 @@ export type RaidHubActivity = {
     playerCount: number
     dateStarted: string
     dateCompleted: string
-    didMemberComplete: boolean
 }
 
 export type RaidHubActivitiesResponse = {
-    activities: RaidHubActivity[]
+    activities: (RaidHubActivity & {
+        didMemberComplete: boolean
+    })[]
     prevActivity: string
 }
+
+export type RaidHubActivityResponse = RaidHubActivity & { players: Record<string, boolean> }

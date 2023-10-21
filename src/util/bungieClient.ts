@@ -13,7 +13,8 @@ import { getDestinyStats } from "~/services/bungie/getDestinyStats"
 const DONT_RETRY_CODES: PlatformErrorCodes[] = [
     217, //PlatformErrorCodes.UserCannotResolveCentralAccount
     5, //PlatformErrorCodes.SystemDisabled
-    622 //PlatformErrorCodes.GroupNotFound
+    622, //PlatformErrorCodes.GroupNotFound,
+    1653 // DestinyPGCRNotFound
 ]
 
 export default class BungieClient implements BungieClientProtocol {
