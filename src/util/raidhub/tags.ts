@@ -59,10 +59,6 @@ export function wfRaceMode({
     }
 }
 
-function dec2bin(dec: number) {
-    return (dec >>> 0).toString(2)
-}
-
 export function findTags(activities: Activity[]) {
     const sorted = activities.sort(
         (a, b) => b.weight - a.weight || a.dateCompleted.getTime() - b.dateCompleted.getTime()
@@ -85,8 +81,12 @@ export function findTags(activities: Activity[]) {
 export function isBestTag(activity: Activity): boolean {
     switch (activity.raid) {
         case Raid.CROTAS_END:
-            // duo flawless or trio flawless master
-            return activity.weight == 0b011110 || activity.weight == 0b001111
+            // solo crota or duo flawless or trio flawless master
+            return (
+                activity.weight == 0b111000 ||
+                activity.weight == 0b011110 ||
+                activity.weight == 0b001111
+            )
 
         case Raid.ROOT_OF_NIGHTMARES:
             // solo flawless or duo flawless master

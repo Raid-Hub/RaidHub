@@ -109,7 +109,8 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading}
                 page={page}
-                setPage={setPage}>
+                setPage={setPage}
+                refresh={query.refetch}>
                 <WorldFirstHeader
                     title={"World First " + raidName}
                     subtitle={raidDate}

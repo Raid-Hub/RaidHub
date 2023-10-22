@@ -1,3 +1,5 @@
+import { BungieMembershipType } from "bungie-net-core/models"
+
 export type RaidHubAPIResponse<T> = {
     minted: number
     message?: string
@@ -22,3 +24,24 @@ export type RaidHubActivitiesResponse = {
 }
 
 export type RaidHubActivityResponse = RaidHubActivity & { players: Record<string, boolean> }
+
+export type RaidHubActivityLeaderboardResponse = {
+    entries: {
+        rank: number
+        activityId: string
+        dateCompleted: string
+        dateStarted: string
+        players: {
+            bungieGlobalDisplayName: string
+            bungieGlobalDisplayNameCode: string
+            displayName: string
+            iconPath: string
+            membershipId: string
+            membershipType: BungieMembershipType
+        }[]
+    }[]
+    params: {
+        count: number
+        page: number
+    }
+}

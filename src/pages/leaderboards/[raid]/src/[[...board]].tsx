@@ -149,7 +149,8 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
                 )}
                 isLoading={query.isLoading}
                 page={page}
-                setPage={setPage}>
+                setPage={setPage}
+                refresh={query.refetch}>
                 <SpeedrunComBanner
                     title={raidName}
                     subtitle={subtitle}

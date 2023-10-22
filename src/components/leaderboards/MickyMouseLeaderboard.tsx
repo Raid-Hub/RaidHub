@@ -42,9 +42,10 @@ export default function MickeyMouseLeaderboard({
 
             <LeaderboardComponent
                 entries={query.data?.entries ?? []}
-                isLoading={query.isLoading}
+                isLoading={query.isLoading || query.isRefetching}
                 page={page}
-                setPage={setPage}>
+                setPage={setPage}
+                refresh={query.refetch}>
                 <WorldFirstHeader
                     title={descriptor + " " + raidName}
                     subtitle={toCustomDateString(date, locale)}

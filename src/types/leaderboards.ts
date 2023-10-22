@@ -1,4 +1,4 @@
-export type LeaderboardMeta = {
+export type LeaderboardResponse = {
     entries: LeaderboardEntry[]
 }
 
