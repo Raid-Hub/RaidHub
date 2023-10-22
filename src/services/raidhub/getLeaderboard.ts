@@ -53,7 +53,6 @@ export async function getLeaderboard(
             throw new Error(data.message)
         }
     } catch (e) {
-        console.error(e)
         return {
             entries: []
         }

@@ -66,7 +66,6 @@ export default function RaidCard({
     activities,
     isLoadingActivities
 }: RaidModalProps) {
-    // console.log(isLoadingActivities, activities)
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
     useEffect(() => {

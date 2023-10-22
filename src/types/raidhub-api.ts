@@ -1,9 +1,22 @@
 import { BungieMembershipType } from "bungie-net-core/models"
 
-export type RaidHubAPIResponse<T> = {
+export type RaidHubAPIResponse<T, E = unknown> = {
     minted: number
     message?: string
-} & ({ success: true; response: T } | { success: false; error: string })
+} & ({ success: true; response: T } | { success: false; error: E })
+
+export type RaidHubPlayer = {
+    membershipId: string
+    membershipType: number | null
+    iconPath: string | null
+    displayName: string | null
+    bungieGlobalDisplayName: string | null
+    bungieGlobalDisplayNameCode: string | null
+    lastSeen: Date
+    clears: number
+    sherpas: number
+    lowmanSherpas: number
+}
 
 export type RaidHubActivity = {
     activityId: string
@@ -14,6 +27,17 @@ export type RaidHubActivity = {
     playerCount: number
     dateStarted: string
     dateCompleted: string
+}
+
+export type RaidHubPlayerResponse = {
+    player: RaidHubPlayer
+    activityLeaderboardEntries: Record<
+        string,
+        {
+            rank: number
+            activityId: string
+        }
+    >
 }
 
 export type RaidHubActivitiesResponse = {
