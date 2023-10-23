@@ -49,7 +49,6 @@ export type RaidTag = {
 
 export type RaceTag = {
     placement?: number
-    asterisk?: boolean
     raid: Raid
     challenge: boolean
     dayOne: boolean

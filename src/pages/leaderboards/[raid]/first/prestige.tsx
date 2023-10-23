@@ -7,7 +7,6 @@ import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderbo
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { PrestigeRaid, PrestigeRaids } from "~/types/raids"
 import { includedIn } from "~/util/betterIncludes"
-import { PrestigeReleases } from "~/data/destiny-dates"
 
 type PrestigeWFPageProps = {
     raid: PrestigeRaid
@@ -68,12 +67,7 @@ export const getStaticProps: GetStaticProps<PrestigeWFPageProps, { raid: string 
 export default function LeaderboadPage({ raid, dehydratedState }: PrestigeWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={raid}
-                params={["prestige"]}
-                descriptor="Prestige"
-                date={PrestigeReleases[raid]}
-            />
+            <MickeyMouseLeaderboard raid={raid} params={["prestige"]} descriptor="Prestige" />
         </Hydrate>
     )
 }

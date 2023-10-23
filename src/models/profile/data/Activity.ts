@@ -14,6 +14,8 @@ export default class Activity {
     readonly dateCompleted: Date
     readonly didMemberComplete: boolean
     readonly durationSeconds: number
+    readonly dayOne: boolean
+    readonly contest: boolean
 
     readonly weight: number
     constructor(data: RaidHubActivity & { didMemberComplete: boolean }) {
@@ -25,6 +27,8 @@ export default class Activity {
         this.dateStarted = new Date(data.dateStarted)
         this.dateCompleted = new Date(data.dateCompleted)
         this.didMemberComplete = data.didMemberComplete
+        this.dayOne = data.dayOne
+        this.contest = data.contest
         ;[this.raid, this.difficulty] = raidTupleFromHash(data.raidHash)
 
         this.durationSeconds = Math.floor(

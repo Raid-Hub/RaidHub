@@ -5,7 +5,6 @@ import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serve
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
-import { PCLeviathanRelease } from "~/data/destiny-dates"
 import { Raid } from "~/types/raids"
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => ({
@@ -56,12 +55,7 @@ export const getStaticProps: GetStaticProps<
 export default function LeaderboadPage({ dehydratedState }: { dehydratedState: unknown }) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={Raid.LEVIATHAN}
-                params={["pc"]}
-                descriptor="PC"
-                date={PCLeviathanRelease}
-            />
+            <MickeyMouseLeaderboard raid={Raid.LEVIATHAN} params={["pc"]} descriptor="PC" />
         </Hydrate>
     )
 }

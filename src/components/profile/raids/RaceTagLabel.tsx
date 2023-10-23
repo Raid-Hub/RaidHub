@@ -42,9 +42,7 @@ const RaceTagLabel = (props: RaidTagLabelProps) => {
 function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
     const tag = wfRaceMode(props)
     if (tag) {
-        return `${strings.tags[tag]}${props.asterisk ? "*" : ""}${
-            props.placement ? ` #${props.placement}` : ""
-        }`
+        return `${strings.tags[tag]}${props.placement ? ` #${props.placement}` : ""}`
     } else {
         return null
     }

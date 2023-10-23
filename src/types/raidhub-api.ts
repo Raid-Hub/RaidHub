@@ -27,6 +27,8 @@ export type RaidHubActivity = {
     playerCount: number
     dateStarted: string
     dateCompleted: string
+    dayOne: boolean
+    contest: boolean
 }
 
 export type RaidHubPlayerResponse = {
@@ -36,6 +38,9 @@ export type RaidHubPlayerResponse = {
         {
             rank: number
             activityId: string
+            dayOne: boolean
+            contest: boolean
+            weekOne: boolean
         }
     >
 }
@@ -63,7 +68,11 @@ export type RaidHubActivityLeaderboardResponse = {
             membershipId: string
             membershipType: BungieMembershipType
         }[]
+        dayOne: boolean
+        contest: boolean
+        weekOne: boolean
     }[]
+    date?: number
     params: {
         count: number
         page: number

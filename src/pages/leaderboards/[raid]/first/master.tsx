@@ -6,7 +6,6 @@ import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serve
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { MasterReleases } from "~/data/destiny-dates"
 import { includedIn } from "~/util/betterIncludes"
 
 type MasterWFPageProps = {
@@ -68,12 +67,7 @@ export const getStaticProps: GetStaticProps<MasterWFPageProps, { raid: string }>
 export default function LeaderboadPage({ raid, dehydratedState }: MasterWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={raid}
-                params={["master"]}
-                descriptor="Master"
-                date={MasterReleases[raid]}
-            />
+            <MickeyMouseLeaderboard raid={raid} params={["master"]} descriptor="Master" />
         </Hydrate>
     )
 }

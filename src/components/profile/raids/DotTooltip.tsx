@@ -26,16 +26,7 @@ const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotToolti
         () => getRelativeTime(activity.dateCompleted),
         [activity.dateCompleted]
     )
-    const difficultyString = useMemo(
-        () =>
-            raidVersion(
-                [activity.raid, activity.difficulty],
-                activity.dateStarted,
-                activity.dateCompleted,
-                strings
-            ),
-        [activity, strings]
-    )
+    const difficultyString = useMemo(() => raidVersion(activity, strings), [activity, strings])
 
     return (
         <div

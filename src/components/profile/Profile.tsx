@@ -16,7 +16,6 @@ import Loading from "../global/Loading"
 import { useBungieClient } from "../app/TokenManager"
 import Activity from "~/models/profile/data/Activity"
 import { PortalProvider } from "../reusable/Portal"
-import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
@@ -76,11 +75,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 }
             ],
         [membershipsData, destinyMembershipId, destinyMembershipType]
-    )
-
-    // todo deal with player memberships
-    const playerMemberships = useRaidHubPlayers(
-        destinyMemberships.map(dm => dm.destinyMembershipId)
     )
 
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(

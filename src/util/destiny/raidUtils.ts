@@ -1,9 +1,7 @@
 import { RaidHashes } from "~/data/raid-hashes"
 import {
     ListedRaid,
-    ContestRaid,
     Difficulty,
-    NoContestRaid,
     Raid,
     RaidDifficultyTuple,
     ReprisedContestRaidDifficulties,
@@ -11,49 +9,25 @@ import {
 } from "../../types/raids"
 import { LocalStrings } from "../presentation/localized-strings"
 import { Tag } from "../raidhub/tags"
-
-export function isDayOne(raid: ListedRaid, ended: Date): boolean {
-    if (DayOneEnd[raid] === undefined) {
-        return false
-    } else {
-        return ended.getTime() < DayOneEnd[raid]!.getTime()
-    }
-}
-
-export function isContest(raid: ListedRaid, started: Date): boolean {
-    if (ContestEnd[raid as ContestRaid] === undefined) {
-        return false
-    } else {
-        return started.getTime() < ContestEnd[raid as ContestRaid].getTime()
-    }
-}
-export function isWeekOne(raid: ListedRaid, ended: Date): boolean {
-    if (WeekOneEnd[raid as NoContestRaid] === undefined) {
-        return false
-    } else {
-        return ended.getTime() < WeekOneEnd[raid as NoContestRaid].getTime()
-    }
-}
+import Activity from "~/models/profile/data/Activity"
 
 export function raidVersion(
-    [raid, difficulty]: RaidDifficultyTuple,
-    startDate: Date,
-    endDate: Date,
+    activity: Activity,
     strings: LocalStrings,
     includeNormal: boolean = true
 ): string {
     if (
         ReprisedContestRaidDifficulties.includes(
-            difficulty as (typeof ReprisedContestRaidDifficulties)[number]
+            activity.difficulty as (typeof ReprisedContestRaidDifficulties)[number]
         )
     ) {
-        return strings.difficulty[difficulty]
-    } else if (isDayOne(raid, endDate)) {
+        return strings.difficulty[activity.difficulty]
+    } else if (activity.dayOne) {
         return strings.tags[Tag.DAY_ONE]
-    } else if (isContest(raid, startDate)) {
+    } else if (activity.contest) {
         return strings.difficulty[Difficulty.CONTEST]
-    } else if (difficulty !== Difficulty.NORMAL) {
-        return strings.difficulty[difficulty]
+    } else if (activity.difficulty !== Difficulty.NORMAL) {
+        return strings.difficulty[activity.difficulty]
     } else if (includeNormal) {
         return strings.difficulty[Difficulty.NORMAL]
     } else {
@@ -91,58 +65,6 @@ const HashDictionary = (() =>
 export const AllValidHashes = Object.keys(HashDictionary) as ValidRaidHash[]
 
 // CONSTANTS
-
-export const ReleaseDate: Record<ListedRaid, Date> = {
-    [Raid.LEVIATHAN]: new Date("September 13, 2017 10:00:00 AM PDT"),
-    [Raid.EATER_OF_WORLDS]: new Date("December 8, 2017 10:00:00 AM PST"),
-    [Raid.SPIRE_OF_STARS]: new Date("May 11, 2018 10:00:00 AM PDT"),
-    [Raid.LAST_WISH]: new Date("September 14, 2018 10:00:00 AM PDT"),
-    [Raid.SCOURGE_OF_THE_PAST]: new Date("December 7, 2018 9:00:00 AM PST"),
-    [Raid.CROWN_OF_SORROW]: new Date("June 4, 2019 4:00:00 PM PDT"),
-    [Raid.GARDEN_OF_SALVATION]: new Date("October 5, 2019 10:00:00 AM PDT"),
-    [Raid.DEEP_STONE_CRYPT]: new Date("November 21, 2020 10:00:00 AM PST"),
-    [Raid.VAULT_OF_GLASS]: new Date("May 22, 2021 10:00:00 AM PDT"),
-    [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 5, 2022 10:00:00 AM PST"),
-    [Raid.KINGS_FALL]: new Date("August 26, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 10, 2023 9:00:00 AM PST"),
-    [Raid.CROTAS_END]: new Date("September 1, 2023 10:00:00 AM PDT")
-}
-
-const DayOneEnd: Record<ListedRaid, Date> = {
-    [Raid.LEVIATHAN]: new Date("September 14, 2017 10:00:00 AM PDT"),
-    [Raid.EATER_OF_WORLDS]: new Date("December 9, 2017 10:00:00 AM PST"),
-    [Raid.SPIRE_OF_STARS]: new Date("May 12, 2018 10:00:00 AM PDT"),
-    [Raid.LAST_WISH]: new Date("September 15, 2018 10:00:00 AM PDT"),
-    [Raid.SCOURGE_OF_THE_PAST]: new Date("December 8, 2018 9:00:00 AM PST"),
-    [Raid.CROWN_OF_SORROW]: new Date("June 5, 2019 4:00:00 PM PDT"),
-    [Raid.GARDEN_OF_SALVATION]: new Date("October 6, 2019 10:00:00 AM PDT"),
-    [Raid.DEEP_STONE_CRYPT]: new Date("November 22, 2020 10:00:00 AM PST"),
-    [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
-    [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 6, 2022 10:00:00 AM PST"),
-    [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 11, 2023 9:00:00 AM PST"),
-    [Raid.CROTAS_END]: new Date("September 2, 2023 10:00:00 AM PDT")
-}
-
-const ContestEnd: Record<ContestRaid, Date> = {
-    [Raid.CROWN_OF_SORROW]: new Date("June 5, 2019 4:00:00 PM PDT"),
-    [Raid.GARDEN_OF_SALVATION]: new Date("October 6, 2019 10:00:00 AM PDT"),
-    [Raid.DEEP_STONE_CRYPT]: new Date("November 22, 2020 10:00:00 AM PST"),
-    [Raid.VAULT_OF_GLASS]: new Date("May 23, 2021 10:00:00 AM PDT"),
-    [Raid.VOW_OF_THE_DISCIPLE]: new Date("March 7, 2022 10:00:00 AM PST"),
-    [Raid.KINGS_FALL]: new Date("August 27, 2022 10:00:00 AM PDT"),
-    [Raid.ROOT_OF_NIGHTMARES]: new Date("March 12, 2023 9:00:00 AM PST"),
-    [Raid.CROTAS_END]: new Date("September 3, 2023 10:00:00 AM PDT")
-}
-
-const WeekOneEnd: Record<NoContestRaid, Date> = {
-    [Raid.LEVIATHAN]: new Date("September 19, 2017 10:00:00 AM PDT"),
-    [Raid.EATER_OF_WORLDS]: new Date("December 12th, 2017 10:00:00 AM PST"),
-    [Raid.SPIRE_OF_STARS]: new Date("May 15, 2018 10:00:00 AM PDT"),
-    [Raid.LAST_WISH]: new Date("September 18, 2018 10:00:00 AM PDT"),
-    [Raid.SCOURGE_OF_THE_PAST]: new Date("December 11, 2018 9:00:00 AM PST")
-}
-
 export const BackdropOpacity: {
     [key in Raid]: number
 } = {

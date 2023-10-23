@@ -10,30 +10,11 @@ import RaidCardBackground from "~/images/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"
 import { toCustomDateString } from "~/util/presentation/formatting"
 
-type ActivityTileProps = { activity: Activity }
-
-const ActivityTile = ({
-    activity: {
-        dateStarted,
-        raid,
-        difficulty,
-        dateCompleted,
-        activityId,
-        completed,
-        playerCount,
-        flawless
-    }
-}: ActivityTileProps) => {
+const ActivityTile = ({ activity }: { activity: Activity }) => {
     const { strings, locale } = useLocale()
-    const difficultyString = raidVersion(
-        [raid, difficulty],
-        dateStarted,
-        dateCompleted,
-        strings,
-        false
-    )
+    const difficultyString = raidVersion(activity, strings, false)
     const lowManString = useMemo(() => {
-        switch (playerCount) {
+        switch (activity.playerCount) {
             case 1:
                 return strings.tags[Tag.SOLO]
             case 2:
@@ -41,20 +22,20 @@ const ActivityTile = ({
             case 3:
                 return strings.tags[Tag.TRIO]
         }
-    }, [playerCount, strings])
+    }, [activity.playerCount, strings])
 
     const flawlessString = useMemo(() => {
-        if (flawless === true) {
+        if (activity.flawless === true) {
             return strings.tags[Tag.FLAWLESS]
-        } else if (flawless === null) {
+        } else if (activity.flawless === null) {
             return strings.tags[Tag.FLAWLESS] + "*"
         }
-    }, [flawless, strings])
+    }, [activity.flawless, strings])
 
     return (
-        <Link href={`/pgcr/${activityId}`} className={styles["activity"]} legacyBehavior>
+        <Link href={`/pgcr/${activity.activityId}`} className={styles["activity"]} legacyBehavior>
             <m.a
-                href={`/pgcr/${activityId}`}
+                href={`/pgcr/${activity.activityId}`}
                 initial={{
                     y: 50,
                     opacity: 0
@@ -69,24 +50,29 @@ const ActivityTile = ({
                 }}
                 className={styles["activity"]}>
                 <CloudflareImage
-                    cloudflareId={RaidCardBackground[raid]}
-                    alt={`Raid card for ${strings.raidNames[raid]}`}
+                    cloudflareId={RaidCardBackground[activity.raid]}
+                    alt={`Raid card for ${strings.raidNames[activity.raid]}`}
                     fill
                     sizes="160px"
                     className={styles["activity-content-img"]}
                 />
                 <div className={styles["hover-date"]}>
-                    {toCustomDateString(dateCompleted, locale)}
+                    {toCustomDateString(activity.dateCompleted, locale)}
                 </div>
                 <p className={styles["activity-title"]}>
-                    {[lowManString, flawlessString, difficultyString, strings.raidNames[raid]]
+                    {[
+                        lowManString,
+                        flawlessString,
+                        difficultyString,
+                        strings.raidNames[activity.raid]
+                    ]
                         .filter(Boolean) // filters out falsy values
                         .join(" ")}
                 </p>
 
                 <div className={styles["success-layer"]}>
-                    <p style={{ color: completed ? "#98e07b" : "#FF0000" }}>
-                        {completed ? strings.success : strings.incompleteRaid}
+                    <p style={{ color: activity.completed ? "#98e07b" : "#FF0000" }}>
+                        {activity.completed ? strings.success : strings.incompleteRaid}
                     </p>
                 </div>
             </m.a>

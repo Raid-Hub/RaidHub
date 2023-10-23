@@ -3,7 +3,6 @@ import { MouseEvent, useCallback, useEffect, useRef } from "react"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { ElevatedRaidDifficulties } from "~/types/raids"
-import { isContest, isDayOne } from "~/util/destiny/raidUtils"
 import { Tag } from "~/util/raidhub/tags"
 import Activity from "~/models/profile/data/Activity"
 import { animate } from "framer-motion"
@@ -105,8 +104,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             {activity.completed && activity.playerCount <= 3 ? (
                 <Star x={centerX} y={centerY} spinning={activity.playerCount === 1} />
             ) : (
-                (isContest(activity.raid, activity.dateStarted) ||
-                    isDayOne(activity.raid, activity.dateCompleted)) && (
+                (activity.contest || activity.dayOne) && (
                     <RaidSkull
                         color="white"
                         width={2 * SKULL_FACTOR * RADIUS}

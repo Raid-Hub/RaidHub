@@ -17,10 +17,11 @@ import { Tag, TagForReprisedContest, addModifiers } from "../../util/raidhub/tag
 import { LocalStrings } from "../../util/presentation/localized-strings"
 import { IPGCREntryStats, WeaponStatsValues } from "../../types/pgcr"
 import { secondsToHMS } from "../../util/presentation/formatting"
-import { isContest, isDayOne, raidTupleFromHash } from "../../util/destiny/raidUtils"
+import { raidTupleFromHash } from "../../util/destiny/raidUtils"
 import { Collection } from "@discordjs/collection"
 import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 import { includedIn } from "~/util/betterIncludes"
+import { RaidHubActivityResponse } from "~/types/raidhub-api"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -38,17 +39,6 @@ type SummaryStats = {
     killsPerMinute: number
     totalCharactersUsed: number
     mostUsedWeapon: WeaponStatsValues | null
-}
-
-type ExtraData = {
-    activityId: string
-    raidHash: string
-    flawless: boolean | null
-    completed: boolean
-    fresh: boolean | null
-    playerCount: number
-    dateStarted: string
-    dateCompleted: string
 }
 
 export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
@@ -177,12 +167,12 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.entries.find(entry => entry.characterId === id)?.hydrate(components)
     }
 
-    tags(data: ExtraData): Tag[] {
+    tags(data: RaidHubActivityResponse): Tag[] {
         if (!includedIn(ListedRaids, this.raid)) return []
 
         const tags = new Array<Tag>()
-        if (isDayOne(this.raid, this.completionDate)) tags.push(Tag.DAY_ONE)
-        if (isContest(this.raid, this.startDate)) {
+        if (data.dayOne) tags.push(Tag.DAY_ONE)
+        if (data.contest) {
             if (includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
                 tags.push(TagForReprisedContest[this.difficulty])
             }
@@ -202,7 +192,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         return tags
     }
 
-    title(strings: LocalStrings, data: ExtraData): string {
+    title(strings: LocalStrings, data: RaidHubActivityResponse): string {
         return this.raid ? addModifiers(this.raid, this.tags(data), strings) : ""
     }
 }

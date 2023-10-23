@@ -34,6 +34,7 @@ export async function getLeaderboard(
 
         if (data.success) {
             return {
+                date: data.response.date ?? null,
                 entries: data.response.entries.map(e => ({
                     id: e.activityId,
                     rank: e.rank,
@@ -54,6 +55,7 @@ export async function getLeaderboard(
         }
     } catch (e) {
         return {
+            date: null,
             entries: []
         }
     }

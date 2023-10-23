@@ -2,7 +2,7 @@ import styles from "~/styles/pages/profile/raids.module.css"
 import { useEffect, useMemo, useState } from "react"
 import { m } from "framer-motion"
 import { Collection } from "@discordjs/collection"
-import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
+import { ListedRaid } from "~/types/raids"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import { useLocale } from "~/components/app/LocaleManager"
 import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
@@ -14,13 +14,17 @@ import CloudflareImage from "~/images/CloudflareImage"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import RaidTagLabel from "./RaidTagLabel"
 import RaceTagLabel from "./RaceTagLabel"
-import { includedIn } from "~/util/betterIncludes"
 import Expand from "~/images/icons/Expand"
 import { findTags } from "~/util/raidhub/tags"
+import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 
 type RaidModalProps = {
     raid: ListedRaid
     expand: () => void
+    leaderboardData: (RaidHubPlayerResponse["activityLeaderboardEntries"][string] & {
+        key: string
+    })[]
+    wfBoard: string | null
 } & (
     | {
           stats: RaidStats
@@ -48,19 +52,15 @@ const report = {
         value: 4891,
         instanceId: "1"
     },
-    sherpaCount: 999,
-    contestFirstClear: {
-        dayOne: true,
-        contest: true,
-        weekOne: true,
-        placement: 69
-    }
+    sherpaCount: 999
 }
 const isLoadingReport = false
 
 export default function RaidCard({
     raid,
     expand,
+    leaderboardData,
+    wfBoard,
     stats,
     isLoadingStats,
     activities,
@@ -90,6 +90,8 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
+    const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank).find(d => d.key === wfBoard)
+
     return (
         <m.div
             initial={{
@@ -115,12 +117,15 @@ export default function RaidCard({
                     alt={strings.raidNames[raid]}
                 />
                 <div className={styles["card-top"]}>
-                    {report?.contestFirstClear && (
+                    {firstClear && (
                         <RaceTagLabel
-                            {...report.contestFirstClear}
-                            challenge={includedIn(RaidsWithReprisedContest, raid)}
+                            placement={firstClear.rank}
+                            instanceId={firstClear.activityId}
+                            dayOne={firstClear.dayOne}
+                            contest={firstClear.contest}
+                            weekOne={firstClear.weekOne}
+                            challenge={wfBoard === "challenge"}
                             raid={raid}
-                            placement={report.contestFirstClear.placement ?? undefined}
                             setActiveId={setHoveredTag}
                         />
                     )}

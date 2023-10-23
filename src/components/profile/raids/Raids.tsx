@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/profile/raids.module.css"
-import { ListedRaids } from "~/types/raids"
+import { ListedRaid, ListedRaids } from "~/types/raids"
 import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
 import RecentRaids from "./RecentRaids"
@@ -15,6 +15,9 @@ import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
+import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
+import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -30,6 +33,38 @@ const Raids = ({
     setMostRecentActivity
 }: RaidsProps) => {
     const bungie = useBungieClient()
+    const manifest = useRaidHubManifest()
+
+    // todo deal with player memberships
+    const { players, isLoading: isLoadingPlayers } = useRaidHubPlayers(
+        destinyMemberships.map(dm => dm.destinyMembershipId)
+    )
+
+    const leaderboardEntriesByRaid = useMemo(() => {
+        const boardIdToRaid = new Map<string, { raid: ListedRaid; key: string }>()
+        Object.entries(manifest?.activityLeaderboards ?? {}).forEach(([raid, boards]) => {
+            Object.entries(boards).forEach(([key, id]) => {
+                boardIdToRaid.set(id, { raid: Number(raid), key })
+            })
+        })
+        const raidToData = new Collection<
+            ListedRaid,
+            (RaidHubPlayerResponse["activityLeaderboardEntries"][string] & { key: string })[]
+        >(ListedRaids.map(raid => [raid, []]))
+
+        players.forEach(p => {
+            Object.entries(p.activityLeaderboardEntries).forEach(([id, data]) => {
+                if (boardIdToRaid.has(id)) {
+                    const { raid, key } = boardIdToRaid.get(id)!
+                    raidToData.get(raid)!.push({ ...data, key })
+                }
+            })
+        })
+
+        return raidToData
+    }, [manifest, players])
+
+    manifest?.activityLeaderboards
 
     const statsQueries = bungie.stats.useQueries(destinyMemberships, {
         enabled: areMembershipsFetched
@@ -126,6 +161,8 @@ const Raids = ({
                         <RaidCard
                             key={raid}
                             raid={raid}
+                            leaderboardData={leaderboardEntriesByRaid.get(raid)!}
+                            wfBoard={manifest?.worldFirstBoards[raid] ?? null}
                             expand={() => setExpandedRaid(raid)}
                             {...(isLoadingStats
                                 ? {

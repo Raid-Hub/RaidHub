@@ -5,13 +5,13 @@ export type UseLocalStorage<V> = {
     save: (value: V | ((old: V) => V)) => void
 }
 
-export const useLocalStorage = <V>(key: string, defaultVaule: V): UseLocalStorage<V> => {
-    const [_value, setValue] = useState<V>(defaultVaule)
+export const useLocalStorage = <V>(key: string, defaultValue: V): UseLocalStorage<V> => {
+    const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
-        setValue(fromStore ? JSON.parse(fromStore) : defaultVaule)
-    }, [key, defaultVaule])
+        setValue(fromStore ? JSON.parse(fromStore) : defaultValue)
+    }, [key, defaultValue])
 
     function save(value: V | ((old: V) => V)) {
         const toSave = typeof value === "function" ? (value as (old: V | null) => V)(_value) : value

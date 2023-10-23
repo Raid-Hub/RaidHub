@@ -3,7 +3,7 @@ import Head from "next/head"
 import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
 import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
-import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
 import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import { usePage } from "~/hooks/util/usePage"
@@ -93,7 +93,8 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     })
 
     const title = `${raidName} | World First Leaderboards`
-    const raidDate = toCustomDateString(ReleaseDate[raid], locale)
+    const date = query.data?.date ? new Date(query.data.date) : null
+    const raidDate = date ? toCustomDateString(date, locale) : ""
     const description = `World First Race Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
@@ -102,7 +103,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
                 <meta key="description" name="description" content={description} />
                 <meta key="og-title" property="og:title" content={title} />
                 <meta key="og-descriptions" property="og:description" content={description} />
-                <meta name="date" content={ReleaseDate[raid].toISOString().slice(0, 10)} />
+                <meta name="date" content={date?.toISOString().slice(0, 10)} />
             </Head>
 
             <LeaderboardComponent

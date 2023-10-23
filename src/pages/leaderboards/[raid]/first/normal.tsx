@@ -67,12 +67,7 @@ export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }>
 export default function NormalWFPage({ raid, dehydratedState }: NormalWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={raid}
-                params={["normal"]}
-                descriptor="Normal Contest"
-                date={new Date()}
-            />
+            <MickeyMouseLeaderboard raid={raid} params={["normal"]} descriptor="Normal Contest" />
         </Hydrate>
     )
 }
