@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useEffect } from "react"
+import { ReactNode, createContext, useContext } from "react"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { RaidHubAPIResponse } from "~/types/raidhub-api"
 import { Difficulty, ListedRaid } from "~/types/raids"
