@@ -29,23 +29,17 @@ type RaidHubManifest = {
 
 const ManifestContext = createContext<RaidHubManifest | null | undefined>(undefined)
 
+const getManifest = () =>
+    fetch(getRaidHubBaseUrl() + "/manifest")
+        .then(res => res.json())
+        .then((data: RaidHubAPIResponse<RaidHubManifest>) => (data.success ? data.response : null))
+
 export function RaidHubManifestManager({ children }: { children: ReactNode }) {
-    const { value: manifest, save } = useLocalStorage<RaidHubManifest | null>(
+    const { value: manifest } = useLocalStorage<RaidHubManifest | null>(
         "raidhub_manifest",
-        null
+        null,
+        getManifest
     )
-
-    useEffect(() => {
-        fetch(getRaidHubBaseUrl() + "/manifest")
-            .then(async res => {
-                const data = (await res.json()) as RaidHubAPIResponse<RaidHubManifest>
-                if (data.success) {
-                    save(data.response)
-                }
-            })
-            .catch(console.error)
-    }, [save])
-
     return <ManifestContext.Provider value={manifest}>{children}</ManifestContext.Provider>
 }
 
