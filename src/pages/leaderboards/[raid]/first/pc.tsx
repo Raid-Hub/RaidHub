@@ -1,11 +1,10 @@
 import { GetStaticPaths, GetStaticProps } from "next"
-import { Hydrate } from "@tanstack/react-query"
+import { Hydrate, dehydrate } from "@tanstack/react-query"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
-import { PCLeviathanRelease } from "~/data/destiny-dates"
 import { Raid } from "~/types/raids"
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => ({
@@ -29,20 +28,23 @@ export const getStaticProps: GetStaticProps<
             throw Error("raid released on pc and console at the same time")
         }
 
-        const { staleTime, dehydratedState } = await prefetchLeaderboard(
-            raid,
-            Leaderboard.WorldFirst,
-            ["pc"],
-            2
+        const queryClient = createServerSideQueryClient()
+        await prefetchLeaderboard(
+            {
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params: ["pc"],
+                pages: 2
+            },
+            queryClient
         )
 
         return {
             props: {
                 raid,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
-            revalidate: staleTime / 1000
-            // revalidate takes seconds, so divide by 1000
+            revalidate: 3600 * 24 // 24 hours
         }
     } catch (e) {
         console.error(e)
@@ -53,12 +55,7 @@ export const getStaticProps: GetStaticProps<
 export default function LeaderboadPage({ dehydratedState }: { dehydratedState: unknown }) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={Raid.LEVIATHAN}
-                params={["pc"]}
-                descriptor="PC"
-                date={PCLeviathanRelease}
-            />
+            <MickeyMouseLeaderboard raid={Raid.LEVIATHAN} params={["pc"]} descriptor="PC" />
         </Hydrate>
     )
 }

@@ -3,7 +3,6 @@ import { MouseEvent, useCallback, useEffect, useRef } from "react"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
 import { ElevatedRaidDifficulties } from "~/types/raids"
-import { isContest, isDayOne, raidTupleFromHash } from "~/util/destiny/raidUtils"
 import { Tag } from "~/util/raidhub/tags"
 import Activity from "~/models/profile/data/Activity"
 import { animate } from "framer-motion"
@@ -26,9 +25,6 @@ type DotProps = {
 
 const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
-
-    const [raid, difficulty] = raidTupleFromHash(activity.hash)
-
     const handleHover = useCallback(
         ({ clientX, currentTarget }: MouseEvent) => {
             // if anything breaks with the tooltip, check this first
@@ -85,12 +81,12 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
 
     return (
         <a
-            href={`/pgcr/${activity.instanceId}`}
+            href={`/pgcr/${activity.activityId}`}
             onClick={e => {
                 e.preventDefault()
                 router.push({
                     pathname: "/pgcr/[activityId]",
-                    query: { activityId: activity.instanceId }
+                    query: { activityId: activity.activityId }
                 })
             }}
             ref={ref}
@@ -108,7 +104,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             {activity.completed && activity.playerCount <= 3 ? (
                 <Star x={centerX} y={centerY} spinning={activity.playerCount === 1} />
             ) : (
-                (isContest(raid, activity.startDate) || isDayOne(raid, activity.endDate)) && (
+                (activity.contest || activity.dayOne) && (
                     <RaidSkull
                         color="white"
                         width={2 * SKULL_FACTOR * RADIUS}
@@ -118,7 +114,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     />
                 )
             )}
-            {includedIn(ElevatedRaidDifficulties, difficulty) && (
+            {includedIn(ElevatedRaidDifficulties, activity.difficulty) && (
                 <circle
                     fill="none"
                     stroke="white"

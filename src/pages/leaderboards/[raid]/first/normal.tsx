@@ -1,9 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from "next"
-import { Hydrate } from "@tanstack/react-query"
+import { Hydrate, dehydrate } from "@tanstack/react-query"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
 import { RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
-import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
 import { includedIn } from "~/util/betterIncludes"
@@ -40,20 +40,23 @@ export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }>
             throw Error("raid does not have a reprised challenge version")
         }
 
-        const { staleTime, dehydratedState } = await prefetchLeaderboard(
-            raid,
-            Leaderboard.WorldFirst,
-            ["normal"],
-            2
+        const queryClient = createServerSideQueryClient()
+        await prefetchLeaderboard(
+            {
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params: ["normal"],
+                pages: 2
+            },
+            queryClient
         )
 
         return {
             props: {
                 raid,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
-            revalidate: staleTime / 1000
-            // revalidate takes seconds, so divide by 1000
+            revalidate: 3600 * 24 // 24 hours
         }
     } catch (e) {
         console.error(e)
@@ -64,12 +67,7 @@ export const getStaticProps: GetStaticProps<NormalWFPageProps, { raid: string }>
 export default function NormalWFPage({ raid, dehydratedState }: NormalWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={raid}
-                params={["normal"]}
-                descriptor="Normal Contest"
-                date={new Date()}
-            />
+            <MickeyMouseLeaderboard raid={raid} params={["normal"]} descriptor="Normal Contest" />
         </Hydrate>
     )
 }

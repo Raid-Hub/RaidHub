@@ -82,31 +82,28 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     <ul>
                         {includedIn(RaidsWithReprisedContest, raid) && (
                             <li>
-                                <Link
-                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/normal`}>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}>
                                     {strings.noChallenge}
                                 </Link>
                             </li>
                         )}
                         {includedIn(MasterRaids, raid) && (
                             <li>
-                                <Link
-                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/master`}>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}>
                                     {strings.difficulty[Difficulty.MASTER]}
                                 </Link>
                             </li>
                         )}
                         {includedIn(PrestigeRaids, raid) && (
                             <li>
-                                <Link
-                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/prestige`}>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}>
                                     {strings.difficulty[Difficulty.PRESTIGE]}
                                 </Link>
                             </li>
                         )}
                         {raid === Raid.LEVIATHAN && (
                             <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst/pc`}>
+                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`}>
                                     PC
                                 </Link>
                             </li>

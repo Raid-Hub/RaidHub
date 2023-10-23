@@ -68,8 +68,13 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
             membershipsData?.profiles.map(p => ({
                 destinyMembershipId: p.membershipId,
                 membershipType: p.membershipType
-            })) ?? [],
-        [membershipsData]
+            })) ?? [
+                {
+                    destinyMembershipId,
+                    membershipType: destinyMembershipType
+                }
+            ],
+        [membershipsData, destinyMembershipId, destinyMembershipType]
     )
 
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(

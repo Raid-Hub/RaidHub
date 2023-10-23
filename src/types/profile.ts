@@ -39,7 +39,7 @@ export type ProfileSocialData = {
 
 export type RaidTag = {
     raid: Raid
-    instanceId: string
+    activityId: string
     playerCount: number
     flawless: boolean
     fresh: boolean | null
@@ -49,7 +49,6 @@ export type RaidTag = {
 
 export type RaceTag = {
     placement?: number
-    asterisk?: boolean
     raid: Raid
     challenge: boolean
     dayOne: boolean

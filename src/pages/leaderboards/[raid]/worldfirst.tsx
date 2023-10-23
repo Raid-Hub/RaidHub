@@ -1,14 +1,14 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { Hydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
 import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
-import { ReleaseDate, UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
 import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import { usePage } from "~/hooks/util/usePage"
 import { zRaidURIComponent } from "~/util/zod"
-import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 
@@ -45,20 +45,23 @@ export const getStaticProps: GetStaticProps<WorldsFirstLeaderboadProps, { raid: 
                 : "normal"
         ]
 
-        const { staleTime, dehydratedState } = await prefetchLeaderboard(
-            raid,
-            Leaderboard.WorldFirst,
-            paramStrings,
-            2
+        const queryClient = createServerSideQueryClient()
+        await prefetchLeaderboard(
+            {
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params: paramStrings,
+                pages: 2
+            },
+            queryClient
         )
 
         return {
             props: {
                 raid,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
-            revalidate: staleTime / 1000
-            // revalidate takes seconds, so divide by 1000
+            revalidate: 3600 * 24 // 24 hours
         }
     } catch (e) {
         console.error(e)
@@ -90,7 +93,8 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     })
 
     const title = `${raidName} | World First Leaderboards`
-    const raidDate = toCustomDateString(ReleaseDate[raid], locale)
+    const date = query.data?.date ? new Date(query.data.date) : null
+    const raidDate = date ? toCustomDateString(date, locale) : ""
     const description = `World First Race Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
@@ -99,14 +103,15 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
                 <meta key="description" name="description" content={description} />
                 <meta key="og-title" property="og:title" content={title} />
                 <meta key="og-descriptions" property="og:description" content={description} />
-                <meta name="date" content={ReleaseDate[raid].toISOString().slice(0, 10)} />
+                <meta name="date" content={date?.toISOString().slice(0, 10)} />
             </Head>
 
             <LeaderboardComponent
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading}
                 page={page}
-                setPage={setPage}>
+                setPage={setPage}
+                refresh={query.refetch}>
                 <WorldFirstHeader
                     title={"World First " + raidName}
                     subtitle={raidDate}

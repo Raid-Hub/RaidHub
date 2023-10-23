@@ -156,22 +156,22 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                     .slice(dotRange[0], dotRange[1])
                     .map((a, idx) => (
                         <Dot
-                            key={a.instanceId}
+                            key={a.activityId}
                             centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
                             activity={a}
                             centerY={getHeight(a.durationSeconds)}
                             setTooltip={setDotTooltipData}
                             tooltipData={dotTooltipData}
-                            isTargeted={a.instanceId === targetDot}
+                            isTargeted={a.activityId === targetDot}
                         />
                     ))}
                 {/* Ensure the target dot is rendered */}
                 {targetted && (
                     <Dot
-                        key={targetted.instanceId}
+                        key={targetted.activityId}
                         centerX={
                             SPACING / 2 +
-                            SPACING * dots.toJSON().findIndex(a => a.instanceId === targetDot)
+                            SPACING * dots.toJSON().findIndex(a => a.activityId === targetDot)
                         }
                         activity={targetted}
                         centerY={getHeight(targetted.durationSeconds)}

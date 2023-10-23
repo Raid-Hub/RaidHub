@@ -8,7 +8,8 @@ const nextConfig = {
     reactStrictMode: false,
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
-        APP_ENV: process.env.APP_ENV
+        APP_ENV: process.env.APP_ENV,
+        RAIDHUB_API_URL: process.env.RAIDHUB_API_URL
     },
     images: {
         remotePatterns: [

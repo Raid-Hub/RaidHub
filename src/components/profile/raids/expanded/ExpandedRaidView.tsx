@@ -84,10 +84,10 @@ export default function ExpandedRaidView({
                         <div className={styles["history-activities"]}>
                             {activities.map(a => (
                                 <Link
-                                    key={a.instanceId}
-                                    href={`/pgcr/${a.instanceId}`}
+                                    key={a.activityId}
+                                    href={`/pgcr/${a.activityId}`}
                                     className={styles["activity"]}>
-                                    <div>{toCustomDateString(a.endDate, locale)}</div>
+                                    <div>{toCustomDateString(a.dateCompleted, locale)}</div>
                                 </Link>
                             ))}
                         </div>

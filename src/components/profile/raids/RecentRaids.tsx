@@ -21,7 +21,10 @@ const RecentRaids = ({ isLoading, allActivities }: RecentRaidsProps) => {
     const filter = useFilterContext()
 
     const activities = useMemo(
-        () => Array.from(allActivities?.values() ?? []).filter(filter),
+        () =>
+            Array.from(allActivities?.values() ?? [])
+                .filter(filter)
+                .sort((a, b) => b.dateStarted.getTime() - a.dateStarted.getTime()),
         [allActivities, filter]
     )
 

@@ -3,10 +3,12 @@ import { toCustomDateString } from "~/util/presentation/formatting"
 import { useLocale } from "~/components/app/LocaleManager"
 import { Raid } from "~/types/raids"
 import { usePGCRContext } from "~/pages/pgcr/[activityId]"
+import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 
 const ActivityHeader = () => {
-    const { data: pgcr, isLoading } = usePGCRContext()
+    const { data: pgcr, isLoading, activityId } = usePGCRContext()
     const { strings, locale } = useLocale()
+    const { data: activity } = useRaidHubActivity(activityId)
 
     return (
         <div className={styles["activity-tile-header-container"]}>
@@ -48,13 +50,14 @@ const ActivityHeader = () => {
             </div>
             <div className={styles["activity-tile-header-attributes"]}>
                 <div className={styles["tags-container"]}>
-                    {pgcr?.tags.map((tag, idx) => (
-                        <div key={idx} className={styles["tag"]}>
-                            {strings.tags[tag]}
-                        </div>
-                    ))}
+                    {activity &&
+                        pgcr?.tags(activity).map((tag, idx) => (
+                            <div key={idx} className={styles["tag"]}>
+                                {strings.tags[tag]}
+                            </div>
+                        ))}
                 </div>
-                {pgcr?.wasFresh() === null && (
+                {activity?.fresh === null && (
                     <div className={styles["cp-error"]}>
                         <p>{strings.checkPointDisclaimer}</p>
                     </div>

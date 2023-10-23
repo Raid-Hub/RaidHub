@@ -14,9 +14,12 @@ import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
+import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
-const DestinyManifestManager = dynamic(() => import("../components/app/DestinyManifestManager"))
+const DestinyManifestManager = dynamic(() =>
+    import("../components/app/DestinyManifestManager").then(imp => imp.DestinyManifestManager)
+)
 
 /** Dynamically import framer-motion features */
 const lazyMotionFeatures = () => import("../util/framer-motion-features").then(imp => imp.default)
@@ -63,24 +66,26 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
                 refetchOnWindowFocus={false}>
                 <TokenManager setRefetchInterval={setSessionRefetchInterval}>
                     <DestinyManifestManager>
-                        <LazyMotion features={lazyMotionFeatures} strict>
-                            <Header />
-                            <ProgressBar
-                                options={{
-                                    showSpinner: false,
-                                    parent: "#header",
-                                    trickle: true,
-                                    speed: 700
-                                }}
-                                stopDelayMs={50}
-                                height={3}
-                                showOnShallow={false}
-                                color={"orange"}
-                            />
-                            <SearchModal />
-                            <Component {...pageProps} />
-                            <Footer />
-                        </LazyMotion>
+                        <RaidHubManifestManager>
+                            <LazyMotion features={lazyMotionFeatures} strict>
+                                <Header />
+                                <ProgressBar
+                                    options={{
+                                        showSpinner: false,
+                                        parent: "#header",
+                                        trickle: true,
+                                        speed: 700
+                                    }}
+                                    stopDelayMs={50}
+                                    height={3}
+                                    showOnShallow={false}
+                                    color={"orange"}
+                                />
+                                <SearchModal />
+                                <Component {...pageProps} />
+                                <Footer />
+                            </LazyMotion>
+                        </RaidHubManifestManager>
                     </DestinyManifestManager>
                 </TokenManager>
             </SessionProvider>

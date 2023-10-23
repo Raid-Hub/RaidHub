@@ -43,7 +43,6 @@ const CameraButton = () => {
             animate={animate}
             variants={variants.button}>
             <m.svg preserveAspectRatio={"xMidYMid"} viewBox={"0 0 24 24"} height={20} width={20}>
-                {/* This is the default view */}
                 {/* TODO replace this with clipboard SVG */}
                 <g>
                     <m.circle

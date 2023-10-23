@@ -11,13 +11,11 @@ import WorldFirstHeader from "./WorldFirstHeader"
 export default function MickeyMouseLeaderboard({
     raid,
     params,
-    descriptor,
-    date
+    descriptor
 }: {
     raid: ListedRaid
     params: string[]
     descriptor: string
-    date: Date
 }) {
     const { strings, locale } = useLocale()
     const [page, setPage] = usePage()
@@ -28,7 +26,8 @@ export default function MickeyMouseLeaderboard({
     })
 
     const title = `${raidName} | ${descriptor} Leaderboards`
-    const raidDate = toCustomDateString(date, locale)
+    const date = query.data?.date ? new Date(query.data.date) : null
+    const raidDate = date ? toCustomDateString(date, locale) : ""
     const description = `${descriptor} Leaderboards for ${raidName} on ${raidDate}`
     return (
         <>
@@ -37,17 +36,18 @@ export default function MickeyMouseLeaderboard({
                 <meta key="description" name="description" content={description} />
                 <meta key="og-title" property="og:title" content={title} />
                 <meta key="og-descriptions" property="og:description" content={description} />
-                <meta name="date" content={date.toISOString().slice(0, 10)} />
+                <meta name="date" content={date?.toISOString().slice(0, 10)} />
             </Head>
 
             <LeaderboardComponent
                 entries={query.data?.entries ?? []}
-                isLoading={query.isLoading}
+                isLoading={query.isLoading || query.isRefetching}
                 page={page}
-                setPage={setPage}>
+                setPage={setPage}
+                refresh={query.refetch}>
                 <WorldFirstHeader
                     title={descriptor + " " + raidName}
-                    subtitle={toCustomDateString(date, locale)}
+                    subtitle={date ? toCustomDateString(date, locale) : ""}
                     raid={raid}
                 />
             </LeaderboardComponent>

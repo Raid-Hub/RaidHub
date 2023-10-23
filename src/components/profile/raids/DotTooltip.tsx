@@ -7,6 +7,7 @@ import { Green, Red, Teal } from "./Dot"
 import { raidVersion } from "../../../util/destiny/raidUtils"
 import { Tag } from "../../../util/raidhub/tags"
 import Activity from "../../../models/profile/data/Activity"
+import { secondsToHMS } from "~/util/presentation/formatting"
 
 export type DotTooltipProps = {
     offset: {
@@ -21,17 +22,11 @@ export type DotTooltipProps = {
 
 const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotTooltipProps) => {
     const { strings } = useLocale()
-    const dateString = useMemo(() => getRelativeTime(activity.endDate), [activity.endDate])
-    const difficultyString = useMemo(
-        () =>
-            raidVersion(
-                [activity.raid, activity.difficulty],
-                activity.startDate,
-                activity.endDate,
-                strings
-            ),
-        [activity, strings]
+    const dateString = useMemo(
+        () => getRelativeTime(activity.dateCompleted),
+        [activity.dateCompleted]
     )
+    const difficultyString = useMemo(() => raidVersion(activity, strings), [activity, strings])
 
     return (
         <div
@@ -41,9 +36,9 @@ const DotTooltip = ({ offset, isShowing, activity, flawless, lowman }: DotToolti
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activity.completed ? (flawless ? Teal : Green) : Red
+                borderColor: activity.didMemberComplete ? (flawless ? Teal : Green) : Red
             }}>
-            <div>{activity.values.activityDurationSeconds.basic.displayValue}</div>
+            <div>{secondsToHMS(activity.durationSeconds)}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
             <div className={styles["dot-tooltip-tags"]}>

@@ -16,7 +16,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     const { strings } = useLocale()
 
     const action = () => {
-        props.instanceId && props.setActiveId(props.instanceId)
+        props.activityId && props.setActiveId(props.activityId)
     }
 
     const { handleHover, handleLeave } = useHover({ action, debounce: 750 })
@@ -33,10 +33,10 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
     }
 
     return label ? (
-        props.instanceId ? (
+        props.activityId ? (
             <Link
                 className={styles["clickable-tag"]}
-                href={`/pgcr/${props.instanceId}`}
+                href={`/pgcr/${props.activityId}`}
                 onMouseEnter={handleHover}
                 onMouseLeave={handleLeave}>
                 <InnerTag />

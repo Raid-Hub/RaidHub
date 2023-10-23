@@ -93,12 +93,11 @@ function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {
         ? data.profiles.find(p => isPrimaryCrossSave(p, membershipId))!
         : null
 
-    return primaryProfile ? (
-        <Link href={`/profile/${primaryProfile.membershipType}/${primaryProfile.membershipId}`}>
-            {primaryProfile.bungieGlobalDisplayName ?? primaryProfile.displayName}
-        </Link>
-    ) : (
-        <span>{membershipId}</span>
+    return (
+        <span>
+            {(primaryProfile?.bungieGlobalDisplayName ?? primaryProfile?.displayName) ||
+                membershipId}
+        </span>
     )
 }
 

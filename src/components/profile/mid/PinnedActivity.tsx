@@ -8,6 +8,7 @@ import { useBungieClient } from "~/components/app/TokenManager"
 import EagerEdge from "~/images/icons/destiny2/EagerEgde"
 import PinIcon from "~/images/icons/PinIcon"
 import CloudflareImage from "~/images/CloudflareImage"
+import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 
 type PinnedActivityProps = {
     activityId: string
@@ -28,6 +29,7 @@ const PinnedActivity = ({
         { staleTime: Infinity }
     )
     const { locale, strings } = useLocale()
+    const { data: activity } = useRaidHubActivity(activityId)
 
     return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (
         <Loading className={styles["pinned-activity-loading"]} />
@@ -44,7 +46,11 @@ const PinnedActivity = ({
             )}
             {isPinned && <PinIcon sx={20} color="white" className={styles["pin-icon"]} />}
             <div className={styles["pinned-activity-text"]}>
-                <p className={styles["pinned-activity-title"]}>{pgcr.title(strings)}</p>
+                {activity && (
+                    <p className={styles["pinned-activity-title"]}>
+                        {pgcr.title(strings, activity)}
+                    </p>
+                )}
             </div>
             <div className={styles["pinned-activity-subtext"]}>
                 <p>{toCustomDateString(pgcr.completionDate, locale)}</p>

@@ -12,11 +12,19 @@ type LeaderboardProps = {
     page: number
     setPage: (page: number) => void
     children: ReactNode
+    refresh: () => void
 }
 
 export const ENTRIES_PER_PAGE = 50
 
-const Leaderboard = ({ entries, isLoading, page, setPage, children }: LeaderboardProps) => {
+const Leaderboard = ({
+    entries,
+    isLoading,
+    page,
+    setPage,
+    children,
+    refresh
+}: LeaderboardProps) => {
     const { strings } = useLocale()
 
     const hasMorePages = isLoading || entries.length === ENTRIES_PER_PAGE
@@ -33,6 +41,7 @@ const Leaderboard = ({ entries, isLoading, page, setPage, children }: Leaderboar
         <main className={styles["main"]}>
             <section>{children}</section>
             <div className={styles["leaderboard-controls"]}>
+                <StyledButton onClick={refresh}>{"Refresh"}</StyledButton>
                 <StyledButton onClick={handleBackwards} disabled={page <= 0}>
                     {strings.back}
                 </StyledButton>

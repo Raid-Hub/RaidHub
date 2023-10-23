@@ -1,16 +1,15 @@
 import { GetStaticPaths, GetStaticProps } from "next"
-import { Hydrate } from "@tanstack/react-query"
+import { Hydrate, dehydrate } from "@tanstack/react-query"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { prefetchLeaderboard } from "~/server/serverQueryClient"
+import { MasterRaid, MasterRaids } from "~/types/raids"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { zRaidURIComponent } from "~/util/zod"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { PrestigeRaid, PrestigeRaids } from "~/types/raids"
 import { includedIn } from "~/util/betterIncludes"
-import { PrestigeReleases } from "~/data/destiny-dates"
 
-type PrestigeWFPageProps = {
-    raid: PrestigeRaid
+type MasterWFPageProps = {
+    raid: MasterRaid
     dehydratedState: unknown
 }
 
@@ -18,7 +17,7 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
     return process.env.APP_ENV !== "local"
         ? {
               paths: Object.entries(UrlPathsToRaid)
-                  .filter(([_, raid]) => includedIn(PrestigeRaids, raid))
+                  .filter(([_, raid]) => includedIn(MasterRaids, raid))
                   .map(([path, _]) => ({
                       params: {
                           raid: path
@@ -32,29 +31,32 @@ export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => {
           }
 }
 
-export const getStaticProps: GetStaticProps<PrestigeWFPageProps, { raid: string }> = async ({
+export const getStaticProps: GetStaticProps<MasterWFPageProps, { raid: string }> = async ({
     params
 }) => {
     try {
         const raid = zRaidURIComponent.parse(params?.raid)
-        if (!includedIn(PrestigeRaids, raid)) {
-            throw Error("raid does not have a prestige version")
+        if (!includedIn(MasterRaids, raid)) {
+            throw Error("raid does not have a master version")
         }
 
-        const { staleTime, dehydratedState } = await prefetchLeaderboard(
-            raid,
-            Leaderboard.WorldFirst,
-            ["prestige"],
-            2
+        const queryClient = createServerSideQueryClient()
+        await prefetchLeaderboard(
+            {
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params: ["master"],
+                pages: 2
+            },
+            queryClient
         )
 
         return {
             props: {
                 raid,
-                dehydratedState
+                dehydratedState: dehydrate(queryClient)
             },
-            revalidate: staleTime / 1000
-            // revalidate takes seconds, so divide by 1000
+            revalidate: 3600 * 24 // 24 hours
         }
     } catch (e) {
         console.error(e)
@@ -62,15 +64,10 @@ export const getStaticProps: GetStaticProps<PrestigeWFPageProps, { raid: string 
     }
 }
 
-export default function LeaderboadPage({ raid, dehydratedState }: PrestigeWFPageProps) {
+export default function LeaderboadPage({ raid, dehydratedState }: MasterWFPageProps) {
     return (
         <Hydrate state={dehydratedState}>
-            <MickeyMouseLeaderboard
-                raid={raid}
-                params={["prestige"]}
-                descriptor="Prestige"
-                date={PrestigeReleases[raid]}
-            />
+            <MickeyMouseLeaderboard raid={raid} params={["master"]} descriptor="Master" />
         </Hydrate>
     )
 }

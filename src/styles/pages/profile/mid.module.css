@@ -64,6 +64,7 @@
 .pinned-activity {
     flex: 3;
     display: block;
+    min-width: 270px;
     width: 100%;
 
     border: 1px solid var(--border);

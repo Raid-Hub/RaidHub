@@ -11,9 +11,13 @@ import Head from "next/head"
 import { useLocale } from "~/components/app/LocaleManager"
 import { Short } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
+import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 
 const PgcrContext = createContext<
-    QueryObserverSuccessResult<DestinyPGCR> | QueryObserverLoadingResult<DestinyPGCR> | null
+    | ((QueryObserverSuccessResult<DestinyPGCR> | QueryObserverLoadingResult<DestinyPGCR>) & {
+          activityId: string
+      })
+    | null
 >(null)
 
 export const usePGCRContext = () => {
@@ -28,14 +32,15 @@ type PGCRPageProps = {
 const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
     const bungie = useBungieClient()
     const query = bungie.pgcr.useQuery({ activityId }, { staleTime: Infinity })
+    const { data: activity } = useRaidHubActivity(activityId)
 
     const { strings, locale } = useLocale()
     return query.isError ? (
         <ErrorComponent error={CustomError.handle(query.error, ErrorCode.PGCR)} />
     ) : (
-        <PgcrContext.Provider value={query}>
+        <PgcrContext.Provider value={{ activityId, ...query }}>
             <Head>
-                {query.data?.raid && (
+                {query.data?.raid && activity && (
                     <>
                         <title key="title">
                             {Short[query.data.raid]} {query.data.activityDetails.instanceId} |
@@ -52,7 +57,8 @@ const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
                             key="description"
                             name="description"
                             content={`${query.data.title(
-                                strings
+                                strings,
+                                activity
                             )} completed on ${toCustomDateString(
                                 query.data.completionDate,
                                 locale
@@ -62,7 +68,8 @@ const PGCRPage: NextPage<PGCRPageProps> = ({ activityId }) => {
                             key="og-descriptions"
                             property="og:description"
                             content={`${query.data.title(
-                                strings
+                                strings,
+                                activity
                             )} completed on ${toCustomDateString(
                                 query.data.completionDate,
                                 locale

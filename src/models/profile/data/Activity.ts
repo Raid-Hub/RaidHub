@@ -1,88 +1,61 @@
-import {
-    DestinyHistoricalStatsActivity,
-    DestinyHistoricalStatsPeriodGroup,
-    DestinyHistoricalStatsValue
-} from "bungie-net-core/models"
 import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raidUtils"
-import { Collection } from "@discordjs/collection"
+import { RaidHubActivity } from "~/types/raidhub-api"
 
-export default class Activity implements DestinyHistoricalStatsPeriodGroup {
-    readonly period: string
-    readonly activityDetails: DestinyHistoricalStatsActivity
-    readonly values: { [key: string]: DestinyHistoricalStatsValue }
-
-    readonly startDate: Date
-    readonly endDate: Date
-    readonly hash: string
+export default class Activity {
+    readonly activityId: string
     readonly raid: ListedRaid
     readonly difficulty: Difficulty
-    constructor(data: DestinyHistoricalStatsPeriodGroup) {
-        this.period = data.period
-        this.activityDetails = data.activityDetails
-        this.values = data.values
+    readonly flawless: boolean
+    readonly completed: boolean
+    readonly fresh: boolean
+    readonly playerCount: number
+    readonly dateStarted: Date
+    readonly dateCompleted: Date
+    readonly didMemberComplete: boolean
+    readonly durationSeconds: number
+    readonly dayOne: boolean
+    readonly contest: boolean
 
-        this.startDate = new Date(data.period)
-        this.endDate = new Date(this.startDate.getTime() + this.durationSeconds * 1000)
-        this.hash = this.activityDetails.directorActivityHash.toString()
-        ;[this.raid, this.difficulty] = raidTupleFromHash(this.hash)
-    }
+    readonly weight: number
+    constructor(data: RaidHubActivity & { didMemberComplete: boolean }) {
+        this.activityId = data.activityId
+        this.flawless = !!data.flawless
+        this.completed = data.completed
+        this.fresh = !!data.fresh
+        this.playerCount = data.playerCount
+        this.dateStarted = new Date(data.dateStarted)
+        this.dateCompleted = new Date(data.dateCompleted)
+        this.didMemberComplete = data.didMemberComplete
+        this.dayOne = data.dayOne
+        this.contest = data.contest
+        ;[this.raid, this.difficulty] = raidTupleFromHash(data.raidHash)
 
-    get completed() {
-        return !!this.values.completed.basic.value && this.values.completionReason.basic.value === 0
-    }
-
-    get durationSeconds() {
-        return this.values.activityDurationSeconds.basic.value
-    }
-
-    get instanceId() {
-        return this.activityDetails.instanceId
-    }
-
-    get playerCount() {
-        // todo
-        const count = this.values.playerCount.basic.value
-        return count <= 0 ? Infinity : count
-    }
-
-    get fresh() {
-        // todo
-        return Number(this.instanceId) % 2 === 0
-    }
-
-    get flawless() {
-        // todo
-        return this.completed && this.fresh && this.values.deaths.basic.value === 0
-    }
-
-    get playerIds() {
-        // todo
-        return ["123", "456"]
-    }
-
-    static combineCollections(x: Collection<string, Activity>, y: Collection<string, Activity>) {
-        return x.merge(
-            y,
-            (a: Activity) => ({
-                keep: true,
-                value: a
-            }),
-            (b: Activity) => ({
-                keep: true,
-                value: b
-            }),
-            (a: Activity, b: Activity) => ({
-                keep: true,
-                // keep the completed one or the one with more time
-                value: !!a.completed
-                    ? a
-                    : !!b.completed
-                    ? b
-                    : a.durationSeconds > b.durationSeconds
-                    ? a
-                    : b
-            })
+        this.durationSeconds = Math.floor(
+            (this.dateCompleted.getTime() - this.dateStarted.getTime()) / 1000
         )
+        // non lowman 2 => 1 => 0
+        // trio => 2 => 1
+        // duo => 4 => 3
+        // solo => 8 => 7
+        const adjustedPlayerCount = (1 << Math.max(0, 4 - Math.min(this.playerCount, 6))) - 1
+        const adjustedDifficulty = Number(
+            ![Difficulty.NORMAL, Difficulty.GUIDEDGAMES].includes(this.difficulty)
+        )
+        /*
+        This is a bitfield to measure the weight of an activity. If its not flawless or a lowman, it has 0 weight.
+        From the right, 
+        - bit 0 is for master/prestige.
+        - bit 1 for fresh
+        - bit 2 for flawless
+        - bit 3,4,5 for trio, duo, and solo respectively
+        */
+        this.weight =
+            this.completed && (this.flawless || this.playerCount <= 3)
+                ? (adjustedPlayerCount << 3) +
+                  ((this.flawless ? 1 : 0) << 2) +
+                  ((this.fresh ? 1 : 0) << 1) +
+                  adjustedDifficulty
+                : 0
     }
 }
