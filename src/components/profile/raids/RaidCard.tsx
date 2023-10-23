@@ -17,6 +17,7 @@ import RaceTagLabel from "./RaceTagLabel"
 import Expand from "~/images/icons/Expand"
 import { findTags } from "~/util/raidhub/tags"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { medianElement } from "~/util/math"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -43,17 +44,6 @@ type RaidModalProps = {
         | { isLoadingActivities: true; activities: null }
     )
 
-const report = {
-    fastestFullClear: {
-        value: 1442,
-        instanceId: "1"
-    },
-    averageFullClear: {
-        value: 4891,
-        instanceId: "1"
-    },
-    sherpaCount: 999
-}
 const isLoadingReport = false
 
 export default function RaidCard({
@@ -91,6 +81,18 @@ export default function RaidCard({
     const { strings } = useLocale()
 
     const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank).find(d => d.key === wfBoard)
+
+    const { fastestFullClear, averageClear } = useMemo(() => {
+        const freshFulls = activities?.filter(a => a.completed && a.fresh)
+        const fastestFullClear = freshFulls?.reduce<Activity>((curr, nxt) =>
+            nxt.durationSeconds < curr.durationSeconds ? nxt : curr
+        )
+        const averageClear = freshFulls
+            ? medianElement(freshFulls.sorted((a, b) => a.durationSeconds - b.durationSeconds))
+            : undefined
+
+        return { fastestFullClear, averageClear }
+    }, [activities])
 
     return (
         <m.div
@@ -180,31 +182,21 @@ export default function RaidCard({
                     />
                     <BigNumberStatItem
                         displayValue={
-                            report?.fastestFullClear
-                                ? secondsToHMS(report.fastestFullClear.value)
+                            fastestFullClear
+                                ? secondsToHMS(fastestFullClear.durationSeconds)
                                 : strings.na
                         }
                         isLoading={isLoadingReport}
                         name={strings.fastestClear}
-                        href={
-                            report?.fastestFullClear
-                                ? `/pgcr/${report.fastestFullClear.instanceId}`
-                                : undefined
-                        }
+                        href={fastestFullClear ? `/pgcr/${fastestFullClear.activityId}` : undefined}
                     />
                     <BigNumberStatItem
                         displayValue={
-                            report?.averageFullClear
-                                ? secondsToHMS(report.averageFullClear.value)
-                                : strings.na
+                            averageClear ? secondsToHMS(averageClear.durationSeconds) : strings.na
                         }
                         isLoading={isLoadingReport}
                         name={strings.averageClear}
-                        href={
-                            report?.averageFullClear
-                                ? `/pgcr/${report.averageFullClear.instanceId}`
-                                : undefined
-                        }
+                        href={averageClear ? `/pgcr/${averageClear.activityId}` : undefined}
                     />
                 </div>
             </div>
