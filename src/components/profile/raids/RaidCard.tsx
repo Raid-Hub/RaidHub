@@ -84,9 +84,11 @@ export default function RaidCard({
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
-        const fastestFullClear = freshFulls?.reduce<Activity>((curr, nxt) =>
-            nxt.durationSeconds < curr.durationSeconds ? nxt : curr
-        )
+        const fastestFullClear = freshFulls?.size
+            ? freshFulls.reduce<Activity>((curr, nxt) =>
+                  nxt.durationSeconds < curr.durationSeconds ? nxt : curr
+              )
+            : undefined
         const averageClear = freshFulls
             ? medianElement(freshFulls.sorted((a, b) => a.durationSeconds - b.durationSeconds))
             : undefined

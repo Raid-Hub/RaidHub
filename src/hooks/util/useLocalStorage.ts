@@ -13,7 +13,7 @@ export const useLocalStorage = <V>(
     const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {
-        fetcher?.().then(setValue)
+        fetcher?.().then(setValue).catch(console.error)
     }, [fetcher])
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export const useLocalStorage = <V>(
     }, [key, defaultValue])
 
     const save = (value: V | ((old: V) => V)) => {
-        const toSave = typeof value === "function" ? (value as (old: V | null) => V)(_value) : value
+        const toSave = typeof value === "function" ? (value as (old: V) => V)(_value) : value
         localStorage.setItem(key, JSON.stringify(toSave))
         setValue(toSave)
     }
