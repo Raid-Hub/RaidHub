@@ -18,7 +18,7 @@ export default function MickeyMouseLeaderboard({
     descriptor: string
 }) {
     const { strings, locale } = useLocale()
-    const [page, setPage] = usePage()
+    const { page, handleBackwards, handleForwards } = usePage()
     const raidName = strings.raidNames[raid]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
@@ -43,7 +43,8 @@ export default function MickeyMouseLeaderboard({
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading || query.isRefetching}
                 page={page}
-                setPage={setPage}
+                handleBackwards={handleBackwards}
+                handleForwards={handleForwards}
                 refresh={query.refetch}>
                 <WorldFirstHeader
                     title={descriptor + " " + raidName}

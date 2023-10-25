@@ -67,6 +67,7 @@ export type RaidHubActivityLeaderboardResponse = {
             iconPath: string
             membershipId: string
             membershipType: BungieMembershipType
+            didPlayerFinish: boolean
         }[]
         dayOne: boolean
         contest: boolean
