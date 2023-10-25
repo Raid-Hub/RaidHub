@@ -108,7 +108,7 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
 
             <LeaderboardComponent
                 entries={query.data?.entries ?? []}
-                isLoading={query.isLoading}
+                isLoading={query.isLoading || query.isRefetching}
                 page={page}
                 handleBackwards={handleBackwards}
                 handleForwards={handleForwards}

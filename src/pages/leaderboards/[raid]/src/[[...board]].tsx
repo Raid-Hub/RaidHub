@@ -147,7 +147,7 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
                     ENTRIES_PER_PAGE * page,
                     ENTRIES_PER_PAGE * (page + 1)
                 )}
-                isLoading={query.isLoading}
+                isLoading={query.isLoading || query.isRefetching}
                 page={page}
                 handleBackwards={handleBackwards}
                 handleForwards={handleForwards}

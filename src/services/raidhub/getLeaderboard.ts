@@ -27,6 +27,7 @@ export async function getLeaderboard(
         getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/${board}/${params.join("/")}`
     )
     url.searchParams.append("page", String(page))
+    url.searchParams.append("count", "50")
 
     try {
         const res = await fetch(url)
