@@ -117,7 +117,7 @@ export default function RtaLeaderboardPage({
 
 const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<string>) => {
     const { strings } = useLocale()
-    const [page, setPage] = usePage()
+    const { page, handleBackwards, handleForwards } = usePage()
     const query = useQuery({
         queryKey: rtaQueryKey(raid, category),
         queryFn: () => getSpeedrunComLeaderboard({ raid, category })
@@ -147,9 +147,10 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
                     ENTRIES_PER_PAGE * page,
                     ENTRIES_PER_PAGE * (page + 1)
                 )}
-                isLoading={query.isLoading}
+                isLoading={query.isLoading || query.isRefetching}
                 page={page}
-                setPage={setPage}
+                handleBackwards={handleBackwards}
+                handleForwards={handleForwards}
                 refresh={query.refetch}>
                 <SpeedrunComBanner
                     title={raidName}

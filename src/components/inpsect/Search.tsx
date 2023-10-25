@@ -75,6 +75,7 @@ export default function Search({ addMember }: { addMember: (membershipId: string
                                 width={45}
                                 height={45}
                                 alt={name}
+                                unoptimized
                                 src={bungieIconUrl(undefined)}
                             />
                             <p>{name}</p>

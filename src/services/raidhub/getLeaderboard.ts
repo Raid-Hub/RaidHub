@@ -26,6 +26,8 @@ export async function getLeaderboard(
     const url = new URL(
         getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/${board}/${params.join("/")}`
     )
+    url.searchParams.append("page", String(page))
+    url.searchParams.append("count", "50")
 
     try {
         const res = await fetch(url)
@@ -39,14 +41,17 @@ export async function getLeaderboard(
                     id: e.activityId,
                     rank: e.rank,
                     url: `/pgcr/${e.activityId}`,
-                    participants: e.players.map(p => ({
-                        id: p.membershipId,
-                        iconURL: bungieIconUrl(p.iconPath),
-                        displayName: p.bungieGlobalDisplayName || p.displayName,
-                        url: `/profile/${p.membershipType}/${p.membershipId}`
-                    })),
+                    participants: e.players
+                        .filter(p => p.didPlayerFinish)
+                        .map(p => ({
+                            id: p.membershipId,
+                            iconURL: bungieIconUrl(p.iconPath),
+                            displayName: p.bungieGlobalDisplayName || p.displayName,
+                            url: `/profile/${p.membershipType}/${p.membershipId}`
+                        })),
                     timeInSeconds:
-                        (new Date(e.dateCompleted).getTime() - new Date(e.dateStarted).getTime()) /
+                        (new Date(e.dateCompleted).getTime() -
+                            new Date(data.response.date ?? e.dateStarted).getTime()) /
                         1000
                 }))
             }

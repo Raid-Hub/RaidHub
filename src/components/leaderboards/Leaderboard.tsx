@@ -10,9 +10,10 @@ type LeaderboardProps = {
     entries: LeaderboardEntry[]
     isLoading: boolean
     page: number
-    setPage: (page: number) => void
     children: ReactNode
     refresh: () => void
+    handleBackwards: () => void
+    handleForwards: () => void
 }
 
 export const ENTRIES_PER_PAGE = 50
@@ -21,28 +22,21 @@ const Leaderboard = ({
     entries,
     isLoading,
     page,
-    setPage,
     children,
-    refresh
+    refresh,
+    handleBackwards,
+    handleForwards
 }: LeaderboardProps) => {
     const { strings } = useLocale()
 
     const hasMorePages = isLoading || entries.length === ENTRIES_PER_PAGE
-    const handleForwards = () => {
-        setPage(page + 1)
-    }
 
-    const handleBackwards = () => {
-        if (page > 0) {
-            setPage(page - 1)
-        }
-    }
     return (
         <main className={styles["main"]}>
             <section>{children}</section>
             <div className={styles["leaderboard-controls"]}>
                 <StyledButton onClick={refresh}>{"Refresh"}</StyledButton>
-                <StyledButton onClick={handleBackwards} disabled={page <= 0}>
+                <StyledButton onClick={handleBackwards} disabled={page <= 1}>
                     {strings.back}
                 </StyledButton>
                 <StyledButton onClick={handleForwards} disabled={!hasMorePages}>

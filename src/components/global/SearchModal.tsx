@@ -7,6 +7,8 @@ import { useKeyPress } from "../../hooks/util/useKeyPress"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import Loader from "~/components/reusable/Loader"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import Image from "next/image"
 type SearchModalProps = {}
 
 const SearchModal = ({}: SearchModalProps) => {
@@ -101,9 +103,6 @@ const SearchModal = ({}: SearchModalProps) => {
                                 <Loader stroke={2} />
                             )}
                         </div>
-                        <div className={styles["search-top-right"]}>
-                            {/* <Image src={Search } alt="search" width={20} height={20} /> */}
-                        </div>
                     </div>
                     <hr />
                     <div className={styles["search-content"]}>
@@ -121,12 +120,13 @@ const SearchModal = ({}: SearchModalProps) => {
                                         }}>
                                         <li>
                                             <div className={styles["individual-result"]}>
-                                                {/* <Image
+                                                <Image
                                                     width={45}
                                                     height={45}
                                                     alt={name}
-                                                    src={Question_Mark}
-                                                /> */}
+                                                    unoptimized
+                                                    src={bungieIconUrl(undefined)}
+                                                />
                                                 <p>{name}</p>
                                             </div>
                                         </li>
