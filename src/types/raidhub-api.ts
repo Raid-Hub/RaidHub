@@ -79,3 +79,35 @@ export type RaidHubActivityLeaderboardResponse = {
         page: number
     }
 }
+
+export type RaidHubSearchResponse<G extends boolean = any> = {
+    params: {
+        count: number
+        term: G extends true
+            ? {
+                  bungieGlobalDisplayName: string
+                  bungieGlobalDisplayNameCode: string
+              }
+            : {
+                  displayName: string
+              }
+    }
+    results: RaidHubSearchResult<G>[]
+}
+
+export type RaidHubSearchResult<G extends boolean = any> = {
+    membershipId: string
+    membershipType: BungieMembershipType
+    iconPath: string
+    displayName: string
+    lastSeen: string
+    clears: number
+} & (G extends true
+    ? {
+          bungieGlobalDisplayName: string
+          bungieGlobalDisplayNameCode: string
+      }
+    : {
+          bungieGlobalDisplayName: null
+          bungieGlobalDisplayNameCode: null
+      })

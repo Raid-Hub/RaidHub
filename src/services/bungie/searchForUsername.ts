@@ -44,5 +44,5 @@ export async function searchForUsername({
         page++
     }
 
-    return results.flat()
+    return results.flat().filter(r => r.destinyMemberships.length)
 }
