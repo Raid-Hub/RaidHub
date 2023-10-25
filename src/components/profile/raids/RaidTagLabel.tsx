@@ -52,19 +52,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
 function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string | null {
     // special cases
     let wishWall = false
-    if (tag.raid === Raid.DEEP_STONE_CRYPT && tag.playerCount === 1) {
-        return null
-    } else if (tag.raid === Raid.GARDEN_OF_SALVATION && tag.playerCount === 2) {
-        tag = {
-            ...tag,
-            fresh: false
-        }
-    } else if (tag.raid === Raid.VAULT_OF_GLASS && tag.playerCount === 1) {
-        tag = {
-            ...tag,
-            fresh: false
-        }
-    } else if (tag.raid === Raid.LAST_WISH && tag.playerCount === 1 && tag.fresh) {
+    if (tag.raid === Raid.LAST_WISH && tag.playerCount === 1 && tag.fresh) {
         wishWall = true
     }
     const descriptors: string[] = []
