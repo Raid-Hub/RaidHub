@@ -35,7 +35,7 @@ const ClanCard = () => {
                 </span>
                 <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                 <div className={styles["desc-text-wrapper"]}>
-                    <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "")}</p>
+                    <p className={styles["desc-text"]}>{urlHighlight(clan?.about ?? "", false)}</p>
                 </div>
             </div>
         </Link>

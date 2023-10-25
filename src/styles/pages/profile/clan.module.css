@@ -78,7 +78,7 @@
     font-size: 12px;
 }
 
-.desc-text a {
+.desc-text *[data-url] {
     text-decoration: underline;
     color: #c56f24;
 }
