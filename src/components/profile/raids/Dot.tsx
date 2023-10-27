@@ -13,6 +13,7 @@ import { useRouter } from "next/router"
 export const Red = "#F44336"
 export const Green = "#4CAF50"
 export const Teal = "#36c9bd"
+export const Orange = "#F07C27"
 
 type DotProps = {
     activity: Activity
@@ -35,16 +36,6 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             setTooltip({
                 isShowing: true,
                 activity,
-                flawless: activity.flawless,
-                lowman: activity.completed
-                    ? activity.playerCount === 1
-                        ? Tag.SOLO
-                        : activity.playerCount === 2
-                        ? Tag.DUO
-                        : activity.playerCount === 3
-                        ? Tag.TRIO
-                        : null
-                    : null,
                 offset: {
                     x: xOffset,
                     y: centerY
@@ -94,7 +85,15 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             onMouseLeave={handleMouseLeave}
             className={[styles["dot"], styles["dot-hover"]].join(" ")}>
             <circle
-                fill={activity.completed ? (activity.flawless ? Teal : Green) : Red}
+                fill={
+                    activity.didMemberComplete
+                        ? activity.flawless
+                            ? Teal
+                            : Green
+                        : activity.completed
+                        ? Orange
+                        : Red
+                }
                 fillOpacity={0.978}
                 r={RADIUS}
                 cx={centerX}
