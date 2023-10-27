@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "../../styles/header.module.css"
-import { useSearch } from "../../hooks/bungie/useSearch"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import Loader from "../reusable/Loader"
 import Search from "~/images/icons/Search"
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
+import BungieName from "~/models/BungieName"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -20,19 +21,13 @@ const SearchBar = ({}: SearchBarProps) => {
         enteredText,
         results,
         isLoading: isLoadingResults,
-        isPerformingExactSearch,
         handleFormEnter,
         handleInputChange,
         clearQuery
-    } = useSearch({
-        errorHandler: console.error /** TODO: Handle search bar errors */,
-        onSuccessfulExactSearch: userInfo => {
+    } = useRaidHubSearch({
+        onRedirect: () => {
             setIsShowingResults(false)
             setIsRedirecting(true)
-            router.push(
-                "/profile/[destinyMembershipType]/[destinyMembershipId]",
-                `/profile/${userInfo.membershipType}/${userInfo.membershipId}`
-            )
         }
     })
     const [isShowingResults, setIsShowingResults] = useState(false)
@@ -83,7 +78,7 @@ const SearchBar = ({}: SearchBarProps) => {
     return (
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
-                {isPerformingExactSearch || isLoadingResults || isRedirecting ? (
+                {isLoadingResults || isRedirecting ? (
                     <Loader stroke={2} />
                 ) : (
                     <Search color="white" />
@@ -107,17 +102,38 @@ const SearchBar = ({}: SearchBarProps) => {
                 </div>
                 {isShowingResults && (
                     <ul className={styles["search-results"]}>
-                        {results.map(({ name, membershipId, membershipType }, idx) => (
-                            <Link
-                                className={styles["search-result"]}
-                                key={idx}
-                                href={`/profile/${membershipType}/${membershipId}`}
-                                onClick={handleSelect}>
-                                <li>
-                                    <p>{name}</p>
-                                </li>
-                            </Link>
-                        ))}
+                        {results.map(
+                            (
+                                {
+                                    displayName,
+                                    bungieGlobalDisplayName,
+                                    bungieGlobalDisplayNameCode,
+                                    membershipId,
+                                    membershipType
+                                },
+                                idx
+                            ) => {
+                                let username = displayName
+                                try {
+                                    const b = new BungieName(
+                                        bungieGlobalDisplayName,
+                                        bungieGlobalDisplayNameCode
+                                    )
+                                    username = b.toString()
+                                } catch {}
+                                return (
+                                    <Link
+                                        className={styles["search-result"]}
+                                        key={idx}
+                                        href={`/profile/${membershipType}/${membershipId}`}
+                                        onClick={handleSelect}>
+                                        <li>
+                                            <p>{username}</p>
+                                        </li>
+                                    </Link>
+                                )
+                            }
+                        )}
                     </ul>
                 )}
             </form>

@@ -1,19 +1,17 @@
-import { useSearch } from "~/hooks/bungie/useSearch"
 import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
+import BungieName from "~/models/BungieName"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
 
-    const { enteredText, results, handleFormEnter, handleInputChange } = useSearch({
-        errorHandler: console.error, // todo
-        onSuccessfulExactSearch: userInfo => {
-            if (userInfo) {
-                setIsShowingResults(false)
-                addMember(userInfo.membershipId)
-            }
+    const { enteredText, results, handleFormEnter, handleInputChange } = useRaidHubSearch({
+        onRedirect: result => {
+            setIsShowingResults(false)
+            addMember(result.membershipId)
         }
     })
 
@@ -63,24 +61,45 @@ export default function Search({ addMember }: { addMember: (membershipId: string
             </form>
             {isShowingResults && (
                 <ol className={styles["search-results"]}>
-                    {results.map(({ name, membershipId }, idx) => (
-                        <li
-                            key={idx}
-                            className={styles["search-result"]}
-                            onClick={() => {
-                                addMember(membershipId)
-                                setIsShowingResults(false)
-                            }}>
-                            <Image
-                                width={45}
-                                height={45}
-                                alt={name}
-                                unoptimized
-                                src={bungieIconUrl(undefined)}
-                            />
-                            <p>{name}</p>
-                        </li>
-                    ))}
+                    {results.map(
+                        (
+                            {
+                                bungieGlobalDisplayName,
+                                bungieGlobalDisplayNameCode,
+                                iconPath,
+                                displayName,
+                                membershipId
+                            },
+                            idx
+                        ) => {
+                            let username = displayName
+                            try {
+                                const b = new BungieName(
+                                    bungieGlobalDisplayName,
+                                    bungieGlobalDisplayNameCode
+                                )
+                                username = b.toString()
+                            } catch {}
+                            return (
+                                <li
+                                    key={idx}
+                                    className={styles["search-result"]}
+                                    onClick={() => {
+                                        addMember(membershipId)
+                                        setIsShowingResults(false)
+                                    }}>
+                                    <Image
+                                        width={45}
+                                        height={45}
+                                        alt={username}
+                                        unoptimized
+                                        src={bungieIconUrl(iconPath)}
+                                    />
+                                    <p>{username}</p>
+                                </li>
+                            )
+                        }
+                    )}
                 </ol>
             )}
         </div>

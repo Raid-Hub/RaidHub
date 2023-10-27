@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react"
 import styles from "../../styles/searchmodal.module.css"
-import { useSearch } from "../../hooks/bungie/useSearch"
 import { animate, AnimationSequence } from "framer-motion"
 import { useTypewriter } from "react-simple-typewriter"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
@@ -9,6 +8,8 @@ import { useRouter } from "next/router"
 import Loader from "~/components/reusable/Loader"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import Image from "next/image"
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
+import BungieName from "~/models/BungieName"
 type SearchModalProps = {}
 
 const SearchModal = ({}: SearchModalProps) => {
@@ -46,20 +47,14 @@ const SearchModal = ({}: SearchModalProps) => {
         enteredText,
         results,
         isLoading: isLoadingResults,
-        isPerformingExactSearch: isPerformingExactSearch,
         handleFormEnter,
         handleInputChange,
         clearQuery
-    } = useSearch({
-        errorHandler: console.error /** TODO: Handle search bar errors */,
-        onSuccessfulExactSearch: userInfo => {
+    } = useRaidHubSearch({
+        onRedirect: () => {
             setShowingResults(false)
             setIsRedirecting(true)
             animateModalOut()
-            router.push(
-                "/profile/[destinyMembershipType]/[destinyMembershipId]",
-                `/profile/${userInfo.membershipType}/${userInfo.membershipId}`
-            )
         }
     })
 
@@ -99,9 +94,7 @@ const SearchModal = ({}: SearchModalProps) => {
                             />
                         </form>
                         <div className={styles["search-loading-indicator"]}>
-                            {(isPerformingExactSearch || isRedirecting || isLoadingResults) && (
-                                <Loader stroke={2} />
-                            )}
+                            {(isRedirecting || isLoadingResults) && <Loader stroke={2} />}
                         </div>
                     </div>
                     <hr />
@@ -109,29 +102,51 @@ const SearchModal = ({}: SearchModalProps) => {
                         <span>Search Results</span>
                         {showingResults && (
                             <ul className={styles["search-results"]}>
-                                {results.map(({ name, membershipId, membershipType }, idx) => (
-                                    <Link
-                                        className={styles["search-result"]}
-                                        key={idx}
-                                        href={`/profile/${membershipType}/${membershipId}`}
-                                        onClick={() => {
-                                            animateModalOut()
-                                            clearQuery()
-                                        }}>
-                                        <li>
-                                            <div className={styles["individual-result"]}>
-                                                <Image
-                                                    width={45}
-                                                    height={45}
-                                                    alt={name}
-                                                    unoptimized
-                                                    src={bungieIconUrl(undefined)}
-                                                />
-                                                <p>{name}</p>
-                                            </div>
-                                        </li>
-                                    </Link>
-                                ))}
+                                {results.map(
+                                    (
+                                        {
+                                            bungieGlobalDisplayName,
+                                            bungieGlobalDisplayNameCode,
+                                            displayName,
+                                            membershipId,
+                                            membershipType,
+                                            iconPath
+                                        },
+                                        idx
+                                    ) => {
+                                        let username = displayName
+                                        try {
+                                            const b = new BungieName(
+                                                bungieGlobalDisplayName,
+                                                bungieGlobalDisplayNameCode
+                                            )
+                                            username = b.toString()
+                                        } catch {}
+                                        return (
+                                            <Link
+                                                className={styles["search-result"]}
+                                                key={idx}
+                                                href={`/profile/${membershipType}/${membershipId}`}
+                                                onClick={() => {
+                                                    animateModalOut()
+                                                    clearQuery()
+                                                }}>
+                                                <li>
+                                                    <div className={styles["individual-result"]}>
+                                                        <Image
+                                                            width={45}
+                                                            height={45}
+                                                            alt={username}
+                                                            unoptimized
+                                                            src={bungieIconUrl(iconPath)}
+                                                        />
+                                                        <p>{username}</p>
+                                                    </div>
+                                                </li>
+                                            </Link>
+                                        )
+                                    }
+                                )}
                             </ul>
                         )}
                     </div>

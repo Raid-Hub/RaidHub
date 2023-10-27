@@ -3,10 +3,11 @@ export default class BungieName {
     name: string
     code: number
 
-    constructor(name: string, code: number) {
-        if (name && code < 10000) {
+    constructor(name: string | null, code: string | number | null) {
+        const num = Number(code)
+        if (name && Number(code) < 10000) {
             this.name = name
-            this.code = code
+            this.code = num
         } else {
             throw new Error("invalid bungie name string")
         }

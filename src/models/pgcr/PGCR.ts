@@ -77,6 +77,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             }
         })
         buckets.forEach((characters, membershipId) => {
+            console.log(membershipId)
             this.players.set(membershipId, new PGCRPlayer(membershipId, characters))
         })
         this.players.sort(sortPlayers)
@@ -84,7 +85,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.startDate = new Date(this.period)
         this.completionDate = new Date(
             this.startDate.getTime() +
-                this.entries[0]?.values.activityDurationSeconds.basic.value * 1000
+                data.entries[0]?.values.activityDurationSeconds.basic.value * 1000
         )
 
         try {
@@ -96,15 +97,18 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
 
         const reduce = (key: keyof IPGCREntryStats) =>
             this.players.reduce((a, b) => a + b.stats[key], 0)
+
+        const deaths = reduce("deaths")
         this.stats = {
-            mvp:
-                this.players.reduce<PGCRPlayer>((a, b) => (a.stats.score > b.stats.score ? a : b))
-                    .displayName ?? null,
+            mvp: this.players.size
+                ? this.players.reduce<PGCRPlayer>((a, b) => (a.stats.score > b.stats.score ? a : b))
+                      .displayName ?? null
+                : null,
             totalKills: reduce("kills"),
             totalDeaths: reduce("deaths"),
             totalAssists: reduce("assists"),
-            overallKD: reduce("kills") / reduce("deaths"),
-            overallKAD: (reduce("deaths") + reduce("assists")) / reduce("deaths"),
+            overallKD: deaths === 0 ? Infinity : reduce("kills") / deaths,
+            overallKAD: deaths === 0 ? Infinity : (reduce("kills") + reduce("assists")) / deaths,
             totalWeaponKills: reduce("weaponKills"),
             totalSuperKills: reduce("superKills"),
             totalAbilityKills: reduce("abilityKills"),
@@ -113,13 +117,14 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
                 (reduce("kills") /
                     ((this.completionDate.getTime() - this.startDate.getTime()) / 1000)) *
                 60,
-            mostUsedWeapon:
-                this.entries
-                    .map(e => e.weapons)
-                    .reduce((a, b) =>
-                        (a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b
-                    )
-                    .first() ?? null
+            mostUsedWeapon: this.entries.length
+                ? this.entries
+                      .map(e => e.weapons)
+                      .reduce((a, b) =>
+                          (a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b
+                      )
+                      .first() ?? null
+                : null
         }
     }
 
@@ -182,9 +187,9 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
         if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
         if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push(Tag.GUIDEDGAMES)
-        if (this.playerCount === 1) tags.push(Tag.SOLO)
-        else if (this.playerCount === 2) tags.push(Tag.DUO)
-        else if (this.playerCount === 3) tags.push(Tag.TRIO)
+        if (data.playerCount === 1) tags.push(Tag.SOLO)
+        else if (data.playerCount === 2) tags.push(Tag.DUO)
+        else if (data.playerCount === 3) tags.push(Tag.TRIO)
         if (data.fresh && this.completed) {
             if (data.flawless) tags.push(Tag.FLAWLESS)
             if (this.stats.totalWeaponKills === 0) tags.push(Tag.ABILITIES_ONLY)

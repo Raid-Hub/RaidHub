@@ -1,7 +1,7 @@
 const urlRegex =
     /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim
 
-export function urlHighlight(str: string): JSX.Element[] {
+export function urlHighlight(str: string, anchor: boolean = true): JSX.Element[] {
     const elements: JSX.Element[] = []
     let match
     let lastIndex = 0
@@ -13,11 +13,19 @@ export function urlHighlight(str: string): JSX.Element[] {
         }
         // Capture the matched URL
         let url = match[0]
-        elements.push(
-            <a key={key++} href={url} target="_blank" rel="noopener noreferrer">
-                {url}
-            </a>
-        )
+        if (anchor) {
+            elements.push(
+                <a key={key++} href={url} target="_blank" rel="noopener noreferrer">
+                    {url}
+                </a>
+            )
+        } else {
+            elements.push(
+                <span data-url={url} key={key++}>
+                    {url}
+                </span>
+            )
+        }
         lastIndex = urlRegex.lastIndex
     }
     // Capture the final non-matching substring after the last matched URL
