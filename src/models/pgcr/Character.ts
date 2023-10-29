@@ -66,7 +66,7 @@ export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGame
 
         this.stats = {
             ..._stats,
-            score: pgcrEntryRankingScore(_stats)
+            score: pgcrEntryRankingScore({ ..._stats, didComplete: this.didComplete })
         }
     }
 
