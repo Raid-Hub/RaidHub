@@ -14,6 +14,6 @@ jobs:
             BUNGIE_CLIENT_ID: ${{ secrets.BUNGIE_CLIENT_ID }}
             BUNGIE_CLIENT_SECRET: ${{ secrets.BUNGIE_CLIENT_SECRET }}
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - run: yarn install
             - run: yarn test
