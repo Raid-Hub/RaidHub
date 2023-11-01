@@ -39,7 +39,7 @@ export const zUser = z.object({
     destinyMembershipType: BungieMembershipEnum,
     bungieMembershipId: z.string(),
     role: z.nativeEnum(Role),
-    email: z.string(),
+    email: z.string().nullable().default(null),
     emailVerified: z.nullable(z.date())
 }) satisfies {
     _output: Omit<PrismaUser, "id">

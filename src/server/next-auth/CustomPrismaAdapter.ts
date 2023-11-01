@@ -20,7 +20,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 )
                 .parse([user.bungieAccessToken, user.bungieRefreshToken])
 
-            return prisma.user.create({
+            const created = await prisma.user.create({
                 data: {
                     ...parsedUser,
                     profile: {
@@ -36,9 +36,10 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                     bungieRefreshToken: true
                 }
             })
+            return { ...created, email: created.email || "" }
         },
         async getUser(id) {
-            return prisma.user.findUnique({
+            const found = await prisma.user.findUnique({
                 where: {
                     id
                 },
@@ -47,6 +48,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                     bungieRefreshToken: true
                 }
             })
+            return found ? { ...found, email: found.email || "" } : null
         },
         async getUserByAccount(provider_providerAccountId) {
             const account = await prisma.account.findUnique({
@@ -61,7 +63,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 }
             })
 
-            return account?.user ?? null
+            return account?.user ? { ...account.user, email: account.user.email || "" } : null
         },
         async linkAccount(account) {
             if (account.provider === "discord") {
@@ -107,8 +109,11 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 }
             })
             if (!userAndSession) return null
-            const { user, ...session } = userAndSession
-            return { user, session }
+            const {
+                user: { email, ...user },
+                ...session
+            } = userAndSession
+            return { user: { ...user, email: email || "" }, session }
         },
         async updateSession(session) {
             return prisma.session.update({
@@ -121,7 +126,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         },
         async updateUser(user) {
             const parsed = zUser.parse(user)
-            return prisma.user.update({
+            const updated = await prisma.user.update({
                 where: {
                     id: user.id
                 },
@@ -132,6 +137,7 @@ export default function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                     bungieRefreshToken: true
                 }
             })
+            return { ...updated, email: updated.email || "" }
         }
     }
 }

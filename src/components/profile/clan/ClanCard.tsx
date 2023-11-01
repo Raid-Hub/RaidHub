@@ -40,10 +40,7 @@ const ClanCard = () => {
             </div>
         </Link>
     ) : error ? (
-        <ErrorComponent
-            error={CustomError.handle(error, ErrorCode.Clan)}
-            title={"Error Loading Clan"}
-        />
+        <ErrorComponent error={CustomError.handle(error, ErrorCode.Clan)} />
     ) : null
 }
 

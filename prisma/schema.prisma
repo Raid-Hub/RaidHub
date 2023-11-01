@@ -40,7 +40,7 @@ enum Role {
 }
 
 model User {
-  id                    String        @id @default(cuid())
+  id                    String        @id @default(uuid())
   name                  String
   image                 String
   bungieMembershipId    String        @unique @map("bungie_membership_id")
@@ -48,7 +48,7 @@ model User {
   destinyMembershipType Int           @map("destiny_membership_type")
   bungieAccessToken     AccessToken?
   bungieRefreshToken    RefreshToken?
-  email                 String        @unique @default("")
+  email                 String?       @unique
   emailVerified         DateTime?     @map("email_verified")
   role                  Role          @default(USER)
   profile               Profile?

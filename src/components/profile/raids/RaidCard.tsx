@@ -124,7 +124,7 @@ export default function RaidCard({
                     {firstClear && (
                         <RaceTagLabel
                             placement={firstClear.rank}
-                            instanceId={firstClear.activityId}
+                            instanceId={firstClear.instanceId}
                             dayOne={firstClear.dayOne}
                             contest={firstClear.contest}
                             weekOne={firstClear.weekOne}

@@ -18,6 +18,13 @@ export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, Sun
     )
 
     const milestone = RaidMileStones[raid]
+    if (
+        profile &&
+        profile.characterProgressions.disabled !== true &&
+        profile.characterProgressions.data == undefined
+    ) {
+        return <div className={styles["weekly-progress"]}>Private profile</div>
+    }
 
     return (
         <div className={styles["weekly-progress"]}>

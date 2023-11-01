@@ -19,7 +19,7 @@ export type RaidHubPlayer = {
 }
 
 export type RaidHubActivity = {
-    activityId: string
+    instanceId: string
     raidHash: string
     flawless: boolean | null
     completed: boolean
@@ -37,7 +37,7 @@ export type RaidHubPlayerResponse = {
         string,
         {
             rank: number
-            activityId: string
+            instanceId: string
             dayOne: boolean
             contest: boolean
             weekOne: boolean
@@ -57,7 +57,7 @@ export type RaidHubActivityResponse = RaidHubActivity & { players: Record<string
 export type RaidHubActivityLeaderboardResponse = {
     entries: {
         rank: number
-        activityId: string
+        instanceId: string
         dateCompleted: string
         dateStarted: string
         players: {

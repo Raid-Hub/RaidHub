@@ -40,7 +40,7 @@ export async function bungieProfile(
             expires: new Date(Date.now() + 7_775_777_777) // <90 days
         },
         role: Role.USER,
-        email: "",
+        email: null,
         emailVerified: null
     }
 }
