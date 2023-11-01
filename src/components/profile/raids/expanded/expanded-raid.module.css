@@ -11,8 +11,8 @@
 }
 
 .bungie-stats {
-    flex: 0 0 70%;
-    max-width: 70%;
+    flex: 7;
+    max-width: 500px;
 }
 
 .table {
@@ -30,26 +30,24 @@
 }
 
 .history {
-    flex: 0 0 30%;
-    max-width: 30%;
+    flex: 3;
 }
 
 .history-activities {
     overflow: auto;
-    max-height: 400px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+
+    padding: 1em;
+
+    justify-content: center;
 }
 
-.activity {
-    transition: color 0.2s ease-out;
-}
-
-.activity:hover {
-    color: var(--brand-orange-light);
-}
-
-.activity h5 {
-    margin: 0;
-    padding: 0.3em;
+.history-activities > * {
+    flex-basis: 170px;
 }
 
 .weekly-progress {
