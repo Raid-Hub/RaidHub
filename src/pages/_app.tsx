@@ -37,14 +37,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
 
     const router = useRouter()
 
-    /* disables the prefetching behavior of next/link, except for profile pages */
+    /* disables the prefetching behavior of next/link */
     useEffect(() => {
-        const prefetch = router.prefetch
-        router.prefetch = async (url, asPath, options) => {
-            if (url.match(/\/profile\//)) {
-                return prefetch(url, asPath, options)
-            }
-        }
+        router.prefetch = async (url, asPath, options) => {}
     }, [router])
 
     return (

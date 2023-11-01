@@ -10,7 +10,7 @@ export const getPGCR = {
     key: "pgcr",
     fn:
         (client: BungieClientProtocol) =>
-        async ({ activityId, filtered = true }: { activityId: string; filtered?: boolean }) => {
+        async ({ activityId, filtered = false }: { activityId: string; filtered?: boolean }) => {
             try {
                 const res = await getPostGameCarnageReport(client, { activityId })
                 return new DestinyPGCR(res.Response, {

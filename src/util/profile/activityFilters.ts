@@ -101,7 +101,6 @@ export const DefaultActivityFilters = new GroupActivityFilter("|", [
     FiltersToSelectFrom[FilterListName.Success](),
     new GroupActivityFilter("&", [
         FiltersToSelectFrom[FilterListName.MinMinutes](),
-        FiltersToSelectFrom[FilterListName.NonLowman](),
         new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])

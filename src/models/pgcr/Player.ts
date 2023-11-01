@@ -40,7 +40,7 @@ export default class PGCRPlayer implements IPGCREntry {
             ..._stats,
             kdr: _stats.kills / (_stats.deaths || 1),
             kda: (_stats.kills + _stats.assists) / (_stats.deaths || 1),
-            score: pgcrEntryRankingScore(_stats)
+            score: pgcrEntryRankingScore({ ..._stats, didComplete: this.didComplete })
         }
 
         this.weapons = mergeWeaponCollections(this.characters.map(char => char.weapons))

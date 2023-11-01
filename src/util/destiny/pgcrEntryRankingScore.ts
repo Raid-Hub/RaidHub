@@ -6,7 +6,8 @@ export function pgcrEntryRankingScore({
     timePlayedSeconds,
     deaths,
     precisionKills,
-    superKills
+    superKills,
+    didComplete
 }: {
     kills: number
     deaths: number
@@ -14,6 +15,7 @@ export function pgcrEntryRankingScore({
     timePlayedSeconds: number
     precisionKills: number
     superKills: number
+    didComplete: boolean
 }) {
     // kills weighted 2x assists, slight diminishing returns
     const killScore = (kills + 0.5 * assists) ** 0.95 / Math.sqrt(round(timePlayedSeconds, -1))
@@ -26,7 +28,10 @@ export function pgcrEntryRankingScore({
 
     const superScore = (superKills / (timePlayedSeconds / 60)) * 5 // 1 point per super kill per minute
 
-    const finalScore = killScore * deathScore + timeScore + precisionScore + superScore
+    const completionScore = didComplete ? 1 : 0.5
+
+    const finalScore =
+        (killScore * deathScore + timeScore + precisionScore + superScore) * completionScore
 
     return finalScore
 }
