@@ -19,7 +19,7 @@ export default class Activity {
 
     readonly weight: number
     constructor(data: RaidHubActivity & { didMemberComplete: boolean }) {
-        this.activityId = data.activityId
+        this.activityId = data.instanceId
         this.flawless = !!data.flawless
         this.completed = data.completed
         this.fresh = !!data.fresh

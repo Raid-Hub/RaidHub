@@ -38,9 +38,9 @@ export async function getLeaderboard(
             return {
                 date: data.response.date ?? null,
                 entries: data.response.entries.map(e => ({
-                    id: e.activityId,
+                    id: e.instanceId,
                     rank: e.rank,
-                    url: `/pgcr/${e.activityId}`,
+                    url: `/pgcr/${e.instanceId}`,
                     participants: e.players
                         .filter(p => p.didPlayerFinish)
                         .map(p => ({
