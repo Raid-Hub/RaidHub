@@ -8,7 +8,7 @@ export function useRaidHubActivities(membershipIds: string[]) {
             queryKey: activitiesQueryKey(membershipId),
             queryFn: () => getAllActivities(membershipId),
             staleTime: 60_000,
-            retry: 1
+            retry: 0
         }))
     })
 
