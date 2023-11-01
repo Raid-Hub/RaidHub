@@ -77,7 +77,6 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             }
         })
         buckets.forEach((characters, membershipId) => {
-            console.log(membershipId)
             this.players.set(membershipId, new PGCRPlayer(membershipId, characters))
         })
         this.players.sort(sortPlayers)
