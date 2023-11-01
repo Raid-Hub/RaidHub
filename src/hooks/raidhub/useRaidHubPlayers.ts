@@ -6,7 +6,8 @@ export function useRaidHubPlayers(membershipIds: string[]) {
     const queries = useQueries({
         queries: membershipIds.map(destinyMembershipId => ({
             queryFn: () => getPlayer(destinyMembershipId),
-            queryKey: playerQueryKey(destinyMembershipId)
+            queryKey: playerQueryKey(destinyMembershipId),
+            retry: 1
         }))
     })
 
