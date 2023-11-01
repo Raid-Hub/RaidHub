@@ -144,8 +144,8 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
             </Head>
             <Leaderboard
                 entries={(query.data ?? []).slice(
-                    ENTRIES_PER_PAGE * page,
-                    ENTRIES_PER_PAGE * (page + 1)
+                    ENTRIES_PER_PAGE * (page - 1),
+                    ENTRIES_PER_PAGE * page
                 )}
                 isLoading={query.isLoading || query.isRefetching}
                 page={page}
