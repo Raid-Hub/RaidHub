@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
 import { searchRaidHubUser } from "~/services/raidhub/search"
@@ -26,6 +26,12 @@ export function useRaidHubSearch({
         nextQuery.current = ""
         setTimeout(() => setEnteredText(""), 200)
     }, [])
+
+    useEffect(() => {
+        router.query
+        clearQuery()
+        setResults([])
+    }, [router.query, clearQuery])
 
     const fetchUsers = useCallback(
         async (query: string) => {
@@ -75,8 +81,6 @@ export function useRaidHubSearch({
 
         if (results?.length === 1) {
             const result = results[0]
-            clearQuery()
-            setResults([])
 
             onRedirect?.(result)
 

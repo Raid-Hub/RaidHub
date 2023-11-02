@@ -2,7 +2,6 @@ import styles from "../../styles/pages/pgcr.module.css"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
 import { useMemo } from "react"
-import { usePGCRContext } from "../../pages/pgcr/[activityId]"
 import { useItem } from "../app/DestinyManifestManager"
 import { SVGComponent } from "../reusable/SVG"
 import SplitHeart from "~/images/icons/SplitHeart"
@@ -14,6 +13,7 @@ import Intellect from "~/images/icons/destiny2/Intellect"
 import Ammo from "~/images/icons/destiny2/Ammo"
 import Users from "~/images/icons/Users"
 import Crosshairs from "~/images/icons/Crosshairs"
+import { usePGCRContext } from "./PGCR"
 
 const SummaryStatsGrid = () => {
     const { locale, strings } = useLocale()

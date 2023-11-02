@@ -2,7 +2,7 @@ import styles from "~/styles/pages/pgcr.module.css"
 import { toCustomDateString } from "~/util/presentation/formatting"
 import { useLocale } from "~/components/app/LocaleManager"
 import { Raid } from "~/types/raids"
-import { usePGCRContext } from "~/pages/pgcr/[activityId]"
+import { usePGCRContext } from "../PGCR"
 import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 
 const ActivityHeader = () => {
