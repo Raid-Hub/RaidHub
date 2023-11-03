@@ -38,6 +38,7 @@ export type RaidHubPlayerResponse = {
         {
             rank: number
             instanceId: string
+            raidHash: string
             dayOne: boolean
             contest: boolean
             weekOne: boolean

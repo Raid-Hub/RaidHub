@@ -54,7 +54,7 @@ const ActivityHeader = () => {
                         pgcr?.tags(activity).map(({ tag, placement }, idx) => (
                             <div key={idx} className={styles["tag"]}>
                                 {strings.tags[tag]}
-                                {placement && ` #${placement}`}
+                                {placement && placementTag(placement)}
                             </div>
                         ))}
                 </div>
@@ -66,6 +66,18 @@ const ActivityHeader = () => {
             </div>
         </div>
     )
+}
+
+function placementTag(placement: number) {
+    if (placement <= 500) {
+        return ` #${placement}`
+    } else if (placement <= 1000) {
+        return " Top 1000"
+    } else if (placement <= 5000) {
+        return " Top 5000"
+    } else {
+        return ""
+    }
 }
 
 export default ActivityHeader
