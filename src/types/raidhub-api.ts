@@ -41,7 +41,7 @@ export type RaidHubPlayerResponse = {
             dayOne: boolean
             contest: boolean
             weekOne: boolean
-        }
+        }[]
     >
 }
 
@@ -52,7 +52,10 @@ export type RaidHubActivitiesResponse = {
     prevActivity: string
 }
 
-export type RaidHubActivityResponse = RaidHubActivity & { players: Record<string, boolean> }
+export type RaidHubActivityResponse = RaidHubActivity & {
+    players: Record<string, boolean>
+    leaderboardEntries: Record<string, number>
+}
 
 export type RaidHubActivityLeaderboardResponse = {
     entries: {

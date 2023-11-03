@@ -129,8 +129,13 @@ export function isBestTag(activity: Activity): boolean {
     }
 }
 
-export function addModifiers(raid: Raid, modifiers: Tag[], strings: LocalStrings): string {
+export function addModifiers(
+    raid: Raid,
+    tagModifiers: { tag: Tag; placement?: number }[],
+    strings: LocalStrings
+): string {
     const result: string[] = []
+    const modifiers = tagModifiers.map(m => m.tag)
     if (modifiers.includes(Tag.ABILITIES_ONLY)) result.push(strings.tags[Tag.ABILITIES_ONLY])
 
     if (modifiers.includes(Tag.SOLO)) result.push(strings.tags[Tag.SOLO])
