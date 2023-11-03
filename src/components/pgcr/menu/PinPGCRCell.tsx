@@ -1,5 +1,5 @@
 import { useLocale } from "../../app/LocaleManager"
-import { usePGCRContext } from "~/pages/pgcr/[activityId]"
+import { usePGCRContext } from "../PGCR"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
