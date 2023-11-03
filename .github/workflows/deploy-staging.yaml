@@ -61,7 +61,7 @@ jobs:
               run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
-              run: echo "URL=$(vercel deploy  --token=${{ secrets.VERCEL_TOKEN }} --prebuilt)" >> $GITHUB_ENV
+              run: echo "URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --prebuilt -e DATABASE_URL=${{ env.DATABASE_URL }})" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $URL staging.raidhub.app --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }}
