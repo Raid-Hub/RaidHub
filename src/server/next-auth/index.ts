@@ -22,10 +22,12 @@ export const nextAuthOptions: AuthOptions = {
     callbacks: {
         session: sessionCallback,
         async signIn({ account, user }) {
-            // @ts-expect-error this line here determines if we need to update the tokens
+            // @ts-expect-error this line here determines if we need to update the tokens. Users
+            // from the callback will have user.id == user.bungieMembershipId, while users from teh DB will have a UUID
             if (account?.provider === "bungie" && user.id !== user.bungieMembershipId) {
                 await updateBungieAccessTokens({
-                    bungieMembershipId: account.membership_id as string,
+                    // @ts-expect-error
+                    bungieMembershipId: user.bungieMembershipId as string,
                     access: {
                         value: account.access_token!,
                         expires: account.expires_at! * 1000

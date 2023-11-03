@@ -51,7 +51,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
             ...session,
             user: newUser
         } satisfies Session
-    } else if (user.bungieRefreshToken && Date.now() < user.bungieRefreshToken?.expires.getTime()) {
+    } else if (user.bungieRefreshToken && Date.now() < user.bungieRefreshToken.expires.getTime()) {
         try {
             const tokens = await refreshAuthorization(
                 user.bungieRefreshToken.value,
@@ -60,9 +60,8 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     client_secret: process.env.BUNGIE_CLIENT_SECRET!
                 },
                 {
-                    async fetch<T>(config: BungieFetchConfig) {
-                        return fetch(config.url, config).then(res => res.json()) as T
-                    }
+                    fetch: async <T>(config: BungieFetchConfig) =>
+                        fetch(config.url, config).then(res => res.json()) as T
                 }
             )
 
@@ -70,11 +69,11 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                 bungieMembershipId: tokens.membership_id,
                 access: {
                     value: tokens.access_token,
-                    expires: tokens.expires_in * 1000
+                    expires: Date.now() + tokens.expires_in * 1000
                 },
                 refresh: {
                     value: tokens.refresh_token,
-                    expires: tokens.refresh_expires_in * 1000
+                    expires: Date.now() + tokens.refresh_expires_in * 1000
                 }
             })
 
