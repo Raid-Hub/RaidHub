@@ -49,14 +49,18 @@ const Raids = ({
         })
         const raidToData = new Collection<
             ListedRaid,
-            (RaidHubPlayerResponse["activityLeaderboardEntries"][string] & { key: string })[]
+            (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
+                key: string
+            })[]
         >(ListedRaids.map(raid => [raid, []]))
 
         players.forEach(p => {
             Object.entries(p.activityLeaderboardEntries).forEach(([id, data]) => {
                 if (boardIdToRaid.has(id)) {
                     const { raid, key } = boardIdToRaid.get(id)!
-                    raidToData.get(raid)!.push({ ...data, key })
+                    data.forEach(entry => {
+                        raidToData.get(raid)!.push({ ...entry, key })
+                    })
                 }
             })
         })

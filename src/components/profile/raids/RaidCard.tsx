@@ -22,7 +22,7 @@ import { medianElement } from "~/util/math"
 type RaidModalProps = {
     raid: ListedRaid
     expand: () => void
-    leaderboardData: (RaidHubPlayerResponse["activityLeaderboardEntries"][string] & {
+    leaderboardData: (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
         key: string
     })[]
     wfBoard: string | null

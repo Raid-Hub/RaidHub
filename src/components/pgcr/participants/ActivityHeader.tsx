@@ -51,9 +51,10 @@ const ActivityHeader = () => {
             <div className={styles["activity-tile-header-attributes"]}>
                 <div className={styles["tags-container"]}>
                     {activity &&
-                        pgcr?.tags(activity).map((tag, idx) => (
+                        pgcr?.tags(activity).map(({ tag, placement }, idx) => (
                             <div key={idx} className={styles["tag"]}>
                                 {strings.tags[tag]}
+                                {placement && ` #${placement}`}
                             </div>
                         ))}
                 </div>

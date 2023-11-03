@@ -22,6 +22,7 @@ import { Collection } from "@discordjs/collection"
 import { nonParticipant } from "../../util/destiny/filterNonParticipants"
 import { includedIn } from "~/util/betterIncludes"
 import { RaidHubActivityResponse } from "~/types/raidhub-api"
+import { LeaderboardsForRaid } from "~/data/leaderboards"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -171,27 +172,40 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
         this.entries.find(entry => entry.characterId === id)?.hydrate(components)
     }
 
-    tags(data: RaidHubActivityResponse): Tag[] {
+    tags(data: RaidHubActivityResponse): { tag: Tag; placement?: number }[] {
         if (!includedIn(ListedRaids, this.raid)) return []
 
-        const tags = new Array<Tag>()
-        if (data.dayOne) tags.push(Tag.DAY_ONE)
-        if (data.contest) {
-            if (includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
-                tags.push(TagForReprisedContest[this.difficulty])
-            }
-            tags.push(Tag.CONTEST)
+        // @ts-expect-error
+        const { challenge, normal, prestige, master } = LeaderboardsForRaid[this.raid]
+
+        const tags = new Array<{ tag: Tag; placement?: number }>()
+        if (data.contest && includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
+            const placement = data.leaderboardEntries[challenge || ""]
+            tags.push({ tag: TagForReprisedContest[this.difficulty], placement })
         }
-        if (data.fresh === false) tags.push(Tag.CHECKPOINT)
-        if (this.difficulty === Difficulty.PRESTIGE) tags.push(Tag.PRESTIGE)
-        if (this.difficulty === Difficulty.MASTER) tags.push(Tag.MASTER)
-        if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push(Tag.GUIDEDGAMES)
-        if (data.playerCount === 1) tags.push(Tag.SOLO)
-        else if (data.playerCount === 2) tags.push(Tag.DUO)
-        else if (data.playerCount === 3) tags.push(Tag.TRIO)
+        if (data.dayOne) {
+            const placement = !includedIn(ReprisedContestRaidDifficulties, this.difficulty)
+                ? data.leaderboardEntries[normal]
+                : undefined
+            tags.push({ tag: Tag.DAY_ONE, placement })
+        }
+        if (data.contest) tags.push({ tag: Tag.CONTEST })
+        if (data.fresh === false) tags.push({ tag: Tag.CHECKPOINT })
+        if (this.difficulty === Difficulty.PRESTIGE) {
+            const placement = data.leaderboardEntries[prestige || ""]
+            tags.push({ tag: Tag.PRESTIGE, placement })
+        }
+        if (this.difficulty === Difficulty.MASTER) {
+            const placement = data.leaderboardEntries[master || ""]
+            tags.push({ tag: Tag.MASTER, placement })
+        }
+        if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push({ tag: Tag.GUIDEDGAMES })
+        if (data.playerCount === 1) tags.push({ tag: Tag.SOLO })
+        else if (data.playerCount === 2) tags.push({ tag: Tag.DUO })
+        else if (data.playerCount === 3) tags.push({ tag: Tag.TRIO })
         if (data.fresh && this.completed) {
-            if (data.flawless) tags.push(Tag.FLAWLESS)
-            if (this.stats.totalWeaponKills === 0) tags.push(Tag.ABILITIES_ONLY)
+            if (data.flawless) tags.push({ tag: Tag.FLAWLESS })
+            if (this.stats.totalWeaponKills === 0) tags.push({ tag: Tag.ABILITIES_ONLY })
         }
         return tags
     }
