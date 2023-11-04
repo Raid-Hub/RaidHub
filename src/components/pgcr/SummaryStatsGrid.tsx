@@ -20,7 +20,7 @@ const SummaryStatsGrid = () => {
     const { data: pgcr } = usePGCRContext()
 
     const stats = useMemo(() => pgcr?.stats, [pgcr])
-    const { data: weapon } = useItem(stats?.mostUsedWeapon?.hash ?? 73015)
+    const { data: weapon } = useItem(stats?.mostUsedWeapon ?? 73015)
     const statsData: {
         Icon: SVGComponent
         name: string

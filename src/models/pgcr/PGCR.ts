@@ -39,7 +39,7 @@ type SummaryStats = {
     totalAbilityKills: number
     killsPerMinute: number
     totalCharactersUsed: number
-    mostUsedWeapon: WeaponStatsValues | null
+    mostUsedWeapon: number | null
 }
 
 export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
@@ -99,6 +99,16 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
             this.players.reduce((a, b) => a + b.stats[key], 0)
 
         const deaths = reduce("deaths")
+        const weaponsCollection = new Collection<number, number>()
+        this.entries.forEach(e =>
+            e.weapons.forEach(w => {
+                if (weaponsCollection.has(w.hash)) {
+                    weaponsCollection.set(w.hash, weaponsCollection.get(w.hash)! + w.kills)
+                } else {
+                    weaponsCollection.set(w.hash, w.kills)
+                }
+            })
+        )
         this.stats = {
             mvp: this.players.size
                 ? this.players.reduce<PGCRPlayer>((a, b) => (a.stats.score > b.stats.score ? a : b))
@@ -117,14 +127,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
                 (reduce("kills") /
                     ((this.completionDate.getTime() - this.startDate.getTime()) / 1000)) *
                 60,
-            mostUsedWeapon: this.entries.length
-                ? this.entries
-                      .map(e => e.weapons)
-                      .reduce((a, b) =>
-                          (a?.first()?.kills ?? 0) >= (b?.first()?.kills ?? 0) ? a : b
-                      )
-                      .first() ?? null
-                : null
+            mostUsedWeapon: weaponsCollection.sort((a, b) => b - a).firstKey() ?? null
         }
     }
 
