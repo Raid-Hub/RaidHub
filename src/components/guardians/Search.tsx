@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
 import BungieName from "~/models/BungieName"
+import { usePortal } from "../reusable/Portal"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
@@ -46,6 +47,10 @@ export default function Search({ addMember }: { addMember: (membershipId: string
         }
     }, [isShowingResults])
 
+    useEffect(() => setIsShowingResults(true), [enteredText])
+
+    const { sendThroughPortal } = usePortal()
+
     return (
         <div className={styles["search"]} ref={ref}>
             <form onSubmit={handleFormEnter}>
@@ -59,49 +64,50 @@ export default function Search({ addMember }: { addMember: (membershipId: string
                     onChange={handleInputChange}
                 />
             </form>
-            {isShowingResults && (
-                <ol className={styles["search-results"]}>
-                    {results.map(
-                        (
-                            {
-                                bungieGlobalDisplayName,
-                                bungieGlobalDisplayNameCode,
-                                iconPath,
-                                displayName,
-                                membershipId
-                            },
-                            idx
-                        ) => {
-                            let username = displayName
-                            try {
-                                const b = new BungieName(
+            {isShowingResults &&
+                sendThroughPortal(
+                    <ol className={styles["search-results"]}>
+                        {results.map(
+                            (
+                                {
                                     bungieGlobalDisplayName,
-                                    bungieGlobalDisplayNameCode
+                                    bungieGlobalDisplayNameCode,
+                                    iconPath,
+                                    displayName,
+                                    membershipId
+                                },
+                                idx
+                            ) => {
+                                let username = displayName
+                                try {
+                                    const b = new BungieName(
+                                        bungieGlobalDisplayName,
+                                        bungieGlobalDisplayNameCode
+                                    )
+                                    username = b.toString()
+                                } catch {}
+                                return (
+                                    <li
+                                        key={idx}
+                                        className={styles["search-result"]}
+                                        onClick={() => {
+                                            addMember(membershipId)
+                                            setIsShowingResults(false)
+                                        }}>
+                                        <Image
+                                            width={45}
+                                            height={45}
+                                            alt={username}
+                                            unoptimized
+                                            src={bungieIconUrl(iconPath)}
+                                        />
+                                        <p>{username}</p>
+                                    </li>
                                 )
-                                username = b.toString()
-                            } catch {}
-                            return (
-                                <li
-                                    key={idx}
-                                    className={styles["search-result"]}
-                                    onClick={() => {
-                                        addMember(membershipId)
-                                        setIsShowingResults(false)
-                                    }}>
-                                    <Image
-                                        width={45}
-                                        height={45}
-                                        alt={username}
-                                        unoptimized
-                                        src={bungieIconUrl(iconPath)}
-                                    />
-                                    <p>{username}</p>
-                                </li>
-                            )
-                        }
-                    )}
-                </ol>
-            )}
+                            }
+                        )}
+                    </ol>
+                )}
         </div>
     )
 }

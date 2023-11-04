@@ -41,6 +41,7 @@ const PinnedActivity = ({
                     cloudflareId={RaidBanners[pgcr.raid]}
                     alt="Pinned activity"
                     fill
+                    sizes="(max-width: 910px) 100vw, 50vw"
                     priority
                 />
             )}

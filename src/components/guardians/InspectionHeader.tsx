@@ -2,23 +2,27 @@ import styles from "~/styles/pages/inpsect.module.css"
 import Search from "./Search"
 import { Dispatch, SetStateAction, useState } from "react"
 import { useBungieClient } from "../app/TokenManager"
-import { InpsectionMemberData } from "~/types/inspect"
+import { GuardianData } from "~/types/guardian"
 
 export default function InspectionHeader({
     addMember,
     clearAllMembers,
-    memberIds
+    memberIds,
+    isExpanded,
+    setExpanded
 }: {
-    addMember: (member: InpsectionMemberData) => void
+    addMember: (member: GuardianData) => void
     clearAllMembers: () => void
     memberIds: string[]
+    setExpanded: (isExpanded: boolean) => void
+    isExpanded: boolean
 }) {
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
     const bungie = useBungieClient()
 
     return (
         <div className={styles["header"]}>
-            <h1>Inpsection Page</h1>
+            <h1>Guardian Lookup Page</h1>
             <div className={styles["controls"]}>
                 <Search
                     addMember={membershipId =>
@@ -28,21 +32,16 @@ export default function InspectionHeader({
                 <Checkbox isChecked={isCheckboxChecked} setIsChecked={setIsCheckboxChecked} />
                 <button
                     onClick={() => {
-                        bungie.profile.refetchQueries({
-                            predicate(query) {
-                                return memberIds.some(id => query.queryHash.includes(id))
-                            }
-                        })
-
-                        bungie.profileTransitory.refetchQueries({
-                            predicate(query) {
-                                return memberIds.some(id => query.queryHash.includes(id))
-                            }
-                        })
+                        bungie.profileTransitory.refetchQueries(query =>
+                            memberIds.some(id => query.queryKey.includes(id))
+                        )
                     }}>
                     Refresh
                 </button>
                 <button onClick={clearAllMembers}>Clear</button>
+                <button onClick={() => setExpanded(!isExpanded)}>
+                    {isExpanded ? "Condense" : "Expand"}
+                </button>
             </div>
         </div>
     )
