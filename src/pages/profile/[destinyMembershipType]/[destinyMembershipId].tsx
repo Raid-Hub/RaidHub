@@ -59,8 +59,8 @@ export const getStaticProps: GetStaticProps<
             const queryClient = createServerSideQueryClient()
             const helpers = createTrpcServerSideHelpers()
             await Promise.all([
-                prefetchDestinyProfile(props, queryClient),
-                prefetchRaidHubPlayer(props.destinyMembershipId, queryClient),
+                // prefetchDestinyProfile(props, queryClient),
+                // prefetchRaidHubPlayer(props.destinyMembershipId, queryClient),
                 prefetchRaidHubProfile(props.destinyMembershipId, helpers)
             ])
 
