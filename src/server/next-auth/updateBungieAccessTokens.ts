@@ -1,10 +1,16 @@
-import { v4 } from "uuid"
 import prisma from "../prisma"
 
 type BungieToken = {
     value: string
     expires: number
 }
+
+const prepare = (token: BungieToken) => ({
+    create: {
+        value: token.value,
+        expires: new Date(token.expires)
+    }
+})
 
 export async function updateBungieAccessTokens({
     bungieMembershipId,
@@ -15,31 +21,24 @@ export async function updateBungieAccessTokens({
     access: BungieToken
     refresh: BungieToken
 }) {
-    const prepare = (token: BungieToken) => ({
-        id: v4(),
-        value: token.value,
-        expires: new Date(token.expires)
-    })
-
-    return prisma.user.update({
-        where: {
-            bungieMembershipId
-        },
-        data: {
-            bungieAccessToken: {
-                update: {
-                    data: prepare(access)
-                }
+    return Promise.all([
+        prisma.accessToken.delete({ where: { bungieMembershipId } }),
+        prisma.refreshToken.delete({ where: { bungieMembershipId } })
+    ]).then(removed =>
+        prisma.user.update({
+            where: {
+                bungieMembershipId
             },
-            bungieRefreshToken: {
-                update: {
-                    data: prepare(refresh)
-                }
+            data: {
+                bungieAccessToken: prepare(access),
+                bungieRefreshToken: prepare(refresh)
+            },
+            select: {
+                bungieMembershipId: true,
+                destinyMembershipId: true,
+                bungieAccessToken: true,
+                bungieRefreshToken: true
             }
-        },
-        include: {
-            bungieAccessToken: true,
-            bungieRefreshToken: true
-        }
-    })
+        })
+    )
 }
