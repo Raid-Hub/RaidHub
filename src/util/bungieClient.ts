@@ -19,10 +19,14 @@ const DONT_RETRY_CODES: PlatformErrorCodes[] = [
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
-    queryClient: QueryClient
+    private _queryClient: QueryClient
 
     constructor(queryClient: QueryClient) {
-        this.queryClient = queryClient
+        this._queryClient = queryClient
+    }
+
+    get queryClient() {
+        return this._queryClient
     }
 
     async fetch<T>(config: BungieFetchConfig): Promise<T> {
@@ -87,7 +91,7 @@ export default class BungieClient implements BungieClientProtocol {
         fn: (client: BungieClientProtocol) => QueryFn<TParams, TData>
         key: string
     }) {
-        return BungieQuery<TParams, TData>(this.queryClient, fn(this), key)
+        return BungieQuery<TParams, TData>(this, fn(this), key)
     }
 
     clan = {
