@@ -19,6 +19,10 @@ export const nextAuthOptions: AuthOptions = {
         error: "/error", // Error code passed in query string as ?error=
         newUser: "/account" // New users will be directed here on first sign in
     },
+    session: {
+        strategy: "database",
+        maxAge: 7776000 // 90 days
+    },
     callbacks: {
         session: sessionCallback,
         async signIn({ account, user }) {
@@ -36,7 +40,7 @@ export const nextAuthOptions: AuthOptions = {
                         value: account.refresh_token!,
                         expires: Date.now() + 7_775_777_777
                     }
-                })
+                }).then(console.log)
             }
             return true
         }

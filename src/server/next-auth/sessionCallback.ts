@@ -65,7 +65,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                 }
             )
 
-            updateBungieAccessTokens({
+            await updateBungieAccessTokens({
                 bungieMembershipId: tokens.membership_id,
                 access: {
                     value: tokens.access_token,
@@ -75,7 +75,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     value: tokens.refresh_token,
                     expires: Date.now() + tokens.refresh_expires_in * 1000
                 }
-            })
+            }).then(console.log)
 
             return {
                 ...session,

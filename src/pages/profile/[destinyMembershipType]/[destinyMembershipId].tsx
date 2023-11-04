@@ -6,8 +6,6 @@ import Profile from "~/components/profile/Profile"
 import {
     createServerSideQueryClient,
     createTrpcServerSideHelpers,
-    prefetchDestinyProfile,
-    prefetchRaidHubPlayer,
     prefetchRaidHubProfile
 } from "~/server/serverQueryClient"
 import { DehydratedState, Hydrate, dehydrate } from "@tanstack/react-query"
@@ -59,8 +57,8 @@ export const getStaticProps: GetStaticProps<
             const queryClient = createServerSideQueryClient()
             const helpers = createTrpcServerSideHelpers()
             await Promise.all([
-                prefetchDestinyProfile(props, queryClient),
-                prefetchRaidHubPlayer(props.destinyMembershipId, queryClient),
+                // prefetchDestinyProfile(props, queryClient),
+                // prefetchRaidHubPlayer(props.destinyMembershipId, queryClient),
                 prefetchRaidHubProfile(props.destinyMembershipId, helpers)
             ])
 
