@@ -6,8 +6,6 @@ import Profile from "~/components/profile/Profile"
 import {
     createServerSideQueryClient,
     createTrpcServerSideHelpers,
-    prefetchDestinyProfile,
-    prefetchRaidHubPlayer,
     prefetchRaidHubProfile
 } from "~/server/serverQueryClient"
 import { DehydratedState, Hydrate, dehydrate } from "@tanstack/react-query"
