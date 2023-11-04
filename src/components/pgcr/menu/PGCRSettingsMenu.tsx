@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react"
-import { UseLocalStorage } from "~/hooks/util/useLocalStorage"
 import styles from "~/styles/pages/pgcr.module.css"
 import { useLocale } from "~/components/app/LocaleManager"
 import ToggleSwitch from "~/components/reusable/ToggleSwitch"
@@ -11,9 +10,13 @@ export type PGCRSettings = {
     showScore: boolean
 }
 
-type PGCRSettingsMenuProps = UseLocalStorage<PGCRSettings>
-
-const PGCRSettingsMenu = ({ value, save }: PGCRSettingsMenuProps) => {
+const PGCRSettingsMenu = ({
+    value,
+    save
+}: {
+    value: PGCRSettings
+    save: (saver: (val: PGCRSettings) => PGCRSettings) => void
+}) => {
     const { data: sessionData } = useSession()
     const { data: pgcr, isLoading } = usePGCRContext()
     const { strings } = useLocale()
