@@ -6,14 +6,15 @@ import {
     useQueries,
     useQuery,
     FetchQueryOptions,
-    QueryClient
+    QueryClient,
+    Query
 } from "@tanstack/react-query"
 import { UseQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries"
 
 export type QueryFn<TParams, TData> = (params: TParams) => Promise<TData>
 
 export default function BungieQuery<TParams, TData>(
-    queryClient: QueryClient,
+    client: { queryClient: QueryClient },
     queryFn: QueryFn<TParams, TData>,
     queryId: string
 ) {
@@ -53,18 +54,28 @@ export default function BungieQuery<TParams, TData>(
         },
 
         getQueryData(params: TParams) {
-            return queryClient.getQueryData(this.queryKey(params)) as TData | undefined
+            return client.queryClient.getQueryData(this.queryKey(params)) as TData | undefined
         },
 
         refetchQueries<TPageData = unknown>(
-            filters?: RefetchQueryFilters<TPageData>,
+            predicate?: RefetchQueryFilters<TPageData>["predicate"],
             options?: RefetchOptions
         ) {
-            return queryClient.refetchQueries(filters, options)
+            return client.queryClient.refetchQueries(
+                {
+                    predicate: (query: Query) =>
+                        query.queryKey.includes(queryId) && (predicate?.(query) ?? true)
+                },
+                options
+            )
         },
 
         prefetchQuery(params: TParams, options?: FetchQueryOptions<TData, unknown, TData>) {
-            return queryClient.prefetchQuery(this.queryKey(params), () => queryFn(params), options)
+            return client.queryClient.prefetchQuery(
+                this.queryKey(params),
+                () => queryFn(params),
+                options
+            )
         }
     }
 }

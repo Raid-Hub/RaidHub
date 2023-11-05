@@ -132,7 +132,7 @@ class ServerSideBungieClient implements BungieClientProtocol {
         fn: (client: BungieClientProtocol) => QueryFn<TParams, TData>
         key: string
     }) {
-        return BungieQuery<TParams, TData>(this.queryClient, fn(this), key)
+        return BungieQuery<TParams, TData>({ queryClient: this.queryClient }, fn(this), key)
     }
 
     get profile() {

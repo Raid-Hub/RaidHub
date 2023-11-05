@@ -2,21 +2,23 @@ import styles from "~/styles/pages/inpsect.module.css"
 import { NextPage } from "next"
 import { z } from "zod"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import { InpsectionMemberData } from "~/types/inspect"
-import InspectionHeader from "~/components/inpsect/InspectionHeader"
-import Player from "~/components/inpsect/Player"
+import { createContext, createRef, useContext, useEffect, useState } from "react"
+import { GuardianData } from "~/types/guardian"
+import InspectionHeader from "~/components/guardians/InspectionHeader"
+import Player from "~/components/guardians/Player"
+import { PortalProvider } from "~/components/reusable/Portal"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 
 const InpsectionPage: NextPage<{}> = () => {
     const router = useRouter()
-    const [members, setMembers] = useState<Map<string, InpsectionMemberData>>(new Map())
+    const [members, setMembers] = useState<Map<string, GuardianData>>(new Map())
 
     // parse query params on mount
     useEffect(() => {
         try {
             const parsed = z
                 .object({
-                    members: z
+                    ids: z
                         .string()
                         .transform(str => z.array(z.string().regex(/^\d+$/)).parse(str.split(", ")))
                 })
@@ -24,7 +26,7 @@ const InpsectionPage: NextPage<{}> = () => {
 
             setMembers(
                 new Map(
-                    parsed.members.map(id => [
+                    parsed.ids.map(id => [
                         id,
                         {
                             membershipId: id,
@@ -36,7 +38,7 @@ const InpsectionPage: NextPage<{}> = () => {
         } catch {}
     }, [])
 
-    function removeMember(member: InpsectionMemberData) {
+    function removeMember(member: GuardianData) {
         setMembers(old => {
             const newMembers = new Map(Array.from(old))
             newMembers.delete(member.membershipId)
@@ -45,7 +47,7 @@ const InpsectionPage: NextPage<{}> = () => {
         })
     }
 
-    function addMember(member: InpsectionMemberData) {
+    function addMember(member: GuardianData) {
         setMembers(old => {
             const newMembers = new Map([[member.membershipId, member]])
             Array.from(old.values()).forEach(member => {
@@ -57,7 +59,7 @@ const InpsectionPage: NextPage<{}> = () => {
             return newMembers
         })
     }
-    function addMembers(members: InpsectionMemberData[]) {
+    function addMembers(members: GuardianData[]) {
         setMembers(old => {
             const newMembers = new Map(members.map(m => [m.membershipId, m] as const))
             Array.from(old.values()).forEach(member => {
@@ -70,36 +72,55 @@ const InpsectionPage: NextPage<{}> = () => {
         })
     }
 
-    function updateRouter(members: Map<string, InpsectionMemberData>) {
+    function updateRouter(members: Map<string, GuardianData>) {
         router.push(
             {
                 query: {
-                    members: Array.from(members.keys()).join(", ")
+                    ids: Array.from(members.keys()).join(", ")
                 }
             },
             undefined,
             { shallow: true }
         )
     }
+
+    const { save: setExpanded, value: isExpanded } = useLocalStorage<boolean>(
+        "expanded-inspect",
+        false
+    )
+    const playersRef = createRef<HTMLDivElement>()
     return (
         <main className={styles["main"]}>
-            <InspectionHeader
-                addMember={addMember}
-                memberIds={Array.from(members.keys())}
-                clearAllMembers={() => setMembers(new Map())}
-            />
-            <div className={styles["players"]}>
-                {Array.from(members?.values() ?? []).map((member, idx) => (
-                    <Player
-                        key={idx}
-                        member={member}
-                        remove={() => removeMember(member)}
-                        addMembers={addMembers}
-                    />
-                ))}
-            </div>
+            <PortalProvider target={playersRef}>
+                <InspectionHeader
+                    addMember={addMember}
+                    memberIds={Array.from(members.keys())}
+                    clearAllMembers={() => setMembers(new Map())}
+                    setExpanded={setExpanded}
+                    isExpanded={isExpanded}
+                />
+                <div className={styles["players"]} ref={playersRef}>
+                    {Array.from(members?.values() ?? []).map(member => (
+                        <ExpandedContext.Provider value={isExpanded} key={member.membershipId}>
+                            <Player
+                                member={member}
+                                remove={() => removeMember(member)}
+                                addMembers={addMembers}
+                            />
+                        </ExpandedContext.Provider>
+                    ))}
+                </div>
+            </PortalProvider>
         </main>
     )
 }
 
 export default InpsectionPage
+
+const ExpandedContext = createContext<boolean | null>(null)
+
+export function useExpandedContext() {
+    const ctx = useContext(ExpandedContext)
+    if (ctx == null) throw new Error("Cannot use context outside of a provider")
+    return ctx
+}

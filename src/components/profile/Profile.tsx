@@ -112,7 +112,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 <meta key="og-descriptions" property="og:description" content={description} />
             </Head>
             <main className={styles["main"]} ref={mainRef}>
-                <PortalProvider target={mainRef.current}>
+                <PortalProvider target={mainRef}>
                     <section className={styles["user-info"]}>
                         <UserCard />
                         <ClanCard />

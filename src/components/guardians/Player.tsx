@@ -5,7 +5,7 @@ import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
 import { useBungieClient } from "../app/TokenManager"
 import { ReactNode, useEffect, useMemo } from "react"
-import { InpsectionMemberData } from "~/types/inspect"
+import { GuardianData } from "~/types/guardian"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
 import Loader from "../reusable/Loader"
@@ -16,9 +16,9 @@ export default function Player({
     remove,
     addMembers
 }: {
-    member: InpsectionMemberData
+    member: GuardianData
     remove: () => void
-    addMembers: (members: InpsectionMemberData[]) => void
+    addMembers: (members: GuardianData[]) => void
 }) {
     const bungie = useBungieClient()
     const { data: linkedProfiles } = bungie.linkedProfiles.useQuery(member, {
@@ -51,8 +51,8 @@ function ResolvedPlayer({
     children
 }: {
     primaryProfile: DestinyProfileUserInfoCard
-    member: InpsectionMemberData
-    addMembers: (members: InpsectionMemberData[]) => void
+    member: GuardianData
+    addMembers: (members: GuardianData[]) => void
     children: ReactNode
 }) {
     const bungie = useBungieClient()

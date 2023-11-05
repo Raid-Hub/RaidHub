@@ -1,4 +1,4 @@
-import React from "react"
+import React, { RefObject } from "react"
 import ReactDOM from "react-dom"
 
 const PortalContext = React.createContext<{
@@ -18,16 +18,13 @@ export function PortalProvider({
     target
 }: {
     children: React.ReactNode
-    target: HTMLElement | null
+    target: RefObject<HTMLElement>
 }) {
-    const sendThroughPortal = React.useCallback(
-        (node: React.ReactNode) => {
-            if (typeof document !== "undefined" && target) {
-                return ReactDOM.createPortal(node, target)
-            }
-        },
-        [target]
-    )
+    const sendThroughPortal = (node: React.ReactNode) => {
+        if (typeof document !== "undefined" && target?.current) {
+            return ReactDOM.createPortal(node, target.current)
+        }
+    }
     return (
         <PortalContext.Provider
             value={{

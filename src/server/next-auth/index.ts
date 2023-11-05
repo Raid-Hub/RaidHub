@@ -40,7 +40,7 @@ export const nextAuthOptions: AuthOptions = {
                         value: account.refresh_token!,
                         expires: Date.now() + 7_775_777_777
                     }
-                }).then(console.log)
+                })
             }
             return true
         }

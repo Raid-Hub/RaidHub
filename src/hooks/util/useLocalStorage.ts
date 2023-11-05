@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react"
 
-export type UseLocalStorage<V> = {
-    value: V
-    save: (value: V | ((old: V) => V)) => void
-}
-
 export const useLocalStorage = <V>(
     key: string,
     defaultValue: V,
     fetcher?: () => Promise<V>
-): UseLocalStorage<V> => {
+): {
+    value: V
+    save: (value: V | ((old: V) => V)) => void
+} => {
     const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {

@@ -55,9 +55,9 @@ const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
     return transitoryComponent?.currentActivity ? (
         <Link
             href={{
-                pathname: "/inspect",
+                pathname: "/guardians",
                 query: {
-                    members: transitoryComponent.partyMembers.map(pm => pm.membershipId).join(", ")
+                    ids: transitoryComponent.partyMembers.map(pm => pm.membershipId).join(", ")
                 }
             }}
             className={styles["current-activity"]}>
