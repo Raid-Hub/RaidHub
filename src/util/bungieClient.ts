@@ -35,7 +35,7 @@ export default class BungieClient implements BungieClientProtocol {
             throw new Error("Missing BUNGIE_API_KEY")
         }
 
-        const payload = {
+        const payload: RequestInit & { headers: Record<string, string> } = {
             method: config.method,
             body: config.body,
             headers: config.headers ?? {}
@@ -50,9 +50,15 @@ export default class BungieClient implements BungieClientProtocol {
         }
 
         const request = async (retry?: boolean) => {
+            const controller = new AbortController()
+            const timer = setTimeout(() => controller.abort(), 5000)
+            payload.signal = controller.signal
+
             if (retry) config.url.searchParams.set("retry", true.toString())
             const res = await fetch(config.url, payload)
             const data = await res.json()
+            clearTimeout(timer)
+
             if (data.ErrorCode && data.ErrorCode !== 1) {
                 throw new BungieAPIError(data)
             } else if (!res.ok) {
@@ -63,11 +69,11 @@ export default class BungieClient implements BungieClientProtocol {
 
         try {
             return await request()
-        } catch (e: any) {
-            if (DONT_RETRY_CODES.includes(e.ErrorCode)) {
-                throw e
-            } else {
+        } catch (e) {
+            if (e instanceof BungieAPIError && !DONT_RETRY_CODES.includes(e.ErrorCode)) {
                 return await request(true)
+            } else {
+                throw e
             }
         }
     }
