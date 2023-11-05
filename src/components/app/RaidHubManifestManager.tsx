@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useContext } from "react"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import { createHeaders } from "~/services/raidhub/createHeaders"
 import { RaidHubAPIResponse } from "~/types/raidhub-api"
 import { Difficulty, ListedRaid } from "~/types/raids"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
@@ -30,7 +31,7 @@ type RaidHubManifest = {
 const ManifestContext = createContext<RaidHubManifest | null | undefined>(undefined)
 
 const getManifest = () =>
-    fetch(getRaidHubBaseUrl() + "/manifest")
+    fetch(getRaidHubBaseUrl() + "/manifest", { headers: createHeaders() })
         .then(res => res.json())
         .then((data: RaidHubAPIResponse<RaidHubManifest>) => (data.success ? data.response : null))
 
