@@ -3,6 +3,7 @@ import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { searchForBungieName } from "../bungie/searchForBungieName"
 import { searchForUsername } from "../bungie/searchForUsername"
 import { BungieClientProtocol } from "bungie-net-core"
+import { createHeaders } from "./createHeaders"
 
 // we have the bungie queries as backups
 export async function searchRaidHubUser(
@@ -12,7 +13,7 @@ export async function searchRaidHubUser(
     const url = new URL(getRaidHubBaseUrl() + `/search`)
     url.searchParams.append("query", query)
 
-    const res = await fetch(url)
+    const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubSearchResponse>
     if (data.success) {

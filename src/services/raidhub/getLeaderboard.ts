@@ -4,6 +4,7 @@ import { ListedRaid } from "~/types/raids"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
+import { createHeaders } from "./createHeaders"
 
 export enum Leaderboard {
     WorldFirst = "worldfirst"
@@ -30,7 +31,7 @@ export async function getLeaderboard(
     url.searchParams.append("count", "50")
 
     try {
-        const res = await fetch(url)
+        const res = await fetch(url, { headers: createHeaders() })
 
         const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivityLeaderboardResponse>
 

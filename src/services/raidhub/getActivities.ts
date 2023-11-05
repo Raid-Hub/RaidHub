@@ -1,6 +1,7 @@
 import Activity from "~/models/profile/data/Activity"
 import { RaidHubAPIResponse, RaidHubActivitiesResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
+import { createHeaders } from "./createHeaders"
 
 export function activitiesQueryKey(membershipId: string) {
     return ["raidhub-activities", membershipId] as const
@@ -30,7 +31,7 @@ async function getActivities({
         url.searchParams.set("cursor", cursor)
     }
 
-    const res = await fetch(url)
+    const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitiesResponse>
 

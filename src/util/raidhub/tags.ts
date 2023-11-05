@@ -60,9 +60,11 @@ export function wfRaceMode({
 }
 
 export function findTags(activities: Activity[]) {
-    const sorted = activities.sort(
-        (a, b) => b.weight - a.weight || a.dateCompleted.getTime() - b.dateCompleted.getTime()
-    )
+    const sorted = activities
+        .filter(a => a.didMemberComplete)
+        .sort(
+            (a, b) => b.weight - a.weight || a.dateCompleted.getTime() - b.dateCompleted.getTime()
+        )
 
     let bitfield = 0
     const result = new Array<Activity & { bestPossible: boolean }>()
