@@ -112,7 +112,13 @@
 
     width: 80%;
 
-    height: 50%;
+    padding: 0.2em;
+    margin: 0;
+
+    background-color: var(--modal-background-opaque);
+    border: 1px solid var(--border);
+
+    text-align: center;
 }
 
 .edit-background-btns {
@@ -123,32 +129,14 @@
     margin: 0.3em 0;
 }
 
-.edit-background-info-text {
-    padding: 0.2em;
-    margin: 0;
-
-    background-color: var(--modal-background-opaque);
-    border: 1px solid var(--border);
-}
-
-.edit-background-info-text a {
-    color: var(--brand-orange-light);
-}
-
-.edit-background-input {
-    width: 100%;
-    height: 100%;
-
-    resize: vertical;
-    white-space: pre-wrap;
-
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 8px;
-    background-color: var(--modal-background-opaque);
-
-    font-family: "Courier New", monospace;
-    color: #ffffff;
+.custom-color-picker {
+    margin-top: 0.25rem;
+    width: 100px;
+    height: 35px;
+    border-radius: 0.5rem;
+    border-color: #e5e7eb;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
 }
 
 .icons {

@@ -35,14 +35,6 @@ export default function UserCard() {
     const socials = useMemo(() => {
         if (!raidHubProfile) return null
         const socials = new Array<ProfileSocialData>()
-        if (raidHubProfile.bungieUsername) {
-            socials.push({
-                id: Socials.Bungie,
-                Icon: BungieShield,
-                displayName: raidHubProfile.bungieUsername,
-                url: `https://www.bungie.net/7/en/User/Profile/${raidHubProfile.destinyMembershipType}/${raidHubProfile.destinyMembershipId}`
-            })
-        }
         if (raidHubProfile.discordUsername) {
             socials.push({
                 id: Socials.Discord,
@@ -89,12 +81,14 @@ export default function UserCard() {
     const ref = useRef<HTMLDivElement>(null)
     const {
         isEditing,
+        opacity,
+        color,
         handleCancel,
         handleStartEditing,
         handleEditorInputSave,
         handleReset,
-        inputStyling,
-        setInputStyling
+        setOpacity,
+        setColor
     } = useProfileDecoration(ref)
 
     const { strings } = useLocale()
@@ -162,21 +156,31 @@ export default function UserCard() {
                                 <button onClick={handleEditorInputSave}>{strings.save}</button>
                                 <button onClick={handleReset}>{strings.reset}</button>
                             </div>
-                            <p className={styles["edit-background-info-text"]}>
-                                Paste a valid value for the css <code>background</code> property
-                                here.{" "}
-                                <a
-                                    href="https://www.joshwcomeau.com/gradient-generator/"
-                                    target="_blank"
-                                    rel="noopener noreferrer">
-                                    Online generator
-                                </a>
-                            </p>
-                            <textarea
-                                className={styles["edit-background-input"]}
-                                name={"background-editor"}
-                                onChange={e => setInputStyling(e.target.value)}
-                                value={inputStyling}
+                            <label
+                                htmlFor="colorpicker"
+                                style={{ display: "block", margin: "0.7em" }}>
+                                Pick a color from the menu below:
+                            </label>
+                            <input
+                                className={styles["custom-color-picker"]}
+                                type="color"
+                                id="colorpicker"
+                                value={color}
+                                onChange={e => setColor(e.target.value)}
+                            />
+                            <label
+                                htmlFor="opacityslider"
+                                style={{ display: "block", margin: "0.7em" }}>
+                                Adjust opacity:
+                            </label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="255"
+                                step="1"
+                                id="opacityslider"
+                                value={opacity}
+                                onChange={e => setOpacity(parseInt(e.target.value, 10))}
                             />
                         </div>
                     )}

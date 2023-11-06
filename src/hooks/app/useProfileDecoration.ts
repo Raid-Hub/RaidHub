@@ -3,7 +3,8 @@ import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useProfileProps } from "~/components/profile/Profile"
 
-const defaultEditInput = ""
+const defaultColor = "#FFFFFF"
+const defaultOpacity = 255
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
     const { destinyMembershipId } = useProfileProps()
@@ -12,43 +13,60 @@ export function useProfileDecoration(ref: RefObject<HTMLElement>) {
     })
 
     const [isEditing, setIsEditing] = useState(false)
-    const [inputStyling, setInputStyling] = useState<string>("")
+    const [color, setColor] = useState<string>(defaultColor)
+    const [opacity, setOpacity] = useState<number>(255)
     const { mutate: mutateProfile } = useOptimisticProfileUpdate()
+
+    const styling = color + percentToHex(opacity)
 
     useEffect(() => {
         if (ref.current) {
-            ref.current.style.cssText = inputStyling
-                ? "background: " +
-                  inputStyling
-                      .split(";")
-                      .filter(Boolean)
-                      .map(
-                          line =>
-                              line.replace("background-image: ", "").replace("background: ", "") ??
-                              "".replace("\n: ", "").replace(/;$/, "")
-                      )[0]
-                : ""
+            if (color) {
+                ref.current.style.cssText = `background-color: ${styling}`
+            } else {
+                ref.current.style.cssText = ""
+            }
         }
-    }, [inputStyling, ref])
+    }, [color, styling, ref])
 
     useEffect(() => {
-        setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)
+        handleDecorationChange()
     }, [raidHubProfile?.profileDecoration])
 
-    const handleEditorInputSave = useCallback(() => {
+    const handleEditorInputSave = () => {
         mutateProfile({
-            profileDecoration: inputStyling
+            profileDecoration: styling
         })
         setIsEditing(false)
-    }, [inputStyling, mutateProfile])
+    }
+
+    const handleDecorationChange = () => {
+        if (raidHubProfile?.profileDecoration) {
+            setColor(raidHubProfile.profileDecoration.substring(0, 7))
+            setOpacity(parseInt(raidHubProfile.profileDecoration.substring(7), 16))
+        } else {
+            setColor(defaultColor)
+            setOpacity(defaultOpacity)
+        }
+    }
 
     return {
         isEditing,
         handleStartEditing: () => setIsEditing(true),
-        handleCancel: () => setIsEditing(false),
+        handleCancel: () => {
+            setIsEditing(false)
+            handleDecorationChange()
+        },
         handleEditorInputSave,
-        setInputStyling,
-        inputStyling,
-        handleReset: () => setInputStyling(raidHubProfile?.profileDecoration ?? defaultEditInput)
+        setColor,
+        setOpacity,
+        color,
+        opacity,
+        handleReset: handleDecorationChange
     }
+}
+
+function percentToHex(decimalValue: number) {
+    const hexValue = decimalValue.toString(16).padStart(2, "0")
+    return hexValue.toUpperCase()
 }

@@ -54,12 +54,12 @@ export const zModifiableUser = z
     _output: Partial<z.infer<typeof zUser>>
 }
 
+const zProfileDecoration = z.string().regex(/^#[A-Fa-f0-9]{8}$/, "Invalid color code")
+
 export const zModifiableProfile = z
     .object({
         pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
-        profileDecoration: z.nullable(
-            z.string().max(500, "CSS String too long, maximum length: 500")
-        )
+        profileDecoration: zProfileDecoration.nullable()
     })
     .partial() satisfies {
     _output: Partial<z.infer<typeof zProfile>>
