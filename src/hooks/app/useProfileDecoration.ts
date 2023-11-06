@@ -29,10 +29,6 @@ export function useProfileDecoration(ref: RefObject<HTMLElement>) {
         }
     }, [color, styling, ref])
 
-    useEffect(() => {
-        handleDecorationChange()
-    }, [raidHubProfile?.profileDecoration])
-
     const handleEditorInputSave = () => {
         mutateProfile({
             profileDecoration: styling
@@ -40,7 +36,7 @@ export function useProfileDecoration(ref: RefObject<HTMLElement>) {
         setIsEditing(false)
     }
 
-    const handleDecorationChange = () => {
+    const handleDecorationChange = useCallback(() => {
         if (raidHubProfile?.profileDecoration) {
             setColor(raidHubProfile.profileDecoration.substring(0, 7))
             setOpacity(parseInt(raidHubProfile.profileDecoration.substring(7), 16))
@@ -48,7 +44,11 @@ export function useProfileDecoration(ref: RefObject<HTMLElement>) {
             setColor(defaultColor)
             setOpacity(defaultOpacity)
         }
-    }
+    }, [raidHubProfile?.profileDecoration])
+
+    useEffect(() => {
+        handleDecorationChange()
+    }, [handleDecorationChange])
 
     return {
         isEditing,

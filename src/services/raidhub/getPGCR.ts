@@ -1,4 +1,4 @@
-import { RaidHubAPIResponse, RaidHubActivityResponse } from "~/types/raidhub-api"
+import { RaidHubAPIResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { createHeaders } from "./createHeaders"
 import { DestinyPostGameCarnageReportData } from "bungie-net-core/models"
