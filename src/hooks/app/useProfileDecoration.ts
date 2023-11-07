@@ -3,7 +3,7 @@ import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
 import { trpc } from "~/util/trpc"
 import { useProfileProps } from "~/components/profile/Profile"
 
-const defaultColor = "#FFFFFF"
+const defaultColor = ""
 const defaultOpacity = 255
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
