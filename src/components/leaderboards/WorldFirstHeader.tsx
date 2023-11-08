@@ -15,7 +15,7 @@ export default function WorldFirstHeader({
 }) {
     const { strings } = useLocale()
     return (
-        <section className={styles["world-first-header"]}>
+        <div className={styles["world-first-header"]}>
             <h1>{title}</h1>
             {subtitle && <h3>{subtitle}</h3>}
             <CloudflareImage
@@ -25,6 +25,6 @@ export default function WorldFirstHeader({
                 fill
                 className={styles["world-first-header-image"]}
             />
-        </section>
+        </div>
     )
 }

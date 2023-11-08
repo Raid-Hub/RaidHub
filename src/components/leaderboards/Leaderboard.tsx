@@ -1,10 +1,12 @@
-import styles from "../../styles/pages/leaderboards.module.css"
+import styles from "~/styles/pages/leaderboards.module.css"
 import LeaderboardEntryComponent from "./LeaderboardEntryComponent"
 import { useLocale } from "../app/LocaleManager"
 import { Fragment, ReactNode } from "react"
-import StyledButton from "../reusable/StyledButton"
 import Loading from "../global/Loading"
-import { LeaderboardEntry } from "../../types/leaderboards"
+import { LeaderboardEntry } from "~/types/leaderboards"
+import NextArrow from "~/images/icons/NextArrow"
+import PreviousArrow from "~/images/icons/PreviousArrow"
+import ReloadArrow from "~/images/icons/ReloadArrow"
 
 type LeaderboardProps = {
     entries: LeaderboardEntry[]
@@ -29,28 +31,43 @@ const Leaderboard = ({
 }: LeaderboardProps) => {
     const { strings } = useLocale()
 
-    const hasMorePages = isLoading || entries.length === ENTRIES_PER_PAGE
+    const canGoForward = isLoading || entries.length === ENTRIES_PER_PAGE
+    const canGoBack = page >= 2
+
+    const Controls = () => (
+        <div className={styles["leaderboard-controls"]}>
+            <ReloadArrow
+                color="white"
+                sx={25}
+                onClick={refresh}
+                className={styles["btn-control"]}
+            />
+            <PreviousArrow
+                color={canGoBack ? "white" : "gray"}
+                sx={20}
+                aria-disabled={!canGoBack}
+                onClick={canGoBack ? handleBackwards : undefined}
+                className={styles["btn-control"]}
+            />
+            <NextArrow
+                color={canGoForward ? "white" : "gray"}
+                sx={20}
+                aria-disabled={!canGoForward}
+                onClick={canGoForward ? handleForwards : undefined}
+                className={styles["btn-control"]}
+            />
+        </div>
+    )
 
     return (
         <main className={styles["main"]}>
             <section>{children}</section>
-            <div className={styles["leaderboard-controls"]}>
-                <StyledButton onClick={refresh}>{"Refresh"}</StyledButton>
-                <StyledButton onClick={handleBackwards} disabled={page <= 1}>
-                    {strings.back}
-                </StyledButton>
-                <StyledButton onClick={handleForwards} disabled={!hasMorePages}>
-                    {strings.next}
-                </StyledButton>
-            </div>
+            <Controls />
             <section className={styles["leaderboard-container"]}>
                 {!isLoading
                     ? entries.map((e, idx) => (
                           <Fragment key={e.id}>
                               <LeaderboardEntryComponent entry={e} />
-                              {idx < entries.length - 1 && (
-                                  <hr className={styles["leaderboard-divider"]} />
-                              )}
                           </Fragment>
                       ))
                     : new Array(ENTRIES_PER_PAGE).fill(null).map((_, idx) => (
@@ -61,6 +78,7 @@ const Leaderboard = ({
                               )}
                           </Fragment>
                       ))}
+                {entries.length > 20 && <Controls />}
             </section>
         </main>
     )

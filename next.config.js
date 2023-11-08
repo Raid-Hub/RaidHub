@@ -25,6 +25,9 @@ const nextConfig = {
     i18n: {
         locales,
         defaultLocale: "en"
+    },
+    experimental: {
+        scrollRestoration: true
     }
 }
 

@@ -4,12 +4,18 @@
 .leaderboard-controls {
     display: flex;
     justify-content: right;
+    margin: 1em auto 0.2em;
     gap: 0.4em;
+    max-width: 950px;
+}
+.btn-control {
+    transition: fill 0.1s ease-in;
+}
+.btn-control:not([aria-disabled="true"]):hover {
+    cursor: pointer;
+    fill: var(--brand-orange-light);
 }
 .leaderboard-container {
-    background-color: var(--modal-background);
-    border-radius: 15px;
-
     padding: 1em;
 
     min-width: min-content;
@@ -28,11 +34,15 @@
     display: flex;
     flex-direction: row;
 
-    padding: 0.5em;
+    padding: 1em;
 
     gap: 1em;
     align-items: center;
     justify-content: space-between;
+
+    background-color: var(--modal-background);
+    border-radius: 15px;
+    margin-bottom: 1.5em;
 }
 .leaderboard-entry-loading {
     height: 120px;
@@ -59,6 +69,8 @@
     display: flex;
     flex-direction: row;
 
+    padding: 0.3em 0;
+
     gap: 0.5em;
     align-items: center;
 }
@@ -72,10 +84,8 @@
 }
 .username {
     display: block;
+    white-space: normal;
     width: 15ch;
-}
-.username p {
-    margin: 0;
 }
 
 .entry-time {
@@ -83,6 +93,10 @@
     white-space: nowrap;
     color: var(--secondary-text);
     font-size: x-large;
+    padding-right: 2em;
+}
+.entry-time-mobile {
+    display: none;
 }
 
 .rta-info {
@@ -194,21 +208,49 @@
         font-size: small;
     }
     .leaderboard-entry {
-        padding: 0;
+        position: relative;
+        flex-direction: column;
+        gap: 0.5em;
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        overflow: hidden;
     }
     .leaderboard-entry-rank {
-        min-width: 3ch;
-        font-size: 1rem;
+        margin: 0;
+        font-size: 1.25rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        font-style: oblique;
+        flex: 1;
+        align-self: flex-start;
+
+        background-color: rgba(161, 105, 0, 0.857);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-bottom-right-radius: 8px;
     }
     .leaderboard-entry-users {
-        flex: 5;
+        margin-top: 18px;
+        flex: 3;
+        justify-content: space-between;
     }
     .leaderboard-entry-user {
         flex-basis: unset;
+        flex: 1;
+    }
+    .entry-time {
+        display: none;
+    }
+    .entry-time-mobile {
+        display: block;
     }
     .username {
-        width: 14ch;
-        font-size: x-small;
+        width: 12ch;
+        font-size: medium;
+    }
+    .username > * {
+        display: block;
     }
     .user-icon-container {
         border-radius: 3px;
@@ -218,6 +260,7 @@
     }
     .entry-time {
         font-size: medium;
+        display: none;
     }
     .src-splash-container {
         flex-basis: 150px;
@@ -248,6 +291,7 @@
     margin-bottom: 0.5em;
 
     position: relative;
+    border: 1px solid var(--border);
 }
 .world-first-header-image {
     z-index: -1;
