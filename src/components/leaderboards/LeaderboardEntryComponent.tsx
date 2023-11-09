@@ -8,6 +8,12 @@ const LeaderboardEntryComponent = ({ entry }: { entry: LeaderboardEntry }) => {
     return (
         <div className={styles["leaderboard-entry"]}>
             <p className={styles["leaderboard-entry-rank"]}>{entry.rank}</p>
+            <Link
+                href={entry.url}
+                className={styles["entry-time-mobile"]}
+                target={entry.url.startsWith("/") ? "" : "_blank"}>
+                {secondsToHMS(entry.timeInSeconds, true)}
+            </Link>
             <div className={styles["leaderboard-entry-users"]}>
                 {entry.participants.map(usr => (
                     <LeaderboardEntryUser key={usr.id} user={usr} />

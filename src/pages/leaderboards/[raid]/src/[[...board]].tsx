@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps<
                 category,
                 dehydratedState: dehydrate(queryClient)
             },
-            revalidate: 3600 // 1 hour
+            revalidate: 48 * 3600 // 48 hours
         }
     } catch (e) {
         console.error(e)

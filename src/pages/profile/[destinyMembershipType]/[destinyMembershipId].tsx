@@ -63,7 +63,7 @@ export const getStaticProps: GetStaticProps<
             ])
 
             return {
-                revalidate: 3600 * 12, //12 hours
+                revalidate: 3600 * 48, // 48 hours
                 props: {
                     ...props,
                     dehydratedState: dehydrate(queryClient),
