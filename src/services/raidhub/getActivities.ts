@@ -12,7 +12,7 @@ export async function getAllActivities(membershipId: string) {
     do {
         const data = await getActivities({ membershipId, cursor })
         all.push(...data.activities.map(a => new Activity(a)))
-        cursor = data.prevActivity
+        cursor = data.nextCursor
     } while (cursor)
 
     return all

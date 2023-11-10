@@ -50,7 +50,7 @@ export type RaidHubActivitiesResponse = {
     activities: (RaidHubActivity & {
         didMemberComplete: boolean
     })[]
-    prevActivity: string
+    nextCursor: string
 }
 
 export type RaidHubActivityResponse = RaidHubActivity & {
