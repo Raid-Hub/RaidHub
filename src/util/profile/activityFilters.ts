@@ -38,7 +38,7 @@ export const HighOrderActivityFilterSchema = {
 } satisfies Record<keyof typeof HighOrderActivityFilters, ZodType>
 
 export const SingleActivityFilters = {
-    [FilterOption.SUCCESS]: (activity: Activity) => !!activity.completed,
+    [FilterOption.SUCCESS]: (activity: Activity) => activity.didMemberComplete,
     [FilterOption.FLAWLESS]: (activity: Activity) => !!activity.flawless,
     [FilterOption.CPB]: (activity: Activity) => activity.playerCount > 50,
     [FilterOption.NONLOWMAN]: (activity: Activity) => activity.playerCount > 3,
