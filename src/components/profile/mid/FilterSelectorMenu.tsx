@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from "react"
-import styles from "../../../styles/pages/profile/mid.module.css"
-import { ActivityFilter } from "../../../types/profile"
-import { FilterListName, FiltersToSelectFrom } from "../../../util/profile/activityFilters"
-import { useLocale } from "../../app/LocaleManager"
+import styles from "~/styles/pages/profile/mid.module.css"
+import { ActivityFilter } from "~/types/profile"
+import { FilterListName, FiltersToSelectFrom } from "~/util/profile/activityFilters"
+import { useLocale } from "~/components/app/LocaleManager"
+import { useClickOutside } from "~/hooks/util/useClickOutside"
 
 type FilterSelectorMenuProps = {
     handleSelect(element: ActivityFilter): void
@@ -12,28 +13,12 @@ const FilterSelectorMenu = ({ handleSelect, handleClickAway }: FilterSelectorMen
     const { strings } = useLocale()
     const listRef = useRef<HTMLUListElement | null>(null)
 
-    const handleClickOutside = useCallback(
-        (event: MouseEvent) => {
-            if (listRef.current && !listRef.current.contains(event.target as Node)) {
-                handleClickAway()
-            }
-        },
-        [handleClickAway]
-    )
-
-    useEffect(() => {
-        const timer = setTimeout(() => document.addEventListener("click", handleClickOutside), 300)
-
-        return () => {
-            clearTimeout(timer)
-            document.removeEventListener("click", handleClickOutside)
-        }
-    }, [handleClickOutside])
+    useClickOutside({ ref: listRef, lockout: 200, enabled: true }, handleClickAway)
 
     return (
         <ul ref={listRef} className={styles["filter-selector-menu"]}>
-            {Object.entries(FiltersToSelectFrom).map(([key, selection]) => (
-                <li key={key} onClick={() => handleSelect(selection())}>
+            {Object.entries(FiltersToSelectFrom).map(([key, generate]) => (
+                <li key={key} onClick={() => handleSelect(generate())}>
                     {strings.filterNames[Number(key) as FilterListName]}
                 </li>
             ))}

@@ -62,10 +62,15 @@ export enum FilterListName {
     Cpb,
     MinMinutes,
     Master,
-    Prestige
+    Prestige,
+    Default,
+    None
     // PlayedWith
 }
-export const FiltersToSelectFrom: Record<FilterListName, () => ActivityFilter> = {
+export const FiltersToSelectFrom: Record<
+    Exclude<FilterListName, FilterListName.Default | FilterListName.None>,
+    () => ActivityFilter
+> = {
     [FilterListName.Success]: () => new SingleActivityFilter(FilterOption.SUCCESS),
     [FilterListName.Incomplete]: () =>
         new NotActivityFilter(new SingleActivityFilter(FilterOption.SUCCESS)),
@@ -104,6 +109,21 @@ export const DefaultActivityFilters = new GroupActivityFilter("|", [
         new NotActivityFilter(FiltersToSelectFrom[FilterListName.Cpb]())
     ])
 ])
+
+export const PresetFilters: Partial<Record<FilterListName, null | (() => ActivityFilter)>> = {
+    [FilterListName.Default]: () => DefaultActivityFilters,
+    [FilterListName.Success]: () => new SingleActivityFilter(FilterOption.SUCCESS),
+    [FilterListName.AnyLowman]: () =>
+        new GroupActivityFilter("&", [
+            new SingleActivityFilter(FilterOption.SUCCESS),
+            new GroupActivityFilter("|", [
+                new SingleActivityFilter(FilterOption.SOLO),
+                new SingleActivityFilter(FilterOption.DUO),
+                new SingleActivityFilter(FilterOption.TRIO)
+            ])
+        ]),
+    [FilterListName.None]: null
+}
 
 export function decodeFilters(json: unknown): ActivityFilter | null {
     if (!json) return null

@@ -164,8 +164,9 @@
 
 .filter-selector {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 5;
 
     background-color: rgba(0, 0, 0, 0.92);
@@ -174,30 +175,61 @@
     backdrop-filter: blur(2px);
     border: 1px solid var(--border);
 
-    min-height: 400px;
     max-width: 400px;
 
+    margin: 0;
     padding: 5px;
+}
 
+.filter-selector-main {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 }
-.filter-selector > div {
-    margin: 0.5em;
-}
 
 .filter-selector-buttons {
     display: flex;
     flex-wrap: nowrap;
-    gap: 0.2em;
+    gap: 1em;
 }
 
-.filter-selector-buttons > * {
+.filter-selector-buttons > button {
     border: none;
     border-radius: 5px;
     white-space: nowrap;
+
+    background-color: gray;
+    font-size: 1.125rem;
+}
+
+.filter-presets {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
+}
+.filter-presets > button {
+    border: 1px solid gray;
+    border-radius: 8px;
+    background-color: rgba(128, 128, 128, 0.238);
+
+    padding: 0.5em;
+
+    font-size: 1.25rem;
+
+    user-select: none;
+    text-transform: uppercase;
+
+    transition: background-color 0.3s ease;
+}
+.filter-presets > button[aria-selected="true"] {
+    border-color: white;
+    background-color: var(--brand-orange-light);
+}
+.filter-selector > div {
+    margin: 0.5em;
 }
 
 .filter-item {

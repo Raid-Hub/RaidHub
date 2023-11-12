@@ -1,275 +1,184 @@
-import React, { useRef, useState } from "react"
-import styles from "../../../styles/pages/profile/mid.module.css"
-import { ActivityFilter } from "../../../types/profile"
-import GroupActivityFilter from "../../../models/profile/filters/GroupActivityFilter"
-import NotActivityFilter from "../../../models/profile/filters/NotActivityFilter"
-import HighOrderActivityFilter from "../../../models/profile/filters/HighOrderActivityFilter"
-import SingleActivityFilter from "../../../models/profile/filters/SingleActivityFilter"
-import FilterSelectorMenu from "./FilterSelectorMenu"
-import { useLocale } from "../../app/LocaleManager"
-import { DefaultActivityFilters } from "../../../util/profile/activityFilters"
-import { useForm } from "react-hook-form"
+import {
+    Dispatch,
+    Fragment,
+    SetStateAction,
+    forwardRef,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react"
+import styles from "~/styles/pages/profile/mid.module.css"
+import { ActivityFilter } from "~/types/profile"
+import { useLocale } from "~/components/app/LocaleManager"
+import { FilterListName, PresetFilters, decodeFilters } from "~/util/profile/activityFilters"
 import { usePortal } from "~/components/reusable/Portal"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import CustomFilterBuilder from "./FilterBuilder"
 
 type FilterSelectorProps = {
     activeFilter: ActivityFilter | null
     setActiveFilter: (filter: ActivityFilter | null) => void
 }
 
+enum FilterModalScreen {
+    Main,
+    Builder
+}
+
 const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) => {
-    const { strings } = useLocale()
-    const [currentFilter, setCurrentFilter] = useState(activeFilter?.deepClone() ?? null)
-    const [handleSelect, _setHandleSelect] = useState<((newFilter: ActivityFilter) => void) | null>(
-        null
-    )
-    // have to do this because state handlers cant directly accept a function
-    const setHandleSelect = (handler: ((newFilter: ActivityFilter) => void) | null): void => {
-        _setHandleSelect((_: any) => handler)
-    }
+    const ref = useRef<HTMLDialogElement | null>(null)
+    const { sendThroughPortal } = usePortal()
+
+    const [pendingFilter, setPendingFilter] = useState<ActivityFilter | null>(null)
+    const [screen, setScreen] = useState(FilterModalScreen.Main)
+
+    const closeModal = () => ref?.current?.close()
 
     const handleCloseEditModal = (save: boolean) => {
         if (save) {
-            setActiveFilter(currentFilter?.deepClone() ?? null)
+            setActiveFilter(pendingFilter ?? null)
         } else {
-            setCurrentFilter(activeFilter?.deepClone() ?? null)
+            setPendingFilter(null)
         }
-        ref.current?.close()
+        closeModal()
     }
 
-    const refreshCurrentFilter = () => setCurrentFilter(old => old?.deepClone() ?? null)
-
-    const removeFilter = () => setCurrentFilter(null)
-
-    const ref = useRef<HTMLDialogElement | null>(null)
-    const { sendThroughPortal } = usePortal()
+    const { strings } = useLocale()
 
     return (
         <div className={styles["filter-view"]}>
             <div
                 className={styles["filter-view-content"]}
-                onClick={() => !ref.current?.open && ref.current?.showModal()}>
+                onClick={() => {
+                    if (!ref.current?.open) {
+                        ref.current?.showModal()
+                        setPendingFilter(activeFilter)
+                    }
+                }}>
                 <h4>{strings.manageFilters}</h4>
             </div>
-
+            {/* Render this HTML dialog somewhere else defined by the portal Context */}
             {sendThroughPortal(
-                <dialog className={styles["filter-selector"]} ref={ref}>
-                    <div className={styles["filter-selector-buttons"]}>
-                        <button onClick={() => handleCloseEditModal(true)}>Save</button>
-                        <button onClick={() => handleCloseEditModal(false)}>Cancel</button>
-                        <button onClick={() => removeFilter()}>Clear</button>
-                        <button onClick={() => setCurrentFilter(DefaultActivityFilters)}>
-                            Reset to Default
-                        </button>
-                    </div>
-                    {currentFilter ? (
-                        <GenericFilterComponent
-                            filter={currentFilter}
-                            depth={0}
-                            canRemove={true}
-                            removeFromParent={removeFilter}
-                            refreshCurrentFilter={refreshCurrentFilter}
-                            setHandleSelect={setHandleSelect}
-                        />
-                    ) : (
-                        <div className={styles["no-filter"]}>
-                            <div>No Filter</div>
-                            <button
-                                onClick={() => {
-                                    setHandleSelect((newFilter: ActivityFilter) => {
-                                        setCurrentFilter(newFilter)
-                                    })
-                                }}>
-                                +
-                            </button>
-                        </div>
-                    )}
-                    {handleSelect && (
-                        <FilterSelectorMenu
-                            handleSelect={e => {
-                                handleSelect?.(e)
-                                setHandleSelect(null)
-                            }}
-                            handleClickAway={() => setHandleSelect(null)}
-                        />
-                    )}
-                </dialog>
-            )}
-        </div>
-    )
-}
-
-type GenericFilterComponentProps<F extends ActivityFilter = ActivityFilter> = {
-    filter: F
-    depth: number
-    canRemove: boolean
-    removeFromParent?(): void
-    refreshCurrentFilter(): void
-    setHandleSelect(handler: (newFilter: ActivityFilter) => void): void
-}
-
-const GenericFilterComponent = (props: GenericFilterComponentProps) => {
-    if (props.filter instanceof GroupActivityFilter) {
-        return <GroupFilterComponent {...props} filter={props.filter} />
-    } else if (props.filter instanceof NotActivityFilter) {
-        return <NotFilterComponent {...props} filter={props.filter} />
-    } else if (props.filter instanceof HighOrderActivityFilter) {
-        return <HighOrderFilterComponent {...props} filter={props.filter} />
-    } else if (props.filter instanceof SingleActivityFilter) {
-        return <SingleFilterComponent {...props} filter={props.filter} />
-    } else {
-        return null
-    }
-}
-
-const GroupFilterComponent = ({
-    canRemove,
-    filter,
-    depth,
-    removeFromParent,
-    refreshCurrentFilter,
-    setHandleSelect
-}: GenericFilterComponentProps<GroupActivityFilter>) => {
-    const removeChild = (id: string) => {
-        filter.children.delete(id)
-        refreshCurrentFilter()
-    }
-    return (
-        <div className={styles["filter-item"]}>
-            {canRemove && (
-                <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
-                    X
-                </button>
-            )}
-            {filter.children.size === 0 && (
-                <div className={styles["filter-combinator"]}>
-                    {filter.combinator == "|" ? "OR" : "AND"}
-                </div>
-            )}
-            {Array.from(filter.children).map(([id, childFilter], idx) => (
-                <React.Fragment key={id}>
-                    <GenericFilterComponent
-                        filter={childFilter}
-                        depth={depth + 1}
-                        canRemove={true}
-                        removeFromParent={() => removeChild(id)}
-                        refreshCurrentFilter={refreshCurrentFilter}
-                        setHandleSelect={setHandleSelect}
-                    />
-                    <div className={styles["filter-combinator"]}>
-                        {filter.combinator == "|" ? "OR" : "AND"}
-                    </div>
-                </React.Fragment>
-            ))}
-            <button
-                onClick={() => {
-                    setHandleSelect(newFilter => {
-                        filter.children.set(newFilter.id, newFilter)
-                        refreshCurrentFilter()
-                    })
-                }}>
-                +
-            </button>
-        </div>
-    )
-}
-
-const NotFilterComponent = ({
-    canRemove,
-    filter,
-    depth,
-    removeFromParent,
-    refreshCurrentFilter,
-    setHandleSelect
-}: GenericFilterComponentProps<NotActivityFilter>) => {
-    const removeChild = () => {
-        filter.child = null
-        refreshCurrentFilter()
-    }
-    return (
-        <div className={[styles["filter-item"], styles["filter-not"]].join(" ")}>
-            {canRemove && (
-                <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
-                    X
-                </button>
-            )}
-            <div className={styles["filter-combinator"]}>{"NOT"}</div>
-            {filter.child ? (
-                <GenericFilterComponent
-                    filter={filter.child}
-                    depth={depth + 1}
-                    canRemove={true}
-                    removeFromParent={removeChild}
-                    refreshCurrentFilter={refreshCurrentFilter}
-                    setHandleSelect={setHandleSelect}
+                <FilterModal
+                    ref={ref}
+                    pendingFilter={pendingFilter}
+                    screen={screen}
+                    setScreen={setScreen}
+                    setPendingFilter={setPendingFilter}
+                    handleSave={() => handleCloseEditModal(true)}
+                    handleCancel={() => handleCloseEditModal(false)}
                 />
-            ) : (
-                <button
-                    onClick={() =>
-                        setHandleSelect(newFilter => {
-                            filter.child = newFilter
-                        })
-                    }>
-                    +
-                </button>
             )}
         </div>
     )
 }
 
-const HighOrderFilterComponent = ({
-    canRemove,
-    filter,
-    removeFromParent
-}: GenericFilterComponentProps<HighOrderActivityFilter>) => {
+const defaultSavedFilters = new Array<{ name: string; data: Object }>()
+interface FilterModalProps {
+    pendingFilter: ActivityFilter | null
+    setPendingFilter: Dispatch<SetStateAction<ActivityFilter | null>>
+    screen: FilterModalScreen
+    setScreen: Dispatch<SetStateAction<FilterModalScreen>>
+    handleSave(): void
+    handleCancel(): void
+}
+const FilterModal = forwardRef<HTMLDialogElement, FilterModalProps>((props, ref) => {
     const { strings } = useLocale()
-    const { handleSubmit, register, formState } = useForm({
-        defaultValues: {
-            value: filter.value
-        },
-        resolver: zodResolver(z.object({ value: filter.schema }))
-    })
-    const enteredValue = async ({ value }: { value: unknown }) => {
-        filter.value = value
-    }
+    const { value: selectedFilter, save: setSelectedFilter } = useLocalStorage<
+        FilterListName | string
+    >("selected-filter-name", FilterListName.Default)
+    const { save: saveFilters, value: savedFilters } = useLocalStorage(
+        "saved-filters",
+        defaultSavedFilters
+    )
+
+    const mySavedfilters = useMemo(
+        () =>
+            savedFilters
+                .map(f => ({ filterName: f.name, filter: decodeFilters(f.data) }))
+                .filter(({ filter }) => Boolean(filter)) as {
+                filterName: string
+                filter: ActivityFilter
+            }[],
+        [savedFilters]
+    )
 
     return (
-        <div className={styles["filter-item"]}>
-            {canRemove && (
-                <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
-                    X
-                </button>
-            )}
-            <p>{strings.activityFilters[filter.key]}</p>
-            <form onSubmit={handleSubmit(enteredValue)}>
-                <input
-                    type={filter.inputType}
-                    inputMode={filter.inputMode}
-                    id="value"
-                    {...register("value")}
+        <dialog className={styles["filter-selector"]} ref={ref}>
+            {props.screen == 0 ? (
+                <div className={styles["filter-selector-main"]}>
+                    <div className={styles["filter-selector-buttons"]}>
+                        <button onClick={props.handleSave}>Save</button>
+                        <button onClick={props.handleCancel}>Cancel</button>
+                    </div>
+                    <hr
+                        style={{
+                            width: "90%",
+                            margin: "0.4em",
+                            borderColor: "--var(border-color)"
+                        }}
+                    />
+                    <div className={styles["filter-presets"]}>
+                        {Object.entries(PresetFilters).map(([filterName, generator]) => {
+                            const filterKey = Number(filterName) as FilterListName
+                            const isSelected = filterKey === selectedFilter
+                            return (
+                                <button
+                                    key={filterName}
+                                    aria-selected={isSelected}
+                                    className={styles["filter-preset-button"]}
+                                    onClick={() => {
+                                        setSelectedFilter(filterKey)
+                                        props.setPendingFilter(generator?.() ?? null)
+                                    }}>
+                                    {strings.filterNames[Number(filterName) as FilterListName]}
+                                </button>
+                            )
+                        })}
+                        {mySavedfilters.map(({ filterName, filter }, idx) => {
+                            const isSelected = filterName === selectedFilter
+                            return (
+                                <button
+                                    key={idx}
+                                    aria-selected={isSelected}
+                                    className={styles["filter-preset-button"]}
+                                    onClick={() => {
+                                        setSelectedFilter(filterName)
+                                        props.setPendingFilter(filter)
+                                    }}>
+                                    {filterName}
+                                </button>
+                            )
+                        })}
+                    </div>
+                    <hr
+                        style={{
+                            width: "90%",
+                            margin: "0.4em",
+                            borderColor: "--var(border-color)"
+                        }}
+                    />
+                    <button onClick={() => props.setScreen(FilterModalScreen.Builder)}>
+                        Open Custom Filter Builder
+                    </button>
+                </div>
+            ) : (
+                <CustomFilterBuilder
+                    returnToMain={() => props.setScreen(FilterModalScreen.Main)}
+                    saveNewFilter={(name, newFilter) => {
+                        saveFilters(old => [
+                            ...old,
+                            {
+                                name: name,
+                                data: newFilter.encode()
+                            }
+                        ])
+                    }}
                 />
-                <button type="submit">save</button>
-            </form>
-        </div>
-    )
-}
-
-const SingleFilterComponent = ({
-    canRemove,
-    filter,
-    removeFromParent
-}: GenericFilterComponentProps<SingleActivityFilter>) => {
-    return (
-        <div className={styles["filter-item"]}>
-            {canRemove && (
-                <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
-                    X
-                </button>
             )}
-            <p>{filter.key}</p>
-        </div>
+        </dialog>
     )
-}
+})
 
 export default FilterSelector

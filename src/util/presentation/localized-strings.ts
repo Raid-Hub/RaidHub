@@ -227,7 +227,9 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             [FilterListName.And]: "And Group",
             [FilterListName.Not]: "Not Element",
             // [FilterListName.PlayedWith]: "Played With",
-            [FilterListName.NonLowman]: "Not Lowman"
+            [FilterListName.NonLowman]: "Not Lowman",
+            [FilterListName.Default]: "Default",
+            [FilterListName.None]: "No Filter"
         },
         clickToView: "Click to View",
         loginToAccess: "If this profile belongs to you, please Login to Access",
