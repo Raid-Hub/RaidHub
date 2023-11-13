@@ -16,8 +16,6 @@ import Loading from "../global/Loading"
 import { useBungieClient } from "../app/TokenManager"
 import Activity from "~/models/profile/data/Activity"
 import { PortalProvider } from "../reusable/Portal"
-import { useQuery } from "@tanstack/react-query"
-import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
