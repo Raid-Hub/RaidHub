@@ -21,24 +21,24 @@ export async function updateBungieAccessTokens({
     access: BungieToken
     refresh: BungieToken
 }) {
-    return Promise.all([
-        prisma.accessToken.delete({ where: { bungieMembershipId } }),
-        prisma.refreshToken.delete({ where: { bungieMembershipId } })
-    ]).then(removed =>
-        prisma.user.update({
-            where: {
-                bungieMembershipId
-            },
-            data: {
-                bungieAccessToken: prepare(access),
-                bungieRefreshToken: prepare(refresh)
-            },
-            select: {
-                bungieMembershipId: true,
-                destinyMembershipId: true,
-                bungieAccessToken: true,
-                bungieRefreshToken: true
-            }
-        })
-    )
+    await Promise.all([
+        prisma.accessToken.delete({ where: { bungieMembershipId } }).catch(console.error),
+        prisma.refreshToken.delete({ where: { bungieMembershipId } }).catch(console.error)
+    ])
+
+    return prisma.user.update({
+        where: {
+            bungieMembershipId
+        },
+        data: {
+            bungieAccessToken: prepare(access),
+            bungieRefreshToken: prepare(refresh)
+        },
+        select: {
+            bungieMembershipId: true,
+            destinyMembershipId: true,
+            bungieAccessToken: true,
+            bungieRefreshToken: true
+        }
+    })
 }
