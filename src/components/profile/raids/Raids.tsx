@@ -18,6 +18,8 @@ import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { useQuery } from "@tanstack/react-query"
+import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -93,6 +95,15 @@ const Raids = ({
     const areAllCharactersFound = statsQueries.every(q => q.isFetched)
 
     const characterQueries = bungie.characterStats.useQueries(characters, {
+        enabled: areMembershipsFetched && areAllCharactersFound
+    })
+
+    // Send the details of this member to the RaidHub API for later validation
+    useQuery({
+        queryKey: postPlayerQueryKey(characters),
+        queryFn: () => postPlayer(characters),
+        staleTime: Infinity,
+        retry: 2,
         enabled: areMembershipsFetched && areAllCharactersFound
     })
 

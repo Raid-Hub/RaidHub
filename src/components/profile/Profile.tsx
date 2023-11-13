@@ -43,14 +43,6 @@ export const useFilterContext = () => {
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileProps) => {
-    // Send the details of this member to the RaidHub API for later validation
-    useQuery({
-        queryKey: postPlayerQueryKey({ destinyMembershipId, destinyMembershipType }),
-        queryFn: () => postPlayer({ destinyMembershipId, destinyMembershipType }),
-        staleTime: Infinity,
-        retry: 2
-    })
-
     const bungie = useBungieClient()
     const mainRef = useRef<HTMLElement | null>(null)
 
