@@ -16,6 +16,8 @@ import Loading from "../global/Loading"
 import { useBungieClient } from "../app/TokenManager"
 import Activity from "~/models/profile/data/Activity"
 import { PortalProvider } from "../reusable/Portal"
+import { useQuery } from "@tanstack/react-query"
+import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
@@ -41,6 +43,14 @@ export const useFilterContext = () => {
 }
 
 const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileProps) => {
+    // Send the details of this member to the RaidHub API for later validation
+    useQuery({
+        queryKey: postPlayerQueryKey({ destinyMembershipId, destinyMembershipType }),
+        queryFn: () => postPlayer({ destinyMembershipId, destinyMembershipType }),
+        staleTime: Infinity,
+        retry: 2
+    })
+
     const bungie = useBungieClient()
     const mainRef = useRef<HTMLElement | null>(null)
 
