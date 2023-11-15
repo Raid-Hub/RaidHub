@@ -66,3 +66,21 @@
 
     margin: 0.5em auto 0.5em;
 }
+
+.home-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5em;
+}
+
+.logo-text {
+    text-transform: uppercase;
+    color: white;
+    margin-left: 5px;
+    margin-right: 5px;
+    letter-spacing: 3px;
+    font-size: 50px;
+    white-space: nowrap;
+    font-weight: 800;
+}
