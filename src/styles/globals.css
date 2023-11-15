@@ -15,6 +15,8 @@
     --modal-background: rgba(48, 48, 48, 0.253);
     --modal-background-opaque: rgba(48, 48, 48, 0.929);
     --button: #ffffffdc;
+    --success: rgba(57, 195, 131, 0.885);
+    --destructive: rgba(160, 79, 79, 0.885);
     color: var(--primary-text);
 }
 

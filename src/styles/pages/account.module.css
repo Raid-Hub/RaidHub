@@ -46,7 +46,7 @@
 
 .destructive {
     color: var(--primary-text);
-    background-color: rgba(160, 79, 79, 0.885);
+    background-color: var(--destructive);
 }
 
 .form {
