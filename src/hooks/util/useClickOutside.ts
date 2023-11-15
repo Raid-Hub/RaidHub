@@ -12,11 +12,14 @@ export function useClickOutside<T extends HTMLElement>(
     },
     handleClickOutside: (event: MouseEvent) => void
 ) {
-    const handleClick = (event: MouseEvent) => {
-        if (ref.current && !ref.current.contains(event.target as Node)) {
-            handleClickOutside(event)
-        }
-    }
+    const handleClick = useCallback(
+        (event: MouseEvent) => {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                handleClickOutside(event)
+            }
+        },
+        [ref, handleClickOutside]
+    )
 
     useEffect(() => {
         if (enabled) {
@@ -27,5 +30,5 @@ export function useClickOutside<T extends HTMLElement>(
                 document.removeEventListener("click", handleClick)
             }
         }
-    }, [lockout, enabled])
+    }, [lockout, enabled, handleClick])
 }

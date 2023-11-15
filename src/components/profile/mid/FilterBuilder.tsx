@@ -11,6 +11,7 @@ import FilterSelectorMenu from "./FilterSelectorMenu"
 import { Fragment, createContext, useContext, useState } from "react"
 import { useLocale } from "~/components/app/LocaleManager"
 import { DefaultActivityFilters } from "~/util/profile/activityFilters"
+import PreviousArrow from "~/images/icons/PreviousArrow"
 
 // This contest here stores the callback for the add an item GUI
 const SelectMenuContext = createContext<{
@@ -32,44 +33,51 @@ export default function CustomFilterBuilder({
     saveNewFilter
 }: {
     returnToMain(): void
-    saveNewFilter: (name: string, newFilter: ActivityFilter) => void
+    saveNewFilter: (name: string, newFilter: ActivityFilter) => boolean
 }) {
-    const { handleSubmit, register, formState, getValues, setValue } = useForm<FilterBuilderForm>({
-        defaultValues: {
-            name: ""
-        },
-        resolver: zodResolver(
-            z.object({
-                name: z
-                    .string({ required_error: "Must enter a filter name" })
-                    .min(1, "Filter name must be longer than 1 character")
-                    .max(20, "Filter name cannot be longer than 20 characters"),
-                pendingFilter: z
-                    .object(
-                        {
-                            id: z.string(),
-                            predicate: z.function(),
-                            encode: z.function(),
-                            deepClone: z.function(),
-                            stringify: z.function().returns(z.string())
-                        },
-                        {
-                            required_error: "Please enter select at least one filter",
-                            invalid_type_error: "Something went wrong, please reload the page"
-                        }
-                    )
-                    .passthrough()
-                    .nullable()
-            })
-        )
-    })
+    const { handleSubmit, register, formState, getValues, setValue, setError } =
+        useForm<FilterBuilderForm>({
+            defaultValues: {
+                name: ""
+            },
+            resolver: zodResolver(
+                z.object({
+                    name: z
+                        .string({ required_error: "Must enter a filter name" })
+                        .min(1, "Filter name must be longer than 1 character")
+                        .max(20, "Filter name cannot be longer than 20 characters"),
+                    pendingFilter: z
+                        .object(
+                            {
+                                id: z.string(),
+                                predicate: z.function(),
+                                encode: z.function(),
+                                deepClone: z.function(),
+                                stringify: z.function().returns(z.string())
+                            },
+                            {
+                                required_error: "Please select at least one filter",
+                                invalid_type_error: "Something went wrong, please reload the page"
+                            }
+                        )
+                        .passthrough()
+                        .nullable()
+                })
+            )
+        })
     const pendingFilter = getValues("pendingFilter")
 
     // We only save the filter if it actually has content
     const onSuccessfulSubmit: SubmitHandler<FilterBuilderForm> = values => {
         if (values.pendingFilter) {
-            saveNewFilter(values.name, values.pendingFilter)
-            returnToMain()
+            const success = saveNewFilter(values.name, values.pendingFilter)
+            if (success) {
+                returnToMain()
+            } else {
+                setError("name", {
+                    message: `Filter ${values.name} already exists.`
+                })
+            }
         }
     }
     const [isShowingSelect, setIsShowingSelect] = useState(false)
@@ -78,25 +86,58 @@ export default function CustomFilterBuilder({
     )
 
     return (
-        <div className={styles["filter-selector-main"]}>
-            {formState.errors.name && <div>{formState.errors.name.message}</div>}
-            {formState.errors.pendingFilter && <div>{formState.errors.pendingFilter.message}</div>}
-            <div className={styles["filter-selector-buttons"]}>
-                <button onClick={returnToMain}>Back</button>
-                <button onClick={() => setValue("pendingFilter", null, { shouldValidate: true })}>
+        <div className={styles["filter-selector-builder"]}>
+            <nav className={styles["filter-selector-nav"]} onClick={returnToMain}>
+                <PreviousArrow
+                    color="white"
+                    sx={20}
+                    className={styles["filter-selector-nav-arrow"]}
+                />
+                <span>Back</span>
+            </nav>
+            <h3>Filter Builder</h3>
+            <form onSubmit={handleSubmit(onSuccessfulSubmit)}>
+                <input
+                    type="text"
+                    {...register("name")}
+                    placeholder="Enter filter name"
+                    aria-label="Filter Name"
+                    title="Enter a name for your filter"
+                    style={
+                        Object.keys(formState.errors).length ? { borderColor: "red" } : undefined
+                    }
+                />
+                <button
+                    type="submit"
+                    className={styles["filter-selector-builder-button"]}
+                    style={{ backgroundColor: "var(--success)" }}>
+                    Save
+                </button>
+                <div className={styles["filter-selector-error"]}>
+                    {formState.errors.name && <p>{formState.errors.name.message}</p>}
+                    {formState.errors.pendingFilter && (
+                        <p>{formState.errors.pendingFilter.message}</p>
+                    )}
+                </div>
+            </form>
+            <div className={styles["filter-selector-builder-controls"]}>
+                <button
+                    onClick={() => setValue("pendingFilter", null, { shouldValidate: true })}
+                    className={styles["filter-selector-builder-button"]}
+                    style={{ backgroundColor: "var(--destructive)" }}>
                     Clear
                 </button>
                 <button
                     onClick={() =>
-                        setValue("pendingFilter", DefaultActivityFilters, { shouldValidate: true })
-                    }>
-                    Reset to Default
+                        setValue("pendingFilter", DefaultActivityFilters, {
+                            shouldValidate: true
+                        })
+                    }
+                    className={styles["filter-selector-builder-button"]}
+                    style={{ backgroundColor: "var(--destructive)" }}>
+                    Reset To Default
                 </button>
             </div>
-            <form onSubmit={handleSubmit(onSuccessfulSubmit)}>
-                <input {...register("name")} />
-                <input type="submit" value="Save" />
-            </form>
             <SelectMenuContext.Provider
                 value={{
                     // in children, we can call "openMenu" and update the state in this component along with the callback
@@ -105,33 +146,35 @@ export default function CustomFilterBuilder({
                         setSelectCallback(() => callback)
                     }
                 }}>
-                {pendingFilter ? (
-                    <GenericFilterComponent
-                        filter={pendingFilter}
-                        depth={0}
-                        canRemove={true}
-                        /* when we remove the top level filter, we just set it to null. Note we always revalidate
+                <div className={styles["filter-selector-block"]}>
+                    {pendingFilter ? (
+                        <GenericFilterComponent
+                            filter={pendingFilter}
+                            depth={0}
+                            canRemove={true}
+                            /* when we remove the top level filter, we just set it to null. Note we always revalidate
                           because otherwise react-hook-form won't do a re-render */
-                        removeFromParent={() =>
-                            setValue("pendingFilter", null, { shouldValidate: true })
-                        }
-                    />
-                ) : (
-                    <div className={styles["no-filter"]}>
-                        <div>No Filter</div>
-                        <button
-                            onClick={() => {
-                                setIsShowingSelect(true)
-                                // functions in state... essentially, the we define a set-state dispatch that returns our callback function
-                                setSelectCallback(
-                                    () => (f: ActivityFilter) =>
-                                        setValue("pendingFilter", f, { shouldValidate: true })
-                                )
-                            }}>
-                            +
-                        </button>
-                    </div>
-                )}
+                            removeFromParent={() =>
+                                setValue("pendingFilter", null, { shouldValidate: true })
+                            }
+                        />
+                    ) : (
+                        <div className={styles["no-filter"]}>
+                            <div>No Filter</div>
+                            <button
+                                onClick={() => {
+                                    setIsShowingSelect(true)
+                                    // functions in state... essentially, the we define a set-state dispatch that returns our callback function
+                                    setSelectCallback(
+                                        () => (f: ActivityFilter) =>
+                                            setValue("pendingFilter", f, { shouldValidate: true })
+                                    )
+                                }}>
+                                +
+                            </button>
+                        </div>
+                    )}
+                </div>
                 {isShowingSelect && (
                     <FilterSelectorMenu
                         handleSelect={filter => {
@@ -175,8 +218,9 @@ const GroupFilterComponent = ({
     removeFromParent
 }: GenericFilterComponentProps<GroupActivityFilter>) => {
     const { openMenu } = useSelectMenuContext()
+    const [key, setKey] = useState<number>(0)
     return (
-        <div className={styles["filter-item"]}>
+        <div className={styles["filter-item"]} key={key}>
             {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
@@ -193,7 +237,10 @@ const GroupFilterComponent = ({
                         filter={childFilter}
                         depth={depth + 1}
                         canRemove={true}
-                        removeFromParent={() => filter.children.delete(id)}
+                        removeFromParent={() => {
+                            filter.children.delete(id)
+                            setKey(Math.random())
+                        }}
                     />
                     <div className={styles["filter-combinator"]}>
                         {filter.combinator == "|" ? "OR" : "AND"}
@@ -219,8 +266,9 @@ const NotFilterComponent = ({
     removeFromParent
 }: GenericFilterComponentProps<NotActivityFilter>) => {
     const { openMenu } = useSelectMenuContext()
+    const [key, setKey] = useState<number>(0)
     return (
-        <div className={[styles["filter-item"], styles["filter-not"]].join(" ")}>
+        <div className={[styles["filter-item"], styles["filter-not"]].join(" ")} key={key}>
             {canRemove && (
                 <button className={styles["filter-remove-btn"]} onClick={removeFromParent}>
                     X
@@ -234,6 +282,7 @@ const NotFilterComponent = ({
                     canRemove={true}
                     removeFromParent={() => {
                         filter.child = null
+                        setKey(Math.random())
                     }}
                 />
             ) : (
@@ -255,7 +304,6 @@ const HighOrderFilterComponent = ({
     filter,
     removeFromParent
 }: GenericFilterComponentProps<HighOrderActivityFilter>) => {
-    const { strings } = useLocale()
     const { handleSubmit, register, formState } = useForm({
         defaultValues: {
             value: filter.value
@@ -265,6 +313,7 @@ const HighOrderFilterComponent = ({
     const enteredValue = ({ value }: { value: unknown }) => {
         filter.value = value
     }
+    const { strings } = useLocale()
 
     return (
         <div className={styles["filter-item"]}>

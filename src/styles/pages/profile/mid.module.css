@@ -150,6 +150,8 @@
 }
 
 .filter-view-content > h4 {
+    color: var(--tertiary-text);
+    text-transform: uppercase;
     margin: 0;
 }
 
@@ -175,10 +177,18 @@
     backdrop-filter: blur(2px);
     border: 1px solid var(--border);
 
-    max-width: 400px;
+    width: 400px;
 
     margin: 0;
     padding: 5px;
+
+    overflow: hidden;
+}
+
+.filter-selector-container {
+    padding: 1em;
+    min-height: 500px;
+    width: 100%;
 }
 
 .filter-selector-main {
@@ -186,21 +196,123 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-}
 
-.filter-selector-buttons {
+    gap: 2em;
+}
+.filter-selector-builder {
     display: flex;
-    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
     gap: 1em;
 }
 
-.filter-selector-buttons > button {
-    border: none;
-    border-radius: 5px;
-    white-space: nowrap;
+.filter-selector-nav {
+    align-self: flex-start;
+    justify-content: flex-start;
 
-    background-color: gray;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: center;
+
+    transition: color 0.1s ease-in;
+    cursor: pointer;
+}
+
+.filter-selector-nav-arrow {
+    transition: fill 0.1s ease-in;
+    cursor: pointer;
+}
+.filter-selector-nav:hover .filter-selector-nav-arrow,
+.filter-selector-nav:hover {
+    fill: var(--brand-orange-light);
+    color: var(--brand-orange-light);
+}
+
+.filter-selector h3 {
+    width: 100%;
+    text-transform: uppercase;
+    margin-block: 0.2em;
+}
+
+.filter-selector-builder > form input[type="text"] {
+    border: 2px solid white;
+    border-radius: 4px;
+
     font-size: 1.125rem;
+}
+
+.filter-selector-builder > form button {
+    margin-left: 1em;
+}
+
+.filter-manager-component {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    border: 1px solid white;
+    border-radius: 999px;
+
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+}
+
+.filter-manager-component > p {
+    width: 200px;
+    margin-block: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    padding: 0 1em;
+}
+
+.filter-selector-builder-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.filter-selector-builder-button {
+    border-radius: 999px;
+    border: none;
+
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    padding: 0.3em 0.6em;
+
+    position: relative;
+}
+
+.filter-selector-builder-button:hover:not([aria-disabled="true"])::before {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2); /* Adjust the alpha value for darkness */
+    pointer-events: none; /* Allows interaction with the button */
+    transition: opacity 0.3s ease; /* Smooth transition effect */
+}
+
+.filter-selector-error {
+    color: rgb(254, 74, 74);
+    font-size: 1rem;
+}
+.filter-selector-error > p {
+    margin: 0.2em;
 }
 
 .filter-presets {
@@ -224,14 +336,13 @@
 
     transition: background-color 0.3s ease;
 }
-.filter-presets > button[aria-selected="true"] {
+.filter-presets > button[aria-current="true"] {
     border-color: white;
     background-color: var(--brand-orange-light);
 }
-.filter-selector > div {
-    margin: 0.5em;
-}
 
+.filter-selector-block {
+}
 .filter-item {
     border: 1px solid var(--border);
     background-color: #ffffff25;
@@ -271,8 +382,8 @@
     background-color: #ffffffae;
 }
 
-.filter-selector button:hover,
-.filter-view button:hover {
+.filter-selector button:not([aria-disabled="true"]):hover,
+.filter-view button:not([aria-disabled="true"]):hover {
     background-color: rgb(255, 172, 47);
     cursor: pointer;
 }
@@ -294,7 +405,16 @@
 
     background-color: var(--modal-background-opaque);
     border-radius: 5px;
+}
 
+.filter-selector-menu h4 {
+    margin-block: 0.2em;
+    text-align: center;
+    font-weight: 500;
+    font-style: oblique;
+}
+
+.filter-selector-menu ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -310,12 +430,12 @@
     overflow-y: auto;
 }
 
-.filter-selector-menu > li {
+.filter-selector-menu li {
     padding: 0.5em;
     background-color: #ffffff2d;
 }
 
-.filter-selector-menu > *:hover {
+.filter-selector-menu li:hover {
     cursor: pointer;
     background-color: var(--brand-orange);
 }
