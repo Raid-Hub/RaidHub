@@ -9,7 +9,7 @@ import Link from "next/link"
 import WeeklyProgress from "./WeeklyProgress"
 import { includedIn } from "~/util/betterIncludes"
 import ActivityTile from "../ActivityTile"
-import { useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 
 type StatsProps =
     | {
@@ -51,8 +51,17 @@ export default function ExpandedRaidView({
                 .slice(0, 6),
         [activities]
     )
+
+    const scrollTargetRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+    }, [])
+
     return (
-        <div className={styles["expanded-raid"]}>
+        <div className={styles["expanded-raid"]} ref={scrollTargetRef}>
             <button onClick={dismiss}>close</button>
             <p>
                 This view is still a work in progress. <b>Have an idea or suggestion?</b> Join our
