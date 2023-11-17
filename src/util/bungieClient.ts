@@ -49,15 +49,18 @@ export default class BungieClient implements BungieClientProtocol {
             }
         }
 
-        const request = async (retry?: boolean) => {
-            const controller = new AbortController()
-            const timer = setTimeout(() => controller.abort(), 5000)
-            payload.signal = controller.signal
+        const controller = new AbortController()
+        payload.signal = controller.signal
+        let timer = null
 
+        if (config.url.pathname.match(/\/PostGameCarnageReport\//)) {
+            timer = setTimeout(() => controller.abort(), 5000)
+        }
+
+        const request = async (retry?: boolean) => {
             if (retry) config.url.searchParams.set("retry", true.toString())
             const res = await fetch(config.url, payload)
             const data = await res.json()
-            clearTimeout(timer)
 
             if (data.ErrorCode && data.ErrorCode !== 1) {
                 throw new BungieAPIError(data)
@@ -74,6 +77,10 @@ export default class BungieClient implements BungieClientProtocol {
                 return await request(true)
             } else {
                 throw e
+            }
+        } finally {
+            if (timer) {
+                clearTimeout(timer)
             }
         }
     }
