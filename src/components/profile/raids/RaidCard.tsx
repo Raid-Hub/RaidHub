@@ -18,14 +18,17 @@ import Expand from "~/images/icons/Expand"
 import { findTags } from "~/util/raidhub/tags"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
+import ExpandedRaidView from "./expanded/ExpandedRaidView"
 
 type RaidModalProps = {
     raid: ListedRaid
     expand: () => void
+    clearExpand: () => void
     leaderboardData: (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
         key: string
     })[]
     wfBoard: string | null
+    isExpanded: boolean
 } & (
     | {
           stats: RaidStats
@@ -49,12 +52,14 @@ const isLoadingReport = false
 export default function RaidCard({
     raid,
     expand,
+    clearExpand,
     leaderboardData,
     wfBoard,
     stats,
     isLoadingStats,
     activities,
-    isLoadingActivities
+    isLoadingActivities,
+    isExpanded
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
@@ -96,7 +101,24 @@ export default function RaidCard({
         return { fastestFullClear, averageClear }
     }, [activities])
 
-    return (
+    return isExpanded ? (
+        <ExpandedRaidView
+            raid={raid}
+            dismiss={clearExpand}
+            {...(isLoadingStats
+                ? { stats: undefined, isLoadingStats: true }
+                : {
+                      stats: stats,
+                      isLoadingStats: false
+                  })}
+            {...(isLoadingActivities
+                ? { activities: undefined, isLoadingActivities: true }
+                : {
+                      activities: activities,
+                      isLoadingActivities: false
+                  })}
+        />
+    ) : (
         <m.div
             initial={{
                 y: 50,

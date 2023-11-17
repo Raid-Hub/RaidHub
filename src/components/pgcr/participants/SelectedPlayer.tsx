@@ -19,9 +19,10 @@ const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => 
     const displayName = player.displayName || player.membershipId
     const completionClass = player.didComplete ? "" : styles["dnf"]
 
-    const classString = character?.classType
-        ? strings.characterNames[character.classType]
-        : player.characters.map(c => strings.characterNames[c.classType]).join(" | ")
+    const classString =
+        character?.classType !== undefined
+            ? strings.characterNames[character.classType]
+            : player.characters.map(c => strings.characterNames[c.classType]).join(" | ")
 
     return (
         <button

@@ -16,9 +16,8 @@ export const getPGCR = {
                 })
             } catch (error) {
                 if (
-                    error instanceof Error &&
-                    (error.name === "AbortError" ||
-                        (error instanceof BungieAPIError && error.ErrorCode === 5))
+                    (error instanceof Error && error.name === "AbortError") ||
+                    (error instanceof BungieAPIError && error.ErrorCode === 5)
                 ) {
                     const res = await getRaidHubPGCR(activityId)
                     return new DestinyPGCR(res, {

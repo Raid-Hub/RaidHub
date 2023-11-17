@@ -13,7 +13,6 @@ import RaidStats from "~/models/profile/data/RaidStats"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
-import ExpandedRaidView from "./expanded/ExpandedRaidView"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
@@ -146,28 +145,6 @@ const Raids = ({
     const isLoadingStats =
         !areMembershipsFetched || !areAllCharactersFound || characterQueries.some(q => q.isLoading)
 
-    if (expandedRaid) {
-        return (
-            <ExpandedRaidView
-                raid={expandedRaid}
-                dismiss={clearExpandedRaid}
-                {...(isLoadingStats
-                    ? { stats: undefined, isLoadingStats: true }
-                    : {
-                          stats:
-                              characterStats?.get(expandedRaid) ?? new RaidStats([], expandedRaid),
-                          isLoadingStats: false
-                      })}
-                {...(isLoadingActivities
-                    ? { activities: undefined, isLoadingActivities: true }
-                    : {
-                          activities: activitiesByRaid?.get(expandedRaid) ?? new Collection(),
-                          isLoadingActivities: false
-                      })}
-            />
-        )
-    }
-
     switch (layout) {
         case Layout.DotCharts:
             return (
@@ -179,6 +156,8 @@ const Raids = ({
                             leaderboardData={leaderboardEntriesByRaid.get(raid)!}
                             wfBoard={manifest?.worldFirstBoards[raid] ?? null}
                             expand={() => setExpandedRaid(raid)}
+                            clearExpand={clearExpandedRaid}
+                            isExpanded={raid === expandedRaid}
                             {...(isLoadingStats
                                 ? {
                                       isLoadingStats: true,
