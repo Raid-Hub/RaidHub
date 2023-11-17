@@ -9,5 +9,5 @@ export const CharacterLogos: { [key in DestinyClass]: SVGComponent } = {
     0: Titan,
     1: Hunter,
     2: Warlock,
-    3: props => QuestionMark({ ...props, width: "20%" }) /**Question_Mark*/
+    3: QuestionMark /**Question_Mark*/
 }
