@@ -115,3 +115,19 @@ export type RaidHubSearchResult<G extends boolean = any> = {
           bungieGlobalDisplayName: null
           bungieGlobalDisplayNameCode: null
       })
+
+export type RaidHubActivitySearchResponse = {
+    query: Record<string, unknown>
+    results: RaidHubActivitySearchResult[]
+}
+export type RaidHubActivitySearchResult = {
+    instanceId: string
+    raidHash: string
+    false: boolean
+    completed: boolean
+    flawless: boolean
+    playerCount: number
+    dateStarted: Date
+    dateCompleted: Date
+    platformType: number
+}
