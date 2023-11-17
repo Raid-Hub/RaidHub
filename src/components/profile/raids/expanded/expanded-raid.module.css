@@ -3,6 +3,9 @@
     border-radius: 10px;
     border: 1px solid var(--border);
     padding: 1em;
+
+    grid-column-start: 1; /* Start from the first column */
+    grid-column-end: -1; /* End at the last column */
 }
 
 .container {
