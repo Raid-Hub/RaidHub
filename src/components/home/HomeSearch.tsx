@@ -1,9 +1,12 @@
 import styles from "../../styles/pages/home.module.css"
 import {useRaidHubSearch} from "~/hooks/raidhub/useRaidHubSearch";
 import {useState} from "react";
-import Loader from "~/components/reusable/Loader";
 import Search from "~/images/icons/Search";
 import {useTypewriter} from "react-simple-typewriter";
+import BungieName from "~/models/BungieName";
+import Link from "next/link";
+import Image from "next/image";
+import {bungieIconUrl} from "~/util/destiny/bungie-icons";
 
 const HomeSearch = () => {
     const [showingResults, setShowingResults] = useState(false)
@@ -11,7 +14,9 @@ const HomeSearch = () => {
     const [isSearchFocused, setIsSearchFocused] = useState(false)
 
     const handleFocus = () => {
-        setIsSearchFocused(!isSearchFocused)
+        // timeout to circumvent the loss of focus, which closes the search before redirecting starts
+        setTimeout(() => setIsSearchFocused(!isSearchFocused), 100)
+
     }
 
     const {
@@ -44,13 +49,9 @@ const HomeSearch = () => {
                     : styles["search-bar-container"]}
             >
                 <div className={styles["search-icon"]}>
-                    {isLoadingResults || isRedirecting ? (
-                        <Loader stroke={2}/>
-                    ) : (
-                        <Search color="white"/>
-                    )}
+                    <Search color="white"/>
                 </div>
-                <form className={styles["search-bar-form"]}>
+                <form className={styles["search-bar-form"]} onSubmit={handleFormEnter}>
                     <input
                         className={styles["search-bar"]}
                         type="text"
@@ -68,7 +69,52 @@ const HomeSearch = () => {
                 <>
                     <div className={styles["divider"]}/>
                     <div className={styles["search-result-container"]}>
-                    {/* TODO render resuts here*/}
+                        <ul className={styles["search-results"]}>
+                            {results.map(
+                                (
+                                    {
+                                        bungieGlobalDisplayName,
+                                        bungieGlobalDisplayNameCode,
+                                        displayName,
+                                        membershipId,
+                                        membershipType,
+                                        iconPath
+                                    },
+                                    idx
+                                ) => {
+                                    let username = displayName
+                                    try {
+                                        const b = new BungieName(
+                                            bungieGlobalDisplayName,
+                                            bungieGlobalDisplayNameCode
+                                        )
+                                        username = b.toString()
+                                    } catch {
+                                    }
+                                    return (
+                                        <Link
+                                            key={idx}
+                                            href={`/profile/${membershipType}/${membershipId}`}
+                                            onClick={() => {
+                                                clearQuery()
+                                            }}>
+                                            <li>
+                                                <div className={styles["individual-result"]}>
+                                                    <Image
+                                                        width={35}
+                                                        height={35}
+                                                        alt={username}
+                                                        unoptimized
+                                                        src={bungieIconUrl(iconPath)}
+                                                    />
+                                                    <p>{username}</p>
+                                                </div>
+                                            </li>
+                                        </Link>
+                                    )
+                                }
+                            )}
+                        </ul>
                     </div>
                 </>
             }
