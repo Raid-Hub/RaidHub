@@ -4,6 +4,7 @@ import { useLocale } from "../app/LocaleManager"
 import HomeRaidCard from "./HomeRaidCard"
 import HomeLogo from "./HomeLogo"
 import HomeSearch from "~/components/home/HomeSearch"
+import Toolbox from "~/components/toolbox/Toolbox";
 const Home = () => {
     const { strings } = useLocale()
     return (
@@ -19,6 +20,7 @@ const Home = () => {
                     <HomeRaidCard raid={raid} strings={strings} key={raid} />
                 ))}
             </section>
+            <Toolbox/>
         </main>
     )
 }
