@@ -78,30 +78,27 @@ PGCRPage.Head = ({ activity, children }) => {
         timeZoneName: "short"
     })}`
 
-    const url = `https://raidhub.app/pgcr/${activity.instanceId}`
     return (
         <Head>
-            {children}
+            <title>{title}</title>
 
             <meta httpEquiv="date" content={dateCompleted.toDateString()} />
             <meta property="article:published_time" content={dateCompleted.toISOString()} />
 
-            {/* Basic */}
+            {children}
+
             <meta property="og:title" content={title} />
-            <meta property="og:url" content={url} />
-            {/* <meta property="og:image" content={thumbnail} /> */}
+            {/* <meta property="og:url" content={url} /> */}
             <meta property="og:description" content={description} />
+            <meta property="og:image" content="/logo.png" />
 
             {/* Twitter */}
             {/* <meta name="twitter:card" content="summary_large_image" /> */}
             <meta name="twitter:card" content="summary" />
             <meta name="twitter:title" content={title} />
-            <meta name="twitter:url" content={url} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content="/logo.png" />
             {/* <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} /> */}
-
-            <title>{title}</title>
         </Head>
     )
 }

@@ -6,7 +6,7 @@ export default function RaidHubMetaData() {
 
             {/* Discord */}
             <meta property="discord:site" content="https://discord.gg/raidhub" />
-            <meta name="theme-color" content="#f0802ffa" />
+            <meta name="theme-color" content="#f0802f" />
 
             {/* Twitter */}
             <meta name="twitter:site" content="@raidhubapp" />
