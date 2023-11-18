@@ -9,14 +9,14 @@ import {
 import Activity from "~/models/profile/data/Activity"
 export enum Tag {
     CHECKPOINT,
+    SOLO,
+    DUO,
+    TRIO,
     DAY_ONE,
     CONTEST,
     WEEK_ONE,
     MASTER,
     PRESTIGE,
-    SOLO,
-    DUO,
-    TRIO,
     FLAWLESS,
     CHALLENGE_VOG,
     CHALLENGE_KF,
