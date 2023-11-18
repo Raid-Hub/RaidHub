@@ -29,7 +29,7 @@ PGCRPage.getInitialProps = async ({ req, res, query }) => {
     const userAgent = req?.headers["user-agent"]
     const _isBot = isBot(userAgent)
 
-    if (res && true) {
+    if (res && _isBot) {
         try {
             const activity = await getActivity(String(query.activityId))
             res.setHeader("Cache-Control", "max-age=31536000")
@@ -65,14 +65,17 @@ PGCRPage.Head = ({ activity, error, children }) => {
     const dateCompleted = new Date(activity.dateCompleted)
 
     const description = `${
-        activity.completed ? "Completed on" : "Attempted at"
+        activity.completed
+            ? activity.fresh == false
+                ? "Checkpoint cleared at"
+                : "Completed at"
+            : "Attempted at"
     } ${dateCompleted.toLocaleString("en-US", {
         timeZone: "America/Los_Angeles",
         timeZoneName: "short"
     })}`
 
     const url = `https://raidhub.app/pgcr/${activity.instanceId}`
-    const thumbnail = `https://b.vlsp.network/Generate/Screenshot/Report?instanceId=${activity.instanceId}`
     return (
         <Head>
             {children}
@@ -83,15 +86,16 @@ PGCRPage.Head = ({ activity, error, children }) => {
             {/* Basic */}
             <meta property="og:title" content={title} />
             <meta property="og:url" content={url} />
-            <meta property="og:image" content={thumbnail} />
+            {/* <meta property="og:image" content={thumbnail} /> */}
             <meta property="og:description" content={description} />
 
             {/* Twitter */}
-            <meta name="twitter:card" content="summary_large_image" />
+            {/* <meta name="twitter:card" content="summary_large_image" /> */}
+            <meta name="twitter:card" content="summary" />
             <meta name="twitter:title" content={title} />
             <meta name="twitter:url" content={url} />
             <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content={thumbnail} />
+            <meta name="twitter:image" content="/logo.png" />
             <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} />
 
             <title>{title}</title>
