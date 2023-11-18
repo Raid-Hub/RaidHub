@@ -55,18 +55,6 @@ body {
     flex-direction: column;
 }
 
-@media (prefers-color-scheme: light) {
-    body {
-        background: repeating-linear-gradient(
-            -30deg,
-            #ffffffff 0px,
-            #ffe6d5 300px,
-            #ffd9d3 800px,
-            #ffffff 1200px
-        );
-    }
-}
-
 /** Adjust the nprogress bar */
 #header.nprogress-custom-parent {
     position: sticky;
