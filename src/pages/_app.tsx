@@ -14,6 +14,8 @@ import dynamic from "next/dynamic"
 import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
+import { CrawlableNextPage } from "~/types/generic"
+import RaidHubMetaData from "~/components/reusable/CommonMetaData"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() =>
@@ -43,13 +45,16 @@ function RaidHub({
     router.prefetch = async (url, asPath, options) => {}
 
     if (isBot) {
+        // @ts-ignore
+        const ComponentHead = Component.Head as CrawlableNextPage<any, any>["Head"]
         return (
-            // @ts-ignore
-            <Component.Head {...pageProps}>
-                <meta property="og:site_name" content="RaidHub" />
-                <meta property="og:type" content="website" />
-                {/* @ts-ignore */}
-            </Component.Head>
+            <ComponentHead {...pageProps}>
+                <RaidHubMetaData />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover"
+                />
+            </ComponentHead>
         )
     }
 
@@ -57,10 +62,14 @@ function RaidHub({
         <LocaleManager>
             <Head>
                 <title key="title">{title}</title>
-                <meta key="description" name="description" content={description} />
-                <meta key="og-title" property="og:title" content={title} />
-                <meta key="og-descriptions" property="og:description" content={description} />
-                <meta key="og-image" property="og:image" content="/logo.png" />
+                <meta property="og:title" content={title} key="og-title" />
+                <meta property="og:image" content="/logo.png" key="og-image" />
+                <meta name="twitter:image" content="/logo.png" />
+                <meta property="og:description" content={description} key="og-descriptions" />
+                <meta name="description" content={description} key="description" />
+
+                <RaidHubMetaData />
+
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"

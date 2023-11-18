@@ -14,7 +14,7 @@ const PGCRPage: CrawlableNextPage<
     {
         activityId: unknown
     },
-    { activity?: RaidHubActivityResponse }
+    { activity?: RaidHubActivityResponse; error?: unknown; userAgent: string }
 > = props => {
     const parsedQuery = z.string().regex(/^\d+$/).optional().safeParse(props.activityId)
 
@@ -25,21 +25,27 @@ const PGCRPage: CrawlableNextPage<
     ) : null
 }
 
-PGCRPage.getInitialProps = async ({ req, query }) => {
+PGCRPage.getInitialProps = async ({ req, res, query }) => {
     const userAgent = req?.headers["user-agent"]
     const _isBot = isBot(userAgent)
 
-    if (_isBot) {
-        const activity = await getActivity(String(query.activityId)).catch(e => undefined)
-
-        return { activity, isBot: _isBot }
+    if (res && true) {
+        try {
+            const activity = await getActivity(String(query.activityId))
+            res.setHeader("Cache-Control", "max-age=31536000")
+            return { activity, isBot: true, userAgent: userAgent ?? "No user Agent" }
+        } catch (e) {
+            return { error: e, isBot: true, userAgent: userAgent ?? "No user Agent" }
+        }
     } else {
-        return { activityId: query.activityId, isBot: _isBot ?? false }
+        return {
+            activityId: query.activityId
+        }
     }
 }
 
-PGCRPage.Head = ({ activity, children }) => {
-    if (!activity) return null
+PGCRPage.Head = ({ activity, error, children }) => {
+    if (!activity) return <div>{String(error)}</div>
 
     const strs = LocalizedStrings.en
 
@@ -55,14 +61,24 @@ PGCRPage.Head = ({ activity, children }) => {
     ]
         .filter(Boolean)
         .join(" ")
-    const description = `Trio Flawless Deep Stone Crypt`
+
+    const dateCompleted = new Date(activity.dateCompleted)
+
+    const description = `${
+        activity.completed ? "Completed on" : "Attempted at"
+    } ${dateCompleted.toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles",
+        timeZoneName: "short"
+    })}`
+
     const url = `https://raidhub.app/pgcr/${activity.instanceId}`
-    const thumbnail = "https://b.vlsp.network/Generate/Screenshot/Report?instanceId=14052506544"
+    const thumbnail = `https://b.vlsp.network/Generate/Screenshot/Report?instanceId=${activity.instanceId}`
     return (
         <Head>
-            <title>{title}</title>
-
             {children}
+
+            <meta http-equiv="date" content={dateCompleted.toDateString()} />
+            <meta property="article:published_time" content={dateCompleted.toISOString()} />
 
             {/* Basic */}
             <meta property="og:title" content={title} />
@@ -70,19 +86,15 @@ PGCRPage.Head = ({ activity, children }) => {
             <meta property="og:image" content={thumbnail} />
             <meta property="og:description" content={description} />
 
-            {/* Discord */}
-            {/* <meta property="discord:owner" content="Your Discord user ID" /> */}
-            <meta property="discord:site" content="https://discord.gg/raidhub" />
-            <meta name="theme-color" content="#f0802ffa" />
-
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:site" content="@raidhubap" />
             <meta name="twitter:title" content={title} />
             <meta name="twitter:url" content={url} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content={thumbnail} />
             <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} />
+
+            <title>{title}</title>
         </Head>
     )
 }
