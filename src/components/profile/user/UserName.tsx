@@ -3,8 +3,8 @@ import BungieName from "~/models/BungieName"
 
 type UserNameProps = {
     displayName: string
-    bungieGlobalDisplayName?: string
-    bungieGlobalDisplayNameCode?: number
+    bungieGlobalDisplayName?: string | null
+    bungieGlobalDisplayNameCode?: number | string | null
 }
 const UserName = ({
     displayName,

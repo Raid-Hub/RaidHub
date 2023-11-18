@@ -7,11 +7,7 @@ import { useRouter } from "next/router"
 
 const DEBOUNCE = 250
 
-export function useRaidHubSearch({
-    onRedirect
-}: {
-    onRedirect?: (result: RaidHubSearchResult) => void
-}) {
+export function useRaidHubSearch(props?: { onRedirect?: (result: RaidHubSearchResult) => void }) {
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
     const lastSearch = useRef<number>(Date.now())
@@ -79,10 +75,10 @@ export function useRaidHubSearch({
 
         const results = await fetchUsers(enteredText)
 
-        if (results?.length === 1) {
+        if (props?.onRedirect && results?.length === 1) {
             const result = results[0]
 
-            onRedirect?.(result)
+            props.onRedirect(result)
 
             router.push(
                 "/profile/[destinyMembershipType]/[destinyMembershipId]",

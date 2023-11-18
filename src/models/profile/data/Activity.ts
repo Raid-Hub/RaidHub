@@ -12,13 +12,13 @@ export default class Activity {
     readonly playerCount: number
     readonly dateStarted: Date
     readonly dateCompleted: Date
-    readonly didMemberComplete: boolean
+    readonly didMemberComplete?: boolean
     readonly durationSeconds: number
     readonly dayOne: boolean
     readonly contest: boolean
 
     readonly weight: number
-    constructor(data: RaidHubActivity & { didMemberComplete: boolean }) {
+    constructor(data: RaidHubActivity & { didMemberComplete?: boolean }) {
         this.activityId = data.instanceId
         this.flawless = !!data.flawless
         this.completed = data.completed

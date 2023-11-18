@@ -1,30 +1,26 @@
-import {
-    RaidHubAPIResponse,
-    RaidHubActivitySearchResponse,
-    RaidHubActivitySearchResult
-} from "~/types/raidhub-api"
+import { RaidHubAPIResponse, RaidHubActivitySearchResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { createHeaders } from "./createHeaders"
 import { z } from "zod"
 import { booleanString, numberString } from "~/util/zod"
 import { ListedRaid, ListedRaids } from "~/types/raids"
 import { includedIn } from "~/util/betterIncludes"
+import Activity from "~/models/profile/data/Activity"
+import { Collection } from "@discordjs/collection"
 
-export function activitySearchQueryKey() {
-    return ["raidhub-activity-search"] as const
+export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuerySchema>) {
+    return ["raidhub-activity-search", query] as const
 }
 
 // we have the bungie queries as backups
-export async function activitySearch(queryString: string): Promise<RaidHubActivitySearchResult[]> {
+export async function activitySearch(queryString: string): Promise<Collection<string, Activity>> {
     const url = new URL(getRaidHubBaseUrl() + `/activities/search?` + queryString)
-    url.searchParams.append("membershipId", "4611686018488107374")
-    url.searchParams.append("membershipId", "4611686018494548988")
 
     const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitySearchResponse>
     if (data.success) {
-        return data.response.results
+        return new Collection(data.response.results.map(r => [r.instanceId, new Activity(r)]))
     } else {
         throw new Error(data.message)
     }

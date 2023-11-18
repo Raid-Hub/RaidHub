@@ -96,25 +96,26 @@ export type RaidHubSearchResponse<G extends boolean = any> = {
                   displayName: string
               }
     }
-    results: RaidHubSearchResult<G>[]
+    results: RaidHubSearchResult[]
 }
 
-export type RaidHubSearchResult<G extends boolean = any> = {
+export type RaidHubSearchResult = {
     membershipId: string
     membershipType: BungieMembershipType
     iconPath: string
     displayName: string
     lastSeen: string
     clears: number
-} & (G extends true
-    ? {
+} & (
+    | {
           bungieGlobalDisplayName: string
           bungieGlobalDisplayNameCode: string
       }
-    : {
+    | {
           bungieGlobalDisplayName: null
           bungieGlobalDisplayNameCode: null
-      })
+      }
+)
 
 export type RaidHubActivitySearchResponse = {
     query: Record<string, unknown>
@@ -123,11 +124,13 @@ export type RaidHubActivitySearchResponse = {
 export type RaidHubActivitySearchResult = {
     instanceId: string
     raidHash: string
-    false: boolean
+    fresh: boolean
     completed: boolean
     flawless: boolean
     playerCount: number
-    dateStarted: Date
-    dateCompleted: Date
+    dateStarted: string
+    dateCompleted: string
     platformType: number
+    dayOne: boolean
+    contest: boolean
 }

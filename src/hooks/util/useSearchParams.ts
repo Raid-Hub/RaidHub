@@ -33,6 +33,10 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
         searchParams.current.append(key, value)
         push()
     }
+    const set = (key: string, value: string) => {
+        searchParams.current.set(key, value)
+        push()
+    }
     const remove = (key: string, value?: string) => {
         searchParams.current.delete(key, value)
         push()
@@ -45,6 +49,7 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
                 isReady: true as const,
                 query,
                 searchString: searchParams.current.toString(),
+                set,
                 append,
                 remove
             }
