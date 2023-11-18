@@ -62,13 +62,18 @@ function RaidHub({
         <LocaleManager>
             <Head>
                 <title key="title">{title}</title>
-                <meta property="og:title" content={title} key="og-title" />
-                <meta property="og:image" content="/logo.png" key="og-image" />
-                <meta name="twitter:image" content="/logo.png" />
-                <meta property="og:description" content={description} key="og-descriptions" />
                 <meta name="description" content={description} key="description" />
 
                 <RaidHubMetaData />
+
+                <meta property="og:title" content={title} key="og-title" />
+                <meta property="og:image" content="/logo.png" key="og-image" />
+                <meta property="og:description" content={description} key="og-descriptions" />
+
+                <meta name="twitter:card" content="summary" />
+                <meta name="twitter:image" content="/logo.png" />
+                <meta name="twitter:title" content={title} />
+                <meta name="twitter:description" content={description} />
 
                 <meta
                     name="viewport"

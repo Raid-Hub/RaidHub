@@ -99,7 +99,7 @@ PGCRPage.Head = ({ activity, children }) => {
             <meta name="twitter:url" content={url} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content="/logo.png" />
-            <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} />
+            {/* <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} /> */}
 
             <title>{title}</title>
         </Head>
