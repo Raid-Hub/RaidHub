@@ -27,7 +27,7 @@ const lazyMotionFeatures = () => import("../util/framer-motion-features").then(i
 
 type PageProps = {
     session: Session
-    isBot?: boolean
+    headOnly?: boolean
 }
 
 const title = "RaidHub"
@@ -36,7 +36,7 @@ const description =
 
 function RaidHub({
     Component,
-    pageProps: { session, isBot, ...pageProps },
+    pageProps: { session, headOnly, ...pageProps },
     router
 }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
@@ -44,7 +44,7 @@ function RaidHub({
     /* disables the prefetching behavior of next/link */
     router.prefetch = async (url, asPath, options) => {}
 
-    if (isBot) {
+    if (headOnly) {
         // @ts-ignore
         const ComponentHead = Component.Head as CrawlableNextPage<any, any>["Head"]
         return (

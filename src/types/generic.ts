@@ -6,6 +6,6 @@ export type Flatten<T> = T extends ReadonlyArray<infer U> ? U : never
 export type ErrorHandler<R = void> = (error: CustomError) => R
 export type FilterCallback<T> = (value: T) => boolean
 
-export type CrawlableNextPage<P, IP> = NextPage<P, P | (IP & { isBot: true })> & {
+export type CrawlableNextPage<P, IP> = NextPage<P, P | (IP & { headOnly: true })> & {
     Head: FunctionComponent<IP & { children: ReactNode }>
 }

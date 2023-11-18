@@ -14,7 +14,7 @@ const PGCRPage: CrawlableNextPage<
     {
         activityId: unknown
     },
-    { activity?: RaidHubActivityResponse; error?: unknown; userAgent: string }
+    { activity: RaidHubActivityResponse }
 > = props => {
     const parsedQuery = z.string().regex(/^\d+$/).optional().safeParse(props.activityId)
 
@@ -26,16 +26,15 @@ const PGCRPage: CrawlableNextPage<
 }
 
 PGCRPage.getInitialProps = async ({ req, res, query }) => {
-    const userAgent = req?.headers["user-agent"]
-    const _isBot = isBot(userAgent)
-
-    if (res && _isBot) {
+    if (res && req && "user-agent" in req.headers && isBot(req.headers["user-agent"]!)) {
         try {
             const activity = await getActivity(String(query.activityId))
             res.setHeader("Cache-Control", "max-age=31536000")
-            return { activity, isBot: true, userAgent: userAgent ?? "No user Agent" }
-        } catch (e) {
-            return { error: e, isBot: true, userAgent: userAgent ?? "No user Agent" }
+            return { activity, headOnly: true }
+        } catch {
+            return {
+                activityId: query.activityId
+            }
         }
     } else {
         return {
@@ -44,9 +43,7 @@ PGCRPage.getInitialProps = async ({ req, res, query }) => {
     }
 }
 
-PGCRPage.Head = ({ activity, error, children }) => {
-    if (!activity) return <div>{String(error)}</div>
-
+PGCRPage.Head = ({ activity, children }) => {
     const strs = LocalizedStrings.en
 
     const [raid, difficulty] = raidTupleFromHash(activity.raidHash)
@@ -67,10 +64,16 @@ PGCRPage.Head = ({ activity, error, children }) => {
     const description = `${
         activity.completed
             ? activity.fresh == false
-                ? "Checkpoint cleared at"
-                : "Completed at"
-            : "Attempted at"
+                ? "Checkpoint cleared on"
+                : "Completed on"
+            : "Attempted on"
     } ${dateCompleted.toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+
         timeZone: "America/Los_Angeles",
         timeZoneName: "short"
     })}`
@@ -80,7 +83,7 @@ PGCRPage.Head = ({ activity, error, children }) => {
         <Head>
             {children}
 
-            <meta http-equiv="date" content={dateCompleted.toDateString()} />
+            <meta httpEquiv="date" content={dateCompleted.toDateString()} />
             <meta property="article:published_time" content={dateCompleted.toISOString()} />
 
             {/* Basic */}
