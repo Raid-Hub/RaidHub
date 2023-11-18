@@ -1,17 +1,16 @@
-import type { AppProps } from "next/app"
+import { AppProps } from "next/app"
 import { SessionProvider } from "next-auth/react"
 import Header from "../components/global/Header"
 import Footer from "../components/global/Footer"
 import "../styles/globals.css"
 import Head from "next/head"
 import TokenManager from "../components/app/TokenManager"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Session } from "next-auth"
 import LocaleManager from "../components/app/LocaleManager"
 import ProgressBar from "nextjs-progressbar"
 import SearchModal from "~/components/global/SearchModal"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/router"
 import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
@@ -26,21 +25,33 @@ const lazyMotionFeatures = () => import("../util/framer-motion-features").then(i
 
 type PageProps = {
     session: Session
+    isBot?: boolean
 }
 
 const title = "RaidHub"
 const description =
     "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageProps>) {
+function RaidHub({
+    Component,
+    pageProps: { session, isBot, ...pageProps },
+    router
+}: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
 
-    const router = useRouter()
-
     /* disables the prefetching behavior of next/link */
-    useEffect(() => {
-        router.prefetch = async (url, asPath, options) => {}
-    }, [router])
+    router.prefetch = async (url, asPath, options) => {}
+
+    if (isBot) {
+        return (
+            // @ts-ignore
+            <Component.Head {...pageProps}>
+                <meta property="og:site_name" content="RaidHub" />
+                <meta property="og:type" content="website" />
+                {/* @ts-ignore */}
+            </Component.Head>
+        )
+    }
 
     return (
         <LocaleManager>
@@ -88,4 +99,4 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps<PageP
     )
 }
 
-export default trpc.withTRPC(App)
+export default trpc.withTRPC(RaidHub)
