@@ -9,7 +9,6 @@ export enum ErrorCode {
     PrivateProfile = "Pineapple",
     DestinyProfile = "Deathstar",
     PGCR = "Pig",
-    ActivityError = "Applesauce",
     ActivityHistory = "Apricot",
     CharacterStats = "Cactus",
     ProfileStats = "Pickle",
@@ -20,7 +19,8 @@ export enum ErrorCode {
     RaidHubProfile = "Rainbow",
     Transitory = "Window",
     Manifest = "Mountain",
-    Search = "Sapphire"
+    Search = "Sapphire",
+    ActivitySearch = "Applesauce"
 }
 
 export default class CustomError extends Error {

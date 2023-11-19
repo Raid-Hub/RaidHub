@@ -1,10 +1,9 @@
 import styles from "./find.module.css"
 import { Collection } from "@discordjs/collection"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import Activity from "~/models/profile/data/Activity"
 import { activitySearch, activitySearchQuerySchema } from "~/services/raidhub/activitySearch"
-import { wait } from "~/util/wait"
 import ActivityTile from "../profile/raids/ActivityTile"
 import { useEffect, useMemo, useRef } from "react"
 import {
@@ -24,6 +23,11 @@ import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { useSeasons } from "../app/DestinyManifestManager"
 import { ListedRaid, ListedRaids } from "~/types/raids"
 import { useLocale } from "../app/LocaleManager"
+import ErrorComponent from "../global/Error"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import Loading from "../global/Loading"
+import { getPlayer, playerQueryKey } from "~/services/raidhub/getPlayer"
+import { getRaidHubMember, getRaidHubMemberQueryKey } from "~/services/raidhub/getMember"
 
 interface ActivitySearchFormState {
     flawless: -1 | 0 | 1
@@ -49,18 +53,17 @@ export default function Find({
     query: z.infer<typeof activitySearchQuerySchema>
     replaceAllQueryParams: (searchParams: URLSearchParams) => void
 }) {
-    const { formState, handleSubmit, control, setValue, register, watch } =
-        useForm<ActivitySearchFormState>({
-            defaultValues: {
-                flawless: query.flawless === undefined ? -1 : query.flawless ? 1 : 0,
-                completed: query.completed === undefined ? -1 : query.completed ? 1 : 0,
-                fresh: query.fresh === undefined ? -1 : query.fresh ? 1 : 0,
-                players: query.membershipIds?.map(m => ({ membershipId: m })) ?? [],
-                playerCountRange: [query.minPlayers, query.maxPlayers],
-                dateRange: [query.minDate, query.maxDate],
-                seasonRange: [query.minSeason, query.maxSeason]
-            }
-        })
+    const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>({
+        defaultValues: {
+            flawless: query.flawless === undefined ? -1 : query.flawless ? 1 : 0,
+            completed: query.completed === undefined ? -1 : query.completed ? 1 : 0,
+            fresh: query.fresh === undefined ? -1 : query.fresh ? 1 : 0,
+            players: query.membershipIds?.map(m => ({ membershipId: m })) ?? [],
+            playerCountRange: [query.minPlayers, query.maxPlayers],
+            dateRange: [query.minDate, query.maxDate],
+            seasonRange: [query.minSeason, query.maxSeason]
+        }
+    })
 
     const submitHandler: SubmitHandler<ActivitySearchFormState> = ({
         flawless,
@@ -122,8 +125,6 @@ export default function Find({
         search(searchString)
     }
 
-    const players = watch("players")
-
     const {
         mutate: search,
         isLoading,
@@ -132,8 +133,10 @@ export default function Find({
         isError,
         error
     } = useMutation<Collection<string, Activity>, Error, URLSearchParams>({
-        mutationFn: params => wait(500).then(() => activitySearch(params.toString()))
+        mutationFn: params => activitySearch(params.toString())
     })
+
+    const players = watch("players")
 
     return (
         <main>
@@ -142,7 +145,6 @@ export default function Find({
                 <div className={styles["form"]}>
                     <div className={styles["players"]}>
                         <h2>Players</h2>
-                        <h5>You must select at least 1 player.</h5>
                         <div className={styles["players-components"]}>
                             <PlayerLookup addPlayer={r => setValue("players", [...players, r])} />
                             <AddedPlayers control={control} />
@@ -189,8 +191,14 @@ export default function Find({
                     Search
                 </button>
             </form>
-            {isError && <div>{error.message}</div>}
-            {isLoading ? <div>{"Loading..."}</div> : isSuccess && <Results allResults={data} />}
+            {isError && (
+                <ErrorComponent error={CustomError.handle(error, ErrorCode.ActivitySearch)} />
+            )}
+            {isLoading ? (
+                <Loading className={styles["loading"]} />
+            ) : (
+                isSuccess && <Results allResults={data} />
+            )}
         </main>
     )
 }
@@ -245,32 +253,54 @@ const AddedPlayers = ({ control }: { control: Control<ActivitySearchFormState, a
         <div className={styles["selected-players"]}>
             <h3>Selected Players</h3>
             <ul>
-                {fields.map((player, index) => (
-                    <li key={player.id}>
-                        <>
-                            {"bungieGlobalDisplayName" in player ? (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <Image
-                                        width={45}
-                                        height={45}
-                                        alt={player.bungieGlobalDisplayName ?? player.displayName}
-                                        unoptimized
-                                        src={bungieIconUrl(player.iconPath)}
-                                    />
-                                    <UserName {...player} />
-                                </div>
-                            ) : (
-                                <div style={{ flex: 1 }}>{player.membershipId}</div>
-                            )}
-                        </>
-                        <button type="button" onClick={() => remove(index)} style={{ flexGrow: 0 }}>
-                            Remove
-                        </button>
-                    </li>
-                ))}
+                {fields.length ? (
+                    fields.map((player, index) => (
+                        <li key={player.id}>
+                            <PickedPlayer {...player} />
+                            <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                style={{ flexGrow: 0 }}>
+                                Remove
+                            </button>
+                        </li>
+                    ))
+                ) : (
+                    <h5>You must select at least 1 player.</h5>
+                )}
             </ul>
         </div>
     )
+}
+
+const PickedPlayer = (player: RaidHubSearchResult | { membershipId: string }) => {
+    // if we dont have the player we can just use the membershipId to get the player
+    const { ...q } = useQuery({
+        queryFn: () => getRaidHubMember(player.membershipId),
+        queryKey: getRaidHubMemberQueryKey(player.membershipId),
+        enabled: !("lastSeen" in player),
+        staleTime: Infinity
+    })
+
+    console.log(q)
+
+    if ("lastSeen" in player || q.isSuccess) {
+        const resolved = q.data ?? (player as RaidHubSearchResult)
+        return (
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <Image
+                    width={45}
+                    height={45}
+                    alt={resolved.bungieGlobalDisplayName ?? resolved.displayName ?? "Guardian"}
+                    unoptimized
+                    src={bungieIconUrl(resolved.iconPath ?? undefined)}
+                />
+                <UserName {...resolved} displayName={resolved.displayName ?? "Guardian"} />
+            </div>
+        )
+    } else {
+        return <div>{player.membershipId}</div>
+    }
 }
 
 function ToggleOption<T extends FieldValues>({
@@ -418,7 +448,7 @@ const Results = ({ allResults }: { allResults: Collection<string, Activity> }) =
     return (
         <section className={styles["results"]} ref={scrollTargetRef}>
             <h2>Search Results</h2>
-            {!!results.size && (
+            {!!results.size ? (
                 <div>
                     {results.map((p, k) => (
                         <div key={k}>
@@ -437,6 +467,8 @@ const Results = ({ allResults }: { allResults: Collection<string, Activity> }) =
                         </div>
                     ))}
                 </div>
+            ) : (
+                <div>No raids found.</div>
             )}
         </section>
     )
