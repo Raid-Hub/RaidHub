@@ -1,11 +1,11 @@
 import styles from "../../styles/toolbox.module.css"
-import ToolboxItem from "~/components/global/ToolboxItem";
+import ToolboxItem from "~/components/toolbox/ToolboxItem";
 import ToolBoxIcon from "~/images/icons/ToolBoxIcon";
 import {useState} from "react";
 import XSymbol from "~/images/icons/xSymbol";
 import {m, AnimatePresence} from "framer-motion"
 
-const Toolbox = () => {
+const Toolbox = (props: {isFooterVisible: boolean}) => {
     const [isOpen, setIsOpen] = useState(false)
 
     const handleClick = () => {
@@ -13,7 +13,11 @@ const Toolbox = () => {
     }
 
     return (
-        <div className={styles["toolbox"]}>
+        <div className={
+            props.isFooterVisible
+            ? [styles["toolbox"], styles["footer-spacing"]].join(" ")
+            : styles["toolbox"]}
+        >
             <AnimatePresence>
                 {isOpen &&
                     <m.div

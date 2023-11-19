@@ -24,7 +24,6 @@ const Home = () => {
                     <HomeRaidCard raid={raid} strings={strings} key={raid} />
                 ))}
             </section>
-            <Toolbox/>
         </main>
     )
 }
