@@ -11,6 +11,12 @@
     bottom: 6em;
 }
 
+@media (max-width: 378px){
+    .toolbox.footer-spacing {
+        bottom: 9em;
+    }
+}
+
 .toolbox-item-container {
     display: flex;
     flex-direction: column;
