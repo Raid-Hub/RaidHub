@@ -1,12 +1,12 @@
 import styles from "../../styles/pages/home.module.css"
-import {useRaidHubSearch} from "~/hooks/raidhub/useRaidHubSearch";
-import {useState} from "react";
-import Search from "~/images/icons/Search";
-import {useTypewriter} from "react-simple-typewriter";
-import BungieName from "~/models/BungieName";
-import Link from "next/link";
-import Image from "next/image";
-import {bungieIconUrl} from "~/util/destiny/bungie-icons";
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
+import { useState } from "react"
+import Search from "~/images/icons/Search"
+import { useTypewriter } from "react-simple-typewriter"
+import BungieName from "~/models/BungieName"
+import Link from "next/link"
+import Image from "next/image"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 const HomeSearch = () => {
     const [showingResults, setShowingResults] = useState(false)
@@ -16,7 +16,6 @@ const HomeSearch = () => {
     const handleFocus = () => {
         // timeout to circumvent the loss of focus, which closes the search before redirecting starts
         setTimeout(() => setIsSearchFocused(!isSearchFocused), 100)
-
     }
 
     const {
@@ -43,13 +42,17 @@ const HomeSearch = () => {
 
     return (
         <div className={styles["search"]}>
-            <div className={
-                isSearchFocused
-                    ? [styles["search-bar-container-focused"], styles["search-bar-container"]].join(" ")
-                    : styles["search-bar-container"]}
-            >
+            <div
+                className={
+                    isSearchFocused
+                        ? [
+                              styles["search-bar-container-focused"],
+                              styles["search-bar-container"]
+                          ].join(" ")
+                        : styles["search-bar-container"]
+                }>
                 <div className={styles["search-icon"]}>
-                    <Search color="white"/>
+                    <Search color="white" />
                 </div>
                 <form className={styles["search-bar-form"]} onSubmit={handleFormEnter}>
                     <input
@@ -65,9 +68,9 @@ const HomeSearch = () => {
                     />
                 </form>
             </div>
-            {isSearchFocused &&
+            {isSearchFocused && (
                 <>
-                    <div className={styles["divider"]}/>
+                    <div className={styles["divider"]} />
                     <div className={styles["search-result-container"]}>
                         <ul className={styles["search-results"]}>
                             {results.map(
@@ -89,8 +92,7 @@ const HomeSearch = () => {
                                             bungieGlobalDisplayNameCode
                                         )
                                         username = b.toString()
-                                    } catch {
-                                    }
+                                    } catch {}
                                     return (
                                         <Link
                                             key={idx}
@@ -117,7 +119,7 @@ const HomeSearch = () => {
                         </ul>
                     </div>
                 </>
-            }
+            )}
         </div>
     )
 }

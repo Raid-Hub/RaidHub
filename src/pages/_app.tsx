@@ -14,7 +14,7 @@ import dynamic from "next/dynamic"
 import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
-import Toolbox from "~/components/toolbox/Toolbox";
+import Toolbox from "~/components/toolbox/Toolbox"
 import { CrawlableNextPage } from "~/types/generic"
 import RaidHubMetaData from "~/components/reusable/CommonMetaData"
 

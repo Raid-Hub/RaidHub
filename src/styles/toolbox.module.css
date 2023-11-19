@@ -11,7 +11,7 @@
     bottom: 6em;
 }
 
-@media (max-width: 378px){
+@media (max-width: 378px) {
     .toolbox.footer-spacing {
         bottom: 9em;
     }
@@ -44,7 +44,7 @@
     backdrop-filter: blur(10px);
     border-radius: 36px;
     border: none;
-    margin:  1em 1em 1em 0;
+    margin: 1em 1em 1em 0;
     width: 60px;
     height: 60px;
 }

@@ -84,7 +84,7 @@
     font-weight: 800;
 }
 
-@media (max-width: 465px){
+@media (max-width: 465px) {
     .logo-text {
         font-size: 50px;
     }
@@ -150,7 +150,6 @@
     z-index: 4;
 }
 
-
 .search-result-container {
     background: #1d181e;
     border-radius: 0 0 24px 24px;
@@ -214,10 +213,10 @@
     letter-spacing: 1px;
 }
 .tool-button:hover {
-    background: #312d32
+    background: #312d32;
 }
 
-.tool-button:hover svg{
+.tool-button:hover svg {
     box-shadow: 0 0 14px 0 rgb(55, 57, 75);
 }
 

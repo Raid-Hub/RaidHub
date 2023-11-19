@@ -1,17 +1,18 @@
 import styles from "../../styles/pages/home.module.css"
-import Link from "next/link";
-import Search from "~/images/icons/Search";
+import Link from "next/link"
+import Search from "~/images/icons/Search"
 
 const HomeToolButtons = () => {
     return (
         <div className={styles["tool-buttons-container"]}>
             <Link href={"/guardians"} className={styles["tool-button"]}>
-                <Search color="white"/>
+                <Search color="white" />
                 Guardian Inspector
             </Link>
             <Link href={"/activity"} className={styles["tool-button"]}>
-                <Search color="white"/>
-                Activity <br/>Finder
+                <Search color="white" />
+                Activity <br />
+                Finder
             </Link>
         </div>
     )
