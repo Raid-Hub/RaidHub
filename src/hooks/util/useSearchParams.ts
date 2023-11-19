@@ -38,6 +38,7 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
         push()
     }
     const remove = (key: string, value?: string) => {
+        // @ts-ignore for some reason the type definition doesn't include the second argument
         searchParams.current.delete(key, value)
         push()
     }

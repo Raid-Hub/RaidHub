@@ -24,7 +24,6 @@ import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { useSeasons } from "../app/DestinyManifestManager"
 import { ListedRaid, ListedRaids } from "~/types/raids"
 import { useLocale } from "../app/LocaleManager"
-import { User } from "bungie-net-core"
 
 interface ActivitySearchFormState {
     flawless: -1 | 0 | 1

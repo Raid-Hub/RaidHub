@@ -8,7 +8,6 @@ import { ClanBanner } from "bungie-net-core/models"
 import { resolveClanBanner } from "~/util/destiny/parseClanBanner"
 import { useQuery } from "@tanstack/react-query"
 import { indexDB } from "~/util/dexie"
-import { reverse } from "dns"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
 
