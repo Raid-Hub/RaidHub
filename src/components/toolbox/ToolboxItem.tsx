@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "../../styles/toolbox.module.css"
+import styles from "~/styles/toolbox.module.css"
 
 const ToolboxItem = (props : {path : string, text : string}) => {
     return (
