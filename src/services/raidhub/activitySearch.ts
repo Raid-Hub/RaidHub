@@ -43,7 +43,6 @@ export const activitySearchQuerySchema = z
         raid: z.coerce
             .number()
             .int()
-            .positive()
             .refine(n => includedIn(ListedRaids, n), {
                 message: "invalid raid value"
             })

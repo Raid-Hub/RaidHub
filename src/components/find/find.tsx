@@ -58,6 +58,7 @@ export default function Find({
             flawless: query.flawless === undefined ? -1 : query.flawless ? 1 : 0,
             completed: query.completed === undefined ? -1 : query.completed ? 1 : 0,
             fresh: query.fresh === undefined ? -1 : query.fresh ? 1 : 0,
+            raid: -1,
             players: query.membershipIds?.map(m => ({ membershipId: m })) ?? [],
             playerCountRange: [query.minPlayers, query.maxPlayers],
             dateRange: [query.minDate, query.maxDate],
@@ -94,6 +95,7 @@ export default function Find({
         }
 
         if (raid !== -1) {
+            console.log(raid, typeof raid)
             searchString.set("raid", String(raid))
         }
 
@@ -281,8 +283,6 @@ const PickedPlayer = (player: RaidHubSearchResult | { membershipId: string }) =>
         enabled: !("lastSeen" in player),
         staleTime: Infinity
     })
-
-    console.log(q)
 
     if ("lastSeen" in player || q.isSuccess) {
         const resolved = q.data ?? (player as RaidHubSearchResult)
