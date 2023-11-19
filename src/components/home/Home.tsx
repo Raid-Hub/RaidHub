@@ -4,7 +4,6 @@ import { useLocale } from "../app/LocaleManager"
 import HomeRaidCard from "./HomeRaidCard"
 import HomeLogo from "./HomeLogo"
 import HomeSearch from "~/components/home/HomeSearch"
-import Toolbox from "~/components/toolbox/Toolbox"
 import HomeToolButtons from "~/components/home/HomeToolButtons"
 const Home = () => {
     const { strings } = useLocale()
