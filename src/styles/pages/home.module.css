@@ -91,7 +91,7 @@
 }
 
 .search-bar-container {
-    margin: 0 20% 7% 20%;
+    margin: 0 20% 3% 20%;
     background: #1d181e;
     border-radius: 24px;
     height: 50px;
@@ -176,4 +176,43 @@
 
 .individual-result:hover {
     background-color: rgba(46, 46, 46, 0.5);
+}
+
+.tool-buttons-container {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 3%;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.tool-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    gap: 0.5em;
+    width: 100px;
+    height: 130px;
+    border-radius: 10px;
+
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.tool-button:hover {
+    background: #312d32
+}
+
+.tool-button:hover svg{
+    box-shadow: 0 0 14px 0 rgb(55, 57, 75);
+}
+
+.tool-button svg {
+    background: #1d181e;
+    border-radius: 10px;
+    padding: 1em;
+    height: 60px;
+    width: 60px;
 }

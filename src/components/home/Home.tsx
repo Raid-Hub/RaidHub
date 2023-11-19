@@ -5,6 +5,7 @@ import HomeRaidCard from "./HomeRaidCard"
 import HomeLogo from "./HomeLogo"
 import HomeSearch from "~/components/home/HomeSearch"
 import Toolbox from "~/components/toolbox/Toolbox";
+import HomeToolButtons from "~/components/home/HomeToolButtons";
 const Home = () => {
     const { strings } = useLocale()
     return (
@@ -14,6 +15,9 @@ const Home = () => {
             </section>
             <section>
                 <HomeSearch/>
+            </section>
+            <section>
+                <HomeToolButtons/>
             </section>
             <section className={styles["raids"]}>
                 {ListedRaids.map(raid => (
