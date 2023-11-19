@@ -95,7 +95,6 @@ export default function Find({
         }
 
         if (raid !== -1) {
-            console.log(raid, typeof raid)
             searchString.set("raid", String(raid))
         }
 
