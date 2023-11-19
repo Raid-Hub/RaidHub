@@ -22,7 +22,11 @@ const UserName = ({
             )
         } catch {}
     }
-    return <span>{displayName}</span>
+    return (
+        <span className={styles["username"]}>
+            <span>{displayName}</span>
+        </span>
+    )
 }
 
 export default UserName

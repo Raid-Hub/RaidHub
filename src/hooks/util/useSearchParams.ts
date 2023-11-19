@@ -42,6 +42,11 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
         push()
     }
 
+    const replaceAll = (params: URLSearchParams) => {
+        searchParams.current = params
+        push()
+    }
+
     if (isReady) {
         try {
             const query = decoder(router.query)
@@ -51,7 +56,8 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
                 searchString: searchParams.current.toString(),
                 set,
                 append,
-                remove
+                remove,
+                replaceAll
             }
         } catch (e) {
             // if something went wrong we can just reset the search params

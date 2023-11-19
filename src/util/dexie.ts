@@ -3,7 +3,8 @@ import { RGBA, RawClanBannerData } from "./destiny/manifest"
 import {
     DestinyActivityDefinition,
     DestinyActivityModeDefinition,
-    DestinyInventoryItemDefinition
+    DestinyInventoryItemDefinition,
+    DestinySeasonDefinition
 } from "bungie-net-core/models"
 
 export type Hashed<T> = { hash: number } & T
@@ -16,6 +17,7 @@ interface CustomDexieTables extends Record<keyof RawClanBannerData, Table> {
     items: Table<DestinyInventoryItemDefinition>
     activities: Table<DestinyActivityDefinition>
     activityModes: Table<DestinyActivityModeDefinition>
+    seasons: Table<DestinySeasonDefinition>
     clanBannerDecalPrimaryColors: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors: Table<Hashed<RGBA>>
     clanBannerDecals: Table<Hashed<ForegroundBackground>>
@@ -31,6 +33,7 @@ class CustomDexie extends Dexie implements CustomDexieTables {
     items!: Table<DestinyInventoryItemDefinition>
     activities!: Table<DestinyActivityDefinition>
     activityModes!: Table<DestinyActivityModeDefinition>
+    seasons!: Table<DestinySeasonDefinition>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
     clanBannerDecals!: Table<Hashed<ForegroundBackground>>
@@ -43,10 +46,11 @@ class CustomDexie extends Dexie implements CustomDexieTables {
 
     constructor() {
         super("app")
-        this.version(5).stores({
+        this.version(6).stores({
             items: "hash",
             activities: "hash",
             activityModes: "hash",
+            seasons: "hash",
             clanBannerDecalPrimaryColors: "hash",
             clanBannerDecalSecondaryColors: "hash",
             clanBannerDecals: "hash",
