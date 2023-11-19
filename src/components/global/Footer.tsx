@@ -28,7 +28,8 @@ const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
 
 export default function Footer({ setIsVisible }: { setIsVisible: (isVisible: boolean) => void }) {
     const ref = React.useRef<HTMLDivElement>(null)
-    const isFooterVisible = useIsVisible(ref, undefined, setIsVisible)
+
+    useIsVisible(ref, undefined, setIsVisible)
 
     const { version } = manifest
     return (
