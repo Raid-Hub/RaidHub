@@ -14,17 +14,18 @@ export function useIsVisible<E extends HTMLElement>(
         }
 
         const observer = new IntersectionObserver(intersectionCallback, options)
+        const currentRef = ref.current
 
-        if (ref.current) {
-            observer.observe(ref.current)
+        if (currentRef) {
+            observer.observe(currentRef)
         }
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current)
+            if (currentRef) {
+                observer.unobserve(currentRef)
             }
         }
-    }, [ref, options])
+    }, [ref, options, callback])
 
     return isIntersecting
 }
