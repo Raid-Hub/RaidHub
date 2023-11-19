@@ -21,7 +21,7 @@ const ToggleSwitch = ({ onToggle, size, value, label }: ToggleProps) => {
             <input
                 type="checkbox"
                 checked={value}
-                name={label ?? "toggle-switch"}
+                name={label}
                 id={label}
                 className={styles["checkbox"]}
                 onChange={handleChange}

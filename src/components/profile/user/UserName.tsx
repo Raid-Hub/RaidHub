@@ -3,8 +3,8 @@ import BungieName from "~/models/BungieName"
 
 type UserNameProps = {
     displayName: string
-    bungieGlobalDisplayName?: string
-    bungieGlobalDisplayNameCode?: number
+    bungieGlobalDisplayName?: string | null
+    bungieGlobalDisplayNameCode?: number | string | null
 }
 const UserName = ({
     displayName,
@@ -22,7 +22,11 @@ const UserName = ({
             )
         } catch {}
     }
-    return <span>{displayName}</span>
+    return (
+        <span className={styles["username"]}>
+            <span>{displayName}</span>
+        </span>
+    )
 }
 
 export default UserName

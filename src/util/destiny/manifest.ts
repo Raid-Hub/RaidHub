@@ -59,9 +59,9 @@ export async function updateCachedManifest({
             destinyManifest: manifest,
             tableName: "DestinyActivityDefinition",
             language: language
-        }).then(items =>
+        }).then(activities =>
             indexDB.transaction("rw", indexDB.activities, () =>
-                indexDB.activities.bulkPut(Object.values(items))
+                indexDB.activities.bulkPut(Object.values(activities))
             )
         ),
 
@@ -69,9 +69,19 @@ export async function updateCachedManifest({
             destinyManifest: manifest,
             tableName: "DestinyActivityModeDefinition",
             language: language
-        }).then(items =>
+        }).then(modes =>
             indexDB.transaction("rw", indexDB.activityModes, () =>
-                indexDB.activityModes.bulkPut(Object.values(items))
+                indexDB.activityModes.bulkPut(Object.values(modes))
+            )
+        ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinySeasonDefinition",
+            language: language
+        }).then(seasons =>
+            indexDB.transaction("rw", indexDB.seasons, () =>
+                indexDB.seasons.bulkPut(Object.values(seasons))
             )
         ),
 

@@ -12,7 +12,7 @@ import { indexDB } from "~/util/dexie"
 const KEY_MANIFEST_VERSION = "manifest_version"
 
 // edit this value if you change anything about the stored values
-const MANIFEST_VERSION_ID = "1"
+const MANIFEST_VERSION_ID = "2"
 
 const DestinyManifestContext = createContext<string>("")
 
@@ -89,6 +89,19 @@ export function useClanBanner(banner: ClanBanner) {
     return useQuery({
         queryKey: ["clanBanner", banner, manifestVersion],
         queryFn: () => resolveClanBanner(banner),
+        staleTime: Infinity
+    })
+}
+
+export function useSeasons(opts?: { reversed?: boolean }) {
+    const manifestVersion = useManifestVersion()
+
+    return useQuery({
+        queryKey: ["seasons", manifestVersion],
+        queryFn: async () =>
+            (await indexDB.seasons.toArray()).sort(
+                (a, b) => (a.seasonNumber - b.seasonNumber) * (opts?.reversed ? -1 : 1)
+            ) ?? null,
         staleTime: Infinity
     })
 }

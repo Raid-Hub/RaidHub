@@ -9,12 +9,7 @@ import { usePortal } from "../reusable/Portal"
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
 
-    const { enteredText, results, handleFormEnter, handleInputChange } = useRaidHubSearch({
-        onRedirect: result => {
-            setIsShowingResults(false)
-            addMember(result.membershipId)
-        }
-    })
+    const { enteredText, results, handleFormEnter, handleInputChange } = useRaidHubSearch()
 
     const [isShowingResults, setIsShowingResults] = useState(false)
 

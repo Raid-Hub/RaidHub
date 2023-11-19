@@ -101,3 +101,9 @@ export const zCreateVanity = z.object({
     destinyMembershipType: BungieMembershipEnum,
     string: z.string()
 })
+
+export const numberString = z.coerce.string().regex(/^\d+$/)
+export const booleanString = z
+    .string()
+    .transform(s => JSON.parse(s))
+    .pipe(z.boolean())
