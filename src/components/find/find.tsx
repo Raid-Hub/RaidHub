@@ -26,7 +26,6 @@ import { useLocale } from "../app/LocaleManager"
 import ErrorComponent from "../global/Error"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import Loading from "../global/Loading"
-import { getPlayer, playerQueryKey } from "~/services/raidhub/getPlayer"
 import { getRaidHubMember, getRaidHubMemberQueryKey } from "~/services/raidhub/getMember"
 
 interface ActivitySearchFormState {
@@ -40,6 +39,7 @@ interface ActivitySearchFormState {
     seasonRange: [number, number]
 }
 
+//  TODO:
 // platformType: z.coerce.number().int().positive().optional(),
 // reversed: z.coerce.boolean().default(false),
 // page: z.coerce.number().int().positive().default(1)

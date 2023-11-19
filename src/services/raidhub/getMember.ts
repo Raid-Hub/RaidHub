@@ -1,4 +1,4 @@
-import { RaidHubAPIResponse, RaidHubPlayer, RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { RaidHubAPIResponse, RaidHubPlayer } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { createHeaders } from "./createHeaders"
 
