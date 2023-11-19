@@ -14,6 +14,7 @@ import dynamic from "next/dynamic"
 import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
+import Toolbox from "~/components/toolbox/Toolbox";
 import { CrawlableNextPage } from "~/types/generic"
 import RaidHubMetaData from "~/components/reusable/CommonMetaData"
 
@@ -40,6 +41,7 @@ function RaidHub({
     router
 }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
+    const [isFooterVisible, setIsFooterVisible] = useState(false)
 
     /* disables the prefetching behavior of next/link */
     router.prefetch = async (url, asPath, options) => {}
@@ -103,7 +105,8 @@ function RaidHub({
                                 />
                                 <SearchModal />
                                 <Component {...pageProps} />
-                                <Footer />
+                                <Footer setIsVisible={setIsFooterVisible} />
+                                <Toolbox isFooterVisible={isFooterVisible} />
                             </LazyMotion>
                         </RaidHubManifestManager>
                     </DestinyManifestManager>
