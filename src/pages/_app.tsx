@@ -105,8 +105,8 @@ function RaidHub({
                                 />
                                 <SearchModal />
                                 <Component {...pageProps} />
-                                <Footer setIsVisible={setIsFooterVisible} />
                                 <Toolbox isFooterVisible={isFooterVisible} />
+                                <Footer setIsVisible={setIsFooterVisible} />
                             </LazyMotion>
                         </RaidHubManifestManager>
                     </DestinyManifestManager>
