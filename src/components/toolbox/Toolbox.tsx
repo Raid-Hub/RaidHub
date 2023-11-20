@@ -27,7 +27,7 @@ const Toolbox = (props: { isFooterVisible: boolean }) => {
                         exit={{ x: 20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}>
                         <ToolboxItem
-                            path={"/activityfinder"}
+                            path={"/find"}
                             text={"Activity finder"}
                             onClick={handleClick}
                         />

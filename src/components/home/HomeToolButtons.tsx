@@ -9,7 +9,7 @@ const HomeToolButtons = () => {
                 <Search color="white" />
                 Guardian Inspector
             </Link>
-            <Link href={"/activity"} className={styles["tool-button"]}>
+            <Link href={"/find"} className={styles["tool-button"]}>
                 <Search color="white" />
                 Activity <br />
                 Finder

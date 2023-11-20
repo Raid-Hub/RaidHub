@@ -29,7 +29,7 @@
             "~/util/*": ["util/*"]
         }
     },
-    "include": ["**/*.ts", "**/*.tsx", "src/components/reusable/useIsVisible"],
+    "include": ["**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"],
     "ts-node": {
         "compilerOptions": {
