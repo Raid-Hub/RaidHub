@@ -7,6 +7,7 @@ import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import TwitterIcon from "~/images/icons/connections/TwitterIcon"
 import Email from "~/images/icons/connections/Email"
 import { SVGProps } from "~/components/reusable/SVG"
+import { useIsVisible } from "~/hooks/util/useIsVisible"
 
 const developers = ["Newo", "Bruce", "Theos"]
 const raidHubMailAddress = "admin@raidhub.app"
@@ -25,10 +26,14 @@ const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
     }
 ]
 
-const Footer = () => {
+export default function Footer({ setIsVisible }: { setIsVisible: (isVisible: boolean) => void }) {
+    const ref = React.useRef<HTMLDivElement>(null)
+
+    useIsVisible(ref, undefined, setIsVisible)
+
     const { version } = manifest
     return (
-        <footer id="footer" className={styles["footer"]}>
+        <footer id="footer" className={styles["footer"]} ref={ref}>
             <div className={styles["top"]}>
                 <div className={styles["left"]}>
                     <div>Developed by</div>
@@ -71,5 +76,3 @@ const Footer = () => {
         </footer>
     )
 }
-
-export default Footer
