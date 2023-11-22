@@ -80,9 +80,12 @@ function ResolvedPlayer({
     )
 
     useEffect(() => {
-        if (member.isFireteamIncluded && transitoryComponent?.currentActivity) {
+        if (
+            member.isFireteamIncluded &&
+            transitoryComponent?.profileTransitoryData.data?.partyMembers
+        ) {
             addMembers(
-                transitoryComponent.partyMembers.map(pm => ({
+                transitoryComponent.profileTransitoryData.data.partyMembers.map(pm => ({
                     membershipId: pm.membershipId,
                     isFireteamIncluded: false
                 }))
@@ -104,9 +107,9 @@ function ResolvedPlayer({
     )
 
     const items = mostRecentCharacterId
-        ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
+        ? transitoryComponent?.characterEquipment?.data?.[mostRecentCharacterId].items
         : undefined
-    const sockets = profileData?.itemComponents?.sockets?.data
+    const sockets = transitoryComponent?.itemComponents?.sockets?.data
 
     const subclass = items?.find(i => i.bucketHash === subclassBucket)
 
