@@ -46,6 +46,8 @@
 }
 .leaderboard-entry-loading {
     height: 120px;
+    border-radius: 15px;
+    margin-bottom: 1.5em;
 }
 .leaderboard-entry-rank {
     font-size: larger;
