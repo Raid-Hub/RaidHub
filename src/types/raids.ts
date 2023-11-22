@@ -3,29 +3,29 @@ import { Flatten } from "./generic"
 
 // add new raids here
 export const enum Raid {
-    NA = -1,
-    LEVIATHAN = 0,
-    EATER_OF_WORLDS = 1,
-    SPIRE_OF_STARS = 2,
-    LAST_WISH = 3,
-    SCOURGE_OF_THE_PAST = 4,
-    CROWN_OF_SORROW = 5,
-    GARDEN_OF_SALVATION = 6,
-    DEEP_STONE_CRYPT = 7,
-    VAULT_OF_GLASS = 8,
-    VOW_OF_THE_DISCIPLE = 9,
-    KINGS_FALL = 10,
-    ROOT_OF_NIGHTMARES = 11,
-    CROTAS_END = 12
+    NA = 0,
+    LEVIATHAN = 1,
+    EATER_OF_WORLDS,
+    SPIRE_OF_STARS,
+    LAST_WISH,
+    SCOURGE_OF_THE_PAST,
+    CROWN_OF_SORROW,
+    GARDEN_OF_SALVATION,
+    DEEP_STONE_CRYPT,
+    VAULT_OF_GLASS,
+    VOW_OF_THE_DISCIPLE,
+    KINGS_FALL,
+    ROOT_OF_NIGHTMARES,
+    CROTAS_END
 }
 
 // add new difficulties here
 export const enum Difficulty {
-    NA = -1,
-    NORMAL = 0,
-    GUIDEDGAMES = 1,
-    PRESTIGE = 2,
-    MASTER = 3,
+    NA = 0,
+    NORMAL = 1,
+    GUIDEDGAMES = 2,
+    PRESTIGE = 3,
+    MASTER = 4,
     CHALLENGE_VOG = 64,
     CHALLENGE_KF = 65,
     CHALLENGE_CROTA = 66,

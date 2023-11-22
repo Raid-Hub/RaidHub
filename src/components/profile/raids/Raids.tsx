@@ -69,8 +69,6 @@ const Raids = ({
         return raidToData
     }, [manifest, players])
 
-    manifest?.activityLeaderboards
-
     const statsQueries = bungie.stats.useQueries(destinyMemberships, {
         enabled: areMembershipsFetched
     })
