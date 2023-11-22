@@ -153,6 +153,7 @@
 .gadget-group > div {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .gadget {
