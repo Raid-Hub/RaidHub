@@ -229,9 +229,11 @@
 .account-dropdown-content > li > * {
     display: block;
     padding: 0.5em;
+
+    transition: background-color 0.05s ease-out;
 }
 
-.account-dropdown-content > li:hover {
+.account-dropdown-content > li:hover > * {
     background-color: var(--brand-orange-light);
 }
 
@@ -308,5 +310,8 @@
     }
     .keys {
         display: none;
+    }
+    .account-dropdown-content > li > * {
+        background-color: var(--modal-background-opaque);
     }
 }
