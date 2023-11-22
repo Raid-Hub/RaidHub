@@ -85,7 +85,7 @@ function CurrentActivityExisting({
             href={{
                 pathname: "/guardians",
                 query: {
-                    ids: transitoryComponent.partyMembers.map(pm => pm.membershipId).join(", ")
+                    membershipId: transitoryComponent.partyMembers.map(pm => pm.membershipId)
                 }
             }}
             className={styles["current-activity"]}>

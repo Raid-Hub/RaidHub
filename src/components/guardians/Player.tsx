@@ -4,33 +4,40 @@ import PlayerItem from "./PlayerItem"
 import Loading from "../global/Loading"
 import PlayerHeader from "./PlayerHeader"
 import { useBungieClient } from "../app/TokenManager"
-import { ReactNode, useEffect, useMemo } from "react"
-import { GuardianData } from "~/types/guardian"
+import { ReactNode, useMemo } from "react"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
 import Loader from "../reusable/Loader"
 import { subclassBucket } from "~/data/inventory-item-buckets"
 
 export default function Player({
-    member,
+    membershipId,
     remove,
-    addMembers
+    isFireteamIncluded,
+    add
 }: {
-    member: GuardianData
+    membershipId: string
+    isFireteamIncluded: boolean
     remove: () => void
-    addMembers: (members: GuardianData[]) => void
+    add: (membershipId: string, isFireteamIncluded: boolean) => void
 }) {
     const bungie = useBungieClient()
-    const { data: linkedProfiles } = bungie.linkedProfiles.useQuery(member, {
-        staleTime: Infinity
-    })
+    const { data: linkedProfiles } = bungie.linkedProfiles.useQuery(
+        { membershipId },
+        {
+            staleTime: Infinity
+        }
+    )
     const primaryProfile = useMemo(
-        () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, member.membershipId)),
-        [linkedProfiles, member.membershipId]
+        () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, membershipId)),
+        [linkedProfiles, membershipId]
     )
 
     return primaryProfile ? (
-        <ResolvedPlayer primaryProfile={primaryProfile} member={member} addMembers={addMembers}>
+        <ResolvedPlayer
+            primaryProfile={primaryProfile}
+            isFireteamIncluded={isFireteamIncluded}
+            addMore={add}>
             <button className={styles["remove-btn"]} onClick={remove}>
                 X
             </button>
@@ -46,13 +53,13 @@ const queryOptions = {
 }
 function ResolvedPlayer({
     primaryProfile,
-    member,
-    addMembers,
+    isFireteamIncluded,
+    addMore,
     children
 }: {
     primaryProfile: DestinyProfileUserInfoCard
-    member: GuardianData
-    addMembers: (members: GuardianData[]) => void
+    isFireteamIncluded: boolean
+    addMore: (membershipId: string, isFireteamIncluded: boolean) => void
     children: ReactNode
 }) {
     const bungie = useBungieClient()
@@ -76,22 +83,17 @@ function ResolvedPlayer({
             membershipType: primaryProfile.membershipType,
             destinyMembershipId: primaryProfile.membershipId
         },
-        queryOptions
-    )
-
-    useEffect(() => {
-        if (
-            member.isFireteamIncluded &&
-            transitoryComponent?.profileTransitoryData.data?.partyMembers
-        ) {
-            addMembers(
-                transitoryComponent.profileTransitoryData.data.partyMembers.map(pm => ({
-                    membershipId: pm.membershipId,
-                    isFireteamIncluded: false
-                }))
-            )
+        {
+            ...queryOptions,
+            onSuccess(data) {
+                if (isFireteamIncluded) {
+                    data.profileTransitoryData.data?.partyMembers.map(pm =>
+                        addMore(pm.membershipId, false)
+                    )
+                }
+            }
         }
-    }, [addMembers, transitoryComponent, member.isFireteamIncluded])
+    )
 
     const mostRecentCharacterId = useMemo(
         () =>
