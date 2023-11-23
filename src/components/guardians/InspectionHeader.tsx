@@ -2,7 +2,6 @@ import styles from "~/styles/pages/inpsect.module.css"
 import Search from "./Search"
 import { Dispatch, SetStateAction, useState } from "react"
 import { useBungieClient } from "../app/TokenManager"
-import { GuardianData } from "~/types/guardian"
 
 export default function InspectionHeader({
     addMember,
@@ -11,9 +10,9 @@ export default function InspectionHeader({
     isExpanded,
     setExpanded
 }: {
-    addMember: (member: GuardianData) => void
+    addMember: (membershipId: string, isFireteamIncluded: boolean) => void
     clearAllMembers: () => void
-    memberIds: string[]
+    memberIds: Set<string>
     setExpanded: (isExpanded: boolean) => void
     isExpanded: boolean
 }) {
@@ -24,16 +23,12 @@ export default function InspectionHeader({
         <div className={styles["header"]}>
             <h1>Guardian Lookup Page</h1>
             <div className={styles["controls"]}>
-                <Search
-                    addMember={membershipId =>
-                        addMember({ membershipId, isFireteamIncluded: isCheckboxChecked })
-                    }
-                />
+                <Search addMember={membershipId => addMember(membershipId, isCheckboxChecked)} />
                 <Checkbox isChecked={isCheckboxChecked} setIsChecked={setIsCheckboxChecked} />
                 <button
                     onClick={() => {
                         bungie.profileTransitory.refetchQueries(query =>
-                            memberIds.some(id => query.queryKey.includes(id))
+                            Array.from(memberIds).some(id => query.queryHash.includes(id))
                         )
                     }}>
                     Refresh

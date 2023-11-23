@@ -5,6 +5,7 @@ import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
 import {
     DestinyCharacterActivitiesComponent,
+    DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
 import { useBungieClient } from "~/components/app/TokenManager"
@@ -13,18 +14,45 @@ import { useActivity, useActivityMode } from "~/components/app/DestinyManifestMa
 import Loading from "~/components/global/Loading"
 import { useProfileProps } from "../Profile"
 
-type CurrentActivityParams = {
-    activitiesComponent: DestinyCharacterActivitiesComponent
-}
-
-const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
+export default function CurrentActivity() {
     const bungie = useBungieClient()
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
-    const { data: transitoryComponent, dataUpdatedAt: updatedAt } =
-        bungie.profileTransitory.useQuery({
+    const { data, dataUpdatedAt: updatedAt } = bungie.profileTransitory.useQuery(
+        {
             destinyMembershipId,
             membershipType: destinyMembershipType
-        })
+        },
+        {
+            refetchInterval: 60000,
+            refetchIntervalInBackground: false,
+            refetchOnReconnect: true,
+            refetchOnWindowFocus: true
+        }
+    )
+
+    const activities = Object.values(data?.characterActivities.data ?? {}).sort(
+        (a, b) =>
+            new Date(b.dateActivityStarted).getTime() - new Date(a.dateActivityStarted).getTime()
+    )[0] as DestinyCharacterActivitiesComponent | undefined
+
+    return data?.profileTransitoryData.data?.currentActivity ? (
+        <CurrentActivityExisting
+            transitoryComponent={data.profileTransitoryData.data}
+            updatedAt={updatedAt}
+            activitiesComponent={activities!}
+        />
+    ) : null
+}
+
+function CurrentActivityExisting({
+    transitoryComponent,
+    activitiesComponent,
+    updatedAt
+}: {
+    transitoryComponent: DestinyProfileTransitoryComponent
+    activitiesComponent: DestinyCharacterActivitiesComponent
+    updatedAt: number
+}) {
     const { data: activity, isLoading: isLoadingActivity } = useActivity(
         activitiesComponent.currentActivityHash
     )
@@ -48,7 +76,7 @@ const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
 
     const { strings } = useLocale()
 
-    if (transitoryComponent?.currentActivity && (isLoadingActivityMode || isLoadingActivity)) {
+    if (isLoadingActivityMode || isLoadingActivity) {
         return <Loading className={styles["current-activity"]} />
     }
 
@@ -57,7 +85,7 @@ const CurrentActivity = ({ activitiesComponent }: CurrentActivityParams) => {
             href={{
                 pathname: "/guardians",
                 query: {
-                    ids: transitoryComponent.partyMembers.map(pm => pm.membershipId).join(", ")
+                    membershipId: transitoryComponent.partyMembers.map(pm => pm.membershipId)
                 }
             }}
             className={styles["current-activity"]}>
@@ -124,5 +152,3 @@ function Timer({ lastRefresh, startTime }: { lastRefresh: number; startTime: Dat
 
     return <div className={styles["timer"]}>{secondsToHMS(elapsed, true)}</div>
 }
-
-export default CurrentActivity

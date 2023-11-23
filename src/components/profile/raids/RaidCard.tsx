@@ -47,8 +47,6 @@ type RaidModalProps = {
         | { isLoadingActivities: true; activities: null }
     )
 
-const isLoadingReport = false
-
 export default function RaidCard({
     raid,
     expand,
@@ -210,7 +208,7 @@ export default function RaidCard({
                                 ? secondsToHMS(fastestFullClear.durationSeconds)
                                 : strings.na
                         }
-                        isLoading={isLoadingReport}
+                        isLoading={isLoadingActivities}
                         name={strings.fastestClear}
                         href={fastestFullClear ? `/pgcr/${fastestFullClear.activityId}` : undefined}
                     />
@@ -218,7 +216,7 @@ export default function RaidCard({
                         displayValue={
                             averageClear ? secondsToHMS(averageClear.durationSeconds) : strings.na
                         }
-                        isLoading={isLoadingReport}
+                        isLoading={isLoadingActivities}
                         name={strings.averageClear}
                         href={averageClear ? `/pgcr/${averageClear.activityId}` : undefined}
                     />
