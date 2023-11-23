@@ -48,10 +48,12 @@ const playerCounts = [1, 2, 3, 4, 5, 6, 12, 50]
 
 export default function Find({
     query,
-    replaceAllQueryParams
+    replaceAllQueryParams,
+    sessionMembershipId
 }: {
     query: z.infer<typeof activitySearchQuerySchema>
     replaceAllQueryParams: (searchParams: URLSearchParams) => void
+    sessionMembershipId: string
 }) {
     const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>({
         defaultValues: {
@@ -59,7 +61,10 @@ export default function Find({
             completed: query.completed === undefined ? -1 : query.completed ? 1 : 0,
             fresh: query.fresh === undefined ? -1 : query.fresh ? 1 : 0,
             raid: -1,
-            players: query.membershipIds?.map(m => ({ membershipId: m })) ?? [],
+            players:
+                query.membershipIds
+                    ?.filter(m => m !== sessionMembershipId)
+                    .map(m => ({ membershipId: m })) ?? [],
             playerCountRange: [query.minPlayers, query.maxPlayers],
             dateRange: [query.minDate, query.maxDate],
             seasonRange: [query.minSeason, query.maxSeason]
@@ -77,6 +82,8 @@ export default function Find({
         dateRange: [minDate, maxDate]
     }) => {
         const searchString = new URLSearchParams()
+
+        searchString.append("membershipId", sessionMembershipId)
 
         players.forEach(p => {
             searchString.append("membershipId", p.membershipId)
@@ -148,7 +155,10 @@ export default function Find({
                         <h2>Players</h2>
                         <div className={styles["players-components"]}>
                             <PlayerLookup addPlayer={r => setValue("players", [...players, r])} />
-                            <AddedPlayers control={control} />
+                            <AddedPlayers
+                                control={control}
+                                sessionMembershipId={sessionMembershipId}
+                            />
                         </div>
                     </div>
                     <div className={styles["gadgets"]}>
@@ -188,7 +198,7 @@ export default function Find({
                         </div>
                     </div>
                 </div>
-                <button type="submit" disabled={!players.length || isLoading} role="button">
+                <button type="submit" disabled={isLoading} role="button">
                     Search
                 </button>
             </form>
@@ -244,7 +254,13 @@ const PlayerLookup = ({ addPlayer }: { addPlayer: (p: RaidHubSearchResult) => vo
     )
 }
 
-const AddedPlayers = ({ control }: { control: Control<ActivitySearchFormState, any> }) => {
+const AddedPlayers = ({
+    control,
+    sessionMembershipId
+}: {
+    control: Control<ActivitySearchFormState, any>
+    sessionMembershipId: string
+}) => {
     const { fields, remove } = useFieldArray({
         control,
         name: "players"
@@ -254,21 +270,17 @@ const AddedPlayers = ({ control }: { control: Control<ActivitySearchFormState, a
         <div className={styles["selected-players"]}>
             <h3>Selected Players</h3>
             <ul>
-                {fields.length ? (
-                    fields.map((player, index) => (
-                        <li key={player.id}>
-                            <PickedPlayer {...player} />
-                            <button
-                                type="button"
-                                onClick={() => remove(index)}
-                                style={{ flexGrow: 0 }}>
-                                Remove
-                            </button>
-                        </li>
-                    ))
-                ) : (
-                    <h5>You must select at least 1 player.</h5>
-                )}
+                <li>
+                    <PickedPlayer membershipId={sessionMembershipId} />
+                </li>
+                {fields.map((player, index) => (
+                    <li key={player.id}>
+                        <PickedPlayer {...player} />
+                        <button type="button" onClick={() => remove(index)} style={{ flexGrow: 0 }}>
+                            Remove
+                        </button>
+                    </li>
+                ))}
             </ul>
         </div>
     )
