@@ -10,7 +10,7 @@ const nextConfig = {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         APP_ENV: process.env.APP_ENV,
         RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.app",
-        RAIDHUB_API_KEY: process.env.RAIDHUB_API_KEY
+        RAIDHUB_API_KEY: process.env.RAIDHUB_API_KEY ?? null
     },
     images: {
         remotePatterns: [

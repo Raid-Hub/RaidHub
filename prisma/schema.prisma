@@ -105,7 +105,7 @@ model Account {
 }
 
 model PGCR {
-  id                 String    @id
+  id                 String    @id @map("instance_id")
   videoURL           String?   @map("video_url")
   profilesWithPinned Profile[]
 
