@@ -25,9 +25,11 @@ export async function updateBungieAccessTokens({
     await Promise.all([
         prisma.accessToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
+            .catch(console.error)
             .then(() => prisma.accessToken.create(prepare(access))),
         prisma.refreshToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
-            .then(() => prisma.accessToken.create(prepare(refresh)))
+            .catch(console.error)
+            .then(() => prisma.refreshToken.create(prepare(refresh)))
     ])
 }
