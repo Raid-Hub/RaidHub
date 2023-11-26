@@ -33,6 +33,21 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
         })
         return { ...created, email: created.email || "" }
     },
+    async updateUser(user) {
+        const parsed = zUser.parse(user)
+        const updated = await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: parsed,
+            include: {
+                profile: true,
+                bungieAccessToken: true,
+                bungieRefreshToken: true
+            }
+        })
+        return { ...updated, email: updated.email || "" }
+    },
     async getUser(id) {
         const found = await prisma.user.findUnique({
             where: {
@@ -59,6 +74,9 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
         })
 
         return account?.user ? { ...account.user, email: account.user.email || "" } : null
+    },
+    async getUserByEmail() {
+        return null
     },
     async linkAccount(account) {
         // if (account.provider === "discord") {
@@ -118,20 +136,5 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
     },
     async deleteSession(sessionToken) {
         return prisma.session.delete({ where: { sessionToken } })
-    },
-    async updateUser(user) {
-        const parsed = zUser.parse(user)
-        const updated = await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: parsed,
-            include: {
-                profile: true,
-                bungieAccessToken: true,
-                bungieRefreshToken: true
-            }
-        })
-        return { ...updated, email: updated.email || "" }
     }
 })
