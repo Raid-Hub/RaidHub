@@ -34,7 +34,7 @@ export type ProfileSocialData = {
     id: Socials
     Icon: React.FC<SVGProps>
     displayName: string
-    url?: string
+    url?: string | null
 }
 
 export type RaidTag = {

@@ -1,4 +1,4 @@
-import { CallbacksOptions } from "@auth/core/types"
+import type { CallbacksOptions } from "@auth/core/types"
 import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
 import { UserMembershipData } from "bungie-net-core/models"
 import { Profile } from "@prisma/client"

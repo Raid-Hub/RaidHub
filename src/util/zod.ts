@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { User as PrismaUser, Profile as PrismaProfile, Prisma, Role } from "@prisma/client"
+import { Role, Prisma } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { UrlPathsToRaid } from "./destiny/raidUtils"
 
@@ -18,40 +18,26 @@ const BungieMembershipEnum = z.nativeEnum({
 })
 
 export const zProfile = z.object({
+    name: z.string(),
+    image: z.string(),
+    userId: z.string(),
+    vanity: z.nullable(z.string()),
     destinyMembershipId: z.string(),
-    speedrunUsername: z.string().nullable().default(null),
-    bungieUsername: z.string(),
-    discordUsername: z.string().nullable().default(null),
-    twitchUsername: z.string().nullable().default(null),
-    youtubeUsername: z.string().nullable().default(null),
     destinyMembershipType: BungieMembershipEnum,
     twitterUsername: z.nullable(z.string()),
     pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
     profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
 }) satisfies {
-    _output: Omit<PrismaProfile, "id">
+    _output: Omit<Prisma.ProfileUpdateInput, "id">
 }
 
 export const zUser = z.object({
-    name: z.string(),
-    image: z.string(),
-    destinyMembershipId: z.string(),
-    destinyMembershipType: BungieMembershipEnum,
     bungieMembershipId: z.string(),
     role: z.nativeEnum(Role),
     email: z.string().nullable().default(null),
     emailVerified: z.nullable(z.date())
 }) satisfies {
-    _output: Omit<PrismaUser, "id">
-}
-
-export const zModifiableUser = z
-    .object({
-        name: z.string(),
-        image: z.string()
-    })
-    .partial() satisfies {
-    _output: Partial<z.infer<typeof zUser>>
+    _output: Omit<Prisma.UserUpdateInput, "id">
 }
 
 const zProfileDecoration = z.string().regex(/^#[A-Fa-f0-9]{8}$/, "Invalid color code")
@@ -85,7 +71,7 @@ export const zUniqueDestinyProfile = z.object({
     ]),
     destinyMembershipId: z.string().regex(/^\d+$/)
 }) satisfies {
-    _output: Prisma.ProfileDestinyMembershipIdDestinyMembershipTypeCompoundUniqueInput & {
+    _output: {
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
     }

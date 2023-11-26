@@ -10,6 +10,7 @@ import prisma from "../prisma"
 import { Provider } from "@auth/core/providers"
 import NextAuth from "next-auth"
 import { User as PrismaUser, Session as PrismaSession } from "@prisma/client"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export type BungieToken = {
     value: string
@@ -29,12 +30,13 @@ declare module "@auth/core/adapters" {
     interface AdapterUser extends PrismaUser {
         image: string
         name: string
+        destinyMembershipId: string
+        destinyMembershipType: BungieMembershipType
         bungieAccessToken: BungieToken | null
         bungieRefreshToken: BungieToken | null
     }
 }
 
-// next auth(or should i say auth.js???) needs to get their shit together with these types man
 export const {
     auth,
     handlers: { GET, POST }

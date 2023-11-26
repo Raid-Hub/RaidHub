@@ -4,17 +4,15 @@ import { zCreateVanity } from "~/util/zod"
 
 export const createVanity = adminProcedure.input(zCreateVanity).mutation(async ({ input, ctx }) => {
     try {
-        const vanity = await ctx.prisma.vanity.create({
+        const vanity = await ctx.prisma.profile.update({
+            where: {
+                destinyMembershipId: input.destinyMembershipId
+            },
             data: {
-                string: input.string,
-                profile: {
-                    connect: {
-                        destinyMembershipId_destinyMembershipType: {
-                            destinyMembershipId: input.destinyMembershipId,
-                            destinyMembershipType: input.destinyMembershipType
-                        }
-                    }
-                }
+                vanity: input.string
+            },
+            select: {
+                vanity: true
             }
         })
         return vanity

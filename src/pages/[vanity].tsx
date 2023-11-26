@@ -25,20 +25,23 @@ const ProfileVanityPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 }
 
 export const getStaticPaths: GetStaticPaths<{ vanity: string }> = async () => {
-    const vanities = await prisma.vanity.findMany({
+    const vanities = await prisma.profile.findMany({
         where: {
             NOT: {
-                profileId: null
+                vanity: null
             }
+        },
+        select: {
+            vanity: true
         }
     })
 
     return {
         paths:
             process.env.APP_ENV !== "local"
-                ? vanities.map(v => ({
+                ? vanities.map(({ vanity }) => ({
                       params: {
-                          vanity: v.string
+                          vanity: vanity!
                       }
                   }))
                 : [],
@@ -53,34 +56,30 @@ export const getStaticProps: GetStaticProps<
     try {
         const vanityString = z.string().parse(params?.vanity)
         const getVanity = async (string: string) =>
-            prisma.vanity.findUnique({
+            prisma.profile.findUnique({
                 where: {
-                    string
+                    vanity: string
                 },
                 select: {
-                    profile: {
-                        select: {
-                            destinyMembershipId: true,
-                            destinyMembershipType: true
-                        }
-                    }
+                    destinyMembershipId: true,
+                    destinyMembershipType: true
                 }
             })
 
         const vanity = await getVanity(vanityString.toLowerCase())
 
-        if (vanity?.profile?.destinyMembershipId && vanity.profile.destinyMembershipType) {
+        if (vanity?.destinyMembershipId && vanity.destinyMembershipType) {
             const queryClient = createServerSideQueryClient()
             const helpers = createTrpcServerSideHelpers()
             await Promise.all([
-                prefetchDestinyProfile(vanity.profile, queryClient),
-                prefetchRaidHubPlayer(vanity.profile.destinyMembershipId, queryClient),
-                prefetchRaidHubProfile(vanity.profile.destinyMembershipId, helpers)
+                prefetchDestinyProfile(vanity, queryClient),
+                prefetchRaidHubPlayer(vanity.destinyMembershipId, queryClient),
+                prefetchRaidHubProfile(vanity.destinyMembershipId, helpers)
             ])
 
             return {
                 props: {
-                    ...vanity.profile,
+                    ...vanity,
                     trpcState: helpers.dehydrate(),
                     dehydratedState: dehydrate(queryClient)
                 },

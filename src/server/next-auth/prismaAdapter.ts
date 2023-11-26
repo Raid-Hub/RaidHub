@@ -1,5 +1,5 @@
-import { Account, PrismaClient } from "@prisma/client"
-import { zUser, zUsernames } from "~/util/zod"
+import type { PrismaClient } from "@prisma/client"
+import { zProfile, zUser } from "~/util/zod"
 import { Adapter } from "@auth/core/adapters"
 import { z } from "zod"
 
@@ -11,42 +11,62 @@ const zToken = z.object({
 export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
     async createUser(user) {
         const parsedUser = zUser.parse(user)
-        const usernames = zUsernames.parse(user)
+        const parsedProfile = zProfile.parse(user)
         const bungieAccessToken = zToken.parse(user.bungieAccessToken)
         const bungieRefreshToken = zToken.parse(user.bungieRefreshToken)
 
-        const created = await prisma.user.create({
+        const { profile, ...created } = await prisma.user.create({
             data: {
                 ...parsedUser,
                 profile: {
-                    create: usernames
+                    create: parsedProfile
                 },
                 bungieAccessToken: {
                     create: bungieAccessToken
                 },
-                bungieRefreshToken: { create: bungieRefreshToken }
+                bungieRefreshToken: {
+                    create: bungieRefreshToken
+                }
             },
             include: {
                 bungieAccessToken: true,
-                bungieRefreshToken: true
+                bungieRefreshToken: true,
+                profile: {
+                    select: {
+                        name: true,
+                        image: true,
+                        destinyMembershipId: true,
+                        destinyMembershipType: true
+                    }
+                }
             }
         })
-        return { ...created, email: created.email || "" }
+        if (!profile) throw new Error("Profile not created")
+        return { ...created, ...profile, email: created.email || "" }
     },
     async updateUser(user) {
         const parsed = zUser.parse(user)
-        const updated = await prisma.user.update({
+        const { profile, ...updated } = await prisma.user.update({
             where: {
                 id: user.id
             },
             data: parsed,
             include: {
-                profile: true,
+                profile: {
+                    select: {
+                        name: true,
+                        image: true,
+                        destinyMembershipId: true,
+                        destinyMembershipType: true
+                    }
+                },
                 bungieAccessToken: true,
                 bungieRefreshToken: true
             }
         })
-        return { ...updated, email: updated.email || "" }
+        if (!profile) throw new Error("Profile not updated")
+
+        return { ...updated, ...profile, email: updated.email || "" }
     },
     async getUser(id) {
         const found = await prisma.user.findUnique({
@@ -54,26 +74,47 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
                 id
             },
             include: {
+                profile: {
+                    select: {
+                        name: true,
+                        image: true,
+                        destinyMembershipId: true,
+                        destinyMembershipType: true
+                    }
+                },
                 bungieAccessToken: true,
                 bungieRefreshToken: true
             }
         })
-        return found ? { ...found, email: found.email || "" } : null
+        if (!found) return null
+        const { profile, ...user } = found
+        if (!profile) throw new Error("Profile not found")
+        return { ...user, ...profile, email: found.email || "" }
     },
     async getUserByAccount(provider_providerAccountId) {
         const account = await prisma.account.findUnique({
             where: { provider_providerAccountId },
-            include: {
+            select: {
                 user: {
                     include: {
+                        profile: {
+                            select: {
+                                name: true,
+                                image: true,
+                                destinyMembershipId: true,
+                                destinyMembershipType: true
+                            }
+                        },
                         bungieAccessToken: true,
                         bungieRefreshToken: true
                     }
                 }
             }
         })
-
-        return account?.user ? { ...account.user, email: account.user.email || "" } : null
+        if (!account) return null
+        const { profile, ...user } = account.user
+        if (!profile) throw new Error("Profile not found")
+        return { ...user, ...profile, email: user.email || "" }
     },
     async getUserByEmail() {
         return null
@@ -96,14 +137,15 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
                 type: account.type,
                 provider: account.provider,
                 providerAccountId: account.providerAccountId,
-                refresh_token: account.refresh_token ?? null,
-                access_token: account.access_token ?? null,
-                expires_at: account.expires_at ?? null,
-                token_type: account.token_type ?? null,
+                displayName: null,
+                refreshToken: account.refresh_token ?? null,
+                accessToken: account.access_token ?? null,
+                expiresAt: account.expires_at ?? null,
+                tokenType: account.token_type ?? null,
                 scope: account.scope ?? null,
-                id_token: account.id_token ?? null,
-                session_state: account.session_state ? String(account.session_state) : null
-            } satisfies Omit<Account, "id">
+                idToken: account.id_token ?? null,
+                sessionState: account.session_state ? String(account.session_state) : null
+            }
         })
     },
     async createSession(session) {
@@ -115,6 +157,14 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
             include: {
                 user: {
                     include: {
+                        profile: {
+                            select: {
+                                name: true,
+                                image: true,
+                                destinyMembershipId: true,
+                                destinyMembershipType: true
+                            }
+                        },
                         bungieAccessToken: true,
                         bungieRefreshToken: true
                     }
@@ -123,10 +173,11 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
         })
         if (!userAndSession) return null
         const {
-            user: { email, ...user },
+            user: { profile, ...restOfUser },
             ...session
         } = userAndSession
-        return { user: { ...user, email: email || "" }, session }
+        if (!profile) throw new Error("Profile not found")
+        return { user: { ...profile, ...restOfUser, email: restOfUser.email || "" }, session }
     },
     async updateSession(session) {
         return prisma.session.update({

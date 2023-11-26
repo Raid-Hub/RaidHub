@@ -34,44 +34,41 @@ export default function UserCard() {
     const socials = useMemo(() => {
         if (!raidHubProfile) return null
         const socials = new Array<ProfileSocialData>()
-        if (raidHubProfile.discordUsername) {
+        const { connections } = raidHubProfile
+        if (connections.has("discord")) {
             socials.push({
                 id: Socials.Discord,
                 Icon: DiscordIcon,
-                displayName: raidHubProfile.discordUsername
+                ...connections.get("discord")!
             })
         }
-        if (raidHubProfile.twitterUsername) {
+        if (connections.has("twitter")) {
             socials.push({
                 id: Socials.Twitter,
                 Icon: TwitterIcon,
-                displayName: raidHubProfile.twitterUsername,
-                url: `https://twitter.com/${raidHubProfile.twitterUsername}`
+                ...connections.get("twitter")!
             })
         }
-        if (raidHubProfile.youtubeUsername) {
+        if (connections.has("google")) {
             socials.push({
                 id: Socials.YouTube,
                 Icon: YoutubeIcon,
-                displayName: raidHubProfile.youtubeUsername,
-                url: `https://youtube.com/${raidHubProfile.youtubeUsername}`
+                ...connections.get("google")!
             })
         }
-        if (raidHubProfile.twitchUsername) {
+        if (connections.has("twitch")) {
             socials.push({
                 id: Socials.Twitch,
                 Icon: TwitchIcon,
-                displayName: raidHubProfile.twitchUsername,
-                url: `https://twitch.tv/${raidHubProfile.twitchUsername}`
+                ...connections.get("twitch")!
             })
         }
 
-        if (raidHubProfile.speedrunUsername) {
+        if (connections.has("speedrun")) {
             socials.push({
                 id: Socials.Speedrun,
                 Icon: SpeedrunIcon,
-                displayName: raidHubProfile.speedrunUsername,
-                url: `https://www.speedrun.com/users/${raidHubProfile.speedrunUsername}`
+                ...connections.get("speedrun")!
             })
         }
         return socials
