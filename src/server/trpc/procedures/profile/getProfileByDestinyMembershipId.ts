@@ -18,15 +18,39 @@ export const getProfileByDestinyMembershipId = publicProcedure
                 include: {
                     user: {
                         select: {
-                            image: true,
-                            name: true
+                            accounts: {
+                                select: {
+                                    provider: true,
+                                    displayName: true,
+                                    url: true
+                                },
+                                where: {
+                                    provider: {
+                                        in: ["discord", "twitch", "twitter", "google", "speedrun"]
+                                    },
+                                    displayName: {
+                                        not: null
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             })
-            if (!data) return null
-            const { user, ...profile } = data
-            return { ...user, ...profile }
+            if (!data?.user) return null
+            const {
+                user: { accounts },
+                ...profile
+            } = data
+            return {
+                ...profile,
+                connections: new Map(
+                    accounts.map(({ provider, displayName, url }) => [
+                        provider,
+                        { displayName: displayName!, url }
+                    ])
+                )
+            }
         } catch (e: any) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",

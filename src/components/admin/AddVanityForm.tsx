@@ -52,7 +52,7 @@ const AddVanityForm = () => {
             </button>
             {isSuccess && (
                 <div style={{ color: "green" }}>
-                    Success: <Link href={`/${data.string}`}>/{data.string}</Link>
+                    Success: <Link href={`/${data.vanity}`}>/{data.vanity}</Link>
                 </div>
             )}
             {isError && <div style={{ color: "red" }}>Error {<span>{error.message}</span>}</div>}

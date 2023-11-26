@@ -1,9 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -12,52 +10,42 @@ datasource db {
   relationMode = "prisma"
 }
 
-// Represents an OAuth account. Do not edit these fields.
-model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@unique([provider, userId])
-  @@index([userId])
-}
-
 enum Role {
   USER
   ADMIN
 }
 
-model User {
-  id                    String        @id @default(uuid())
+model Profile {
+  id                    String  @id @default(uuid())
   name                  String
   image                 String
-  bungieMembershipId    String        @unique @map("bungie_membership_id")
-  destinyMembershipId   String        @unique @map("destiny_membership_id")
-  destinyMembershipType Int           @map("destiny_membership_type")
-  bungieAccessToken     AccessToken?
-  bungieRefreshToken    RefreshToken?
-  email                 String?       @unique
-  emailVerified         DateTime?     @map("email_verified")
-  role                  Role          @default(USER)
-  profile               Profile?
-  accounts              Account[]
-  sessions              Session[]
+  userId                String  @unique @map("user_id")
+  destinyMembershipId   String  @unique @map("destiny_membership_id")
+  destinyMembershipType Int     @map("destiny_membership_type")
+  pinnedActivityId      String? @map("pinned_activity_id")
+  profileDecoration     String? @map("profile_decoration") @db.VarChar(512)
+  vanity                String? @unique
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pinnedPGCR            PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
 
-  @@unique([destinyMembershipId, destinyMembershipType])
-  @@index([bungieMembershipId])
-  @@index([destinyMembershipId, destinyMembershipType])
+  @@index([pinnedActivityId])
+  @@map("profile")
+}
+
+model User {
+  id                 String        @id @default(uuid())
+  bungieMembershipId String        @unique @map("bungie_membership_id")
+  email              String?       @unique
+  emailVerified      DateTime?     @map("email_verified")
+  createdAt          DateTime      @default(now())
+  role               Role          @default(USER)
+  bungieAccessToken  AccessToken?
+  bungieRefreshToken RefreshToken?
+  profile            Profile?
+  accounts           Account[]
+  sessions           Session[]
+
+  @@map("user")
 }
 
 model AccessToken {
@@ -67,7 +55,7 @@ model AccessToken {
   expires            DateTime @default(now())
   user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
 
-  @@index([bungieMembershipId])
+  @@map("bungie_access_token")
 }
 
 model RefreshToken {
@@ -77,49 +65,49 @@ model RefreshToken {
   expires            DateTime @default(now())
   user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
 
-  @@index([bungieMembershipId])
+  @@map("bungie_refresh_token")
 }
 
-// do not edit these fields
+// Represents an OAuth session. Do not edit these fields.
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
   sessionToken String   @unique @map("session_token")
   expires      DateTime @default(now())
-  userId       String   @map("user_id")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@map("session")
 }
 
-model Profile {
-  id                    String  @id @default(cuid())
-  destinyMembershipId   String  @unique @map("destinyMembershipId")
-  destinyMembershipType Int     @map("destiny_membership_type")
-  user                  User    @relation(fields: [destinyMembershipId, destinyMembershipType], references: [destinyMembershipId, destinyMembershipType], onDelete: Cascade)
-  vanity                Vanity?
-  bungieUsername        String? @map("bungie_username")
-  discordUsername       String? @map("discord_username")
-  twitchUsername        String? @map("twitch_username")
-  twitterUsername       String? @map("twitter_username")
-  youtubeUsername       String? @map("youtube_username")
-  speedrunUsername      String? @map("speedrun_username")
-  pinnedActivityId      String? @map("pinned_activity_id")
-  pinnedPGCR            PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)
-  profileDecoration     String? @map("profile_decoration") @db.VarChar(512)
+// Represents an OAuth account. Do not edit these fields.
+model Account {
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  displayName       String? @map("display_name")
+  url               String? @map("url")
+  refreshToken      String? @db.Text
+  accessToken       String? @db.Text
+  expiresAt         Int?
+  tokenType         String?
+  scope             String?
+  idToken           String? @db.Text
+  sessionState      String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([destinyMembershipId, destinyMembershipType])
-  @@index([pinnedActivityId])
-}
-
-model Vanity {
-  id        String   @id @default(cuid())
-  string    String   @unique
-  profileId String?  @unique @map("profile_id")
-  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+  @@unique([provider, userId])
+  @@index([userId])
+  @@map("account")
 }
 
 model PGCR {
   id                 String    @id
   videoURL           String?   @map("video_url")
   profilesWithPinned Profile[]
+
+  @@map("pgcr")
 }

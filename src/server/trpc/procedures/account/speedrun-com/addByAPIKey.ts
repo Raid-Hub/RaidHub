@@ -32,11 +32,15 @@ export const addByAPIKey = protectedProcedure
 
             const {
                 data: {
+                    id,
+                    weblink,
                     names: { international: username }
                 }
             } = z
                 .object({
                     data: z.object({
+                        id: z.string(),
+                        weblink: z.string().url(),
                         names: z.object({
                             international: z.string()
                         })
@@ -44,14 +48,16 @@ export const addByAPIKey = protectedProcedure
                 })
                 .parse(data)
 
-            await ctx.prisma.user.update({
-                where: {
-                    id: ctx.session.user.id
-                },
+            await ctx.prisma.account.create({
                 data: {
-                    profile: {
-                        update: {
-                            speedrunUsername: username
+                    displayName: username,
+                    provider: "speedrun",
+                    providerAccountId: id,
+                    type: "api-key",
+                    url: weblink,
+                    user: {
+                        connect: {
+                            id: ctx.session.user.id
                         }
                     }
                 }

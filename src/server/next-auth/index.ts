@@ -1,18 +1,48 @@
-import CustomBungieProvider from "~/server/next-auth/CustomBungieProvider"
-import CustomPrismaAdapter from "~/server/next-auth/CustomPrismaAdapter"
-import { sessionCallback } from "~/server/next-auth/sessionCallback"
-import { updateBungieAccessTokens } from "~/server/next-auth/updateBungieAccessTokens"
-import prisma from "server/prisma"
-import { AuthOptions } from "next-auth"
-import { Provider } from "next-auth/providers"
-import DiscordProvider from "next-auth/providers/discord"
-import TwitchProvider from "next-auth/providers/twitch"
-import TwitterProvider from "next-auth/providers/twitter"
-import GoogleProvider from "next-auth/providers/google"
+import DiscordProvider from "@auth/core/providers/discord"
+import TwitchProvider from "@auth/core/providers/twitch"
+import TwitterProvider from "@auth/core/providers/twitter"
+import GoogleProvider from "@auth/core/providers/google"
+import BungieProvider from "~/server/next-auth/providers/BungieProvider"
+import { SessionUser, sessionCallback } from "~/server/next-auth/sessionCallback"
+import { signInCallback } from "./signInCallback"
+import { prismaAdapter } from "./adapter"
+import prisma from "../prisma"
+import { Provider } from "@auth/core/providers"
+import NextAuth from "next-auth"
+import { User as PrismaUser, Session as PrismaSession } from "@prisma/client"
+import { BungieMembershipType } from "bungie-net-core/models"
 
-export const nextAuthOptions: AuthOptions = {
-    adapter: CustomPrismaAdapter(prisma),
+export type BungieToken = {
+    value: string
+    expires: Date
+}
+
+export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
+
+declare module "@auth/core/types" {
+    interface Session extends PrismaSession {
+        error?: AuthError
+        user: SessionUser
+    }
+}
+
+declare module "@auth/core/adapters" {
+    interface AdapterUser extends PrismaUser {
+        image: string
+        name: string
+        destinyMembershipId: string
+        destinyMembershipType: BungieMembershipType
+        bungieAccessToken: BungieToken | null
+        bungieRefreshToken: BungieToken | null
+    }
+}
+
+export const {
+    auth,
+    handlers: { GET, POST }
+} = NextAuth({
     providers: getProviders(),
+    adapter: prismaAdapter(prisma),
     pages: {
         signIn: "/login",
         signOut: "/logout",
@@ -25,43 +55,19 @@ export const nextAuthOptions: AuthOptions = {
     },
     callbacks: {
         session: sessionCallback,
-        async signIn({ account, user }) {
-            // @ts-expect-error this line here determines if we need to update the tokens. Users
-            // from the callback will have user.id == user.bungieMembershipId, while users from teh DB will have a UUID
-            if (account?.provider === "bungie" && user.id !== user.bungieMembershipId) {
-                await updateBungieAccessTokens({
-                    // @ts-expect-error
-                    bungieMembershipId: user.bungieMembershipId as string,
-                    access: {
-                        value: account.access_token!,
-                        expires: account.expires_at! * 1000
-                    },
-                    refresh: {
-                        value: account.refresh_token!,
-                        expires: Date.now() + 7_775_777_777
-                    }
-                }).catch(console.error)
-            }
-            return true
-        }
+        // @ts-expect-error
+        signIn: signInCallback
     }
-}
+})
 
 function getProviders(): Provider[] {
-    const providers = new Array<Provider>()
-    if (
-        process.env.BUNGIE_CLIENT_ID &&
-        process.env.BUNGIE_CLIENT_SECRET &&
-        process.env.BUNGIE_API_KEY
-    ) {
-        providers.push(
-            CustomBungieProvider({
-                clientId: process.env.BUNGIE_CLIENT_ID,
-                clientSecret: process.env.BUNGIE_CLIENT_SECRET,
-                apiKey: process.env.BUNGIE_API_KEY
-            })
-        )
-    }
+    const providers = new Array<Provider>(
+        BungieProvider({
+            clientId: process.env.BUNGIE_CLIENT_ID!,
+            clientSecret: process.env.BUNGIE_CLIENT_SECRET!,
+            apiKey: process.env.BUNGIE_API_KEY!
+        })
+    )
 
     if (process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET) {
         providers.push(
@@ -84,7 +90,6 @@ function getProviders(): Provider[] {
     if (process.env.TWITTER_CLIENT_ID && process.env.TWITTER_CLIENT_SECRET) {
         providers.push(
             TwitterProvider({
-                version: "2.0",
                 clientId: process.env.TWITTER_CLIENT_ID,
                 clientSecret: process.env.TWITTER_CLIENT_SECRET
             })

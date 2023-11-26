@@ -1,26 +1,11 @@
 #!/bin/bash
-function seed_and_build() {
-
-    # Run build in the background
-    yarn next build &
-    pid1=$!
-
-    # Run seed in the background
-    yarn prisma db seed &
-    pid2=$!
-
-    # Wait for both commands to finish
-    wait $pid1
-    wait $pid2
-}
-
 if [[ -n $NAMESPACE ]] ; then 
   echo "Deploying local build to preview: $NAMESPACE.raidhub.app..."
 
   yarn prisma generate
   yarn prisma db push --force-reset --skip-generate
   
-  seed_and_build
+  yarn next build
 
 elif [[ $APP_ENV == "staging" ]] ; then
   echo "Deploying to staging..."
@@ -28,7 +13,7 @@ elif [[ $APP_ENV == "staging" ]] ; then
   yarn prisma generate
   yarn prisma db push --accept-data-loss --skip-generate
 
-  seed_and_build
+  yarn next build
 
 elif [[ $VERCEL_ENV == "production" ]] ; then 
   echo "Deploying to production..."
@@ -43,7 +28,7 @@ elif [[ $VERCEL_ENV == "preview" ]] ; then
   yarn prisma generate
   yarn prisma db push --skip-generate
 
-  seed_and_build
+  yarn next build
 
 else
   echo "Building local..."
