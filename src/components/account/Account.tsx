@@ -86,7 +86,7 @@ const Account = ({ session }: AccountProps) => {
                     {discordProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "discord" })}
-                            link={() => signIn(discordProvider.id, {}, { prompt: "consent" })}
+                            link={() => signIn("discord", {}, { prompt: "consent" })}
                             serviceName={discordProvider.name}
                             username={socialNames?.discordUsername ?? null}
                             Icon={DiscordIcon}
@@ -95,7 +95,7 @@ const Account = ({ session }: AccountProps) => {
                     {twitterProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "twitter" })}
-                            link={() => signIn(twitterProvider.id, {}, { force_login: "true" })}
+                            link={() => signIn("twitter", {}, { force_login: "true" })}
                             serviceName={twitterProvider.name}
                             username={socialNames?.twitterUsername ?? null}
                             Icon={TwitterIcon}
@@ -104,7 +104,7 @@ const Account = ({ session }: AccountProps) => {
                     {twitchProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "twitch" })}
-                            link={() => signIn(twitchProvider.id, {}, { force_verify: "true" })}
+                            link={() => signIn("twitch", {}, { force_verify: "true" })}
                             serviceName={twitchProvider.name}
                             username={socialNames?.twitchUsername ?? null}
                             Icon={TwitchIcon}
@@ -113,7 +113,7 @@ const Account = ({ session }: AccountProps) => {
                     {googleProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "google" })}
-                            link={() => signIn(googleProvider.id, {}, { prompt: "select_account" })}
+                            link={() => signIn("google", {}, { prompt: "select_account" })}
                             serviceName={googleProvider.name}
                             username={socialNames?.youtubeUsername ?? null}
                             Icon={YoutubeIcon}
