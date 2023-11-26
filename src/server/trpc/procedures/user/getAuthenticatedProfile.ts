@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
 
 export const getAuthenticatedProfile = protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.userId
+    const userId = ctx.session.user.id
     try {
         const data = await ctx.prisma.profile.findUnique({
             where: {

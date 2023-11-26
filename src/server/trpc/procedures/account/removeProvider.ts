@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 // delete account from user
 export const removeProvider = protectedProcedure
@@ -23,6 +24,9 @@ export const removeProvider = protectedProcedure
                 }
             })
         } catch (e: any) {
+            if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
+                return
+            }
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",
                 message: e.message

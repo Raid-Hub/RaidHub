@@ -1,4 +1,4 @@
-import { DiscordProfile } from "next-auth/providers/discord"
+import { DiscordProfile } from "@auth/core/providers/discord"
 
 export async function getDiscordProfile(access_token: string) {
     const res = await fetch("https://discord.com/api/users/@me", {

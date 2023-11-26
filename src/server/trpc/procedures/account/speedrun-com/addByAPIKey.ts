@@ -57,7 +57,7 @@ export const addByAPIKey = protectedProcedure
                     url: weblink,
                     user: {
                         connect: {
-                            id: ctx.session.userId
+                            id: ctx.session.user.id
                         }
                     }
                 }

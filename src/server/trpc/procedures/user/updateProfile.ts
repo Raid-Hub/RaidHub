@@ -15,7 +15,7 @@ export const updateProfile = protectedProcedure
         try {
             const profile = await ctx.prisma.profile.update({
                 where: {
-                    userId: ctx.session.userId
+                    userId: ctx.session.user.id
                 },
                 data: input
             })

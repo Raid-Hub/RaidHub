@@ -1,7 +1,5 @@
-import { TwitterProfile } from "next-auth/providers/twitter"
-
 export async function getTwitterProfile(access_token: string) {
-    const res = await fetch("https://api.twitter.com/2/users/me", {
+    const res = await fetch("https://api.twitter.com/2/users/me?user.fields=url", {
         headers: {
             Authorization: `Bearer ${access_token}`
         }
@@ -9,7 +7,12 @@ export async function getTwitterProfile(access_token: string) {
 
     const data = await res.json()
     if (res.ok) {
-        return data.data as TwitterProfile["data"]
+        return data.data as {
+            name: string
+            url: string
+            id: string
+            username: string
+        }
     } else {
         throw data
     }

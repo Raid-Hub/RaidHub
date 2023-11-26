@@ -20,15 +20,17 @@ const BungieMembershipEnum = z.nativeEnum({
 export const zProfile = z.object({
     name: z.string(),
     image: z.string(),
-    userId: z.string(),
-    vanity: z.nullable(z.string()),
+    vanity: z.string().nullable().optional(),
     destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
-    twitterUsername: z.nullable(z.string()),
-    pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
-    profileDecoration: z.nullable(z.string().max(500, "CSS String too long, maximum length: 500"))
+    pinnedActivityId: z.string().regex(/^\d+$/).nullable().optional(),
+    profileDecoration: z
+        .string()
+        .max(500, "CSS String too long, maximum length: 500")
+        .nullable()
+        .optional()
 }) satisfies {
-    _output: Omit<Prisma.ProfileUpdateInput, "id">
+    _output: Omit<Prisma.ProfileCreateInput, "user">
 }
 
 export const zUser = z.object({
@@ -37,7 +39,7 @@ export const zUser = z.object({
     email: z.string().nullable().default(null),
     emailVerified: z.nullable(z.date())
 }) satisfies {
-    _output: Omit<Prisma.UserUpdateInput, "id">
+    _output: Prisma.UserCreateInput
 }
 
 const zProfileDecoration = z.string().regex(/^#[A-Fa-f0-9]{8}$/, "Invalid color code")
@@ -48,16 +50,6 @@ export const zModifiableProfile = z
         profileDecoration: zProfileDecoration.nullable()
     })
     .partial() satisfies {
-    _output: Partial<z.infer<typeof zProfile>>
-}
-
-export const zUsernames = z.object({
-    bungieUsername: z.string(),
-    discordUsername: z.string().nullable().default(null),
-    twitterUsername: z.string().nullable().default(null),
-    twitchUsername: z.string().nullable().default(null),
-    youtubeUsername: z.string().nullable().default(null)
-}) satisfies {
     _output: Partial<z.infer<typeof zProfile>>
 }
 

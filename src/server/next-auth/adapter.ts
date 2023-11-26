@@ -1,7 +1,11 @@
-import type { PrismaClient } from "@prisma/client"
+import type { Prisma, PrismaClient } from "@prisma/client"
 import { zProfile, zUser } from "~/util/zod"
 import { Adapter } from "@auth/core/adapters"
 import { z } from "zod"
+import { getTwitterProfile } from "./providers/twitter"
+import { getDiscordProfile } from "./providers/discord"
+import { getTwitchProfile } from "./providers/twitch"
+import { getYoutubeProfile } from "./providers/youtube"
 
 const zToken = z.object({
     value: z.string(),
@@ -119,34 +123,72 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
     async getUserByEmail() {
         return null
     },
-    async linkAccount(account) {
-        // if (account.provider === "discord") {
-        //     await addDiscordAccountToUser(account)
-        // } else if (account.provider === "twitch") {
-        //     await addTwitchAccountToUser(account)
-        // } else if (account.provider === "twitter") {
-        //     await addTwitterAccountToUser(account)
-        // } else if (account.provider === "google") {
-        //     await addYoutubeAccountToUser(account)
-        // }
-
-        // cleans properties that shouldnt be here
-        await prisma.account.create({
-            data: {
-                userId: account.userId,
-                type: account.type,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                displayName: null,
-                refreshToken: account.refresh_token ?? null,
-                accessToken: account.access_token ?? null,
-                expiresAt: account.expires_at ?? null,
-                tokenType: account.token_type ?? null,
-                scope: account.scope ?? null,
-                idToken: account.id_token ?? null,
-                sessionState: account.session_state ? String(account.session_state) : null
+    async linkAccount(rawAccount) {
+        const account: Prisma.AccountCreateInput = {
+            accessToken: rawAccount.access_token,
+            expiresAt: rawAccount.expires_at,
+            idToken: rawAccount.id_token,
+            provider: rawAccount.provider,
+            providerAccountId: rawAccount.providerAccountId,
+            refreshToken: rawAccount.refresh_token,
+            scope: rawAccount.scope,
+            tokenType: rawAccount.token_type,
+            type: rawAccount.type,
+            user: {
+                connect: {
+                    id: rawAccount.userId
+                }
             }
-        })
+        }
+
+        switch (account.provider) {
+            case "bungie":
+                await prisma.account.create({
+                    data: account
+                })
+                break
+            case "twitter":
+                const twitterProfile = await getTwitterProfile(account.accessToken!)
+
+                await prisma.account.create({
+                    data: {
+                        ...account,
+                        displayName: twitterProfile.username,
+                        url: twitterProfile.url
+                    }
+                })
+                break
+            case "discord":
+                const discordProfile = await getDiscordProfile(account.accessToken!)
+                await prisma.account.create({
+                    data: {
+                        ...account,
+                        displayName: discordProfile.username
+                    }
+                })
+                break
+            case "twitch":
+                const twitchProfile = await getTwitchProfile(account.accessToken!)
+                await prisma.account.create({
+                    data: {
+                        ...account,
+                        displayName: twitchProfile.display_name,
+                        url: `https://twitch.tv/${twitchProfile.login}`
+                    }
+                })
+                break
+            case "google":
+                const youtubeProfile = await getYoutubeProfile(account.accessToken!)
+                await prisma.account.create({
+                    data: {
+                        ...account,
+                        displayName: youtubeProfile.snippet.title,
+                        url: youtubeProfile.snippet.customUrl
+                            ? `https://youtube.com/${youtubeProfile.snippet.customUrl}`
+                            : `https://youtube.com/channel/${youtubeProfile.id}`
+                    }
+                })
+        }
     },
     async createSession(session) {
         return prisma.session.create({ data: session })
