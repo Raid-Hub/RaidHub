@@ -4,7 +4,7 @@ services:
     mysql:
         platform: linux/x86_64
         container_name: raidhub-mysql-on-docker
-        image: mysql:latest
+        image: mysql:5.7
         ports:
             - "${MYSQL_PORT}:3306"
         expose:
