@@ -193,4 +193,3 @@ function Input({
 }
 
 export default SearchModal
-

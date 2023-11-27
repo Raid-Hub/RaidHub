@@ -39,7 +39,8 @@ const PGCRSettingsMenu = ({
                 <CameraButton />
             </div>
             {/* Check PGCR Equals Raid Mode - Probably can do this for pin.*/}
-            {sessionData?.user.destinyMembershipId && pgcr.activityDetails.mode == 4 &&
+            {sessionData?.user.destinyMembershipId &&
+                pgcr.activityDetails.mode == 4 &&
                 pgcr.players
                     ?.map(p => p.membershipId)
                     .includes(sessionData.user.destinyMembershipId) && (

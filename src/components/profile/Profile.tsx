@@ -103,7 +103,9 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
     const description = `View ${
         username ? `${username}'s ` : ""
     }raid stats, achievements, tags, and more`
-    const image = raidHubProfile?.image ?? bungieIconUrl(primaryDestinyProfile?.profile.data?.userInfo.iconPath);
+    const image =
+        raidHubProfile?.image ??
+        bungieIconUrl(primaryDestinyProfile?.profile.data?.userInfo.iconPath)
 
     return (
         <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
@@ -116,9 +118,13 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 <meta key="og-descriptions" property="og:description" content={description} />
                 <meta key="og-image" property="og:image" content={image} />
 
-                {/* Twitter */ }
+                {/* Twitter */}
                 <meta key="twitter-title" property="twitter:title" content={title} />
-                <meta key="twitter-descriptions" property="twitter:description" content={description} />
+                <meta
+                    key="twitter-descriptions"
+                    property="twitter:description"
+                    content={description}
+                />
                 <meta key="twitter-image" property="twitter:image" content={image} />
             </Head>
             <main className={styles["main"]} ref={mainRef}>
