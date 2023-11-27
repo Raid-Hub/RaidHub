@@ -72,10 +72,10 @@ function RaidHub({
                 <meta property="og:image" content="/logo.png" key="og-image" />
                 <meta property="og:description" content={description} key="og-descriptions" />
 
-                <meta name="twitter:card" content="summary" key="twitter-card"/>
-                <meta name="twitter:image" content="/logo.png" key="twitter-image"/>
-                <meta name="twitter:title" content={title} key="twitter-title"/>
-                <meta name="twitter:description" content={description} key="twitter-descriptions"/>
+                <meta name="twitter:card" content="summary" key="twitter-card" />
+                <meta name="twitter:image" content="/logo.png" key="twitter-image" />
+                <meta name="twitter:title" content={title} key="twitter-title" />
+                <meta name="twitter:description" content={description} key="twitter-descriptions" />
 
                 <meta
                     name="viewport"
