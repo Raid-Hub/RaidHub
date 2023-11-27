@@ -9,7 +9,7 @@ export const createVanity = adminProcedure.input(zCreateVanity).mutation(async (
                 destinyMembershipId: input.destinyMembershipId
             },
             data: {
-                vanity: input.string
+                vanity: input.string.toLowerCase()
             },
             select: {
                 vanity: true
