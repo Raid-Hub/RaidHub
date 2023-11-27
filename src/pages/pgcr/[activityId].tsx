@@ -26,12 +26,21 @@ const PGCRPage: CrawlableNextPage<
 }
 
 PGCRPage.getInitialProps = async ({ req, res, query }) => {
+    console.log({
+        headers: req?.headers
+    })
     if (res && req && "user-agent" in req.headers && isBot(req.headers["user-agent"]!)) {
+        res.setHeader("x-head-only", req.headers["user-agent"]!)
         try {
             const activity = await getActivity(String(query.activityId))
-            res.setHeader("Cache-Control", "max-age=31536000")
+            console.log({
+                activity
+            })
+            res.setHeader("x-head-only-success", "true")
             return { activity, headOnly: true }
-        } catch {
+        } catch (e) {
+            console.error(e)
+            res.setHeader("x-head-only-success", "false")
             return {
                 activityId: query.activityId
             }
