@@ -71,16 +71,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-<<<<<<< HEAD
-<<<<<<< HEAD
     padding: calc(min(12%, 70px)) 0 4% 0;
-=======
-    padding: 17% 0 4% 0;
-    margin-top: -10%;
->>>>>>> 9af39df (Tiny UI Updates)
-=======
-    padding: calc(min(12%, 70px)) 0 4% 0;
->>>>>>> 7031c88 (Searchbar)
 }
 
 .logo-text {
@@ -113,17 +104,11 @@
     width: inherit;
     display: flex;
     align-items: center;
-<<<<<<< HEAD
     padding: 0 1em;
 }
 
 .search-bar-container-focused {
     border-radius: 24px 24px 0 0;
-<<<<<<< HEAD
-=======
->>>>>>> 9af39df (Tiny UI Updates)
-=======
->>>>>>> 7031c88 (Searchbar)
 }
 
 .search-icon {
@@ -162,18 +147,8 @@
 .search-result-container {
     background: #1d181e;
     border-radius: 0 0 24px 24px;
-<<<<<<< HEAD
-<<<<<<< HEAD
     width: 60%;
     height: 550%;
-=======
-    width: 70%;
-    height: 250%;
->>>>>>> 9af39df (Tiny UI Updates)
-=======
-    width: 60%;
-    height: 550%;
->>>>>>> 7031c88 (Searchbar)
     position: absolute;
     margin: 50px 20% 0 20%;
     z-index: 3;
@@ -231,16 +206,7 @@
     margin-bottom: 3%;
     align-items: center;
     justify-content: center;
-<<<<<<< HEAD
-<<<<<<< HEAD
     gap: 1em;
-=======
-    gap: 5%;
-    padding-bottom: 6%;
->>>>>>> 9af39df (Tiny UI Updates)
-=======
-    gap: 1em;
->>>>>>> 7031c88 (Searchbar)
 }
 
 .tool-button {
