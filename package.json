@@ -1,6 +1,6 @@
 {
     "name": "raidhub",
-    "version": "2023.11.27.0",
+    "version": "2023.11.27.1",
     "private": true,
     "scripts": {
         "dev": "next dev",
