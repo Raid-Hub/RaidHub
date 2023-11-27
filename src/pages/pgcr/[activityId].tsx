@@ -38,7 +38,8 @@ PGCRPage.getInitialProps = async ({ req, res, query }) => {
             })
             res.setHeader("x-head-only-success", "true")
             return { activity, headOnly: true }
-        } catch {
+        } catch (e) {
+            console.error(e)
             res.setHeader("x-head-only-success", "false")
             return {
                 activityId: query.activityId
