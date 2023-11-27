@@ -87,6 +87,18 @@ const {
         session: sessionCallback,
         // @ts-expect-error
         signIn: signInCallback
+    },
+    cookies: {
+        // fixes an error with cookies
+        pkceCodeVerifier: {
+            name: "next-auth.pkce.code_verifier",
+            options: {
+                httpOnly: true,
+                sameSite: "none",
+                path: "/",
+                secure: true
+            }
+        }
     }
 })
 
