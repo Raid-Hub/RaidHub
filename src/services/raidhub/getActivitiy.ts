@@ -5,10 +5,10 @@ import { createHeaders } from "./createHeaders"
 export function activityQueryKey(activityId: string) {
     return ["raidhub-activity", activityId] as const
 }
-export async function getActivity(activityId: string) {
+export async function getActivity(activityId: string, headers?: Record<string, string>) {
     const url = new URL(getRaidHubBaseUrl() + `/activity/${activityId}`)
 
-    const res = await fetch(url, { headers: createHeaders() })
+    const res = await fetch(url, { headers: { ...createHeaders(), ...headers } })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivityResponse>
 
