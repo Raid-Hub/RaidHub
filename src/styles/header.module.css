@@ -98,9 +98,12 @@
     background: none;
 
     color: white;
-    font-weight: 400;
-    font-size: 1.125rem;
-    font-style: italic;
+}
+
+@media screen and (max-width: 430px) {
+    #search-bar {
+        width: 200px;
+    }
 }
 
 #search-bar:focus {
@@ -177,6 +180,8 @@
 .account-dropdown {
     overflow: hidden;
     cursor: pointer;
+
+    border-radius: 100px;
 }
 
 .account-button {
@@ -200,14 +205,18 @@
     right: 0.5em;
     z-index: 1;
 
+    margin-top: 15px;
+
     min-width: 100px;
 
     border-radius: 6px;
+    border: 1px solid var(--border);
 
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     background-color: var(--modal-background);
 
     display: grid;
+    backdrop-filter: blur(10px);
 }
 
 .account-dropdown-content {
@@ -233,6 +242,32 @@
 
 .account-dropdown-content > li:hover {
     background-color: var(--brand-orange-light);
+}
+
+.account-dropdown-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px 5px 5px 5px;
+}
+
+.account-dropdown-top img {
+    border-radius: 100px;
+}
+
+.account-dropdown-top .account-dropdown-top-user {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+
+    text-align: left;
+    margin-bottom: 5px;
+    padding-left: 10px;
+}
+
+.account-dropdown-name {
+    font-weight: 800;
 }
 
 .search-modal {

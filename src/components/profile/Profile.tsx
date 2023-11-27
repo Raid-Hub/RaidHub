@@ -7,15 +7,16 @@ import { trpc } from "~/util/trpc"
 import { createContext, useContext, useMemo, useRef, useState } from "react"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useActivityFilters } from "~/hooks/util/useActivityFilters"
+import { useBungieClient } from "~/components/app/TokenManager"
 import Raids from "./raids/Raids"
 import CurrentActivity from "./mid/CurrentActivity"
 import { ActivityFilter, InitialProfileProps } from "~/types/profile"
 import FilterSelector from "./mid/FilterSelector"
 import LayoutToggle, { Layout } from "./mid/LayoutToggle"
 import Loading from "../global/Loading"
-import { useBungieClient } from "../app/TokenManager"
 import Activity from "~/models/profile/data/Activity"
 import { PortalProvider } from "../reusable/Portal"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
@@ -102,14 +103,23 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
     const description = `View ${
         username ? `${username}'s ` : ""
     }raid stats, achievements, tags, and more`
+    const image = raidHubProfile?.image ?? bungieIconUrl(primaryDestinyProfile?.profile.data?.userInfo.iconPath);
 
     return (
         <PropsContext.Provider value={{ destinyMembershipId, destinyMembershipType }}>
             <Head>
                 <title key="title">{title}</title>
                 <meta key="description" name="description" content={description} />
+
+                {/* Facebook */}
                 <meta key="og-title" property="og:title" content={title} />
                 <meta key="og-descriptions" property="og:description" content={description} />
+                <meta key="og-image" property="og:image" content={image} />
+
+                {/* Twitter */ }
+                <meta key="twitter-title" property="twitter:title" content={title} />
+                <meta key="twitter-descriptions" property="twitter:description" content={description} />
+                <meta key="twitter-image" property="twitter:image" content={image} />
             </Head>
             <main className={styles["main"]} ref={mainRef}>
                 <PortalProvider target={mainRef}>

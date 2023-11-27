@@ -70,8 +70,8 @@ const HomeSearch = () => {
             </div>
             {isSearchFocused && (
                 <>
-                    <div className={styles["divider"]} />
                     <div className={styles["search-result-container"]}>
+                        <hr className={styles["divider"]} />
                         <ul className={styles["search-results"]}>
                             {results.map(
                                 (

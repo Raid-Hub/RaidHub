@@ -142,3 +142,4 @@ const SearchBar = ({}: SearchBarProps) => {
 }
 
 export default SearchBar
+
