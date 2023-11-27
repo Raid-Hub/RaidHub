@@ -10,9 +10,9 @@ const Toolbox = (props: { isFooterVisible: boolean }) => {
     const [isVisible, setIsVisible] = useState(false)
 
     useEffect(() => {
-        if (!screen.orientation.type.includes("portrait")) {
-            setIsVisible(true)
-        }
+        const isPortrait = window.matchMedia("(orientation: portrait)").matches
+
+        if (!isPortrait) setIsVisible(true)
     }, [])
 
     const handleClick = () => {
