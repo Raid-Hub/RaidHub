@@ -129,19 +129,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     </section>
 
                     <section className={styles["mid"]}>
-                        {primaryDestinyProfile?.characterActivities?.data && (
-                            <CurrentActivity
-                                activitiesComponent={
-                                    Object.values(
-                                        primaryDestinyProfile.characterActivities.data
-                                    ).sort(
-                                        (a, b) =>
-                                            new Date(b.dateActivityStarted).getTime() -
-                                            new Date(a.dateActivityStarted).getTime()
-                                    )[0]
-                                }
-                            />
-                        )}
+                        <CurrentActivity />
                         {pinnedActivityId ? (
                             <PinnedActivity
                                 activityId={pinnedActivityId}

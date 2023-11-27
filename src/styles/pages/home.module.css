@@ -107,6 +107,7 @@
     height: 50px;
     width: 70%;
     align-items: center;
+    padding: 0 1em;
 }
 
 .search-icon {
@@ -180,6 +181,23 @@ hr.divider {
 
 .individual-result:hover {
     background-color: rgba(46, 46, 46, 0.5);
+}
+
+@media (max-width: 700px) {
+    .search-bar-container {
+        margin: 0 0 3% 0;
+    }
+
+    .search-result-container {
+        margin: 50px 0 0 0;
+        width: 100%;
+        height: min(60vh, 750%);
+    }
+
+    .divider {
+        width: 84%;
+        margin: 50px 8% 0 8%;
+    }
 }
 
 .tool-buttons-container {

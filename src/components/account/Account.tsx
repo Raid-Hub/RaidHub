@@ -27,11 +27,6 @@ const Account = ({ session }: AccountProps) => {
             refetchSocials()
         }
     })
-    const { mutate: unlinkSpeedrunUsername } = trpc.user.account.speedrunCom.remove.useMutation({
-        onSuccess() {
-            refetchSocials()
-        }
-    })
     const { mutate: deleteUserMutation } = trpc.user.delete.useMutation()
     const speedrunAPIKeyModalRef = useRef<HTMLDialogElement | null>(null)
 
@@ -86,44 +81,44 @@ const Account = ({ session }: AccountProps) => {
                     {discordProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "discord" })}
-                            link={() => signIn(discordProvider.id, {}, { prompt: "consent" })}
+                            link={() => signIn("discord", {}, { prompt: "consent" })}
                             serviceName={discordProvider.name}
-                            username={socialNames?.discordUsername ?? null}
+                            username={socialNames?.get("discord") ?? null}
                             Icon={DiscordIcon}
                         />
                     )}
                     {twitterProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "twitter" })}
-                            link={() => signIn(twitterProvider.id, {}, { force_login: "true" })}
+                            link={() => signIn("twitter", {}, { force_login: "true" })}
                             serviceName={twitterProvider.name}
-                            username={socialNames?.twitterUsername ?? null}
+                            username={socialNames?.get("twitter") ?? null}
                             Icon={TwitterIcon}
                         />
                     )}
                     {twitchProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "twitch" })}
-                            link={() => signIn(twitchProvider.id, {}, { force_verify: "true" })}
+                            link={() => signIn("twitch", {}, { force_verify: "true" })}
                             serviceName={twitchProvider.name}
-                            username={socialNames?.twitchUsername ?? null}
+                            username={socialNames?.get("twitch") ?? null}
                             Icon={TwitchIcon}
                         />
                     )}
                     {googleProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "google" })}
-                            link={() => signIn(googleProvider.id, {}, { prompt: "select_account" })}
+                            link={() => signIn("google", {}, { prompt: "select_account" })}
                             serviceName={googleProvider.name}
-                            username={socialNames?.youtubeUsername ?? null}
+                            username={socialNames?.get("google") ?? null}
                             Icon={YoutubeIcon}
                         />
                     )}
                     <Connection
-                        unlink={() => unlinkSpeedrunUsername()}
+                        unlink={() => unlinkAccountFromUser({ providerId: "speedrun" })}
                         link={() => speedrunAPIKeyModalRef.current?.showModal()}
                         serviceName="Speedrun.com"
-                        username={socialNames?.speedrunUsername ?? null}
+                        username={socialNames?.get("speedrun") ?? null}
                         Icon={BungieShield}
                     />
                 </div>

@@ -16,12 +16,7 @@ export const getProfile = {
             const { Response } = await bungieGetProfile(client, {
                 destinyMembershipId,
                 membershipType,
-                components: [
-                    100, 200 /*Characters*/, 202 /*CharacterProgressions*/,
-                    205 /*DestinyComponentType.CharacterEquipment*/,
-                    204 /*DestinyComponentType.CharacterActivities*/,
-                    305 /*DestinyComponentType.ItemSockets */
-                ]
+                components: [100, 200 /*Characters*/, 202 /*CharacterProgressions*/]
             })
             return Response
         }
@@ -61,15 +56,14 @@ export const getProfileTransitory = {
             const { Response } = await bungieGetProfile(client, {
                 destinyMembershipId,
                 membershipType,
-                components: [1000 /*DestinyComponentType.Transitory */]
+                components: [
+                    1000 /*DestinyComponentType.Transitory */,
+                    205 /*DestinyComponentType.CharacterEquipment*/,
+                    204 /*DestinyComponentType.CharacterActivities*/,
+                    305 /*DestinyComponentType.ItemSockets */
+                ]
             })
 
-            if (!Response.profileTransitoryData.data) {
-                return {
-                    currentActivity: null
-                }
-            } else {
-                return Response.profileTransitoryData.data
-            }
+            return Response
         }
 }

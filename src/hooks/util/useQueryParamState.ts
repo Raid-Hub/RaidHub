@@ -1,6 +1,9 @@
 import { useRouter } from "next/router"
 import { ParsedUrlQuery } from "querystring"
 
+/*
+ This is deprecated, use useSearchParams instead
+ */
 export function useQueryParamState<T = ParsedUrlQuery[string]>(
     key: string,
     opts?: {

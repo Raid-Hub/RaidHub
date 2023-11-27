@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps<
         const profile = await prisma.profile
             .findUnique({
                 where: {
-                    destinyMembershipId_destinyMembershipType: props
+                    destinyMembershipId: props.destinyMembershipId
                 },
                 select: {
                     vanity: true
@@ -46,11 +46,11 @@ export const getStaticProps: GetStaticProps<
             })
             .catch(console.error)
 
-        if (profile?.vanity?.string) {
+        if (profile?.vanity) {
             return {
                 redirect: {
                     permanent: true,
-                    destination: `/${profile.vanity.string}`
+                    destination: `/${profile.vanity}`
                 }
             }
         } else {

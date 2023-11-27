@@ -1,116 +1,84 @@
 import styles from "~/styles/pages/inpsect.module.css"
 import { NextPage } from "next"
 import { z } from "zod"
-import { useRouter } from "next/router"
-import { createContext, createRef, useContext, useEffect, useState } from "react"
-import { GuardianData } from "~/types/guardian"
+import { createContext, createRef, useContext, useState } from "react"
 import InspectionHeader from "~/components/guardians/InspectionHeader"
 import Player from "~/components/guardians/Player"
 import { PortalProvider } from "~/components/reusable/Portal"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import { useSearchParams } from "~/hooks/util/useSearchParams"
+import { numberString } from "~/util/zod"
 
 const InpsectionPage: NextPage<{}> = () => {
-    const router = useRouter()
-    const [members, setMembers] = useState<Map<string, GuardianData>>(new Map())
-
-    // parse query params on mount
-    useEffect(() => {
-        try {
-            const parsed = z
+    const {
+        isReady,
+        append,
+        remove,
+        query: membershipIds
+    } = useSearchParams({
+        decoder: query =>
+            z
                 .object({
-                    ids: z
-                        .string()
-                        .transform(str => z.array(z.string().regex(/^\d+$/)).parse(str.split(", ")))
-                })
-                .parse(Object.fromEntries(new URLSearchParams(location.search)))
-
-            setMembers(
-                new Map(
-                    parsed.ids.map(id => [
-                        id,
-                        {
-                            membershipId: id,
-                            isFireteamIncluded: false
-                        }
+                    membershipId: z.union([
+                        numberString.transform(s => [s]),
+                        z.array(numberString).default([])
                     ])
-                )
-            )
-        } catch {}
-    }, [])
-
-    function removeMember(member: GuardianData) {
-        setMembers(old => {
-            const newMembers = new Map(Array.from(old))
-            newMembers.delete(member.membershipId)
-            updateRouter(newMembers)
-            return newMembers
-        })
-    }
-
-    function addMember(member: GuardianData) {
-        setMembers(old => {
-            const newMembers = new Map([[member.membershipId, member]])
-            Array.from(old.values()).forEach(member => {
-                if (!newMembers.has(member.membershipId)) {
-                    newMembers.set(member.membershipId, member)
-                }
-            })
-            updateRouter(newMembers)
-            return newMembers
-        })
-    }
-    function addMembers(members: GuardianData[]) {
-        setMembers(old => {
-            const newMembers = new Map(members.map(m => [m.membershipId, m] as const))
-            Array.from(old.values()).forEach(member => {
-                if (!newMembers.has(member.membershipId)) {
-                    newMembers.set(member.membershipId, member)
-                }
-            })
-            updateRouter(newMembers)
-            return newMembers
-        })
-    }
-
-    function updateRouter(members: Map<string, GuardianData>) {
-        router.push(
-            {
-                query: {
-                    ids: Array.from(members.keys()).join(", ")
-                }
-            },
-            undefined,
-            { shallow: true }
-        )
-    }
+                })
+                .transform(q => new Set(q.membershipId))
+                .parse(query)
+    })
 
     const { save: setExpanded, value: isExpanded } = useLocalStorage<boolean>(
         "expanded-inspect",
         false
     )
+
+    function addMember(membershipId: string, isFireteamIncluded: boolean) {
+        if (!isReady) return
+
+        if (membershipIds.has(membershipId)) {
+            remove("membershipId", membershipId)
+            append("membershipId", membershipId)
+
+            if (isFireteamIncluded) {
+                setFireteamIncluded(prev => [...prev, membershipId])
+            } else {
+                setFireteamIncluded(prev => prev.filter(id => id !== membershipId))
+            }
+        } else {
+            append("membershipId", membershipId)
+        }
+    }
+
+    const [fireteamIncluded, setFireteamIncluded] = useState<Array<string>>([])
+
     const playersRef = createRef<HTMLDivElement>()
     return (
         <main className={styles["main"]}>
-            <PortalProvider target={playersRef}>
-                <InspectionHeader
-                    addMember={addMember}
-                    memberIds={Array.from(members.keys())}
-                    clearAllMembers={() => setMembers(new Map())}
-                    setExpanded={setExpanded}
-                    isExpanded={isExpanded}
-                />
-                <div className={styles["players"]} ref={playersRef}>
-                    {Array.from(members?.values() ?? []).map(member => (
-                        <ExpandedContext.Provider value={isExpanded} key={member.membershipId}>
-                            <Player
-                                member={member}
-                                remove={() => removeMember(member)}
-                                addMembers={addMembers}
-                            />
+            {isReady && (
+                <PortalProvider target={playersRef}>
+                    <InspectionHeader
+                        addMember={addMember}
+                        memberIds={membershipIds}
+                        clearAllMembers={() => remove("membershipId")}
+                        setExpanded={setExpanded}
+                        isExpanded={isExpanded}
+                    />
+                    <div className={styles["players"]} ref={playersRef}>
+                        <ExpandedContext.Provider value={isExpanded}>
+                            {Array.from(membershipIds).map(membershipId => (
+                                <Player
+                                    key={membershipId}
+                                    membershipId={membershipId}
+                                    remove={() => remove("membershipId", membershipId)}
+                                    add={addMember}
+                                    isFireteamIncluded={fireteamIncluded.includes(membershipId)}
+                                />
+                            ))}
                         </ExpandedContext.Provider>
-                    ))}
-                </div>
-            </PortalProvider>
+                    </div>
+                </PortalProvider>
+            )}
         </main>
     )
 }

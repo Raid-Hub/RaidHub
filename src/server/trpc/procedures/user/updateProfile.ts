@@ -1,31 +1,23 @@
-import { zModifiableProfile, zModifiableUser } from "~/util/zod"
 import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
+import { z } from "zod"
 
 export const updateProfile = protectedProcedure
     .input(
-        zModifiableProfile.merge(zModifiableUser).transform(p => ({
-            profile: zModifiableProfile.parse(p),
-            user: zModifiableUser.parse(p)
-        }))
+        z.object({
+            name: z.string().optional(),
+            image: z.string().url().optional(),
+            pinnedActivityId: z.string().nullable().optional(),
+            profileDecoration: z.string().nullable().optional()
+        })
     )
     .mutation(async ({ input, ctx }) => {
         try {
-            const { profile } = await ctx.prisma.user.update({
+            const profile = await ctx.prisma.profile.update({
                 where: {
-                    id: ctx.session.user.id
+                    userId: ctx.session.user.id
                 },
-                data: {
-                    ...input.user,
-                    profile: {
-                        update: {
-                            data: input.profile
-                        }
-                    }
-                },
-                select: {
-                    profile: true
-                }
+                data: input
             })
             return profile
         } catch (e: any) {

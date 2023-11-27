@@ -1,14 +1,11 @@
-import * as trpcNext from "@trpc/server/adapters/next"
+import { createNextApiHandler } from "@trpc/server/adapters/next"
 import { createContext } from "~/server/trpc/context"
 import { appRouter } from "~/server/trpc/router"
 
-export default trpcNext.createNextApiHandler({
+export default createNextApiHandler({
     router: appRouter,
     createContext: createContext,
-    onError({ error }) {
-        // todo
-    },
     batching: {
-        enabled: true
+        enabled: false
     }
 })

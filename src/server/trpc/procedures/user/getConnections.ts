@@ -9,20 +9,24 @@ export const getConnections = protectedProcedure.query(async ({ ctx }) => {
                 id: userId
             },
             select: {
-                profile: {
+                accounts: {
                     select: {
-                        bungieUsername: true,
-                        twitchUsername: true,
-                        discordUsername: true,
-                        twitterUsername: true,
-                        speedrunUsername: true,
-                        youtubeUsername: true
+                        provider: true,
+                        displayName: true
+                    },
+                    where: {
+                        provider: {
+                            in: ["discord", "twitch", "twitter", "google", "speedrun"]
+                        }
                     }
                 }
             }
         })
+
         if (data) {
-            return data.profile
+            return new Map(
+                data.accounts.map(({ provider, displayName }) => [provider, displayName])
+            )
         } else {
             throw Error("Profile not found")
         }

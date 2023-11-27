@@ -1,21 +1,20 @@
-import * as trpc from "@trpc/server"
-import * as trpcNext from "@trpc/server/adapters/next"
-import { getServerSession } from "next-auth"
-import { nextAuthOptions } from "~/server/next-auth"
-import prisma from "server/prisma"
+import { inferAsyncReturnType } from "@trpc/server"
+import { CreateNextContextOptions } from "@trpc/server/adapters/next"
+import prisma from "../prisma"
+import { auth } from "../next-auth"
 
-export const createContext = async (opts?: trpcNext.CreateNextContextOptions) => {
+export const createContext = async (opts?: CreateNextContextOptions) => {
     const req = opts?.req
     const res = opts?.res
 
-    const session = req && res && (await getServerSession(req, res, nextAuthOptions))
+    const session = req && res && (await auth(req, res))
 
     return {
         req,
         res,
         session,
-        prisma
+        prisma: prisma
     }
 }
 
-export type Context = trpc.inferAsyncReturnType<typeof createContext>
+export type Context = inferAsyncReturnType<typeof createContext>

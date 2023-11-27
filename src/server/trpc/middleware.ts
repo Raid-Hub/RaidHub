@@ -17,7 +17,7 @@ const authenticatedMidddleware = middleware(({ ctx, next }) => {
 export const protectedProcedure = publicProcedure.use(authenticatedMidddleware)
 
 const adminMiddleware = middleware(({ ctx, next }) => {
-    if (!ctx.session || ctx.session.user.role !== "ADMIN") {
+    if (!ctx.session || ctx?.session.user.role !== "ADMIN") {
         throw new TRPCError({ code: "UNAUTHORIZED" })
     }
 

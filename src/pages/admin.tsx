@@ -1,9 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import { getServerSession } from "next-auth"
-import { nextAuthOptions } from "~/server/next-auth"
 import { Role } from "@prisma/client"
 import AdminPanel from "~/components/admin/AdminPanel"
 import Head from "next/head"
+import { auth } from "~/server/next-auth"
 
 export default function Admin({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
@@ -16,8 +15,8 @@ export default function Admin({}: InferGetServerSidePropsType<typeof getServerSi
     )
 }
 
-export const getServerSideProps: GetServerSideProps<{}> = async ({ req, res }) => {
-    const session = await getServerSession(req, res, nextAuthOptions)
+export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
+    const session = await auth(ctx)
 
     if (session?.user.role !== Role.ADMIN) {
         return {

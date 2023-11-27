@@ -2,24 +2,14 @@ import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
 
 export const getAuthenticatedProfile = protectedProcedure.query(async ({ ctx }) => {
-    const destinyMembershipId = ctx.session.user.destinyMembershipId
+    const userId = ctx.session.user.id
     try {
         const data = await ctx.prisma.profile.findUnique({
             where: {
-                destinyMembershipId: destinyMembershipId
-            },
-            include: {
-                user: {
-                    select: {
-                        image: true,
-                        name: true
-                    }
-                }
+                userId: userId
             }
         })
-        if (!data) return null
-        const { user, ...profile } = data
-        return { ...user, ...profile }
+        return data
     } catch (e: any) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",

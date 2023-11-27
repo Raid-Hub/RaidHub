@@ -6,7 +6,6 @@ import { getConnections } from "./procedures/user/getConnections"
 import { removeProvider } from "./procedures/account/removeProvider"
 import { updateProfile } from "./procedures/user/updateProfile"
 import { addByAPIKey } from "./procedures/account/speedrun-com/addByAPIKey"
-import { removeSrcName } from "./procedures/account/speedrun-com/removeSrcName"
 import { createPresignedProfilePicURL } from "./procedures/account/createPresignedProfilePicURL"
 import { createVanity } from "./procedures/admin/vanity/createVanity"
 
@@ -23,8 +22,7 @@ export const appRouter = router({
             presignedIconURL: createPresignedProfilePicURL,
             removeById: removeProvider,
             speedrunCom: router({
-                addByAPIKey: addByAPIKey,
-                remove: removeSrcName
+                addByAPIKey: addByAPIKey
             })
         })
     }),

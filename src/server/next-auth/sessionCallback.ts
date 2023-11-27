@@ -1,10 +1,9 @@
-import { CallbacksOptions, Session } from "next-auth/core/types"
-import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
-import { AdapterUser } from "next-auth/adapters"
+import type { CallbacksOptions, Session } from "@auth/core/types"
+import type { AdapterUser } from "@auth/core/adapters"
+import type { BungieFetchConfig } from "bungie-net-core"
+import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { BungieMembershipType } from "bungie-net-core/models"
-import { BungieFetchConfig } from "bungie-net-core"
-import { Role } from "@prisma/client"
 
 export type SessionUser = {
     id: string
@@ -12,7 +11,7 @@ export type SessionUser = {
     destinyMembershipType: BungieMembershipType
     name: string
     image: string
-    role: Role
+    role: "USER" | "ADMIN"
     bungieAccessToken?: {
         value: string
         expires: number
@@ -60,8 +59,14 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                     client_secret: process.env.BUNGIE_CLIENT_SECRET!
                 },
                 {
-                    fetch: async <T>(config: BungieFetchConfig) =>
-                        fetch(config.url, config).then(res => res.json()) as T
+                    fetch: async <T>(config: BungieFetchConfig) => {
+                        const res = await fetch(config.url, config)
+                        if (!res.ok) {
+                            throw await res.json()
+                        } else {
+                            return res.json() as T
+                        }
+                    }
                 }
             )
 
@@ -69,11 +74,11 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                 bungieMembershipId: tokens.membership_id,
                 access: {
                     value: tokens.access_token,
-                    expires: Date.now() + tokens.expires_in * 1000
+                    expires: new Date(Date.now() + tokens.expires_in * 1000)
                 },
                 refresh: {
                     value: tokens.refresh_token,
-                    expires: Date.now() + tokens.refresh_expires_in * 1000
+                    expires: new Date(Date.now() + tokens.refresh_expires_in * 1000)
                 }
             }).catch(console.error)
 

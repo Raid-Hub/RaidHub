@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../../middleware"
-import { providerIdToUsernamePropMap } from "~/server/next-auth/providerIdMap"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 // delete account from user
 export const removeProvider = protectedProcedure
     .input(
         z.object({
-            providerId: z.enum(["discord", "twitch", "twitter", "google"])
+            providerId: z.enum(["discord", "twitch", "twitter", "google", "speedrun"])
         })
     )
     .mutation(async ({ input, ctx }) => {
@@ -15,35 +15,18 @@ export const removeProvider = protectedProcedure
         const providerId = input.providerId
 
         try {
-            const { accounts } = await ctx.prisma.user.update({
-                where: { id: userId },
-                data: {
-                    profile: {
-                        update: {
-                            [providerIdToUsernamePropMap[providerId]]: null
-                        }
-                    }
-                },
-                select: {
-                    accounts: {
-                        where: {
-                            userId: userId,
-                            provider: providerId
-                        }
+            await ctx.prisma.account.delete({
+                where: {
+                    provider_userId: {
+                        provider: providerId,
+                        userId: userId
                     }
                 }
             })
-            if (accounts.length) {
-                await ctx.prisma.account.delete({
-                    where: {
-                        provider_userId: {
-                            provider: providerId,
-                            userId: userId
-                        }
-                    }
-                })
-            }
         } catch (e: any) {
+            if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
+                return
+            }
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",
                 message: e.message
