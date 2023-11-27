@@ -7,21 +7,7 @@ export const createContext = async (opts?: CreateNextContextOptions) => {
     const req = opts?.req
     const res = opts?.res
 
-    // stupid fuckery to get around a next auth issue, i hate it
-    const fakeRes = new Response()
-    const session =
-        req &&
-        res &&
-        (await auth(
-            req,
-            // @ts-ignore
-            fakeRes
-        ))
-
-    res &&
-        fakeRes.headers.forEach((value, key) => {
-            res.setHeader(key, value)
-        })
+    const session = req && res && (await auth(req, res))
 
     return {
         req,
