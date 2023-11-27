@@ -11,6 +11,7 @@ import { Provider } from "@auth/core/providers"
 import NextAuth from "next-auth"
 import { User as PrismaUser, Session as PrismaSession } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
+import { ServerResponse } from "http"
 
 export type BungieToken = {
     value: string
@@ -37,8 +38,37 @@ declare module "@auth/core/adapters" {
     }
 }
 
-export const {
-    auth,
+// stupid fuckery to get around a next auth issue, i hate it
+export const auth: typeof _auth = (...args) => {
+    // @ts-expect-error
+    if ("res" in args[0]) {
+        const { res, ...restOfArgs } = args[0]
+        const fakeRes = new Response()
+        // @ts-expect-error
+        const result = _auth({ ...restOfArgs, res: fakeRes })
+        fakeRes.headers.forEach((value, key) => {
+            // @ts-expect-error
+            args[1].setHeader(key, value)
+        })
+        return result
+    } else if (args[1] instanceof ServerResponse) {
+        const fakeRes = new Response()
+        // @ts-expect-error
+        const result = _auth(args[0], fakeRes)
+        fakeRes.headers.forEach((value, key) => {
+            // @ts-expect-error
+            args[1].setHeader(key, value)
+        })
+        return result
+    }
+    // @ts-expect-error
+    else return _auth(args)
+}
+
+export { GET, POST }
+
+const {
+    auth: _auth,
     handlers: { GET, POST }
 } = NextAuth({
     providers: getProviders(),
