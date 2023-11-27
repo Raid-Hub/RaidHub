@@ -61,47 +61,57 @@ const AccountIcon = () => {
                     <UserIcon color="white" />
                 )}
             </div>
-            <m.div
-                className={styles["account-dropdown-content-container"]}
-                initial={"closed"}
-                animate={animate}
-                variants={variants}>
-                <ul className={styles["account-dropdown-content"]} onClick={handleItemClick}>
-                    {sessionData ? (
-                        <>
-                            <li>
-                                <Link href="/account">{strings.manageAccount}</Link>
+            {isDropdownOpen &&
+                <m.div
+                    className={styles["account-dropdown-content-container"]}
+                    initial={"closed"}
+                    animate={animate}
+                    variants={variants}>
+                    <ul className={styles["account-dropdown-content"]} onClick={handleItemClick}>
+                        {sessionData ? (
+                            <>
+                                <div className={styles["account-dropdown-top"]}>
+                                    <Image src={sessionData.user.image} alt="profile" width={65} height={65}  unoptimized />
+                                    <div className={styles["account-dropdown-top-user"]}>
+                                        <a className={styles["account-dropdown-name"]}>{sessionData.user.name}</a>
+                                        <a className={styles["account-dropdown-id"]}>{sessionData.user.destinyMembershipId}</a>
+                                    </div>
+                                </div>
+                                <hr />
+                                <li>
+                                    <Link href="/account">{strings.manageAccount}</Link>
+                                </li>
+                                {sessionData.user.destinyMembershipType &&
+                                    sessionData.user.destinyMembershipId && (
+                                        <li>
+                                            <Link
+                                                href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
+                                                className={styles["account-link"]}>
+                                                {strings.viewProfile}
+                                            </Link>
+                                        </li>
+                                    )}
+                                <li onClick={() => signOut({ callbackUrl: "/" })}>
+                                    <span>{strings.logOut}</span>
+                                </li>
+                            </>
+                        ) : (
+                            <li
+                                onClick={() => {
+                                    signIn(
+                                        "bungie",
+                                        {
+                                            callbackUrl: encodeURI(window.location.href)
+                                        },
+                                        "reauth=true"
+                                    )
+                                }}>
+                                <span>{strings.logIn}</span>
                             </li>
-                            {sessionData.user.destinyMembershipType &&
-                                sessionData.user.destinyMembershipId && (
-                                    <li>
-                                        <Link
-                                            href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
-                                            className={styles["account-link"]}>
-                                            {strings.viewProfile}
-                                        </Link>
-                                    </li>
-                                )}
-                            <li onClick={() => signOut({ callbackUrl: "/" })}>
-                                <span>{strings.logOut}</span>
-                            </li>
-                        </>
-                    ) : (
-                        <li
-                            onClick={() => {
-                                signIn(
-                                    "bungie",
-                                    {
-                                        callbackUrl: encodeURI(window.location.href)
-                                    },
-                                    "reauth=true"
-                                )
-                            }}>
-                            <span>{strings.logIn}</span>
-                        </li>
-                    )}
-                </ul>
-            </m.div>
+                        )}
+                    </ul>
+                </m.div>
+            }
         </div>
     )
 }

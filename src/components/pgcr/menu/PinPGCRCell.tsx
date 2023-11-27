@@ -22,7 +22,7 @@ const PinPCRCell = () => {
 
     const { strings } = useLocale()
 
-    return profile && pgcr ? (
+    return profile && pgcr?.activityDetails.mode == 4 ? (
         <div>
             <span>{isPinned ? strings.pinToProfile : strings.unPinFromProfile}</span>
             <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>

@@ -9,15 +9,9 @@ const Home = () => {
     const { strings } = useLocale()
     return (
         <main>
-            <section>
-                <HomeLogo />
-            </section>
-            <section>
-                <HomeSearch />
-            </section>
-            <section>
-                <HomeToolButtons />
-            </section>
+            <HomeLogo />
+            <HomeSearch />
+            <HomeToolButtons />
             <section className={styles["raids"]}>
                 {ListedRaids.map(raid => (
                     <HomeRaidCard raid={raid} strings={strings} key={raid} />
