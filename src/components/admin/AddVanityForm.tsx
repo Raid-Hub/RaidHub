@@ -1,14 +1,14 @@
 import { SubmitHandler, useForm } from "react-hook-form"
-import { useLocale } from "../app/LocaleManager"
 import { trpc } from "~/util/trpc"
 import { z } from "zod"
 import { zCreateVanity } from "~/util/zod"
 import styles from "~/styles/pages/admin.module.css"
 import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 type FormValues = z.infer<typeof zCreateVanity>
 
-const AddVanityForm = () => {
+export default function AddVanityForm() {
     const {
         mutate: create,
         isLoading: isCreating,
@@ -18,12 +18,13 @@ const AddVanityForm = () => {
         data
     } = trpc.admin.vanity.create.useMutation()
 
+    const { handleSubmit, register } = useForm<FormValues>({
+        resolver: zodResolver(zCreateVanity)
+    })
+
     const onSubmit: SubmitHandler<FormValues> = async data => {
         create(data)
     }
-    const { strings } = useLocale()
-
-    const { handleSubmit, control, register } = useForm<FormValues>()
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,7 +49,7 @@ const AddVanityForm = () => {
                 </div>
             </div>
             <button type="submit" disabled={isCreating}>
-                {strings.submit}
+                Submit
             </button>
             {isSuccess && (
                 <div style={{ color: "green" }}>
@@ -59,5 +60,3 @@ const AddVanityForm = () => {
         </form>
     )
 }
-
-export default AddVanityForm
