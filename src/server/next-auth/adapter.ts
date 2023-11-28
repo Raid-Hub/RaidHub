@@ -163,7 +163,8 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
                 await prisma.account.create({
                     data: {
                         ...account,
-                        displayName: discordProfile.username
+                        displayName: discordProfile.username,
+                        url: `https://discord.com/users/${discordProfile.id}`
                     }
                 })
                 break
