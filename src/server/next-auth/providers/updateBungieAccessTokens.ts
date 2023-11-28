@@ -14,17 +14,27 @@ export async function updateBungieAccessTokens({
         where: {
             bungieMembershipId
         },
-        data: {
-            id: crypto.randomUUID(),
-            value: token.value,
-            expires: token.expires
-        },
         select: {
             user: {
                 select: {
                     id: true
                 }
             }
+        },
+        create: {
+            id: crypto.randomUUID(),
+            value: token.value,
+            expires: token.expires,
+            user: {
+                connect: {
+                    bungieMembershipId
+                }
+            }
+        },
+        update: {
+            id: crypto.randomUUID(),
+            value: token.value,
+            expires: token.expires
         }
     })
 
@@ -40,7 +50,8 @@ export async function updateBungieAccessTokens({
             }
         },
         data: {
-            [key]: token.value
+            [key]: token.value,
+            expiresAt: token.expires.getTime() / 1000
         }
     })
 
@@ -48,16 +59,16 @@ export async function updateBungieAccessTokens({
         prisma.accessToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
             .catch(console.error)
-            .then(() => prisma.accessToken.update(prepareTokenUpdate(access)))
+            .then(() => prisma.accessToken.upsert(prepareTokenUpdate(access)))
             .then(({ user }) =>
                 prisma.account.update(prepareAccountUpdate("accessToken", access, user.id))
             ),
         prisma.refreshToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
             .catch(console.error)
-            .then(() => prisma.refreshToken.update(prepareTokenUpdate(refresh)))
+            .then(() => prisma.refreshToken.upsert(prepareTokenUpdate(refresh)))
             .then(({ user }) =>
-                prisma.account.update(prepareAccountUpdate("refreshToken", access, user.id))
+                prisma.account.update(prepareAccountUpdate("refreshToken", refresh, user.id))
             )
     ])
 }

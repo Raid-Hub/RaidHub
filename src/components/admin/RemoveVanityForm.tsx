@@ -27,7 +27,7 @@ export default function RemoveVanityForm() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <h3>delete vanity</h3>
+            <h3>Delete vanity</h3>
             <div className={styles["form-content"]}>
                 <div className={styles["form-element"]}>
                     <label>Vanity string</label>

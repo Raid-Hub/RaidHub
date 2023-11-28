@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server"
 import { adminProcedure } from "../../../middleware"
-import { z } from "zod"
 import { zDeleteVanity } from "~/util/zod"
 
 export const deleteVanity = adminProcedure.input(zDeleteVanity).mutation(async ({ input, ctx }) => {
@@ -15,11 +14,10 @@ export const deleteVanity = adminProcedure.input(zDeleteVanity).mutation(async (
             select: {
                 destinyMembershipId: true,
                 destinyMembershipType: true,
-                name: true,
-                vanity: true
+                name: true
             }
         })
-        return removed
+        return { ...removed, ...input }
     } catch (e: any) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
