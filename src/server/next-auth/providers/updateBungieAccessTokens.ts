@@ -10,8 +10,19 @@ export async function updateBungieAccessTokens({
     access: BungieToken
     refresh: BungieToken
 }) {
-    const prepare = (token: BungieToken) => ({
-        data: {
+    const prepareTokenUpdate = (token: BungieToken) => ({
+        where: {
+            bungieMembershipId
+        },
+        select: {
+            user: {
+                select: {
+                    id: true
+                }
+            }
+        },
+        create: {
+            id: crypto.randomUUID(),
             value: token.value,
             expires: token.expires,
             user: {
@@ -19,6 +30,28 @@ export async function updateBungieAccessTokens({
                     bungieMembershipId
                 }
             }
+        },
+        update: {
+            id: crypto.randomUUID(),
+            value: token.value,
+            expires: token.expires
+        }
+    })
+
+    const prepareAccountUpdate = (
+        key: "accessToken" | "refreshToken",
+        token: BungieToken,
+        userId: string
+    ) => ({
+        where: {
+            provider_userId: {
+                provider: "bungie",
+                userId: userId
+            }
+        },
+        data: {
+            [key]: token.value,
+            expiresAt: token.expires.getTime() / 1000
         }
     })
 
@@ -26,10 +59,16 @@ export async function updateBungieAccessTokens({
         prisma.accessToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
             .catch(console.error)
-            .then(() => prisma.accessToken.create(prepare(access))),
+            .then(() => prisma.accessToken.upsert(prepareTokenUpdate(access)))
+            .then(({ user }) =>
+                prisma.account.update(prepareAccountUpdate("accessToken", access, user.id))
+            ),
         prisma.refreshToken
             .delete({ where: { bungieMembershipId: bungieMembershipId } })
             .catch(console.error)
-            .then(() => prisma.refreshToken.create(prepare(refresh)))
+            .then(() => prisma.refreshToken.upsert(prepareTokenUpdate(refresh)))
+            .then(({ user }) =>
+                prisma.account.update(prepareAccountUpdate("refreshToken", refresh, user.id))
+            )
     ])
 }

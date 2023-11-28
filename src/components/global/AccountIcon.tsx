@@ -108,13 +108,9 @@ const AccountIcon = () => {
                         ) : (
                             <li
                                 onClick={() => {
-                                    signIn(
-                                        "bungie",
-                                        {
-                                            callbackUrl: encodeURI(window.location.href)
-                                        },
-                                        "reauth=true"
-                                    )
+                                    signIn("bungie", {
+                                        callbackUrl: encodeURI(window.location.href)
+                                    })
                                 }}>
                                 <span>{strings.logIn}</span>
                             </li>

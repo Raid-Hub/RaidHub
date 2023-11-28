@@ -93,7 +93,10 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
                 }
             } satisfies Session
         } catch (e: any) {
-            if (e.response?.error_description === "SystemDisabled") {
+            if (
+                e.response?.error_description === "SystemDisabled" ||
+                e.response?.error_description === "Error Response for Shard Relay."
+            ) {
                 return {
                     ...session,
                     user: newUser,

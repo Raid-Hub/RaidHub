@@ -75,9 +75,13 @@ export const zRaidURIComponent = z
     .transform(key => UrlPathsToRaid[key])
 
 export const zCreateVanity = z.object({
-    destinyMembershipId: z.string().transform(s => s.toLowerCase()),
+    destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
-    string: z.string()
+    string: z.string().transform(s => s.toLowerCase())
+})
+
+export const zDeleteVanity = z.object({
+    vanity: z.string().toLowerCase()
 })
 
 export const numberString = z.coerce.string().regex(/^\d+$/)

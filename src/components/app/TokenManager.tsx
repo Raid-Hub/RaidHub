@@ -18,23 +18,25 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     const queryClient = useQueryClient()
     const [bungie] = useState(new BungieClient(queryClient))
 
-    if (failedTokenRequests > 3) {
+    if (failedTokenRequests >= 3) {
+        setFailedTokenRequests(0)
         signOut()
     }
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
     useEffect(() => {
-        if (sessionData?.error == "BungieAPIOffline") {
+        if (status == "unauthenticated") {
+            setRefetchInterval(0)
+        } else if (sessionData?.error == "BungieAPIOffline") {
+            console.error(sessionData.error)
             setRefetchInterval(120)
         } else if (sessionData?.error == "AccessTokenError") {
             console.error(sessionData.error)
-            setRefetchInterval(10)
             setFailedTokenRequests(prev => prev + 1)
+            setRefetchInterval(10)
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             setRefetchInterval(0)
             signOut()
-        } else if (status == "unauthenticated") {
-            setRefetchInterval(0)
         } else if (sessionData?.user.bungieAccessToken) {
             setFailedTokenRequests(0)
             setAccessToken(sessionData.user.bungieAccessToken.value)
