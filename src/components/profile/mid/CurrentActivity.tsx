@@ -35,11 +35,11 @@ export default function CurrentActivity() {
             new Date(b.dateActivityStarted).getTime() - new Date(a.dateActivityStarted).getTime()
     )[0] as DestinyCharacterActivitiesComponent | undefined
 
-    return data?.profileTransitoryData.data?.currentActivity ? (
+    return data?.profileTransitoryData.data?.currentActivity && activities ? (
         <CurrentActivityExisting
             transitoryComponent={data.profileTransitoryData.data}
             updatedAt={updatedAt}
-            activitiesComponent={activities!}
+            activitiesComponent={activities}
         />
     ) : null
 }
