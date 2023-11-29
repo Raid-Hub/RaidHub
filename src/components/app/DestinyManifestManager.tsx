@@ -24,6 +24,7 @@ export const DestinyManifestManager = ({ children }: { children: ReactNode }) =>
     useEffect(() => {
         const oldVersion = localStorage.getItem(KEY_MANIFEST_VERSION)
         if (oldVersion) setManifestVersion(oldVersion)
+
         getDestinyManifest(client)
             .then(async ({ Response: manifest }) => {
                 const currentVersion = [manifest.version, language, MANIFEST_VERSION_ID].join("-")

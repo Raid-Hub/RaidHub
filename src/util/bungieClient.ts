@@ -10,12 +10,12 @@ import { QueryClient } from "@tanstack/react-query"
 import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
 import { getDestinyStats } from "~/services/bungie/getDestinyStats"
 
-const DONT_RETRY_CODES: PlatformErrorCodes[] = [
-    217, //PlatformErrorCodes.UserCannotResolveCentralAccount
-    5, //PlatformErrorCodes.SystemDisabled
-    622, //PlatformErrorCodes.GroupNotFound,
+const DO_NOT_RETRY_CODES = new Set<PlatformErrorCodes>([
+    5, // SystemDisabled
+    217, // UserCannotResolveCentralAccount
+    622, // GroupNotFound,
     1653 // DestinyPGCRNotFound
-]
+])
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
@@ -54,11 +54,16 @@ export default class BungieClient implements BungieClientProtocol {
         let timer = null
 
         if (config.url.pathname.match(/\/PostGameCarnageReport\//)) {
-            timer = setTimeout(() => controller.abort(), 5000)
+            timer = setTimeout(() => controller.abort(), 3000)
         }
 
-        const request = async (retry?: boolean) => {
-            if (retry) config.url.searchParams.set("retry", true.toString())
+        const request = async (opts?: { retry?: boolean; cacheBust?: true }) => {
+            if (opts?.retry) config.url.searchParams.set("retry", "true")
+            if (opts?.cacheBust)
+                config.url.searchParams.set(
+                    "cacheBust",
+                    String(Math.floor(Math.random() * 7777777))
+                )
             const res = await fetch(config.url, payload)
             const data = await res.json()
 
@@ -71,10 +76,12 @@ export default class BungieClient implements BungieClientProtocol {
         }
 
         try {
-            return await request()
+            return request()
         } catch (e) {
-            if (e instanceof BungieAPIError && !DONT_RETRY_CODES.includes(e.ErrorCode)) {
-                return await request(true)
+            if (e instanceof BungieAPIError && !DO_NOT_RETRY_CODES.has(e.ErrorCode)) {
+                return request({ retry: true })
+            } else if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
+                return request({ cacheBust: true })
             } else {
                 throw e
             }
