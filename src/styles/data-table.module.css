@@ -1,0 +1,48 @@
+.container {
+    border: 3px solid white;
+    padding: 2em;
+
+    width: fit-content;
+}
+.table {
+    border-collapse: collapse;
+    background-color: var(--modal-background);
+}
+
+.table th {
+    text-transform: uppercase;
+}
+
+.table tr:nth-child(even) {
+    background-color: #2b2a2a3a;
+}
+
+.table th,
+.table td {
+    border: 1px solid var(--border);
+    text-align: left;
+
+    padding: 0.8em 1.2em;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+
+.table td:first-child,
+.table th:first-child {
+    font-weight: 600;
+    text-align: left; /* Align the leftmost td in each row to the left */
+}
+
+.attribution {
+    font-size: 0.8em;
+    text-align: left;
+
+    margin-top: 1em;
+
+    font-style: italic;
+}
+
+.link {
+    letter-spacing: 0.04em;
+    color: var(--brand-orange-light);
+}
