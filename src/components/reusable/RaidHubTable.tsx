@@ -3,18 +3,35 @@ import Link from "next/link"
 import { ReactNode } from "react"
 import styles from "~/styles/data-table.module.css"
 
-export default function RaidHubTable<T extends readonly any[]>({
+/* EXAMPLE USAGE
+const { columnLabels, rows } = parseRawSQL<["raid", "attempts", "clears", "kills"]>(
+    `raid         | attempts | clears |   kills   
+    ---------------------+----------+--------+-----------
+     King's Fall         |    39958 |   4483 | 231788168
+     Last Wish           |   494586 |  19030 |  22780427
+     Crota's End         |    54981 |  27709 |  15145506
+     Vault of Glass      |    24581 |   5843 |   2628054
+     Root of Nightmares  |    18166 |   9701 |   2530861
+     Vow of the Disciple |    33062 |   3470 |   2331819
+     Deep Stone Crypt    |    14999 |   5517 |   1334354
+     Garden of Salvation |    16744 |   2906 |    881889`,
+    {
+        kills: value => <i>{formattedNumber(value, "en-US")}</i>,
+        clears: value => formattedNumber(value, "en-US"),
+        attempts: value => formattedNumber(value, "en-US")
+    }
+)
+*/
+
+export default function RaidHubTable<T extends readonly string[]>({
     title,
     columnLabels,
-    rows,
-    mapper
+    rows
 }: {
     title: string
-    columnLabels: string[]
-    rows: [...T][]
-    mapper?: (row: [...T]) => ReactNode[]
+    columnLabels: T
+    rows: Record<keyof T, any>[]
 }) {
-    const mappedRows = mapper ? rows.map(mapper) : rows
     return (
         <div className={styles["container"]}>
             <div style={{ display: "flex" }}>
@@ -33,9 +50,9 @@ export default function RaidHubTable<T extends readonly any[]>({
                         </tr>
                     </thead>
                     <tbody>
-                        {mappedRows.map((row, idx) => (
+                        {rows.map((row, idx) => (
                             <tr key={idx}>
-                                {row.map((c, i) => (
+                                {Object.values(row).map((c, i) => (
                                     <td key={i}>{c}</td>
                                 ))}
                             </tr>
@@ -51,4 +68,36 @@ export default function RaidHubTable<T extends readonly any[]>({
             </div>
         </div>
     )
+}
+
+export function parseRawSQL<T extends readonly string[]>(
+    output: string,
+    formatter: Partial<Record<T[number], (value: any) => ReactNode>>
+): {
+    columnLabels: T
+    rows: Record<keyof T, string>[]
+} {
+    const lines = output.split("\n")
+    lines.splice(1, 1)
+    const [header, ...rows] = lines
+
+    const columnLabels = header.split("|").map(t => t.trim())
+
+    return {
+        // @ts-ignore
+        columnLabels,
+        // @ts-ignore
+        rows: rows.map(r =>
+            Object.fromEntries(
+                r.split("|").map((t, i) => {
+                    const trimmed = t.trim()
+                    return [
+                        columnLabels[i],
+                        // @ts-ignore
+                        formatter[columnLabels[i]] ? formatter[columnLabels[i]](t.trim()) : t.trim()
+                    ] as const
+                })
+            )
+        )
+    }
 }
