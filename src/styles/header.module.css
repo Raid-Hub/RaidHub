@@ -17,6 +17,10 @@
     backdrop-filter: blur(10px);
 }
 
+.no-border {
+    border-bottom: none;
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -29,6 +33,7 @@
 }
 
 .logo-text {
+    font-family: 'Inter', sans-serif;
     text-transform: uppercase;
     color: white;
     margin-left: 5px;
@@ -63,15 +68,15 @@
     padding-right: 1em;
 
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 5px;
     background-color: var(--search-background);
 
     position: relative;
 }
 
 .search-icon {
-    width: 15px;
-    height: 15px;
+    width: 25px;
+    height: 25px;
 
     position: relative;
 }
@@ -195,9 +200,14 @@
     transition: width 0.1s ease-out, height 0.1s ease-out;
 }
 
+.account-dropdown .account-button {
+    transition: transform 0.5s ease-in-out;
+
+}
+
 .account-dropdown:hover .account-button {
-    width: 35px;
-    height: 35px;
+    overflow: hidden;
+    transform: scale(1.1);
 }
 
 .account-dropdown-content-container {
@@ -213,7 +223,7 @@
     border: 1px solid var(--border);
 
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    background-color: var(--modal-background);
+    background-color: #FAFAFA0A;
 
     display: grid;
     backdrop-filter: blur(10px);

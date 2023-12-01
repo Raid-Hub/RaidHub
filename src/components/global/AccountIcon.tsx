@@ -71,13 +71,6 @@ const AccountIcon = () => {
                         {sessionData ? (
                             <>
                                 <div className={styles["account-dropdown-top"]}>
-                                    <Image
-                                        src={sessionData.user.image}
-                                        alt="profile"
-                                        width={65}
-                                        height={65}
-                                        unoptimized
-                                    />
                                     <div className={styles["account-dropdown-top-user"]}>
                                         <a className={styles["account-dropdown-name"]}>
                                             {sessionData.user.name}

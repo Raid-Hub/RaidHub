@@ -2,22 +2,27 @@
 :root {
     --brand-orange: #ff8c3980;
     --brand-orange-light: #f0802ffa;
+    --brand-orange-glow: #FA5C1E;
     --bungie-blue: #13e6ff;
     --primary-text: #ffffff;
     --secondary-text: #e4e4e4b4;
     --tertiary-text: rgb(183, 183, 183);
-    --border: rgba(105, 105, 105, 0.28);
-    --header-background: #44444470;
+    --border: #FFFFFF1A;
+    --header-background: #00000003;
     --scroll-track: #7f7f7f;
-    --search-background: #2b2b2b6b;
+    --search-background: #FAFAFA0A;
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
-    --modal-background: rgba(48, 48, 48, 0.253);
+    --modal-background: #FAFAFA0A;
     --modal-background-opaque: rgba(48, 48, 48, 0.929);
     --button: #ffffffdc;
     --success: rgba(57, 195, 131, 0.885);
     --destructive: rgba(160, 79, 79, 0.885);
     color: var(--primary-text);
+}
+
+hr {
+    color: #fafafa17;
 }
 
 * {
@@ -32,19 +37,23 @@ html {
 }
 
 body {
-    font-family: "Neue Haas Grotesk Display Pro", sans-serif;
+    font-family: 'Manrope', sans-serif;
     padding: 0;
     margin: 0;
 
-    background-color: black;
-    background: linear-gradient(
+    background-color: #010011;
+    /*background: linear-gradient(
         90deg,
         rgba(1, 0, 17, 1) 0%,
         rgba(1, 0, 17, 1) 25%,
         rgba(23, 1, 13, 1) 48%,
         rgba(1, 0, 17, 1) 91%,
         rgba(19, 3, 1, 1) 100%
-    );
+    );*/
+}
+
+ul {
+    padding: 0;
 }
 
 #__next {
