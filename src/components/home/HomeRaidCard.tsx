@@ -15,7 +15,6 @@ import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { includedIn } from "~/util/betterIncludes"
 import CloudflareImage from "~/images/CloudflareImage"
-import { DestinyVendorReplyType } from "bungie-net-core/models"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
@@ -67,7 +66,8 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                                         href={`/leaderboards/${
                                             RaidToUrlPaths[raid]
                                         }/src/${encodeURIComponent(type)}`}
-                                        className={styles["content-section"]}>
+                                        className={styles["content-section"]}
+                                        key={id}>
                                         <div>
                                             <h4>{strings.leaderboards[key]}</h4>
                                         </div>
