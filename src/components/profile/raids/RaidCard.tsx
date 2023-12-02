@@ -60,7 +60,6 @@ export default function RaidCard({
     isExpanded
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-
     useEffect(() => {
         if (hoveredTag) {
             // Set a new timeout
@@ -83,8 +82,7 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
-    const sortedLeaderboardData = leaderboardData?.sort((a, b) => a.rank - b.rank)
-    const firstClear = sortedLeaderboardData.find(r => r.key == wfBoard) || sortedLeaderboardData[0]
+    const firstClear = leaderboardData?.sort((a, b) => a.rank - b.rank).find(raid => raid.key === "challenge" || raid.key === "normal");
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
