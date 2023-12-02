@@ -35,6 +35,7 @@ const Header = () => {
                     alt="logo"
                     width={30}
                     height={30}
+                    unoptimized={true}
                 />
                 <span className={styles["logo-text"]}>RaidHub</span>
             </Link>
