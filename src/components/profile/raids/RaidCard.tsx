@@ -83,7 +83,7 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
-    const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank)[0]
+    const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank).find(r => r.key == wfBoard)
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
@@ -148,7 +148,7 @@ export default function RaidCard({
                             dayOne={firstClear.dayOne}
                             contest={firstClear.contest}
                             weekOne={firstClear.weekOne}
-                            challenge={wfBoard === "challenge"}
+                            challenge={firstClear.key === "challenge"}
                             raid={raid}
                             setActiveId={setHoveredTag}
                         />

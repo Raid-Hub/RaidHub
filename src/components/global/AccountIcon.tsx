@@ -107,19 +107,19 @@ const AccountIcon = () => {
                                         </div>
                                     </Link>
                                 </div>
-                                <li onClick={() => signOut({ callbackUrl: "/" })}>
+                                <div onClick={() => signOut({ callbackUrl: "/" })}>
                                     <span>{strings.logOut}</span>
-                                </li>
+                                </div>
                             </>
                         ) : (
-                            <li
+                            <div
                                 onClick={() => {
                                     signIn("bungie", {
                                         callbackUrl: encodeURI(window.location.href)
                                     })
                                 }}>
                                 <span>{strings.logIn}</span>
-                            </li>
+                            </div>
                         )}
                     </div>
                 </m.div>

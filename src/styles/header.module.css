@@ -264,8 +264,6 @@
 
     display: grid;
     backdrop-filter: blur(10px);
-
-    padding: 15px;
 }
 
 .account-dropdown-content {
@@ -277,7 +275,7 @@
     margin-block: 0;
     padding-inline-start: 0;
 
-    text-align: center;
+    padding: 15px;
 }
 
 .account-dropdown-content > li {
