@@ -27,7 +27,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0; 
+    bottom: 0;
     height: 8px;
     backdrop-filter: blur(10px);
 }
@@ -58,7 +58,7 @@
 
 .section-title span {
     color: rgba(255, 255, 255, 0.411);
-    
+
     font-size: 16px;
     font-weight: 400;
     text-transform: uppercase;
@@ -89,7 +89,7 @@
 }
 
 .content-section .content-section-inner-section:hover {
-    background-color: #FA5C1E0D;
+    background-color: #fa5c1e0d;
     margin-left: -15px;
     margin-right: -15px;
     padding: 15px;
@@ -100,7 +100,7 @@
 }
 
 .content-section:hover {
-    background-color: #FA5C1E0D;
+    background-color: #fa5c1e0d;
     margin-left: -15px;
     margin-right: -15px;
     padding: 15px;
@@ -135,7 +135,6 @@
     padding-bottom: 5vw;
 }
 
-
 .logo-img {
     position: absolute;
     z-index: -1;
@@ -144,11 +143,10 @@
     width: 150px;
     height: 150px;
     opacity: 0.1;
-  }
+}
 
-  
 .logo-text {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     text-transform: uppercase;
     color: white;
     margin-left: 15px;
@@ -172,7 +170,7 @@
 
 .search-bar-container {
     margin: 0 20% 3% 20%;
-    background: #FAFAFA0A;
+    background: #fafafa0a;
     border: 1px solid var(--border);
     border-radius: 10px;
     height: 50px;
@@ -220,7 +218,7 @@
 }
 
 .search-result-container {
-    background: #FAFAFA0A;
+    background: #fafafa0a;
     backdrop-filter: blur(10px) !important;
     border: 1px solid var(--border);
     border-radius: 0 0 24px 24px;
@@ -310,7 +308,7 @@
 }
 
 .tool-button svg {
-    background: #FAFAFA1A;
+    background: #fafafa1a;
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1em;

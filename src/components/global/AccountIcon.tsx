@@ -3,6 +3,7 @@ import styles from "../../styles/header.module.css"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
 import { useLocale } from "../app/LocaleManager"
+import RightArrow from "~/images/icons/RightArrow"
 import Link from "next/link"
 import { Variants, m } from "framer-motion"
 import QuestionMark from "~/images/icons/QuestionMark"
@@ -67,7 +68,7 @@ const AccountIcon = () => {
                     initial={"closed"}
                     animate={animate}
                     variants={variants}>
-                    <ul className={styles["account-dropdown-content"]} onClick={handleItemClick}>
+                    <div className={styles["account-dropdown-content"]} onClick={handleItemClick}>
                         {sessionData ? (
                             <>
                                 <div className={styles["account-dropdown-top"]}>
@@ -81,19 +82,31 @@ const AccountIcon = () => {
                                     </div>
                                 </div>
                                 <hr />
-                                <li>
-                                    <Link href="/account">{strings.manageAccount}</Link>
-                                </li>
                                 {sessionData.user.destinyMembershipType &&
                                     sessionData.user.destinyMembershipId && (
-                                        <li>
+                                        <div className={`${styles["card-section"]}`}>
                                             <Link
                                                 href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
-                                                className={styles["account-link"]}>
-                                                {strings.viewProfile}
+                                                className={styles["content-section"]}>
+                                                <div>
+                                                    <h4>{strings.viewProfile}</h4>
+                                                </div>
+                                                <div className={styles["content-section-arrow"]}>
+                                                    <RightArrow />
+                                                </div>
                                             </Link>
-                                        </li>
+                                        </div>
                                     )}
+                                <div className={`${styles["card-section"]}`}>
+                                    <Link href="/account" className={styles["content-section"]}>
+                                        <div>
+                                            <h4>{strings.manageAccount}</h4>
+                                        </div>
+                                        <div className={styles["content-section-arrow"]}>
+                                            <RightArrow />
+                                        </div>
+                                    </Link>
+                                </div>
                                 <li onClick={() => signOut({ callbackUrl: "/" })}>
                                     <span>{strings.logOut}</span>
                                 </li>
@@ -108,7 +121,7 @@ const AccountIcon = () => {
                                 <span>{strings.logIn}</span>
                             </li>
                         )}
-                    </ul>
+                    </div>
                 </m.div>
             )}
         </div>

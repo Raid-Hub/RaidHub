@@ -2,18 +2,18 @@
 :root {
     --brand-orange: #ff8c3980;
     --brand-orange-light: #f0802ffa;
-    --brand-orange-glow: #FA5C1E;
+    --brand-orange-glow: #fa5c1e;
     --bungie-blue: #13e6ff;
     --primary-text: #ffffff;
     --secondary-text: #e4e4e4b4;
     --tertiary-text: rgb(183, 183, 183);
-    --border: #FFFFFF1A;
+    --border: #ffffff1a;
     --header-background: #00000003;
     --scroll-track: #7f7f7f;
-    --search-background: #FAFAFA0A;
+    --search-background: #fafafa0a;
     --search-placeholder: #a9a9a9;
     --search-text: #e9e8e8;
-    --modal-background: #FAFAFA0A;
+    --modal-background: #fafafa0a;
     --modal-background-opaque: rgba(48, 48, 48, 0.929);
     --button: #ffffffdc;
     --success: rgba(57, 195, 131, 0.885);
@@ -37,7 +37,7 @@ html {
 }
 
 body {
-    font-family: 'Manrope', sans-serif;
+    font-family: "Manrope", sans-serif;
     padding: 0;
     margin: 0;
 

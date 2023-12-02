@@ -41,9 +41,11 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
 
                 <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                 <hr />
-                
+
                 <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
-                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`} className={styles["content-section"]}> 
+                    <Link
+                        href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
+                        className={styles["content-section"]}>
                         <div>
                             <h4>{strings.worldFirstLeaderboards}</h4>
                         </div>
@@ -61,25 +63,31 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                         {SpeedrunVariables[raid] ? (
                             Object.entries(SpeedrunVariables[raid]!.values).map(
                                 ([type, { id, name: key }]: [string, SpeedData]) => (
-                                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/src/${encodeURIComponent(type)}`} className={styles["content-section"]}> 
+                                    <Link
+                                        href={`/leaderboards/${
+                                            RaidToUrlPaths[raid]
+                                        }/src/${encodeURIComponent(type)}`}
+                                        className={styles["content-section"]}>
                                         <div>
                                             <h4>{strings.leaderboards[key]}</h4>
                                         </div>
                                         <div className={styles["content-section-arrow"]}>
                                             <RightArrow />
                                         </div>
-                                    </Link> 
+                                    </Link>
                                 )
                             )
                         ) : (
-                            <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/src`} className={styles["content-section"]}> 
+                            <Link
+                                href={`/leaderboards/${RaidToUrlPaths[raid]}/src`}
+                                className={styles["content-section"]}>
                                 <div>
                                     <h4>{strings.leaderboards.anyPercent}</h4>
                                 </div>
                                 <div className={styles["content-section-arrow"]}>
                                     <RightArrow />
                                 </div>
-                            </Link> 
+                            </Link>
                         )}
                     </div>
                 </div>
@@ -107,46 +115,54 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 <div className={styles["card-section"]}>
                     <div className={styles["section-title"]}>
                         <span>{strings.otherLeaderboards}</span>
-                    </div>                    
+                    </div>
                     {includedIn(RaidsWithReprisedContest, raid) && (
-                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`} className={styles["content-section"]}> 
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
+                            className={styles["content-section"]}>
                             <div>
                                 <h4>{strings.noChallenge}</h4>
                             </div>
                             <div className={styles["content-section-arrow"]}>
                                 <RightArrow />
                             </div>
-                        </Link> 
+                        </Link>
                     )}
                     {includedIn(MasterRaids, raid) && (
-                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`} className={styles["content-section"]}> 
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}
+                            className={styles["content-section"]}>
                             <div>
                                 <h4>{strings.difficulty[Difficulty.MASTER]}</h4>
                             </div>
                             <div className={styles["content-section-arrow"]}>
                                 <RightArrow />
                             </div>
-                        </Link> 
+                        </Link>
                     )}
                     {includedIn(PrestigeRaids, raid) && (
-                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`} className={styles["content-section"]}> 
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}
+                            className={styles["content-section"]}>
                             <div>
                                 <h4>{strings.difficulty[Difficulty.PRESTIGE]}</h4>
                             </div>
                             <div className={styles["content-section-arrow"]}>
                                 <RightArrow />
                             </div>
-                        </Link> 
+                        </Link>
                     )}
                     {raid === Raid.LEVIATHAN && (
-                        <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`} className={styles["content-section"]}> 
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`}
+                            className={styles["content-section"]}>
                             <div>
                                 <h4>PC</h4>
                             </div>
                             <div className={styles["content-section-arrow"]}>
                                 <RightArrow />
                             </div>
-                        </Link> 
+                        </Link>
                     )}
                     {strings.comingSoon}
                 </div>

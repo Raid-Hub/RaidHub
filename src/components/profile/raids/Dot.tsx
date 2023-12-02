@@ -8,7 +8,7 @@ import { animate } from "framer-motion"
 import RaidSkull from "~/images/icons/destiny2/RaidSkull"
 import { includedIn } from "~/util/betterIncludes"
 import { useRouter } from "next/router"
-import Link from 'next/link';
+import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"

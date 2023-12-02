@@ -33,7 +33,7 @@
 }
 
 .logo-text {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     text-transform: uppercase;
     color: white;
     margin-left: 5px;
@@ -72,6 +72,44 @@
     background-color: var(--search-background);
 
     position: relative;
+}
+
+.card-section {
+    padding-bottom: 5px;
+}
+
+.content-section {
+    display: flex;
+    align-items: center;
+
+    height: 40px;
+}
+
+.content-section-inner li {
+    list-style: none;
+}
+
+.content-section:hover {
+    background-color: #fa5c1e0d;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 20px;
+}
+
+.content-section a {
+    color: var(--brand-orange-light);
+}
+
+.content-section h4 {
+    font-size: large;
+    font-weight: 400;
+    margin: 0;
+}
+
+.content-section-arrow {
+    height: 25px;
+    width: 25px;
+    margin-left: auto;
 }
 
 .search-icon {
@@ -202,7 +240,6 @@
 
 .account-dropdown .account-button {
     transition: transform 0.5s ease-in-out;
-
 }
 
 .account-dropdown:hover .account-button {
@@ -217,16 +254,18 @@
 
     margin-top: 15px;
 
-    min-width: 100px;
+    min-width: 250px;
 
     border-radius: 6px;
     border: 1px solid var(--border);
 
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    background-color: #FAFAFA0A;
+    background-color: #fafafa0a;
 
     display: grid;
     backdrop-filter: blur(10px);
+
+    padding: 15px;
 }
 
 .account-dropdown-content {
@@ -260,8 +299,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    padding: 5px 5px 5px 5px;
 }
 
 .account-dropdown-top img {
@@ -275,11 +312,17 @@
 
     text-align: left;
     margin-bottom: 5px;
-    padding-left: 10px;
 }
 
 .account-dropdown-name {
-    font-weight: 800;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.account-dropdown-id {
+    color: #ffffff4d;
+    font-weight: 400;
+    font-size: 16px;
 }
 
 .search-modal {

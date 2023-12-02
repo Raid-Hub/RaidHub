@@ -83,7 +83,7 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
-    const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank).find(d => d.key === wfBoard)
+    const firstClear = leaderboardData.sort((a, b) => a.rank - b.rank)[0]
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
