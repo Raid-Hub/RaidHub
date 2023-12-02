@@ -82,7 +82,9 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
-    const firstClear = leaderboardData?.sort((a, b) => a.rank - b.rank).find(raid => raid.key === "challenge" || raid.key === "normal");
+    const firstClear = leaderboardData
+        ?.sort((a, b) => a.rank - b.rank)
+        .find(raid => raid.key === "challenge" || raid.key === "normal")
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
