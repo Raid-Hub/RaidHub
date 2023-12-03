@@ -13,7 +13,7 @@ const RaidCardBackground: { [key in ListedRaid]: string } = {
     [Raid.VAULT_OF_GLASS]: "d04307fd-6b3a-4aa7-cb78-c853bc494700",
     [Raid.VOW_OF_THE_DISCIPLE]: "692acf5e-7de4-4b47-1884-4b878be43000",
     [Raid.KINGS_FALL]: "34d48e44-7a1d-4e03-23fc-1dc3de934d00",
-    [Raid.ROOT_OF_NIGHTMARES]: "d9d5b312-63ba-4efd-6170-d246d2134f00",
+    [Raid.ROOT_OF_NIGHTMARES]: "2a2e9ea3-b0f6-449e-6f5d-ec03f0f40d00",
     [Raid.CROTAS_END]: "5f3e8b20-3694-4899-a89c-fa2fb992f900"
 }
 
