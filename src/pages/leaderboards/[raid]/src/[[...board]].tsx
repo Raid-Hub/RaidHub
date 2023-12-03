@@ -41,7 +41,7 @@ const categoryPaths = (
     }))
 
 export const getStaticPaths: GetStaticPaths<{ raid: string; board: string[] }> = async () => {
-    return process.env.APP_ENV === "local"
+    return process.env.APP_ENV === "local" || process.env.APP_ENV === "preview"
         ? {
               paths: [],
               fallback: "blocking"
