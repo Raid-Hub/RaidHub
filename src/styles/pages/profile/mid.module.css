@@ -27,7 +27,7 @@
     display: block;
 
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
 }
 
@@ -105,7 +105,7 @@
 }
 
 .pinned-activity-title {
-    font-weight: 600;
+    font-weight: 800;
     font-size: 22px;
     text-transform: uppercase;
     margin-right: 0.5em;
@@ -274,7 +274,7 @@
     width: 200px;
     margin-block: 0;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
 
     text-wrap: wrap;
@@ -294,7 +294,7 @@
     border: none;
 
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
 
     padding: 0.3em 0.6em;
@@ -483,7 +483,7 @@
 }
 
 .description-toggle.checked {
-    font-weight: 600;
+    font-weight: 800;
     color: var(--tertiary-text);
 }
 

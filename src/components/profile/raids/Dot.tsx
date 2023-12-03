@@ -8,6 +8,7 @@ import { animate } from "framer-motion"
 import RaidSkull from "~/images/icons/destiny2/RaidSkull"
 import { includedIn } from "~/util/betterIncludes"
 import { useRouter } from "next/router"
+import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -70,15 +71,8 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
     const router = useRouter()
 
     return (
-        <a
+        <Link
             href={`/pgcr/${activity.activityId}`}
-            onClick={e => {
-                e.preventDefault()
-                router.push({
-                    pathname: "/pgcr/[activityId]",
-                    query: { activityId: activity.activityId }
-                })
-            }}
             ref={ref}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}
@@ -122,7 +116,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     cy={centerY}
                 />
             )}
-        </a>
+        </Link>
     )
 }
 

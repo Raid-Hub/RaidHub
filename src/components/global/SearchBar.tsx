@@ -13,7 +13,7 @@ type SearchBarProps = {}
 
 const SearchBar = ({}: SearchBarProps) => {
     const [isRedirecting, setIsRedirecting] = useState(false)
-    const [OSKey, setOSKey] = useState("Ctrl")
+    const [OSKey, setOSKey] = useState("ctrl")
 
     const router = useRouter()
 
@@ -98,7 +98,7 @@ const SearchBar = ({}: SearchBarProps) => {
                 <div className={styles["keys"]}>
                     <kbd>{OSKey}</kbd>
                     <span>+</span>
-                    <kbd>K</kbd>
+                    <kbd>k</kbd>
                 </div>
                 {isShowingResults && (
                     <ul className={styles["search-results"]}>

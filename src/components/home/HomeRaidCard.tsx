@@ -1,5 +1,6 @@
 import Link from "next/link"
 import styles from "~/styles/pages/home.module.css"
+import RightArrow from "~/images/icons/RightArrow"
 import RaidCardBackground from "~/images/raid-backgrounds"
 import {
     Difficulty,
@@ -31,85 +32,139 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     cloudflareId={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
-                <h3>{strings.raidNames[raid]}</h3>
             </div>
             <div className={styles["card-content"]}>
-                <div className={styles["content-section"]}>
-                    <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}>
-                        <h4>{strings.worldFirstLeaderboards}</h4>
+                <div className={styles["section-title"]}>
+                    <span>Leaderboards</span>
+                </div>
+
+                <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
+                <hr />
+
+                <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
+                    <Link
+                        href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
+                        className={styles["content-section"]}>
+                        <div>
+                            <h4>{strings.worldFirstLeaderboards}</h4>
+                        </div>
+                        <div className={styles["content-section-arrow"]}>
+                            <RightArrow />
+                        </div>
                     </Link>
                 </div>
 
-                <div className={styles["content-section"]}>
-                    <h4>{strings.rtaSpeedrunLeaderboards}</h4>
-                    <ul>
+                <div className={styles["card-section"]}>
+                    <div className={styles["section-title"]}>
+                        <span>{strings.rtaSpeedrunLeaderboards}</span>
+                    </div>
+                    <div className={styles["content-section-inner"]}>
                         {SpeedrunVariables[raid] ? (
                             Object.entries(SpeedrunVariables[raid]!.values).map(
                                 ([type, { id, name: key }]: [string, SpeedData]) => (
-                                    <li key={id}>
-                                        <Link
-                                            href={`/leaderboards/${
-                                                RaidToUrlPaths[raid]
-                                            }/src/${encodeURIComponent(type)}`}>
-                                            {strings.leaderboards[key]}
-                                        </Link>
-                                    </li>
+                                    <Link
+                                        href={`/leaderboards/${
+                                            RaidToUrlPaths[raid]
+                                        }/src/${encodeURIComponent(type)}`}
+                                        className={styles["content-section"]}
+                                        key={id}>
+                                        <div>
+                                            <h4>{strings.leaderboards[key]}</h4>
+                                        </div>
+                                        <div className={styles["content-section-arrow"]}>
+                                            <RightArrow />
+                                        </div>
+                                    </Link>
                                 )
                             )
                         ) : (
-                            <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/src`}>
-                                    {strings.leaderboards.anyPercent}
-                                </Link>
-                            </li>
+                            <Link
+                                href={`/leaderboards/${RaidToUrlPaths[raid]}/src`}
+                                className={styles["content-section"]}>
+                                <div>
+                                    <h4>{strings.leaderboards.anyPercent}</h4>
+                                </div>
+                                <div className={styles["content-section-arrow"]}>
+                                    <RightArrow />
+                                </div>
+                            </Link>
                         )}
-                    </ul>
+                    </div>
                 </div>
+
+                {/*
                 <div className={styles["content-section"]}>
-                    <h4>{strings.apiSpeedrunLeaderboards}</h4>
+                    <div className={styles["section-title"]}>
+                        <span>{strings.apiSpeedrunLeaderboards}</span>
+                    </div>
                     <ul>
                         <li>{strings.comingSoon}</li>
                     </ul>
                 </div>
+
                 <div className={styles["content-section"]}>
-                    <h4>{strings.clearsLeaderboards}</h4>
+                    <div className={styles["section-title"]}>
+                        <span>{strings.clearsLeaderboards}</span>
+                    </div>
                     <ul>
                         <li>{strings.comingSoon}</li>
                     </ul>
                 </div>
-                <div className={styles["content-section"]}>
-                    <h4>{strings.otherLeaderboards}</h4>
-                    <ul>
-                        {includedIn(RaidsWithReprisedContest, raid) && (
-                            <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}>
-                                    {strings.noChallenge}
-                                </Link>
-                            </li>
-                        )}
-                        {includedIn(MasterRaids, raid) && (
-                            <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}>
-                                    {strings.difficulty[Difficulty.MASTER]}
-                                </Link>
-                            </li>
-                        )}
-                        {includedIn(PrestigeRaids, raid) && (
-                            <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}>
-                                    {strings.difficulty[Difficulty.PRESTIGE]}
-                                </Link>
-                            </li>
-                        )}
-                        {raid === Raid.LEVIATHAN && (
-                            <li>
-                                <Link href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`}>
-                                    PC
-                                </Link>
-                            </li>
-                        )}
-                        <li>{strings.comingSoon}</li>
-                    </ul>
+                */}
+
+                <div className={styles["card-section"]}>
+                    <div className={styles["section-title"]}>
+                        <span>{strings.otherLeaderboards}</span>
+                    </div>
+                    {includedIn(RaidsWithReprisedContest, raid) && (
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
+                            className={styles["content-section"]}>
+                            <div>
+                                <h4>{strings.noChallenge}</h4>
+                            </div>
+                            <div className={styles["content-section-arrow"]}>
+                                <RightArrow />
+                            </div>
+                        </Link>
+                    )}
+                    {includedIn(MasterRaids, raid) && (
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}
+                            className={styles["content-section"]}>
+                            <div>
+                                <h4>{strings.difficulty[Difficulty.MASTER]}</h4>
+                            </div>
+                            <div className={styles["content-section-arrow"]}>
+                                <RightArrow />
+                            </div>
+                        </Link>
+                    )}
+                    {includedIn(PrestigeRaids, raid) && (
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}
+                            className={styles["content-section"]}>
+                            <div>
+                                <h4>{strings.difficulty[Difficulty.PRESTIGE]}</h4>
+                            </div>
+                            <div className={styles["content-section-arrow"]}>
+                                <RightArrow />
+                            </div>
+                        </Link>
+                    )}
+                    {raid === Raid.LEVIATHAN && (
+                        <Link
+                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`}
+                            className={styles["content-section"]}>
+                            <div>
+                                <h4>PC</h4>
+                            </div>
+                            <div className={styles["content-section-arrow"]}>
+                                <RightArrow />
+                            </div>
+                        </Link>
+                    )}
+                    {strings.comingSoon}
                 </div>
             </div>
         </div>

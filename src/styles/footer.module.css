@@ -2,6 +2,7 @@
     margin-top: auto;
     width: 100%;
     padding: 1em 1em;
+    --header-background: rgba(14, 14, 14, 0.39);
     background-color: var(--header-background);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -13,6 +14,8 @@
 
     font-size: 0.9rem;
     color: var(--footer-fill);
+
+    backdrop-filter: blur(10px) !important;
 }
 
 @media only screen and (max-width: 600px) {
@@ -73,7 +76,7 @@
 }
 
 .developers {
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
 }
 

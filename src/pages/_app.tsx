@@ -81,6 +81,7 @@ function RaidHub({
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
                 />
+                <meta name="theme-color" content="#FFA500" />
             </Head>
             <SessionProvider
                 session={session}
