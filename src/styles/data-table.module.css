@@ -27,8 +27,7 @@
     letter-spacing: 0.04em;
 }
 
-.table td:first-child,
-.table th:first-child {
+.table td:first-child {
     font-weight: 600;
     text-align: left; /* Align the leftmost td in each row to the left */
 }
