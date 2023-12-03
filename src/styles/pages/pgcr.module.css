@@ -1,3 +1,7 @@
+.main {
+    max-width: 1200px; /* Overrides the global setting */
+}
+
 .summary-card {
     flex: 1;
     padding: 0.8em;

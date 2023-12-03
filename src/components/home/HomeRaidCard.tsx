@@ -34,13 +34,8 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                 />
             </div>
             <div className={styles["card-content"]}>
-                <div className={styles["section-title"]}>
-                    <span>Leaderboards</span>
-                </div>
-
                 <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
                 <hr />
-
                 <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
                     <Link
                         href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
@@ -53,7 +48,6 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                         </div>
                     </Link>
                 </div>
-
                 <div className={styles["card-section"]}>
                     <div className={styles["section-title"]}>
                         <span>{strings.rtaSpeedrunLeaderboards}</span>
@@ -91,7 +85,6 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                         )}
                     </div>
                 </div>
-
                 {/*
                 <div className={styles["content-section"]}>
                     <div className={styles["section-title"]}>
@@ -111,7 +104,6 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     </ul>
                 </div>
                 */}
-
                 <div className={styles["card-section"]}>
                     <div className={styles["section-title"]}>
                         <span>{strings.otherLeaderboards}</span>

@@ -1,6 +1,6 @@
 .raids {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
 }
 
@@ -54,6 +54,9 @@
 .card-title {
     font-size: x-large;
     font-weight: 800;
+    text-transform: uppercase;
+
+    white-space: nowrap;
 }
 
 .section-title span {
@@ -67,6 +70,10 @@
 
 .card-content {
     padding: 15px;
+}
+
+.card-content hr {
+    border-color: var(--border);
 }
 
 .card-section {
@@ -131,8 +138,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: calc(min(12%, 70px)) 0 4% 0;
-    padding-bottom: 5vw;
+    padding: calc(min(4%, 50px)) 0 4% 0;
+
+    min-height: 170px; /* min size of logo + 20 */
+    position: relative;
+    margin-bottom: 1em;
 }
 
 .logo-img {
