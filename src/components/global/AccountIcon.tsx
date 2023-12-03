@@ -1,27 +1,18 @@
 import Image from "next/image"
 import styles from "../../styles/header.module.css"
-import { signIn, signOut, useSession } from "next-auth/react"
-import { useEffect, useRef, useState } from "react"
-import { useLocale } from "../app/LocaleManager"
-import RightArrow from "~/images/icons/RightArrow"
-import Link from "next/link"
-import { Variants, m } from "framer-motion"
+import { useSession } from "next-auth/react"
+import { useEffect, useRef } from "react"
 import QuestionMark from "~/images/icons/QuestionMark"
 import UserIcon from "~/images/icons/UserIcon"
 
-const variants = {
-    open: {
-        height: "unset",
-        gridTemplateRows: "1fr"
-    },
-    closed: { height: "unset", gridTemplateRows: "0fr" }
-} satisfies Variants
+type AccountIconProps = {
+    isDropdownOpen: boolean
+    setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const AccountIcon = () => {
+const AccountIcon = ({ isDropdownOpen, setIsDropdownOpen }: AccountIconProps) => {
     const { data: sessionData, status } = useSession()
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
-    const { strings } = useLocale()
 
     const handleIconClick = () => {
         setIsDropdownOpen(old => !old)
@@ -44,9 +35,8 @@ const AccountIcon = () => {
                 document.removeEventListener("click", handler)
             }
         }
-    }, [isDropdownOpen])
+    }, [isDropdownOpen, setIsDropdownOpen])
 
-    const animate: keyof typeof variants = isDropdownOpen ? "open" : "closed"
     return (
         <div className={styles["account-dropdown"]}>
             <div
@@ -62,81 +52,6 @@ const AccountIcon = () => {
                     <UserIcon color="white" />
                 )}
             </div>
-            {isDropdownOpen && (
-                <m.div
-                    className={styles["account-dropdown-content-container"]}
-                    initial={"closed"}
-                    animate={animate}
-                    variants={variants}>
-                    <div className={styles["account-dropdown-content"]} onClick={handleItemClick}>
-                        {sessionData ? (
-                            <>
-                                <div className={styles["account-dropdown-top"]}>
-                                    <div className={styles["account-dropdown-top-user"]}>
-                                        <a className={styles["account-dropdown-name"]}>
-                                            {sessionData.user.name}
-                                        </a>
-                                        <a className={styles["account-dropdown-id"]}>
-                                            {sessionData.user.destinyMembershipId}
-                                        </a>
-                                    </div>
-                                </div>
-                                <hr style={{ borderColor: "var(--border)" }} />
-                                {sessionData.user.destinyMembershipType &&
-                                    sessionData.user.destinyMembershipId && (
-                                        <div className={`${styles["card-section"]}`}>
-                                            <Link
-                                                href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
-                                                className={styles["content-section"]}>
-                                                <div>
-                                                    <h4>{strings.viewProfile}</h4>
-                                                </div>
-                                                <div className={styles["content-section-arrow"]}>
-                                                    <RightArrow />
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    )}
-                                <div className={`${styles["card-section"]}`}>
-                                    <Link href="/account" className={styles["content-section"]}>
-                                        <div>
-                                            <h4>{strings.manageAccount}</h4>
-                                        </div>
-                                        <div className={styles["content-section-arrow"]}>
-                                            <RightArrow />
-                                        </div>
-                                    </Link>
-                                </div>
-                                <div
-                                    onClick={() => signOut({ callbackUrl: "/" })}
-                                    className={styles["content-section"]}>
-                                    <div>
-                                        <span>{strings.logOut}</span>
-                                    </div>
-                                    <div className={styles["content-section-arrow"]}>
-                                        <RightArrow />
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <div
-                                onClick={() => {
-                                    signIn("bungie", {
-                                        callbackUrl: encodeURI(window.location.href)
-                                    })
-                                }}
-                                className={styles["content-section"]}>
-                                <div>
-                                    <span>{strings.logIn}</span>
-                                </div>
-                                <div className={styles["content-section-arrow"]}>
-                                    <RightArrow />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </m.div>
-            )}
         </div>
     )
 }
