@@ -22,3 +22,33 @@ export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean = fa
         !hours || alwaysIncludeSeconds ? ` ${time + "s"}` : ""
     }`
 }
+
+export function secondsToYDHMS(totalSeconds: number): string {
+    let time = Math.round(totalSeconds)
+    const seconds = time % 60
+    time -= seconds
+    time /= 60
+
+    const minutes = time % 60
+    time -= minutes
+    time /= 60
+
+    const hours = time % 24
+    time -= hours
+    time /= 24
+
+    const days = time % 365
+    time -= days
+    time /= 365
+
+    const years = time
+    return [
+        years ? years + "y" : "",
+        days ? days + "d" : "",
+        hours ? hours + "h" : "",
+        minutes ? minutes + "m" : "",
+        seconds ? seconds + "s" : ""
+    ]
+        .filter(Boolean)
+        .join(" ")
+}
