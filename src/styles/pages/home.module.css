@@ -32,14 +32,21 @@
     backdrop-filter: blur(10px);
 }
 
-.card-image-header h3 {
+.card-title {
     position: absolute;
-    top: 50%;
-    left: 8%;
+    bottom: 0%;
+    left: 0%;
+    padding: 0.5em;
 
     font-weight: 500;
     font-size: x-large;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+
+    font-size: x-large;
+    font-weight: 800;
+    text-transform: uppercase;
+
+    white-space: nowrap;
 }
 
 .card-image-header img {
@@ -49,14 +56,6 @@
     margin-bottom: -5%;
 
     filter: brightness(90%);
-}
-
-.card-title {
-    font-size: x-large;
-    font-weight: 800;
-    text-transform: uppercase;
-
-    white-space: nowrap;
 }
 
 .section-title span {
