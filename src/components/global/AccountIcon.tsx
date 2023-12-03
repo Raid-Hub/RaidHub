@@ -81,7 +81,7 @@ const AccountIcon = () => {
                                         </a>
                                     </div>
                                 </div>
-                                <hr />
+                                <hr style={{ borderColor: "var(--border)" }} />
                                 {sessionData.user.destinyMembershipType &&
                                     sessionData.user.destinyMembershipId && (
                                         <div className={`${styles["card-section"]}`}>
