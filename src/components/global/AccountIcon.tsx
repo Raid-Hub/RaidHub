@@ -107,8 +107,15 @@ const AccountIcon = () => {
                                         </div>
                                     </Link>
                                 </div>
-                                <div onClick={() => signOut({ callbackUrl: "/" })}>
-                                    <span>{strings.logOut}</span>
+                                <div
+                                    onClick={() => signOut({ callbackUrl: "/" })}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <span>{strings.logOut}</span>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
                                 </div>
                             </>
                         ) : (
@@ -117,8 +124,14 @@ const AccountIcon = () => {
                                     signIn("bungie", {
                                         callbackUrl: encodeURI(window.location.href)
                                     })
-                                }}>
-                                <span>{strings.logIn}</span>
+                                }}
+                                className={styles["content-section"]}>
+                                <div>
+                                    <span>{strings.logIn}</span>
+                                </div>
+                                <div className={styles["content-section-arrow"]}>
+                                    <RightArrow />
+                                </div>
                             </div>
                         )}
                     </div>

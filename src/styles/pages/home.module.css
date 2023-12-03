@@ -123,8 +123,8 @@
 }
 
 .logo-glow {
-    color: var(--brand-orange-glow);
-    text-shadow: 0 0 100px var(--brand-orange-glow); /* Adjust the color and intensity as needed */
+    color: var(--brand-orange-light);
+    text-shadow: 0 0 100px var(--brand-orange-light); /* Adjust the color and intensity as needed */
 }
 
 .home-logo {
