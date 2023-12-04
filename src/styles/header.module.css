@@ -250,18 +250,15 @@
 }
 
 .account-dropdown-content-container {
-    position: absolute;
-    right: 0.5em;
-    z-index: 1;
+    position: fixed;
+    z-index: 101;
 
-    margin-top: 24px;
-    margin-right: 15px;
-
-    min-width: 250px;
+    top: 5em;
+    right: 1.5em;
+    width: 250px;
 
     border-radius: 6px;
     border: 1px solid var(--border);
-
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     background-color: #fafafa0a;
 

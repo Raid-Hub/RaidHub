@@ -154,7 +154,7 @@ export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
                     data: {
                         ...account,
                         displayName: twitterProfile.username,
-                        url: twitterProfile.url
+                        url: `https://twitter.com/${twitterProfile.username}`
                     }
                 })
                 break

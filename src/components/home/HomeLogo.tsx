@@ -1,17 +1,15 @@
 import Image from "next/image"
 import styles from "~/styles/pages/home.module.css"
-import Logo from "../../../public/logo.png"
 
 const HomeLogo = () => {
     return (
         <div className={styles["home-logo"]}>
             <Image
                 className={styles["logo-img"]}
-                src={Logo}
+                src={"/logo.png"}
                 alt="logo"
                 width={70}
                 height={70}
-                unoptimized={true}
             />
             <span className={styles["logo-text"]}>
                 Raid<span className={styles["logo-glow"]}>Hub</span>

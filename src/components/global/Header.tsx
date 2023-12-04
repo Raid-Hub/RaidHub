@@ -5,9 +5,12 @@ import SearchBar from "./SearchBar"
 import Image from "next/image"
 import Logo from "../../../public/logo.png"
 import AccountIcon from "./AccountIcon"
+import AccountDropdown from "./AccountDropdown"
 
 const Header = () => {
     const [isScrolled, setIsScrolled] = useState(false)
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
     useEffect(() => {
         const handleScroll = () => {
             const scrolled = window.scrollY
@@ -22,25 +25,30 @@ const Header = () => {
     }, [])
 
     return (
-        <header
-            id="header"
-            className={`${styles["header"]} ${isScrolled ? "" : styles["no-border"]}`}>
-            <Link href={"/"} className={styles["logo"]}>
-                <Image
-                    className={styles["logo-img"]}
-                    src={Logo}
-                    alt="logo"
-                    width={30}
-                    height={30}
-                    unoptimized={true}
-                />
-                <span className={styles["logo-text"]}>RaidHub</span>
-            </Link>
-            <div className={styles["right-content"]}>
-                <SearchBar />
-                <AccountIcon />
-            </div>
-        </header>
+        <>
+            <header
+                id="header"
+                className={`${styles["header"]} ${isScrolled ? "" : styles["no-border"]}`}>
+                <Link href={"/"} className={styles["logo"]}>
+                    <Image
+                        className={styles["logo-img"]}
+                        src={Logo}
+                        alt="logo"
+                        width={30}
+                        height={30}
+                    />
+                    <span className={styles["logo-text"]}>RaidHub</span>
+                </Link>
+                <div className={styles["right-content"]}>
+                    <SearchBar />
+                    <AccountIcon
+                        isDropdownOpen={isDropdownOpen}
+                        setIsDropdownOpen={setIsDropdownOpen}
+                    />
+                </div>
+            </header>
+            <AccountDropdown isDropdownOpen={isDropdownOpen} />
+        </>
     )
 }
 

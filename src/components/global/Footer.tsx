@@ -9,8 +9,12 @@ import Email from "~/images/icons/connections/Email"
 import { SVGProps } from "~/components/reusable/SVG"
 import { useIsVisible } from "~/hooks/util/useIsVisible"
 
-const developers = ["Newo", "Bruce", "Theos"]
-const raidHubMailAddress = "admin@raidhub.app"
+const developers: [display: string, path: string][] = [
+    ["Newo", "newo"],
+    ["Sam", "sam"],
+    ["Theos", "theos"]
+]
+
 const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
     {
         url: `https://discord.gg/raidhub`,
@@ -21,7 +25,7 @@ const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
         Icon: TwitterIcon
     },
     {
-        url: `mailto:${raidHubMailAddress}`,
+        url: `mailto:admin@raidhub.app`,
         Icon: Email
     }
 ]
@@ -38,12 +42,10 @@ export default function Footer({ setIsVisible }: { setIsVisible: (isVisible: boo
                 <div className={styles["left"]}>
                     <div>Developed by</div>
                     <div className={styles["developers"]}>
-                        {developers.map((dev, idx) => (
+                        {developers.map(([display, path], idx) => (
                             <React.Fragment key={idx}>
-                                <Link
-                                    className={styles["developer"]}
-                                    href={`/${dev.toLowerCase()}`}>
-                                    {dev}
+                                <Link className={styles["developer"]} href={`/${path}`}>
+                                    {display}
                                 </Link>
                                 {idx !== developers.length - 1 && <span>{", "}</span>}
                             </React.Fragment>

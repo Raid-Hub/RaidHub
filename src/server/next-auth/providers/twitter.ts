@@ -9,7 +9,6 @@ export async function getTwitterProfile(access_token: string) {
     if (res.ok) {
         return data.data as {
             name: string
-            url: string
             id: string
             username: string
         }
