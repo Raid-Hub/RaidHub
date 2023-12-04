@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Read current version number from package.json
-VERSION=$(cat package.json | grep version | awk -F'"' '{print $4}')
+VERSION=$(cat ./public/manifest.json | grep version | awk -F'"' '{print $4}')
 
 # Split the version into an array using the dot as a delimiter
 VERSION_ARRAY=(${VERSION//./ })
@@ -27,8 +27,7 @@ fi
 # Update version number with custom version format
 UPDATED_VERSION="${CURRENT_YEAR}.${CURRENT_MONTH}.${CURRENT_DAY}.${PATCH}"
 
-# Write updated version number back to package.json
-sed -i -e "s/\"version\": \"${VERSION}\"/\"version\": \"${UPDATED_VERSION}\"/g" package.json;
+# Write updated version number back to manifest.json
 sed -i -e "s/\"version\": \"${VERSION}\"/\"version\": \"${UPDATED_VERSION}\"/g" public/manifest.json;
 
 echo $UPDATED_VERSION
