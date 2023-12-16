@@ -199,11 +199,10 @@
     padding: 0.3em;
     padding-left: 0.9em;
     transition: transform 0.2s ease-out;
-}
 
-.search-result {
     font-size: 1.5rem;
     font-weight: 400;
+    cursor: pointer;
 }
 
 .search-result p {
@@ -212,9 +211,6 @@
 
 .search-result:hover {
     background: var(--brand-orange-light);
-    cursor: pointer;
-    transform: scale(1.1);
-    transition: transform 0.02s ease-in-out;
 }
 
 /* width */
