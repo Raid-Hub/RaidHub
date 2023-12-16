@@ -125,10 +125,9 @@ const SearchBar = ({}: SearchBarProps) => {
                                     username = b.toString()
                                 } catch {}
                                 return (
-                                    <li>
+                                    <li key={idx}>
                                         <Link
                                             className={styles["search-result"]}
-                                            key={idx}
                                             href={`/profile/${membershipType}/${membershipId}`}
                                             onClick={handleSelect}
                                             style={{ display: "flex", flexWrap: "wrap" }}>
