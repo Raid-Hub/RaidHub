@@ -52,3 +52,8 @@ export function secondsToYDHMS(totalSeconds: number): string {
         .filter(Boolean)
         .join(" ")
 }
+
+export const decodeHtmlEntities = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, "text/html")
+    return doc.body.textContent || ""
+}

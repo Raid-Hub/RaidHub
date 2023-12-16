@@ -10,6 +10,7 @@ import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import Custom404 from "~/pages/404"
 import Loading from "../global/Loading"
 import ClanMember from "./ClanMember"
+import { decodeHtmlEntities } from "~/util/presentation/formatting"
 
 export default function Clan({ groupId }: ClanPageProps) {
     const bungie = useBungieClient()
@@ -26,7 +27,10 @@ export default function Clan({ groupId }: ClanPageProps) {
         { staleTime: 5 * 60000 }
     )
 
-    const clanName = useMemo(() => (clan ? fixClanName(clan.detail.name) : null), [clan])
+    const clanName = useMemo(
+        () => (clan ? decodeHtmlEntities(fixClanName(clan.detail.name)) : null),
+        [clan]
+    )
 
     if (isError) {
         if (error instanceof BungieAPIError) {
@@ -47,7 +51,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                             <h1 className={styles["name"]}>
                                 {clanName}{" "}
                                 <span className={styles["call-sign"]}>
-                                    [{clan.detail.clanInfo.clanCallsign}]
+                                    {decodeHtmlEntities(`[${clan.detail.clanInfo.clanCallsign}]`)}
                                 </span>
                             </h1>
                             <h3 className={styles["motto"]}>
