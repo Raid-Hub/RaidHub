@@ -39,7 +39,8 @@ const TosPage: NextPage = () => {
                         All content published and made available on our Site is the property of
                         RaidHub and the Site&apos;s creators. This includes, but is not limited to
                         images, text, logos, documents, downloadable files and anything that
-                        contributes to the composition of our Site.
+                        contributes to the composition of our Site. Excluded from this are any
+                        images and content taken directly from Bungie Inc.
                     </p>
                     <h2>Accounts</h2>
                     <p>
