@@ -1,13 +1,14 @@
-import styles from "../../../styles/pages/profile/clan.module.css"
-import Loading from "../../global/Loading"
-import ClanBanner from "../../reusable/ClanBanner"
-import { fixClanName } from "../../../util/destiny/fixClanName"
+import styles from "~/styles/pages/profile/clan.module.css"
+import Loading from "~/components/global/Loading"
+import ClanBanner from "~/components/reusable/ClanBanner"
+import { fixClanName } from "~/util/destiny/fixClanName"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
 import ErrorComponent from "~/components/global/Error"
 import { useProfileProps } from "../Profile"
+import { decodeHtmlEntities } from "~/util/presentation/formatting"
 
 const ClanCard = () => {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
@@ -31,7 +32,9 @@ const ClanCard = () => {
             </div>
             <div className={styles["desc"]}>
                 <span className={styles["desc-title"]}>
-                    {fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`}
+                    {decodeHtmlEntities(
+                        fixClanName(clan.name) + ` [${clan.clanInfo.clanCallsign}]`
+                    )}
                 </span>
                 <span className={styles["desc-subtitle"]}>{clan?.motto}</span>
                 <div className={styles["desc-text-wrapper"]}>

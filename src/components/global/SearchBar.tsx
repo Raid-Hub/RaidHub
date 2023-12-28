@@ -6,6 +6,8 @@ import Loader from "../reusable/Loader"
 import Search from "~/images/icons/Search"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
 import BungieName from "~/models/BungieName"
+import Image from "next/image"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -109,7 +111,8 @@ const SearchBar = ({}: SearchBarProps) => {
                                     bungieGlobalDisplayName,
                                     bungieGlobalDisplayNameCode,
                                     membershipId,
-                                    membershipType
+                                    membershipType,
+                                    iconPath
                                 },
                                 idx
                             ) => {
@@ -122,15 +125,28 @@ const SearchBar = ({}: SearchBarProps) => {
                                     username = b.toString()
                                 } catch {}
                                 return (
-                                    <Link
-                                        className={styles["search-result"]}
-                                        key={idx}
-                                        href={`/profile/${membershipType}/${membershipId}`}
-                                        onClick={handleSelect}>
-                                        <li>
-                                            <p>{username}</p>
-                                        </li>
-                                    </Link>
+                                    <li key={idx}>
+                                        <Link
+                                            className={styles["search-result"]}
+                                            href={`/profile/${membershipType}/${membershipId}`}
+                                            onClick={handleSelect}
+                                            style={{ display: "flex", flexWrap: "wrap" }}>
+                                            <p style={{ flex: 1 }}>{username}</p>
+                                            <div
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    position: "relative"
+                                                }}>
+                                                <Image
+                                                    src={bungieIconUrl(iconPath)}
+                                                    unoptimized
+                                                    fill
+                                                    alt={""}
+                                                />
+                                            </div>
+                                        </Link>
+                                    </li>
                                 )
                             }
                         )}
