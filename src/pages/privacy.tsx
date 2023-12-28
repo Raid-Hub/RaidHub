@@ -14,7 +14,7 @@ const PrivacyPage: NextPage = () => {
                 <h4>
                     Effective date:{" "}
                     <span className={styles["effective-date"]}>
-                        {new Date("August 5, 2023 6:50:00 AM EDT").toLocaleDateString(undefined, {
+                        {new Date("December 28, 2023 12:46 PM EST").toLocaleDateString(undefined, {
                             year: "numeric",
                             month: "long",
                             day: "numeric"
@@ -134,7 +134,7 @@ const PrivacyPage: NextPage = () => {
                     </p>
                     <p>
                         raidhub.app (the &quot;Site&quot;) is owned and operated by RaidHub. RaidHub
-                        can be contacted at: support@raidhub.app
+                        can be contacted at: admin@raidhub.app
                     </p>
                 </section>
             </main>
