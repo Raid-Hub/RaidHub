@@ -37,7 +37,7 @@ const TosPage: NextPage = () => {
                     <h2>Intellectual Property</h2>
                     <p>
                         All content voluntarily submitted and made accessible on our Site by users
-                        becomes the property of RaidHub, and the Site's creators shall have no claim
+                        becomes the property of RaidHub, and the Site&apos;s creators shall have no claim
                         or ownership over such user-generated content. This includes, but is not
                         limited to, images, text, logos, documents, downloadable files, and any
                         material contributed by users that forms part of our Site. Users retain the
@@ -53,16 +53,16 @@ const TosPage: NextPage = () => {
                     <h2>Data Sourcing and Usage</h2>
                     <p>
                         The data presented on this site has various sources. Some data is directly
-                        sourced from Bungie, Inc., while other data is derived from the Site's
-                        servers. It's important to note that specific data on our servers may differ
+                        sourced from Bungie, Inc., while other data is derived from the Site&apos;s
+                        servers. It&apos;s important to note that specific data on our servers may differ
                         from information available from Bungie, as it has undergone distinct
                         processing procedures. Additionally, on rare occasions, we may modify data.
                         Privacy settings on Bungie may not be fully synchronized or aligned with our
                         site. To stay informed about the specifics, users are encouraged to review{" "}
                         <a href="https://www.bungie.net/7/en/Legal/terms" target="_blank">
-                            Bungie's terms of use
+                            Bungie&apos;s terms of use
                         </a>{" "}
-                        for the data accessed on this site. The site's creators disclaim any
+                        for the data accessed on this site. The site&apos;s creators disclaim any
                         responsibility for damages or losses associated with the use of this data.
                         Furthermore, we make no claim that all data is 100% accurate.
                     </p>
