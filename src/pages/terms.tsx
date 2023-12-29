@@ -37,9 +37,9 @@ const TosPage: NextPage = () => {
                     <h2>Intellectual Property</h2>
                     <p>
                         All content voluntarily submitted and made accessible on our Site by users
-                        becomes the property of RaidHub, and the Site&apos;s creators shall have no claim
-                        or ownership over such user-generated content. This includes, but is not
-                        limited to, images, text, logos, documents, downloadable files, and any
+                        becomes the property of RaidHub, and the Site&apos;s creators shall have no
+                        claim or ownership over such user-generated content. This includes, but is
+                        not limited to, images, text, logos, documents, downloadable files, and any
                         material contributed by users that forms part of our Site. Users retain the
                         rights to their own submitted content; however, by voluntarily sharing it on
                         our platform, they grant RaidHub a non-exclusive, royalty-free, worldwide
@@ -54,8 +54,8 @@ const TosPage: NextPage = () => {
                     <p>
                         The data presented on this site has various sources. Some data is directly
                         sourced from Bungie, Inc., while other data is derived from the Site&apos;s
-                        servers. It&apos;s important to note that specific data on our servers may differ
-                        from information available from Bungie, as it has undergone distinct
+                        servers. It&apos;s important to note that specific data on our servers may
+                        differ from information available from Bungie, as it has undergone distinct
                         processing procedures. Additionally, on rare occasions, we may modify data.
                         Privacy settings on Bungie may not be fully synchronized or aligned with our
                         site. To stay informed about the specifics, users are encouraged to review{" "}
