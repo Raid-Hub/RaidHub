@@ -13,7 +13,7 @@ const TosPage: NextPage = () => {
                 <h4>
                     Effective date:{" "}
                     <span className={styles["effective-date"]}>
-                        {new Date("August 21, 2023 5:06 AM EDT").toLocaleDateString(undefined, {
+                        {new Date("December 28, 2023 12:46 PM EST").toLocaleDateString(undefined, {
                             year: "numeric",
                             month: "long",
                             day: "numeric"
@@ -36,10 +36,35 @@ const TosPage: NextPage = () => {
                     </p>
                     <h2>Intellectual Property</h2>
                     <p>
-                        All content published and made available on our Site is the property of
-                        RaidHub and the Site&apos;s creators. This includes, but is not limited to
-                        images, text, logos, documents, downloadable files and anything that
-                        contributes to the composition of our Site.
+                        All content voluntarily submitted and made accessible on our Site by users
+                        becomes the property of RaidHub, and the Site&apos;s creators shall have no
+                        claim or ownership over such user-generated content. This includes, but is
+                        not limited to, images, text, logos, documents, downloadable files, and any
+                        material contributed by users that forms part of our Site. Users retain the
+                        rights to their own submitted content; however, by voluntarily sharing it on
+                        our platform, they grant RaidHub a non-exclusive, royalty-free, worldwide
+                        license to use, reproduce, modify, adapt, publish, translate, and distribute
+                        such content for the sole purpose of operating and improving the services
+                        provided on the Site. Users are responsible for ensuring that their
+                        submitted content complies with applicable laws and regulations. RaidHub
+                        reserves the right to remove any user-generated content that violates our
+                        policies or infringes upon the rights of others.
+                    </p>
+                    <h2>Data Sourcing and Usage</h2>
+                    <p>
+                        The data presented on this site has various sources. Some data is directly
+                        sourced from Bungie, Inc., while other data is derived from the Site&apos;s
+                        servers. It&apos;s important to note that specific data on our servers may
+                        differ from information available from Bungie, as it has undergone distinct
+                        processing procedures. Additionally, on rare occasions, we may modify data.
+                        Privacy settings on Bungie may not be fully synchronized or aligned with our
+                        site. To stay informed about the specifics, users are encouraged to review{" "}
+                        <a href="https://www.bungie.net/7/en/Legal/terms" target="_blank">
+                            Bungie&apos;s terms of use
+                        </a>{" "}
+                        for the data accessed on this site. The site&apos;s creators disclaim any
+                        responsibility for damages or losses associated with the use of this data.
+                        Furthermore, we make no claim that all data is 100% accurate.
                     </p>
                     <h2>Accounts</h2>
                     <p>
@@ -51,46 +76,46 @@ const TosPage: NextPage = () => {
                     </p>
                     <p>When you create an account on our Site, you agree to the following:</p>
                     <ol type="1">
-                        <p>
-                            <li>
+                        <li>
+                            <p>
                                 To provide true, accurate, current and complete information about
                                 yourself as prompted by the Company Service;
-                            </li>
-                        </p>
-                        <p>
-                            <li>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
                                 that your account is for your personal and/or business use. You may
                                 not resell the Service;
-                            </li>
-                        </p>
-                        <p>
-                            <li>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
                                 that by creating an account, you agree to receive certain
                                 communications in connection with the Service;
-                            </li>
-                        </p>
-                        <p>
-                            <li>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
                                 as permitted, maintain and promptly update such information. If you
                                 provide any information that is false, inaccurate or outdated, or
                                 the Site has reasonable grounds to suspect that such information is
                                 false, inaccurate or outdated, the Site has the right to suspend or
                                 terminate your account and prohibit all current or future use of the
                                 Service by you; and
-                            </li>
-                        </p>
-                        <p>
-                            <li>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
                                 as permitted, maintain and promptly update such information. If you
                                 provide any information that is false, inaccurate or outdated, the
                                 Site has reasonable grounds to suspect that such information is
                                 false, inaccurate or outdated, the Site has the right to suspend or
                                 terminate your account and prohibit all current or future use of the
                                 Service by you; and
-                            </li>
-                        </p>
-                        <p>
-                            <li>
+                            </p>
+                        </li>
+                        <li>
+                            <p>
                                 that you are responsible for maintaining the confidentiality of the
                                 password and account and are fully responsible for all activities
                                 that occur under your account. Your account is meant to be private
@@ -100,8 +125,8 @@ const TosPage: NextPage = () => {
                                 for all charges resulting from the use of your account via the
                                 Company Service, including charges resulting from unauthorized use
                                 of your account.
-                            </li>
-                        </p>
+                            </p>
+                        </li>
                         <p>
                             You may not impersonate someone else, create or use an account for
                             anyone other than
