@@ -130,8 +130,11 @@ const SearchBar = ({}: SearchBarProps) => {
                                             className={styles["search-result"]}
                                             href={`/profile/${membershipType}/${membershipId}`}
                                             onClick={handleSelect}
-                                            style={{ display: "flex", flexWrap: "wrap" }}>
-                                            <p style={{ flex: 1 }}>{username}</p>
+                                            style={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                gap: "0.5em"
+                                            }}>
                                             <div
                                                 style={{
                                                     width: "30px",
@@ -145,6 +148,7 @@ const SearchBar = ({}: SearchBarProps) => {
                                                     alt={""}
                                                 />
                                             </div>
+                                            <p style={{ flex: 1 }}>{username}</p>
                                         </Link>
                                     </li>
                                 )

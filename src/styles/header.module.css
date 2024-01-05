@@ -197,7 +197,7 @@
 .search-result {
     transform-origin: left;
     padding: 0.3em;
-    padding-left: 0.9em;
+    padding-left: 0.5em;
     transition: transform 0.2s ease-out;
 
     font-size: 1.5rem;

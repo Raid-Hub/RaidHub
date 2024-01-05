@@ -7,7 +7,6 @@ import { getPGCR } from "../services/bungie/getPGCR"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
 import { QueryClient } from "@tanstack/react-query"
-import { getDestinyStatsForCharacter } from "~/services/bungie/getDestinyStatsForCharacter"
 import { getDestinyStats } from "~/services/bungie/getDestinyStats"
 
 const DO_NOT_RETRY_CODES = new Set<PlatformErrorCodes>([
@@ -125,5 +124,4 @@ export default class BungieClient implements BungieClientProtocol {
     pgcr = this.query(getPGCR)
     linkedProfiles = this.query(getLinkedProfiles)
     stats = this.query(getDestinyStats)
-    characterStats = this.query(getDestinyStatsForCharacter)
 }

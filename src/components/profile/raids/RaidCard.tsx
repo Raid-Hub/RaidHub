@@ -19,6 +19,7 @@ import { findTags } from "~/util/raidhub/tags"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
+import { useActivitiesContext } from "./RaidContext"
 
 type RaidModalProps = {
     raid: ListedRaid
@@ -29,23 +30,7 @@ type RaidModalProps = {
     })[]
     wfBoard: string | null
     isExpanded: boolean
-} & (
-    | {
-          stats: RaidStats
-          isLoadingStats: false
-      }
-    | {
-          stats: null
-          isLoadingStats: true
-      }
-) &
-    (
-        | {
-              isLoadingActivities: false
-              activities: Collection<string, Activity>
-          }
-        | { isLoadingActivities: true; activities: null }
-    )
+}
 
 export default function RaidCard({
     raid,
@@ -53,10 +38,6 @@ export default function RaidCard({
     clearExpand,
     leaderboardData,
     wfBoard,
-    stats,
-    isLoadingStats,
-    activities,
-    isLoadingActivities,
     isExpanded
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
@@ -72,6 +53,8 @@ export default function RaidCard({
             }
         }
     }, [hoveredTag])
+
+    const { activities, isLoadingActivities } = useActivitiesContext()
 
     const recentClear = useMemo(
         () => activities?.find(a => a.didMemberComplete && a.fresh),
@@ -101,22 +84,7 @@ export default function RaidCard({
     }, [activities])
 
     return isExpanded ? (
-        <ExpandedRaidView
-            raid={raid}
-            dismiss={clearExpand}
-            {...(isLoadingStats
-                ? { stats: undefined, isLoadingStats: true }
-                : {
-                      stats: stats,
-                      isLoadingStats: false
-                  })}
-            {...(isLoadingActivities
-                ? { activities: undefined, isLoadingActivities: true }
-                : {
-                      activities: activities,
-                      isLoadingActivities: false
-                  })}
-        />
+        <ExpandedRaidView raid={raid} dismiss={clearExpand} />
     ) : (
         <m.div
             initial={{
@@ -186,8 +154,8 @@ export default function RaidCard({
                     )}
                     <div className={styles["graph-right"]}>
                         <BigNumberStatItem
-                            displayValue={stats?.totalClears ? stats.totalClears : 0}
-                            isLoading={isLoadingStats}
+                            displayValue={activities?.filter(a => a.didMemberComplete).size ?? 0}
+                            isLoading={isLoadingActivities}
                             name={strings.totalClears.split(" ").join("\n")}
                             extraLarge={true}
                         />

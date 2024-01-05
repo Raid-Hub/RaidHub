@@ -8,8 +8,6 @@ import { useBungieClient } from "~/components/app/TokenManager"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { Collection } from "@discordjs/collection"
 import { partitionCollectionByRaid } from "~/util/destiny/partitionCollectionByRaid"
-import { partitionStatsByRaid } from "~/util/destiny/partitionStatsByRaid"
-import RaidStats from "~/models/profile/data/RaidStats"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
@@ -19,6 +17,7 @@ import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 import { useQuery } from "@tanstack/react-query"
 import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
+import { RaidCardContext } from "./RaidContext"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -91,10 +90,6 @@ const Raids = ({
 
     const areAllCharactersFound = statsQueries.every(q => q.isFetched)
 
-    const characterQueries = bungie.characterStats.useQueries(characters, {
-        enabled: areMembershipsFetched && areAllCharactersFound
-    })
-
     // Send the details of this member to the RaidHub API for later validation
     useQuery({
         queryKey: postPlayerQueryKey(characters),
@@ -103,15 +98,6 @@ const Raids = ({
         retry: 2,
         enabled: areMembershipsFetched && areAllCharactersFound
     })
-
-    const characterStats = useMemo(() => {
-        if (characterQueries.every(q => q.isSuccess)) {
-            const data = characterQueries.map(q => q.data!)
-            return partitionStatsByRaid(data)
-        } else {
-            return null
-        }
-    }, [characterQueries])
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(
         destinyMemberships.map(dm => dm.destinyMembershipId)
@@ -140,41 +126,25 @@ const Raids = ({
         encoder: raid => RaidToUrlPaths[raid]
     })
 
-    const isLoadingStats =
-        !areMembershipsFetched || !areAllCharactersFound || characterQueries.some(q => q.isLoading)
-
     switch (layout) {
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
                     {ListedRaids.map(raid => (
-                        <RaidCard
+                        <RaidCardContext
                             key={raid}
-                            raid={raid}
-                            leaderboardData={leaderboardEntriesByRaid.get(raid)!}
-                            wfBoard={manifest?.worldFirstBoards[raid] ?? null}
-                            expand={() => setExpandedRaid(raid)}
-                            clearExpand={clearExpandedRaid}
-                            isExpanded={raid === expandedRaid}
-                            {...(isLoadingStats
-                                ? {
-                                      isLoadingStats: true,
-                                      stats: null
-                                  }
-                                : {
-                                      isLoadingStats: false,
-                                      stats: characterStats?.get(raid) ?? new RaidStats([], raid)
-                                  })}
-                            {...(isLoadingActivities
-                                ? {
-                                      isLoadingActivities: true,
-                                      activities: null
-                                  }
-                                : {
-                                      isLoadingActivities: false,
-                                      activities: activitiesByRaid?.get(raid) ?? new Collection()
-                                  })}
-                        />
+                            activitiesByRaid={activitiesByRaid}
+                            isLoadingActivities={isLoadingActivities}
+                            raid={raid}>
+                            <RaidCard
+                                raid={raid}
+                                leaderboardData={leaderboardEntriesByRaid.get(raid)!}
+                                wfBoard={manifest?.worldFirstBoards[raid] ?? null}
+                                expand={() => setExpandedRaid(raid)}
+                                clearExpand={clearExpandedRaid}
+                                isExpanded={raid === expandedRaid}
+                            />
+                        </RaidCardContext>
                     ))}
                 </div>
             )
