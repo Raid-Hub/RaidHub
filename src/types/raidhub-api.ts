@@ -1,4 +1,5 @@
 import { BungieMembershipType } from "bungie-net-core/models"
+import { ListedRaid } from "./raids"
 
 export type RaidHubAPIResponse<T, E = unknown> = {
     minted: number
@@ -79,6 +80,27 @@ export type RaidHubActivityLeaderboardResponse = {
     }[]
     date?: number
     params: {
+        count: number
+        page: number
+    }
+}
+
+export type RaidHubIndividualLeaderboardResponse = {
+    entries: {
+        rank: number
+        value: number
+        player: {
+            bungieGlobalDisplayName: string
+            bungieGlobalDisplayNameCode: string
+            displayName: string
+            iconPath: string
+            membershipId: string
+            membershipType: BungieMembershipType
+        }
+    }[]
+    params: {
+        category: string
+        raid: ListedRaid
         count: number
         page: number
     }
