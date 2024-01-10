@@ -23,14 +23,14 @@ const { columnLabels, rows } = parseRawSQL<["raid", "attempts", "clears", "kills
 )
 */
 
-export default function RaidHubTable<T extends readonly string[]>({
+export default function RaidHubTable<T extends string[]>({
     title,
     columnLabels,
     rows
 }: {
     title: string
     columnLabels: T
-    rows: Record<keyof T, any>[]
+    rows: Record<T[number], any>[]
 }) {
     return (
         <div className={styles["container"]}>
@@ -53,7 +53,7 @@ export default function RaidHubTable<T extends readonly string[]>({
                         {rows.map((row, idx) => (
                             <tr key={idx}>
                                 {Object.values(row).map((c, i) => (
-                                    <td key={i}>{c}</td>
+                                    <td key={i}>{c as ReactNode}</td>
                                 ))}
                             </tr>
                         ))}
@@ -71,17 +71,15 @@ export default function RaidHubTable<T extends readonly string[]>({
 }
 
 export function parseRawSQL<T extends readonly string[]>(
+    columnLabels: T,
     output: string,
     formatter: Partial<Record<T[number], (value: any) => ReactNode>>
 ): {
-    columnLabels: T
     rows: Record<keyof T, string>[]
 } {
     const lines = output.split("\n")
     lines.splice(1, 1)
     const [header, ...rows] = lines
-
-    const columnLabels = header.split("|").map(t => t.trim())
 
     return {
         // @ts-ignore
@@ -90,7 +88,6 @@ export function parseRawSQL<T extends readonly string[]>(
         rows: rows.map(r =>
             Object.fromEntries(
                 r.split("|").map((t, i) => {
-                    const trimmed = t.trim()
                     return [
                         columnLabels[i],
                         // @ts-ignore

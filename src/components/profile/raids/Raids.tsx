@@ -18,7 +18,6 @@ import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
 import { useQuery } from "@tanstack/react-query"
-import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
