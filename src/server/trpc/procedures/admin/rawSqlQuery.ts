@@ -21,6 +21,7 @@ export const rawSqlQuery = adminProcedure
                 headers: {
                     ...createHeaders(),
                     "Content-Type": "application/json",
+                    "X-API-Key": process.env.BUNGIE_API_KEY!,
                     "X-Admin-Key": process.env.ADMIN_KEY!
                 },
                 body: JSON.stringify({ query: input.query }),
