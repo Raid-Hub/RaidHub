@@ -11,7 +11,9 @@ export const rawSqlQuery = adminProcedure
     .input(z.object({ query: z.string(), timeout: z.number().nonnegative().int().default(5000) }))
     .mutation(async ({ input }) => {
         const controller = new AbortController()
-        setTimeout(() => controller.abort(), input.timeout)
+        if (process.env.APP_ENV != "local") {
+            setTimeout(() => controller.abort(), input.timeout)
+        }
 
         try {
             const res = await fetch(url, {

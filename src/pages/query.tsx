@@ -2,14 +2,31 @@ import styles from "~/styles/pages/query.module.css"
 import { Role } from "@prisma/client"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import Head from "next/head"
-import { FormEvent, MouseEventHandler, useState } from "react"
-import RaidHubTable from "~/components/reusable/RaidHubTable"
+import { MouseEventHandler, useState } from "react"
+import { RaidHubTable } from "~/components/reusable/RaidHubTable"
 import { auth } from "~/server/next-auth"
 import { trpc } from "~/util/trpc"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 
+export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
+    const session = await auth(ctx)
+
+    if (session?.user.role !== Role.ADMIN) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false
+            }
+        }
+    } else {
+        return {
+            props: {}
+        }
+    }
+}
+
 export default function AdminQuery({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const ac = new AbortController()
+    const [isExplaining, setIsExplaining] = useState(false)
 
     const { mutate, data, isSuccess, isLoading, isError, error } =
         trpc.admin.rawSqlQuery.useMutation({
@@ -18,20 +35,13 @@ export default function AdminQuery({}: InferGetServerSidePropsType<typeof getSer
                 abortOnUnmount: true
             }
         })
-
-    const { value: queryText, save: setQueryText } = useLocalStorage("admin-query-text", "SELECT 1")
-    const { value: queryTitle, save: setQueryTitle } = useLocalStorage(
-        "admin-query-title",
-        "My Table"
-    )
-
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+    const handleQuery = (queryText: string) => {
+        setIsExplaining(false)
         mutate({ query: queryText })
     }
 
-    const handleExplain: MouseEventHandler<HTMLButtonElement> = event => {
-        event.preventDefault()
+    const handleExplain = (queryText: string) => {
+        setIsExplaining(true)
         mutate({ query: `EXPLAIN ${queryText}` })
     }
 
@@ -49,16 +59,18 @@ export default function AdminQuery({}: InferGetServerSidePropsType<typeof getSer
             )
         }
         if (isSuccess) {
+            if (isExplaining) {
+                return (
+                    <div>
+                        <pre>{data.map(d => d["QUERY PLAN"]).join("\n")}</pre>
+                    </div>
+                )
+            }
+
             if (!data.length) {
                 return <div>{"No rows :("}</div>
             } else {
-                return (
-                    <RaidHubTable
-                        title={queryTitle}
-                        columnLabels={Object.keys(data[0])}
-                        rows={data}
-                    />
-                )
+                return <RaidHubTable columnLabels={Object.keys(data[0])} rows={data} />
             }
         }
         return null
@@ -70,46 +82,47 @@ export default function AdminQuery({}: InferGetServerSidePropsType<typeof getSer
                 <title key="title">Admin Query Tool</title>
             </Head>
             <main>
-                <form onSubmit={handleSubmit} className={styles["sql-textarea-container"]}>
-                    <input
-                        value={queryTitle}
-                        onChange={e => setQueryTitle(e.target.value)}
-                        placeholder="Set a table name"
-                    />
-                </form>
-                <form onSubmit={handleSubmit} className={styles["sql-textarea-container"]}>
-                    <textarea
-                        placeholder="Enter SQL query here"
-                        className={styles["sql-textarea"]}
-                        rows={10}
-                        cols={50}
-                        value={queryText}
-                        onChange={e => setQueryText(e.target.value)}
-                    />
-                    <div>
-                        <button type="submit">Submit</button>
-                        <button onClick={handleExplain}>Explain</button>
-                    </div>
-                </form>
+                <SqlInputBoxArea handleQuery={handleQuery} handleExplain={handleExplain} />
                 <DataView />
             </main>
         </>
     )
 }
 
-export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
-    const session = await auth(ctx)
+function SqlInputBoxArea(props: {
+    handleQuery: (query: string) => void
+    handleExplain: (query: string) => void
+}) {
+    const { value: queryText, save: setQueryText } = useLocalStorage("admin-query-text", "SELECT 1")
 
-    if (session?.user.role !== Role.ADMIN) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: false
-            }
-        }
-    } else {
-        return {
-            props: {}
-        }
+    const handleSubmit: MouseEventHandler<HTMLButtonElement> = event => {
+        event.preventDefault()
+        props.handleQuery(queryText)
     }
+
+    const handleExplainSubmit: MouseEventHandler<HTMLButtonElement> = event => {
+        event.preventDefault()
+        props.handleExplain(queryText)
+    }
+
+    return (
+        <form className={styles["sql-textarea-container"]}>
+            <textarea
+                placeholder="Enter SQL query here"
+                className={styles["sql-textarea"]}
+                rows={10}
+                cols={50}
+                value={queryText}
+                onChange={e => setQueryText(e.target.value)}
+            />
+            <div className={styles["submit-btns"]}>
+                <button onClick={handleSubmit} type="submit">
+                    Submit
+                </button>
+                <button onClick={handleExplainSubmit} type="submit">
+                    Explain
+                </button>
+            </div>
+        </form>
+    )
 }
