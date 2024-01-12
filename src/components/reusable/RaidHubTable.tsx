@@ -1,11 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { z } from "zod"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import styles from "~/styles/data-table.module.css"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { formattedNumber } from "~/util/presentation/formatting"
+import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
+import ScreenshotContainer, { useScreenshot } from "./ScreenshotContainer"
+import Logo from "../../../public/logo.png"
 
 export function RaidHubTable<T extends string[]>({
     columnLabels,
@@ -14,6 +16,7 @@ export function RaidHubTable<T extends string[]>({
     columnLabels: T
     rows: Record<T[number], any>[]
 }) {
+    const ref = useRef<HTMLDivElement>(null)
     const [isEditing, setIsEditing] = useState(false)
     const [fns, setFns] = useState<
         Record<string, (typeof ColumnFormats)[keyof typeof ColumnFormats]>
@@ -35,28 +38,43 @@ export function RaidHubTable<T extends string[]>({
     }, [columnLabels, setFns])
 
     return (
-        <div className={styles["container"]}>
-            <button onClick={() => setIsEditing(!isEditing)}>{isEditing ? "Save" : "Edit"}</button>
-            <div className={styles["table-area"]}>
-                <div style={{ display: "flex" }}>
-                    <h2 style={{ marginRight: "1em" }}>
-                        {isEditing ? (
-                            <form className={styles["title-form-container"]}>
-                                <input
-                                    id="table-name"
-                                    value={queryTitle}
-                                    onChange={e => setQueryTitle(e.target.value)}
-                                    placeholder="Set a table name"
-                                />
-                            </form>
-                        ) : (
-                            queryTitle
-                        )}
-                    </h2>
-                    <div>
-                        <Image src="/logo.png" width={50} height={50} alt="logo" />
-                    </div>
-                </div>
+        <ScreenshotContainer
+            childRef={ref}
+            options={{
+                useCORS: true,
+                backgroundColor: "black",
+                scale: 4
+            }}>
+            <div style={{ display: "flex", gap: "0.5em", padding: "0.5em" }}>
+                <button onClick={() => setIsEditing(!isEditing)}>
+                    {isEditing ? "Save" : "Edit"}
+                </button>
+                <ScreenshotButton title={queryTitle} />
+            </div>
+
+            <div className={styles["table-area"]} ref={ref}>
+                <Image
+                    className={styles["logo-img"]}
+                    src={Logo}
+                    alt="logo"
+                    width={30}
+                    height={30}
+                    style={{ position: "absolute", top: 10, left: 10 }}
+                />
+                <h2 style={{ textAlign: "center", marginTop: 0 }}>
+                    {isEditing ? (
+                        <form className={styles["title-form-container"]}>
+                            <input
+                                id="table-name"
+                                value={queryTitle}
+                                onChange={e => setQueryTitle(e.target.value)}
+                                placeholder="Set a table name"
+                            />
+                        </form>
+                    ) : (
+                        queryTitle
+                    )}
+                </h2>
                 <div>
                     <table className={styles["table"]}>
                         <thead>
@@ -93,7 +111,7 @@ export function RaidHubTable<T extends string[]>({
                     </div>
                 </div>
             </div>
-        </div>
+        </ScreenshotContainer>
     )
 }
 
@@ -104,11 +122,7 @@ const Cell = ({
     value: any
     Formatter: (typeof ColumnFormats)[keyof typeof ColumnFormats]
 }) => {
-    return (
-        <td>
-            <Formatter value={value as never} />
-        </td>
-    )
+    return <td>{value !== null ? <Formatter value={value as never} /> : null}</td>
 }
 
 const ColumnLabel = ({
@@ -171,9 +185,16 @@ const ColumnLabel = ({
 const ColumnFormats = {
     string: (props: { value: string }) => <>{props.value.toString()}</>,
     number: (props: { value: number }) => <>{formattedNumber(props.value, "en-US")}</>,
-    time: (props: { value: string }) => <>{new Date(props.value).toLocaleTimeString()}</>,
+    time: (props: { value: string }) => (
+        <>
+            {new Date(props.value).toLocaleTimeString(undefined, {
+                timeZone: "America/Los_Angeles"
+            })}
+        </>
+    ),
     date: (props: { value: string }) => <>{new Date(props.value).toLocaleDateString()}</>,
     datetime: (props: { value: string }) => <>{new Date(props.value).toLocaleString()}</>,
+    duration: (props: { value: number }) => <>{secondsToYDHMS(props.value)}</>,
     bungieIcon: (props: { value: string }) => {
         const url = z.string().url().safeParse(bungieIconUrl(props.value))
         return url.success ? (
@@ -182,4 +203,34 @@ const ColumnFormats = {
             <span>Invalid Image</span>
         )
     }
+}
+
+const ScreenshotButton = ({ title }: { title: string }) => {
+    const dl = useRef<HTMLAnchorElement>(null)
+    const handleSuccess = async (blob: Blob) => {
+        try {
+            if (!dl.current) throw new Error("No ref")
+
+            dl.current.href = URL.createObjectURL(blob)
+            dl.current.download = `${title}.png`
+
+            dl.current.click()
+
+            URL.revokeObjectURL(dl.current.href)
+        } catch (e: any) {
+            alert(e.message)
+        }
+    }
+
+    const { takeScreenshot } = useScreenshot({
+        onSuccess: handleSuccess,
+        onFailure: () => alert("Failed to take screenshot")
+    })
+
+    return (
+        <div>
+            <button onClick={takeScreenshot}>Screenshot</button>
+            <a ref={dl} style={{ display: "none" }} />
+        </div>
+    )
 }

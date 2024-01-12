@@ -21,7 +21,7 @@ export const useScreenshot = ({
     const { childRef, options } = useContext(ScreenshotContext)
     const takeScreenshot = async () => {
         const element = childRef?.current
-        if (!element) return
+        if (!element) return onFailure?.()
 
         try {
             const canvas = await html2canvas(element, options)
@@ -43,11 +43,11 @@ export const useScreenshot = ({
 
 const ScreenshotContainer = ({
     childRef,
-    options,
+    options = {},
     children
 }: {
     childRef: RefObject<HTMLElement>
-    options: CanvasOptions
+    options?: CanvasOptions
     children: ReactNode
 }) => {
     return (

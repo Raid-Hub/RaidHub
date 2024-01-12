@@ -1,10 +1,21 @@
-.container {
-}
 .table-area {
-    border: 3px solid white;
     padding: 2em;
 
     width: fit-content;
+
+    background-color: #010011;
+    background: linear-gradient(
+        78deg,
+        rgba(1, 0, 17, 1) 0%,
+        rgba(1, 0, 17, 1) 25%,
+        rgb(19, 1, 10) 48%,
+        rgba(1, 0, 17, 1) 91%,
+        rgba(19, 3, 1, 1) 100%
+    );
+
+    border: 1px solid var(--border);
+
+    position: relative;
 }
 .table {
     border-collapse: collapse;
@@ -17,15 +28,25 @@
 
 .table th,
 .table td {
-    border: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     padding: 0.8em 1.2em;
     text-align: center;
     letter-spacing: 0.04em;
+
+    font-weight: 500;
+    font-size: 14px;
 }
 
-.table td:first-child {
-    font-weight: 600;
+.table td:first-child,
+.table th:first-child {
+    border-left: 1px solid var(--border);
+}
+
+.table td:last-child,
+.table th:last-child {
+    border-right: 1px solid var(--border);
 }
 
 .attribution {

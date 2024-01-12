@@ -112,6 +112,7 @@ function SqlInputBoxArea(props: {
                 className={styles["sql-textarea"]}
                 rows={10}
                 cols={50}
+                spellCheck="false"
                 value={queryText}
                 onChange={e => setQueryText(e.target.value)}
             />

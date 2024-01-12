@@ -34,7 +34,6 @@ export const rawSqlQuery = adminProcedure
             if (data.success) {
                 return data.response
             } else {
-                console.error(data)
                 if (data.error.meta?.message) {
                     throw new Error(data.error.meta.message as string)
                 }
