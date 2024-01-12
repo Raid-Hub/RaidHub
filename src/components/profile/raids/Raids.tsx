@@ -15,8 +15,6 @@ import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 import { RaidHubPlayerResponse } from "~/types/raidhub-api"
-import { useQuery } from "@tanstack/react-query"
-import { postPlayer, postPlayerQueryKey } from "~/services/raidhub/postPlayer"
 import { RaidCardContext } from "./RaidContext"
 
 type RaidsProps = {
@@ -26,13 +24,7 @@ type RaidsProps = {
     setMostRecentActivity: (id: string | null | undefined) => void
 }
 
-const Raids = ({
-    destinyMemberships,
-    areMembershipsFetched,
-    layout,
-    setMostRecentActivity
-}: RaidsProps) => {
-    const bungie = useBungieClient()
+const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps) => {
     const manifest = useRaidHubManifest()
 
     // todo deal with player memberships
@@ -67,37 +59,6 @@ const Raids = ({
 
         return raidToData
     }, [manifest, players])
-
-    const statsQueries = bungie.stats.useQueries(destinyMemberships, {
-        enabled: areMembershipsFetched
-    })
-
-    const characters = useMemo(
-        () =>
-            statsQueries
-                .map(
-                    q =>
-                        q.data?.characters.map(({ characterId }) => ({
-                            destinyMembershipId: q.data.destinyMembershipId,
-                            membershipType: q.data.membershipType,
-                            characterId
-                        }))!
-                )
-                .filter(Boolean)
-                .flat(),
-        [statsQueries]
-    )
-
-    const areAllCharactersFound = statsQueries.every(q => q.isFetched)
-
-    // Send the details of this member to the RaidHub API for later validation
-    useQuery({
-        queryKey: postPlayerQueryKey(characters),
-        queryFn: () => postPlayer(characters),
-        staleTime: Infinity,
-        retry: 2,
-        enabled: areMembershipsFetched && areAllCharactersFound
-    })
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(
         destinyMemberships.map(dm => dm.destinyMembershipId)
