@@ -19,7 +19,7 @@ export const rawSqlQuery = adminProcedure
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
-                    ...createHeaders(),
+                    ...createHeaders(true),
                     "Content-Type": "application/json",
                     "X-Admin-Key": process.env.ADMIN_KEY!
                 },
