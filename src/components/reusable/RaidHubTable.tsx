@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { z } from "zod"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import styles from "~/styles/data-table.module.css"
@@ -23,6 +23,16 @@ export function RaidHubTable<T extends string[]>({
         "admin-query-title",
         "My Table"
     )
+
+    const setColumnFn = useMemo(() => {
+        return Object.fromEntries(
+            columnLabels.map(label => [
+                label,
+                (label: string, fn: (typeof ColumnFormats)[keyof typeof ColumnFormats]) =>
+                    setFns(fns => ({ ...fns, [label]: fn }))
+            ])
+        )
+    }, [columnLabels, setFns])
 
     return (
         <div className={styles["container"]}>
@@ -56,9 +66,7 @@ export function RaidHubTable<T extends string[]>({
                                         key={idx}
                                         label={label}
                                         isEditing={isEditing}
-                                        setColumnFn={(label, fn) =>
-                                            setFns(fns => ({ ...fns, [label]: fn }))
-                                        }
+                                        setColumnFn={setColumnFn[label]}
                                     />
                                 ))}
                             </tr>
@@ -66,15 +74,13 @@ export function RaidHubTable<T extends string[]>({
                         <tbody>
                             {rows.map((row, idx) => (
                                 <tr key={idx}>
-                                    {Object.values(row).map((value, i) => {
-                                        const Formatter =
-                                            fns[columnLabels[i]] ?? ColumnFormats.string
-                                        return (
-                                            <td key={i}>
-                                                <Formatter value={value as never} />
-                                            </td>
-                                        )
-                                    })}
+                                    {Object.values(row).map((value, i) => (
+                                        <Cell
+                                            key={i}
+                                            value={value as any}
+                                            Formatter={fns[columnLabels[i]] ?? ColumnFormats.string}
+                                        />
+                                    ))}
                                 </tr>
                             ))}
                         </tbody>
@@ -88,6 +94,20 @@ export function RaidHubTable<T extends string[]>({
                 </div>
             </div>
         </div>
+    )
+}
+
+const Cell = ({
+    value,
+    Formatter
+}: {
+    value: any
+    Formatter: (typeof ColumnFormats)[keyof typeof ColumnFormats]
+}) => {
+    return (
+        <td>
+            <Formatter value={value as never} />
+        </td>
     )
 }
 
