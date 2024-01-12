@@ -9,6 +9,7 @@ import { addByAPIKey } from "./procedures/account/speedrun-com/addByAPIKey"
 import { createPresignedProfilePicURL } from "./procedures/account/createPresignedProfilePicURL"
 import { createVanity } from "./procedures/admin/vanity/createVanity"
 import { deleteVanity } from "./procedures/admin/vanity/deleteVanity"
+import { rawSqlQuery } from "./procedures/admin/rawSqlQuery"
 
 export const appRouter = router({
     // protected router for a user logged in with a session
@@ -36,6 +37,7 @@ export const appRouter = router({
         vanity: router({
             create: createVanity,
             delete: deleteVanity
-        })
+        }),
+        rawSqlQuery: rawSqlQuery
     })
 })
