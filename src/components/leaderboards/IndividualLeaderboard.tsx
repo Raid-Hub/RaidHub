@@ -12,6 +12,10 @@ import { useQuery } from "@tanstack/react-query"
 import { Controls } from "./LeaderboardControls"
 import Loading from "../global/Loading"
 import Link from "next/link"
+import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import CloudflareImage from "~/images/CloudflareImage"
+import RaidBanners from "~/images/raid-banners"
 
 const ENTRIES_PER_PAGE = 50
 
@@ -41,7 +45,14 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
             </Head>
 
             <main className={styles["main"]}>
-                <section>{"todo"}</section>
+                <section style={{ position: "relative", width: "80%", height: "10em" }}>
+                    <CloudflareImage
+                        priority
+                        cloudflareId={RaidBanners[raid]}
+                        alt={strings.raidNames[raid]}
+                        fill
+                    />
+                </section>
                 <Controls
                     entriesLength={query.data?.length ?? 0}
                     entriesPerPage={ENTRIES_PER_PAGE}
@@ -54,13 +65,17 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
                 <section className={styles["leaderboard-container"]}>
                     {query.isSuccess
                         ? query.data.map(e => (
-                              <div key={e.player.membershipId}>
-                                  <Link
-                                      href={`/profile/${e.player.membershipType}/${e.player.membershipId}`}>
-                                      {e.player.bungieGlobalDisplayName || e.player.displayName}
-                                  </Link>
-                                  <div>{e.value}</div>
-                              </div>
+                              <IndividualLeaderboardEntryComponent
+                                  entry={{
+                                      displayName: e.player.bungieGlobalDisplayName,
+                                      iconURL: bungieIconUrl(e.player.iconPath),
+                                      id: e.player.membershipId,
+                                      rank: e.rank,
+                                      url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
+                                      value: e.value
+                                  }}
+                                  key={e.player.membershipId}
+                              />
                           ))
                         : new Array(ENTRIES_PER_PAGE)
                               .fill(null)
