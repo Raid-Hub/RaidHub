@@ -67,3 +67,33 @@ export const createGetStaticProps =
             return { notFound: true }
         }
     }
+
+export const createGlobalGetStaticProps =
+    (
+        leaderboard: Leaderboard.Sherpa | Leaderboard.Clears | Leaderboard.FullClears
+    ): GetStaticProps<{
+        dehydratedState: unknown
+    }> =>
+    async () => {
+        try {
+            const queryClient = createServerSideQueryClient()
+            await prefetchIndividualLeaderboard(
+                {
+                    raid: "global",
+                    board: leaderboard,
+                    pages: 1
+                },
+                queryClient
+            )
+
+            return {
+                props: {
+                    dehydratedState: dehydrate(queryClient)
+                },
+                revalidate: 3600 * 24 // 24 hours
+            }
+        } catch (e) {
+            console.error(e)
+            return { notFound: true }
+        }
+    }

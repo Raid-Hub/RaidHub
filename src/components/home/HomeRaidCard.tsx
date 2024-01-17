@@ -32,7 +32,7 @@ const HomeRaidCard = ({
                     cloudflareId={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
-                <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
+                <h2 className={styles["card-title"]}>{strings.raidNames[raid]}</h2>
             </div>
             <div className={styles["card-content"]}>
                 {!!worldFirstLeaderboards.length && (
@@ -40,25 +40,38 @@ const HomeRaidCard = ({
                         <div className={styles["section-title"]}>
                             <span>{strings.worldFirstLeaderboards}</span>
                         </div>
-
-                        <Link
-                            href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
-                            className={styles["content-section"]}>
-                            <div>
-                                <h4>
-                                    {worldFirstLeaderboards.find(b => b.type === "challenge")
-                                        ? "Challenge"
-                                        : "Normal"}
-                                </h4>
-                            </div>
-                            <div className={styles["content-section-arrow"]}>
-                                <RightArrow />
-                            </div>
-                        </Link>
+                        <div className={styles["content-section-inner"]}>
+                            <Link
+                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
+                                className={styles["content-section"]}>
+                                <div>
+                                    <h4>
+                                        {worldFirstLeaderboards.find(b => b.type === "challenge")
+                                            ? "Challenge"
+                                            : "Normal"}
+                                    </h4>
+                                </div>
+                                <div className={styles["content-section-arrow"]}>
+                                    <RightArrow />
+                                </div>
+                            </Link>
+                            {worldFirstLeaderboards.find(b => b.type === "challenge") && (
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <h4>Normal</h4>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
                     </div>
                 )}
                 {individualLeaderboards && (
-                    <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
+                    <div className={styles["card-section"]}>
                         <div className={styles["section-title"]}>
                             <span>Individual Leaderboards</span>
                         </div>
@@ -124,18 +137,6 @@ const HomeRaidCard = ({
                             <span>{strings.otherLeaderboards}</span>
                         </div>
                         <div className={styles["content-section-inner"]}>
-                            {worldFirstLeaderboards.find(b => b.type === "challenge") && (
-                                <Link
-                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
-                                    className={styles["content-section"]}>
-                                    <div>
-                                        <h4>{strings.noChallenge}</h4>
-                                    </div>
-                                    <div className={styles["content-section-arrow"]}>
-                                        <RightArrow />
-                                    </div>
-                                </Link>
-                            )}
                             {worldFirstLeaderboards.find(b => b.type === "master") && (
                                 <Link
                                     href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}

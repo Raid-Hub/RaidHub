@@ -21,7 +21,7 @@ export enum Leaderboard {
 }
 
 export function leaderboardQueryKey(
-    raid: ListedRaid,
+    raid: ListedRaid | "global",
     board: Leaderboard,
     paramStrings: string[],
     page: number
@@ -78,10 +78,33 @@ export async function getLeaderboard(
     }
 }
 
-export async function getIndiviualLeaderboard(raid: ListedRaid, board: Leaderboard, page: number) {
+export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderboard, page: number) {
     const url = new URL(
         getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/individual/${board}`
     )
+    url.searchParams.append("page", String(page))
+    url.searchParams.append("count", "50")
+
+    try {
+        const res = await fetch(url, { headers: createHeaders() })
+
+        const data = (await res.json()) as RaidHubAPIResponse<RaidHubIndividualLeaderboardResponse>
+
+        if (data.success) {
+            return data.response.entries
+        } else {
+            throw new Error(data.message)
+        }
+    } catch (e) {
+        return []
+    }
+}
+
+export async function getIndividualGlobalLeaderboard(
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears,
+    page: number
+) {
+    const url = new URL(getRaidHubBaseUrl() + `/leaderboard/global/${board}`)
     url.searchParams.append("page", String(page))
     url.searchParams.append("count", "50")
 

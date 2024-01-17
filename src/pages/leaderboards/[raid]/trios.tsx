@@ -23,7 +23,7 @@ const getStaticProps = createGetStaticProps(Leaderboard.Trios)
 
 export { getStaticPaths, getStaticProps }
 
-export default function WorldsFirstLeaderboadPage({
+export default function RaidTrios({
     dehydratedState,
     ...props
 }: InferGetStaticPropsType<typeof getStaticProps>) {

@@ -1,3 +1,20 @@
+.card-title {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+
+    font-size: x-large;
+    font-weight: 800;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+    margin: 0;
+
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    padding: 0.5em;
+}
+
 .raids {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -30,21 +47,6 @@
     bottom: 0;
     height: 8px;
     backdrop-filter: blur(10px);
-}
-
-.card-title {
-    position: absolute;
-    bottom: 0%;
-    left: 0%;
-    padding: 0.5em;
-
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-
-    font-size: x-large;
-    font-weight: 800;
-    text-transform: uppercase;
-
-    white-space: nowrap;
 }
 
 .card-image-header img {

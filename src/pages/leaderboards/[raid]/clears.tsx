@@ -10,7 +10,7 @@ const getStaticProps = createGetStaticProps(Leaderboard.Clears)
 
 export { getStaticPaths, getStaticProps }
 
-export default function WorldsFirstLeaderboadPage({
+export default function RaidClears({
     dehydratedState,
     ...props
 }: InferGetStaticPropsType<typeof getStaticProps>) {

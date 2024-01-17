@@ -10,7 +10,7 @@ const getStaticProps = createGetStaticProps(Leaderboard.Sherpa)
 
 export { getStaticPaths, getStaticProps }
 
-export default function WorldsFirstLeaderboadPage({
+export default function RaidSherpas({
     dehydratedState,
     ...props
 }: InferGetStaticPropsType<typeof getStaticProps>) {

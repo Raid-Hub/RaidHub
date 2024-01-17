@@ -16,7 +16,7 @@ const getStaticProps = createGetStaticProps(Leaderboard.Solos)
 
 export { getStaticPaths, getStaticProps }
 
-export default function WorldsFirstLeaderboadPage({
+export default function RaidSolos({
     dehydratedState,
     ...props
 }: InferGetStaticPropsType<typeof getStaticProps>) {

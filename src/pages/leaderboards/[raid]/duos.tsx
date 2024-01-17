@@ -22,7 +22,7 @@ const getStaticProps = createGetStaticProps(Leaderboard.Duos)
 
 export { getStaticPaths, getStaticProps }
 
-export default function WorldsFirstLeaderboadPage({
+export default function RaidDuos({
     dehydratedState,
     ...props
 }: InferGetStaticPropsType<typeof getStaticProps>) {

@@ -1,10 +1,9 @@
 import styles from "~/styles/pages/leaderboards.module.css"
 import {
     Leaderboard,
-    getIndividualLeaderboard,
+    getIndividualGlobalLeaderboard,
     leaderboardQueryKey
 } from "~/services/raidhub/getLeaderboard"
-import { ListedRaid } from "~/types/raids"
 import { useLocale } from "../app/LocaleManager"
 import { usePage } from "~/hooks/util/usePage"
 import Head from "next/head"
@@ -13,29 +12,26 @@ import { Controls } from "./LeaderboardControls"
 import Loading from "../global/Loading"
 import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import CloudflareImage from "~/images/CloudflareImage"
-import RaidBanners from "~/images/raid-banners"
 import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import CloudflareImage from "~/images/CloudflareImage"
 
 const ENTRIES_PER_PAGE = 50
 
-export type IndividualLeaderboadProps = {
-    raid: ListedRaid
-    board: Exclude<Leaderboard, Leaderboard.WorldFirst>
-}
-
-export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps) => {
+export const IndividualLeaderboadGlobal = ({
+    board
+}: {
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears
+}) => {
     const { strings } = useLocale()
     const { page, handleBackwards, handleForwards } = usePage()
-    const raidName = strings.raidNames[raid]
     const boardName = strings.individualLeaderboads[board]
     const query = useQuery({
-        queryKey: leaderboardQueryKey(raid, board, [], page),
-        queryFn: () => getIndividualLeaderboard(raid, board, page)
+        queryKey: leaderboardQueryKey("global", board, [], page),
+        queryFn: () => getIndividualGlobalLeaderboard(board, page)
     })
     const manifest = useRaidHubManifest()
-    const title = `${raidName} | ${boardName} Leaderboards`
-    const description = `${boardName} Leaderboards for ${raidName}`
+    const title = `Total ${boardName} Leaderboards`
+    const description = `${boardName} for all Raids in Destiny 2`
     return (
         <>
             <Head>
@@ -48,13 +44,12 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
             <main className={styles["main"]}>
                 <section className={styles["individual-leaderboard-banner"]}>
                     <div>
-                        <h1 className={styles["header-h1"]}>{boardName}</h1>
-                        <h3 className={styles["header-h3"]}>{raidName}</h3>
+                        <h1 className={styles["header-h1"]}>Total {boardName}</h1>
                     </div>
                     <CloudflareImage
                         priority
-                        cloudflareId={RaidBanners[raid]}
-                        alt={raidName}
+                        cloudflareId={"5e4dc4de-9417-4aef-2a48-aea495ae3500"}
+                        alt={"RaidHub banner"}
                         fill
                     />
                 </section>

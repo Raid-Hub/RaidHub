@@ -251,6 +251,7 @@
 
 .individual-leaderboard-banner {
     width: 80%;
+    max-width: 600px;
     margin: 0 auto;
     height: 10em;
 
@@ -266,7 +267,7 @@
 .individual-leaderboard-banner img {
     z-index: -1;
     opacity: 0.6;
-    object-position: center;
+    object-position: center 30%;
     object-fit: cover;
 }
 

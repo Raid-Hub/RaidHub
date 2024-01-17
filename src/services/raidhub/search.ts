@@ -10,7 +10,7 @@ export async function searchRaidHubUser(
     query: string,
     bungieClient: BungieClientProtocol
 ): Promise<RaidHubSearchResult[]> {
-    const url = new URL(getRaidHubBaseUrl() + `/search`)
+    const url = new URL(getRaidHubBaseUrl() + `/player/search`)
     url.searchParams.append("query", query)
 
     const res = await fetch(url, { headers: createHeaders() })
