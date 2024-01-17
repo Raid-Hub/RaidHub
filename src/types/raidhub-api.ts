@@ -180,16 +180,6 @@ export type RaidHubManifest = {
     }[]
     leaderboards: {
         worldFirst: Record<ListedRaid, RaidHubManifestBoard[]>
-        individual: Record<
-            ListedRaid,
-            {
-                clears: boolean
-                fresh: boolean
-                sherpas: boolean
-                trios: boolean
-                duos: boolean
-                solos: boolean
-            }
-        >
+        individual: Record<ListedRaid, { category: string; name: string }[]>
     }
 }

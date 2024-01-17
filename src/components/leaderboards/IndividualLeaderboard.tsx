@@ -15,25 +15,27 @@ import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntr
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import CloudflareImage from "~/images/CloudflareImage"
 import RaidBanners from "~/images/raid-banners"
+import { useRaidHubManifest } from "../app/RaidHubManifestManager"
 
 const ENTRIES_PER_PAGE = 50
 
 export type IndividualLeaderboadProps = {
     raid: ListedRaid
-    board: Leaderboard
+    board: Exclude<Leaderboard, Leaderboard.WorldFirst>
 }
 
 export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps) => {
     const { strings } = useLocale()
     const { page, handleBackwards, handleForwards } = usePage()
     const raidName = strings.raidNames[raid]
+    const boardName = strings.individualLeaderboads[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, board, [], page),
         queryFn: () => getIndiviualLeaderboard(raid, board, page)
     })
-
-    const title = `${raidName} | ${board} Leaderboards`
-    const description = `${board} Leaderboards for ${raidName}`
+    const manifest = useRaidHubManifest()
+    const title = `${raidName} | ${boardName} Leaderboards`
+    const description = `${boardName} Leaderboards for ${raidName}`
     return (
         <>
             <Head>
@@ -44,11 +46,15 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
             </Head>
 
             <main className={styles["main"]}>
-                <section style={{ position: "relative", width: "80%", height: "10em" }}>
+                <section className={styles["individual-leaderboard-banner"]}>
+                    <div>
+                        <h1 className={styles["header-h1"]}>{boardName}</h1>
+                        <h3 className={styles["header-h3"]}>{raidName}</h3>
+                    </div>
                     <CloudflareImage
                         priority
                         cloudflareId={RaidBanners[raid]}
-                        alt={strings.raidNames[raid]}
+                        alt={raidName}
                         fill
                     />
                 </section>

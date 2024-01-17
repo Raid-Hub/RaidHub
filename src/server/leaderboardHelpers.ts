@@ -33,7 +33,7 @@ export const createGetStaticPaths =
 
 export const createGetStaticProps =
     (
-        leaderboard: Leaderboard
+        leaderboard: Exclude<Leaderboard, Leaderboard.WorldFirst>
     ): GetStaticProps<
         IndividualLeaderboadProps & {
             dehydratedState: unknown
