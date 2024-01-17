@@ -22,7 +22,9 @@ export async function activitySearch(queryString: string): Promise<Collection<st
     if (data.success) {
         return new Collection(data.response.results.map(r => [r.instanceId, new Activity(r)]))
     } else {
-        throw new Error(data.message)
+        const err = new Error(data.message)
+        Object.assign(err, data.error)
+        throw err
     }
 }
 

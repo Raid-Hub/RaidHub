@@ -85,18 +85,16 @@ export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderbo
     url.searchParams.append("page", String(page))
     url.searchParams.append("count", "50")
 
-    try {
-        const res = await fetch(url, { headers: createHeaders() })
+    const res = await fetch(url, { headers: createHeaders() })
 
-        const data = (await res.json()) as RaidHubAPIResponse<RaidHubIndividualLeaderboardResponse>
+    const data = (await res.json()) as RaidHubAPIResponse<RaidHubIndividualLeaderboardResponse>
 
-        if (data.success) {
-            return data.response.entries
-        } else {
-            throw new Error(data.message)
-        }
-    } catch (e) {
-        return []
+    if (data.success) {
+        return data.response.entries
+    } else {
+        const err = new Error(data.message)
+        Object.assign(err, data.error)
+        throw err
     }
 }
 

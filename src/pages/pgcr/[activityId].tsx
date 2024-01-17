@@ -1,73 +1,97 @@
 import { z } from "zod"
 import PGCR from "~/components/pgcr/PGCR"
-import Custom404 from "../404"
 import { getActivity } from "~/services/raidhub/getActivitiy"
-import { RaidHubActivityResponse } from "~/types/raidhub-api"
 import { isBot } from "~/util/userAgent"
-import { CrawlableNextPage } from "~/types/generic"
 import Head from "next/head"
-import { LocalizedStrings } from "~/util/presentation/localized-strings"
 import { raidTupleFromHash } from "~/util/destiny/raidUtils"
 import { Tag } from "~/util/raidhub/tags"
+import { NextPage } from "next"
+import { RaidHubActivityResponse } from "~/types/raidhub-api"
+import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
+import { useLocale } from "~/components/app/LocaleManager"
+import Custom404 from "../404"
 
-const PGCRPage: CrawlableNextPage<
-    {
-        activityId: unknown
-    },
-    { activity: RaidHubActivityResponse }
+const PGCRPage: NextPage<
+    | { notFound: true }
+    | { activityId: string }
+    | { activityId: string; serverRendered: true; activity: RaidHubActivityResponse }
 > = props => {
-    const parsedQuery = z.string().regex(/^\d+$/).optional().safeParse(props.activityId)
-
-    return !parsedQuery.success ? (
-        <Custom404 error={parsedQuery.error.message} />
-    ) : parsedQuery.data ? (
-        <PGCR activityId={parsedQuery.data} />
-    ) : null
+    if ("notFound" in props) {
+        return <Custom404 error="Invalid instance ID" />
+    }
+    return (
+        <>
+            <PGCRMetaData
+                activityId={props.activityId}
+                activity={"serverRendered" in props ? props.activity : undefined}
+            />
+            <PGCR activityId={props.activityId} />
+        </>
+    )
 }
 
 PGCRPage.getInitialProps = async ({ req, res, query }) => {
-    if (res && req && "user-agent" in req.headers && isBot(req.headers["user-agent"]!)) {
-        res.setHeader("x-head-only", req.headers["user-agent"]!)
-        try {
-            const activity = await getActivity(String(query.activityId), {
-                "x-api-key": process.env.RAIDHUB_API_KEY_SERVER!
-            })
-            res.setHeader("x-head-only-success", "true")
-            return { activity, headOnly: true }
-        } catch (e) {
-            res.setHeader("x-head-only-success", "false")
-            return {
-                activityId: query.activityId
-            }
-        }
-    } else {
+    const parsedQuery = z.string().regex(/^\d+$/).safeParse(query.activityId)
+    if (!parsedQuery.success) {
         return {
-            activityId: query.activityId
+            notFound: true
         }
+    }
+
+    const activityId = parsedQuery.data
+
+    if (res && req && "user-agent" in req.headers) {
+        res.setHeader("X-Server-Render-Agent", req.headers["user-agent"]!)
+        if (isBot(req.headers["user-agent"]!)) {
+            res.setHeader("X-Should-Server-Render", "true")
+            try {
+                const activity = await getActivity(activityId)
+                return { activityId: activityId, serverRendered: true, activity }
+            } catch (e: any) {
+                if (!e.notFound) {
+                    console.error(e)
+                }
+            }
+        } else {
+            res.setHeader("X-Should-Server-Render", "false")
+        }
+    }
+    return {
+        activityId: activityId
     }
 }
 
-PGCRPage.Head = ({ activity, children }) => {
-    const strs = LocalizedStrings.en
+function PGCRMetaData({
+    activityId,
+    activity
+}: {
+    activityId: string
+    activity?: RaidHubActivityResponse
+}) {
+    const { data } = useRaidHubActivity(activityId, activity)
+    const { strings } = useLocale()
 
-    const [raid, difficulty] = raidTupleFromHash(activity.raidHash)
-    const raidName = strs.raidNames[raid]
-    const difficultyName = strs.difficulty[difficulty]
+    if (!data) return null
+
+    const [raid, difficulty] = raidTupleFromHash(data.raidHash)
+    const raidName = strings.raidNames[raid]
+    const difficultyName = strings.difficulty[difficulty]
 
     const title = [
-        activity.playerCount < 4 ? strs.tags[activity.playerCount as Tag] : null,
-        activity.flawless ? "Flawless" : null,
+        data.playerCount < 4 ? strings.tags[data.playerCount as Tag] : null,
+        data.flawless ? "Flawless" : null,
         raidName,
-        `(${difficultyName})`
+        `(${difficultyName})`,
+        "| RaidHub"
     ]
         .filter(Boolean)
         .join(" ")
 
-    const dateCompleted = new Date(activity.dateCompleted)
+    const dateCompleted = new Date(data.dateCompleted)
 
     const description = `${
-        activity.completed
-            ? activity.fresh == false
+        data.completed
+            ? data.fresh == false
                 ? "Checkpoint cleared on"
                 : "Completed on"
             : "Attempted on"
@@ -84,28 +108,29 @@ PGCRPage.Head = ({ activity, children }) => {
 
     return (
         <Head>
-            <title>{title}</title>
+            {/* key prevents duplicates */}
+            <title key={title}>{title}</title>
+            <meta key="description" name="description" content={description} />
 
-            <meta httpEquiv="date" content={dateCompleted.toDateString()} />
-            <meta property="article:published_time" content={dateCompleted.toISOString()} />
-
-            {children}
-
-            <meta property="og:title" content={title} />
-            {/* <meta property="og:url" content={url} /> */}
-            <meta property="og:description" content={description} />
-            <meta property="og:image" content="/logo.png" />
+            <meta key="og:title" property="og:title" content={title} />
+            <meta key="og:description" property="og:description" content={description} />
+            {/* <meta key="og:url" property="og:url" content={url} /> */}
 
             {/* Twitter */}
-            {/* <meta name="twitter:card" content="summary_large_image" /> */}
-            <meta name="twitter:card" content="summary" />
-            <meta name="twitter:title" content={title} />
-            <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content="/logo.png" />
-            {/* <meta name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} /> */}
+            <meta key="twitter:title" name="twitter:title" content={title} />
+            <meta key="twitter:description" name="twitter:description" content={description} />
+            {/* <meta key="twitter:card" name="twitter:card" content="summary_large_image" /> */}
+            {/* <meta key="twitter:image:alt" name="twitter:image:alt" content={`Thumbnail for Destiny 2 Raid: ${title}`} /> */}
+
+            <meta
+                key="article:published_time"
+                property="article:published_time"
+                content={dateCompleted.toISOString()}
+            />
+            <meta httpEquiv="date" content={dateCompleted.toDateString()} />
+            <meta name="date" content={dateCompleted.toISOString().slice(0, 10)} />
         </Head>
     )
 }
-PGCRPage.Head.displayName = "PGCRPage.Head"
 
 export default PGCRPage
