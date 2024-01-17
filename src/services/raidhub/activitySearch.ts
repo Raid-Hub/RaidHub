@@ -14,7 +14,7 @@ export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuery
 
 // we have the bungie queries as backups
 export async function activitySearch(queryString: string): Promise<Collection<string, Activity>> {
-    const url = new URL(getRaidHubBaseUrl() + `/activities/search?` + queryString)
+    const url = new URL(getRaidHubBaseUrl() + `/activity/search?` + queryString)
 
     const res = await fetch(url, { headers: createHeaders() })
 

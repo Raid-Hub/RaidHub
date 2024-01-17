@@ -2,7 +2,7 @@ import styles from "~/styles/pages/leaderboards.module.css"
 import { useState } from "react"
 import { IndividualLeaderboardEntry } from "~/types/leaderboards"
 import Link from "next/link"
-import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
+import { formattedNumber } from "~/util/presentation/formatting"
 import Image from "next/image"
 import { useLocale } from "../app/LocaleManager"
 

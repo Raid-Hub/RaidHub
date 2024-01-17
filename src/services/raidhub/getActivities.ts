@@ -4,7 +4,7 @@ import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { createHeaders } from "./createHeaders"
 
 export function activitiesQueryKey(membershipId: string) {
-    return ["raidhub-activities", membershipId] as const
+    return ["raidhub-player-activities", membershipId] as const
 }
 export async function getAllActivities(membershipId: string) {
     const all = new Array<Activity>()
@@ -25,7 +25,7 @@ async function getActivities({
     membershipId: string
     cursor?: string
 }): Promise<RaidHubActivitiesResponse> {
-    const url = new URL(getRaidHubBaseUrl() + `/activities/${membershipId}`)
+    const url = new URL(getRaidHubBaseUrl() + `/player/${membershipId}/activities`)
 
     if (cursor) {
         url.searchParams.set("cursor", cursor)

@@ -17,7 +17,6 @@ import { Collection } from "@discordjs/collection"
 import { nonParticipant } from "~/util/destiny/filterNonParticipants"
 import { includedIn } from "~/util/betterIncludes"
 import { RaidHubActivityResponse } from "~/types/raidhub-api"
-import { LeaderboardsForRaid } from "~/data/leaderboards"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -173,28 +172,25 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     tags(data: RaidHubActivityResponse): { tag: Tag; placement?: number }[] {
         if (!includedIn(ListedRaids, this.raid)) return []
 
-        // @ts-expect-error
-        const { challenge, normal, prestige, master } = LeaderboardsForRaid[this.raid]
-
         const tags = new Array<{ tag: Tag; placement?: number }>()
         if (data.contest && includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
-            const placement = data.leaderboardEntries[challenge || ""]
+            const placement = data.leaderboardEntries["challenge"]
             tags.push({ tag: TagForReprisedContest[this.difficulty], placement })
         }
         if (data.dayOne) {
             const placement = !includedIn(ReprisedContestRaidDifficulties, this.difficulty)
-                ? data.leaderboardEntries[normal]
+                ? data.leaderboardEntries["normal"]
                 : undefined
             tags.push({ tag: Tag.DAY_ONE, placement })
         }
         if (data.contest) tags.push({ tag: Tag.CONTEST })
         if (data.fresh === false) tags.push({ tag: Tag.CHECKPOINT })
         if (this.difficulty === Difficulty.PRESTIGE) {
-            const placement = data.leaderboardEntries[prestige || ""]
+            const placement = data.leaderboardEntries["prestige"]
             tags.push({ tag: Tag.PRESTIGE, placement })
         }
         if (this.difficulty === Difficulty.MASTER) {
-            const placement = data.leaderboardEntries[master || ""]
+            const placement = data.leaderboardEntries["master"]
             tags.push({ tag: Tag.MASTER, placement })
         }
         if (this.difficulty === Difficulty.GUIDEDGAMES) tags.push({ tag: Tag.GUIDEDGAMES })

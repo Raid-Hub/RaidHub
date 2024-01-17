@@ -1,8 +1,8 @@
 import { BungieMembershipType } from "bungie-net-core/models"
-import { ListedRaid } from "./raids"
+import { Difficulty, ListedRaid } from "./raids"
 
 export type RaidHubAPIResponse<T, E = unknown> = {
-    minted: number
+    minted: string // ISO date string
     message?: string
 } & ({ success: true; response: T } | { success: false; error: E })
 
@@ -15,8 +15,8 @@ export type RaidHubPlayer = {
     bungieGlobalDisplayNameCode: string | null
     lastSeen: Date
     clears: number
+    fullClears: number
     sherpas: number
-    lowmanSherpas: number
 }
 
 export type RaidHubActivity = {
@@ -29,22 +29,23 @@ export type RaidHubActivity = {
     dateStarted: string
     dateCompleted: string
     dayOne: boolean
+    weekOne: boolean
     contest: boolean
+    platform: BungieMembershipType
+}
+
+export type RaidHubPlayerLeaderboardEntry = {
+    rank: number
+    instanceId: string
+    raidHash: string
+    dayOne: boolean
+    contest: boolean
+    weekOne: boolean
 }
 
 export type RaidHubPlayerResponse = {
     player: RaidHubPlayer
-    activityLeaderboardEntries: Record<
-        string,
-        {
-            rank: number
-            instanceId: string
-            raidHash: string
-            dayOne: boolean
-            contest: boolean
-            weekOne: boolean
-        }[]
-    >
+    activityLeaderboardEntries: Record<string, RaidHubPlayerLeaderboardEntry[]>
 }
 
 export type RaidHubActivitiesResponse = {
@@ -55,8 +56,15 @@ export type RaidHubActivitiesResponse = {
 }
 
 export type RaidHubActivityResponse = RaidHubActivity & {
-    players: Record<string, boolean>
-    leaderboardEntries: Record<string, number>
+    players: Record<
+        string,
+        {
+            finishedRaid: boolean
+            sherpas: number
+            isFirstClear: boolean
+        }
+    >
+    leaderboardEntries: Record<RaidHubManifestBoard["type"], number>
 }
 
 export type RaidHubActivityLeaderboardResponse = {
@@ -143,16 +151,45 @@ export type RaidHubActivitySearchResponse = {
     query: Record<string, unknown>
     results: RaidHubActivitySearchResult[]
 }
-export type RaidHubActivitySearchResult = {
-    instanceId: string
-    raidHash: string
-    fresh: boolean
-    completed: boolean
-    flawless: boolean
-    playerCount: number
-    dateStarted: string
-    dateCompleted: string
-    platformType: number
-    dayOne: boolean
-    contest: boolean
+export type RaidHubActivitySearchResult = RaidHubActivity
+
+export type RaidHubManifestBoard = {
+    id: string
+    date: string // ISO date string
+    type: "normal" | "prestige" | "master" | "challenge"
+}
+
+export type RaidHubManifest = {
+    raids: Record<ListedRaid, string>
+    difficulties: Record<Difficulty, string>
+    hashes: Record<
+        string,
+        {
+            raid: ListedRaid
+            difficulty: Difficulty
+        }
+    >
+    listed: ListedRaid[]
+    sunset: ListedRaid[]
+    contest: ListedRaid[]
+    master: ListedRaid[]
+    prestige: ListedRaid[]
+    reprisedChallengePairings: {
+        raid: ListedRaid
+        difficulty: Difficulty
+    }[]
+    leaderboards: {
+        worldFirst: Record<ListedRaid, RaidHubManifestBoard[]>
+        individual: Record<
+            ListedRaid,
+            {
+                clears: boolean
+                fresh: boolean
+                sherpas: boolean
+                trios: boolean
+                duos: boolean
+                solos: boolean
+            }
+        >
+    }
 }

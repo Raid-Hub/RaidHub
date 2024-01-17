@@ -14,7 +14,7 @@ import RaidTagLabel from "./RaidTagLabel"
 import RaceTagLabel from "./RaceTagLabel"
 import Expand from "~/images/icons/Expand"
 import { findTags } from "~/util/raidhub/tags"
-import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { RaidHubManifestBoard, RaidHubPlayerLeaderboardEntry } from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
 import { useActivitiesContext } from "./RaidContext"
@@ -23,10 +23,8 @@ type RaidModalProps = {
     raid: ListedRaid
     expand: () => void
     clearExpand: () => void
-    leaderboardData: (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
-        key: string
-    })[]
-    wfBoard: string | null
+    leaderboardData: (RaidHubPlayerLeaderboardEntry & RaidHubManifestBoard)[]
+    wfBoardId: string | null
     isExpanded: boolean
 }
 
@@ -35,7 +33,7 @@ export default function RaidCard({
     expand,
     clearExpand,
     leaderboardData,
-    wfBoard,
+    wfBoardId,
     isExpanded
 }: RaidModalProps) {
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
@@ -65,7 +63,7 @@ export default function RaidCard({
 
     const sortedLeaderboardData = leaderboardData?.sort((a, b) => a.rank - b.rank)
     const firstClear =
-        sortedLeaderboardData?.find(raid => raid.key == wfBoard) || sortedLeaderboardData[0]
+        sortedLeaderboardData?.find(entry => entry.id == wfBoardId) || sortedLeaderboardData[0]
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
@@ -115,7 +113,7 @@ export default function RaidCard({
                             dayOne={firstClear.dayOne}
                             contest={firstClear.contest}
                             weekOne={firstClear.weekOne}
-                            challenge={firstClear.key === "challenge"}
+                            challenge={firstClear.type === "challenge"}
                             raid={raid}
                             setActiveId={setHoveredTag}
                         />

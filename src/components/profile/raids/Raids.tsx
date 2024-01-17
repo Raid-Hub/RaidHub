@@ -13,7 +13,7 @@ import { zRaidURIComponent } from "~/util/zod"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
-import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { RaidHubManifestBoard, RaidHubPlayerLeaderboardEntry } from "~/types/raidhub-api"
 import { RaidCardContext } from "./RaidContext"
 
 type RaidsProps = {
@@ -32,25 +32,26 @@ const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps
     )
 
     const leaderboardEntriesByRaid = useMemo(() => {
-        const boardIdToRaid = new Map<string, { raid: ListedRaid; key: string }>()
-        Object.entries(manifest?.activityLeaderboards ?? {}).forEach(([raid, boards]) => {
-            Object.entries(boards).forEach(([key, id]) => {
-                boardIdToRaid.set(id, { raid: Number(raid), key })
+        const boardIdToRaid = new Map<string, ListedRaid>()
+        Object.entries(manifest?.leaderboards.worldFirst ?? {}).forEach(([raid, boards]) => {
+            boards.forEach(({ id }) => {
+                boardIdToRaid.set(id, Number(raid))
             })
         })
         const raidToData = new Collection<
             ListedRaid,
-            (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
-                key: string
-            })[]
+            (RaidHubPlayerLeaderboardEntry & RaidHubManifestBoard)[]
         >(ListedRaids.map(raid => [raid, []]))
 
         players.forEach(p => {
             Object.entries(p.activityLeaderboardEntries).forEach(([id, data]) => {
                 if (boardIdToRaid.has(id)) {
-                    const { raid, key } = boardIdToRaid.get(id)!
+                    const raid = boardIdToRaid.get(id)!
                     data.forEach(entry => {
-                        raidToData.get(raid)!.push({ ...entry, key })
+                        raidToData.get(raid)!.push({
+                            ...entry,
+                            ...manifest?.leaderboards.worldFirst[raid].find(b => b.id === id)!
+                        })
                     })
                 }
             })
@@ -99,7 +100,17 @@ const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps
                             <RaidCard
                                 raid={raid}
                                 leaderboardData={leaderboardEntriesByRaid.get(raid)!}
-                                wfBoard={manifest?.worldFirstBoards[raid] ?? null}
+                                wfBoardId={
+                                    (manifest?.leaderboards.worldFirst[raid].some(
+                                        b => b.type === "challenge"
+                                    )
+                                        ? manifest.leaderboards.worldFirst[raid].find(
+                                              b => b.type === "normal"
+                                          )?.id
+                                        : manifest?.leaderboards.worldFirst[raid].find(
+                                              b => b.type === "challenge"
+                                          )?.id) ?? null
+                                }
                                 expand={() => setExpandedRaid(raid)}
                                 clearExpand={clearExpandedRaid}
                                 isExpanded={raid === expandedRaid}

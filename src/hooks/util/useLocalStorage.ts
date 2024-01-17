@@ -2,17 +2,12 @@ import { useEffect, useState } from "react"
 
 export const useLocalStorage = <V>(
     key: string,
-    defaultValue: V,
-    fetcher?: () => Promise<V>
+    defaultValue: V
 ): {
     value: V
     save: (value: V | ((old: V) => V)) => void
 } => {
     const [_value, setValue] = useState<V>(defaultValue)
-
-    useEffect(() => {
-        fetcher?.().then(setValue).catch(console.error)
-    }, [fetcher])
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
