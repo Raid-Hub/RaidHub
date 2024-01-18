@@ -131,6 +131,8 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
 
     const targetted = targetDot ? dots.get(targetDot) : null
 
+    const dotArr = useMemo(() => Array.from(dots.values()), [dots])
+
     return (
         <div
             ref={containerRef}
@@ -151,27 +153,24 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                     y2={LINE_Y}
                     style={{ stroke: "rgb(92, 92, 92)", strokeWidth: "2" }}
                 />
-                {dots
-                    ?.toJSON()
-                    .slice(dotRange[0], dotRange[1])
-                    .map((a, idx) => (
-                        <Dot
-                            key={a.activityId}
-                            centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
-                            activity={a}
-                            centerY={getHeight(a.durationSeconds)}
-                            setTooltip={setDotTooltipData}
-                            tooltipData={dotTooltipData}
-                            isTargeted={a.activityId === targetDot}
-                        />
-                    ))}
+                {dotArr.slice(dotRange[0], dotRange[1]).map((a, idx) => (
+                    <Dot
+                        key={a.activityId}
+                        centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
+                        activity={a}
+                        centerY={getHeight(a.durationSeconds)}
+                        setTooltip={setDotTooltipData}
+                        tooltipData={dotTooltipData}
+                        isTargeted={a.activityId === targetDot}
+                    />
+                ))}
                 {/* Ensure the target dot is rendered */}
                 {targetted && (
                     <Dot
                         key={targetted.activityId}
                         centerX={
                             SPACING / 2 +
-                            SPACING * dots.toJSON().findIndex(a => a.activityId === targetDot)
+                            SPACING * dotArr.findIndex(a => a.activityId === targetDot)
                         }
                         activity={targetted}
                         centerY={getHeight(targetted.durationSeconds)}

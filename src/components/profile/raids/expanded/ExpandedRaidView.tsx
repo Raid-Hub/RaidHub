@@ -22,8 +22,7 @@ export default function ExpandedRaidView({
 
     const recents = useMemo(
         () =>
-            activities
-                ?.toJSON()
+            Array.from(activities?.values() ?? [])
                 .filter(a => a.completed)
                 .slice(0, 24),
         [activities]

@@ -73,7 +73,7 @@ export default function RaidCard({
               )
             : undefined
         const averageClear = freshFulls
-            ? medianElement(freshFulls.sorted((a, b) => a.durationSeconds - b.durationSeconds))
+            ? medianElement(freshFulls.toSorted((a, b) => a.durationSeconds - b.durationSeconds))
             : undefined
 
         return { fastestFullClear, averageClear }
