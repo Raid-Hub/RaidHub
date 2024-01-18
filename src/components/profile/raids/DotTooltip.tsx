@@ -43,7 +43,7 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activity.didMemberComplete
+                borderColor: activity.player.didMemberComplete
                     ? activity.flawless
                         ? Teal
                         : Green

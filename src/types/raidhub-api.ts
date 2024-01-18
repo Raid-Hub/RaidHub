@@ -50,7 +50,15 @@ export type RaidHubPlayerResponse = {
 
 export type RaidHubActivitiesResponse = {
     activities: (RaidHubActivity & {
-        didMemberComplete: boolean
+        player: {
+            didMemberComplete: boolean
+            sherpas: number
+            isFirstClear: boolean
+            timePlayedSeconds: number
+            kills: number
+            deaths: number
+            assists: number
+        }
     })[]
     nextCursor: string
 }
@@ -149,7 +157,7 @@ export type RaidHubSearchResult = {
 
 export type RaidHubActivitySearchResponse = {
     query: Record<string, unknown>
-    results: RaidHubActivitySearchResult[]
+    results: RaidHubActivity[]
 }
 export type RaidHubActivitySearchResult = RaidHubActivity
 

@@ -105,10 +105,10 @@ const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps
                                         b => b.type === "challenge"
                                     )
                                         ? manifest.leaderboards.worldFirst[raid].find(
-                                              b => b.type === "normal"
+                                              b => b.type === "challenge"
                                           )?.id
                                         : manifest?.leaderboards.worldFirst[raid].find(
-                                              b => b.type === "challenge"
+                                              b => b.type === "normal"
                                           )?.id) ?? null
                                 }
                                 expand={() => setExpandedRaid(raid)}

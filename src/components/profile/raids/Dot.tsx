@@ -79,7 +79,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             className={[styles["dot"], styles["dot-hover"]].join(" ")}>
             <circle
                 fill={
-                    activity.didMemberComplete
+                    activity.player.didMemberComplete
                         ? activity.flawless
                             ? Teal
                             : Green

@@ -20,7 +20,24 @@ export async function activitySearch(queryString: string): Promise<Collection<st
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitySearchResponse>
     if (data.success) {
-        return new Collection(data.response.results.map(r => [r.instanceId, new Activity(r)]))
+        return new Collection(
+            data.response.results.map(r => [
+                r.instanceId,
+                new Activity({
+                    ...r,
+                    //  todo fix patchwork this later
+                    player: {
+                        didMemberComplete: true,
+                        sherpas: 0,
+                        isFirstClear: false,
+                        timePlayedSeconds: 0,
+                        kills: 0,
+                        deaths: 0,
+                        assists: 0
+                    }
+                })
+            ])
+        )
     } else {
         const err = new Error(data.message)
         Object.assign(err, data.error)

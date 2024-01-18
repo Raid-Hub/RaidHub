@@ -53,7 +53,7 @@ export default function RaidCard({
     const { activities, isLoadingActivities } = useActivitiesContext()
 
     const recentClear = useMemo(
-        () => activities?.find(a => a.didMemberComplete && a.fresh),
+        () => activities?.find(a => a.player.didMemberComplete && a.fresh),
         [activities]
     )
 
@@ -150,7 +150,9 @@ export default function RaidCard({
                     )}
                     <div className={styles["graph-right"]}>
                         <BigNumberStatItem
-                            displayValue={activities?.filter(a => a.didMemberComplete).size ?? 0}
+                            displayValue={
+                                activities?.filter(a => a.player.didMemberComplete).size ?? 0
+                            }
                             isLoading={isLoadingActivities}
                             name={strings.totalClears.split(" ").join("\n")}
                             extraLarge={true}

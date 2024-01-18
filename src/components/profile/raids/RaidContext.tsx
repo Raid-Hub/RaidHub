@@ -5,10 +5,11 @@ import { ListedRaid } from "~/types/raids"
 
 const RaidContext = createContext<
     | {
+          raid: ListedRaid
           isLoadingActivities: false
           activities: Collection<string, Activity>
       }
-    | { isLoadingActivities: true; activities: null }
+    | { raid: ListedRaid; isLoadingActivities: true; activities: null }
     | null
 >(null)
 
@@ -33,11 +34,9 @@ export function RaidCardContext({
         <RaidContext.Provider
             value={{
                 ...(isLoadingActivities
-                    ? {
-                          isLoadingActivities: true,
-                          activities: null
-                      }
+                    ? { raid, isLoadingActivities: true, activities: null }
                     : {
+                          raid,
                           isLoadingActivities: false,
                           activities: activitiesByRaid?.get(raid) ?? new Collection()
                       })
