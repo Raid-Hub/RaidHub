@@ -16,6 +16,8 @@ export async function getRaidHubPGCR(instanceId: string) {
     if (data.success) {
         return data.response
     } else {
-        throw new Error(data.message)
+        const err = new Error(data.message)
+        Object.assign(err, data.error)
+        throw err
     }
 }

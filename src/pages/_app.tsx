@@ -15,8 +15,6 @@ import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
 import Toolbox from "~/components/toolbox/Toolbox"
-import { CrawlableNextPage } from "~/types/generic"
-import RaidHubMetaData from "~/components/reusable/CommonMetaData"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() =>
@@ -28,60 +26,54 @@ const lazyMotionFeatures = () => import("../util/framer-motion-features").then(i
 
 type PageProps = {
     session: Session
-    headOnly?: boolean
+    serverRendered?: boolean
 }
 
 const title = "RaidHub"
 const description =
     "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
 
-function RaidHub({
-    Component,
-    pageProps: { session, headOnly, ...pageProps },
-    router
-}: AppProps<PageProps>) {
+function RaidHub({ Component, pageProps: { session, ...pageProps }, router }: AppProps<PageProps>) {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
     const [isFooterVisible, setIsFooterVisible] = useState(false)
 
     /* disables the prefetching behavior of next/link */
     router.prefetch = async (url, asPath, options) => {}
 
-    if (headOnly) {
-        // @ts-ignore
-        const ComponentHead = Component.Head as CrawlableNextPage<any, any>["Head"]
-        return (
-            <ComponentHead {...pageProps}>
-                <RaidHubMetaData />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover"
-                />
-            </ComponentHead>
-        )
-    }
-
     return (
         <LocaleManager>
+            {/* All meta tags should have keys to avoid duplication */}
             <Head>
                 <title key="title">{title}</title>
-                <meta name="description" content={description} key="description" />
+                <meta key="description" name="description" content={description} />
 
-                <RaidHubMetaData />
+                {/* Open Graph */}
+                <meta key="og:site_name" property="og:site_name" content="RaidHub" />
+                <meta key="og:site_type" property="og:type" content="website" />
+                <meta key="og:title" property="og:title" content={title} />
+                <meta key="og:image" property="og:image" content="/logo.png" />
+                <meta key="og:description" property="og:description" content={description} />
 
-                <meta property="og:title" content={title} key="og-title" />
-                <meta property="og:image" content="/logo.png" key="og-image" />
-                <meta property="og:description" content={description} key="og-descriptions" />
+                {/* Twitter */}
+                <meta key="twitter:site" name="twitter:site" content="@raidhubapp" />
+                <meta key="twitter:card" name="twitter:card" content="summary" />
+                <meta key="twitter:image" name="twitter:image" content="/logo.png" />
+                <meta key="twitter:title" name="twitter:title" content={title} />
+                <meta key="twitter:description" name="twitter:description" content={description} />
 
-                <meta name="twitter:card" content="summary" key="twitter-card" />
-                <meta name="twitter:image" content="/logo.png" key="twitter-image" />
-                <meta name="twitter:title" content={title} key="twitter-title" />
-                <meta name="twitter:description" content={description} key="twitter-descriptions" />
+                {/* Discord */}
+                <meta
+                    key="discord:site"
+                    property="discord:site"
+                    content="https://discord.gg/raidhub"
+                />
+                <meta key="theme-color" name="theme-color" content="#f0802f" />
 
                 <meta
+                    key="viewport"
                     name="viewport"
                     content="width=device-width, initial-scale=1.0, maximum-scale=1"
                 />
-                <meta name="theme-color" content="#FFA500" />
             </Head>
             <SessionProvider
                 session={session}

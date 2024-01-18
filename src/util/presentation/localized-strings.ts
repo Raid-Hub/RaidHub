@@ -1,5 +1,5 @@
 import { Tag } from "../raidhub/tags"
-import { Difficulty, Raid } from "../../types/raids"
+import { Difficulty, Raid } from "~/types/raids"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
 import { DestinyClass } from "bungie-net-core/models"
 
@@ -76,6 +76,14 @@ export interface LocalStrings {
         allEncounters: string
         trioAllEncounters: string
         trio: string
+    }
+    individualLeaderboads: {
+        fresh: string
+        clears: string
+        sherpas: string
+        trios: string
+        duos: string
+        solos: string
     }
     score: string
     showScore: string
@@ -262,6 +270,14 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             2: "Warlock",
             3: "Unknown"
         },
-        submit: "Submit"
+        submit: "Submit",
+        individualLeaderboads: {
+            fresh: "Full Clears",
+            clears: "Clears",
+            sherpas: "Sherpas",
+            trios: "Trio Clears",
+            duos: "Duo Clears",
+            solos: "Solo Clears"
+        }
     }
 }

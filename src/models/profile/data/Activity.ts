@@ -1,6 +1,7 @@
 import { ListedRaid, Difficulty } from "../../../types/raids"
 import { raidTupleFromHash } from "../../../util/destiny/raidUtils"
-import { RaidHubActivity } from "~/types/raidhub-api"
+import { RaidHubActivitiesResponse } from "~/types/raidhub-api"
+import { BungieMembershipType } from "bungie-net-core/models"
 
 export default class Activity {
     readonly activityId: string
@@ -12,24 +13,26 @@ export default class Activity {
     readonly playerCount: number
     readonly dateStarted: Date
     readonly dateCompleted: Date
-    readonly didMemberComplete?: boolean
     readonly durationSeconds: number
     readonly dayOne: boolean
     readonly contest: boolean
+    readonly platform: BungieMembershipType
+    readonly player: RaidHubActivitiesResponse["activities"][number]["player"]
 
     readonly weight: number
-    constructor(data: RaidHubActivity & { didMemberComplete?: boolean }) {
+    constructor(data: RaidHubActivitiesResponse["activities"][number]) {
         this.activityId = data.instanceId
         this.flawless = !!data.flawless
         this.completed = data.completed
         this.fresh = !!data.fresh
         this.playerCount = data.playerCount
+        this.platform = data.platform
         this.dateStarted = new Date(data.dateStarted)
         this.dateCompleted = new Date(data.dateCompleted)
-        this.didMemberComplete = data.didMemberComplete
         this.dayOne = data.dayOne
         this.contest = data.contest
         ;[this.raid, this.difficulty] = raidTupleFromHash(data.raidHash)
+        this.player = data.player
 
         this.durationSeconds = Math.floor(
             (this.dateCompleted.getTime() - this.dateStarted.getTime()) / 1000

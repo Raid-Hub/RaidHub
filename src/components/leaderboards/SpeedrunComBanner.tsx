@@ -3,7 +3,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { HTMLAttributeAnchorTarget, ReactNode } from "react"
 import { SpeedData } from "~/data/speedrun-com-mappings"
-import { useLocale } from "../app/LocaleManager"
 import { ListedRaid } from "~/types/raids"
 import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
@@ -49,17 +48,14 @@ function submitRunURL(categoryData: CategoryData) {
 export default function SpeedrunComBanner({
     title,
     subtitle,
-    raid,
     raidId,
-    category,
-    others
+    category
 }: {
     title: string
     subtitle?: string
     raid: ListedRaid
     others?: Record<string, SpeedData>
 } & CategoryData) {
-    const { strings } = useLocale()
     return (
         <div className={styles["rta-info"]}>
             <div className={styles["src-splash-container"]}>

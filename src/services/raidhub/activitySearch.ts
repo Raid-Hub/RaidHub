@@ -14,15 +14,34 @@ export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuery
 
 // we have the bungie queries as backups
 export async function activitySearch(queryString: string): Promise<Collection<string, Activity>> {
-    const url = new URL(getRaidHubBaseUrl() + `/activities/search?` + queryString)
+    const url = new URL(getRaidHubBaseUrl() + `/activity/search?` + queryString)
 
     const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitySearchResponse>
     if (data.success) {
-        return new Collection(data.response.results.map(r => [r.instanceId, new Activity(r)]))
+        return new Collection(
+            data.response.results.map(r => [
+                r.instanceId,
+                new Activity({
+                    ...r,
+                    //  todo fix patchwork this later
+                    player: {
+                        didMemberComplete: true,
+                        sherpas: 0,
+                        isFirstClear: false,
+                        timePlayedSeconds: 0,
+                        kills: 0,
+                        deaths: 0,
+                        assists: 0
+                    }
+                })
+            ])
+        )
     } else {
-        throw new Error(data.message)
+        const err = new Error(data.message)
+        Object.assign(err, data.error)
+        throw err
     }
 }
 

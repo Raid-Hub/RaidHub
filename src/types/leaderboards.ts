@@ -17,3 +17,12 @@ export type LeaderboardEntryParticipant = {
     displayName: string
     url: string | null
 }
+
+export type IndividualLeaderboardEntry = {
+    rank: number
+    iconURL: string | null
+    displayName: string
+    id: string
+    url: string
+    value: number
+}

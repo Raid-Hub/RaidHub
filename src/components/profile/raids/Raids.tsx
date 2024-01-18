@@ -4,19 +4,17 @@ import RaidCard from "./RaidCard"
 import { useEffect, useMemo } from "react"
 import RecentRaids from "./RecentRaids"
 import { Layout } from "../mid/LayoutToggle"
-import { useBungieClient } from "~/components/app/TokenManager"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { Collection } from "@discordjs/collection"
 import { partitionCollectionByRaid } from "~/util/destiny/partitionCollectionByRaid"
-import { partitionStatsByRaid } from "~/util/destiny/partitionStatsByRaid"
-import RaidStats from "~/models/profile/data/RaidStats"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
-import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { RaidHubManifestBoard, RaidHubPlayerLeaderboardEntry } from "~/types/raidhub-api"
+import { RaidCardContext } from "./RaidContext"
 
 type RaidsProps = {
     destinyMemberships: { destinyMembershipId: string; membershipType: BungieMembershipType }[]
@@ -25,13 +23,7 @@ type RaidsProps = {
     setMostRecentActivity: (id: string | null | undefined) => void
 }
 
-const Raids = ({
-    destinyMemberships,
-    areMembershipsFetched,
-    layout,
-    setMostRecentActivity
-}: RaidsProps) => {
-    const bungie = useBungieClient()
+const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps) => {
     const manifest = useRaidHubManifest()
 
     // todo deal with player memberships
@@ -40,25 +32,26 @@ const Raids = ({
     )
 
     const leaderboardEntriesByRaid = useMemo(() => {
-        const boardIdToRaid = new Map<string, { raid: ListedRaid; key: string }>()
-        Object.entries(manifest?.activityLeaderboards ?? {}).forEach(([raid, boards]) => {
-            Object.entries(boards).forEach(([key, id]) => {
-                boardIdToRaid.set(id, { raid: Number(raid), key })
+        const boardIdToRaid = new Map<string, ListedRaid>()
+        Object.entries(manifest?.leaderboards.worldFirst ?? {}).forEach(([raid, boards]) => {
+            boards.forEach(({ id }) => {
+                boardIdToRaid.set(id, Number(raid))
             })
         })
         const raidToData = new Collection<
             ListedRaid,
-            (RaidHubPlayerResponse["activityLeaderboardEntries"][string][number] & {
-                key: string
-            })[]
+            (RaidHubPlayerLeaderboardEntry & RaidHubManifestBoard)[]
         >(ListedRaids.map(raid => [raid, []]))
 
         players.forEach(p => {
             Object.entries(p.activityLeaderboardEntries).forEach(([id, data]) => {
                 if (boardIdToRaid.has(id)) {
-                    const { raid, key } = boardIdToRaid.get(id)!
+                    const raid = boardIdToRaid.get(id)!
                     data.forEach(entry => {
-                        raidToData.get(raid)!.push({ ...entry, key })
+                        raidToData.get(raid)!.push({
+                            ...entry,
+                            ...manifest?.leaderboards.worldFirst[raid].find(b => b.id === id)!
+                        })
                     })
                 }
             })
@@ -66,41 +59,6 @@ const Raids = ({
 
         return raidToData
     }, [manifest, players])
-
-    const statsQueries = bungie.stats.useQueries(destinyMemberships, {
-        enabled: areMembershipsFetched
-    })
-
-    const characters = useMemo(
-        () =>
-            statsQueries
-                .map(
-                    q =>
-                        q.data?.characters.map(({ characterId }) => ({
-                            destinyMembershipId: q.data.destinyMembershipId,
-                            membershipType: q.data.membershipType,
-                            characterId
-                        }))!
-                )
-                .filter(Boolean)
-                .flat(),
-        [statsQueries]
-    )
-
-    const areAllCharactersFound = statsQueries.every(q => q.isFetched)
-
-    const characterQueries = bungie.characterStats.useQueries(characters, {
-        enabled: areMembershipsFetched && areAllCharactersFound
-    })
-
-    const characterStats = useMemo(() => {
-        if (characterQueries.every(q => q.isSuccess)) {
-            const data = characterQueries.map(q => q.data!)
-            return partitionStatsByRaid(data)
-        } else {
-            return null
-        }
-    }, [characterQueries])
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(
         destinyMemberships.map(dm => dm.destinyMembershipId)
@@ -129,41 +87,35 @@ const Raids = ({
         encoder: raid => RaidToUrlPaths[raid]
     })
 
-    const isLoadingStats =
-        !areMembershipsFetched || !areAllCharactersFound || characterQueries.some(q => q.isLoading)
-
     switch (layout) {
         case Layout.DotCharts:
             return (
                 <div className={styles["cards"]}>
                     {ListedRaids.map(raid => (
-                        <RaidCard
+                        <RaidCardContext
                             key={raid}
-                            raid={raid}
-                            leaderboardData={leaderboardEntriesByRaid.get(raid)!}
-                            wfBoard={manifest?.worldFirstBoards[raid] ?? null}
-                            expand={() => setExpandedRaid(raid)}
-                            clearExpand={clearExpandedRaid}
-                            isExpanded={raid === expandedRaid}
-                            {...(isLoadingStats
-                                ? {
-                                      isLoadingStats: true,
-                                      stats: null
-                                  }
-                                : {
-                                      isLoadingStats: false,
-                                      stats: characterStats?.get(raid) ?? new RaidStats([], raid)
-                                  })}
-                            {...(isLoadingActivities
-                                ? {
-                                      isLoadingActivities: true,
-                                      activities: null
-                                  }
-                                : {
-                                      isLoadingActivities: false,
-                                      activities: activitiesByRaid?.get(raid) ?? new Collection()
-                                  })}
-                        />
+                            activitiesByRaid={activitiesByRaid}
+                            isLoadingActivities={isLoadingActivities}
+                            raid={raid}>
+                            <RaidCard
+                                raid={raid}
+                                leaderboardData={leaderboardEntriesByRaid.get(raid)!}
+                                wfBoardId={
+                                    (manifest?.leaderboards.worldFirst[raid].some(
+                                        b => b.type === "challenge"
+                                    )
+                                        ? manifest.leaderboards.worldFirst[raid].find(
+                                              b => b.type === "challenge"
+                                          )?.id
+                                        : manifest?.leaderboards.worldFirst[raid].find(
+                                              b => b.type === "normal"
+                                          )?.id) ?? null
+                                }
+                                expand={() => setExpandedRaid(raid)}
+                                clearExpand={clearExpandedRaid}
+                                isExpanded={raid === expandedRaid}
+                            />
+                        </RaidCardContext>
                     ))}
                 </div>
             )

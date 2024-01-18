@@ -2,32 +2,26 @@ import Link from "next/link"
 import styles from "~/styles/pages/home.module.css"
 import RightArrow from "~/images/icons/RightArrow"
 import RaidCardBackground from "~/images/raid-backgrounds"
-import {
-    Difficulty,
-    ListedRaid,
-    MasterRaids,
-    PrestigeRaids,
-    RaidsWithReprisedContest
-} from "~/types/raids"
+import { Difficulty, ListedRaid } from "~/types/raids"
 import { LocalStrings } from "~/util/presentation/localized-strings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
-import { includedIn } from "~/util/betterIncludes"
 import CloudflareImage from "~/images/CloudflareImage"
+import { RaidHubManifest } from "~/types/raidhub-api"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
     strings: LocalStrings
+    worldFirstLeaderboards: RaidHubManifest["leaderboards"]["worldFirst"][ListedRaid]
+    individualLeaderboards: RaidHubManifest["leaderboards"]["individual"][ListedRaid] | null
 }
 
-const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
-    const miscBoards = {
-        normalContest: includedIn(RaidsWithReprisedContest, raid),
-        master: includedIn(MasterRaids, raid),
-        prestige: includedIn(PrestigeRaids, raid)
-        // pc: raid === Raid.LEVIATHAN
-    }
-
+const HomeRaidCard = ({
+    raid,
+    strings,
+    worldFirstLeaderboards,
+    individualLeaderboards
+}: HomeRaidCardProps) => {
     return (
         <div id={RaidToUrlPaths[raid]} className={styles["home-raid-card"]}>
             <div className={styles["card-image-header"]}>
@@ -38,28 +32,67 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                     cloudflareId={RaidCardBackground[raid]}
                     alt={`header for ${strings.raidNames[raid]}`}
                 />
-                <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
+                <h2 className={styles["card-title"]}>{strings.raidNames[raid]}</h2>
             </div>
             <div className={styles["card-content"]}>
-                <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
-                    <div className={styles["section-title"]}>
-                        <span>{strings.worldFirstLeaderboards}</span>
+                {!!worldFirstLeaderboards.length && (
+                    <div className={`${styles["card-section"]} ${styles["card-section-top"]}`}>
+                        <div className={styles["section-title"]}>
+                            <span>{strings.worldFirstLeaderboards}</span>
+                        </div>
+                        <div className={styles["content-section-inner"]}>
+                            <Link
+                                href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
+                                className={styles["content-section"]}>
+                                <div>
+                                    <h4>
+                                        {worldFirstLeaderboards.find(b => b.type === "challenge")
+                                            ? "Challenge"
+                                            : "Normal"}
+                                    </h4>
+                                </div>
+                                <div className={styles["content-section-arrow"]}>
+                                    <RightArrow />
+                                </div>
+                            </Link>
+                            {worldFirstLeaderboards.find(b => b.type === "challenge") && (
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <h4>Normal</h4>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
                     </div>
-                    <Link
-                        href={`/leaderboards/${RaidToUrlPaths[raid]}/worldfirst`}
-                        className={styles["content-section"]}>
-                        <div>
-                            <h4>
-                                {includedIn(RaidsWithReprisedContest, raid)
-                                    ? "Challenge"
-                                    : "Normal"}
-                            </h4>
+                )}
+                {individualLeaderboards && (
+                    <div className={styles["card-section"]}>
+                        <div className={styles["section-title"]}>
+                            <span>Individual Leaderboards</span>
                         </div>
-                        <div className={styles["content-section-arrow"]}>
-                            <RightArrow />
+                        <div className={styles["content-section-inner"]}>
+                            {individualLeaderboards.map(({ name, category }) => (
+                                <Link
+                                    key={category}
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/${category}`}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <h4>{name}</h4>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
+                                    <div className={styles["content-section-inner"]}></div>
+                                </Link>
+                            ))}
                         </div>
-                    </Link>
-                </div>
+                    </div>
+                )}
                 <div className={styles["card-section"]}>
                     <div className={styles["section-title"]}>
                         <span>{strings.rtaSpeedrunLeaderboards}</span>
@@ -97,78 +130,38 @@ const HomeRaidCard = ({ raid, strings }: HomeRaidCardProps) => {
                         )}
                     </div>
                 </div>
-                {/*
-                <div className={styles["content-section"]}>
-                    <div className={styles["section-title"]}>
-                        <span>{strings.apiSpeedrunLeaderboards}</span>
-                    </div>
-                    <ul>
-                        <li>{strings.comingSoon}</li>
-                    </ul>
-                </div>
 
-                <div className={styles["content-section"]}>
-                    <div className={styles["section-title"]}>
-                        <span>{strings.clearsLeaderboards}</span>
-                    </div>
-                    <ul>
-                        <li>{strings.comingSoon}</li>
-                    </ul>
-                </div>
-                */}
-                {Object.values(miscBoards).some(Boolean) && (
+                {worldFirstLeaderboards.length > 1 && (
                     <div className={styles["card-section"]}>
                         <div className={styles["section-title"]}>
                             <span>{strings.otherLeaderboards}</span>
                         </div>
-                        {miscBoards.normalContest && (
-                            <Link
-                                href={`/leaderboards/${RaidToUrlPaths[raid]}/first/normal`}
-                                className={styles["content-section"]}>
-                                <div>
-                                    <h4>{strings.noChallenge}</h4>
-                                </div>
-                                <div className={styles["content-section-arrow"]}>
-                                    <RightArrow />
-                                </div>
-                            </Link>
-                        )}
-                        {miscBoards.master && (
-                            <Link
-                                href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}
-                                className={styles["content-section"]}>
-                                <div>
-                                    <h4>{strings.difficulty[Difficulty.MASTER]}</h4>
-                                </div>
-                                <div className={styles["content-section-arrow"]}>
-                                    <RightArrow />
-                                </div>
-                            </Link>
-                        )}
-                        {miscBoards.prestige && (
-                            <Link
-                                href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}
-                                className={styles["content-section"]}>
-                                <div>
-                                    <h4>{strings.difficulty[Difficulty.PRESTIGE]}</h4>
-                                </div>
-                                <div className={styles["content-section-arrow"]}>
-                                    <RightArrow />
-                                </div>
-                            </Link>
-                        )}
-                        {/* {miscBoards.pc && (
-                        <Link
-                            href={`/leaderboards/${RaidToUrlPaths[raid]}/first/pc`}
-                            className={styles["content-section"]}>
-                            <div>
-                                <h4>PC</h4>
-                            </div>
-                            <div className={styles["content-section-arrow"]}>
-                                <RightArrow />
-                            </div>
-                        </Link>
-                    )} */}
+                        <div className={styles["content-section-inner"]}>
+                            {worldFirstLeaderboards.find(b => b.type === "master") && (
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/first/master`}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <h4>{strings.difficulty[Difficulty.MASTER]}</h4>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
+                                </Link>
+                            )}
+                            {worldFirstLeaderboards.find(b => b.type === "prestige") && (
+                                <Link
+                                    href={`/leaderboards/${RaidToUrlPaths[raid]}/first/prestige`}
+                                    className={styles["content-section"]}>
+                                    <div>
+                                        <h4>{strings.difficulty[Difficulty.PRESTIGE]}</h4>
+                                    </div>
+                                    <div className={styles["content-section-arrow"]}>
+                                        <RightArrow />
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>

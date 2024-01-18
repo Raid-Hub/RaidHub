@@ -1,6 +1,12 @@
 import { DehydrateOptions, QueryClient, dehydrate } from "@tanstack/react-query"
 import { createServerSideHelpers } from "@trpc/react-query/server"
-import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
+import {
+    Leaderboard,
+    getIndividualGlobalLeaderboard,
+    getIndividualLeaderboard,
+    getLeaderboard,
+    leaderboardQueryKey
+} from "~/services/raidhub/getLeaderboard"
 import {
     getSpeedrunComLeaderboard,
     rtaQueryKey
@@ -94,6 +100,35 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
             queryClient.prefetchQuery(
                 leaderboardQueryKey(raid, board, params, idx),
                 () => getLeaderboard(raid, board, params, idx),
+                {
+                    staleTime: 2 * 60000 // 2 minutes
+                }
+            )
+        )
+    )
+
+    return dehydrate(queryClient)
+}
+
+export async function prefetchIndividualLeaderboard<R extends ListedRaid | "global">(
+    { raid, board, pages }: { raid: R; board: Leaderboard; pages: number },
+    queryClient: QueryClient
+) {
+    // we prefetch the first page at build time
+    await Promise.all(
+        new Array(pages).fill(undefined).map((_, page) =>
+            queryClient.prefetchQuery(
+                leaderboardQueryKey(raid, board, [], page),
+                () =>
+                    raid === "global"
+                        ? getIndividualGlobalLeaderboard(
+                              board as
+                                  | Leaderboard.Clears
+                                  | Leaderboard.FullClears
+                                  | Leaderboard.Sherpa,
+                              page
+                          )
+                        : getIndividualLeaderboard(raid, board, page),
                 {
                     staleTime: 2 * 60000 // 2 minutes
                 }

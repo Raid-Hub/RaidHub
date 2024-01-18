@@ -26,7 +26,7 @@ import { useLocale } from "../app/LocaleManager"
 import ErrorComponent from "../global/Error"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import Loading from "../global/Loading"
-import { getRaidHubMember, getRaidHubMemberQueryKey } from "~/services/raidhub/getMember"
+import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
 
 interface ActivitySearchFormState {
     flawless: -1 | 0 | 1
@@ -289,8 +289,8 @@ const AddedPlayers = ({
 const PickedPlayer = (player: RaidHubSearchResult | { membershipId: string }) => {
     // if we dont have the player we can just use the membershipId to get the player
     const { ...q } = useQuery({
-        queryFn: () => getRaidHubMember(player.membershipId),
-        queryKey: getRaidHubMemberQueryKey(player.membershipId),
+        queryFn: () => getPlayerBasic(player.membershipId),
+        queryKey: getPlayerBasicKey(player.membershipId),
         enabled: !("lastSeen" in player),
         staleTime: Infinity
     })

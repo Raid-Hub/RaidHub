@@ -61,7 +61,7 @@ export function wfRaceMode({
 
 export function findTags(activities: Activity[]) {
     const sorted = activities
-        .filter(a => a.didMemberComplete)
+        .filter(a => a.player.didMemberComplete)
         .sort(
             (a, b) => b.weight - a.weight || a.dateCompleted.getTime() - b.dateCompleted.getTime()
         )
