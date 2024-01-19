@@ -11,7 +11,7 @@ export const signInCallback: CallbacksOptions<UserMembershipData | Profile>["sig
     // Users from the callback will have no user, while users from the DB will exist
     if (account?.provider === "bungie" && user && profile && "bungieNetUser" in profile) {
         await updateBungieAccessTokens({
-            bungieMembershipId: profile.bungieNetUser.membershipId,
+            userId: user.id,
             access: {
                 value: account.access_token!,
                 expires: new Date(account.expires_at! * 1000)

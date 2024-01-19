@@ -33,39 +33,17 @@ model Profile {
 }
 
 model User {
-  id                 String        @id @default(uuid())
-  bungieMembershipId String        @unique @map("bungie_membership_id")
-  email              String?       @unique
-  emailVerified      DateTime?     @map("email_verified")
-  createdAt          DateTime      @default(now())
-  role               Role          @default(USER)
-  bungieAccessToken  AccessToken?
-  bungieRefreshToken RefreshToken?
+  id                 String    @id @default(uuid())
+  bungieMembershipId String    @unique @map("bungie_membership_id")
+  email              String?   @unique
+  emailVerified      DateTime? @map("email_verified")
+  createdAt          DateTime  @default(now())
+  role               Role      @default(USER)
   profile            Profile?
   accounts           Account[]
   sessions           Session[]
 
   @@map("user")
-}
-
-model AccessToken {
-  id                 String   @id @default(uuid())
-  bungieMembershipId String   @unique @map("bungie_membership_id")
-  value              String   @db.Text
-  expires            DateTime @default(now())
-  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
-
-  @@map("bungie_access_token")
-}
-
-model RefreshToken {
-  id                 String   @id @default(uuid())
-  bungieMembershipId String   @unique @map("bungie_membership_id")
-  value              String   @db.Text
-  expires            DateTime @default(now())
-  user               User     @relation(fields: [bungieMembershipId], references: [bungieMembershipId], onDelete: Cascade)
-
-  @@map("bungie_refresh_token")
 }
 
 // Represents an OAuth session. Do not edit these fields.
@@ -92,6 +70,7 @@ model Account {
   refreshToken      String? @db.Text
   accessToken       String? @db.Text
   expiresAt         Int?
+  refreshExpiresAt  Int?
   tokenType         String?
   scope             String?
   idToken           String? @db.Text

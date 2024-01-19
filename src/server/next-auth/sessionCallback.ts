@@ -1,59 +1,46 @@
-import type { CallbacksOptions, Session } from "@auth/core/types"
-import type { AdapterUser } from "@auth/core/adapters"
+import type { Session } from "@auth/core/types"
 import type { BungieFetchConfig } from "bungie-net-core"
 import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
 import { refreshAuthorization } from "bungie-net-core/auth"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { AdapterUser } from "@auth/core/adapters"
+import { BungieAccount } from "."
 
-export type SessionUser = {
-    id: string
-    destinyMembershipId: string
-    destinyMembershipType: BungieMembershipType
-    name: string
-    image: string
-    role: "USER" | "ADMIN"
-    bungieAccessToken?: {
-        value: string
-        expires: number
+export const sessionCallback = async ({
+    session,
+    user: { bungieAccount, ...user }
+}: {
+    session: {
+        user: {
+            name: string
+            email: string
+            image: string
+        }
+        expires: Date
     }
-}
-
-function sessionUser(user: AdapterUser): SessionUser {
-    return {
-        id: user.id,
-        destinyMembershipId: user.destinyMembershipId,
-        destinyMembershipType: user.destinyMembershipType,
-        image: user.image,
-        name: user.name,
-        role: user.role,
-        bungieAccessToken: user.bungieAccessToken
-            ? {
-                  value: user.bungieAccessToken.value,
-                  expires: user.bungieAccessToken.expires.getTime()
-              }
-            : undefined
-    }
-}
-
-export const sessionCallback: CallbacksOptions["session"] = async ({ session, user }) => {
-    const newUser = sessionUser(user)
-
-    if (!user.bungieAccessToken) {
-        // If user is not authenticated with Bungie
-        return {
-            ...session,
-            user: newUser
-        } satisfies Session
-    } else if (Date.now() < user.bungieAccessToken.expires.getTime()) {
+    user: AdapterUser & { bungieAccount: BungieAccount }
+}) => {
+    if (
+        bungieAccount.expiresAt &&
+        bungieAccount.accessToken &&
+        Date.now() < bungieAccount.expiresAt * 1000
+    ) {
         // If user access token has not expired yet
         return {
             ...session,
-            user: newUser
+            bungieAccessToken: {
+                value: bungieAccount.accessToken,
+                expires: new Date(bungieAccount.expiresAt * 1000)
+            },
+            user
         } satisfies Session
-    } else if (user.bungieRefreshToken && Date.now() < user.bungieRefreshToken.expires.getTime()) {
+    } else if (
+        bungieAccount.refreshToken &&
+        (!bungieAccount.refreshExpiresAt || Date.now() < bungieAccount.refreshExpiresAt * 1000)
+    ) {
+        // User access token has expired, but refresh token has not
         try {
             const tokens = await refreshAuthorization(
-                user.bungieRefreshToken.value,
+                bungieAccount.refreshToken,
                 {
                     client_id: process.env.BUNGIE_CLIENT_ID!,
                     client_secret: process.env.BUNGIE_CLIENT_SECRET!
@@ -71,7 +58,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
             )
 
             await updateBungieAccessTokens({
-                bungieMembershipId: tokens.membership_id,
+                userId: user.id,
                 access: {
                     value: tokens.access_token,
                     expires: new Date(Date.now() + tokens.expires_in * 1000)
@@ -84,12 +71,10 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
 
             return {
                 ...session,
-                user: {
-                    ...newUser,
-                    bungieAccessToken: {
-                        value: tokens.access_token,
-                        expires: Date.now() + tokens.expires_in * 1000
-                    }
+                user,
+                bungieAccessToken: {
+                    value: tokens.access_token,
+                    expires: new Date(Date.now() + tokens.expires_in * 1000)
                 }
             } satisfies Session
         } catch (e: any) {
@@ -99,14 +84,14 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
             ) {
                 return {
                     ...session,
-                    user: newUser,
+                    user,
                     error: "BungieAPIOffline"
                 } satisfies Session
             } else {
                 console.error(e)
                 return {
                     ...session,
-                    user: newUser,
+                    user,
                     error: "AccessTokenError"
                 } satisfies Session
             }
@@ -114,7 +99,7 @@ export const sessionCallback: CallbacksOptions["session"] = async ({ session, us
     } else {
         return {
             ...session,
-            user: newUser,
+            user,
             error: "ExpiredRefreshTokenError"
         } satisfies Session
     }

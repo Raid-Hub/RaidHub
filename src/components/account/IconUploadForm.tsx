@@ -1,20 +1,20 @@
 import styles from "~/styles/pages/account.module.css"
 import { ChangeEventHandler, useState } from "react"
 import Image from "next/image"
-import { SessionUser } from "~/server/next-auth/sessionCallback"
 import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useLocale } from "../app/LocaleManager"
 import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
+import { AdapterUser } from "@auth/core/adapters"
 
 type FormValues = {
     username: string
     image: File
 }
 
-const IconUploadForm = ({ user }: { user: SessionUser }) => {
+const IconUploadForm = ({ user }: { user: AdapterUser }) => {
     const { update: updateSession } = useSession()
     const [imageSrc, setImageSrc] = useState<string | null>(null)
     const [err, setErr] = useState<Error | null>(null)

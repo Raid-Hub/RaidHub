@@ -3,27 +3,26 @@ import TwitchProvider from "@auth/core/providers/twitch"
 import TwitterProvider from "@auth/core/providers/twitter"
 import GoogleProvider from "@auth/core/providers/google"
 import BungieProvider from "~/server/next-auth/providers/BungieProvider"
-import { SessionUser, sessionCallback } from "~/server/next-auth/sessionCallback"
+import { sessionCallback } from "~/server/next-auth/sessionCallback"
 import { signInCallback } from "./signInCallback"
 import { prismaAdapter } from "./adapter"
 import prisma from "../prisma"
 import { Provider } from "@auth/core/providers"
 import NextAuth from "next-auth"
-import { User as PrismaUser, Session as PrismaSession } from "@prisma/client"
+import { User as PrismaUser } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { ServerResponse } from "http"
-
-export type BungieToken = {
-    value: string
-    expires: Date
-}
-
-export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
+import { AdapterUser } from "@auth/core/adapters"
 
 declare module "@auth/core/types" {
-    interface Session extends PrismaSession {
+    interface Session {
         error?: AuthError
-        user: SessionUser
+        user: AdapterUser
+        bungieAccessToken?: {
+            value: string
+            expires: Date
+        }
+        expires: Date
     }
 }
 
@@ -33,10 +32,22 @@ declare module "@auth/core/adapters" {
         name: string
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
-        bungieAccessToken: BungieToken | null
-        bungieRefreshToken: BungieToken | null
     }
 }
+
+export type BungieToken = {
+    value: string
+    expires: Date
+}
+
+export type BungieAccount = {
+    refreshToken: string | null
+    accessToken: string | null
+    expiresAt: number | null
+    refreshExpiresAt: number | null
+}
+
+export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
 // stupid fuckery to get around a next auth issue, i hate it
 export const auth: typeof _auth = (...args) => {
@@ -84,6 +95,7 @@ const {
         maxAge: 7776000 // 90 days
     },
     callbacks: {
+        // @ts-expect-error
         session: sessionCallback,
         // @ts-expect-error
         signIn: signInCallback
