@@ -22,10 +22,7 @@ export function RaidHubTable<T extends string[]>({
         Record<string, (typeof ColumnFormats)[keyof typeof ColumnFormats]>
     >({})
 
-    const { value: queryTitle, save: setQueryTitle } = useLocalStorage(
-        "admin-query-title",
-        "My Table"
-    )
+    const [queryTitle, setQueryTitle] = useLocalStorage("admin-query-title", "My Table")
 
     const setColumnFn = useMemo(() => {
         return Object.fromEntries(
@@ -134,13 +131,14 @@ const ColumnLabel = ({
     isEditing: boolean
     setColumnFn: (label: string, fn: (typeof ColumnFormats)[keyof typeof ColumnFormats]) => void
 }) => {
-    const { save: saveLabel, value: customLabel } = useLocalStorage(
+    const [customLabel, saveLabel] = useLocalStorage(
         `admin-query-table-column-label-${label}`,
         label
     )
-    const { save: saveDataType, value: customDataType } = useLocalStorage<
-        keyof typeof ColumnFormats
-    >(`admin-query-table-data-type-${label}`, "string")
+    const [customDataType, saveDataType] = useLocalStorage<keyof typeof ColumnFormats>(
+        `admin-query-table-data-type-${label}`,
+        "string"
+    )
 
     useEffect(
         () => setColumnFn(label, ColumnFormats[customDataType]),

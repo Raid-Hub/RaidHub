@@ -15,6 +15,7 @@ import { trpc } from "~/util/trpc"
 import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
 import Toolbox from "~/components/toolbox/Toolbox"
+import { HeaderBanner } from "~/components/global/HeaderBanner"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() =>
@@ -26,6 +27,7 @@ const lazyMotionFeatures = () => import("../util/framer-motion-features").then(i
 
 type PageProps = {
     session: Session
+    dotAppRedirect?: boolean
     serverRendered?: boolean
 }
 
@@ -33,7 +35,11 @@ const title = "RaidHub"
 const description =
     "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
 
-function RaidHub({ Component, pageProps: { session, ...pageProps }, router }: AppProps<PageProps>) {
+const RaidHub = ({
+    Component,
+    pageProps: { session, ...pageProps },
+    router
+}: AppProps<PageProps>) => {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
     const [isFooterVisible, setIsFooterVisible] = useState(false)
 
@@ -96,6 +102,7 @@ function RaidHub({ Component, pageProps: { session, ...pageProps }, router }: Ap
                                     showOnShallow={false}
                                     color={"orange"}
                                 />
+                                <HeaderBanner />
                                 <SearchModal />
                                 <Component {...pageProps} />
                                 <Toolbox isFooterVisible={isFooterVisible} />
@@ -108,5 +115,4 @@ function RaidHub({ Component, pageProps: { session, ...pageProps }, router }: Ap
         </LocaleManager>
     )
 }
-
 export default trpc.withTRPC(RaidHub)

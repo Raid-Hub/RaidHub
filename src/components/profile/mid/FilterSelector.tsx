@@ -67,14 +67,11 @@ interface FilterModalProps {
 }
 const FilterModal = forwardRef<HTMLDialogElement, FilterModalProps>((props, ref) => {
     const { strings } = useLocale()
-    const { value: selectedFilter, save: setSelectedFilter } = useLocalStorage<
-        FilterListName | string
-    >("selected-filter-name", FilterListName.Default)
-    const { save: saveFilters, value: savedFilters } = useLocalStorage(
-        "saved-filters",
-        defaultSavedFilters
+    const [selectedFilter, setSelectedFilter] = useLocalStorage<FilterListName | string>(
+        "selected-filter-name",
+        FilterListName.Default
     )
-
+    const [savedFilters, saveFilters] = useLocalStorage("saved-filters", defaultSavedFilters)
     const mySavedfilters = useMemo(
         () =>
             new Collection(

@@ -3,10 +3,7 @@ import { useEffect, useState } from "react"
 export const useLocalStorage = <V>(
     key: string,
     defaultValue: V
-): {
-    value: V
-    save: (value: V | ((old: V) => V)) => void
-} => {
+): [V, (value: V | ((old: V) => V)) => void] => {
     const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {
@@ -20,8 +17,5 @@ export const useLocalStorage = <V>(
         setValue(toSave)
     }
 
-    return {
-        value: _value,
-        save
-    }
+    return [_value, save]
 }

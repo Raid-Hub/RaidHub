@@ -38,10 +38,7 @@ const PGCR = ({ activityId }: { activityId: string }) => {
     const bungie = useBungieClient()
     const query = bungie.pgcr.useQuery({ activityId }, { staleTime: Infinity })
 
-    const { value: prefs, save: savePrefs } = useLocalStorage<PGCRSettings>(
-        "pgcr_prefs",
-        defaultPrefs
-    )
+    const [prefs, savePrefs] = useLocalStorage<PGCRSettings>("pgcr_prefs", defaultPrefs)
 
     const summaryCardRef = createRef<HTMLElement>()
 

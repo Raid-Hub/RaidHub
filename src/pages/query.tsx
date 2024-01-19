@@ -93,7 +93,7 @@ function SqlInputBoxArea(props: {
     handleQuery: (query: string) => void
     handleExplain: (query: string) => void
 }) {
-    const { value: queryText, save: setQueryText } = useLocalStorage("admin-query-text", "SELECT 1")
+    const [queryText, setQueryText] = useLocalStorage("admin-query-text", "SELECT 1")
 
     const handleSubmit: MouseEventHandler<HTMLButtonElement> = event => {
         event.preventDefault()

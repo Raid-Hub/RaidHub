@@ -28,10 +28,7 @@ const InpsectionPage: NextPage<{}> = () => {
                 .parse(query)
     })
 
-    const { save: setExpanded, value: isExpanded } = useLocalStorage<boolean>(
-        "expanded-inspect",
-        false
-    )
+    const [isExpanded, setExpanded] = useLocalStorage<boolean>("expanded-inspect", false)
 
     function addMember(membershipId: string, isFireteamIncluded: boolean) {
         if (!isReady) return

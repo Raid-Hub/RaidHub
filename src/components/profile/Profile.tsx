@@ -85,7 +85,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
     const pinnedActivityId = raidHubProfile?.pinnedActivityId ?? mostRecentActivity
 
     // LAYOUT
-    const { value: layout, save: setLayout } = useLocalStorage("profile-layout", Layout.DotCharts)
+    const [layout, setLayout] = useLocalStorage("profile-layout", Layout.DotCharts)
 
     const handleLayoutToggle = (buttonState: boolean) => {
         const newState = buttonState ? Layout.RecentActivities : Layout.DotCharts
