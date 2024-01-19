@@ -9,7 +9,7 @@ const nextConfig = {
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         APP_ENV: process.env.APP_ENV,
-        RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.app",
+        RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.io",
         RAIDHUB_API_KEY:
             process.env.RAIDHUB_API_KEY ??
             Array(32)
@@ -22,7 +22,7 @@ const nextConfig = {
             /** Only optimize images from our cdn */
             {
                 protocol: "https",
-                hostname: "cdn.raidhub.app",
+                hostname: "cdn.raidhub.io",
                 pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
             }
         ]

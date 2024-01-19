@@ -3,7 +3,7 @@
 if [ -n "$1" ]; then
     namespace="$1"
 
-    read -p "Deploy to $namespace.raidhub.app (y/n)? " CONT
+    read -p "Deploy to $namespace.raidhub.io (y/n)? " CONT
     if [ "$CONT" != "y" ]; then
         exit 1
     fi
@@ -38,10 +38,10 @@ if [ -z $namespace ]; then
     eval $vercel_deploy_command
 else 
     export NAMESPACE=$namespace
-    vercel_deploy_command+=" -e NEXTAUTH_URL=https://$namespace.raidhub.app"
+    vercel_deploy_command+=" -e NEXTAUTH_URL=https://$namespace.raidhub.io"
 
     eval $vercel_build_command
     url="$(eval $vercel_deploy_command)"
 
-    vercel alias set $url $namespace.raidhub.app --scope "raid-hub" --token=$token
+    vercel alias set $url $namespace.raidhub.io --scope "raid-hub" --token=$token
 fi

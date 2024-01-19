@@ -105,8 +105,8 @@ export function RaidHubTable<T extends string[]>({
                     </table>
                     <div className={styles["attribution"]}>
                         Source:{" "}
-                        <Link href="https://raidhub.app" className={styles["link"]}>
-                            raidhub.app
+                        <Link href="https://raidhub.io" className={styles["link"]}>
+                            raidhub.io
                         </Link>
                     </div>
                 </div>

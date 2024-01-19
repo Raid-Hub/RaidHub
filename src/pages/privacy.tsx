@@ -14,7 +14,7 @@ const PrivacyPage: NextPage = () => {
                 <h4>
                     Effective date:{" "}
                     <span className={styles["effective-date"]}>
-                        {new Date("December 28, 2023 12:46 PM EST").toLocaleDateString(undefined, {
+                        {new Date("January 19, 2024 3:24 PM EST").toLocaleDateString(undefined, {
                             year: "numeric",
                             month: "long",
                             day: "numeric"
@@ -23,11 +23,10 @@ const PrivacyPage: NextPage = () => {
                 </h4>
                 <section className={styles["section"]}>
                     <p>
-                        This Privacy Policy governs the manner in which raidhub.app collects, uses,
+                        This Privacy Policy governs the manner in which raidhub.io collects, uses,
                         maintains and discloses information collected from users (each, a
-                        &quot;User&quot;) of the raidhub.app website (&quot;Site&quot;). This
-                        privacy policy applies to the Site and all products and services offered by
-                        RaidHub.
+                        &quot;User&quot;) of the raidhub.io website (&quot;Site&quot;). This privacy
+                        policy applies to the Site and all products and services offered by RaidHub.
                     </p>
                     <h2>Third party websites</h2>
                     <p>
@@ -133,8 +132,8 @@ const PrivacyPage: NextPage = () => {
                         will be deemed your acceptance of those changes.
                     </p>
                     <p>
-                        raidhub.app (the &quot;Site&quot;) is owned and operated by RaidHub. RaidHub
-                        can be contacted at: admin@raidhub.app
+                        raidhub.io (the &quot;Site&quot;) is owned and operated by RaidHub. RaidHub
+                        can be contacted at: admin@raidhub.io
                     </p>
                 </section>
             </main>

@@ -1,6 +1,6 @@
 #!/bin/bash
 if [[ -n $NAMESPACE ]] ; then 
-  echo "Deploying local build to preview: $NAMESPACE.raidhub.app..."
+  echo "Deploying local build to preview: $NAMESPACE.raidhub.io..."
 
   yarn prisma generate
   yarn prisma db push --force-reset --skip-generate

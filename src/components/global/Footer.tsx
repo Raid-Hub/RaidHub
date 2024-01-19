@@ -25,7 +25,7 @@ const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
         Icon: TwitterIcon
     },
     {
-        url: `mailto:admin@raidhub.app`,
+        url: `mailto:admin@raidhub.io`,
         Icon: Email
     }
 ]

@@ -42,7 +42,7 @@ jobs:
               working-directory: ./
               run: |
                   git config --global credential.helper store
-                  git config --global user.email "github-actions@raidhub.app"
+                  git config --global user.email "github-actions@raidhub.io"
                   git config --global user.name "GitHub Actions"
 
             - name: Clone Repo

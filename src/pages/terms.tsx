@@ -13,7 +13,7 @@ const TosPage: NextPage = () => {
                 <h4>
                     Effective date:{" "}
                     <span className={styles["effective-date"]}>
-                        {new Date("December 28, 2023 12:46 PM EST").toLocaleDateString(undefined, {
+                        {new Date("January 19, 2024 3:24 PM EST").toLocaleDateString(undefined, {
                             year: "numeric",
                             month: "long",
                             day: "numeric"
@@ -23,8 +23,8 @@ const TosPage: NextPage = () => {
                 <section className={styles["section"]}>
                     <p>
                         These terms and conditions (the &quot;Terms and Conditions&quot;) govern the
-                        use of raidhub.app (the &quot;Site&quot;). This Site is owned and operated
-                        by RaidHub. This Site is a data compilation service.
+                        use of raidhub.io (the &quot;Site&quot;). This Site is owned and operated by
+                        RaidHub. This Site is a data compilation service.
                     </p>
                     <p>
                         By using this Site, you indicate that you have read and understand these
@@ -199,7 +199,7 @@ const TosPage: NextPage = () => {
                     </p>
                     <h2>Contact Details</h2>
                     Please contact us if you have any questions or concerns. Our contact details are
-                    as follows: admin@raidhub.app
+                    as follows: admin@raidhub.io
                 </section>
             </main>
         </>

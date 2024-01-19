@@ -33,7 +33,7 @@ const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
         cloudflareVariants[cloudflareVariants.length - 1]
     ).name
 
-    return `https://cdn.raidhub.app/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/${src}/${variant}`
+    return `https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/${src}/${variant}`
 }
 
 export default function CloudflareImage({

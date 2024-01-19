@@ -34,7 +34,7 @@ jobs:
             BUNGIE_API_KEY: ${{ secrets.STAGING_BUNGIE_API_KEY }}
             BUNGIE_CLIENT_ID: ${{ secrets.STAGING_BUNGIE_CLIENT_ID }}
             BUNGIE_CLIENT_SECRET: ${{ secrets.STAGING_BUNGIE_CLIENT_SECRET }}
-            NEXTAUTH_URL: "https://staging.raidhub.app"
+            NEXTAUTH_URL: "https://staging.raidhub.io"
             APP_ENV: "staging"
         steps:
             - name: Checkout
@@ -64,4 +64,4 @@ jobs:
               run: echo "URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --prebuilt -e DATABASE_URL=${{ env.DATABASE_URL }})" >> $GITHUB_ENV
 
             - name: Set Alias
-              run: vercel alias set $URL staging.raidhub.app --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }}
+              run: vercel alias set $URL staging.raidhub.io --scope "raid-hub" --token=${{ secrets.VERCEL_TOKEN }}
