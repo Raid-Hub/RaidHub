@@ -37,21 +37,21 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             setRefetchInterval(0)
             signOut()
-        } else if (sessionData?.user.bungieAccessToken) {
+        } else if (sessionData?.bungieAccessToken) {
             setFailedTokenRequests(0)
-            setAccessToken(sessionData.user.bungieAccessToken.value)
-            const timeRemaining = sessionData.user.bungieAccessToken.expires - Date.now()
+            setAccessToken(sessionData.bungieAccessToken.value)
+            const timeRemaining =
+                // expired is an ISO string, not a date
+                new Date(sessionData.bungieAccessToken.expires).getTime() - Date.now()
             setRefetchInterval(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
 
-    useEffect(() => {
-        if (accessToken) {
-            bungie.setToken(accessToken)
-        } else {
-            bungie.clearToken()
-        }
-    }, [bungie, accessToken])
+    if (accessToken) {
+        bungie.setToken(accessToken)
+    } else {
+        bungie.clearToken()
+    }
 
     return <BungieClientContext.Provider value={bungie}>{children}</BungieClientContext.Provider>
 }
