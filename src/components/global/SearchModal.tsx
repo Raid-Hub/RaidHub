@@ -94,7 +94,9 @@ const SearchModal = ({}: SearchModalProps) => {
                             />
                         </form>
                         <div className={styles["search-loading-indicator"]}>
-                            {(isRedirecting || isLoadingResults) && <Loader stroke={2} />}
+                            {(isRedirecting || isLoadingResults) && (
+                                <Loader stroke={2} size="100%" />
+                            )}
                         </div>
                     </div>
                     <hr />

@@ -46,6 +46,7 @@ export function useSearchParams<T extends { [key: string]: any }>({
             player: searchParams.current.get("player"),
             page: searchParams.current.get("page")
         })
+        // @ts-ignore - typescript doesn't know that value exists
         searchParams.current.delete(key, value)
         push()
     }

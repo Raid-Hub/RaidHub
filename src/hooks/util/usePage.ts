@@ -40,7 +40,7 @@ export const usePage = (keep?: readonly string[]) => {
                 }
             )
         },
-        [router]
+        [router, keep]
     )
 
     const handleForwards = () => {

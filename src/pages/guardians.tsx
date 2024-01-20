@@ -14,7 +14,7 @@ const InpsectionPage: NextPage<{}> = () => {
         isReady,
         append,
         remove,
-        query: membershipIds
+        query: memberships
     } = useSearchParams({
         decoder: query =>
             z
@@ -24,9 +24,9 @@ const InpsectionPage: NextPage<{}> = () => {
                         z.array(numberString).default([])
                     ])
                 })
-                .transform(q => new Set(q.membershipId))
                 .parse(query)
     })
+    const membershipIds = new Set(memberships?.membershipId)
 
     const [isExpanded, setExpanded] = useLocalStorage<boolean>("expanded-inspect", false)
 

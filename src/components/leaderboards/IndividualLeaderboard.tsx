@@ -20,7 +20,6 @@ import {
     searchLeaderboardPlayerQueryKey
 } from "~/services/raidhub/searchLeaderboard"
 import { useRouter } from "next/router"
-import { useState } from "react"
 
 const ENTRIES_PER_PAGE = 50
 

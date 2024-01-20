@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
+import { Hydrate, dehydrate, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
-import LeaderboardComponent from "~/components/leaderboards/Leaderboard"
+import LeaderboardComponent, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { toCustomDateString } from "~/util/presentation/formatting"
 import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
@@ -11,6 +11,10 @@ import { zRaidURIComponent } from "~/util/zod"
 import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
+import {
+    searchLeaderboardPlayer,
+    searchLeaderboardPlayerQueryKey
+} from "~/services/raidhub/searchLeaderboard"
 
 type WorldsFirstLeaderboadProps = {
     raid: ListedRaid
@@ -82,7 +86,7 @@ export default function WorldsFirstLeaderboadPage({
 
 const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const { strings, locale } = useLocale()
-    const { page, handleBackwards, handleForwards } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage()
     const raidName = strings.raidNames[raid]
     const params = [
         (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid) ? "challenge" : "normal"
@@ -90,6 +94,33 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
         queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
+    })
+
+    const queryClient = useQueryClient()
+
+    const searchParams = {
+        type: "worldfirst",
+        raid,
+        board: Leaderboard.WorldFirst,
+        params
+    } as const
+
+    const searchQueryParams = {
+        page,
+        count: ENTRIES_PER_PAGE
+    }
+
+    const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
+        mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
+        mutationFn: (membershipId: string) =>
+            searchLeaderboardPlayer(searchParams, searchQueryParams, membershipId),
+        onSuccess(result) {
+            setPage(result.page)
+            queryClient.setQueryData(
+                leaderboardQueryKey(raid, Leaderboard.WorldFirst, [], result.page),
+                result.entries
+            )
+        }
     })
 
     const title = `${raidName} | World First Leaderboards`
@@ -112,7 +143,9 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
                 page={page}
                 handleBackwards={handleBackwards}
                 handleForwards={handleForwards}
-                refresh={query.refetch}>
+                refresh={query.refetch}
+                searchForPlayer={searchForLeaderboardPlayer}
+                isLoadingSearch={isLoadingSearch}>
                 <WorldFirstHeader
                     title={"World First " + raidName}
                     subtitle={raidDate}

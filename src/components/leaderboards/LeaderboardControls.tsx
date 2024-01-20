@@ -56,72 +56,74 @@ export const Controls = ({
     } = useRaidHubSearch()
     return (
         <div className={styles["leaderboard-controls"]}>
-            <form
-                onSubmit={handleFormEnter}
-                style={{ position: "relative" }}
-                ref={searchRef}
-                onClick={() => setIsShowingResults(true)}>
-                <div style={{ display: "flex", gap: "1em", marginRight: "0.5em" }}>
-                    {isLoadingSearch && <Loader stroke={3.5} size="30px" />}
-                    <input
-                        style={{ height: "30px" }}
-                        type="text"
-                        value={enteredText}
-                        placeholder="Search the leaderboards"
-                        onChange={handleInputChange}
-                    />
-                </div>
-                {!!results.length && isShowingResults && isReady && (
-                    <div className={styles["search-results"]}>
-                        {results.map((result, idx) => {
-                            let username = result.displayName
-                            try {
-                                const b = new BungieName(
-                                    result.bungieGlobalDisplayName,
-                                    result.bungieGlobalDisplayNameCode
-                                )
-                                username = b.toString()
-                            } catch {}
-                            return (
-                                <div
-                                    key={idx}
-                                    onClick={() => {
-                                        setParam("player", result.membershipId)
-                                        searchFn?.(result.membershipId)
-                                        clearQuery()
-                                    }}
-                                    style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        gap: "0.5em",
-                                        alignItems: "center",
-                                        padding: "1em 1em"
-                                    }}>
-                                    <div
-                                        style={{
-                                            width: "50px",
-                                            height: "50px",
-                                            position: "relative"
-                                        }}>
-                                        <Image
-                                            src={bungieIconUrl(result.iconPath)}
-                                            unoptimized
-                                            fill
-                                            alt={""}
-                                        />
-                                    </div>
-                                    <span
-                                        style={{
-                                            marginLeft: "0.5em"
-                                        }}>
-                                        {username}
-                                    </span>
-                                </div>
-                            )
-                        })}
+            {searchFn && (
+                <form
+                    onSubmit={handleFormEnter}
+                    style={{ position: "relative" }}
+                    ref={searchRef}
+                    onClick={() => setIsShowingResults(true)}>
+                    <div style={{ display: "flex", gap: "1em", marginRight: "0.5em" }}>
+                        {isLoadingSearch && <Loader stroke={3.5} size="30px" />}
+                        <input
+                            style={{ height: "30px" }}
+                            type="text"
+                            value={enteredText}
+                            placeholder="Search the leaderboards"
+                            onChange={handleInputChange}
+                        />
                     </div>
-                )}
-            </form>
+                    {!!results.length && isShowingResults && isReady && (
+                        <div className={styles["search-results"]}>
+                            {results.map((result, idx) => {
+                                let username = result.displayName
+                                try {
+                                    const b = new BungieName(
+                                        result.bungieGlobalDisplayName,
+                                        result.bungieGlobalDisplayNameCode
+                                    )
+                                    username = b.toString()
+                                } catch {}
+                                return (
+                                    <div
+                                        key={idx}
+                                        onClick={() => {
+                                            setParam("player", result.membershipId)
+                                            searchFn(result.membershipId)
+                                            clearQuery()
+                                        }}
+                                        style={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: "0.5em",
+                                            alignItems: "center",
+                                            padding: "1em 1em"
+                                        }}>
+                                        <div
+                                            style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                position: "relative"
+                                            }}>
+                                            <Image
+                                                src={bungieIconUrl(result.iconPath)}
+                                                unoptimized
+                                                fill
+                                                alt={""}
+                                            />
+                                        </div>
+                                        <span
+                                            style={{
+                                                marginLeft: "0.5em"
+                                            }}>
+                                            {username}
+                                        </span>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </form>
+            )}
             <ReloadArrow
                 color="white"
                 sx={25}

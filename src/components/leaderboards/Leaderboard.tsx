@@ -13,6 +13,9 @@ type LeaderboardProps = {
     handleBackwards: () => void
     handleForwards: () => void
     children: ReactNode
+} & {
+    searchForPlayer?: (membershipId: string) => void
+    isLoadingSearch?: boolean
 }
 
 export const ENTRIES_PER_PAGE = 50
@@ -24,6 +27,8 @@ const Leaderboard = ({
     refresh,
     handleBackwards,
     handleForwards,
+    isLoadingSearch,
+    searchForPlayer,
     children
 }: LeaderboardProps) => {
     return (
@@ -37,16 +42,21 @@ const Leaderboard = ({
                 refresh={refresh}
                 handleBackwards={handleBackwards}
                 handleForwards={handleForwards}
+                searchFn={searchForPlayer}
             />
             <section className={styles["leaderboard-container"]}>
-                {!isLoading
-                    ? entries.map(e => <LeaderboardEntryComponent entry={e} key={e.id} />)
-                    : new Array(ENTRIES_PER_PAGE)
-                          .fill(null)
-                          .map((_, idx) => (
-                              <Loading key={idx} className={styles["leaderboard-entry-loading"]} />
-                          ))}
-                {entries.length > 20 && (
+                {isLoadingSearch ? (
+                    <div>Searching...</div>
+                ) : !isLoading ? (
+                    entries.map(e => <LeaderboardEntryComponent entry={e} key={e.id} />)
+                ) : (
+                    new Array(ENTRIES_PER_PAGE)
+                        .fill(null)
+                        .map((_, idx) => (
+                            <Loading key={idx} className={styles["leaderboard-entry-loading"]} />
+                        ))
+                )}
+                {!isLoadingSearch && entries.length > 20 && (
                     <Controls
                         entriesLength={entries.length}
                         entriesPerPage={ENTRIES_PER_PAGE}
