@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { useCallback, useMemo } from "react"
 
-export const usePage = () => {
+export const usePage = (keep?: readonly string[]) => {
     const router = useRouter()
     const page = useMemo(() => {
         const queryPage = router.query.page
@@ -12,12 +12,25 @@ export const usePage = () => {
             return 1
         }
     }, [router.query])
+
     const setPage = useCallback(
         (page: number) => {
+            const necessaryQueryParams = new Set<string>([
+                ...router.pathname
+                    .split("/")
+                    .map(s => s.match(/\[([^[\]]+)]/)?.[0].substring(1, s.length - 1))
+                    .filter((s): s is string => !!s),
+                ...(keep ?? [])
+            ])
+
+            const keepers = Object.fromEntries(
+                Object.entries(router.query).filter(([key, _]) => necessaryQueryParams.has(key))
+            )
+
             router.push(
                 {
                     query: {
-                        ...router.query,
+                        ...keepers,
                         page
                     }
                 },
@@ -38,5 +51,5 @@ export const usePage = () => {
         setPage(page > 1 ? page - 1 : page)
     }
 
-    return { page, handleForwards, handleBackwards }
+    return { page, handleForwards, handleBackwards, setPage }
 }

@@ -21,6 +21,8 @@
     min-width: min-content;
 
     gap: 1em;
+
+    min-height: 300px;
 }
 .leaderboard-divider {
     margin: 1em;
@@ -415,4 +417,22 @@
     .header-h3 {
         font-size: 1.5rem;
     }
+}
+
+.search-results {
+    position: absolute;
+    width: 300px;
+    right: -40px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--modal-background-opaque);
+
+    max-height: 600px;
+    overflow: scroll;
+}
+
+.search-results > *:hover {
+    cursor: pointer;
+    background-color: var(--brand-orange-light);
 }

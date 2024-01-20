@@ -96,10 +96,10 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
 ) {
     // we prefetch the first page at build time
     await Promise.all(
-        new Array(pages).fill(undefined).map((_, idx) =>
+        new Array(pages).fill(undefined).map((_, page) =>
             queryClient.prefetchQuery(
-                leaderboardQueryKey(raid, board, params, idx),
-                () => getLeaderboard(raid, board, params, idx),
+                leaderboardQueryKey(raid, board, params, page + 1),
+                () => getLeaderboard(raid, board, params, page + 1),
                 {
                     staleTime: 2 * 60000 // 2 minutes
                 }
@@ -118,7 +118,7 @@ export async function prefetchIndividualLeaderboard<R extends ListedRaid | "glob
     await Promise.all(
         new Array(pages).fill(undefined).map((_, page) =>
             queryClient.prefetchQuery(
-                leaderboardQueryKey(raid, board, [], page),
+                leaderboardQueryKey(raid, board, [], page + 1),
                 () =>
                     raid === "global"
                         ? getIndividualGlobalLeaderboard(
@@ -126,9 +126,9 @@ export async function prefetchIndividualLeaderboard<R extends ListedRaid | "glob
                                   | Leaderboard.Clears
                                   | Leaderboard.FullClears
                                   | Leaderboard.Sherpa,
-                              page
+                              page + 1
                           )
-                        : getIndividualLeaderboard(raid, board, page),
+                        : getIndividualLeaderboard(raid, board, page + 1),
                 {
                     staleTime: 2 * 60000 // 2 minutes
                 }

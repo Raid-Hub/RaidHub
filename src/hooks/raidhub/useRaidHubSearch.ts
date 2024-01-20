@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
-import { searchRaidHubUser } from "~/services/raidhub/search"
 import { RaidHubSearchResult } from "~/types/raidhub-api"
 import { useRouter } from "next/router"
+import { searchRaidHubUser } from "~/services/raidhub/search"
 
 const DEBOUNCE = 250
 
@@ -39,6 +39,7 @@ export function useRaidHubSearch(props?: { onRedirect?: (result: RaidHubSearchRe
                     setResults([])
                     return
                 }
+                setLoading(true)
                 const results = await searchRaidHubUser(query, client)
                 if (lastSearch.current === currentSearch) {
                     setResults(results)

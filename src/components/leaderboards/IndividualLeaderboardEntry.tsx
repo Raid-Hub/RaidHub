@@ -12,6 +12,7 @@ export const IndividualLeaderboardEntryComponent = ({
     entry
 }: {
     entry: IndividualLeaderboardEntry
+    isSearched?: boolean
 }) => {
     const [icon, setIcon] = useState(entry.iconURL ?? defautlIcon)
     const { locale } = useLocale()

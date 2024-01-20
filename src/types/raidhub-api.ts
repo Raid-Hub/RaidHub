@@ -191,3 +191,11 @@ export type RaidHubManifest = {
         individual: Record<ListedRaid, { category: string; name: string }[]>
     }
 }
+
+export type RaidHubLeaderboardSearchResult = {
+    page: number
+    position: number
+    entries:
+        | RaidHubIndividualLeaderboardResponse["entries"]
+        | RaidHubActivityLeaderboardResponse["entries"]
+}

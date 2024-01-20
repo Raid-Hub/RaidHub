@@ -67,7 +67,8 @@ export const IndividualLeaderboadGlobal = ({
                         ? query.data.map(e => (
                               <IndividualLeaderboardEntryComponent
                                   entry={{
-                                      displayName: e.player.bungieGlobalDisplayName,
+                                      displayName:
+                                          e.player.bungieGlobalDisplayName || e.player.displayName,
                                       iconURL: bungieIconUrl(e.player.iconPath),
                                       id: e.player.membershipId,
                                       rank: e.rank,
