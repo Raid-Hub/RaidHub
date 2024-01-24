@@ -85,8 +85,13 @@ export type RaidHubPlayerResponse = {
 }
 
 export type RaidHubActivitiesResponse = {
-    activities: (RaidHubActivityExtended & {
+    activities: (Omit<RaidHubActivityExtended, "raidHash"> & {
         player: RaidHubActivityPlayerData
+        raid: {
+            versionId: Difficulty
+            raidId: ListedRaid
+            raidHash: string
+        }
     })[]
     nextCursor: string
 }

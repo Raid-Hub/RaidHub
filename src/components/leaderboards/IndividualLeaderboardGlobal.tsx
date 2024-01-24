@@ -18,8 +18,7 @@ import {
     searchLeaderboardPlayerQueryKey
 } from "~/services/raidhub/searchLeaderboard"
 import { useRouter } from "next/router"
-
-const ENTRIES_PER_PAGE = 25
+import { ENTRIES_PER_PAGE } from "./Leaderboard"
 
 export const IndividualLeaderboadGlobal = ({
     board,

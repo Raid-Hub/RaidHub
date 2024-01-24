@@ -1,6 +1,7 @@
 import { dehydrate } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticProps } from "next"
 import { IndividualLeaderboadProps } from "~/components/leaderboards/IndividualLeaderboard"
+import { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
 import {
     createServerSideQueryClient,
     prefetchIndividualLeaderboard
@@ -49,7 +50,8 @@ export const createGetStaticProps =
                 {
                     raid: raid,
                     board: leaderboard,
-                    pages: 1
+                    pages: 1,
+                    count: ENTRIES_PER_PAGE
                 },
                 queryClient
             )
@@ -81,7 +83,8 @@ export const createGlobalGetStaticProps =
                 {
                     raid: "global",
                     board: leaderboard,
-                    pages: 1
+                    pages: 1,
+                    count: ENTRIES_PER_PAGE
                 },
                 queryClient
             )

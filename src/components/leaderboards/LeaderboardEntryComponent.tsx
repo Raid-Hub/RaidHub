@@ -1,13 +1,13 @@
 import styles from "../../styles/pages/leaderboards.module.css"
 import LeaderboardEntryUser from "./LeaderboardEntryPlayer"
-import { secondsToHMS } from "../../util/presentation/formatting"
+import { secondsToHMS, truncatedNumber } from "../../util/presentation/formatting"
 import Link from "next/link"
 import { LeaderboardEntry } from "../../types/leaderboards"
 
 const LeaderboardEntryComponent = ({ entry }: { entry: LeaderboardEntry }) => {
     return (
         <div className={styles["leaderboard-entry"]}>
-            <p className={styles["leaderboard-entry-rank"]}>{entry.rank}</p>
+            <p className={styles["leaderboard-entry-rank"]}>{truncatedNumber(entry.rank)}</p>
             <Link
                 href={entry.url}
                 className={styles["entry-time-mobile"]}

@@ -2,9 +2,7 @@ import styles from "./find.module.css"
 import { Collection } from "@discordjs/collection"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
-import Activity from "~/models/profile/data/Activity"
 import { activitySearch, activitySearchQuerySchema } from "~/services/raidhub/searchActivities"
-import ActivityTile from "../profile/raids/ActivityTile"
 import { useEffect, useMemo, useRef } from "react"
 import {
     Control,
@@ -16,7 +14,7 @@ import {
     useForm
 } from "react-hook-form"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import { RaidHubSearchResult } from "~/types/raidhub-api"
+import { RaidHubActivityExtended, RaidHubSearchResult } from "~/types/raidhub-api"
 import UserName from "../profile/user/UserName"
 import Image from "next/image"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
@@ -27,6 +25,11 @@ import ErrorComponent from "../global/Error"
 import CustomError, { ErrorCode } from "~/models/errors/CustomError"
 import Loading from "../global/Loading"
 import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
+import Link from "next/link"
+import CloudflareImage from "~/images/CloudflareImage"
+import RaidCardBackground from "~/images/raid-backgrounds"
+import { raidTupleFromHash } from "~/util/destiny/raidUtils"
+import { secondsToHMS } from "~/util/presentation/formatting"
 
 interface ActivitySearchFormState {
     flawless: -1 | 0 | 1
@@ -140,7 +143,7 @@ export default function Find({
         data,
         isError,
         error
-    } = useMutation<Collection<string, Activity>, Error, URLSearchParams>({
+    } = useMutation<Collection<string, RaidHubActivityExtended>, Error, URLSearchParams>({
         mutationFn: params => activitySearch(params.toString())
     })
 
@@ -435,16 +438,21 @@ function RaidPicker<T extends FieldValues>({
     )
 }
 
-const Results = ({ allResults }: { allResults: Collection<string, Activity> }) => {
+const Results = ({ allResults }: { allResults: Collection<string, RaidHubActivityExtended> }) => {
     const scrollTargetRef = useRef<HTMLDivElement>(null)
     const results = useMemo(() => {
-        const partioned = new Collection<string, Collection<string, Activity>>()
+        const partioned = new Collection<string, Collection<string, RaidHubActivityExtended>>()
         allResults.forEach(a => {
-            const key = `${a.dateCompleted.getMonth()}-${a.dateCompleted.getFullYear()}`
+            const key = `${new Date(a.dateCompleted).getMonth()}-${new Date(
+                a.dateCompleted
+            ).getFullYear()}`
             if (partioned.has(key)) {
-                partioned.get(key)!.set(a.activityId, a)
+                partioned.get(key)!.set(a.instanceId, a)
             } else {
-                partioned.set(key, new Collection<string, Activity>([[a.activityId, a]]))
+                partioned.set(
+                    key,
+                    new Collection<string, RaidHubActivityExtended>([[a.instanceId, a]])
+                )
             }
         })
         return partioned
@@ -461,26 +469,62 @@ const Results = ({ allResults }: { allResults: Collection<string, Activity> }) =
             <h2>Search Results</h2>
             {!!results.size ? (
                 <div>
-                    {results.map((p, k) => (
-                        <div key={k}>
-                            <h3>
-                                {p.first()?.dateCompleted.toLocaleDateString(undefined, {
-                                    month: "long",
-                                    year: "numeric",
-                                    day: undefined
-                                })}
-                            </h3>
-                            <div className={styles["results-set"]}>
-                                {p.map(a => (
-                                    <ActivityTile activity={a} key={a.activityId} />
-                                ))}
+                    {results.map((p, k) => {
+                        const first = p.first()
+                        if (!first) return null
+                        const date = new Date(first.dateCompleted)
+                        return (
+                            <div key={k}>
+                                <h3>
+                                    {date.toLocaleDateString(undefined, {
+                                        month: "long",
+                                        year: "numeric",
+                                        day: undefined
+                                    })}
+                                </h3>
+                                <div className={styles["results-set"]}>
+                                    {p.map(a => (
+                                        <Tile activity={a} key={a.instanceId} />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             ) : (
                 <div>No raids found.</div>
             )}
         </section>
+    )
+}
+
+const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
+    const { strings, locale } = useLocale()
+    const [raid, _] = raidTupleFromHash(activity.raidHash)
+    const completed = new Date(activity.dateCompleted)
+    const started = new Date(activity.dateStarted)
+    return (
+        <Link
+            href={`/pgcr/${activity.instanceId}`}
+            className={styles["tile"]}
+            style={{ border: `1px solid ${activity.completed ? "Green" : "Red"}` }}>
+            <CloudflareImage
+                cloudflareId={RaidCardBackground[raid]}
+                alt={`Raid card for ${strings.raidNames[raid]}`}
+                fill
+                sizes="160px"
+            />
+            <div className={styles["tile-overlay"]}>
+                <div className={styles["tile-date"]}>
+                    {completed.toLocaleDateString(locale, {
+                        month: "long",
+                        day: "numeric"
+                    })}
+                </div>
+                <div className={styles["tile-time"]}>
+                    {secondsToHMS(Math.floor((completed.getTime() - started.getTime()) / 1000))}
+                </div>
+            </div>
+        </Link>
     )
 }

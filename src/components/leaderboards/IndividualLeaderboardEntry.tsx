@@ -2,7 +2,7 @@ import styles from "~/styles/pages/leaderboards.module.css"
 import { useEffect, useRef, useState } from "react"
 import { IndividualLeaderboardEntry } from "~/types/leaderboards"
 import Link from "next/link"
-import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
+import { formattedNumber, secondsToHMS, truncatedNumber } from "~/util/presentation/formatting"
 import Image from "next/image"
 import { useLocale } from "../app/LocaleManager"
 
@@ -20,8 +20,6 @@ export const IndividualLeaderboardEntryComponent = ({
     const [icon, setIcon] = useState(entry.iconURL ?? defautlIcon)
     const { locale } = useLocale()
     const scrollTargetRef = useRef<HTMLDivElement>(null)
-
-    console.log(isSearched)
 
     useEffect(() => {
         if (scrollTargetRef.current) {
@@ -45,7 +43,9 @@ export const IndividualLeaderboardEntryComponent = ({
                       }
                     : {}
             }>
-            <div className={styles["individual-leaderboard-entry-rank"]}>{entry.rank}</div>
+            <div className={styles["individual-leaderboard-entry-rank"]}>
+                {truncatedNumber(entry.rank)}
+            </div>
             <div className={styles["individual-user-icon-container"]}>
                 <Image
                     unoptimized

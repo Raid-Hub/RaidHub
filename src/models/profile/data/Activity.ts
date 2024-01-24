@@ -31,7 +31,7 @@ export default class Activity {
         this.dateCompleted = new Date(data.dateCompleted)
         this.dayOne = data.dayOne
         this.contest = data.contest
-        ;[this.raid, this.difficulty] = raidTupleFromHash(data.raidHash)
+        ;[this.raid, this.difficulty] = raidTupleFromHash(data.raid.raidHash)
         this.player = data.player
 
         this.durationSeconds = Math.floor(

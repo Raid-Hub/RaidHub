@@ -36,7 +36,8 @@ export function HeaderBanner() {
                     top: 7,
                     right: 7,
                     background: "#FFFFFF11",
-                    border: "none"
+                    border: "none",
+                    cursor: "pointer"
                 }}>
                 X
             </button>

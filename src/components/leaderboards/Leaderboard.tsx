@@ -5,20 +5,7 @@ import Loading from "../global/Loading"
 import { LeaderboardEntry } from "~/types/leaderboards"
 import { Controls } from "./LeaderboardControls"
 
-type LeaderboardProps = {
-    entries: LeaderboardEntry[]
-    isLoading: boolean
-    page: number
-    refresh: () => void
-    handleBackwards: () => void
-    handleForwards: () => void
-    children: ReactNode
-} & {
-    searchForPlayer?: (membershipId: string) => void
-    isLoadingSearch?: boolean
-}
-
-export const ENTRIES_PER_PAGE = 50
+export const ENTRIES_PER_PAGE = 25
 
 const Leaderboard = ({
     entries,
@@ -30,7 +17,18 @@ const Leaderboard = ({
     isLoadingSearch,
     searchForPlayer,
     children
-}: LeaderboardProps) => {
+}: {
+    entries: LeaderboardEntry[]
+    isLoading: boolean
+    page: number
+    refresh: () => void
+    handleBackwards: () => void
+    handleForwards: () => void
+    children: ReactNode
+} & {
+    searchForPlayer?: (membershipId: string) => void
+    isLoadingSearch?: boolean
+}) => {
     return (
         <main className={styles["main"]}>
             <section>{children}</section>
