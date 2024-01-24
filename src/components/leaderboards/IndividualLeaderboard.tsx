@@ -21,7 +21,7 @@ import {
 } from "~/services/raidhub/searchLeaderboard"
 import { useRouter } from "next/router"
 
-const ENTRIES_PER_PAGE = 50
+const ENTRIES_PER_PAGE = 25
 
 export type IndividualLeaderboadProps = {
     raid: ListedRaid
@@ -36,7 +36,7 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
     const boardName = strings.individualLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, board, [], page),
-        queryFn: () => getIndividualLeaderboard(raid, board, page)
+        queryFn: () => getIndividualLeaderboard(raid, board, page, ENTRIES_PER_PAGE)
     })
     const title = `${raidName} | ${boardName} Leaderboards`
     const description = `${boardName} Leaderboards for ${raidName}`

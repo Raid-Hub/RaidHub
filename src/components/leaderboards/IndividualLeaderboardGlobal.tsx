@@ -19,7 +19,7 @@ import {
 } from "~/services/raidhub/searchLeaderboard"
 import { useRouter } from "next/router"
 
-const ENTRIES_PER_PAGE = 50
+const ENTRIES_PER_PAGE = 25
 
 export const IndividualLeaderboadGlobal = ({
     board,
@@ -33,7 +33,7 @@ export const IndividualLeaderboadGlobal = ({
     const boardName = strings.globalLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey("global", board, [], page),
-        queryFn: () => getIndividualGlobalLeaderboard(board, page)
+        queryFn: () => getIndividualGlobalLeaderboard(board, page, ENTRIES_PER_PAGE)
     })
 
     const queryClient = useQueryClient()

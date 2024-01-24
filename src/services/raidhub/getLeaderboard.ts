@@ -77,12 +77,17 @@ export async function getLeaderboard(
     }
 }
 
-export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderboard, page: number) {
+export async function getIndividualLeaderboard(
+    raid: ListedRaid,
+    board: Leaderboard,
+    page: number,
+    count: number
+) {
     const url = new URL(
         getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/individual/${board}`
     )
     url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+    url.searchParams.append("count", String(count))
 
     const res = await fetch(url, { headers: createHeaders() })
 
@@ -99,11 +104,12 @@ export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderbo
 
 export async function getIndividualGlobalLeaderboard(
     board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun,
-    page: number
+    page: number,
+    count: number
 ) {
     const url = new URL(getRaidHubBaseUrl() + `/leaderboard/global/${board}`)
     url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+    url.searchParams.append("count", String(count))
 
     try {
         const res = await fetch(url, { headers: createHeaders() })
