@@ -138,7 +138,7 @@ function ResolvedPlayer({
             {children}
             {(isRefetchingProfile || isRefetchingTransitoryComponent) && (
                 <div className={styles["loader-container"]}>
-                    <Loader stroke={3} />
+                    <Loader stroke={3} size="100%" />
                 </div>
             )}
             {sockets && (

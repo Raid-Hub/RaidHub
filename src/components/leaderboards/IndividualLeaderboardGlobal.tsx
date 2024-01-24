@@ -7,30 +7,61 @@ import {
 import { useLocale } from "../app/LocaleManager"
 import { usePage } from "~/hooks/util/usePage"
 import Head from "next/head"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Controls } from "./LeaderboardControls"
 import Loading from "../global/Loading"
 import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
 import CloudflareImage from "~/images/CloudflareImage"
-
-const ENTRIES_PER_PAGE = 50
+import {
+    searchLeaderboardPlayer,
+    searchLeaderboardPlayerQueryKey
+} from "~/services/raidhub/searchLeaderboard"
+import { useRouter } from "next/router"
+import { ENTRIES_PER_PAGE } from "./Leaderboard"
 
 export const IndividualLeaderboadGlobal = ({
-    board
+    board,
+    valueType = "number"
 }: {
-    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun
+    valueType?: "number" | "duration"
 }) => {
     const { strings } = useLocale()
-    const { page, handleBackwards, handleForwards } = usePage()
-    const boardName = strings.individualLeaderboads[board]
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
+    const boardName = strings.globalLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey("global", board, [], page),
-        queryFn: () => getIndividualGlobalLeaderboard(board, page)
+        queryFn: () => getIndividualGlobalLeaderboard(board, page, ENTRIES_PER_PAGE)
     })
-    const manifest = useRaidHubManifest()
-    const title = `Total ${boardName} Leaderboards`
+
+    const queryClient = useQueryClient()
+
+    const searchParams = {
+        type: "global",
+        board
+    } as const
+
+    const searchQueryParams = {
+        page,
+        count: ENTRIES_PER_PAGE
+    }
+
+    const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
+        mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
+        mutationFn: (membershipId: string) =>
+            searchLeaderboardPlayer<"global">(searchParams, searchQueryParams, membershipId),
+        onSuccess(result) {
+            queryClient.setQueryData(
+                leaderboardQueryKey("global", board, [], result.page),
+                result.entries
+            )
+            setPage(result.page)
+        }
+    })
+    const { query: queryParams } = useRouter()
+
+    const title = `${boardName} Leaderboards`
     const description = `${boardName} for all Raids in Destiny 2`
     return (
         <>
@@ -44,7 +75,7 @@ export const IndividualLeaderboadGlobal = ({
             <main className={styles["main"]}>
                 <section className={styles["individual-leaderboard-banner"]}>
                     <div>
-                        <h1 className={styles["header-h1"]}>Total {boardName}</h1>
+                        <h1 className={styles["header-h1"]}>{boardName}</h1>
                     </div>
                     <CloudflareImage
                         priority
@@ -61,31 +92,39 @@ export const IndividualLeaderboadGlobal = ({
                     refresh={query.refetch}
                     handleBackwards={handleBackwards}
                     handleForwards={handleForwards}
+                    searchFn={searchForLeaderboardPlayer}
                 />
                 <section className={styles["leaderboard-container"]}>
-                    {query.isSuccess
-                        ? query.data.map(e => (
-                              <IndividualLeaderboardEntryComponent
-                                  entry={{
-                                      displayName: e.player.bungieGlobalDisplayName,
-                                      iconURL: bungieIconUrl(e.player.iconPath),
-                                      id: e.player.membershipId,
-                                      rank: e.rank,
-                                      url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
-                                      value: e.value
-                                  }}
-                                  key={e.player.membershipId}
-                              />
-                          ))
-                        : new Array(ENTRIES_PER_PAGE)
-                              .fill(null)
-                              .map((_, idx) => (
-                                  <Loading
-                                      key={idx}
-                                      className={styles["leaderboard-entry-loading"]}
-                                  />
-                              ))}
-                    {(query.data?.length ?? 0) > 20 && (
+                    {isLoadingSearch ? (
+                        <div>Searching...</div>
+                    ) : query.isLoading || query.isRefetching ? (
+                        new Array(ENTRIES_PER_PAGE)
+                            .fill(null)
+                            .map((_, idx) => (
+                                <Loading
+                                    key={idx}
+                                    className={styles["leaderboard-entry-loading"]}
+                                />
+                            ))
+                    ) : (
+                        query.data?.map(e => (
+                            <IndividualLeaderboardEntryComponent
+                                entry={{
+                                    displayName:
+                                        e.player.bungieGlobalDisplayName || e.player.displayName,
+                                    iconURL: bungieIconUrl(e.player.iconPath),
+                                    id: e.player.membershipId,
+                                    rank: e.rank,
+                                    url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
+                                    value: e.value
+                                }}
+                                key={e.player.membershipId}
+                                isSearched={queryParams["player"] === e.player.membershipId}
+                                valueType={valueType}
+                            />
+                        ))
+                    )}
+                    {!isLoadingSearch && (query.data?.length ?? 0) > 20 && (
                         <Controls
                             entriesLength={query.data?.length ?? 0}
                             entriesPerPage={ENTRIES_PER_PAGE}

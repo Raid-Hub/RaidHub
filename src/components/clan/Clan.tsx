@@ -55,7 +55,7 @@ export default function Clan({ groupId }: ClanPageProps) {
                                 </span>
                             </h1>
                             <h3 className={styles["motto"]}>
-                                <i>{clan.detail.motto}</i>
+                                <i>{decodeHtmlEntities(clan.detail.motto)}</i>
                             </h3>
                         </div>
                         <section className={styles["overview"]}>

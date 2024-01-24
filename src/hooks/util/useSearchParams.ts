@@ -2,7 +2,11 @@ import { useRouter } from "next/router"
 import { ParsedUrlQuery } from "querystring"
 import { useEffect, useRef, useState } from "react"
 
-export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuery) => T }) {
+export function useSearchParams<T extends { [key: string]: any }>({
+    decoder
+}: {
+    decoder: (query: ParsedUrlQuery) => T
+}) {
     const searchParams = useRef(new URLSearchParams())
     const [isReady, setIsReady] = useState(false)
     const router = useRouter()
@@ -10,6 +14,7 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
     useEffect(() => {
         if (router.isReady) {
             searchParams.current = new URLSearchParams()
+
             for (const [key, value] of Object.entries(router.query)) {
                 if (Array.isArray(value)) {
                     for (const v of value) {
@@ -23,22 +28,25 @@ export function useSearchParams<T>({ decoder }: { decoder: (query: ParsedUrlQuer
         } else {
             setIsReady(false)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router.isReady])
+    }, [router.isReady, router.query])
 
     const push = () =>
         router.replace({ query: searchParams.current.toString() }, undefined, { shallow: true })
 
-    const append = (key: string, value: string) => {
+    const append = (key: keyof T & string, value: string) => {
         searchParams.current.append(key, value)
         push()
     }
-    const set = (key: string, value: string) => {
+    const set = (key: keyof T & string, value: string) => {
         searchParams.current.set(key, value)
         push()
     }
-    const remove = (key: string, value?: string) => {
-        // @ts-ignore for some reason the type definition doesn't include the second argument
+    const remove = (key: keyof T & string, value?: string) => {
+        console.log({
+            player: searchParams.current.get("player"),
+            page: searchParams.current.get("page")
+        })
+        // @ts-ignore - typescript doesn't know that value exists
         searchParams.current.delete(key, value)
         push()
     }

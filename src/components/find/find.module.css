@@ -239,3 +239,50 @@
         --min-size: 180px;
     }
 }
+
+.tile {
+    position: relative;
+    aspect-ratio: 16/9;
+
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tile > img {
+    opacity: 0.6;
+}
+
+.tile-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(1px);
+
+    padding: 0.5em;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2em;
+
+    /* to inherit */
+
+    text-align: center;
+    text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+.tile:hover {
+    transform: scale(1.02);
+}
+
+.tile-date {
+    font-size: x-large;
+}
+
+.tile-time {
+    font-size: large;
+}

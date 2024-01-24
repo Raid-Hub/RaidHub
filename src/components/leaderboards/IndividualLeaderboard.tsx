@@ -8,34 +8,62 @@ import { ListedRaid } from "~/types/raids"
 import { useLocale } from "../app/LocaleManager"
 import { usePage } from "~/hooks/util/usePage"
 import Head from "next/head"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Controls } from "./LeaderboardControls"
 import Loading from "../global/Loading"
 import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import CloudflareImage from "~/images/CloudflareImage"
 import RaidBanners from "~/images/raid-banners"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
-
-const ENTRIES_PER_PAGE = 50
+import {
+    searchLeaderboardPlayer,
+    searchLeaderboardPlayerQueryKey
+} from "~/services/raidhub/searchLeaderboard"
+import { useRouter } from "next/router"
+import { ENTRIES_PER_PAGE } from "./Leaderboard"
 
 export type IndividualLeaderboadProps = {
     raid: ListedRaid
-    board: Exclude<Leaderboard, Leaderboard.WorldFirst>
+    board: Exclude<Leaderboard, Leaderboard.WorldFirst | Leaderboard.Speedrun>
 }
 
 export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps) => {
     const { strings } = useLocale()
-    const { page, handleBackwards, handleForwards } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
+    const queryClient = useQueryClient()
     const raidName = strings.raidNames[raid]
-    const boardName = strings.individualLeaderboads[board]
+    const boardName = strings.individualLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, board, [], page),
-        queryFn: () => getIndividualLeaderboard(raid, board, page)
+        queryFn: () => getIndividualLeaderboard(raid, board, page, ENTRIES_PER_PAGE)
     })
-    const manifest = useRaidHubManifest()
     const title = `${raidName} | ${boardName} Leaderboards`
     const description = `${boardName} Leaderboards for ${raidName}`
+
+    const searchParams = {
+        type: "individual",
+        raid,
+        board
+    } as const
+
+    const searchQueryParams = {
+        page,
+        count: ENTRIES_PER_PAGE
+    }
+    const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
+        mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
+        mutationFn: (membershipId: string) =>
+            searchLeaderboardPlayer<"individual">(searchParams, searchQueryParams, membershipId),
+        onSuccess(result) {
+            queryClient.setQueryData(
+                leaderboardQueryKey(raid, board, [], result.page),
+                result.entries
+            )
+            setPage(result.page)
+        }
+    })
+
+    const { query: queryParams } = useRouter()
     return (
         <>
             <Head>
@@ -66,31 +94,39 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
                     refresh={query.refetch}
                     handleBackwards={handleBackwards}
                     handleForwards={handleForwards}
+                    searchFn={searchForLeaderboardPlayer}
                 />
                 <section className={styles["leaderboard-container"]}>
-                    {query.isSuccess
-                        ? query.data.map(e => (
-                              <IndividualLeaderboardEntryComponent
-                                  entry={{
-                                      displayName: e.player.bungieGlobalDisplayName,
-                                      iconURL: bungieIconUrl(e.player.iconPath),
-                                      id: e.player.membershipId,
-                                      rank: e.rank,
-                                      url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
-                                      value: e.value
-                                  }}
-                                  key={e.player.membershipId}
-                              />
-                          ))
-                        : new Array(ENTRIES_PER_PAGE)
-                              .fill(null)
-                              .map((_, idx) => (
-                                  <Loading
-                                      key={idx}
-                                      className={styles["leaderboard-entry-loading"]}
-                                  />
-                              ))}
-                    {(query.data?.length ?? 0) > 20 && (
+                    {isLoadingSearch ? (
+                        <div>Searching...</div>
+                    ) : query.isLoading || query.isRefetching ? (
+                        new Array(ENTRIES_PER_PAGE)
+                            .fill(null)
+                            .map((_, idx) => (
+                                <Loading
+                                    key={idx}
+                                    className={styles["leaderboard-entry-loading"]}
+                                />
+                            ))
+                    ) : (
+                        query.data?.map(e => (
+                            <IndividualLeaderboardEntryComponent
+                                entry={{
+                                    displayName:
+                                        e.player.bungieGlobalDisplayName || e.player.displayName,
+                                    iconURL: bungieIconUrl(e.player.iconPath),
+                                    id: e.player.membershipId,
+                                    rank: e.rank,
+                                    url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
+                                    value: e.value
+                                }}
+                                key={e.player.membershipId}
+                                isSearched={queryParams["player"] === e.player.membershipId}
+                                valueType="number"
+                            />
+                        ))
+                    )}
+                    {!isLoadingSearch && (query.data?.length ?? 0) > 20 && (
                         <Controls
                             entriesLength={query.data?.length ?? 0}
                             entriesPerPage={ENTRIES_PER_PAGE}

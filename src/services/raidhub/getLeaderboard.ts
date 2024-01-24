@@ -8,7 +8,7 @@ import { ListedRaid } from "~/types/raids"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./createHeaders"
+import { createHeaders } from "./_createHeaders"
 
 export enum Leaderboard {
     WorldFirst = "worldfirst",
@@ -17,7 +17,8 @@ export enum Leaderboard {
     Clears = "clears",
     Trios = "trios",
     Duos = "duos",
-    Solos = "solos"
+    Solos = "solos",
+    Speedrun = "speed"
 }
 
 export function leaderboardQueryKey(
@@ -50,21 +51,19 @@ export async function getLeaderboard(
             return {
                 date: data.response.date ?? null,
                 entries: data.response.entries.map(e => ({
-                    id: e.instanceId,
+                    id: e.activity.instanceId,
                     rank: e.rank,
-                    url: `/pgcr/${e.instanceId}`,
+                    url: `/pgcr/${e.activity.instanceId}`,
                     participants: e.players
-                        .filter(p => p.didPlayerFinish)
+                        .filter(p => p.data.finishedRaid)
                         .map(p => ({
                             id: p.membershipId,
                             iconURL: bungieIconUrl(p.iconPath),
-                            displayName: p.bungieGlobalDisplayName || p.displayName,
-                            url: `/profile/${p.membershipType}/${p.membershipId}`
+                            displayName:
+                                p.bungieGlobalDisplayName || p.displayName || p.membershipId,
+                            url: `/profile/${p.membershipType || 0}/${p.membershipId}`
                         })),
-                    timeInSeconds:
-                        (new Date(e.dateCompleted).getTime() -
-                            new Date(data.response.date ?? e.dateStarted).getTime()) /
-                        1000
+                    timeInSeconds: e.value
                 }))
             }
         } else {
@@ -78,12 +77,17 @@ export async function getLeaderboard(
     }
 }
 
-export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderboard, page: number) {
+export async function getIndividualLeaderboard(
+    raid: ListedRaid,
+    board: Leaderboard,
+    page: number,
+    count: number
+) {
     const url = new URL(
         getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/individual/${board}`
     )
     url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+    url.searchParams.append("count", String(count))
 
     const res = await fetch(url, { headers: createHeaders() })
 
@@ -99,12 +103,13 @@ export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderbo
 }
 
 export async function getIndividualGlobalLeaderboard(
-    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears,
-    page: number
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun,
+    page: number,
+    count: number
 ) {
     const url = new URL(getRaidHubBaseUrl() + `/leaderboard/global/${board}`)
     url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+    url.searchParams.append("count", String(count))
 
     try {
         const res = await fetch(url, { headers: createHeaders() })

@@ -4,6 +4,16 @@ export function formattedNumber(num: number, locale: string): string {
     return round(num, 2).toLocaleString(locale)
 }
 
+export function truncatedNumber(num: number): string {
+    if (num < 1000) {
+        return num.toString()
+    } else if (num < 1000000) {
+        return Math.floor(num / 1000) + "k"
+    } else {
+        return Math.floor(num / 1000000) + "M"
+    }
+}
+
 export function toCustomDateString(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, {
         month: "long",

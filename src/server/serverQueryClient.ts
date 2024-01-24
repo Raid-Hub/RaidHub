@@ -96,10 +96,10 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
 ) {
     // we prefetch the first page at build time
     await Promise.all(
-        new Array(pages).fill(undefined).map((_, idx) =>
+        new Array(pages).fill(undefined).map((_, page) =>
             queryClient.prefetchQuery(
-                leaderboardQueryKey(raid, board, params, idx),
-                () => getLeaderboard(raid, board, params, idx),
+                leaderboardQueryKey(raid, board, params, page + 1),
+                () => getLeaderboard(raid, board, params, page + 1),
                 {
                     staleTime: 2 * 60000 // 2 minutes
                 }
@@ -111,14 +111,14 @@ export async function prefetchLeaderboard<R extends ListedRaid>(
 }
 
 export async function prefetchIndividualLeaderboard<R extends ListedRaid | "global">(
-    { raid, board, pages }: { raid: R; board: Leaderboard; pages: number },
+    { raid, board, pages, count }: { raid: R; board: Leaderboard; pages: number; count: number },
     queryClient: QueryClient
 ) {
     // we prefetch the first page at build time
     await Promise.all(
-        new Array(pages).fill(undefined).map((_, page) =>
+        new Array(pages).fill(undefined).map((_, idx) =>
             queryClient.prefetchQuery(
-                leaderboardQueryKey(raid, board, [], page),
+                leaderboardQueryKey(raid, board, [], idx + 1),
                 () =>
                     raid === "global"
                         ? getIndividualGlobalLeaderboard(
@@ -126,9 +126,10 @@ export async function prefetchIndividualLeaderboard<R extends ListedRaid | "glob
                                   | Leaderboard.Clears
                                   | Leaderboard.FullClears
                                   | Leaderboard.Sherpa,
-                              page
+                              idx + 1,
+                              count
                           )
-                        : getIndividualLeaderboard(raid, board, page),
+                        : getIndividualLeaderboard(raid, board, idx + 1, count),
                 {
                     staleTime: 2 * 60000 // 2 minutes
                 }

@@ -1,84 +1,28 @@
 .clan {
-    flex: 1;
     display: flex;
+    flex-direction: column;
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 1em;
+    padding: 1em 1em 0.5em 1em;
     align-items: stretch;
-    background-color: var(--modal-background);
+    width: min-content;
 
-    max-width: 475px;
-}
-
-.card-loading {
-    min-height: 30vh;
-    max-width: 475px;
-
-    border-radius: 15px;
-    border: 1px solid var(--border);
-    background-color: var(--modal-background);
+    gap: 1em;
 }
 
 .clan-banner-container {
-    margin-right: 1em;
-
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     align-content: center;
     position: relative;
 }
 
-.desc {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2em;
-}
-
 .desc-title {
-    flex-grow: 1;
-    display: inline-block;
-    flex: 1;
     margin-bottom: -0.1em;
+    text-align: center;
 
-    font-weight: 800;
-    font-size: x-large;
+    font-weight: 600;
+    font-size: large;
     letter-spacing: 1px;
-}
-
-.desc-subtitle {
-    display: inline-block;
-    flex-grow: 1;
-
-    font-style: italic;
-    font-size: 18px;
-    color: var(--secondary-text);
-}
-
-.desc-text-wrapper {
-    flex-grow: 100;
-    flex-basis: 100px;
-    height: 100px;
-    overflow-y: auto;
-    display: flex;
-    margin-bottom: 0.5em;
-}
-
-.desc-text-wrapper::-webkit-scrollbar {
-    width: 5px;
-}
-
-.desc-text {
-    height: 100%;
-    margin: 0;
-    /* Remove default margin on p element */
-
-    white-space: pre-line;
-    color: var(--tertiary-text);
-    font-size: 12px;
-}
-
-.desc-text *[data-url] {
-    text-decoration: underline;
-    color: #c56f24;
 }

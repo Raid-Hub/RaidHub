@@ -1,6 +1,6 @@
 import { RaidHubAPIResponse, RaidHubActivityResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./createHeaders"
+import { createHeaders } from "./_createHeaders"
 
 export function activityQueryKey(activityId: string) {
     return ["raidhub-activity", activityId] as const

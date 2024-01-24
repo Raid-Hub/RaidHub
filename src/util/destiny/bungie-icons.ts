@@ -3,7 +3,7 @@ import { DestinyInventoryItemDefinition } from "bungie-net-core/models"
 const baseBungieUrl = "https://www.bungie.net"
 
 const defaultIcon = "/img/profile/avatars/default_avatar.gif"
-export function bungieIconUrl(path: string | undefined) {
+export function bungieIconUrl(path: string | undefined | null) {
     return baseBungieUrl + (path || defaultIcon)
 }
 

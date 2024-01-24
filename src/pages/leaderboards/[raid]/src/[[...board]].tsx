@@ -117,7 +117,7 @@ export default function RtaLeaderboardPage({
 
 const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<string>) => {
     const { strings } = useLocale()
-    const { page, handleBackwards, handleForwards } = usePage()
+    const { page, handleBackwards, handleForwards } = usePage(["player"])
     const query = useQuery({
         queryKey: rtaQueryKey(raid, category),
         queryFn: () => getSpeedrunComLeaderboard({ raid, category })
@@ -130,7 +130,7 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
             ? // @ts-ignore
               (SpeedrunVariables[raid]?.values[category] as SpeedData)
             : undefined
-    const subtitle = subKey ? strings.leaderboards[subKey.name] : undefined
+    const subtitle = subKey ? strings.rtaLeaderboards[subKey.name] : undefined
 
     const pageTitle = `${raidName} | RTA Speedrun Leaderboards`
     const description = `RTA Speedrun Leaderboards for ${raidName}`

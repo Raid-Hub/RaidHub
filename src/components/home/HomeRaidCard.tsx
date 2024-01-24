@@ -108,7 +108,7 @@ const HomeRaidCard = ({
                                         className={styles["content-section"]}
                                         key={id}>
                                         <div>
-                                            <h4>{strings.leaderboards[key]}</h4>
+                                            <h4>{strings.rtaLeaderboards[key]}</h4>
                                         </div>
                                         <div className={styles["content-section-arrow"]}>
                                             <RightArrow />
@@ -121,7 +121,7 @@ const HomeRaidCard = ({
                                 href={`/leaderboards/${RaidToUrlPaths[raid]}/src`}
                                 className={styles["content-section"]}>
                                 <div>
-                                    <h4>{strings.leaderboards.anyPercent}</h4>
+                                    <h4>{strings.rtaLeaderboards.anyPercent}</h4>
                                 </div>
                                 <div className={styles["content-section-arrow"]}>
                                     <RightArrow />

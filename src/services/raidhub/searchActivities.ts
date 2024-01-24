@@ -1,11 +1,14 @@
-import { RaidHubAPIResponse, RaidHubActivitySearchResponse } from "~/types/raidhub-api"
+import {
+    RaidHubAPIResponse,
+    RaidHubActivityExtended,
+    RaidHubActivitySearchResponse
+} from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./createHeaders"
+import { createHeaders } from "./_createHeaders"
 import { z } from "zod"
 import { booleanString, numberString } from "~/util/zod"
 import { ListedRaid, ListedRaids } from "~/types/raids"
 import { includedIn } from "~/util/betterIncludes"
-import Activity from "~/models/profile/data/Activity"
 import { Collection } from "@discordjs/collection"
 
 export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuerySchema>) {
@@ -13,31 +16,16 @@ export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuery
 }
 
 // we have the bungie queries as backups
-export async function activitySearch(queryString: string): Promise<Collection<string, Activity>> {
+export async function activitySearch(
+    queryString: string
+): Promise<Collection<string, RaidHubActivityExtended>> {
     const url = new URL(getRaidHubBaseUrl() + `/activity/search?` + queryString)
 
     const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitySearchResponse>
     if (data.success) {
-        return new Collection(
-            data.response.results.map(r => [
-                r.instanceId,
-                new Activity({
-                    ...r,
-                    //  todo fix patchwork this later
-                    player: {
-                        didMemberComplete: true,
-                        sherpas: 0,
-                        isFirstClear: false,
-                        timePlayedSeconds: 0,
-                        kills: 0,
-                        deaths: 0,
-                        assists: 0
-                    }
-                })
-            ])
-        )
+        return new Collection(data.response.results.map(r => [r.instanceId, r]))
     } else {
         const err = new Error(data.message)
         Object.assign(err, data.error)

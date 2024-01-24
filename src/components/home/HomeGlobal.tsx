@@ -44,6 +44,16 @@ export function HomeGlobal() {
                             </div>
                         </Link>
                         <Link
+                            href={`/leaderboards/all/speed`}
+                            className={styles["content-section"]}>
+                            <div>
+                                <h4>Cumulative Speedrun</h4>
+                            </div>
+                            <div className={styles["content-section-arrow"]}>
+                                <RightArrow />
+                            </div>
+                        </Link>
+                        <Link
                             href={`/leaderboards/all/sherpas`}
                             className={styles["content-section"]}>
                             <div>

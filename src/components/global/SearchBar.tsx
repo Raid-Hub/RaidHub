@@ -81,7 +81,7 @@ const SearchBar = ({}: SearchBarProps) => {
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
                 {isLoadingResults || isRedirecting ? (
-                    <Loader stroke={2} />
+                    <Loader stroke={2} size="100%" />
                 ) : (
                     <Search color="white" />
                 )}

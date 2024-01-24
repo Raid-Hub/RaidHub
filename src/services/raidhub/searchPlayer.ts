@@ -3,7 +3,7 @@ import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 import { searchForBungieName } from "../bungie/searchForBungieName"
 import { searchForUsername } from "../bungie/searchForUsername"
 import { BungieClientProtocol } from "bungie-net-core"
-import { createHeaders } from "./createHeaders"
+import { createHeaders } from "./_createHeaders"
 
 // we have the bungie queries as backups
 export async function searchRaidHubUser(

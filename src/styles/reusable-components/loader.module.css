@@ -1,13 +1,16 @@
 .loader {
+    box-sizing: border-box;
     position: absolute;
-    left: 3px;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
 
     /* stroke is assigned in the component */
     border: var(--stroke) solid #f3f3f3;
     border-radius: 50%;
     border-top: var(--stroke) solid var(--brand-orange);
-    width: 88%;
-    height: 88%;
 
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;

@@ -50,9 +50,7 @@ export default function ExpandedStatsTable() {
             <StatsRow
                 header="Total Clears"
                 values={versions.map(
-                    v =>
-                        activities.filter(a => a.difficulty === v && a.player.didMemberComplete)
-                            .size
+                    v => activities.filter(a => a.difficulty === v && a.player.finishedRaid).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
@@ -62,7 +60,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.fresh && a.player.didMemberComplete
+                            a => a.difficulty === v && a.fresh && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -72,7 +70,7 @@ export default function ExpandedStatsTable() {
                 header="Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v && a.player.didMemberComplete)
+                        .filter(a => a.difficulty === v && a.player.finishedRaid)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -82,7 +80,7 @@ export default function ExpandedStatsTable() {
                 header="Fresh Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v && a.fresh && a.player.didMemberComplete)
+                        .filter(a => a.difficulty === v && a.fresh && a.player.finishedRaid)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -103,10 +101,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.difficulty === v &&
-                                a.playerCount <= 3 &&
-                                a.player.didMemberComplete
+                            a => a.difficulty === v && a.playerCount <= 3 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -117,10 +112,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.difficulty === v &&
-                                a.playerCount === 3 &&
-                                a.player.didMemberComplete
+                            a => a.difficulty === v && a.playerCount === 3 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -131,10 +123,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.difficulty === v &&
-                                a.playerCount === 2 &&
-                                a.player.didMemberComplete
+                            a => a.difficulty === v && a.playerCount === 2 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -145,10 +134,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.difficulty === v &&
-                                a.playerCount === 1 &&
-                                a.player.didMemberComplete
+                            a => a.difficulty === v && a.playerCount === 1 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}

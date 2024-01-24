@@ -5,17 +5,7 @@ import Loading from "../global/Loading"
 import { LeaderboardEntry } from "~/types/leaderboards"
 import { Controls } from "./LeaderboardControls"
 
-type LeaderboardProps = {
-    entries: LeaderboardEntry[]
-    isLoading: boolean
-    page: number
-    refresh: () => void
-    handleBackwards: () => void
-    handleForwards: () => void
-    children: ReactNode
-}
-
-export const ENTRIES_PER_PAGE = 50
+export const ENTRIES_PER_PAGE = 25
 
 const Leaderboard = ({
     entries,
@@ -24,8 +14,21 @@ const Leaderboard = ({
     refresh,
     handleBackwards,
     handleForwards,
+    isLoadingSearch,
+    searchForPlayer,
     children
-}: LeaderboardProps) => {
+}: {
+    entries: LeaderboardEntry[]
+    isLoading: boolean
+    page: number
+    refresh: () => void
+    handleBackwards: () => void
+    handleForwards: () => void
+    children: ReactNode
+} & {
+    searchForPlayer?: (membershipId: string) => void
+    isLoadingSearch?: boolean
+}) => {
     return (
         <main className={styles["main"]}>
             <section>{children}</section>
@@ -37,16 +40,21 @@ const Leaderboard = ({
                 refresh={refresh}
                 handleBackwards={handleBackwards}
                 handleForwards={handleForwards}
+                searchFn={searchForPlayer}
             />
             <section className={styles["leaderboard-container"]}>
-                {!isLoading
-                    ? entries.map(e => <LeaderboardEntryComponent entry={e} key={e.id} />)
-                    : new Array(ENTRIES_PER_PAGE)
-                          .fill(null)
-                          .map((_, idx) => (
-                              <Loading key={idx} className={styles["leaderboard-entry-loading"]} />
-                          ))}
-                {entries.length > 20 && (
+                {isLoadingSearch ? (
+                    <div>Searching...</div>
+                ) : !isLoading ? (
+                    entries.map(e => <LeaderboardEntryComponent entry={e} key={e.id} />)
+                ) : (
+                    new Array(ENTRIES_PER_PAGE)
+                        .fill(null)
+                        .map((_, idx) => (
+                            <Loading key={idx} className={styles["leaderboard-entry-loading"]} />
+                        ))
+                )}
+                {!isLoadingSearch && entries.length > 20 && (
                     <Controls
                         entriesLength={entries.length}
                         entriesPerPage={ENTRIES_PER_PAGE}

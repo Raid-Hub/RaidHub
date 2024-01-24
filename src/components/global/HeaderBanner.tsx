@@ -1,9 +1,16 @@
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import { wait } from "~/util/wait"
 
 export function HeaderBanner() {
+    const [isReady, setIsReady] = useState(false)
     const [dismissedBanner, setDismissedBanner] = useLocalStorage("dismissed-app-io-banner", false)
-    return !dismissedBanner ? (
+
+    useEffect(() => {
+        wait(10).then(() => setIsReady(true))
+    }, [])
+    return !dismissedBanner && isReady ? (
         <div
             style={{
                 backgroundColor: "rgba(244, 128, 188, 0.38)",
@@ -29,7 +36,8 @@ export function HeaderBanner() {
                     top: 7,
                     right: 7,
                     background: "#FFFFFF11",
-                    border: "none"
+                    border: "none",
+                    cursor: "pointer"
                 }}>
                 X
             </button>
