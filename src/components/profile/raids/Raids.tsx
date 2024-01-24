@@ -13,7 +13,11 @@ import { zRaidURIComponent } from "~/util/zod"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
 import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
-import { RaidHubManifestBoard, RaidHubPlayerLeaderboardEntry } from "~/types/raidhub-api"
+import {
+    RaidHubManifestBoard,
+    RaidHubPlayerLeaderboardEntry,
+    RaidHubPlayerResponse
+} from "~/types/raidhub-api"
 import { RaidCardContext } from "./RaidContext"
 
 type RaidsProps = {
@@ -21,15 +25,11 @@ type RaidsProps = {
     areMembershipsFetched: boolean
     layout: Layout
     setMostRecentActivity: (id: string | null | undefined) => void
+    players: RaidHubPlayerResponse[]
 }
 
-const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps) => {
+const Raids = ({ destinyMemberships, layout, setMostRecentActivity, players }: RaidsProps) => {
     const manifest = useRaidHubManifest()
-
-    // todo deal with player memberships
-    const { players, isLoading: isLoadingPlayers } = useRaidHubPlayers(
-        destinyMemberships.map(dm => dm.destinyMembershipId)
-    )
 
     const leaderboardEntriesByRaid = useMemo(() => {
         const boardIdToRaid = new Map<string, ListedRaid>()

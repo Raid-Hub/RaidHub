@@ -26,7 +26,7 @@ export default class Activity {
         this.completed = data.completed
         this.fresh = !!data.fresh
         this.playerCount = data.playerCount
-        this.platform = data.platform
+        this.platform = data.platformType
         this.dateStarted = new Date(data.dateStarted)
         this.dateCompleted = new Date(data.dateCompleted)
         this.dayOne = data.dayOne

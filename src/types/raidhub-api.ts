@@ -28,7 +28,7 @@ export type RaidHubActivity = {
     playerCount: number
     dateStarted: string
     dateCompleted: string
-    platform: BungieMembershipType
+    platformType: BungieMembershipType
 }
 
 export type RaidHubActivityExtended = RaidHubActivity & {

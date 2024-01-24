@@ -17,6 +17,8 @@ import Loading from "../global/Loading"
 import Activity from "~/models/profile/data/Activity"
 import { PortalProvider } from "../reusable/Portal"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import ProfileRankings from "./ranks/Rankings"
+import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
@@ -84,6 +86,10 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
     const pinnedActivityId = raidHubProfile?.pinnedActivityId ?? mostRecentActivity
 
+    const { players, isLoading: isLoadingPlayers } = useRaidHubPlayers(
+        destinyMemberships.map(dm => dm.destinyMembershipId)
+    )
+
     // LAYOUT
     const [layout, setLayout] = useLocalStorage("profile-layout", Layout.DotCharts)
 
@@ -132,6 +138,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                     <section className={styles["user-info"]}>
                         <UserCard />
                         <ClanCard />
+                        {false && <ProfileRankings players={players} />}
                     </section>
 
                     <section className={styles["mid"]}>
@@ -172,6 +179,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                                 areMembershipsFetched={areMembershipsFetched}
                                 layout={layout}
                                 setMostRecentActivity={setMostRecentActivity}
+                                players={players}
                             />
                         </FilterContext.Provider>
                     </section>
