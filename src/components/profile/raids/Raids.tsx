@@ -44,7 +44,7 @@ const Raids = ({ destinyMemberships, layout, setMostRecentActivity }: RaidsProps
         >(ListedRaids.map(raid => [raid, []]))
 
         players.forEach(p => {
-            Object.entries(p.activityLeaderboardEntries).forEach(([id, data]) => {
+            Object.entries(p.worldFirstEntries).forEach(([id, data]) => {
                 if (boardIdToRaid.has(id)) {
                     const raid = boardIdToRaid.get(id)!
                     data.forEach(entry => {

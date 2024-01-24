@@ -1,6 +1,6 @@
 import { RaidHubAPIResponse, RaidHubActivitySearchResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./createHeaders"
+import { createHeaders } from "./_createHeaders"
 import { z } from "zod"
 import { booleanString, numberString } from "~/util/zod"
 import { ListedRaid, ListedRaids } from "~/types/raids"
@@ -27,13 +27,14 @@ export async function activitySearch(queryString: string): Promise<Collection<st
                     ...r,
                     //  todo fix patchwork this later
                     player: {
-                        didMemberComplete: true,
+                        finishedRaid: true,
                         sherpas: 0,
                         isFirstClear: false,
                         timePlayedSeconds: 0,
                         kills: 0,
                         deaths: 0,
-                        assists: 0
+                        assists: 0,
+                        classHash: ""
                     }
                 })
             ])

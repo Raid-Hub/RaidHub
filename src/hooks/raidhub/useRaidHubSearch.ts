@@ -3,7 +3,7 @@ import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
 import { RaidHubSearchResult } from "~/types/raidhub-api"
 import { useRouter } from "next/router"
-import { searchRaidHubUser } from "~/services/raidhub/search"
+import { searchRaidHubUser } from "~/services/raidhub/searchPlayer"
 
 const DEBOUNCE = 250
 

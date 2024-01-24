@@ -28,10 +28,13 @@ export type RaidHubActivity = {
     playerCount: number
     dateStarted: string
     dateCompleted: string
+    platform: BungieMembershipType
+}
+
+export type RaidHubActivityExtended = RaidHubActivity & {
     dayOne: boolean
     weekOne: boolean
     contest: boolean
-    platform: BungieMembershipType
 }
 
 export type RaidHubPlayerLeaderboardEntry = {
@@ -43,27 +46,52 @@ export type RaidHubPlayerLeaderboardEntry = {
     weekOne: boolean
 }
 
+type PlayerResponseGlobalLeaderboardPlacement =
+    | {
+          value: number
+          rank: number
+      }
+    | {
+          value: null
+          rank: null
+      }
+
 export type RaidHubPlayerResponse = {
     player: RaidHubPlayer
-    activityLeaderboardEntries: Record<string, RaidHubPlayerLeaderboardEntry[]>
+    worldFirstEntries: Record<string, RaidHubPlayerLeaderboardEntry[]>
+    stats: {
+        global: {
+            clears: PlayerResponseGlobalLeaderboardPlacement
+            fullClears: PlayerResponseGlobalLeaderboardPlacement
+            sherpas: PlayerResponseGlobalLeaderboardPlacement
+            speedrun: PlayerResponseGlobalLeaderboardPlacement
+        }
+        byRaid: Record<
+            ListedRaid,
+            {
+                clears: number
+                fullClears: number
+                sherpas: number
+                trios: number
+                duos: number
+                solos: number
+                fastestClear: {
+                    instanceId: string
+                    duration: number
+                } | null
+            }
+        >
+    }
 }
 
 export type RaidHubActivitiesResponse = {
-    activities: (RaidHubActivity & {
-        player: {
-            didMemberComplete: boolean
-            sherpas: number
-            isFirstClear: boolean
-            timePlayedSeconds: number
-            kills: number
-            deaths: number
-            assists: number
-        }
+    activities: (RaidHubActivityExtended & {
+        player: RaidHubActivityPlayerData
     })[]
     nextCursor: string
 }
 
-export type RaidHubActivityResponse = RaidHubActivity & {
+export type RaidHubActivityResponse = RaidHubActivityExtended & {
     players: Record<
         string,
         {
@@ -75,24 +103,33 @@ export type RaidHubActivityResponse = RaidHubActivity & {
     leaderboardEntries: Record<RaidHubManifestBoard["type"], number>
 }
 
+export type RaidHubCommonPlayerData = {
+    membershipType: BungieMembershipType
+    bungieGlobalDisplayName: string | null
+    bungieGlobalDisplayNameCode: string | null
+    displayName: string | null
+    iconPath: string | null
+    membershipId: string
+}
+
+export type RaidHubActivityPlayerData = {
+    finishedRaid: boolean
+    kills: number
+    assists: number
+    deaths: number
+    timePlayedSeconds: number
+    classHash: string
+    sherpas: number
+    isFirstClear: boolean
+}
+
 export type RaidHubActivityLeaderboardResponse = {
     entries: {
         rank: number
-        instanceId: string
-        dateCompleted: string
-        dateStarted: string
-        players: {
-            bungieGlobalDisplayName: string
-            bungieGlobalDisplayNameCode: string
-            displayName: string
-            iconPath: string
-            membershipId: string
-            membershipType: BungieMembershipType
-            didPlayerFinish: boolean
-        }[]
-        dayOne: boolean
-        contest: boolean
-        weekOne: boolean
+        position: number
+        value: number
+        activity: RaidHubActivity
+        players: (RaidHubCommonPlayerData & { data: RaidHubActivityPlayerData })[]
     }[]
     date?: number
     params: {
@@ -157,7 +194,7 @@ export type RaidHubSearchResult = {
 
 export type RaidHubActivitySearchResponse = {
     query: Record<string, unknown>
-    results: RaidHubActivity[]
+    results: RaidHubActivityExtended[]
 }
 export type RaidHubActivitySearchResult = RaidHubActivity
 
