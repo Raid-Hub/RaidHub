@@ -1,5 +1,5 @@
 import styles from "~/styles/pages/leaderboards.module.css"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { IndividualLeaderboardEntry } from "~/types/leaderboards"
 import Link from "next/link"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
@@ -10,7 +10,8 @@ const defautlIcon = "https://www.bungie.net/img/theme/destiny/icons/missing_embl
 
 export const IndividualLeaderboardEntryComponent = ({
     entry,
-    valueType
+    valueType,
+    isSearched
 }: {
     entry: IndividualLeaderboardEntry
     isSearched?: boolean
@@ -18,9 +19,32 @@ export const IndividualLeaderboardEntryComponent = ({
 }) => {
     const [icon, setIcon] = useState(entry.iconURL ?? defautlIcon)
     const { locale } = useLocale()
+    const scrollTargetRef = useRef<HTMLDivElement>(null)
+
+    console.log(isSearched)
+
+    useEffect(() => {
+        if (scrollTargetRef.current) {
+            scrollTargetRef.current.scrollIntoView({
+                behavior: "smooth",
+                inline: "center",
+                block: "center"
+            })
+        }
+    }, [])
 
     return (
-        <div className={styles["individual-leaderboard-entry"]}>
+        <div
+            className={styles["individual-leaderboard-entry"]}
+            ref={isSearched ? scrollTargetRef : undefined}
+            style={
+                isSearched
+                    ? {
+                          backgroundColor:
+                              "color-mix(in srgb, var(--brand-orange-light) 40%, transparent)"
+                      }
+                    : {}
+            }>
             <div className={styles["individual-leaderboard-entry-rank"]}>{entry.rank}</div>
             <div className={styles["individual-user-icon-container"]}>
                 <Image

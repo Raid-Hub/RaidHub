@@ -11,6 +11,7 @@ import { useRef, useState } from "react"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { useSearchParams } from "~/hooks/util/useSearchParams"
 import { z } from "zod"
+import { RaidHubSearchResult } from "~/types/raidhub-api"
 
 export const Controls = ({
     isLoading,
@@ -33,6 +34,7 @@ export const Controls = ({
 }) => {
     const searchRef = useRef<HTMLFormElement>(null)
     const [isShowingResults, setIsShowingResults] = useState(false)
+    const [selected, setSelected] = useState<RaidHubSearchResult | null>(null)
 
     const handleClickAway = () => {
         setIsShowingResults(false)
@@ -43,7 +45,11 @@ export const Controls = ({
     const canGoForward = isLoading || entriesLength === entriesPerPage
     const canGoBack = currentPage > 1
 
-    const { set: setParam, isReady } = useSearchParams({
+    const {
+        set: setParam,
+        isReady,
+        remove: removeParam
+    } = useSearchParams({
         decoder: q => z.object({ player: z.coerce.string() }).parse(q)
     })
     const {
@@ -62,13 +68,40 @@ export const Controls = ({
                     style={{ position: "relative" }}
                     ref={searchRef}
                     onClick={() => setIsShowingResults(true)}>
-                    <div style={{ display: "flex", gap: "1em", marginRight: "0.5em" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "1em",
+                            marginRight: "0.5em"
+                        }}>
                         {isLoadingSearch && <Loader stroke={3.5} size="30px" />}
+                        {selected && isReady && (
+                            <button
+                                onClick={() => {
+                                    setSelected(null), removeParam("player")
+                                }}>
+                                Clear
+                            </button>
+                        )}
                         <input
                             style={{ height: "30px" }}
                             type="text"
                             value={enteredText}
-                            placeholder="Search the leaderboards"
+                            placeholder={
+                                selected
+                                    ? (() => {
+                                          let username = selected.displayName
+                                          try {
+                                              const b = new BungieName(
+                                                  selected.bungieGlobalDisplayName,
+                                                  selected.bungieGlobalDisplayNameCode
+                                              )
+                                              username = b.toString()
+                                          } catch {}
+                                          return username
+                                      })()
+                                    : "Search the leaderboards"
+                            }
                             onChange={handleInputChange}
                         />
                     </div>
@@ -90,6 +123,7 @@ export const Controls = ({
                                             setParam("player", result.membershipId)
                                             searchFn(result.membershipId)
                                             clearQuery()
+                                            setSelected(result)
                                         }}
                                         style={{
                                             display: "flex",

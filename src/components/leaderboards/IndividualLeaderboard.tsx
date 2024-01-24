@@ -25,12 +25,12 @@ const ENTRIES_PER_PAGE = 50
 
 export type IndividualLeaderboadProps = {
     raid: ListedRaid
-    board: Exclude<Leaderboard, Leaderboard.WorldFirst>
+    board: Exclude<Leaderboard, Leaderboard.WorldFirst | Leaderboard.Speedrun>
 }
 
 export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps) => {
     const { strings } = useLocale()
-    const { page, handleBackwards, handleForwards, setPage } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
     const queryClient = useQueryClient()
     const raidName = strings.raidNames[raid]
     const boardName = strings.individualLeaderboards[board]
@@ -42,7 +42,7 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
     const description = `${boardName} Leaderboards for ${raidName}`
 
     const searchParams = {
-        type: "invidual",
+        type: "individual",
         raid,
         board
     } as const
@@ -54,13 +54,13 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
     const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
         mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
         mutationFn: (membershipId: string) =>
-            searchLeaderboardPlayer(searchParams, searchQueryParams, membershipId),
+            searchLeaderboardPlayer<"individual">(searchParams, searchQueryParams, membershipId),
         onSuccess(result) {
-            setPage(result.page)
             queryClient.setQueryData(
                 leaderboardQueryKey(raid, board, [], result.page),
                 result.entries
             )
+            setPage(result.page)
         }
     })
 
@@ -123,6 +123,7 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
                                 }}
                                 key={e.player.membershipId}
                                 isSearched={queryParams["player"] === e.player.membershipId}
+                                valueType="number"
                             />
                         ))
                     )}

@@ -2,7 +2,7 @@ import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
 import Find from "~/components/find/find"
 import { useSearchParams } from "~/hooks/util/useSearchParams"
-import { activitySearchQuerySchema } from "~/services/raidhub/seaarchActivities"
+import { activitySearchQuerySchema } from "~/services/raidhub/searchActivities"
 
 const FindPage: NextPage = () => {
     const { status, data: sessionData } = useSession({

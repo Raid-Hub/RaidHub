@@ -3,7 +3,7 @@ import { Collection } from "@discordjs/collection"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { z } from "zod"
 import Activity from "~/models/profile/data/Activity"
-import { activitySearch, activitySearchQuerySchema } from "~/services/raidhub/seaarchActivities"
+import { activitySearch, activitySearchQuerySchema } from "~/services/raidhub/searchActivities"
 import ActivityTile from "../profile/raids/ActivityTile"
 import { useEffect, useMemo, useRef } from "react"
 import {

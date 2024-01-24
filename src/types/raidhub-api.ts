@@ -229,10 +229,11 @@ export type RaidHubManifest = {
     }
 }
 
-export type RaidHubLeaderboardSearchResult = {
+export type RaidHubLeaderboardSearchResult<T extends "global" | "individual" | "worldfirst"> = {
     page: number
     position: number
-    entries:
-        | RaidHubIndividualLeaderboardResponse["entries"]
-        | RaidHubActivityLeaderboardResponse["entries"]
+    rank: number
+    entries: T extends "worldfirst"
+        ? RaidHubActivityLeaderboardResponse["entries"]
+        : RaidHubIndividualLeaderboardResponse["entries"]
 }

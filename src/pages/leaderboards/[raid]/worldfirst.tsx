@@ -86,7 +86,7 @@ export default function WorldsFirstLeaderboadPage({
 
 const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     const { strings, locale } = useLocale()
-    const { page, handleBackwards, handleForwards, setPage } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
     const raidName = strings.raidNames[raid]
     const params = [
         (RaidsWithReprisedContest as readonly ListedRaid[]).includes(raid) ? "challenge" : "normal"

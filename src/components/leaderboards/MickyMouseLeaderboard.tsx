@@ -22,7 +22,7 @@ export default function MickeyMouseLeaderboard({
     descriptor: string
 }) {
     const { strings, locale } = useLocale()
-    const { page, handleBackwards, handleForwards, setPage } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
     const raidName = strings.raidNames[raid]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
@@ -46,13 +46,13 @@ export default function MickeyMouseLeaderboard({
     const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
         mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
         mutationFn: (membershipId: string) =>
-            searchLeaderboardPlayer(searchParams, searchQueryParams, membershipId),
+            searchLeaderboardPlayer<"worldfirst">(searchParams, searchQueryParams, membershipId),
         onSuccess(result) {
-            setPage(result.page)
             queryClient.setQueryData(
                 leaderboardQueryKey(raid, Leaderboard.WorldFirst, [], result.page),
                 result.entries
             )
+            setPage(result.page)
         }
     })
 

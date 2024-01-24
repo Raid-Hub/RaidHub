@@ -17,6 +17,7 @@ import {
     searchLeaderboardPlayer,
     searchLeaderboardPlayerQueryKey
 } from "~/services/raidhub/searchLeaderboard"
+import { useRouter } from "next/router"
 
 const ENTRIES_PER_PAGE = 50
 
@@ -25,10 +26,10 @@ export const IndividualLeaderboadGlobal = ({
     valueType = "number"
 }: {
     board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun
-    valueType: "number" | "duration"
+    valueType?: "number" | "duration"
 }) => {
     const { strings } = useLocale()
-    const { page, handleBackwards, handleForwards, setPage } = usePage()
+    const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
     const boardName = strings.globalLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey("global", board, [], page),
@@ -50,15 +51,16 @@ export const IndividualLeaderboadGlobal = ({
     const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
         mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
         mutationFn: (membershipId: string) =>
-            searchLeaderboardPlayer(searchParams, searchQueryParams, membershipId),
+            searchLeaderboardPlayer<"global">(searchParams, searchQueryParams, membershipId),
         onSuccess(result) {
-            setPage(result.page)
             queryClient.setQueryData(
                 leaderboardQueryKey("global", board, [], result.page),
                 result.entries
             )
+            setPage(result.page)
         }
     })
+    const { query: queryParams } = useRouter()
 
     const title = `${boardName} Leaderboards`
     const description = `${boardName} for all Raids in Destiny 2`
@@ -118,6 +120,7 @@ export const IndividualLeaderboadGlobal = ({
                                     value: e.value
                                 }}
                                 key={e.player.membershipId}
+                                isSearched={queryParams["player"] === e.player.membershipId}
                                 valueType={valueType}
                             />
                         ))
