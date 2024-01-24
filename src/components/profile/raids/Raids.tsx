@@ -12,7 +12,6 @@ import { useQueryParamState } from "~/hooks/util/useQueryParamState"
 import { zRaidURIComponent } from "~/util/zod"
 import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
-import { useRaidHubPlayers } from "~/hooks/raidhub/useRaidHubPlayers"
 import {
     RaidHubManifestBoard,
     RaidHubPlayerLeaderboardEntry,
