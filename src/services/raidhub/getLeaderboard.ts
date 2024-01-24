@@ -17,7 +17,8 @@ export enum Leaderboard {
     Clears = "clears",
     Trios = "trios",
     Duos = "duos",
-    Solos = "solos"
+    Solos = "solos",
+    Speedrun = "speed"
 }
 
 export function leaderboardQueryKey(
@@ -97,7 +98,7 @@ export async function getIndividualLeaderboard(raid: ListedRaid, board: Leaderbo
 }
 
 export async function getIndividualGlobalLeaderboard(
-    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears,
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun,
     page: number
 ) {
     const url = new URL(getRaidHubBaseUrl() + `/leaderboard/global/${board}`)

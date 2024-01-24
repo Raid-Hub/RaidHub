@@ -130,7 +130,7 @@ const RTASpeedunLeaderboad = ({ raid, category }: RTASpeedunLeaderboadProps<stri
             ? // @ts-ignore
               (SpeedrunVariables[raid]?.values[category] as SpeedData)
             : undefined
-    const subtitle = subKey ? strings.leaderboards[subKey.name] : undefined
+    const subtitle = subKey ? strings.rtaLeaderboards[subKey.name] : undefined
 
     const pageTitle = `${raidName} | RTA Speedrun Leaderboards`
     const description = `RTA Speedrun Leaderboards for ${raidName}`

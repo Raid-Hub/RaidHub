@@ -5,7 +5,11 @@ import { Leaderboard } from "./getLeaderboard"
 type LeaderboardSearchParams =
     | {
           type: "global"
-          board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears
+          board:
+              | Leaderboard.Clears
+              | Leaderboard.Sherpa
+              | Leaderboard.FullClears
+              | Leaderboard.Speedrun
       }
     | {
           type: "invidual"

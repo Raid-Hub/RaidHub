@@ -68,7 +68,7 @@ export interface LocalStrings {
     edit: string
     save: string
     cancel: string
-    leaderboards: {
+    rtaLeaderboards: {
         normal: string
         anyPercent: string
         prestige: string
@@ -77,13 +77,20 @@ export interface LocalStrings {
         trioAllEncounters: string
         trio: string
     }
-    individualLeaderboads: {
+    individualLeaderboards: {
         fresh: string
         clears: string
         sherpas: string
         trios: string
         duos: string
         solos: string
+        speed: string
+    }
+    globalLeaderboards: {
+        fresh: string
+        clears: string
+        sherpas: string
+        speed: string
     }
     score: string
     showScore: string
@@ -247,7 +254,7 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         edit: "Edit",
         save: "Save",
         cancel: "Cancel",
-        leaderboards: {
+        rtaLeaderboards: {
             anyPercent: "Any %",
             trio: "Trio",
             normal: "Normal",
@@ -271,13 +278,20 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             3: "Unknown"
         },
         submit: "Submit",
-        individualLeaderboads: {
+        individualLeaderboards: {
             fresh: "Full Clears",
             clears: "Clears",
             sherpas: "Sherpas",
             trios: "Trio Clears",
             duos: "Duo Clears",
-            solos: "Solo Clears"
+            solos: "Solo Clears",
+            speed: "Speedrun"
+        },
+        globalLeaderboards: {
+            fresh: "Total Full Clears",
+            clears: "Total Clears",
+            sherpas: "Total Sherpas",
+            speed: "Sum of Fastest Clears"
         }
     }
 }

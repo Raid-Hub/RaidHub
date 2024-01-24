@@ -33,7 +33,7 @@ export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps)
     const { page, handleBackwards, handleForwards, setPage } = usePage()
     const queryClient = useQueryClient()
     const raidName = strings.raidNames[raid]
-    const boardName = strings.individualLeaderboads[board]
+    const boardName = strings.individualLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, board, [], page),
         queryFn: () => getIndividualLeaderboard(raid, board, page)

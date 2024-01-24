@@ -103,4 +103,4 @@ export const SpeedrunVariables = {
     } | null
 >
 
-export type SpeedData = { id: string; name: keyof LocalStrings["leaderboards"] }
+export type SpeedData = { id: string; name: keyof LocalStrings["rtaLeaderboards"] }

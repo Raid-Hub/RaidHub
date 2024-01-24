@@ -2,17 +2,19 @@ import styles from "~/styles/pages/leaderboards.module.css"
 import { useState } from "react"
 import { IndividualLeaderboardEntry } from "~/types/leaderboards"
 import Link from "next/link"
-import { formattedNumber } from "~/util/presentation/formatting"
+import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
 import Image from "next/image"
 import { useLocale } from "../app/LocaleManager"
 
 const defautlIcon = "https://www.bungie.net/img/theme/destiny/icons/missing_emblem.jpg"
 
 export const IndividualLeaderboardEntryComponent = ({
-    entry
+    entry,
+    valueType
 }: {
     entry: IndividualLeaderboardEntry
     isSearched?: boolean
+    valueType: "number" | "duration"
 }) => {
     const [icon, setIcon] = useState(entry.iconURL ?? defautlIcon)
     const { locale } = useLocale()
@@ -36,7 +38,9 @@ export const IndividualLeaderboardEntryComponent = ({
                 <span>{entry.displayName}</span>
             </Link>
             <span className={styles["individual-value"]}>
-                {formattedNumber(entry.value, locale)}
+                {valueType === "number"
+                    ? formattedNumber(entry.value, locale)
+                    : secondsToHMS(entry.value, true)}
             </span>
         </div>
     )

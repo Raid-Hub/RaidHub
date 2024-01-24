@@ -96,7 +96,7 @@ export type RaidHubActivityResponse = RaidHubActivityExtended & {
         string,
         {
             finishedRaid: boolean
-            sherpas: number
+            creditedSherpas: number
             isFirstClear: boolean
         }
     >

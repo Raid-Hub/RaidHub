@@ -21,13 +21,15 @@ import {
 const ENTRIES_PER_PAGE = 50
 
 export const IndividualLeaderboadGlobal = ({
-    board
+    board,
+    valueType = "number"
 }: {
-    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears
+    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun
+    valueType: "number" | "duration"
 }) => {
     const { strings } = useLocale()
     const { page, handleBackwards, handleForwards, setPage } = usePage()
-    const boardName = strings.individualLeaderboads[board]
+    const boardName = strings.globalLeaderboards[board]
     const query = useQuery({
         queryKey: leaderboardQueryKey("global", board, [], page),
         queryFn: () => getIndividualGlobalLeaderboard(board, page)
@@ -58,7 +60,7 @@ export const IndividualLeaderboadGlobal = ({
         }
     })
 
-    const title = `Total ${boardName} Leaderboards`
+    const title = `${boardName} Leaderboards`
     const description = `${boardName} for all Raids in Destiny 2`
     return (
         <>
@@ -72,7 +74,7 @@ export const IndividualLeaderboadGlobal = ({
             <main className={styles["main"]}>
                 <section className={styles["individual-leaderboard-banner"]}>
                     <div>
-                        <h1 className={styles["header-h1"]}>Total {boardName}</h1>
+                        <h1 className={styles["header-h1"]}>{boardName}</h1>
                     </div>
                     <CloudflareImage
                         priority
@@ -116,6 +118,7 @@ export const IndividualLeaderboadGlobal = ({
                                     value: e.value
                                 }}
                                 key={e.player.membershipId}
+                                valueType={valueType}
                             />
                         ))
                     )}
