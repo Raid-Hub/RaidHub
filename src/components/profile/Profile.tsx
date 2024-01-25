@@ -120,18 +120,18 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 <meta key="description" name="description" content={description} />
 
                 {/* Facebook */}
-                <meta key="og-title" property="og:title" content={title} />
-                <meta key="og-descriptions" property="og:description" content={description} />
-                <meta key="og-image" property="og:image" content={image} />
+                <meta key="og:title" property="og:title" content={title} />
+                <meta key="og:descriptions" property="og:description" content={description} />
+                <meta key="og:image" property="og:image" content={image} />
 
                 {/* Twitter */}
-                <meta key="twitter-title" property="twitter:title" content={title} />
+                <meta key="twitter:title" property="twitter:title" content={title} />
                 <meta
-                    key="twitter-descriptions"
+                    key="twitter:descriptions"
                     property="twitter:description"
                     content={description}
                 />
-                <meta key="twitter-image" property="twitter:image" content={image} />
+                <meta key="twitter:image" property="twitter:image" content={image} />
             </Head>
             <main className={styles["main"]} ref={mainRef}>
                 <PortalProvider target={mainRef}>
