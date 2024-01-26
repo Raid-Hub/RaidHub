@@ -4,10 +4,10 @@ import { createHeaders } from "./_createHeaders"
 
 export const manifestQueryKey = ["raidhub_manifest"] as const
 
-export async function getManifest(headers?: Record<string, string>) {
+export async function getManifest() {
     const url = new URL(getRaidHubBaseUrl() + `/manifest`)
 
-    const res = await fetch(url, { headers: { ...createHeaders(), ...headers } })
+    const res = await fetch(url, { headers: createHeaders() })
 
     const data = (await res.json()) as RaidHubAPIResponse<RaidHubManifest>
 
