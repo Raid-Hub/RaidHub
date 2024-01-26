@@ -121,7 +121,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
 
                 {/* Facebook */}
                 <meta key="og:title" property="og:title" content={title} />
-                <meta key="og:descriptions" property="og:description" content={description} />
+                <meta key="og:description" property="og:description" content={description} />
                 <meta key="og:image" property="og:image" content={image} />
 
                 {/* Twitter */}
