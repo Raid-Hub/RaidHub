@@ -4,7 +4,7 @@ import {
     RaidHubActivitySearchResponse
 } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 import { z } from "zod"
 import { booleanString, numberString } from "~/util/zod"
 import { ListedRaid, ListedRaids } from "~/types/raids"

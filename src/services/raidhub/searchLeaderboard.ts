@@ -2,7 +2,7 @@ import { RaidHubAPIResponse, RaidHubLeaderboardSearchResult } from "~/types/raid
 import { ListedRaid } from "~/types/raids"
 import { Leaderboard } from "./getLeaderboard"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 
 type LeaderboardSearchParams<T extends "global" | "individual" | "worldfirst"> = T extends "global"
     ? {

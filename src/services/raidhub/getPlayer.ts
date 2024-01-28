@@ -1,6 +1,6 @@
 import { RaidHubAPIResponse, RaidHubPlayer, RaidHubPlayerResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 
 export function playerQueryKey(membershipId: string) {
     return ["raidhub-player", membershipId] as const

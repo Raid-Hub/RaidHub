@@ -1,6 +1,6 @@
 import { RaidHubAPIResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 import { DestinyPostGameCarnageReportData } from "bungie-net-core/models"
 
 export function activityQueryKey(instanceId: string) {

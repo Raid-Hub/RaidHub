@@ -93,7 +93,14 @@ const WorldsFirstLeaderboad = ({ raid }: { raid: ListedRaid }) => {
     ]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
-        queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
+        queryFn: () =>
+            getLeaderboard({
+                raid: raid,
+                board: Leaderboard.WorldFirst,
+                params,
+                page,
+                count: ENTRIES_PER_PAGE
+            })
     })
 
     const queryClient = useQueryClient()

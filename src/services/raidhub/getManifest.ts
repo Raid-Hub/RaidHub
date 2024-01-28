@@ -1,6 +1,6 @@
 import { RaidHubAPIResponse, RaidHubManifest } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 
 export const manifestQueryKey = ["raidhub_manifest"] as const
 

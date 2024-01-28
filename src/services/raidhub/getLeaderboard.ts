@@ -8,7 +8,7 @@ import { ListedRaid } from "~/types/raids"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
+import { createHeaders } from "."
 
 export enum Leaderboard {
     WorldFirst = "worldfirst",
@@ -30,17 +30,19 @@ export function leaderboardQueryKey(
     return ["raidhub-leaderboard", raid, board, paramStrings, page] as const
 }
 
-export async function getLeaderboard(
-    raid: ListedRaid,
-    board: Leaderboard,
-    params: string[],
+export async function getLeaderboard(args: {
+    raid: ListedRaid
+    board: Leaderboard
+    params: string[]
     page: number
-): Promise<LeaderboardResponse> {
+    count: number
+}): Promise<LeaderboardResponse> {
     const url = new URL(
-        getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/${board}/${params.join("/")}`
+        getRaidHubBaseUrl() +
+            `/leaderboard/${RaidToUrlPaths[args.raid]}/${args.board}/${args.params.join("/")}`
     )
-    url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+    url.searchParams.append("page", String(args.page))
+    url.searchParams.append("count", String(args.count))
 
     try {
         const res = await fetch(url, { headers: createHeaders() })

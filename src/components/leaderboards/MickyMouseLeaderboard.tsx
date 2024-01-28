@@ -26,7 +26,14 @@ export default function MickeyMouseLeaderboard({
     const raidName = strings.raidNames[raid]
     const query = useQuery({
         queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
-        queryFn: () => getLeaderboard(raid, Leaderboard.WorldFirst, params, page)
+        queryFn: () =>
+            getLeaderboard({
+                raid,
+                board: Leaderboard.WorldFirst,
+                params,
+                page,
+                count: ENTRIES_PER_PAGE
+            })
     })
 
     const queryClient = useQueryClient()

@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { adminProcedure } from "../../middleware"
 import { z } from "zod"
-import { createHeaders } from "~/services/raidhub/_createHeaders"
+import { createHeaders } from "~/services/raidhub"
 import { RaidHubAPIResponse } from "~/types/raidhub-api"
 import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
 
