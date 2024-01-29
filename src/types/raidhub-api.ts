@@ -18,6 +18,7 @@ export type RaidHubActivitiesResponse = components["schemas"]["PlayerActivitiesR
 export type RaidHubManifestResponse = components["schemas"]["ManifestResponse"]
 
 export type RaidHubPlayerSearchResponse = components["schemas"]["PlayerSearchResponse"]
+export type RaidHubPlayerSearchResult = RaidHubPlayerSearchResponse["results"][number]
 
 export type RaidHubRaidPath = components["schemas"]["RaidPath"]
 

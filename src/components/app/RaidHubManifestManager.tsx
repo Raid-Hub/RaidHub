@@ -8,6 +8,7 @@ import manifest from "../../../manifest.json"
 type ManifestContextData = {
     manifest: RaidHubManifestResponse
     urlPathForRaid(raid: ListedRaid): RaidHubRaidPath
+    listedRaids: ListedRaid[]
 }
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
@@ -25,7 +26,8 @@ export function RaidHubManifestManager({ children }: { children: ReactNode }) {
             manifest: data,
             urlPathForRaid(raid: ListedRaid) {
                 return this.manifest.raidUrlPaths[raid]
-            }
+            },
+            listedRaids: [...data.listed]
         }
     }, [data])
 

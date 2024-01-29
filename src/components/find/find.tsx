@@ -1,8 +1,7 @@
-import styles from "./find.module.css"
 import { Collection } from "@discordjs/collection"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { z } from "zod"
-import { activitySearch, activitySearchQuerySchema } from "~/services/raidhub/searchActivities"
+import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
 import {
     Control,
@@ -14,29 +13,37 @@ import {
     useForm
 } from "react-hook-form"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import { RaidHubActivityExtended, RaidHubSearchResult } from "~/types/raidhub-api"
-import UserName from "../profile/user/UserName"
-import Image from "next/image"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { useSeasons } from "../app/DestinyManifestManager"
-import { ListedRaid, ListedRaids } from "~/types/raids"
-import { useLocale } from "../app/LocaleManager"
-import ErrorComponent from "../global/Error"
-import CustomError, { ErrorCode } from "~/models/errors/CustomError"
-import Loading from "../global/Loading"
-import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
-import Link from "next/link"
 import CloudflareImage from "~/images/CloudflareImage"
 import RaidCardBackground from "~/images/raid-backgrounds"
+import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
+import { activitySearch } from "~/services/raidhub/searchActivities"
+import {
+    RaidHubActivityExtended,
+    RaidHubActivitySearchQuery,
+    RaidHubPlayerSearchResult
+} from "~/types/raidhub-api"
+import { ListedRaid } from "~/types/raids"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { raidTupleFromHash } from "~/util/destiny/raidUtils"
 import { secondsToHMS } from "~/util/presentation/formatting"
+import { useSeasons } from "../app/DestinyManifestManager"
+import { useLocale } from "../app/LocaleManager"
+import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import ErrorComponent from "../global/Error"
+import Loading from "../global/Loading"
+import UserName from "../profile/user/UserName"
+import styles from "./find.module.css"
 
 interface ActivitySearchFormState {
     flawless: -1 | 0 | 1
     fresh: -1 | 0 | 1
     completed: -1 | 0 | 1
     raid: ListedRaid | -1
-    players: ({ membershipId: string } | RaidHubSearchResult)[]
+    players: (
+        | { resolved: false; membershipId: string }
+        | ({ resolved: true } & RaidHubPlayerSearchResult)
+    )[]
     playerCountRange: [number, number]
     dateRange: [Date, Date]
     seasonRange: [number, number]
@@ -54,7 +61,7 @@ export default function Find({
     replaceAllQueryParams,
     sessionMembershipId
 }: {
-    query: z.infer<typeof activitySearchQuerySchema>
+    query: RaidHubActivitySearchQuery
     replaceAllQueryParams: (searchParams: URLSearchParams) => void
     sessionMembershipId: string
 }) {
@@ -143,9 +150,11 @@ export default function Find({
         data,
         isError,
         error
-    } = useMutation<Collection<string, RaidHubActivityExtended>, Error, URLSearchParams>({
-        mutationFn: params => activitySearch(params.toString())
-    })
+    } = useMutation<Collection<string, RaidHubActivityExtended>, Error, RaidHubActivitySearchQuery>(
+        {
+            mutationFn: activitySearch
+        }
+    )
 
     const players = watch("players")
 
@@ -217,7 +226,11 @@ export default function Find({
     )
 }
 
-const PlayerLookup = ({ addPlayer }: { addPlayer: (p: RaidHubSearchResult) => void }) => {
+const PlayerLookup = ({
+    addPlayer
+}: {
+    addPlayer: (p: ActivitySearchFormState["players"][number]) => void
+}) => {
     const playerSearch = useRaidHubSearch()
 
     return (
@@ -274,7 +287,7 @@ const AddedPlayers = ({
             <h3>Selected Players</h3>
             <ul>
                 <li>
-                    <PickedPlayer membershipId={sessionMembershipId} />
+                    <PickedPlayer membershipId={sessionMembershipId} resolved={false} />
                 </li>
                 {fields.map((player, index) => (
                     <li key={player.id}>
@@ -289,27 +302,27 @@ const AddedPlayers = ({
     )
 }
 
-const PickedPlayer = (player: RaidHubSearchResult | { membershipId: string }) => {
+const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
     // if we dont have the player we can just use the membershipId to get the player
-    const { ...q } = useQuery({
+    const { data } = useQuery({
         queryFn: () => getPlayerBasic(player.membershipId),
         queryKey: getPlayerBasicKey(player.membershipId),
-        enabled: !("lastSeen" in player),
+        initialData: player.resolved ? player : null,
+        enabled: !player.resolved,
         staleTime: Infinity
     })
 
-    if ("lastSeen" in player || q.isSuccess) {
-        const resolved = q.data ?? (player as RaidHubSearchResult)
+    if (data) {
         return (
             <div style={{ display: "flex", alignItems: "center" }}>
                 <Image
                     width={45}
                     height={45}
-                    alt={resolved.bungieGlobalDisplayName ?? resolved.displayName ?? "Guardian"}
+                    alt={data.bungieGlobalDisplayName ?? data.displayName ?? "Guardian"}
                     unoptimized
-                    src={bungieIconUrl(resolved.iconPath ?? undefined)}
+                    src={bungieIconUrl(data.iconPath ?? undefined)}
                 />
-                <UserName {...resolved} displayName={resolved.displayName ?? "Guardian"} />
+                <UserName {...data} displayName={data.displayName ?? "Guardian"} />
             </div>
         )
     } else {
@@ -421,13 +434,15 @@ function RaidPicker<T extends FieldValues>({
     register: UseFormRegister<T>
 }) {
     const { strings } = useLocale()
+    const { listedRaids } = useRaidHubManifest()
+
     return (
         <div className={styles["gadget"]}>
             <label htmlFor={id}>{label}</label>
             <select id={id} {...register(id, { valueAsNumber: true })}>
                 <option value={-1}>None</option>
                 <>
-                    {ListedRaids?.map(r => (
+                    {listedRaids?.map(r => (
                         <option key={r} value={r}>
                             {strings.raidNames[r]}
                         </option>

@@ -1,5 +1,5 @@
 import { BungieClientProtocol } from "bungie-net-core"
-import { RaidHubPlayerSearchResponse } from "~/types/raidhub-api"
+import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { getRaidHubApi } from "."
 import { searchForBungieName } from "../bungie/searchForBungieName"
 import { searchForUsername } from "../bungie/searchForUsername"
@@ -8,7 +8,7 @@ import { searchForUsername } from "../bungie/searchForUsername"
 export async function searchRaidHubUser(
     query: string,
     bungieClient: BungieClientProtocol
-): Promise<RaidHubPlayerSearchResponse["results"]> {
+): Promise<readonly RaidHubPlayerSearchResult[]> {
     try {
         const data = await getRaidHubApi("/player/search", null, { query })
         if (data.results.length > 0) {
@@ -52,7 +52,7 @@ export async function searchRaidHubUser(
             displayNamePrefix: displayName,
             pages: 2
         }).then(res =>
-            res.map((r): RaidHubPlayerSearchResponse["results"][0] => {
+            res.map((r): RaidHubPlayerSearchResult => {
                 const membership = r.destinyMemberships[0]
                 return {
                     membershipId: membership.membershipId,
