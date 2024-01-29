@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "next dev",
         "dev+": "node proxy/server.js",
-        "gen": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types --path-params-as-types",
+        "manifest": "curl -o manifest.json https://api.raidhub.app/manifest -H 'origin: https://raidhub.io'",
+        "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:schema": "prisma format && prisma db push",
         "db:push": "prisma format && prisma db push --force-reset",
@@ -66,6 +67,7 @@
         "node-fetch": "^3.3.1",
         "openapi-typescript": "^6.7.4",
         "prettier": "2.8.7",
+        "prettier-plugin-organize-imports": "^3.2.4",
         "prisma": "^5.8.1",
         "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",

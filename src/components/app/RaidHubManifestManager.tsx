@@ -1,29 +1,35 @@
 import { useQuery } from "@tanstack/react-query"
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { getManifest, manifestQueryKey } from "~/services/raidhub/getManifest"
-import { RaidHubManifest } from "~/types/raidhub-api"
+import { ReactNode, createContext, useContext, useMemo } from "react"
+import { getRaidHubApi } from "~/services/raidhub"
+import { RaidHubManifestResponse, RaidHubRaidPath } from "~/types/raidhub-api"
+import { ListedRaid } from "~/types/raids"
+import manifest from "../../../manifest.json"
 
-const ManifestContext = createContext<RaidHubManifest | null | undefined>(undefined)
+type ManifestContextData = {
+    manifest: RaidHubManifestResponse
+    urlPathForRaid(raid: ListedRaid): RaidHubRaidPath
+}
+
+const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
 
 export function RaidHubManifestManager({ children }: { children: ReactNode }) {
-    const [storedManifest, setStoredManifest] = useState<string | null>()
-    useEffect(() => setStoredManifest(localStorage.getItem("raidhub_manifest")), [])
-
     const { data } = useQuery({
-        queryKey: manifestQueryKey,
-        queryFn: () => getManifest(),
-        staleTime: 1000 * 3600, // 1 hour
-        onSuccess(data) {
-            localStorage.setItem("raidhub_manifest", JSON.stringify(data))
-        }
+        queryKey: ["raidhub-manifest"],
+        queryFn: () => getRaidHubApi("/manifest", null, null),
+        initialData: manifest.response as RaidHubManifestResponse,
+        staleTime: 1000 * 3600 // 1 hour
     })
 
-    return (
-        <ManifestContext.Provider
-            value={data ?? (storedManifest ? JSON.parse(storedManifest) : null)}>
-            {children}
-        </ManifestContext.Provider>
-    )
+    const value = useMemo(() => {
+        return {
+            manifest: data,
+            urlPathForRaid(raid: ListedRaid) {
+                return this.manifest.raidUrlPaths[raid]
+            }
+        }
+    }, [data])
+
+    return <ManifestContext.Provider value={value}>{children}</ManifestContext.Provider>
 }
 
 export function useRaidHubManifest() {

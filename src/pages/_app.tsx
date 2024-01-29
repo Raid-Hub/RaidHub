@@ -16,6 +16,7 @@ import { LazyMotion } from "framer-motion"
 import { RaidHubManifestManager } from "~/components/app/RaidHubManifestManager"
 import Toolbox from "~/components/toolbox/Toolbox"
 import { HeaderBanner } from "~/components/global/HeaderBanner"
+import { Hydrate } from "@tanstack/react-query"
 
 /** Allows us to offload the the import of dexie (indexdb tool) until necessary */
 const DestinyManifestManager = dynamic(() =>
@@ -27,6 +28,7 @@ const lazyMotionFeatures = () => import("../util/framer-motion-features").then(i
 
 type PageProps = {
     session: Session
+    globalDehydratedState: unknown
     dotAppRedirect?: boolean
     serverRendered?: boolean
 }
@@ -37,7 +39,7 @@ const description =
 
 const RaidHub = ({
     Component,
-    pageProps: { session, ...pageProps },
+    pageProps: { session, globalDehydratedState, ...pageProps },
     router
 }: AppProps<PageProps>) => {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)

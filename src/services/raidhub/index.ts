@@ -1,24 +1,34 @@
-import { RaidHubAPIResponse } from "~/types/raidhub-api"
+import { RaidHubAPIResponse, RaidHubPath } from "~/types/raidhub-api"
 import { paths } from "~/types/raidhub-openapi"
 
-export async function getRaidhubApi<
-    T extends keyof paths,
+export async function getRaidHubApi<
+    T extends RaidHubPath,
     _M = "get" extends keyof paths[T] ? paths[T]["get"] : null,
     _R = "responses" extends keyof _M ? _M["responses"] : null,
     _200 = 200 extends keyof _R ? _R[200] : null,
     _C = "content" extends keyof _200 ? _200["content"] : null,
     R = "application/json" extends keyof _C ? _C["application/json"] : never,
     _P = "parameters" extends keyof _M ? _M["parameters"] : null
->(path: T, query: "query" extends keyof _P ? _P["query"] : null): Promise<R> {
-    const url = new URL(path, process.env.RAIDHUB_API_URL!)
-    Object.entries(query ?? {}).forEach(([key, value]) => {
+>(
+    path: T,
+    pathParams: "path" extends keyof _P ? _P["path"] : null,
+    queryParams: "query" extends keyof _P ? _P["query"] : null
+): Promise<R> {
+    const url = new URL(
+        path.replace(/{([^}]+)}/g, (_, paramName) => {
+            // @ts-expect-error types don't really work here
+            return pathParams[paramName]
+        }),
+        process.env.RAIDHUB_API_URL
+    )
+    Object.entries(queryParams ?? {}).forEach(([key, value]) => {
         url.searchParams.set(key, String(value))
     })
 
     return fetchRaidHub<R>(url, { headers: createHeaders(), method: "GET" })
 }
 
-export async function postRaidhubApi<
+export async function postRaidHubApi<
     T extends keyof paths,
     _M = "post" extends keyof paths[T] ? paths[T]["post"] : null,
     _R = "responses" extends keyof _M ? _M["responses"] : null,

@@ -7,13 +7,13 @@ import { LocalStrings } from "~/util/presentation/localized-strings"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
 import { SpeedData, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import CloudflareImage from "~/images/CloudflareImage"
-import { RaidHubManifest } from "~/types/raidhub-api"
+import { RaidHubManifestResponse } from "~/types/raidhub-api"
 
 type HomeRaidCardProps = {
     raid: ListedRaid
     strings: LocalStrings
-    worldFirstLeaderboards: RaidHubManifest["leaderboards"]["worldFirst"][ListedRaid]
-    individualLeaderboards: RaidHubManifest["leaderboards"]["individual"][ListedRaid] | null
+    worldFirstLeaderboards: RaidHubManifestResponse["leaderboards"]["worldFirst"][ListedRaid]
+    individualLeaderboards: RaidHubManifestResponse["leaderboards"]["individual"][ListedRaid] | null
 }
 
 const HomeRaidCard = ({

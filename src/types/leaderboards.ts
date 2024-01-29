@@ -1,5 +1,5 @@
 export type LeaderboardResponse = {
-    date: number | null
+    date: Date | null
     entries: LeaderboardEntry[]
 }
 

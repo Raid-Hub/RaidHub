@@ -1,27 +1,21 @@
-import { RaidHubAPIResponse, RaidHubSearchResponse, RaidHubSearchResult } from "~/types/raidhub-api"
-import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
+import { BungieClientProtocol } from "bungie-net-core"
+import { RaidHubPlayerSearchResponse } from "~/types/raidhub-api"
+import { getRaidHubApi } from "."
 import { searchForBungieName } from "../bungie/searchForBungieName"
 import { searchForUsername } from "../bungie/searchForUsername"
-import { BungieClientProtocol } from "bungie-net-core"
-import { createHeaders } from "."
 
 // we have the bungie queries as backups
 export async function searchRaidHubUser(
     query: string,
     bungieClient: BungieClientProtocol
-): Promise<RaidHubSearchResult[]> {
-    const url = new URL(getRaidHubBaseUrl() + `/player/search`)
-    url.searchParams.append("query", query)
-
-    const res = await fetch(url, { headers: createHeaders() })
-
-    const data = (await res.json()) as RaidHubAPIResponse<RaidHubSearchResponse>
-    if (!data.success) {
-        const err = new Error(data.message)
-        Object.assign(err, data.error)
-        console.error(err)
-    } else if (data.response.results.length > 0) {
-        return data.response.results
+): Promise<RaidHubPlayerSearchResponse["results"]> {
+    try {
+        const data = await getRaidHubApi("/player/search", null, { query })
+        if (data.results.length > 0) {
+            return data.results
+        }
+    } catch (e) {
+        console.error(e)
     }
 
     // if we fail, let's try bungie
@@ -58,7 +52,7 @@ export async function searchRaidHubUser(
             displayNamePrefix: displayName,
             pages: 2
         }).then(res =>
-            res.map((r): RaidHubSearchResult => {
+            res.map((r): RaidHubPlayerSearchResponse["results"][0] => {
                 const membership = r.destinyMemberships[0]
                 return {
                     membershipId: membership.membershipId,
