@@ -1,17 +1,17 @@
-import styles from "~/styles/pages/leaderboards.module.css"
-import ReloadArrow from "~/images/icons/ReloadArrow"
-import PreviousArrow from "~/images/icons/PreviousArrow"
-import NextArrow from "~/images/icons/NextArrow"
-import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import Loader from "../reusable/Loader"
-import BungieName from "~/models/BungieName"
 import Image from "next/image"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { useRef, useState } from "react"
+import { z } from "zod"
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { useSearchParams } from "~/hooks/util/useSearchParams"
-import { z } from "zod"
-import { RaidHubSearchResult } from "~/types/raidhub-api"
+import NextArrow from "~/images/icons/NextArrow"
+import PreviousArrow from "~/images/icons/PreviousArrow"
+import ReloadArrow from "~/images/icons/ReloadArrow"
+import styles from "~/styles/pages/leaderboards.module.css"
+import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
+import Loader from "../reusable/Loader"
 
 export const Controls = ({
     isLoading,
@@ -34,7 +34,7 @@ export const Controls = ({
 }) => {
     const searchRef = useRef<HTMLFormElement>(null)
     const [isShowingResults, setIsShowingResults] = useState(false)
-    const [selected, setSelected] = useState<RaidHubSearchResult | null>(null)
+    const [selected, setSelected] = useState<RaidHubPlayerSearchResult | null>(null)
 
     const handleClickAway = () => {
         setIsShowingResults(false)
@@ -88,72 +88,50 @@ export const Controls = ({
                             type="text"
                             value={enteredText}
                             placeholder={
-                                selected
-                                    ? (() => {
-                                          let username = selected.displayName
-                                          try {
-                                              const b = new BungieName(
-                                                  selected.bungieGlobalDisplayName,
-                                                  selected.bungieGlobalDisplayNameCode
-                                              )
-                                              username = b.toString()
-                                          } catch {}
-                                          return username
-                                      })()
-                                    : "Search the leaderboards"
+                                selected ? getUserName(selected) : "Search the leaderboards"
                             }
                             onChange={handleInputChange}
                         />
                     </div>
                     {!!results.length && isShowingResults && isReady && (
                         <div className={styles["search-results"]}>
-                            {results.map((result, idx) => {
-                                let username = result.displayName
-                                try {
-                                    const b = new BungieName(
-                                        result.bungieGlobalDisplayName,
-                                        result.bungieGlobalDisplayNameCode
-                                    )
-                                    username = b.toString()
-                                } catch {}
-                                return (
+                            {results.map((result, idx) => (
+                                <div
+                                    key={idx}
+                                    onClick={() => {
+                                        setParam("player", result.membershipId)
+                                        searchFn(result.membershipId)
+                                        clearQuery()
+                                        setSelected(result)
+                                    }}
+                                    style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: "0.5em",
+                                        alignItems: "center",
+                                        padding: "1em 1em"
+                                    }}>
                                     <div
-                                        key={idx}
-                                        onClick={() => {
-                                            setParam("player", result.membershipId)
-                                            searchFn(result.membershipId)
-                                            clearQuery()
-                                            setSelected(result)
-                                        }}
                                         style={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            gap: "0.5em",
-                                            alignItems: "center",
-                                            padding: "1em 1em"
+                                            width: "50px",
+                                            height: "50px",
+                                            position: "relative"
                                         }}>
-                                        <div
-                                            style={{
-                                                width: "50px",
-                                                height: "50px",
-                                                position: "relative"
-                                            }}>
-                                            <Image
-                                                src={bungieIconUrl(result.iconPath)}
-                                                unoptimized
-                                                fill
-                                                alt={""}
-                                            />
-                                        </div>
-                                        <span
-                                            style={{
-                                                marginLeft: "0.5em"
-                                            }}>
-                                            {username}
-                                        </span>
+                                        <Image
+                                            src={bungieIconUrl(result.iconPath)}
+                                            unoptimized
+                                            fill
+                                            alt={""}
+                                        />
                                     </div>
-                                )
-                            })}
+                                    <span
+                                        style={{
+                                            marginLeft: "0.5em"
+                                        }}>
+                                        {getUserName(result)}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </form>

@@ -1,5 +1,5 @@
-import { ListedRaid, Raid } from "../types/raids"
-import { LocalStrings } from "../util/presentation/localized-strings"
+import { ListedRaid } from "../types/raidhub-api"
+import { Raid } from "./raid"
 
 export const destiny2GameId = "4d7y5zd7"
 
@@ -102,5 +102,12 @@ export const SpeedrunVariables = {
         values: Record<string, SpeedData>
     } | null
 >
-
-export type SpeedData = { id: string; name: keyof LocalStrings["rtaLeaderboards"] }
+export type RTABoard =
+    | "anyPercent"
+    | "trio"
+    | "normal"
+    | "prestige"
+    | "noMajorGlitches"
+    | "allEncounters"
+    | "trioAllEncounters"
+export type SpeedData = { id: string; name: RTABoard }

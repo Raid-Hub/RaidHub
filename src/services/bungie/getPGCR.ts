@@ -1,7 +1,7 @@
-import DestinyPGCR from "~/models/pgcr/PGCR"
-import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
 import { BungieClientProtocol } from "bungie-net-core"
+import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
 import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import DestinyPGCR from "~/util/destiny/PGCR"
 import { getRaidHubPGCR } from "../raidhub/getPGCR"
 
 export const getPGCR = {

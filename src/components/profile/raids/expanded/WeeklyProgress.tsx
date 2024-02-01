@@ -1,7 +1,7 @@
 import { useBungieClient } from "~/components/app/TokenManager"
-import { RaidMileStones } from "~/data/milestones"
-import { ListedRaid, SunsetRaid } from "~/types/raids"
 import { useProfileProps } from "~/components/profile/Profile"
+import { RaidMileStones } from "~/data/milestones"
+import { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
 import CharacterWeeklyProgress from "./CharacterWeeklyProgress"
 import styles from "./expanded-raid.module.css"
 

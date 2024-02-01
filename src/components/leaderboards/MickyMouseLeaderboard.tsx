@@ -1,38 +1,43 @@
-import { ListedRaid } from "~/types/raids"
-import { useLocale } from "../app/LocaleManager"
-import { usePage } from "~/hooks/util/usePage"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
-import { toCustomDateString } from "~/util/presentation/formatting"
 import Head from "next/head"
-import LeaderboardComponent, { ENTRIES_PER_PAGE } from "./Leaderboard"
-import WorldFirstHeader from "./WorldFirstHeader"
+import { usePage } from "~/hooks/util/usePage"
+import { getWorldfirstLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
     searchLeaderboardPlayer,
-    searchLeaderboardPlayerQueryKey
+    searchLeaderboardPlayerMutationKey
 } from "~/services/raidhub/searchLeaderboard"
+import { ListedRaid, RaidHubWorldFirstLeaderboardCategory } from "~/types/raidhub-api"
+import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
+import { toCustomDateString } from "~/util/presentation/formatting"
+import { useLocale } from "../app/LocaleManager"
+import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import ActivityLeaderboard from "./ActivityLeaderboard"
+import WorldFirstHeader from "./WorldFirstHeader"
 
 export default function MickeyMouseLeaderboard({
     raid,
-    params,
+    board,
     descriptor
 }: {
     raid: ListedRaid
-    params: string[]
+    board: RaidHubWorldFirstLeaderboardCategory
     descriptor: string
 }) {
-    const { strings, locale } = useLocale()
+    const { locale } = useLocale()
+    const { getUrlPathForRaid, getRaidString } = useRaidHubManifest()
     const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
-    const raidName = strings.raidNames[raid]
+    const raidName = getRaidString(raid)
     const query = useQuery({
-        queryKey: leaderboardQueryKey(raid, Leaderboard.WorldFirst, params, page),
+        queryKey: leaderboardQueryKey(raid, board, {
+            page: page,
+            count: LEADERBOARD_ENTRIES_PER_PAGE
+        }),
         queryFn: () =>
-            getLeaderboard({
-                raid,
-                board: Leaderboard.WorldFirst,
-                params,
+            getWorldfirstLeaderboard({
+                raid: getUrlPathForRaid(raid),
+                category: board,
                 page,
-                count: ENTRIES_PER_PAGE
+                count: LEADERBOARD_ENTRIES_PER_PAGE
             })
     })
 
@@ -41,22 +46,20 @@ export default function MickeyMouseLeaderboard({
     const searchParams = {
         type: "worldfirst",
         raid,
-        board: Leaderboard.WorldFirst,
-        params
+        category: board,
+        page,
+        count: LEADERBOARD_ENTRIES_PER_PAGE
     } as const
 
-    const searchQueryParams = {
-        page,
-        count: ENTRIES_PER_PAGE
-    }
-
     const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
-        mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
-        mutationFn: (membershipId: string) =>
-            searchLeaderboardPlayer<"worldfirst">(searchParams, searchQueryParams, membershipId),
+        mutationKey: searchLeaderboardPlayerMutationKey(searchParams),
+        mutationFn: (membershipId: string) => searchLeaderboardPlayer(searchParams, membershipId),
         onSuccess(result) {
             queryClient.setQueryData(
-                leaderboardQueryKey(raid, Leaderboard.WorldFirst, [], result.page),
+                leaderboardQueryKey(raid, board, {
+                    page: page,
+                    count: LEADERBOARD_ENTRIES_PER_PAGE
+                }),
                 result.entries
             )
             setPage(result.page)
@@ -78,7 +81,7 @@ export default function MickeyMouseLeaderboard({
                 <meta name="date" content={date?.toISOString().slice(0, 10)} />
             </Head>
 
-            <LeaderboardComponent
+            <ActivityLeaderboard
                 entries={query.data?.entries ?? []}
                 isLoading={query.isLoading || query.isRefetching}
                 isLoadingSearch={isLoadingSearch}
@@ -92,7 +95,7 @@ export default function MickeyMouseLeaderboard({
                     subtitle={date ? toCustomDateString(date, locale) : ""}
                     raid={raid}
                 />
-            </LeaderboardComponent>
+            </ActivityLeaderboard>
         </>
     )
 }

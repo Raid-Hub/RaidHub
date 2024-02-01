@@ -1,12 +1,12 @@
-import styles from "~/styles/pages/query.module.css"
 import { Role } from "@prisma/client"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import Head from "next/head"
 import { MouseEventHandler, useState } from "react"
 import { RaidHubTable } from "~/components/reusable/RaidHubTable"
-import { auth } from "~/server/next-auth"
-import { trpc } from "~/util/trpc"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import { auth } from "~/server/next-auth"
+import styles from "~/styles/pages/query.module.css"
+import { trpc } from "~/util/trpc"
 
 export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
     const session = await auth(ctx)

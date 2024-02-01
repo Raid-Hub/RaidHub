@@ -1,8 +1,8 @@
-import PGCRCharacter from "./Character"
-import { mergeWeaponCollections } from "../../util/destiny/weapons"
-import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
-import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
 import { Collection } from "@discordjs/collection"
+import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
+import PGCRCharacter from "./Character"
+import { pgcrEntryRankingScore } from "./pgcrEntryRankingScore"
+import { mergeWeaponCollections } from "./weapons"
 
 export default class PGCRPlayer implements IPGCREntry {
     readonly membershipId: string

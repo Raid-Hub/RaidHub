@@ -1,30 +1,29 @@
-import styles from "~/styles/pages/profile/raids.module.css"
-import { useEffect, useMemo, useState } from "react"
 import { m } from "framer-motion"
-import { ListedRaid } from "~/types/raids"
-import RaidCardBackground from "~/images/raid-backgrounds"
+import { useEffect, useMemo, useState } from "react"
 import { useLocale } from "~/components/app/LocaleManager"
-import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
-import BigNumberStatItem from "./BigNumberStatItem"
-import Activity from "~/models/profile/data/Activity"
 import Loading from "~/components/global/Loading"
+import RaidCardBackground from "~/data/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"
-import { secondsToHMS } from "~/util/presentation/formatting"
-import RaidTagLabel from "./RaidTagLabel"
-import RaceTagLabel from "./RaceTagLabel"
 import Expand from "~/images/icons/Expand"
-import { findTags } from "~/util/raidhub/tags"
-import { RaidHubManifestBoard, RaidHubPlayerLeaderboardEntry } from "~/types/raidhub-api"
+import Activity from "~/models/profile/data/Activity"
+import styles from "~/styles/pages/profile/raids.module.css"
+import { ListedRaid, RaidHubPlayerProfileLeaderboardEntry } from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
-import ExpandedRaidView from "./expanded/ExpandedRaidView"
+import { secondsToHMS } from "~/util/presentation/formatting"
+import { findTags } from "~/util/tags"
+import BigNumberStatItem from "./BigNumberStatItem"
+import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
+import RaceTagLabel from "./RaceTagLabel"
 import { useActivitiesContext } from "./RaidContext"
+import RaidTagLabel from "./RaidTagLabel"
+import ExpandedRaidView from "./expanded/ExpandedRaidView"
 
 type RaidModalProps = {
     raid: ListedRaid
     expand: () => void
     clearExpand: () => void
-    leaderboardData: (RaidHubPlayerLeaderboardEntry & RaidHubManifestBoard)[]
-    wfBoardId: string | null
+    leaderboardData: RaidHubPlayerProfileLeaderboardEntry[]
+    wfBoardId: string
     isExpanded: boolean
 }
 
@@ -61,9 +60,19 @@ export default function RaidCard({
 
     const { strings } = useLocale()
 
-    const sortedLeaderboardData = leaderboardData?.sort((a, b) => a.rank - b.rank)
-    const firstClear =
-        sortedLeaderboardData?.find(entry => entry.id == wfBoardId) || sortedLeaderboardData[0]
+    const firstTaggedClear: RaidHubPlayerProfileLeaderboardEntry | undefined = useMemo(() => {
+        const wfBoardClear = leaderboardData
+            .filter(e => e.boardId === "wfBoardId")
+            ?.sort((a, b) => a.rank - b.rank)[0]
+        if (wfBoardClear) return wfBoardClear
+
+        const allLeaderboardClears = Array.from(leaderboardData.values())
+            .flat()
+            .sort(
+                (a, b) => new Date(a.dateCompleted).getTime() - new Date(b.dateCompleted).getTime()
+            )
+        return allLeaderboardClears[0]
+    }, [leaderboardData, wfBoardId])
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
@@ -106,14 +115,14 @@ export default function RaidCard({
                     alt={strings.raidNames[raid]}
                 />
                 <div className={styles["card-top"]}>
-                    {firstClear && (
+                    {firstTaggedClear && (
                         <RaceTagLabel
-                            placement={firstClear.rank}
-                            instanceId={firstClear.instanceId}
-                            dayOne={firstClear.dayOne}
-                            contest={firstClear.contest}
-                            weekOne={firstClear.weekOne}
-                            challenge={firstClear.type === "challenge"}
+                            placement={firstTaggedClear.rank}
+                            instanceId={firstTaggedClear.instanceId}
+                            dayOne={firstTaggedClear.dayOne}
+                            contest={firstTaggedClear.contest}
+                            weekOne={firstTaggedClear.weekOne}
+                            challenge={firstTaggedClear.type === "Challenge"}
                             raid={raid}
                             setActiveId={setHoveredTag}
                         />

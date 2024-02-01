@@ -1,10 +1,10 @@
-import styles from "~/styles/pages/profile/raids.module.css"
 import Link from "next/link"
 import { useLocale } from "~/components/app/LocaleManager"
+import useHover from "~/hooks/util/useDebouncedHover"
+import styles from "~/styles/pages/profile/raids.module.css"
 import { RaceTag } from "~/types/profile"
 import { LocalStrings } from "~/util/presentation/localized-strings"
-import { wfRaceMode } from "~/util/raidhub/tags"
-import useHover from "~/hooks/util/useDebouncedHover"
+import { wfRaceMode } from "~/util/tags"
 
 type RaidTagLabelProps = {
     instanceId?: string

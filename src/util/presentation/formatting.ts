@@ -63,7 +63,8 @@ export function secondsToYDHMS(totalSeconds: number): string {
         .join(" ")
 }
 
+const parser = new DOMParser()
 export const decodeHtmlEntities = (html: string) => {
-    const doc = new DOMParser().parseFromString(html, "text/html")
+    const doc = parser.parseFromString(html, "text/html")
     return doc.body.textContent || ""
 }

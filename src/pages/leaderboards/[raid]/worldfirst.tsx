@@ -1,20 +1,19 @@
+import { Hydrate, dehydrate, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { Hydrate, dehydrate, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useLocale } from "~/components/app/LocaleManager"
-import LeaderboardComponent, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
-import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { toCustomDateString } from "~/util/presentation/formatting"
-import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
-import { usePage } from "~/hooks/util/usePage"
-import { zRaidURIComponent } from "~/util/zod"
-import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
-import { ListedRaid, RaidsWithReprisedContest } from "~/types/raids"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
+import { usePage } from "~/hooks/util/usePage"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
+import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
     searchLeaderboardPlayer,
     searchLeaderboardPlayerQueryKey
 } from "~/services/raidhub/searchLeaderboard"
+import { ListedRaid } from "~/types/raidhub-api"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { toCustomDateString } from "~/util/presentation/formatting"
+import { zRaidURIComponent } from "~/util/zod"
 
 type WorldsFirstLeaderboadProps = {
     raid: ListedRaid

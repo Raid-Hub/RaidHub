@@ -1,8 +1,8 @@
-import RaidBanners from "~/images/raid-banners"
-import styles from "~/styles/pages/leaderboards.module.css"
-import { ListedRaid } from "~/types/raids"
-import { useLocale } from "../app/LocaleManager"
+import RaidBanners from "~/data/raid-banners"
 import CloudflareImage from "~/images/CloudflareImage"
+import styles from "~/styles/pages/leaderboards.module.css"
+import { ListedRaid } from "~/types/raidhub-api"
+import { useRaidHubManifest } from "../app/RaidHubManifestManager"
 
 export default function WorldFirstHeader({
     title,
@@ -13,7 +13,7 @@ export default function WorldFirstHeader({
     subtitle?: string
     raid: ListedRaid
 }) {
-    const { strings } = useLocale()
+    const { getRaidString } = useRaidHubManifest()
     return (
         <div className={styles["world-first-header"]}>
             <h1 className={styles["header-h1"]}>{title}</h1>
@@ -21,7 +21,7 @@ export default function WorldFirstHeader({
             <CloudflareImage
                 priority
                 cloudflareId={RaidBanners[raid]}
-                alt={strings.raidNames[raid]}
+                alt={getRaidString(raid)}
                 fill
                 className={styles["world-first-header-image"]}
             />

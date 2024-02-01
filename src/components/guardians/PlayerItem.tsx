@@ -1,16 +1,16 @@
-import styles from "~/styles/pages/inpsect.module.css"
-import Image from "next/image"
-import Link from "next/link"
 import {
     DestinyInventoryItemDefinition,
     DestinyItemComponent,
     DestinyItemSocketState
 } from "bungie-net-core/models"
-import { useItem } from "../app/DestinyManifestManager"
-import Socket, { EnabledDestinyItemSocketState } from "./Socket"
-import Loading from "../global/Loading"
-import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import Image from "next/image"
+import Link from "next/link"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
 import { useExpandedContext } from "~/pages/guardians"
+import styles from "~/styles/pages/inpsect.module.css"
+import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import Loading from "../global/Loading"
+import Socket, { EnabledDestinyItemSocketState } from "./Socket"
 
 const isExoticArmor = (data: DestinyInventoryItemDefinition) =>
     data?.itemType == 2 && data.inventory?.tierType == 6
@@ -22,14 +22,13 @@ export default function PlayerItem({
     item: DestinyItemComponent
     sockets: DestinyItemSocketState[]
 }) {
-    const { data, isLoading } = useItem(item.itemHash)
+    const data = useItemDefinition(item.itemHash)
 
     const isExpanded = useExpandedContext()
 
-    if (isLoading) return <Loading className={styles["item"]} />
+    if (!data) return <Loading className={styles["item"]} />
 
-    return data &&
-        (isExpanded || data.itemType == 16 || data.itemType == 3 || isExoticArmor(data)) ? (
+    return isExpanded || data.itemType == 16 || data.itemType == 3 || isExoticArmor(data) ? (
         <div className={styles["item"]} data-item-hash={item.itemHash}>
             <div className={styles["item-main"]}>
                 <Image

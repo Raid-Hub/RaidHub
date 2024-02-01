@@ -3,16 +3,17 @@ import { paths } from "~/types/raidhub-openapi"
 
 export async function getRaidHubApi<
     T extends RaidHubPath,
-    _M = "get" extends keyof paths[T] ? paths[T]["get"] : null,
-    _R = "responses" extends keyof _M ? _M["responses"] : null,
-    _200 = 200 extends keyof _R ? _R[200] : null,
-    _C = "content" extends keyof _200 ? _200["content"] : null,
+    _M = "get" extends keyof paths[T] ? paths[T]["get"] : never,
+    _R = "responses" extends keyof _M ? _M["responses"] : never,
+    _200 = 200 extends keyof _R ? _R[200] : never,
+    _C = "content" extends keyof _200 ? _200["content"] : never,
     R = "application/json" extends keyof _C ? _C["application/json"] : never,
-    _P = "parameters" extends keyof _M ? _M["parameters"] : null
+    _P = "parameters" extends keyof _M ? _M["parameters"] : never
 >(
     path: T,
     pathParams: "path" extends keyof _P ? _P["path"] : null,
-    queryParams: "query" extends keyof _P ? _P["query"] : null
+    queryParams: "query" extends keyof _P ? _P["query"] : null,
+    headers?: HeadersInit
 ): Promise<R> {
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
@@ -25,23 +26,24 @@ export async function getRaidHubApi<
         url.searchParams.set(key, String(value))
     })
 
-    return fetchRaidHub<R>(url, { headers: createHeaders(), method: "GET" })
+    return fetchRaidHub<R>(url, { headers: { ...createHeaders(), ...headers }, method: "GET" })
 }
 
 export async function postRaidHubApi<
     T extends keyof paths,
-    _M = "post" extends keyof paths[T] ? paths[T]["post"] : null,
-    _R = "responses" extends keyof _M ? _M["responses"] : null,
+    _M = "post" extends keyof paths[T] ? paths[T]["post"] : never,
+    _P = "parameters" extends keyof _M ? _M["parameters"] : null,
+    _RB = "requestBody" extends keyof _M ? Exclude<_M["requestBody"], undefined> : null,
+    _RC = "content" extends keyof _RB ? _RB["content"] : null,
+    _R = "responses" extends keyof _M ? _M["responses"] : never,
     _200 = 200 extends keyof _R ? _R[200] : null,
     _C = "content" extends keyof _200 ? _200["content"] : null,
-    R = "application/json" extends keyof _C ? _C["application/json"] : never,
-    _P = "parameters" extends keyof _M ? _M["parameters"] : null,
-    _RB = "requestBody" extends keyof _M ? _M["requestBody"][] : null,
-    _RC = "content" extends keyof _RB ? _RB["content"] : null
+    R = "application/json" extends keyof _C ? _C["application/json"] : never
 >(
     path: T,
     query: "query" extends keyof _P ? _P["query"] : null,
-    body: "application/json" extends keyof _RC ? _RC["application/json"] : null
+    body: "application/json" extends keyof _RC ? _RC["application/json"] : null,
+    headers?: HeadersInit
 ): Promise<R> {
     // create url
     const url = new URL(path, process.env.RAIDHUB_API_URL!)
@@ -50,7 +52,7 @@ export async function postRaidHubApi<
     })
 
     return fetchRaidHub<R>(url, {
-        headers: { ...createHeaders(), "Content-Type": "application/json" },
+        headers: { ...createHeaders(), "Content-Type": "application/json", ...headers },
         method: "POST",
         body: JSON.stringify(body)
     })

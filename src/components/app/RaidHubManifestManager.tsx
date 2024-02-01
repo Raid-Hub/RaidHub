@@ -1,14 +1,29 @@
 import { useQuery } from "@tanstack/react-query"
 import { ReactNode, createContext, useContext, useMemo } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
-import { RaidHubManifestResponse, RaidHubRaidPath } from "~/types/raidhub-api"
-import { ListedRaid } from "~/types/raids"
+import {
+    ListedRaid,
+    RaidDifficulty,
+    RaidHubManifestResponse,
+    RaidHubRaidPath,
+    SunsetRaid
+} from "~/types/raidhub-api"
 import manifest from "../../../manifest.json"
 
 type ManifestContextData = {
-    manifest: RaidHubManifestResponse
-    urlPathForRaid(raid: ListedRaid): RaidHubRaidPath
+    leaderboards: RaidHubManifestResponse["leaderboards"]
     listedRaids: ListedRaid[]
+    elevatedDifficulties: RaidDifficulty[]
+    sunsetRaids: SunsetRaid[]
+    getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
+    getDifficultyString(
+        raid: RaidDifficulty
+    ): RaidHubManifestResponse["difficultyStrings"][RaidDifficulty]
+    getRaidString(raid: ListedRaid): RaidHubManifestResponse["raidStrings"][ListedRaid]
+    getRaidFromHash: (hash: string | number) => {
+        raid: ListedRaid
+        difficulty: RaidDifficulty
+    } | null
 }
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
@@ -23,11 +38,26 @@ export function RaidHubManifestManager({ children }: { children: ReactNode }) {
 
     const value = useMemo(() => {
         return {
-            manifest: data,
-            urlPathForRaid(raid: ListedRaid) {
-                return this.manifest.raidUrlPaths[raid]
+            getRaidString: (raid: ListedRaid) => data.raidStrings[raid],
+            getDifficultyString: (raid: RaidDifficulty) => data.difficultyStrings[raid],
+            getUrlPathForRaid: (raid: ListedRaid) => data.raidUrlPaths[raid],
+            getRaidFromHash: (hash: string | number) => {
+                const raid = data.hashes[String(hash)]
+                if (!raid) {
+                    return null
+                } else {
+                    return {
+                        raid: raid.raid as ListedRaid,
+                        difficulty: raid.difficulty as RaidDifficulty
+                    }
+                }
             },
-            listedRaids: [...data.listed]
+            elevatedDifficulties: Object.entries(data.difficultyStrings)
+                .filter(([_, v]) => v === "Master" || v === "Prestige")
+                .map(([k, _]) => Number(k) as RaidDifficulty),
+            leaderboards: data.leaderboards,
+            listedRaids: [...data.listed],
+            sunsetRaids: [...data.sunset]
         }
     }, [data])
 

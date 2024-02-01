@@ -1,12 +1,12 @@
-import styles from "../../styles/pages/home.module.css"
-import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import { useState } from "react"
-import Search from "~/images/icons/Search"
-import { useTypewriter } from "react-simple-typewriter"
-import BungieName from "~/models/BungieName"
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
+import { useTypewriter } from "react-simple-typewriter"
+import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
+import Search from "~/images/icons/Search"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
+import styles from "../../styles/pages/home.module.css"
 
 const HomeSearch = () => {
     const [showingResults, setShowingResults] = useState(false)
@@ -72,49 +72,29 @@ const HomeSearch = () => {
                 <>
                     <div className={styles["search-result-container"]}>
                         <ul className={styles["search-results"]}>
-                            {results.map(
-                                (
-                                    {
-                                        bungieGlobalDisplayName,
-                                        bungieGlobalDisplayNameCode,
-                                        displayName,
-                                        membershipId,
-                                        membershipType,
-                                        iconPath
-                                    },
-                                    idx
-                                ) => {
-                                    let username = displayName
-                                    try {
-                                        const b = new BungieName(
-                                            bungieGlobalDisplayName,
-                                            bungieGlobalDisplayNameCode
-                                        )
-                                        username = b.toString()
-                                    } catch {}
-                                    return (
-                                        <Link
-                                            key={idx}
-                                            href={`/profile/${membershipType}/${membershipId}`}
-                                            onClick={() => {
-                                                clearQuery()
-                                            }}>
-                                            <li>
-                                                <div className={styles["individual-result"]}>
-                                                    <Image
-                                                        width={35}
-                                                        height={35}
-                                                        alt={username}
-                                                        unoptimized
-                                                        src={bungieIconUrl(iconPath)}
-                                                    />
-                                                    <p>{username}</p>
-                                                </div>
-                                            </li>
-                                        </Link>
-                                    )
-                                }
-                            )}
+                            {results.map((user, idx) => (
+                                <Link
+                                    key={idx}
+                                    href={`/profile/${user.membershipType || 0}/${
+                                        user.membershipId
+                                    }`}
+                                    onClick={() => {
+                                        clearQuery()
+                                    }}>
+                                    <li>
+                                        <div className={styles["individual-result"]}>
+                                            <Image
+                                                width={35}
+                                                height={35}
+                                                alt={getUserName(user)}
+                                                unoptimized
+                                                src={bungieIconUrl(user.iconPath)}
+                                            />
+                                            <p>{getUserName(user)}</p>
+                                        </div>
+                                    </li>
+                                </Link>
+                            ))}
                         </ul>
                     </div>
                 </>

@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection"
 import Activity from "~/models/profile/data/Activity"
-import { ListedRaid } from "~/types/raids"
+import { ListedRaid } from "~/types/raidhub-api"
 
 export function partitionCollectionByRaid(
     collection: Iterable<[string, Activity]>,

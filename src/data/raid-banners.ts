@@ -1,4 +1,5 @@
-import { ListedRaid, Raid } from "../types/raids"
+import { ListedRaid } from "../types/raidhub-api"
+import { Raid } from "./raid"
 
 const RaidBanners: { [key in ListedRaid]: string } = {
     /** The ID of the image on Cloudflare */

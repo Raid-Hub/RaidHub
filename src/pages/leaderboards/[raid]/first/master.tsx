@@ -1,12 +1,12 @@
-import { GetStaticPaths, GetStaticProps } from "next"
 import { Hydrate, dehydrate } from "@tanstack/react-query"
-import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { MasterRaid, MasterRaids } from "~/types/raids"
-import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
-import { zRaidURIComponent } from "~/util/zod"
+import { GetStaticPaths, GetStaticProps } from "next"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
-import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
+import { Leaderboard } from "~/services/raidhub/getLeaderboard"
+import { MasterRaid, MasterRaids } from "~/types/raidhub-api"
 import { includedIn } from "~/util/betterIncludes"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { zRaidURIComponent } from "~/util/zod"
 
 type MasterWFPageProps = {
     raid: MasterRaid

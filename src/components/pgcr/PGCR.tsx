@@ -1,21 +1,17 @@
+import { QueryObserverLoadingResult, QueryObserverSuccessResult } from "@tanstack/react-query"
+import { createContext, createRef, useContext } from "react"
+import RaidCardBackground from "~/data/raid-backgrounds"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import CloudflareImage from "~/images/CloudflareImage"
 import styles from "~/styles/pages/pgcr.module.css"
-import ParticipantsSection from "./participants/ParticipantsSection"
-import SummaryStatsGrid from "./SummaryStatsGrid"
-import ActivityHeader from "./participants/ActivityHeader"
+import DestinyPGCR from "~/util/destiny/PGCR"
+import { useBungieClient } from "../app/TokenManager"
 import KebabMenu from "../reusable/KebabMenu"
 import ScreenshotContainer from "../reusable/ScreenshotContainer"
-import RaidCardBackground from "~/images/raid-backgrounds"
-import { useLocalStorage } from "~/hooks/util/useLocalStorage"
-import { createContext, createRef, useContext } from "react"
-import { BackdropOpacity } from "~/util/destiny/raidUtils"
-import { Raid } from "~/types/raids"
-import CloudflareImage from "~/images/CloudflareImage"
+import SummaryStatsGrid from "./SummaryStatsGrid"
 import PGCRSettingsMenu, { PGCRSettings } from "./menu/PGCRSettingsMenu"
-import { useBungieClient } from "../app/TokenManager"
-import { QueryObserverLoadingResult, QueryObserverSuccessResult } from "@tanstack/react-query"
-import DestinyPGCR from "~/models/pgcr/PGCR"
-import ErrorComponent from "../global/Error"
-import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import ActivityHeader from "./participants/ActivityHeader"
+import ParticipantsSection from "./participants/ParticipantsSection"
 
 const PgcrContext = createContext<
     | ((QueryObserverSuccessResult<DestinyPGCR> | QueryObserverLoadingResult<DestinyPGCR>) & {
@@ -43,7 +39,7 @@ const PGCR = ({ activityId }: { activityId: string }) => {
     const summaryCardRef = createRef<HTMLElement>()
 
     if (query.isError) {
-        return <ErrorComponent error={CustomError.handle(query.error, ErrorCode.PGCR)} />
+        return <div>Something Went wrong.</div>
     }
 
     const pgcr = query.data
@@ -68,7 +64,7 @@ const PGCR = ({ activityId }: { activityId: string }) => {
                                 cloudflareId={RaidCardBackground[pgcr.raid]}
                                 alt="background image"
                                 fill
-                                style={{ opacity: BackdropOpacity[pgcr?.raid ?? Raid.NA] }}
+                                style={{ opacity: 0.85 }}
                             />
                         )}
                         <div

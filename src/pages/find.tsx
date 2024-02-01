@@ -1,8 +1,6 @@
 import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
 import Find from "~/components/find/find"
-import { useSearchParams } from "~/hooks/util/useSearchParams"
-import { activitySearchQuerySchema } from "~/services/raidhub/searchActivities"
 
 const FindPage: NextPage = () => {
     const { status, data: sessionData } = useSession({
@@ -12,16 +10,8 @@ const FindPage: NextPage = () => {
         }
     })
 
-    const { isReady, query, replaceAll } = useSearchParams({
-        decoder: q => activitySearchQuerySchema.parse(q)
-    })
-
-    return isReady && status === "authenticated" ? (
-        <Find
-            query={query}
-            replaceAllQueryParams={replaceAll}
-            sessionMembershipId={sessionData.user.destinyMembershipId}
-        />
+    return status === "authenticated" ? (
+        <Find sessionMembershipId={sessionData.user.destinyMembershipId} />
     ) : null
 }
 

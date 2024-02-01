@@ -1,11 +1,11 @@
-import styles from "~/styles/pages/leaderboards.module.css"
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
 import { HTMLAttributeAnchorTarget, ReactNode } from "react"
 import { SpeedData } from "~/data/speedrun-com-mappings"
-import { ListedRaid } from "~/types/raids"
 import DiscordIcon from "~/images/icons/connections/DiscordIcon"
 import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
+import styles from "~/styles/pages/leaderboards.module.css"
+import { ListedRaid } from "~/types/raidhub-api"
 
 type CategoryData = {
     raidId: string

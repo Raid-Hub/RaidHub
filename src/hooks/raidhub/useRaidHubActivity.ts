@@ -6,7 +6,7 @@ export function useRaidHubActivity(activityId: string, initialData?: RaidHubActi
     return useQuery({
         queryKey: activityQueryKey(activityId),
         queryFn: () => getActivity(activityId),
-        staleTime: Infinity,
+        staleTime: 3600_000,
         initialData: initialData
     })
 }

@@ -12,25 +12,24 @@ import {
     useFieldArray,
     useForm
 } from "react-hook-form"
+import RaidCardBackground from "~/data/raid-backgrounds"
+import { useSeasons } from "~/hooks/dexie/useSeasonDefinition"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
 import CloudflareImage from "~/images/CloudflareImage"
-import RaidCardBackground from "~/images/raid-backgrounds"
-import CustomError, { ErrorCode } from "~/models/errors/CustomError"
+import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
 import { activitySearch } from "~/services/raidhub/searchActivities"
 import {
+    ListedRaid,
     RaidHubActivityExtended,
     RaidHubActivitySearchQuery,
     RaidHubPlayerSearchResult
 } from "~/types/raidhub-api"
-import { ListedRaid } from "~/types/raids"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { raidTupleFromHash } from "~/util/destiny/raidUtils"
+import { getUserName } from "~/util/destiny/bungieName"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import { useSeasons } from "../app/DestinyManifestManager"
 import { useLocale } from "../app/LocaleManager"
 import { useRaidHubManifest } from "../app/RaidHubManifestManager"
-import ErrorComponent from "../global/Error"
 import Loading from "../global/Loading"
 import UserName from "../profile/user/UserName"
 import styles from "./find.module.css"
@@ -56,91 +55,23 @@ interface ActivitySearchFormState {
 
 const playerCounts = [1, 2, 3, 4, 5, 6, 12, 50]
 
-export default function Find({
-    query,
-    replaceAllQueryParams,
-    sessionMembershipId
-}: {
-    query: RaidHubActivitySearchQuery
-    replaceAllQueryParams: (searchParams: URLSearchParams) => void
-    sessionMembershipId: string
-}) {
-    const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>({
-        defaultValues: {
-            flawless: query.flawless === undefined ? -1 : query.flawless ? 1 : 0,
-            completed: query.completed === undefined ? -1 : query.completed ? 1 : 0,
-            fresh: query.fresh === undefined ? -1 : query.fresh ? 1 : 0,
-            raid: -1,
-            players:
-                query.membershipIds
-                    ?.filter(m => m !== sessionMembershipId)
-                    .map(m => ({ membershipId: m })) ?? [],
-            playerCountRange: [query.minPlayers, query.maxPlayers],
-            dateRange: [query.minDate, query.maxDate],
-            seasonRange: [query.minSeason, query.maxSeason]
-        }
-    })
+export default function Find({ sessionMembershipId }: { sessionMembershipId: string }) {
+    const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>()
 
-    const submitHandler: SubmitHandler<ActivitySearchFormState> = ({
-        flawless,
-        completed,
-        fresh,
-        raid,
-        players,
-        playerCountRange: [minPlayers, maxPlayers],
-        seasonRange: [minSeason, maxSeason],
-        dateRange: [minDate, maxDate]
-    }) => {
-        const searchString = new URLSearchParams()
-
-        searchString.append("membershipId", sessionMembershipId)
-
-        players.forEach(p => {
-            searchString.append("membershipId", p.membershipId)
+    const submitHandler: SubmitHandler<ActivitySearchFormState> = state => {
+        search({
+            membershipId: [sessionMembershipId, ...state.players.map(p => p.membershipId)],
+            flawless: state.flawless === -1 ? undefined : !!state.flawless,
+            fresh: state.fresh === -1 ? undefined : !!state.fresh,
+            completed: state.completed === -1 ? undefined : !!state.completed,
+            raid: state.raid === -1 ? undefined : state.raid,
+            minPlayers: state.playerCountRange[0] === 0 ? undefined : state.playerCountRange[0],
+            maxPlayers: state.playerCountRange[1] === 0 ? undefined : state.playerCountRange[1],
+            minSeason: state.seasonRange[0] === 0 ? undefined : state.seasonRange[0],
+            maxSeason: state.seasonRange[1] === 0 ? undefined : state.seasonRange[1],
+            minDate: state.dateRange[0].toISOString(),
+            maxDate: state.dateRange[1].toISOString()
         })
-
-        if (fresh !== -1) {
-            searchString.set("fresh", String(!!fresh))
-        }
-
-        if (completed !== -1) {
-            searchString.set("completed", String(!!completed))
-        }
-
-        if (flawless !== -1) {
-            searchString.set("flawless", String(!!flawless))
-        }
-
-        if (raid !== -1) {
-            searchString.set("raid", String(raid))
-        }
-
-        if (minPlayers) {
-            searchString.set("minPlayers", String(minPlayers))
-        }
-
-        if (maxPlayers) {
-            searchString.set("maxPlayers", String(maxPlayers))
-        }
-
-        if (!Number.isNaN(minDate.getTime())) {
-            searchString.set("minDate", minDate.toLocaleString())
-        }
-
-        if (!Number.isNaN(maxDate.getTime())) {
-            searchString.set("maxDate", maxDate.toLocaleString())
-        }
-
-        if (minSeason) {
-            searchString.set("minSeason", String(minSeason))
-        }
-
-        if (maxSeason) {
-            searchString.set("maxSeason", String(maxSeason))
-        }
-
-        replaceAllQueryParams(searchString)
-        search(searchString)
     }
 
     const {
@@ -150,11 +81,13 @@ export default function Find({
         data,
         isError,
         error
-    } = useMutation<Collection<string, RaidHubActivityExtended>, Error, RaidHubActivitySearchQuery>(
-        {
-            mutationFn: activitySearch
-        }
-    )
+    } = useMutation<
+        Collection<string, RaidHubActivityExtended>,
+        BungieAPIError<unknown>,
+        RaidHubActivitySearchQuery
+    >({
+        mutationFn: activitySearch
+    })
 
     const players = watch("players")
 
@@ -214,9 +147,6 @@ export default function Find({
                     Search
                 </button>
             </form>
-            {isError && (
-                <ErrorComponent error={CustomError.handle(error, ErrorCode.ActivitySearch)} />
-            )}
             {isLoading ? (
                 <Loading className={styles["loading"]} />
             ) : (
@@ -250,13 +180,13 @@ const PlayerLookup = ({
                         <div
                             key={r.membershipId}
                             onClick={() => {
-                                addPlayer(r)
+                                addPlayer({ ...r, resolved: true })
                                 playerSearch.clearQuery()
                             }}>
                             <Image
                                 width={45}
                                 height={45}
-                                alt={r.bungieGlobalDisplayName ?? r.displayName}
+                                alt={getUserName(r)}
                                 unoptimized
                                 src={bungieIconUrl(r.iconPath)}
                                 style={{ borderRadius: "5px" }}
@@ -403,7 +333,7 @@ function SeasonPicker<T extends FieldValues>({
     id: Path<T>
     register: UseFormRegister<T>
 }) {
-    const { data: seasons } = useSeasons({
+    const seasons = useSeasons({
         reversed: true
     })
 
@@ -433,8 +363,7 @@ function RaidPicker<T extends FieldValues>({
     id: Path<T>
     register: UseFormRegister<T>
 }) {
-    const { strings } = useLocale()
-    const { listedRaids } = useRaidHubManifest()
+    const { listedRaids, getRaidString } = useRaidHubManifest()
 
     return (
         <div className={styles["gadget"]}>
@@ -444,7 +373,7 @@ function RaidPicker<T extends FieldValues>({
                 <>
                     {listedRaids?.map(r => (
                         <option key={r} value={r}>
-                            {strings.raidNames[r]}
+                            {getRaidString(r)}
                         </option>
                     ))}
                 </>
@@ -514,8 +443,9 @@ const Results = ({ allResults }: { allResults: Collection<string, RaidHubActivit
 }
 
 const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
-    const { strings, locale } = useLocale()
-    const [raid, _] = raidTupleFromHash(activity.raidHash)
+    const { locale } = useLocale()
+    const { getRaidFromHash, getRaidString } = useRaidHubManifest()
+    const meta = getRaidFromHash(activity.raidHash)
     const completed = new Date(activity.dateCompleted)
     const started = new Date(activity.dateStarted)
     return (
@@ -523,12 +453,14 @@ const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
             href={`/pgcr/${activity.instanceId}`}
             className={styles["tile"]}
             style={{ border: `1px solid ${activity.completed ? "Green" : "Red"}` }}>
-            <CloudflareImage
-                cloudflareId={RaidCardBackground[raid]}
-                alt={`Raid card for ${strings.raidNames[raid]}`}
-                fill
-                sizes="160px"
-            />
+            {meta && (
+                <CloudflareImage
+                    cloudflareId={RaidCardBackground[meta.raid]}
+                    alt={`Raid card for ${getRaidString(meta.raid)}`}
+                    fill
+                    sizes="160px"
+                />
+            )}
             <div className={styles["tile-overlay"]}>
                 <div className={styles["tile-date"]}>
                     {completed.toLocaleDateString(locale, {

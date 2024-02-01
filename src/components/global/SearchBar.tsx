@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react"
-import styles from "../../styles/header.module.css"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import Loader from "../reusable/Loader"
-import Search from "~/images/icons/Search"
+import { useEffect, useRef, useState } from "react"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import BungieName from "~/models/BungieName"
-import Image from "next/image"
+import Search from "~/images/icons/Search"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
+import styles from "../../styles/header.module.css"
+import Loader from "../reusable/Loader"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -104,56 +104,36 @@ const SearchBar = ({}: SearchBarProps) => {
                 </div>
                 {isShowingResults && (
                     <ul className={styles["search-results"]}>
-                        {results.map(
-                            (
-                                {
-                                    displayName,
-                                    bungieGlobalDisplayName,
-                                    bungieGlobalDisplayNameCode,
-                                    membershipId,
-                                    membershipType,
-                                    iconPath
-                                },
-                                idx
-                            ) => {
-                                let username = displayName
-                                try {
-                                    const b = new BungieName(
-                                        bungieGlobalDisplayName,
-                                        bungieGlobalDisplayNameCode
-                                    )
-                                    username = b.toString()
-                                } catch {}
-                                return (
-                                    <li key={idx}>
-                                        <Link
-                                            className={styles["search-result"]}
-                                            href={`/profile/${membershipType}/${membershipId}`}
-                                            onClick={handleSelect}
-                                            style={{
-                                                display: "flex",
-                                                flexWrap: "wrap",
-                                                gap: "0.5em"
-                                            }}>
-                                            <div
-                                                style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    position: "relative"
-                                                }}>
-                                                <Image
-                                                    src={bungieIconUrl(iconPath)}
-                                                    unoptimized
-                                                    fill
-                                                    alt={""}
-                                                />
-                                            </div>
-                                            <p style={{ flex: 1 }}>{username}</p>
-                                        </Link>
-                                    </li>
-                                )
-                            }
-                        )}
+                        {results.map((user, idx) => (
+                            <li key={idx}>
+                                <Link
+                                    className={styles["search-result"]}
+                                    href={`/profile/${user.membershipType ?? 0}/${
+                                        user.membershipId
+                                    }`}
+                                    onClick={handleSelect}
+                                    style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: "0.5em"
+                                    }}>
+                                    <div
+                                        style={{
+                                            width: "30px",
+                                            height: "30px",
+                                            position: "relative"
+                                        }}>
+                                        <Image
+                                            src={bungieIconUrl(user.iconPath)}
+                                            unoptimized
+                                            fill
+                                            alt={""}
+                                        />
+                                    </div>
+                                    <p style={{ flex: 1 }}>{getUserName(user)}</p>
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 )}
             </form>

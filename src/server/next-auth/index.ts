@@ -1,24 +1,28 @@
+import { AdapterUser } from "@auth/core/adapters"
+import { Provider } from "@auth/core/providers"
 import DiscordProvider from "@auth/core/providers/discord"
+import GoogleProvider from "@auth/core/providers/google"
 import TwitchProvider from "@auth/core/providers/twitch"
 import TwitterProvider from "@auth/core/providers/twitter"
-import GoogleProvider from "@auth/core/providers/google"
-import BungieProvider from "~/server/next-auth/providers/BungieProvider"
-import { sessionCallback } from "~/server/next-auth/sessionCallback"
-import { signInCallback } from "./signInCallback"
-import { prismaAdapter } from "./adapter"
-import prisma from "../prisma"
-import { Provider } from "@auth/core/providers"
-import NextAuth from "next-auth"
 import { User as PrismaUser } from "@prisma/client"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { ServerResponse } from "http"
-import { AdapterUser } from "@auth/core/adapters"
+import NextAuth from "next-auth"
+import BungieProvider from "~/server/next-auth/providers/BungieProvider"
+import { sessionCallback } from "~/server/next-auth/sessionCallback"
+import prisma from "../prisma"
+import { prismaAdapter } from "./adapter"
+import { signInCallback } from "./signInCallback"
 
 declare module "@auth/core/types" {
     interface Session {
         error?: AuthError
         user: AdapterUser
         bungieAccessToken?: {
+            value: string
+            expires: Date
+        }
+        raidHubAccessToken?: {
             value: string
             expires: Date
         }

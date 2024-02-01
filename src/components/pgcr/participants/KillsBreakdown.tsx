@@ -1,16 +1,15 @@
-import styles from "~/styles/pages/pgcr.module.css"
 import Image from "next/image"
-import { IPGCREntry, WeaponStatsValues } from "~/types/pgcr"
 import Link from "next/link"
-import StyledButton from "~/components/reusable/StyledButton"
-import { useLocale } from "~/components/app/LocaleManager"
-import { useItem } from "~/components/app/DestinyManifestManager"
-import { bungieItemUrl } from "~/util/destiny/bungie-icons"
-import QuestionMark from "~/images/icons/QuestionMark"
 import { SVGComponent } from "~/components/reusable/SVG"
+import StyledButton from "~/components/reusable/StyledButton"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import QuestionMark from "~/images/icons/QuestionMark"
 import Grenade from "~/images/icons/destiny2/Grenade"
-import Melee from "~/images/icons/destiny2/Melee"
 import Intellect from "~/images/icons/destiny2/Intellect"
+import Melee from "~/images/icons/destiny2/Melee"
+import styles from "~/styles/pages/pgcr.module.css"
+import { IPGCREntry, WeaponStatsValues } from "~/types/pgcr"
+import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 
 type AbilityData = {
     name: string
@@ -18,15 +17,14 @@ type AbilityData = {
     icon: SVGComponent
 }
 const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) => {
-    const { strings } = useLocale()
     const abilityCellData: AbilityData[] = [
         {
-            name: strings.super,
+            name: "Super",
             value: entry.stats.superKills,
             icon: Intellect
         },
-        { name: strings.grenade, value: entry.stats.grenadeKills, icon: Grenade },
-        { name: strings.melee, value: entry.stats.meleeKills, icon: Melee }
+        { name: "Grenade", value: entry.stats.grenadeKills, icon: Grenade },
+        { name: "Melee", value: entry.stats.meleeKills, icon: Melee }
     ]
 
     const allCellData = [...Array.from(entry.weapons.entries()), ...abilityCellData].sort(
@@ -55,8 +53,7 @@ const AllWeapons = ({ entry, back }: { entry: IPGCREntry; back: () => void }) =>
 }
 
 const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues }) => {
-    const { strings } = useLocale()
-    const { data: weapon } = useItem(hash)
+    const weapon = useItemDefinition(hash)
 
     return (
         <div
@@ -79,7 +76,7 @@ const WeaponCell = ({ hash, stats }: { hash: number; stats: WeaponStatsValues })
                     className={[styles["summary-stat-name"], styles["contained-span"]].join(" ")}
                     href={`https://www.light.gg/db/items/${hash}/`}
                     target="_blank">
-                    {weapon?.displayProperties.name ?? strings.loading}
+                    {weapon?.displayProperties.name ?? "Loading..."}
                 </Link>
                 <span
                     className={[styles["summary-stat-value"], styles["contained-span"]].join(" ")}>

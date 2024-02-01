@@ -1,26 +1,26 @@
+import { useMemo } from "react"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import Crosshairs from "~/images/icons/Crosshairs"
+import Crown from "~/images/icons/Crown"
+import SplitHeart from "~/images/icons/SplitHeart"
+import Users from "~/images/icons/Users"
+import Ability from "~/images/icons/destiny2/Ability"
+import Ammo from "~/images/icons/destiny2/Ammo"
+import Death from "~/images/icons/destiny2/Death"
+import Intellect from "~/images/icons/destiny2/Intellect"
+import Kill from "~/images/icons/destiny2/Kill"
 import styles from "../../styles/pages/pgcr.module.css"
 import { formattedNumber } from "../../util/presentation/formatting"
 import { useLocale } from "../app/LocaleManager"
-import { useMemo } from "react"
-import { useItem } from "../app/DestinyManifestManager"
 import { SVGComponent } from "../reusable/SVG"
-import SplitHeart from "~/images/icons/SplitHeart"
-import Death from "~/images/icons/destiny2/Death"
-import Crown from "~/images/icons/Crown"
-import Kill from "~/images/icons/destiny2/Kill"
-import Ability from "~/images/icons/destiny2/Ability"
-import Intellect from "~/images/icons/destiny2/Intellect"
-import Ammo from "~/images/icons/destiny2/Ammo"
-import Users from "~/images/icons/Users"
-import Crosshairs from "~/images/icons/Crosshairs"
 import { usePGCRContext } from "./PGCR"
 
 const SummaryStatsGrid = () => {
-    const { locale, strings } = useLocale()
+    const { locale } = useLocale()
     const { data: pgcr } = usePGCRContext()
 
     const stats = useMemo(() => pgcr?.stats, [pgcr])
-    const { data: weapon } = useItem(stats?.mostUsedWeapon ?? 73015)
+    const weapon = useItemDefinition(stats?.mostUsedWeapon ?? 73015)
     const statsData: {
         Icon: SVGComponent
         name: string
@@ -30,50 +30,50 @@ const SummaryStatsGrid = () => {
             ? [
                   {
                       Icon: Crown,
-                      name: strings.mvp,
+                      name: "MVP",
                       value: stats?.mvp ?? "???"
                   }
               ]
             : []),
         {
             Icon: Kill,
-            name: strings.totalKills,
+            name: "Total Kills",
             value: formattedNumber(stats?.totalKills ?? 0, locale)
         },
         {
             Icon: Death,
-            name: strings.totalDeaths,
+            name: "Total Deaths",
             value: formattedNumber(stats?.totalDeaths ?? 0, locale)
         },
         {
             Icon: SplitHeart,
-            name: strings.totalAssists,
+            name: "Total Assists",
             value: formattedNumber(stats?.totalAssists ?? 0, locale)
         },
         {
             Icon: Ability,
-            name: strings.abilityKillsPercentage,
+            name: "Ability Kills",
             value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
         },
         {
             Icon: Crosshairs,
-            name: strings.overallKD,
+            name: "Overal K/D",
             value: formattedNumber(stats?.overallKD ?? 0, locale)
         },
         {
             Icon: Intellect,
-            name: strings.superKills,
+            name: "Super Kills",
             value: formattedNumber(stats?.totalSuperKills ?? 0, locale)
         },
         {
             Icon: Users,
-            name: strings.totalCharactersUsed,
+            name: "Characters Used",
             value: stats?.totalCharactersUsed ?? 0
         },
         {
             Icon: Ammo,
-            name: strings.mostUsedWeapon,
-            value: weapon?.displayProperties.name ?? strings.none
+            name: "Mosted Used Weapon",
+            value: weapon?.displayProperties.name ?? "None"
         }
     ]
     return (

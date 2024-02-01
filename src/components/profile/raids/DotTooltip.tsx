@@ -1,13 +1,11 @@
-import styles from "../../../styles/pages/profile/raids.module.css"
 import { useMemo } from "react"
-import { getRelativeTime } from "../../../util/presentation/pastDates"
-import { FULL_HEIGHT } from "./DotGraph"
-import { useLocale } from "../../app/LocaleManager"
-import { Green, Orange, Red, Teal } from "./Dot"
-import { raidVersion } from "../../../util/destiny/raidUtils"
-import { Tag } from "../../../util/raidhub/tags"
-import Activity from "../../../models/profile/data/Activity"
 import { secondsToHMS } from "~/util/presentation/formatting"
+import Activity from "../../../models/profile/data/Activity"
+import styles from "../../../styles/pages/profile/raids.module.css"
+import { getRelativeTime } from "../../../util/presentation/pastDates"
+import { Tag } from "../../../util/tags"
+import { Green, Orange, Red, Teal } from "./Dot"
+import { FULL_HEIGHT } from "./DotGraph"
 
 export type DotTooltipProps = {
     offset: {
@@ -19,7 +17,6 @@ export type DotTooltipProps = {
 }
 
 const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
-    const { strings } = useLocale()
     const dateString = useMemo(
         () => getRelativeTime(activity.dateCompleted),
         [activity.dateCompleted]

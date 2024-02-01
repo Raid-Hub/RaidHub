@@ -1,10 +1,10 @@
 import { DestinyHistoricalStatsValue } from "bungie-net-core/models"
-import { Raid } from "~/types/raids"
+import { ListedRaid } from "~/types/raidhub-api"
 
 type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
 
 export default class RaidStats {
-    raid: Raid
+    raid: ListedRaid
     raw: DestinyHistoricalStatsDictionary[]
     assists: number
     totalClears: number
@@ -13,7 +13,7 @@ export default class RaidStats {
     precisionKills: number
     secondsPlayed: number
 
-    constructor(data: DestinyHistoricalStatsDictionary[], raid: Raid) {
+    constructor(data: DestinyHistoricalStatsDictionary[], raid: ListedRaid) {
         this.raw = data
         this.raid = raid
 

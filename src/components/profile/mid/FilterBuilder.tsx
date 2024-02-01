@@ -1,17 +1,16 @@
-import styles from "~/styles/pages/profile/mid.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Fragment, createContext, useContext, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-import { ActivityFilter } from "~/types/profile"
-import GroupActivityFilter from "~/models/profile/filters/GroupActivityFilter"
-import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
-import HighOrderActivityFilter from "~/models/profile/filters/HighOrderActivityFilter"
-import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
-import FilterSelectorMenu from "./FilterSelectorMenu"
-import { Fragment, createContext, useContext, useState } from "react"
-import { useLocale } from "~/components/app/LocaleManager"
-import { DefaultActivityFilters } from "~/util/profile/activityFilters"
 import PreviousArrow from "~/images/icons/PreviousArrow"
+import GroupActivityFilter from "~/models/profile/filters/GroupActivityFilter"
+import HighOrderActivityFilter from "~/models/profile/filters/HighOrderActivityFilter"
+import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
+import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
+import styles from "~/styles/pages/profile/mid.module.css"
+import { ActivityFilter } from "~/types/profile"
+import { DefaultActivityFilters } from "~/util/profile/activityFilters"
+import FilterSelectorMenu from "./FilterSelectorMenu"
 
 // This contest here stores the callback for the add an item GUI
 const SelectMenuContext = createContext<{
@@ -313,7 +312,6 @@ const HighOrderFilterComponent = ({
     const enteredValue = ({ value }: { value: unknown }) => {
         filter.value = value
     }
-    const { strings } = useLocale()
 
     return (
         <div className={styles["filter-item"]}>

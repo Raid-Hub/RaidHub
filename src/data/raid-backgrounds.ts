@@ -1,4 +1,5 @@
-import { ListedRaid, Raid } from "~/types/raids"
+import { Raid } from "~/data/raid"
+import { ListedRaid } from "~/types/raidhub-api"
 
 const RaidCardBackground: { [key in ListedRaid]: string } = {
     /** The ID of the image on Cloudflare */

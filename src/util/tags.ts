@@ -1,12 +1,6 @@
-import { LocalStrings } from "../presentation/localized-strings"
-import {
-    Difficulty,
-    Raid,
-    ReprisedContestDifficultyDictionary,
-    ReprisedContestRaidDifficulties,
-    ReprisedRaid
-} from "~/types/raids"
+import { Difficulty, Raid } from "~/data/raid"
 import Activity from "~/models/profile/data/Activity"
+
 export enum Tag {
     CHECKPOINT,
     SOLO,
@@ -26,37 +20,10 @@ export enum Tag {
     GUIDEDGAMES
 }
 
-export const TagForReprisedContest: Record<(typeof ReprisedContestRaidDifficulties)[number], Tag> =
-    {
-        [Difficulty.CHALLENGE_VOG]: Tag.CHALLENGE_VOG,
-        [Difficulty.CHALLENGE_KF]: Tag.CHALLENGE_KF,
-        [Difficulty.CHALLENGE_CROTA]: Tag.CHALLENGE_CROTA
-    }
-
-export function wfRaceMode({
-    challenge,
-    raid,
-    dayOne,
-    contest,
-    weekOne
-}: {
-    raid: Raid
-    dayOne: boolean | undefined
-    challenge: boolean | undefined
-    contest: boolean | undefined
-    weekOne: boolean | undefined
-}): Tag | null {
-    if (challenge) {
-        return TagForReprisedContest[ReprisedContestDifficultyDictionary[raid as ReprisedRaid]]
-    } else if (dayOne) {
-        return Tag.DAY_ONE
-    } else if (contest) {
-        return Tag.CONTEST
-    } else if (weekOne) {
-        return Tag.WEEK_ONE
-    } else {
-        return null
-    }
+export const TagForReprisedContest = {
+    [Difficulty.CHALLENGE_VOG]: Tag.CHALLENGE_VOG,
+    [Difficulty.CHALLENGE_KF]: Tag.CHALLENGE_KF,
+    [Difficulty.CHALLENGE_CROTA]: Tag.CHALLENGE_CROTA
 }
 
 export function findTags(activities: Activity[]) {
@@ -151,32 +118,4 @@ export function isBestTag(activity: Activity): boolean {
 
 function bitfieldMatches(a: number, compareTo: number) {
     return (a & compareTo) === compareTo
-}
-
-export function addModifiers(
-    raid: Raid,
-    tagModifiers: { tag: Tag; placement?: number }[],
-    strings: LocalStrings
-): string {
-    const result: string[] = []
-    const modifiers = tagModifiers.map(m => m.tag)
-    if (modifiers.includes(Tag.ABILITIES_ONLY)) result.push(strings.tags[Tag.ABILITIES_ONLY])
-
-    if (modifiers.includes(Tag.SOLO)) result.push(strings.tags[Tag.SOLO])
-    else if (modifiers.includes(Tag.DUO)) result.push(strings.tags[Tag.DUO])
-    else if (modifiers.includes(Tag.TRIO)) result.push(strings.tags[Tag.TRIO])
-
-    if (modifiers.includes(Tag.FLAWLESS)) result.push(strings.tags[Tag.FLAWLESS])
-
-    if (modifiers.includes(Tag.DAY_ONE)) result.push(strings.tags[Tag.DAY_ONE])
-
-    if (modifiers.includes(Tag.MASTER)) result.push(strings.tags[Tag.MASTER])
-    else if (modifiers.includes(Tag.PRESTIGE)) result.push(strings.tags[Tag.PRESTIGE])
-    else if (modifiers.includes(Tag.CONTEST)) result.push(strings.tags[Tag.CONTEST])
-
-    result.push(strings.raidNames[raid])
-
-    if (modifiers.includes(Tag.CHECKPOINT)) result.push(`(${strings.tags[Tag.CHECKPOINT]})`)
-
-    return result.join(" ")
 }

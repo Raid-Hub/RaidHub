@@ -1,19 +1,18 @@
-import styles from "~/styles/pages/account.module.css"
-import { signIn, signOut } from "next-auth/react"
 import { Session } from "next-auth"
-import IconUploadForm from "./IconUploadForm"
+import { signIn, signOut } from "next-auth/react"
+import Link from "next/link"
+import { useMemo, useRef, useState } from "react"
+import { useProviders } from "~/hooks/app/useProviders"
+import BungieShield from "~/images/icons/connections/BungieShield"
+import DiscordIcon from "~/images/icons/connections/DiscordIcon"
+import TwitchIcon from "~/images/icons/connections/TwitchIcon"
+import TwitterIcon from "~/images/icons/connections/TwitterIcon"
+import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
+import styles from "~/styles/pages/account.module.css"
 import { trpc } from "~/util/trpc"
 import Connection from "./Connection"
-import { useMemo, useRef, useState } from "react"
-import { useLocale } from "../app/LocaleManager"
-import Link from "next/link"
-import { useProviders } from "~/hooks/app/useProviders"
+import IconUploadForm from "./IconUploadForm"
 import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
-import DiscordIcon from "~/images/icons/connections/DiscordIcon"
-import TwitterIcon from "~/images/icons/connections/TwitterIcon"
-import TwitchIcon from "~/images/icons/connections/TwitchIcon"
-import BungieShield from "~/images/icons/connections/BungieShield"
-import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
 
 type AccountProps = {
     session: Session
@@ -46,7 +45,6 @@ const Account = ({ session }: AccountProps) => {
         [providers]
     )
 
-    const { strings } = useLocale()
     return (
         <main>
             <SpeedrunAPIKeyModal refetchSocials={refetchSocials} ref={speedrunAPIKeyModalRef} />
@@ -62,12 +60,12 @@ const Account = ({ session }: AccountProps) => {
                     </button>
                     <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
                     {deleteOnClick && (
-                        <button onClick={() => setDeleteOnClick(false)}>{strings.cancel}</button>
+                        <button onClick={() => setDeleteOnClick(false)}>Cancel</button>
                     )}
                     <button
                         onClick={deleteOnClick ? deleteUser : () => setDeleteOnClick(true)}
                         className={styles["destructive"]}>
-                        {deleteOnClick ? strings.confirmDelete : strings.deleteAccount}
+                        {deleteOnClick ? "Confirm Deletion" : "Delete Account"}
                     </button>
                 </div>
             </section>

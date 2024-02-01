@@ -1,18 +1,17 @@
-import { useCallback, useRef, useState } from "react"
-import styles from "../../styles/searchmodal.module.css"
-import { animate, AnimationSequence } from "framer-motion"
-import { useTypewriter } from "react-simple-typewriter"
-import { useKeyPress } from "../../hooks/util/useKeyPress"
+import { AnimationSequence, animate } from "framer-motion"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useCallback, useRef, useState } from "react"
+import { useTypewriter } from "react-simple-typewriter"
 import Loader from "~/components/reusable/Loader"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import Image from "next/image"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import BungieName from "~/models/BungieName"
-type SearchModalProps = {}
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
+import { useKeyPress } from "../../hooks/util/useKeyPress"
+import styles from "../../styles/searchmodal.module.css"
 
-const SearchModal = ({}: SearchModalProps) => {
+const SearchModal = () => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)
     const [showingResults, setShowingResults] = useState(false)
     const [isRedirecting, setIsRedirecting] = useState(false)
@@ -104,51 +103,31 @@ const SearchModal = ({}: SearchModalProps) => {
                         <span>Search Results</span>
                         {showingResults && (
                             <ul className={styles["search-results"]}>
-                                {results.map(
-                                    (
-                                        {
-                                            bungieGlobalDisplayName,
-                                            bungieGlobalDisplayNameCode,
-                                            displayName,
-                                            membershipId,
-                                            membershipType,
-                                            iconPath
-                                        },
-                                        idx
-                                    ) => {
-                                        let username = displayName
-                                        try {
-                                            const b = new BungieName(
-                                                bungieGlobalDisplayName,
-                                                bungieGlobalDisplayNameCode
-                                            )
-                                            username = b.toString()
-                                        } catch {}
-                                        return (
-                                            <Link
-                                                className={styles["search-result"]}
-                                                key={idx}
-                                                href={`/profile/${membershipType}/${membershipId}`}
-                                                onClick={() => {
-                                                    animateModalOut()
-                                                    clearQuery()
-                                                }}>
-                                                <li>
-                                                    <div className={styles["individual-result"]}>
-                                                        <Image
-                                                            width={45}
-                                                            height={45}
-                                                            alt={username}
-                                                            unoptimized
-                                                            src={bungieIconUrl(iconPath)}
-                                                        />
-                                                        <p>{username}</p>
-                                                    </div>
-                                                </li>
-                                            </Link>
-                                        )
-                                    }
-                                )}
+                                {results.map((user, idx) => (
+                                    <Link
+                                        className={styles["search-result"]}
+                                        key={idx}
+                                        href={`/profile/${user.membershipType || 0}/${
+                                            user.membershipId
+                                        }`}
+                                        onClick={() => {
+                                            animateModalOut()
+                                            clearQuery()
+                                        }}>
+                                        <li>
+                                            <div className={styles["individual-result"]}>
+                                                <Image
+                                                    width={45}
+                                                    height={45}
+                                                    alt={getUserName(user)}
+                                                    unoptimized
+                                                    src={bungieIconUrl(user.iconPath)}
+                                                />
+                                                <p>{getUserName(user)}</p>
+                                            </div>
+                                        </li>
+                                    </Link>
+                                ))}
                             </ul>
                         )}
                     </div>

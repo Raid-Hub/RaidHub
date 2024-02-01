@@ -1,14 +1,14 @@
-import styles from "../../../styles/pages/profile/mid.module.css"
-import Loading from "../../global/Loading"
-import { toCustomDateString } from "../../../util/presentation/formatting"
-import { useLocale } from "../../app/LocaleManager"
-import RaidBanners from "../../../images/raid-banners"
 import Link from "next/link"
 import { useBungieClient } from "~/components/app/TokenManager"
-import EagerEdge from "~/images/icons/destiny2/EagerEgde"
-import PinIcon from "~/images/icons/PinIcon"
-import CloudflareImage from "~/images/CloudflareImage"
 import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
+import CloudflareImage from "~/images/CloudflareImage"
+import PinIcon from "~/images/icons/PinIcon"
+import EagerEdge from "~/images/icons/destiny2/EagerEgde"
+import RaidBanners from "../../../data/raid-banners"
+import styles from "../../../styles/pages/profile/mid.module.css"
+import { toCustomDateString } from "../../../util/presentation/formatting"
+import { useLocale } from "../../app/LocaleManager"
+import Loading from "../../global/Loading"
 
 type PinnedActivityProps = {
     activityId: string
@@ -28,7 +28,7 @@ const PinnedActivity = ({
         { activityId },
         { staleTime: Infinity }
     )
-    const { locale, strings } = useLocale()
+    const { locale } = useLocale()
     const { data: activity } = useRaidHubActivity(activityId)
 
     return isLoadingPGCR || isLoadingActivities || isLoadingRaidHubProfile ? (

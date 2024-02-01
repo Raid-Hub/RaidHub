@@ -1,12 +1,12 @@
-import { GetStaticPaths, GetStaticProps } from "next"
 import { Hydrate, dehydrate } from "@tanstack/react-query"
-import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
-import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { RaidsWithReprisedContest, ReprisedRaid } from "~/types/raids"
-import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
-import { zRaidURIComponent } from "~/util/zod"
+import { GetStaticPaths, GetStaticProps } from "next"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
+import { Leaderboard } from "~/services/raidhub/getLeaderboard"
+import { RaidsWithReprisedContest, ReprisedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/betterIncludes"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { zRaidURIComponent } from "~/util/zod"
 
 type NormalWFPageProps = {
     raid: ReprisedRaid

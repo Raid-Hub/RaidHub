@@ -1,5 +1,4 @@
 import styles from "../../../styles/pages/profile/mid.module.css"
-import { useLocale } from "../../app/LocaleManager"
 import ToggleSwitch from "../../reusable/ToggleSwitch"
 
 export enum Layout {
@@ -14,13 +13,12 @@ const LayoutToggle = ({
     layout: Layout
     handleLayoutToggle: (state: boolean) => void
 }) => {
-    const { strings } = useLocale()
     return (
         <div className={styles["layout-toggle"]}>
             <span
                 className={styles["description-toggle"] + (!layout ? " " + styles["checked"] : "")}
                 onClick={() => handleLayoutToggle(!!Layout.DotCharts)}>
-                {strings.charts}
+                Raids
             </span>
             <ToggleSwitch
                 size={30}
@@ -31,7 +29,7 @@ const LayoutToggle = ({
             <span
                 className={styles["description-toggle"] + (!!layout ? " " + styles["checked"] : "")}
                 onClick={() => handleLayoutToggle(!!Layout.RecentActivities)}>
-                {strings.tiles}
+                Recent
             </span>
         </div>
     )

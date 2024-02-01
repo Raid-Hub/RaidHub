@@ -1,3 +1,4 @@
+import { Collection } from "@discordjs/collection"
 import {
     DestinyCharacterComponent,
     DestinyHistoricalStatsActivity,
@@ -5,18 +6,14 @@ import {
     DestinyPostGameCarnageReportTeamEntry,
     UserInfoCard
 } from "bungie-net-core/models"
+import { Difficulty } from "~/data/raid"
+import { IPGCREntryStats } from "~/types/pgcr"
+import { ListedRaid, RaidDifficulty, RaidHubActivityResponse } from "~/types/raidhub-api"
+import { nonParticipant } from "~/util/destiny/filterNonParticipants"
+import { LocalStrings } from "~/util/presentation/localized-strings"
+import { Tag, addModifiers } from "~/util/tags"
 import PGCRCharacter from "./Character"
 import PGCRPlayer from "./Player"
-import { ListedRaid, ListedRaids, Difficulty, ReprisedContestRaidDifficulties } from "~/types/raids"
-import { Tag, TagForReprisedContest, addModifiers } from "~/util/raidhub/tags"
-import { LocalStrings } from "~/util/presentation/localized-strings"
-import { IPGCREntryStats } from "~/types/pgcr"
-import { secondsToHMS } from "~/util/presentation/formatting"
-import { raidTupleFromHash } from "~/util/destiny/raidUtils"
-import { Collection } from "@discordjs/collection"
-import { nonParticipant } from "~/util/destiny/filterNonParticipants"
-import { includedIn } from "~/util/betterIncludes"
-import { RaidHubActivityResponse } from "~/types/raidhub-api"
 
 type PostGameCarnageReportOptions = {
     filtered: boolean
@@ -48,7 +45,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     readonly startDate: Date
     readonly completionDate: Date
     readonly raid: ListedRaid | null
-    readonly difficulty: Difficulty
+    readonly difficulty: RaidDifficulty
     readonly stats: SummaryStats
 
     constructor(data: DestinyPostGameCarnageReportData, options: PostGameCarnageReportOptions) {
@@ -82,12 +79,13 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
                 data.entries[0]?.values.activityDurationSeconds.basic.value * 1000
         )
 
-        try {
-            ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
-        } catch {
-            this.raid = null
-            this.difficulty = Difficulty.NORMAL
-        }
+        // todo fix
+        // try {
+        //     ;[this.raid, this.difficulty] = raidTupleFromHash(`${this.hash}`)
+        // } catch {
+        this.raid = null
+        this.difficulty = Difficulty.NORMAL
+        // }
 
         const reduce = (key: keyof IPGCREntryStats) =>
             this.players.reduce((a, b) => a + b.stats[key], 0)
@@ -139,12 +137,7 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     get speed() {
         const completionDate = this.completionDate
         const startDate = this.startDate
-        return {
-            value: completionDate.getTime() - startDate.getTime(),
-            string(strings: LocalStrings) {
-                return secondsToHMS(this.value / 1000)
-            }
-        }
+        return completionDate.getTime() - startDate.getTime()
     }
 
     get weightedScores(): Collection<string, number> {
@@ -170,19 +163,18 @@ export default class DestinyPGCR implements DestinyPostGameCarnageReportData {
     }
 
     tags(data: RaidHubActivityResponse): { tag: Tag; placement?: number }[] {
-        if (!includedIn(ListedRaids, this.raid)) return []
-
         const tags = new Array<{ tag: Tag; placement?: number }>()
-        if (data.contest && includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
-            const placement = data.leaderboardEntries["challenge"]
-            tags.push({ tag: TagForReprisedContest[this.difficulty], placement })
-        }
-        if (data.dayOne) {
-            const placement = !includedIn(ReprisedContestRaidDifficulties, this.difficulty)
-                ? data.leaderboardEntries["normal"]
-                : undefined
-            tags.push({ tag: Tag.DAY_ONE, placement })
-        }
+        // TODO fix
+        // if (data.contest && includedIn(ReprisedContestRaidDifficulties, this.difficulty)) {
+        //     const placement = data.leaderboardEntries["challenge"]
+        //     tags.push({ tag: TagForReprisedContest[this.difficulty], placement })
+        // }
+        // if (data.dayOne) {
+        //     const placement = !includedIn(ReprisedContestRaidDifficulties, this.difficulty)
+        //         ? data.leaderboardEntries["normal"]
+        //         : undefined
+        //     tags.push({ tag: Tag.DAY_ONE, placement })
+        // }
         if (data.contest) tags.push({ tag: Tag.CONTEST })
         if (data.fresh === false) tags.push({ tag: Tag.CHECKPOINT })
         if (this.difficulty === Difficulty.PRESTIGE) {

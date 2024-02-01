@@ -1,16 +1,13 @@
-import styles from "~/styles/pages/home.module.css"
-import { ListedRaids } from "~/types/raids"
-import { useLocale } from "../app/LocaleManager"
-import HomeRaidCard from "./HomeRaidCard"
-import HomeLogo from "./HomeLogo"
 import HomeSearch from "~/components/home/HomeSearch"
 import HomeToolButtons from "~/components/home/HomeToolButtons"
+import styles from "~/styles/pages/home.module.css"
 import { useRaidHubManifest } from "../app/RaidHubManifestManager"
 import { HomeGlobal } from "./HomeGlobal"
+import HomeLogo from "./HomeLogo"
+import HomeRaidCard from "./HomeRaidCard"
 
 const Home = () => {
-    const { strings } = useLocale()
-    const manifest = useRaidHubManifest()
+    const { listedRaids, leaderboards } = useRaidHubManifest()
     return (
         <main>
             <HomeLogo />
@@ -18,13 +15,12 @@ const Home = () => {
             <HomeToolButtons />
             <section className={styles["raids"]}>
                 <HomeGlobal />
-                {ListedRaids.map(raid => (
+                {listedRaids.map(raid => (
                     <HomeRaidCard
                         raid={raid}
-                        strings={strings}
                         key={raid}
-                        worldFirstLeaderboards={manifest?.leaderboards.worldFirst[raid] ?? []}
-                        individualLeaderboards={manifest?.leaderboards.individual[raid] ?? null}
+                        worldFirstLeaderboards={leaderboards.worldFirst[raid] ?? []}
+                        individualLeaderboards={leaderboards.individual[raid] ?? {}}
                     />
                 ))}
             </section>

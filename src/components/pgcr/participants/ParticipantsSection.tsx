@@ -1,13 +1,13 @@
-import styles from "~/styles/pages/pgcr.module.css"
-import { useCallback } from "react"
-import PGCRPlayer from "../../../models/pgcr/Player"
-import PlayerCell from "./PlayerCell"
-import SelectedPlayerHeader from "./SelectedPlayerHeader"
 import { useRouter } from "next/router"
+import { useCallback } from "react"
+import styles from "~/styles/pages/pgcr.module.css"
+import DestinyPGCRCharacter from "../../../util/destiny/Character"
+import PGCRPlayer from "../../../util/destiny/Player"
 import { usePGCRContext } from "../PGCR"
-import PlayerStatCells from "./PlayerStatCells"
-import DestinyPGCRCharacter from "../../../models/pgcr/Character"
 import KillsBreakdown from "./KillsBreakdown"
+import PlayerCell from "./PlayerCell"
+import PlayerStatCells from "./PlayerStatCells"
+import SelectedPlayerHeader from "./SelectedPlayerHeader"
 
 type ParticipantsProps = {
     showScorePref: boolean

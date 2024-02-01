@@ -7,7 +7,7 @@ const ProfileRankings = ({ players }: { players: RaidHubPlayerResponse[] }) => {
             {players.map((p, i) => (
                 <div key={i}>
                     <h1>{p.player.membershipType}</h1>
-                    {Object.entries(p.stats.global).map(([key, stats]) => (
+                    {Object.entries(p.stats.global ?? {}).map(([key, stats]) => (
                         <div key={key}>
                             <h3>{key}</h3>
                             <div>{stats.rank}</div>

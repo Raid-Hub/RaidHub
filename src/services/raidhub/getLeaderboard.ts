@@ -1,11 +1,11 @@
 import { LeaderboardResponse } from "~/types/leaderboards"
 import {
+    ListedRaid,
     RaidHubGlobalLeaderboardCategory,
     RaidHubIndividualLeaderboardCategory,
     RaidHubRaidPath,
     RaidHubWorldFirstLeaderboardCategory
 } from "~/types/raidhub-api"
-import { ListedRaid } from "~/types/raids"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getRaidHubApi } from "."
 
@@ -15,10 +15,9 @@ export function leaderboardQueryKey(
         | RaidHubIndividualLeaderboardCategory
         | RaidHubWorldFirstLeaderboardCategory
         | RaidHubGlobalLeaderboardCategory,
-    page: number,
-    count: number
+    query: { page: number; count: number }
 ) {
-    return ["raidhub-leaderboard", raid, category, page, count] as const
+    return ["raidhub-leaderboard", raid, category, query] as const
 }
 
 export async function getWorldfirstLeaderboard(args: {

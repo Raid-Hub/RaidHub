@@ -1,14 +1,14 @@
-import styles from "~/styles/pages/pgcr.module.css"
-import PGCRPlayer from "~/models/pgcr/Player"
 import Image from "next/image"
-import { formattedNumber } from "~/util/presentation/formatting"
-import { useLocale } from "../../app/LocaleManager"
-import { useItem } from "../../app/DestinyManifestManager"
-import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
-import Kill from "~/images/icons/destiny2/Kill"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import BasicDiamond from "~/images/icons/BasicDiamond"
 import SplitHeart from "~/images/icons/SplitHeart"
 import Death from "~/images/icons/destiny2/Death"
-import BasicDiamond from "~/images/icons/BasicDiamond"
+import Kill from "~/images/icons/destiny2/Kill"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRPlayer from "~/util/destiny/Player"
+import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
+import { formattedNumber } from "~/util/presentation/formatting"
+import { useLocale } from "../../app/LocaleManager"
 
 type PlayerCellProps = {
     player: PGCRPlayer
@@ -31,10 +31,10 @@ const PlayerCell = ({
     showScore,
     onClick
 }: PlayerCellProps) => {
-    const { locale, strings } = useLocale()
+    const { locale } = useLocale()
     const dynamicCssClass = player.membershipId === selectedPlayerId ? styles["selected"] : ""
 
-    const { data: emblem } = useItem(player.banner)
+    const emblem = useItemDefinition(player.banner)
 
     const completionClass = dnf ? styles["dnf"] : ""
     const Icon = player.characters.first()!.logo

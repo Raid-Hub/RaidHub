@@ -1,10 +1,10 @@
-import styles from "~/styles/pages/pgcr.module.css"
-import PGCRPlayer from "../../../models/pgcr/Player"
 import Image from "next/image"
+import { characterNames } from "~/data/strings/character-names"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRCharacter from "../../../util/destiny/Character"
+import PGCRPlayer from "../../../util/destiny/Player"
 import { bannerEmblemUrl } from "../../../util/destiny/bungie-icons"
-import PGCRCharacter from "../../../models/pgcr/Character"
-import { useItem } from "../../app/DestinyManifestManager"
-import { useLocale } from "../../app/LocaleManager"
 
 type SelectedPlayerProps = {
     player: PGCRPlayer
@@ -13,16 +13,15 @@ type SelectedPlayerProps = {
 }
 
 const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => {
-    const { data: emblem } = useItem(character?.banner ?? player.banner)
-    const { strings } = useLocale()
+    const emblem = useItemDefinition(character?.banner ?? player.banner)
 
     const displayName = player.displayName || player.membershipId
     const completionClass = player.didComplete ? "" : styles["dnf"]
 
     const classString =
         character?.classType !== undefined
-            ? strings.characterNames[character.classType]
-            : player.characters.map(c => strings.characterNames[c.classType]).join(" | ")
+            ? characterNames[character.classType]
+            : player.characters.map(c => characterNames[c.classType]).join(" | ")
 
     return (
         <button

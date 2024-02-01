@@ -1,32 +1,24 @@
 import { ReactNode } from "react"
-import styles from "./expanded-raid.module.css"
-import { useActivitiesContext } from "../RaidContext"
-import { Difficulty } from "~/types/raids"
 import { useLocale } from "~/components/app/LocaleManager"
 import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { Difficulty } from "~/data/raid"
+import { RaidDifficulty } from "~/types/raidhub-api"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
-
-// todo
-const versions = [Difficulty.NORMAL, Difficulty.MASTER]
+import { useActivitiesContext } from "../RaidContext"
+import styles from "./expanded-raid.module.css"
 
 export default function ExpandedStatsTable() {
-    const { activities, isLoadingActivities, raid } = useActivitiesContext()
-    const { strings, locale } = useLocale()
-    const manifest = useRaidHubManifest()
-    const versions = Array.from(
-        new Set(
-            Object.values(manifest?.hashes ?? {})
-                .filter(tuple => tuple.raid === raid)
-                .map(({ difficulty }) => difficulty)
-        )
-    ).sort((a, b) => {
-        if (a === Difficulty.GUIDEDGAMES) {
-            return 1
-        } else if (b === Difficulty.GUIDEDGAMES) {
-            return -1
-        }
-        return a - b
-    })
+    const { activities, isLoadingActivities } = useActivitiesContext()
+    const { getDifficultyString } = useRaidHubManifest()
+    const { locale } = useLocale()
+
+    // the order of the columns in the chart
+    const versions: RaidDifficulty[] = [
+        Difficulty.NORMAL,
+        Difficulty.PRESTIGE,
+        Difficulty.MASTER,
+        Difficulty.GUIDEDGAMES
+    ]
 
     if (isLoadingActivities) return <p>loading...</p>
 
@@ -37,7 +29,7 @@ export default function ExpandedStatsTable() {
                     <th />
                     <th>Total</th>
                     {versions.map((v, idx) => (
-                        <th key={idx}>{strings.difficulty[v]}</th>
+                        <th key={idx}>{getDifficultyString(v)}</th>
                     ))}
                 </tr>
             </thead>

@@ -1,11 +1,11 @@
-import { GetStaticPaths, GetStaticProps } from "next"
 import { Hydrate, dehydrate } from "@tanstack/react-query"
-import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
-import { zRaidURIComponent } from "~/util/zod"
+import { GetStaticPaths, GetStaticProps } from "next"
 import MickeyMouseLeaderboard from "~/components/leaderboards/MickyMouseLeaderboard"
+import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
+import { Leaderboard } from "~/services/raidhub/getLeaderboard"
+import { Raid } from "~/types/raidhub-api"
 import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
-import { Raid } from "~/types/raids"
+import { zRaidURIComponent } from "~/util/zod"
 
 export const getStaticPaths: GetStaticPaths<{ raid: string }> = async () => ({
     paths: [

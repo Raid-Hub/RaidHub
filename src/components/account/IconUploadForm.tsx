@@ -1,13 +1,12 @@
-import styles from "~/styles/pages/account.module.css"
-import { ChangeEventHandler, useState } from "react"
-import Image from "next/image"
-import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
-import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { useLocale } from "../app/LocaleManager"
-import { trpc } from "~/util/trpc"
-import { useSession } from "next-auth/react"
 import { AdapterUser } from "@auth/core/adapters"
+import { useSession } from "next-auth/react"
+import Image from "next/image"
+import { ChangeEventHandler, useState } from "react"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
+import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
+import styles from "~/styles/pages/account.module.css"
+import { trpc } from "~/util/trpc"
 
 type FormValues = {
     username: string
@@ -74,8 +73,6 @@ const IconUploadForm = ({ user }: { user: AdapterUser }) => {
         }
     }
 
-    const { strings } = useLocale()
-
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
@@ -100,7 +97,7 @@ const IconUploadForm = ({ user }: { user: AdapterUser }) => {
             </div>
             {err && <div style={{ color: "red" }}>{err.message}</div>}
             <button type="submit" disabled={isLoading}>
-                {strings.save}
+                Save
             </button>
         </form>
     )

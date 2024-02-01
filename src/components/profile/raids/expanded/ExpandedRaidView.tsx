@@ -1,13 +1,13 @@
-import { ListedRaid, SunsetRaids } from "~/types/raids"
-import styles from "./expanded-raid.module.css"
-import { useLocale } from "~/components/app/LocaleManager"
 import Link from "next/link"
-import WeeklyProgress from "./WeeklyProgress"
+import { useEffect, useMemo, useRef } from "react"
+import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { ListedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/betterIncludes"
 import ActivityTile from "../ActivityTile"
-import { useEffect, useMemo, useRef } from "react"
-import ExpandedStatsTable from "./ExpandedStatsTable"
 import { useActivitiesContext } from "../RaidContext"
+import ExpandedStatsTable from "./ExpandedStatsTable"
+import WeeklyProgress from "./WeeklyProgress"
+import styles from "./expanded-raid.module.css"
 
 export default function ExpandedRaidView({
     raid,
@@ -16,7 +16,7 @@ export default function ExpandedRaidView({
     raid: ListedRaid
     dismiss: () => void
 }) {
-    const { strings } = useLocale()
+    const { sunsetRaids, getRaidString } = useRaidHubManifest()
 
     const { activities, isLoadingActivities } = useActivitiesContext()
 
@@ -49,13 +49,13 @@ export default function ExpandedRaidView({
                     discord.gg/raidhub
                 </Link>
             </p>
-            <h2>Expanded details for {strings.raidNames[raid]}</h2>
+            <h2>Expanded details for {getRaidString(raid)}</h2>
             <div className={styles["container"]}>
                 <div className={styles["bungie-stats"]}>
                     <h3>Stats</h3>
                     {<ExpandedStatsTable />}
 
-                    {!includedIn(SunsetRaids, raid) && (
+                    {!includedIn(sunsetRaids, raid) && (
                         <div>
                             <h3>Weekly Progress</h3>
                             <WeeklyProgress raid={raid} />

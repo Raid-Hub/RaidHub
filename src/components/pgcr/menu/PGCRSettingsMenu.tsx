@@ -1,10 +1,9 @@
 import { useSession } from "next-auth/react"
-import styles from "~/styles/pages/pgcr.module.css"
-import { useLocale } from "~/components/app/LocaleManager"
 import ToggleSwitch from "~/components/reusable/ToggleSwitch"
-import PinPCRCell from "./PinPGCRCell"
+import styles from "~/styles/pages/pgcr.module.css"
 import { usePGCRContext } from "../PGCR"
 import CameraButton from "./CameraButton"
+import PinPCRCell from "./PinPGCRCell"
 
 export type PGCRSettings = {
     showScore: boolean
@@ -19,12 +18,11 @@ const PGCRSettingsMenu = ({
 }) => {
     const { data: sessionData } = useSession()
     const { data: pgcr, isLoading } = usePGCRContext()
-    const { strings } = useLocale()
 
     return !isLoading ? (
         <div className={styles["settings-menu-dropdown"]}>
             <div>
-                <span>{strings.showScore}</span>
+                <span>Show Score</span>
                 <ToggleSwitch
                     label="show-score"
                     value={value?.showScore ?? false}
@@ -35,7 +33,7 @@ const PGCRSettingsMenu = ({
 
             <hr />
             <div>
-                <span>{strings.screenshot}</span>
+                <span>Screenshot</span>
                 <CameraButton />
             </div>
             {/* Check PGCR Equals Raid Mode - Probably can do this for pin.*/}

@@ -1,9 +1,8 @@
-import { useLocale } from "../../app/LocaleManager"
-import { usePGCRContext } from "../PGCR"
-import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
-import { trpc } from "~/util/trpc"
 import { useSession } from "next-auth/react"
+import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import PinIcon from "~/images/icons/PinIcon"
+import { trpc } from "~/util/trpc"
+import { usePGCRContext } from "../PGCR"
 
 const PinPCRCell = () => {
     const { data: pgcr } = usePGCRContext()
@@ -20,11 +19,9 @@ const PinPCRCell = () => {
             pinnedActivityId: isPinned ? pgcr!.activityDetails.instanceId : null
         })
 
-    const { strings } = useLocale()
-
     return profile && pgcr?.activityDetails.mode == 4 ? (
         <div>
-            <span>{isPinned ? strings.pinToProfile : strings.unPinFromProfile}</span>
+            <span>{isPinned ? "Pin" : "Un-Pin"}</span>
             <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>
                 <PinIcon sx={20} color={isPinned ? "white" : "orange"} />
             </button>

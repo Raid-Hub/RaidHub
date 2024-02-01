@@ -1,24 +1,24 @@
-import Head from "next/head"
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
 import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
+import Head from "next/head"
 import { z } from "zod"
-import { ListedRaid } from "~/types/raids"
-import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
 import { useLocale } from "~/components/app/LocaleManager"
-import { usePage } from "~/hooks/util/usePage"
-import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/ActivityLeaderboard"
+import SpeedrunComBanner from "~/components/leaderboards/SpeedrunComBanner"
 import { SpeedData, SpeedrunBoardId, SpeedrunVariables } from "~/data/speedrun-com-mappings"
+import { usePage } from "~/hooks/util/usePage"
+import {
+    createServerSideQueryClient,
+    prefetchSpeedrunComLeaderboard
+} from "~/server/serverQueryClient"
 import {
     SpeedrunQueryArgs,
     getSpeedrunComLeaderboard,
     rtaQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
+import { ListedRaid } from "~/types/raidhub-api"
+import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { zRaidURIComponent } from "~/util/zod"
-import {
-    createServerSideQueryClient,
-    prefetchSpeedrunComLeaderboard
-} from "~/server/serverQueryClient"
-import SpeedrunComBanner from "~/components/leaderboards/SpeedrunComBanner"
 
 type RTASpeedunLeaderboadProps<
     K extends (typeof SpeedrunVariables)[R] extends { values: infer D }

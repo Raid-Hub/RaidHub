@@ -1,14 +1,13 @@
+import { Collection } from "@discordjs/collection"
 import { Dispatch, SetStateAction, forwardRef, useMemo, useRef, useState } from "react"
-import styles from "~/styles/pages/profile/mid.module.css"
-import { ActivityFilter } from "~/types/profile"
-import { useLocale } from "~/components/app/LocaleManager"
-import { FilterListName, PresetFilters, decodeFilters } from "~/util/profile/activityFilters"
 import { usePortal } from "~/components/reusable/Portal"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
+import Death from "~/images/icons/destiny2/Death"
+import styles from "~/styles/pages/profile/mid.module.css"
+import { ActivityFilter } from "~/types/profile"
+import { FilterListName, PresetFilters, decodeFilters } from "~/util/profile/activityFilters"
 import CustomFilterBuilder from "./FilterBuilder"
 import CustomFilterManager from "./FilterManager"
-import { Collection } from "@discordjs/collection"
-import Death from "~/images/icons/destiny2/Death"
 
 type FilterSelectorProps = {
     activeFilter: ActivityFilter | null
@@ -29,8 +28,6 @@ const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) 
 
     const closeModal = () => ref?.current?.close()
 
-    const { strings } = useLocale()
-
     return (
         <div className={styles["filter-view"]}>
             <div
@@ -40,7 +37,7 @@ const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) 
                         ref.current?.showModal()
                     }
                 }}>
-                <h4>{strings.manageFilters}</h4>
+                <h4>Manager Filters</h4>
             </div>
             {/* Render this HTML dialog somewhere else defined by the portal Context */}
             {sendThroughPortal(
@@ -66,7 +63,6 @@ interface FilterModalProps {
     closeModal(): void
 }
 const FilterModal = forwardRef<HTMLDialogElement, FilterModalProps>((props, ref) => {
-    const { strings } = useLocale()
     const [selectedFilter, setSelectedFilter] = useLocalStorage<FilterListName | string>(
         "selected-filter-name",
         FilterListName.Default

@@ -1,18 +1,20 @@
+import { useRouter } from "next/router"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { searchRaidHubUser } from "~/services/raidhub/searchPlayer"
+import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { useBungieClient } from "../../components/app/TokenManager"
 import { wait } from "../../util/wait"
-import { RaidHubSearchResult } from "~/types/raidhub-api"
-import { useRouter } from "next/router"
-import { searchRaidHubUser } from "~/services/raidhub/searchPlayer"
 
 const DEBOUNCE = 250
 
-export function useRaidHubSearch(props?: { onRedirect?: (result: RaidHubSearchResult) => void }) {
+export function useRaidHubSearch(props?: {
+    onRedirect?: (result: RaidHubPlayerSearchResult) => void
+}) {
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
     const lastSearch = useRef<number>(Date.now())
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [results, setResults] = useState<RaidHubSearchResult[]>([])
+    const [results, setResults] = useState<readonly RaidHubPlayerSearchResult[]>([])
     const [error, setError] = useState<Error | null>(null)
 
     const client = useBungieClient()
@@ -90,7 +92,7 @@ export function useRaidHubSearch(props?: { onRedirect?: (result: RaidHubSearchRe
 
     const filteredResults = results.filter(
         r =>
-            r.displayName.toLowerCase().includes(enteredText.toLowerCase()) ||
+            r.displayName?.toLowerCase().includes(enteredText.toLowerCase()) ||
             `${r.bungieGlobalDisplayName ?? ""}#${r.bungieGlobalDisplayNameCode ?? ""}`
                 .toLowerCase()
                 .includes(enteredText.toLowerCase())

@@ -1,12 +1,11 @@
-import styles from "~/styles/pages/profile/raids.module.css"
 import Link from "next/link"
-import { Difficulty, Raid } from "~/types/raids"
 import { useLocale } from "~/components/app/LocaleManager"
-import { RaidTag } from "~/types/profile"
-import { LocalStrings } from "~/util/presentation/localized-strings"
-import { Tag } from "~/util/raidhub/tags"
 import useHover from "~/hooks/util/useDebouncedHover"
 import BasicDiamond from "~/images/icons/BasicDiamond"
+import styles from "~/styles/pages/profile/raids.module.css"
+import { RaidTag } from "~/types/profile"
+import { LocalStrings } from "~/util/presentation/localized-strings"
+import { Tag } from "~/util/tags"
 
 type RaidTagLabelProps = {
     setActiveId: (instanceId: string) => void
@@ -52,7 +51,7 @@ const RaidTagLabel = (props: RaidTagLabelProps) => {
 function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string | null {
     // special cases
     let wishWall = false
-    if (tag.raid === Raid.LAST_WISH && tag.playerCount === 1 && tag.fresh) {
+    if (tag.raid === 4 && tag.playerCount === 1 && tag.fresh) {
         wishWall = true
     }
     const descriptors: string[] = []
@@ -69,8 +68,8 @@ function getChallengeLabel(tag: RaidTag, strings: LocalStrings): string | null {
             break
     }
     if (tag.flawless) descriptors.push(strings.tags[Tag.FLAWLESS])
-    if (tag.difficulty == Difficulty.MASTER) descriptors.push(strings.tags[Tag.MASTER])
-    else if (tag.difficulty == Difficulty.CONTEST) descriptors.push(strings.tags[Tag.CONTEST])
+    if (tag.difficulty == 4) descriptors.push(strings.tags[Tag.MASTER])
+    else if (tag.difficulty == 128) descriptors.push(strings.tags[Tag.CONTEST])
     if (tag.fresh == false) descriptors.push(strings.checkpoints[tag.raid])
     let str = descriptors.join(" ")
     if (wishWall) str += " (Wishwall)"

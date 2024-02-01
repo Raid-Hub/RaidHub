@@ -3,7 +3,7 @@ import { InferGetStaticPropsType } from "next"
 import { IndividualLeaderboad } from "~/components/leaderboards/IndividualLeaderboard"
 import { createGetStaticPaths, createGetStaticProps } from "~/server/leaderboardHelpers"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { ListedRaids } from "~/types/raids"
+import { ListedRaids } from "~/types/raidhub-api"
 
 const getStaticPaths = createGetStaticPaths(ListedRaids)
 const getStaticProps = createGetStaticProps(Leaderboard.Clears)

@@ -1,11 +1,6 @@
-import { Tag } from "../raidhub/tags"
-import { Difficulty, Raid } from "~/types/raids"
+import { Difficulty, Raid } from "~/types/raidhub-api"
 import { FilterListName, FilterOption } from "../profile/activityFilters"
-import { DestinyClass } from "bungie-net-core/models"
-
-export enum SupportedLanguage {
-    ENGLISH = "en"
-}
+import { Tag } from "../tags"
 
 export interface LocalStrings {
     checkPointDisclaimer: string
@@ -68,15 +63,6 @@ export interface LocalStrings {
     edit: string
     save: string
     cancel: string
-    rtaLeaderboards: {
-        normal: string
-        anyPercent: string
-        prestige: string
-        noMajorGlitches: string
-        allEncounters: string
-        trioAllEncounters: string
-        trio: string
-    }
     individualLeaderboards: {
         fresh: string
         clears: string
@@ -100,7 +86,6 @@ export interface LocalStrings {
     noChallenge: string
     deleteAccount: string
     confirmDelete: string
-    characterNames: { [key in DestinyClass]: string }
     submit: string
 }
 
@@ -110,22 +95,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             "Note: this report may or may not be a checkpoint due to API issues from Season of the Hunt through Season of the Risen",
         incompleteRaid: "Incomplete",
         success: "Success",
-        raidNames: {
-            [Raid.LEVIATHAN]: "Leviathan",
-            [Raid.EATER_OF_WORLDS]: "Eater of Worlds",
-            [Raid.SPIRE_OF_STARS]: "Spire of Stars",
-            [Raid.LAST_WISH]: "Last Wish",
-            [Raid.SCOURGE_OF_THE_PAST]: "Scourge of the Past",
-            [Raid.CROWN_OF_SORROW]: "Crown of Sorrow",
-            [Raid.GARDEN_OF_SALVATION]: "Garden of Salvation",
-            [Raid.DEEP_STONE_CRYPT]: "Deep Stone Crypt",
-            [Raid.VAULT_OF_GLASS]: "Vault of Glass",
-            [Raid.VOW_OF_THE_DISCIPLE]: "Vow of the Disciple",
-            [Raid.KINGS_FALL]: "King's Fall",
-            [Raid.ROOT_OF_NIGHTMARES]: "Root of Nightmares",
-            [Raid.CROTAS_END]: "Crota's End",
-            [Raid.NA]: "Non-Raid"
-        },
         loading: "Loading...",
         none: "None",
         mvp: "MVP",
@@ -253,30 +222,12 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
         reset: "Reset",
         edit: "Edit",
         save: "Save",
-        cancel: "Cancel",
-        rtaLeaderboards: {
-            anyPercent: "Any %",
-            trio: "Trio",
-            normal: "Normal",
-            prestige: "Prestige",
-            noMajorGlitches: "No Major Glitches",
-            allEncounters: "All Encounters",
-            trioAllEncounters: "Trio All Encounters"
-        },
         score: "Score",
         showScore: "Show Score",
         pinToProfile: "Pin to Profile",
         unPinFromProfile: "Un-pin from Profile",
         screenshot: "Screenshot",
         noChallenge: "Normal Contest",
-        deleteAccount: "Delete Account",
-        confirmDelete: "Confirm Deletion",
-        characterNames: {
-            0: "Titan",
-            1: "Hunter",
-            2: "Warlock",
-            3: "Unknown"
-        },
         submit: "Submit",
         individualLeaderboards: {
             fresh: "Full Clears",
@@ -286,12 +237,6 @@ export const LocalizedStrings: { [key in SupportedLanguage]: LocalStrings } = {
             duos: "Duo Clears",
             solos: "Solo Clears",
             speed: "Speedrun"
-        },
-        globalLeaderboards: {
-            fresh: "Total Full Clears",
-            clears: "Total Clears",
-            sherpas: "Total Sherpas",
-            speed: "Sum of Fastest Clears"
         }
     }
 }

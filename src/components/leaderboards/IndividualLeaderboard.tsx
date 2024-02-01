@@ -1,144 +1,84 @@
-import styles from "~/styles/pages/leaderboards.module.css"
-import {
-    Leaderboard,
-    getIndividualLeaderboard,
-    leaderboardQueryKey
-} from "~/services/raidhub/getLeaderboard"
-import { ListedRaid } from "~/types/raids"
-import { useLocale } from "../app/LocaleManager"
-import { usePage } from "~/hooks/util/usePage"
-import Head from "next/head"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Controls } from "./LeaderboardControls"
-import Loading from "../global/Loading"
-import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import CloudflareImage from "~/images/CloudflareImage"
-import RaidBanners from "~/images/raid-banners"
+import RaidBanners from "~/data/raid-banners"
+import { usePage } from "~/hooks/util/usePage"
+import { getIndividualLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import {
     searchLeaderboardPlayer,
-    searchLeaderboardPlayerQueryKey
+    searchLeaderboardPlayerMutationKey
 } from "~/services/raidhub/searchLeaderboard"
-import { useRouter } from "next/router"
-import { ENTRIES_PER_PAGE } from "./Leaderboard"
+import { ListedRaid, RaidHubIndividualLeaderboardCategory } from "~/types/raidhub-api"
+import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
+import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import GenericIndividualLeaderboard from "./GenericIndividualLeaderboard"
 
-export type IndividualLeaderboadProps = {
+export const IndividualLeaderboad = ({
+    raid,
+    board
+}: {
     raid: ListedRaid
-    board: Exclude<Leaderboard, Leaderboard.WorldFirst | Leaderboard.Speedrun>
-}
-
-export const IndividualLeaderboad = ({ raid, board }: IndividualLeaderboadProps) => {
-    const { strings } = useLocale()
+    board: RaidHubIndividualLeaderboardCategory
+}) => {
+    const { getUrlPathForRaid, leaderboards, getRaidString } = useRaidHubManifest()
     const { page, handleBackwards, handleForwards, setPage } = usePage(["player"])
     const queryClient = useQueryClient()
-    const raidName = strings.raidNames[raid]
-    const boardName = strings.individualLeaderboards[board]
     const query = useQuery({
-        queryKey: leaderboardQueryKey(raid, board, [], page),
-        queryFn: () => getIndividualLeaderboard(raid, board, page, ENTRIES_PER_PAGE)
+        queryKey: leaderboardQueryKey(raid, board, {
+            page,
+            count: LEADERBOARD_ENTRIES_PER_PAGE
+        }),
+        queryFn: () =>
+            getIndividualLeaderboard({
+                board: board,
+                raid: getUrlPathForRaid(raid),
+                count: LEADERBOARD_ENTRIES_PER_PAGE,
+                page: page
+            })
     })
-    const title = `${raidName} | ${boardName} Leaderboards`
-    const description = `${boardName} Leaderboards for ${raidName}`
 
     const searchParams = {
         type: "individual",
         raid,
-        board
+        category: board,
+        page,
+        count: LEADERBOARD_ENTRIES_PER_PAGE
     } as const
 
-    const searchQueryParams = {
-        page,
-        count: ENTRIES_PER_PAGE
-    }
     const { mutate: searchForLeaderboardPlayer, isLoading: isLoadingSearch } = useMutation({
-        mutationKey: searchLeaderboardPlayerQueryKey(searchParams, searchQueryParams),
-        mutationFn: (membershipId: string) =>
-            searchLeaderboardPlayer<"individual">(searchParams, searchQueryParams, membershipId),
+        mutationKey: searchLeaderboardPlayerMutationKey(searchParams),
+        mutationFn: (membershipId: string) => searchLeaderboardPlayer(searchParams, membershipId),
         onSuccess(result) {
             queryClient.setQueryData(
-                leaderboardQueryKey(raid, board, [], result.page),
+                leaderboardQueryKey(raid, board, {
+                    count: LEADERBOARD_ENTRIES_PER_PAGE,
+                    page: page
+                }),
                 result.entries
             )
             setPage(result.page)
         }
     })
 
-    const { query: queryParams } = useRouter()
-    return (
-        <>
-            <Head>
-                <title>{title}</title>
-                <meta key="description" name="description" content={description} />
-                <meta key="og-title" property="og:title" content={title} />
-                <meta key="og-descriptions" property="og:description" content={description} />
-            </Head>
+    const raidName = getRaidString(raid)
+    const boardName = leaderboards.individual[raid].find(b => b.category === board)?.name ?? board
+    const title = `${raidName} | ${boardName} Leaderboards`
+    const description = `${boardName} Leaderboards for ${raidName}`
 
-            <main className={styles["main"]}>
-                <section className={styles["individual-leaderboard-banner"]}>
-                    <div>
-                        <h1 className={styles["header-h1"]}>{boardName}</h1>
-                        <h3 className={styles["header-h3"]}>{raidName}</h3>
-                    </div>
-                    <CloudflareImage
-                        priority
-                        cloudflareId={RaidBanners[raid]}
-                        alt={raidName}
-                        fill
-                    />
-                </section>
-                <Controls
-                    entriesLength={query.data?.length ?? 0}
-                    entriesPerPage={ENTRIES_PER_PAGE}
-                    isLoading={query.isLoading}
-                    currentPage={page}
-                    refresh={query.refetch}
-                    handleBackwards={handleBackwards}
-                    handleForwards={handleForwards}
-                    searchFn={searchForLeaderboardPlayer}
-                />
-                <section className={styles["leaderboard-container"]}>
-                    {isLoadingSearch ? (
-                        <div>Searching...</div>
-                    ) : query.isLoading || query.isRefetching ? (
-                        new Array(ENTRIES_PER_PAGE)
-                            .fill(null)
-                            .map((_, idx) => (
-                                <Loading
-                                    key={idx}
-                                    className={styles["leaderboard-entry-loading"]}
-                                />
-                            ))
-                    ) : (
-                        query.data?.map(e => (
-                            <IndividualLeaderboardEntryComponent
-                                entry={{
-                                    displayName:
-                                        e.player.bungieGlobalDisplayName || e.player.displayName,
-                                    iconURL: bungieIconUrl(e.player.iconPath),
-                                    id: e.player.membershipId,
-                                    rank: e.rank,
-                                    url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
-                                    value: e.value
-                                }}
-                                key={e.player.membershipId}
-                                isSearched={queryParams["player"] === e.player.membershipId}
-                                valueType="number"
-                            />
-                        ))
-                    )}
-                    {!isLoadingSearch && (query.data?.length ?? 0) > 20 && (
-                        <Controls
-                            entriesLength={query.data?.length ?? 0}
-                            entriesPerPage={ENTRIES_PER_PAGE}
-                            isLoading={query.isLoading}
-                            currentPage={page}
-                            refresh={query.refetch}
-                            handleBackwards={handleBackwards}
-                            handleForwards={handleForwards}
-                        />
-                    )}
-                </section>
-            </main>
-        </>
+    return (
+        <GenericIndividualLeaderboard
+            title={title}
+            description={description}
+            cloudflareBannerId={RaidBanners[raid]}
+            subtitle={raidName}
+            boardName={boardName}
+            data={query.data}
+            isRefetching={query.isFetching}
+            isLoading={query.isLoading}
+            isLoadingSearch={isLoadingSearch}
+            currentPage={page}
+            refresh={query.refetch}
+            handleBackwards={handleBackwards}
+            handleForwards={handleForwards}
+            searchForLeaderboardPlayer={searchForLeaderboardPlayer}
+        />
     )
 }

@@ -1,9 +1,9 @@
-import styles from "~/styles/pages/inpsect.module.css"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import BungieName from "~/models/BungieName"
+import styles from "~/styles/pages/inpsect.module.css"
+import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
 import { usePortal } from "../reusable/Portal"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
@@ -62,45 +62,24 @@ export default function Search({ addMember }: { addMember: (membershipId: string
             {isShowingResults &&
                 sendThroughPortal(
                     <ol className={styles["search-results"]}>
-                        {results.map(
-                            (
-                                {
-                                    bungieGlobalDisplayName,
-                                    bungieGlobalDisplayNameCode,
-                                    iconPath,
-                                    displayName,
-                                    membershipId
-                                },
-                                idx
-                            ) => {
-                                let username = displayName
-                                try {
-                                    const b = new BungieName(
-                                        bungieGlobalDisplayName,
-                                        bungieGlobalDisplayNameCode
-                                    )
-                                    username = b.toString()
-                                } catch {}
-                                return (
-                                    <li
-                                        key={idx}
-                                        className={styles["search-result"]}
-                                        onClick={() => {
-                                            addMember(membershipId)
-                                            setIsShowingResults(false)
-                                        }}>
-                                        <Image
-                                            width={45}
-                                            height={45}
-                                            alt={username}
-                                            unoptimized
-                                            src={bungieIconUrl(iconPath)}
-                                        />
-                                        <p>{username}</p>
-                                    </li>
-                                )
-                            }
-                        )}
+                        {results.map((user, idx) => (
+                            <li
+                                key={idx}
+                                className={styles["search-result"]}
+                                onClick={() => {
+                                    addMember(user.membershipId)
+                                    setIsShowingResults(false)
+                                }}>
+                                <Image
+                                    width={45}
+                                    height={45}
+                                    alt={getUserName(user)}
+                                    unoptimized
+                                    src={bungieIconUrl(user.iconPath)}
+                                />
+                                <p>{getUserName(user)}</p>
+                            </li>
+                        ))}
                     </ol>
                 )}
         </div>

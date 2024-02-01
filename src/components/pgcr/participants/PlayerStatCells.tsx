@@ -1,20 +1,20 @@
-import styles from "~/styles/pages/pgcr.module.css"
-import { formattedNumber, secondsToHMS } from "../../../util/presentation/formatting"
-import { IPGCREntry } from "../../../types/pgcr"
-import { useLocale } from "../../app/LocaleManager"
-import { usePGCRContext } from "../PGCR"
-import PlayerStatCell from "./PlayerStatCell"
-import PGCRPlayer from "../../../models/pgcr/Player"
-import { useItem } from "../../app/DestinyManifestManager"
-import { SVGComponent } from "../../reusable/SVG"
-import Stopwatch from "~/images/icons/Stopwatch"
-import SplitHeart from "~/images/icons/SplitHeart"
-import Death from "~/images/icons/destiny2/Death"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
 import Crown from "~/images/icons/Crown"
-import Kill from "~/images/icons/destiny2/Kill"
+import Expand from "~/images/icons/Expand"
+import SplitHeart from "~/images/icons/SplitHeart"
+import Stopwatch from "~/images/icons/Stopwatch"
 import Ability from "~/images/icons/destiny2/Ability"
 import Ammo from "~/images/icons/destiny2/Ammo"
-import Expand from "~/images/icons/Expand"
+import Death from "~/images/icons/destiny2/Death"
+import Kill from "~/images/icons/destiny2/Kill"
+import styles from "~/styles/pages/pgcr.module.css"
+import { IPGCREntry } from "../../../types/pgcr"
+import PGCRPlayer from "../../../util/destiny/Player"
+import { formattedNumber, secondsToHMS } from "../../../util/presentation/formatting"
+import { useLocale } from "../../app/LocaleManager"
+import { SVGComponent } from "../../reusable/SVG"
+import { usePGCRContext } from "../PGCR"
+import PlayerStatCell from "./PlayerStatCell"
 
 type PlayerStatCellProps = {
     entry: IPGCREntry
@@ -22,8 +22,8 @@ type PlayerStatCellProps = {
 }
 
 const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => {
-    const { locale, strings } = useLocale()
-    const { data: weapon } = useItem(entry.weapons.first()?.hash ?? 73015)
+    const { locale } = useLocale()
+    const weapon = useItemDefinition(entry.weapons.first()?.hash ?? 73015)
     const { data: pgcr } = usePGCRContext()
     const stats = entry.stats
 
@@ -34,40 +34,40 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
     }[] = [
         {
             icon: Kill,
-            name: strings.kills,
+            name: "Kills",
             value: formattedNumber(stats.kills, locale)
         },
         {
             icon: Death,
-            name: strings.deaths,
+            name: "Deaths",
             value: formattedNumber(stats.deaths, locale)
         },
         {
             icon: SplitHeart,
-            name: strings.assists,
+            name: "Assists",
             value: formattedNumber(stats.assists, locale)
         },
         {
             icon: Ability,
-            name: strings.abilityKills,
+            name: "Ability Kills",
             value: formattedNumber(stats.abilityKills, locale)
         },
         {
             icon: Stopwatch,
-            name: strings.timeSpent,
+            name: "Time Spent",
             value: secondsToHMS(stats.timePlayedSeconds)
         },
         {
             icon: Ammo,
-            name: strings.mostUsedWeapon,
-            value: weapon?.displayProperties.name ?? strings.none
+            name: "Most Used Weapon",
+            value: weapon?.displayProperties.name ?? "None"
         }
     ]
 
     if (entry instanceof PGCRPlayer) {
         statsData.splice(3, 0, {
             icon: Crown,
-            name: strings.score,
+            name: "Score",
             value: formattedNumber(pgcr?.weightedScores.get(entry.membershipId) ?? 0, locale)
         })
     }
@@ -89,13 +89,13 @@ const PlayerStatCells = ({ entry, showWeaponsDetails }: PlayerStatCellProps) => 
                         className={[styles["summary-stat-name"], styles["contained-span"]].join(
                             " "
                         )}>
-                        {strings.killBreakdown}
+                        Kills Breakdown
                     </span>
                     <span
                         className={[styles["summary-stat-value"], styles["contained-span"]].join(
                             " "
                         )}>
-                        {strings.clickToView}
+                        Click to View
                     </span>
                 </div>
             </div>

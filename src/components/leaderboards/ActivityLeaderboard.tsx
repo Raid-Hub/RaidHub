@@ -1,13 +1,12 @@
-import styles from "~/styles/pages/leaderboards.module.css"
-import LeaderboardEntryComponent from "./LeaderboardEntryComponent"
 import { ReactNode } from "react"
-import Loading from "../global/Loading"
+import styles from "~/styles/pages/leaderboards.module.css"
 import { LeaderboardEntry } from "~/types/leaderboards"
+import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
+import Loading from "../global/Loading"
 import { Controls } from "./LeaderboardControls"
+import LeaderboardEntryComponent from "./LeaderboardEntryComponent"
 
-export const ENTRIES_PER_PAGE = 25
-
-const Leaderboard = ({
+const ActivityLeaderboard = ({
     entries,
     isLoading,
     page,
@@ -34,7 +33,7 @@ const Leaderboard = ({
             <section>{children}</section>
             <Controls
                 entriesLength={entries.length}
-                entriesPerPage={ENTRIES_PER_PAGE}
+                entriesPerPage={LEADERBOARD_ENTRIES_PER_PAGE}
                 isLoading={isLoading}
                 currentPage={page}
                 refresh={refresh}
@@ -48,7 +47,7 @@ const Leaderboard = ({
                 ) : !isLoading ? (
                     entries.map(e => <LeaderboardEntryComponent entry={e} key={e.id} />)
                 ) : (
-                    new Array(ENTRIES_PER_PAGE)
+                    new Array(LEADERBOARD_ENTRIES_PER_PAGE)
                         .fill(null)
                         .map((_, idx) => (
                             <Loading key={idx} className={styles["leaderboard-entry-loading"]} />
@@ -57,7 +56,7 @@ const Leaderboard = ({
                 {!isLoadingSearch && entries.length > 20 && (
                     <Controls
                         entriesLength={entries.length}
-                        entriesPerPage={ENTRIES_PER_PAGE}
+                        entriesPerPage={LEADERBOARD_ENTRIES_PER_PAGE}
                         isLoading={isLoading}
                         currentPage={page}
                         refresh={refresh}
@@ -70,4 +69,4 @@ const Leaderboard = ({
     )
 }
 
-export default Leaderboard
+export default ActivityLeaderboard

@@ -1,17 +1,16 @@
-import styles from "../../../styles/pages/profile/mid.module.css"
-import { useEffect, useMemo, useState } from "react"
-import { secondsToHMS } from "../../../util/presentation/formatting"
-import { useLocale } from "../../app/LocaleManager"
-import Link from "next/link"
 import {
     DestinyCharacterActivitiesComponent,
     DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
+import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
 import { useBungieClient } from "~/components/app/TokenManager"
+import { useActivityDefiition } from "~/hooks/dexie/useActivityDefinition"
+import { useActivityModeDefinition } from "~/hooks/dexie/useActivityModeDefinition"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
-import { useActivity, useActivityMode } from "~/components/app/DestinyManifestManager"
-import Loading from "~/components/global/Loading"
+import styles from "../../../styles/pages/profile/mid.module.css"
+import { secondsToHMS } from "../../../util/presentation/formatting"
 import { useProfileProps } from "../Profile"
 
 export default function CurrentActivity() {
@@ -53,12 +52,8 @@ function CurrentActivityExisting({
     activitiesComponent: DestinyCharacterActivitiesComponent
     updatedAt: number
 }) {
-    const { data: activity, isLoading: isLoadingActivity } = useActivity(
-        activitiesComponent.currentActivityHash
-    )
-    const { data: activityMode, isLoading: isLoadingActivityMode } = useActivityMode(
-        activitiesComponent.currentActivityModeHash
-    )
+    const activity = useActivityDefiition(activitiesComponent.currentActivityHash)
+    const activityMode = useActivityModeDefinition(activitiesComponent.currentActivityModeHash)
 
     const activityName = useMemo(() => {
         const activityName = activity?.displayProperties.name
@@ -74,12 +69,6 @@ function CurrentActivityExisting({
         }
     }, [activity, activityMode])
 
-    const { strings } = useLocale()
-
-    if (isLoadingActivityMode || isLoadingActivity) {
-        return <Loading className={styles["current-activity"]} />
-    }
-
     return transitoryComponent?.currentActivity ? (
         <Link
             href={{
@@ -90,11 +79,11 @@ function CurrentActivityExisting({
             }}
             className={styles["current-activity"]}>
             <div>
-                <span className={styles["current-activity-label"]}>{strings.inGame}</span>
+                <span className={styles["current-activity-label"]}>In Game</span>
                 <span className={styles["activity-name"]}>{activityName}</span>
             </div>
             <div>
-                <span className={styles["current-activity-label"]}>{strings.fireteam}</span>
+                <span className={styles["current-activity-label"]}>Fireteam</span>
                 <div className={styles["fireteam-members"]}>
                     {transitoryComponent.partyMembers.map(pm => (
                         <PartyMember key={pm.membershipId} {...pm} />
@@ -103,7 +92,7 @@ function CurrentActivityExisting({
             </div>
             {transitoryComponent.currentActivity.startTime && (
                 <div className={styles["timer-container"]}>
-                    <span className={styles["current-activity-label"]}>{strings.elapsedTime}</span>
+                    <span className={styles["current-activity-label"]}>Elapsed Time</span>
                     <Timer
                         lastRefresh={updatedAt}
                         startTime={new Date(transitoryComponent.currentActivity.startTime)}

@@ -1,14 +1,12 @@
-import styles from "~/styles/pages/profile/raids.module.css"
+import { animate } from "framer-motion"
+import Link from "next/link"
 import { MouseEvent, useCallback, useEffect, useRef } from "react"
+import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import RaidSkull from "~/images/icons/destiny2/RaidSkull"
+import Activity from "~/models/profile/data/Activity"
+import styles from "~/styles/pages/profile/raids.module.css"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { DotTooltipProps } from "./DotTooltip"
-import { ElevatedRaidDifficulties } from "~/types/raids"
-import Activity from "~/models/profile/data/Activity"
-import { animate } from "framer-motion"
-import RaidSkull from "~/images/icons/destiny2/RaidSkull"
-import { includedIn } from "~/util/betterIncludes"
-import { useRouter } from "next/router"
-import Link from "next/link"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -68,7 +66,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
         }
     }, [isTargeted])
 
-    const router = useRouter()
+    const { elevatedDifficulties } = useRaidHubManifest()
 
     return (
         <Link
@@ -106,7 +104,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     />
                 )
             )}
-            {includedIn(ElevatedRaidDifficulties, activity.difficulty) && (
+            {elevatedDifficulties.includes(activity.difficulty) && (
                 <circle
                     fill="none"
                     stroke="white"

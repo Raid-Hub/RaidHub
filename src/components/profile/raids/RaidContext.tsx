@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { ReactNode, createContext, useContext } from "react"
 import Activity from "~/models/profile/data/Activity"
-import { ListedRaid } from "~/types/raids"
+import { ListedRaid } from "~/types/raidhub-api"
 
 const RaidContext = createContext<
     | {

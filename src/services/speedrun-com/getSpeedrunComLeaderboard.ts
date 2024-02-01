@@ -1,6 +1,6 @@
-import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
-import { ListedRaid } from "../../types/raids"
 import { SpeedrunBoardId, SpeedrunVariables, destiny2GameId } from "~/data/speedrun-com-mappings"
+import { LeaderboardEntry, LeaderboardEntryParticipant } from "../../types/leaderboards"
+import { ListedRaid } from "../../types/raidhub-api"
 
 export type SpeedrunQueryArgs<
     R extends ListedRaid,

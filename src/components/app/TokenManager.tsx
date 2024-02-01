@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { signOut, useSession } from "next-auth/react"
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { ReactNode, createContext, useContext, useEffect, useRef, useState } from "react"
 import BungieClient from "~/util/bungieClient"
 
 const BungieClientContext = createContext<BungieClient | null>(null)
@@ -12,15 +12,15 @@ type TokenManagerProps = {
 
 const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
     const { data: sessionData, status } = useSession()
-    const [accessToken, setAccessToken] = useState<string>("")
     const [failedTokenRequests, setFailedTokenRequests] = useState(0)
 
     const queryClient = useQueryClient()
-    const [bungie] = useState(new BungieClient(queryClient))
+    const bungie = useRef(new BungieClient(queryClient))
 
     if (failedTokenRequests >= 3) {
         setFailedTokenRequests(0)
         signOut()
+        bungie.current.clearToken()
     }
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
@@ -37,23 +37,22 @@ const TokenManager = ({ setRefetchInterval, children }: TokenManagerProps) => {
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             setRefetchInterval(0)
             signOut()
+            bungie.current.clearToken()
         } else if (sessionData?.bungieAccessToken) {
             setFailedTokenRequests(0)
-            setAccessToken(sessionData.bungieAccessToken.value)
+            bungie.current.setToken(sessionData.bungieAccessToken.value)
             const timeRemaining =
-                // expired is an ISO string, not a date
+                // bungieAccessToken.expires is an ISO string, not a date
                 new Date(sessionData.bungieAccessToken.expires).getTime() - Date.now()
             setRefetchInterval(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 0)
         }
     }, [sessionData, status, setRefetchInterval])
 
-    if (accessToken) {
-        bungie.setToken(accessToken)
-    } else {
-        bungie.clearToken()
-    }
-
-    return <BungieClientContext.Provider value={bungie}>{children}</BungieClientContext.Provider>
+    return (
+        <BungieClientContext.Provider value={bungie.current}>
+            {children}
+        </BungieClientContext.Provider>
+    )
 }
 
 export const useBungieClient = () => {

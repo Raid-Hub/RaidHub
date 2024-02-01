@@ -1,17 +1,16 @@
-import styles from "~/styles/pages/profile/raids.module.css"
-import Link from "next/link"
-import { useLocale } from "../../app/LocaleManager"
-import { raidVersion } from "~/util/destiny/raidUtils"
-import Activity from "~/models/profile/data/Activity"
-import { useMemo } from "react"
-import { Tag } from "~/util/raidhub/tags"
 import { m } from "framer-motion"
-import RaidCardBackground from "~/images/raid-backgrounds"
+import Link from "next/link"
+import { useMemo } from "react"
+import RaidCardBackground from "~/data/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"
+import Activity from "~/models/profile/data/Activity"
+import styles from "~/styles/pages/profile/raids.module.css"
 import { toCustomDateString } from "~/util/presentation/formatting"
+import { Tag } from "~/util/tags"
+import { useLocale } from "../../app/LocaleManager"
 
 const ActivityTile = ({ activity }: { activity: Activity }) => {
-    const { strings, locale } = useLocale()
+    const { locale } = useLocale()
     const difficultyString = raidVersion(activity, strings, false)
     const lowManString = useMemo(() => {
         switch (activity.playerCount) {

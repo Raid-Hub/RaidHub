@@ -1,13 +1,13 @@
 import { dehydrate } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticProps } from "next"
+import { ENTRIES_PER_PAGE } from "~/components/leaderboards/ActivityLeaderboard"
 import { IndividualLeaderboadProps } from "~/components/leaderboards/IndividualLeaderboard"
-import { ENTRIES_PER_PAGE } from "~/components/leaderboards/Leaderboard"
 import {
     createServerSideQueryClient,
     prefetchIndividualLeaderboard
 } from "~/server/serverQueryClient"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { ListedRaid } from "~/types/raids"
+import { ListedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/betterIncludes"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
 import { zRaidURIComponent } from "~/util/zod"

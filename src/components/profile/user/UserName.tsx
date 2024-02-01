@@ -1,30 +1,28 @@
 import styles from "~/styles/pages/profile/user.module.css"
-import BungieName from "~/models/BungieName"
 
 type UserNameProps = {
-    displayName: string
+    membershipId: string
+    displayName: string | null
     bungieGlobalDisplayName?: string | null
     bungieGlobalDisplayNameCode?: number | string | null
 }
 const UserName = ({
+    membershipId,
     displayName,
     bungieGlobalDisplayName,
     bungieGlobalDisplayNameCode
 }: UserNameProps) => {
     if (bungieGlobalDisplayName && bungieGlobalDisplayNameCode) {
-        try {
-            const bungieName = new BungieName(bungieGlobalDisplayName, bungieGlobalDisplayNameCode)
-            return (
-                <span className={styles["username"]}>
-                    <span>{bungieName.name}</span>
-                    <span className={styles["discrim"]}>{"#" + bungieName.fixedBungieCode}</span>
-                </span>
-            )
-        } catch {}
+        return (
+            <span className={styles["username"]}>
+                <span>{bungieGlobalDisplayName}</span>
+                <span className={styles["discrim"]}>{"#" + bungieGlobalDisplayNameCode}</span>
+            </span>
+        )
     }
     return (
         <span className={styles["username"]}>
-            <span>{displayName}</span>
+            <span>{displayName || membershipId}</span>
         </span>
     )
 }

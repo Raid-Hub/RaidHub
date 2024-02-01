@@ -1,4 +1,6 @@
+import { Collection } from "@discordjs/collection"
 import {
+    BungieMembershipType,
     DestinyCharacterComponent,
     DestinyClass,
     DestinyHistoricalStatsValue,
@@ -7,12 +9,10 @@ import {
     DestinyPostGameCarnageReportExtendedData,
     UserInfoCard
 } from "bungie-net-core/models"
-import { parseWeapons } from "../../util/destiny/weapons"
-import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
-import { pgcrEntryRankingScore } from "../../util/destiny/pgcrEntryRankingScore"
-import { Collection } from "@discordjs/collection"
-import { BungieMembershipType } from "bungie-net-core/models"
 import { CharacterLogos } from "~/images/icons/character-logos"
+import { IPGCREntry, IPGCREntryStats, PlayerWeapons } from "../../types/pgcr"
+import { pgcrEntryRankingScore } from "./pgcrEntryRankingScore"
+import { parseWeapons } from "./weapons"
 
 export default class DestinyPGCRCharacter implements IPGCREntry, DestinyPostGameCarnageReportEntry {
     readonly standing: number

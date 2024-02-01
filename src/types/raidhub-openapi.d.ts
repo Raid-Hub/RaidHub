@@ -143,9 +143,9 @@ export interface paths {
           maxDate?: string | null;
           minSeason?: number | null;
           maxSeason?: number | null;
-          fresh?: string | null;
-          completed?: string | null;
-          flawless?: string | null;
+          fresh?: boolean;
+          completed?: boolean;
+          flawless?: boolean;
           raid?: components["schemas"]["RaidEnum"];
           platformType?: number;
           reversed?: boolean | null;
@@ -506,7 +506,8 @@ export interface components {
       readonly displayName: string | null;
       readonly bungieGlobalDisplayName: string | null;
       readonly bungieGlobalDisplayNameCode: string | null;
-      readonly lastSeen: string | null;
+      /** Format: date-time */
+      readonly lastSeen: string;
     };
     readonly Activity: {
       readonly instanceId: string;
@@ -515,7 +516,9 @@ export interface components {
       readonly flawless: boolean | null;
       readonly fresh: boolean | null;
       readonly playerCount: number;
+      /** Format: date-time */
       readonly dateStarted: string;
+      /** Format: date-time */
       readonly dateCompleted: string;
       readonly duration: number;
       readonly platformType?: components["schemas"]["BungieMembershipType"];
@@ -555,6 +558,7 @@ export interface components {
     /** @enum {string} */
     readonly RaidHubErrorCode: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError";
     readonly RaidHubError: {
+      /** Format: date-time */
       readonly minted: string;
       readonly message: string;
       /** @enum {boolean} */
@@ -633,9 +637,9 @@ export interface components {
       readonly maxDate?: string | null;
       readonly minSeason?: number | null;
       readonly maxSeason?: number | null;
-      readonly fresh?: string | null;
-      readonly completed?: string | null;
-      readonly flawless?: string | null;
+      readonly fresh?: boolean;
+      readonly completed?: boolean;
+      readonly flawless?: boolean;
       readonly raid?: components["schemas"]["RaidEnum"];
       readonly platformType?: number;
       /** @default false */
@@ -745,6 +749,19 @@ export interface components {
       readonly value: number | null;
       readonly rank: number | null;
     };
+    readonly PlayerProfileLeaderboardEntry: {
+      readonly rank: number;
+      readonly instanceId: string;
+      readonly boardId: string;
+      /** @enum {string} */
+      readonly type: "Normal" | "Challenge" | "Prestige" | "Master";
+      readonly raidHash: string;
+      /** Format: date-time */
+      readonly dateCompleted: string;
+      readonly dayOne: boolean;
+      readonly contest: boolean;
+      readonly weekOne: boolean;
+    };
     readonly ManifestResponse: {
       readonly hashes: {
         [key: string]: {
@@ -766,6 +783,7 @@ export interface components {
           [key: string]: readonly {
               readonly id: string;
               readonly type: string;
+              /** Format: date-time */
               readonly date: string;
             }[];
         };
@@ -800,7 +818,7 @@ export interface components {
     };
     readonly PlayerActivitiesResponse: {
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
-          readonly raid: {
+          readonly meta: {
             readonly raidId: components["schemas"]["RaidEnum"];
             readonly versionId: components["schemas"]["RaidVersionEnum"];
           };
@@ -826,7 +844,8 @@ export interface components {
       readonly displayName: string | null;
       readonly bungieGlobalDisplayName: string | null;
       readonly bungieGlobalDisplayNameCode: string | null;
-      readonly lastSeen: string | null;
+      /** Format: date-time */
+      readonly lastSeen: string;
     };
     readonly PlayerProfileResponse: {
       readonly player: components["schemas"]["PlayerInfo"];
@@ -853,22 +872,17 @@ export interface components {
           };
         };
       };
-      readonly worldFirstEntries: {
-        [key: string]: readonly {
-            readonly rank: number;
-            readonly instanceId: string;
-            readonly raidHash: string;
-            readonly dayOne: boolean;
-            readonly contest: boolean;
-            readonly weekOne: boolean;
-          }[];
-      };
+      readonly worldFirstEntries: readonly components["schemas"]["PlayerProfileLeaderboardEntry"][];
     };
     readonly ActivitySearchResponse: {
       readonly query: components["schemas"]["ActivitySearchQuery"];
       readonly results: readonly components["schemas"]["ActivityExtended"][];
     };
     readonly ActivityResponse: components["schemas"]["ActivityExtended"] & {
+      readonly meta: {
+        readonly raid: components["schemas"]["RaidEnum"];
+        readonly version: components["schemas"]["RaidVersionEnum"];
+      };
       readonly leaderboardEntries: {
         [key: string]: number;
       };
@@ -914,6 +928,7 @@ export interface components {
         /** @default 1 */
         readonly page?: number;
       };
+      /** Format: date-time */
       readonly date: string;
       readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
     };
@@ -938,7 +953,9 @@ export interface components {
       readonly entries: readonly {
           readonly rank: number;
           readonly instanceId: string;
+          /** Format: date-time */
           readonly dateStarted: string;
+          /** Format: date-time */
           readonly dateCompleted: string;
           readonly duration: number;
           readonly players: readonly components["schemas"]["PlayerWithActivityData"][];

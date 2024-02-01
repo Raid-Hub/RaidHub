@@ -1,9 +1,9 @@
+import { AdapterUser } from "@auth/core/adapters"
 import type { Session } from "@auth/core/types"
 import type { BungieFetchConfig } from "bungie-net-core"
-import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
 import { refreshAuthorization } from "bungie-net-core/auth"
-import { AdapterUser } from "@auth/core/adapters"
 import { BungieAccount } from "."
+import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
 
 export const sessionCallback = async ({
     session,
@@ -19,6 +19,7 @@ export const sessionCallback = async ({
     }
     user: AdapterUser & { bungieAccount: BungieAccount }
 }) => {
+    // TODO: add raidhub access token
     if (
         bungieAccount.expiresAt &&
         bungieAccount.accessToken &&

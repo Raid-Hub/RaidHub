@@ -1,5 +1,10 @@
 import { DehydrateOptions, QueryClient, dehydrate } from "@tanstack/react-query"
 import { createServerSideHelpers } from "@trpc/react-query/server"
+import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
+import { BungieMembershipType } from "bungie-net-core/models"
+import superjson from "superjson"
+import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import { getBasicProfile } from "~/services/bungie/getProfile"
 import {
     Leaderboard,
     getIndividualGlobalLeaderboard,
@@ -7,20 +12,15 @@ import {
     getLeaderboard,
     leaderboardQueryKey
 } from "~/services/raidhub/getLeaderboard"
+import { getPlayer, playerQueryKey } from "~/services/raidhub/getPlayer"
 import {
     getSpeedrunComLeaderboard,
     rtaQueryKey
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
-import { ListedRaid } from "~/types/raids"
-import { appRouter } from "./trpc/router"
-import prisma from "./prisma"
-import superjson from "superjson"
-import { BungieMembershipType } from "bungie-net-core/models"
-import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
-import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import { ListedRaid } from "~/types/raidhub-api"
 import BungieQuery, { QueryFn } from "~/util/bungieQuery"
-import { getBasicProfile } from "~/services/bungie/getProfile"
-import { getPlayer, playerQueryKey } from "~/services/raidhub/getPlayer"
+import prisma from "./prisma"
+import { appRouter } from "./trpc/router"
 
 export const createServerSideQueryClient = () =>
     new QueryClient({

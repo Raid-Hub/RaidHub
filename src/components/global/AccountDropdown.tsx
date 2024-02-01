@@ -1,9 +1,8 @@
-import styles from "../../styles/header.module.css"
+import { Variants, m } from "framer-motion"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import { Variants, m } from "framer-motion"
-import { useLocale } from "../app/LocaleManager"
 import RightArrow from "~/images/icons/RightArrow"
+import styles from "../../styles/header.module.css"
 
 const variants = {
     open: {
@@ -19,7 +18,6 @@ type AccountDropdownProps = {
 
 const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
     const { data: sessionData } = useSession()
-    const { strings } = useLocale()
 
     const animate: keyof typeof variants = isDropdownOpen ? "open" : "closed"
     return (
@@ -51,7 +49,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                                 href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
                                                 className={styles["content-section"]}>
                                                 <div>
-                                                    <h4>{strings.viewProfile}</h4>
+                                                    <h4>View Profile</h4>
                                                 </div>
                                                 <div className={styles["content-section-arrow"]}>
                                                     <RightArrow />
@@ -62,7 +60,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                 <div className={`${styles["card-section"]}`}>
                                     <Link href="/account" className={styles["content-section"]}>
                                         <div>
-                                            <h4>{strings.manageAccount}</h4>
+                                            <h4>Manage Account</h4>
                                         </div>
                                         <div className={styles["content-section-arrow"]}>
                                             <RightArrow />
@@ -73,7 +71,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                     onClick={() => signOut({ callbackUrl: "/" })}
                                     className={styles["content-section"]}>
                                     <div>
-                                        <span>{strings.logOut}</span>
+                                        <span>Logout</span>
                                     </div>
                                     <div className={styles["content-section-arrow"]}>
                                         <RightArrow />
@@ -89,7 +87,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                 }}
                                 className={styles["content-section"]}>
                                 <div>
-                                    <span>{strings.logIn}</span>
+                                    <span>Log In</span>
                                 </div>
                                 <div className={styles["content-section-arrow"]}>
                                     <RightArrow />

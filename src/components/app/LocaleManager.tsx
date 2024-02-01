@@ -1,13 +1,27 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
-import { LocalizedStrings, SupportedLanguage } from "../../util/presentation/localized-strings"
+import { DestinyManifestLanguage as DestinyManifestLanguageType } from "bungie-net-core/manifest"
 import Head from "next/head"
-import { useRouter } from "next/router"
+import { ReactNode, createContext, useContext, useEffect, useState } from "react"
 
-const LanguageContext = createContext({
-    language: SupportedLanguage.ENGLISH,
-    locale: "en-US",
-    strings: LocalizedStrings[SupportedLanguage.ENGLISH]
-})
+const supportedLanguages = [
+    { regex: /^de/i, lang: "de" },
+    { regex: /^es(?:-MX)?/i, lang: "es-mx" },
+    { regex: /^fr/i, lang: "fr" },
+    { regex: /^it/i, lang: "it" },
+    { regex: /^ja/i, lang: "ja" },
+    { regex: /^ko/i, lang: "ko" },
+    { regex: /^pl/i, lang: "pl" },
+    { regex: /^pt(?:-BR)?/i, lang: "pt-br" },
+    { regex: /^ru/i, lang: "ru" },
+    { regex: /^zh(?:-CN)?/i, lang: "zh-chs" },
+    { regex: /^zh-TW/i, lang: "zh-cht" },
+    { regex: /^en(?:-)?/i, lang: "en" }
+    // Add more patterns as needed
+] as const
+
+const LanguageContext = createContext<{
+    locale: string
+    manifestLanguage: DestinyManifestLanguageType
+} | null>(null)
 
 type LanguageProviderProps = {
     children: ReactNode
@@ -15,30 +29,35 @@ type LanguageProviderProps = {
 
 const LocaleManager = ({ children }: LanguageProviderProps) => {
     const [locale, setLocale] = useState<string>("en-US")
-    const { locale: language } = useRouter()
 
     useEffect(() => {
         setLocale(navigator.language)
     }, [])
 
-    const value = {
-        language: (language as SupportedLanguage) ?? SupportedLanguage.ENGLISH,
-        locale,
-        get strings() {
-            return LocalizedStrings[this.language]
-        }
+    function getDestinyManifestLanguage(locale: string): DestinyManifestLanguageType {
+        const matchedLanguage = supportedLanguages.find(({ regex }) => regex.test(locale))
+
+        return matchedLanguage ? matchedLanguage.lang : "en"
     }
 
     return (
-        <LanguageContext.Provider value={value}>
+        <LanguageContext.Provider
+            value={{
+                locale,
+                manifestLanguage: getDestinyManifestLanguage(locale)
+            }}>
             {children}
             <Head>
-                <meta httpEquiv="Content-Language" content={value.language} />
+                <meta httpEquiv="Content-Language" content={locale} />
             </Head>
         </LanguageContext.Provider>
     )
 }
 
-export const useLocale = () => useContext(LanguageContext)
+export const useLocale = () => {
+    const context = useContext(LanguageContext)
+    if (!context) throw new Error("useLocale must be used within a LanguageProvider")
+    return context
+}
 
 export default LocaleManager

@@ -1,12 +1,14 @@
 import { RaidHubLeaderboardSearchQuery } from "~/types/raidhub-api"
 import { getRaidHubApi } from "."
 
-export function searchLeaderboardPlayerQueryKey(query: RaidHubLeaderboardSearchQuery) {
+export function searchLeaderboardPlayerMutationKey(
+    query: Omit<RaidHubLeaderboardSearchQuery, "membershipId">
+) {
     return ["raidhub-leaderboard-player", query] as const
 }
 
 export async function searchLeaderboardPlayer(
-    query: RaidHubLeaderboardSearchQuery,
+    query: Omit<RaidHubLeaderboardSearchQuery, "membershipId">,
     membershipId: string
 ) {
     switch (query.type) {

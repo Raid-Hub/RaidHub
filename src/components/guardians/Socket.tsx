@@ -1,7 +1,7 @@
-import styles from "~/styles/pages/inpsect.module.css"
-import Image from "next/image"
 import { DestinyItemSocketState } from "bungie-net-core/models"
-import { useItem } from "../app/DestinyManifestManager"
+import Image from "next/image"
+import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import styles from "~/styles/pages/inpsect.module.css"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 
 export type EnabledDestinyItemSocketState = DestinyItemSocketState & {
@@ -10,7 +10,7 @@ export type EnabledDestinyItemSocketState = DestinyItemSocketState & {
 }
 
 export default function Socket({ socket }: { socket: EnabledDestinyItemSocketState }) {
-    const { data: socketData } = useItem(socket.plugHash)
+    const socketData = useItemDefinition(socket.plugHash)
 
     return socketData?.displayProperties.icon ? (
         <div className={styles["socket"]} data-socket-hash={socket.plugHash}>

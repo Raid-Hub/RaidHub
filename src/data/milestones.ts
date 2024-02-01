@@ -1,4 +1,5 @@
-import { ListedRaid, Raid, SunsetRaid } from "~/types/raids"
+import { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
+import { Raid } from "./raid"
 
 export const RaidMileStones: Record<Exclude<ListedRaid, SunsetRaid>, number> = {
     [Raid.LAST_WISH]: 3181387331,

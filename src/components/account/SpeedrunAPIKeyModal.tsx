@@ -1,11 +1,10 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
+import React from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { trpc } from "~/util/trpc"
-import Link from "next/link"
 import styles from "~/styles/pages/account.module.css"
-import { useLocale } from "../app/LocaleManager"
-import React from "react"
+import { trpc } from "~/util/trpc"
 
 const errMsg = "Invalid API Key format: "
 const zFormSchema = z.object({
@@ -44,7 +43,6 @@ export default React.forwardRef<HTMLDialogElement, { refetchSocials: () => void 
         } = useForm<FormSchemaType>({
             resolver: zodResolver(zFormSchema)
         })
-        const { strings } = useLocale()
 
         const onSubmit: SubmitHandler<FormSchemaType> = data => {
             updateAPIKey(data)
@@ -113,7 +111,7 @@ export default React.forwardRef<HTMLDialogElement, { refetchSocials: () => void 
                         {...register("apiKey")}
                     />
                     <button type="submit" disabled={isLoading}>
-                        {strings.submit}
+                        Submit
                     </button>
                     {err && <div className={styles["api-key-modal-err"]}>{err.message}</div>}
                 </form>

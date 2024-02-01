@@ -3,7 +3,7 @@ import { InferGetStaticPropsType } from "next"
 import { IndividualLeaderboad } from "~/components/leaderboards/IndividualLeaderboard"
 import { createGetStaticPaths, createGetStaticProps } from "~/server/leaderboardHelpers"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
-import { Raid } from "~/types/raids"
+import { Raid } from "~/types/raidhub-api"
 
 const getStaticPaths = createGetStaticPaths([
     Raid.EATER_OF_WORLDS,

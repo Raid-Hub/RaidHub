@@ -1,10 +1,9 @@
-import styles from "~/styles/pages/pgcr.module.css"
-import PGCRPlayer from "~/models/pgcr/Player"
-import SelectedPlayer from "./SelectedPlayer"
-import { useLocale } from "../../app/LocaleManager"
 import Link from "next/link"
-import PGCRCharacter from "~/models/pgcr/Character"
 import ExternalLink from "~/images/icons/ExternalLink"
+import styles from "~/styles/pages/pgcr.module.css"
+import PGCRCharacter from "~/util/destiny/Character"
+import PGCRPlayer from "~/util/destiny/Player"
+import SelectedPlayer from "./SelectedPlayer"
 
 type SelectedPlayerHeaderProps = {
     selectedPlayer: PGCRPlayer
@@ -18,8 +17,6 @@ const SelectedPlayerHeader = ({
     onClick,
     updateCharacterId
 }: SelectedPlayerHeaderProps) => {
-    const { strings } = useLocale()
-
     return (
         <div className={styles["members-header"]}>
             <SelectedPlayer
@@ -48,7 +45,7 @@ const SelectedPlayerHeader = ({
             <Link
                 href={`/profile/${selectedPlayer.membershipType}/${selectedPlayer.membershipId}`}
                 className={[styles["member-profile-button"], styles["selectable"]].join(" ")}>
-                <span>{strings.viewProfile}</span>
+                <span>View Profile</span>
                 <ExternalLink sx={30} color="white" />
             </Link>
         </div>

@@ -6,7 +6,7 @@ import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
 import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
 import { FilterCallback } from "~/types/generic"
 import { ActivityFilter } from "~/types/profile"
-import { CommonRaidDifficulties, Difficulty } from "~/types/raids"
+import { CommonRaidDifficulties, Difficulty } from "~/types/raidhub-api"
 import { includedIn } from "../betterIncludes"
 
 export enum FilterOption {

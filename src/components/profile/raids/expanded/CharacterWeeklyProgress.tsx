@@ -1,12 +1,13 @@
 import {
     DestinyCharacterComponent,
     DestinyMilestone,
-    DestinyMilestoneActivityPhase
+    DestinyMilestoneActivityPhase,
+    DestinyMilestoneChallengeActivity
 } from "bungie-net-core/models"
 import Image from "next/image"
-import { useLocale } from "~/components/app/LocaleManager"
+import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { characterNames } from "~/data/strings/character-names"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { raidTupleFromHash } from "~/util/destiny/raidUtils"
 import styles from "./expanded-raid.module.css"
 
 export default function CharacterWeeklyProgress({
@@ -16,31 +17,37 @@ export default function CharacterWeeklyProgress({
     character: DestinyCharacterComponent
     milestone: DestinyMilestone
 }) {
-    const { strings } = useLocale()
     return (
         <div style={{ border: "1px solid var(--border)", padding: "1em" }}>
             <div className={styles["character-progress-header"]}>
-                <h4>{strings.characterNames[character.classType]}</h4>
+                <h4>{characterNames[character.classType]}</h4>
                 <div className={styles["image-container"]}>
                     <Image src={bungieIconUrl(character.emblemPath)} alt="" fill unoptimized />
                 </div>
             </div>
             <div>
-                {milestone.activities.map(({ activityHash, phases }) => (
-                    <div key={activityHash}>
-                        <h5>{strings.difficulty[raidTupleFromHash(String(activityHash))[1]]}</h5>
-                        <div
-                            className={styles["progress-boxes"]}
-                            style={{
-                                gridTemplateColumns: `repeat(${
-                                    milestone.activities[0].phases?.length ?? 0
-                                }, 30px)`
-                            }}>
-                            {phases?.map(phase => (
-                                <EncounterProgress key={phase.phaseHash} phase={phase} />
-                            ))}
-                        </div>
-                    </div>
+                {milestone.activities.map(a => (
+                    <MilestoneActivity key={a.activityHash} activity={a} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
+function MilestoneActivity({ activity }: { activity: DestinyMilestoneChallengeActivity }) {
+    const { getDifficultyString, getRaidFromHash } = useRaidHubManifest()
+    const metaData = getRaidFromHash(activity.activityHash)
+    if (!metaData) return null
+    return (
+        <div>
+            <h5>{getDifficultyString(metaData.difficulty)}</h5>
+            <div
+                className={styles["progress-boxes"]}
+                style={{
+                    gridTemplateColumns: `repeat(${activity.phases?.length ?? 0}, 30px)`
+                }}>
+                {activity.phases?.map(phase => (
+                    <EncounterProgress key={phase.phaseHash} phase={phase} />
                 ))}
             </div>
         </div>
