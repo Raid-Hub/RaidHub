@@ -1,5 +1,6 @@
-import { middleware, publicProcedure } from "."
 import { TRPCError } from "@trpc/server"
+import { Session } from "next-auth"
+import { middleware, publicProcedure } from "."
 
 const authenticatedMidddleware = middleware(({ ctx, next }) => {
     if (!ctx.session) {
@@ -24,7 +25,7 @@ const adminMiddleware = middleware(({ ctx, next }) => {
     return next({
         ctx: {
             ...ctx,
-            session: ctx.session
+            session: ctx.session as Session & { user: { role: "ADMIN" } }
         }
     })
 })

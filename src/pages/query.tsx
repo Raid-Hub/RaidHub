@@ -1,12 +1,14 @@
 import { Role } from "@prisma/client"
+import { useMutation } from "@tanstack/react-query"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import { useSession } from "next-auth/react"
 import Head from "next/head"
 import { MouseEventHandler, useState } from "react"
 import { RaidHubTable } from "~/components/reusable/RaidHubTable"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { auth } from "~/server/next-auth"
+import { postAdminQuery, postAdminQueryMutationKey } from "~/services/raidhub/postAdminQuery"
 import styles from "~/styles/pages/query.module.css"
-import { trpc } from "~/util/trpc"
 
 export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
     const session = await auth(ctx)
@@ -27,14 +29,12 @@ export const getServerSideProps: GetServerSideProps<{}> = async ctx => {
 
 export default function AdminQuery({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [isExplaining, setIsExplaining] = useState(false)
+    const session = useSession()
 
-    const { mutate, data, isSuccess, isLoading, isError, error } =
-        trpc.admin.rawSqlQuery.useMutation({
-            onError: err => console.error(err),
-            trpc: {
-                abortOnUnmount: true
-            }
-        })
+    const { mutate, data, isSuccess, isLoading, isError, error } = useMutation({
+        mutationKey: [postAdminQueryMutationKey],
+        mutationFn: postAdminQuery
+    })
     const handleQuery = (queryText: string) => {
         setIsExplaining(false)
         mutate({ query: queryText })
