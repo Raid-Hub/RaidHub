@@ -6,6 +6,9 @@ const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
 
 module.exports = withBundleAnalyzer({
     reactStrictMode: false,
+    compiler: {
+        styledComponents: true
+    },
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         APP_ENV: process.env.APP_ENV,

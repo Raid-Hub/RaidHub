@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next"
 import { getRaidHubApi } from "~/services/raidhub"
+import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
 import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
 import { SessionManager } from "./managers/SessionManager"
+import { StyledComponentsManager } from "./managers/StyledComponentsManager"
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, undefined, { revalidate: 300 })
@@ -19,13 +21,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <SessionManager>
                         <LocaleManager>
                             <RaidHubManifestManager serverManifest={manifest}>
-                                <main>{children}</main>
-                                {/* <LazyMotion
-                                    features={async () =>
-                                        import("framer-motion").then(module => module.domAnimation)
-                                    }
-                                    strict>
-                                    <Header />
+                                <StyledComponentsManager>
+                                    <FramerMotionManager>
+                                        {/* <Header />
                                     <ProgressBar
                                         options={{
                                             showSpinner: false,
@@ -39,10 +37,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                         color={"orange"}
                                     />
                                     <HeaderBanner />
-                                    <SearchModal />
-                                    <main>{children}</main>
-                                    <Footer />
-                                </LazyMotion> */}
+                                    <SearchModal /> */}
+                                        {children}
+                                        {/* <Footer /> */}
+                                    </FramerMotionManager>
+                                </StyledComponentsManager>
                             </RaidHubManifestManager>
                         </LocaleManager>
                     </SessionManager>

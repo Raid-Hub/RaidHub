@@ -1,4 +1,4 @@
-import { Difficulty, Raid } from "~/data/raid"
+import { Difficulty, Raid } from "data/raid"
 import { components, paths } from "./raidhub-openapi"
 
 export type ListedRaid = (typeof Raid)[keyof typeof Raid]
