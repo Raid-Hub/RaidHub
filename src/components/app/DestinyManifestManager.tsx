@@ -1,8 +1,8 @@
 import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { useBungieClient } from "../../app/managers/BungieTokenManager"
+import { useLocale } from "../../app/managers/LocaleManager"
 import { updateCachedManifest } from "../../util/destiny/manifest"
-import { useLocale } from "./LocaleManager"
-import { useBungieClient } from "./TokenManager"
 
 const KEY_MANIFEST_VERSION = "manifest_version"
 

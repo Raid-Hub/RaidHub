@@ -1,10 +1,12 @@
-/** @type {import('./src/util/presentation/localized-strings').SupportedLanguage[]} */
-const locales = ["en"]
+import bundleAnalyzer from "@next/bundle-analyzer"
+
+const withBundleAnalyzer = bundleAnalyzer({
+    enabled: process.env.ANALYZE === "true"
+})
 
 const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+export default withBundleAnalyzer({
     reactStrictMode: false,
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
@@ -26,18 +28,5 @@ const nextConfig = {
                 pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
             }
         ]
-    },
-    i18n: {
-        locales,
-        defaultLocale: "en"
-    },
-    experimental: {
-        scrollRestoration: true
     }
-}
-
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-    enabled: process.env.ANALYZE === "true"
 })
-
-module.exports = process.env.APP_ENV === "local" ? withBundleAnalyzer(nextConfig) : nextConfig

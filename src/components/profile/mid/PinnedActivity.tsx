@@ -4,10 +4,10 @@ import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 import CloudflareImage from "~/images/CloudflareImage"
 import PinIcon from "~/images/icons/PinIcon"
 import EagerEdge from "~/images/icons/destiny2/EagerEgde"
+import { useLocale } from "../../../app/managers/LocaleManager"
 import RaidBanners from "../../../data/raid-banners"
 import styles from "../../../styles/pages/profile/mid.module.css"
 import { toCustomDateString } from "../../../util/presentation/formatting"
-import { useLocale } from "../../app/LocaleManager"
 import Loading from "../../global/Loading"
 
 type PinnedActivityProps = {

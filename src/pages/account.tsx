@@ -1,8 +1,8 @@
 import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
-import { useLocale } from "../components/app/LocaleManager"
-import Account from "../components/account/Account"
 import Head from "next/head"
+import { useLocale } from "../app/managers/LocaleManager"
+import Account from "../components/account/Account"
 
 const AccountPage: NextPage = () => {
     const { status, data: sessionData } = useSession({

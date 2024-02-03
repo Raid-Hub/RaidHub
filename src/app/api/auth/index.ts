@@ -1,37 +1,30 @@
-import { AdapterUser } from "@auth/core/adapters"
-import { Provider } from "@auth/core/providers"
-import DiscordProvider from "@auth/core/providers/discord"
-import GoogleProvider from "@auth/core/providers/google"
-import TwitchProvider from "@auth/core/providers/twitch"
-import TwitterProvider from "@auth/core/providers/twitter"
-import { User as PrismaUser } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/models"
-import { ServerResponse } from "http"
-import NextAuth from "next-auth"
-import BungieProvider from "~/server/next-auth/providers/BungieProvider"
-import { sessionCallback } from "~/server/next-auth/sessionCallback"
-import prisma from "../prisma"
-import { prismaAdapter } from "./adapter"
-import { signInCallback } from "./signInCallback"
+import { User } from "@prisma/client";
+import { BungieMembershipType } from "bungie-net-core/models";
+import {
+    getServerSession,
+    type DefaultSession,
+    type NextAuthOptions,
+  } from "next-auth";
+  import DiscordProvider from "next-auth/providers/discord";
+  
+// declare module "next-auth" {
+//     interface Session  extends DefaultSession{
+//         error?: AuthError
+//         user: AdapterUser
+//         bungieAccessToken?: {
+//             value: string
+//             expires: Date
+//         }
+//         raidHubAccessToken?: {
+//             value: string
+//             expires: Date
+//         }
+//         expires: Date
+//     }
+// }
 
-declare module "@auth/core/types" {
-    interface Session {
-        error?: AuthError
-        user: AdapterUser
-        bungieAccessToken?: {
-            value: string
-            expires: Date
-        }
-        raidHubAccessToken?: {
-            value: string
-            expires: Date
-        }
-        expires: Date
-    }
-}
-
-declare module "@auth/core/adapters" {
-    interface AdapterUser extends PrismaUser {
+declare module "next-auth/adapters" {
+    interface AdapterUser extends User {
         image: string
         name: string
         destinyMembershipId: string
@@ -39,7 +32,7 @@ declare module "@auth/core/adapters" {
     }
 }
 
-export type BungieToken = {
+export type AuthToken = {
     value: string
     expires: Date
 }
@@ -53,39 +46,37 @@ export type BungieAccount = {
 
 export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
 
-// stupid fuckery to get around a next auth issue, i hate it
-export const auth: typeof _auth = (...args) => {
-    // @ts-expect-error
-    if ("res" in args[0]) {
-        const { res, ...restOfArgs } = args[0]
-        const fakeRes = new Response()
-        // @ts-expect-error
-        const result = _auth({ ...restOfArgs, res: fakeRes })
-        fakeRes.headers.forEach((value, key) => {
-            // @ts-expect-error
-            args[1].setHeader(key, value)
-        })
-        return result
-    } else if (args[1] instanceof ServerResponse) {
-        const fakeRes = new Response()
-        // @ts-expect-error
-        const result = _auth(args[0], fakeRes)
-        fakeRes.headers.forEach((value, key) => {
-            // @ts-expect-error
-            args[1].setHeader(key, value)
-        })
-        return result
-    }
-    // @ts-expect-error
-    else return _auth(args)
-}
+// TODO: Delete this
+// // stupid fuckery to get around a next auth issue, i hate it
+// export const auth: typeof _auth = (...args) => {
+//     // @ts-expect-error
+//     if ("res" in args[0]) {
+//         const { res, ...restOfArgs } = args[0]
+//         const fakeRes = new Response()
+//         // @ts-expect-error
+//         const result = _auth({ ...restOfArgs, res: fakeRes })
+//         fakeRes.headers.forEach((value, key) => {
+//             // @ts-expect-error
+//             args[1].setHeader(key, value)
+//         })
+//         return result
+//     } else if (args[1] instanceof ServerResponse) {
+//         const fakeRes = new Response()
+//         // @ts-expect-error
+//         const result = _auth(args[0], fakeRes)
+//         fakeRes.headers.forEach((value, key) => {
+//             // @ts-expect-error
+//             args[1].setHeader(key, value)
+//         })
+//         return result
+//     }
+//     // @ts-expect-error
+//     else return _auth(args)
+// }
 
-export { GET, POST }
+// export { GET, POST }
 
-const {
-    auth: _auth,
-    handlers: { GET, POST }
-} = NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: getProviders(),
     adapter: prismaAdapter(prisma),
     pages: {
@@ -103,6 +94,17 @@ const {
         session: sessionCallback,
         // @ts-expect-error
         signIn: signInCallback
+    },
+    logger: {
+        error(code, ...message) {
+            console.error(code, message)
+        },
+        warn(code, ...message) {
+            console.warn(code, message)
+        },
+        debug(code, ...message) {
+            console.debug(code, message)
+        }
     }
 })
 

@@ -1,7 +1,7 @@
 import type { CallbacksOptions } from "@auth/core/types"
-import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
-import { UserMembershipData } from "bungie-net-core/models"
-import { Profile } from "@prisma/client"
+import type { Profile } from "@prisma/client"
+import type { UserMembershipData } from "bungie-net-core/models"
+import { updateBungieAccessTokens } from "../updateBungieAccessTokens"
 
 export const signInCallback: CallbacksOptions<UserMembershipData | Profile>["signIn"] = async ({
     account,
@@ -9,7 +9,7 @@ export const signInCallback: CallbacksOptions<UserMembershipData | Profile>["sig
     profile
 }) => {
     // Users from the callback will have no user, while users from the DB will exist
-    if (account?.provider === "bungie" && user && profile && "bungieNetUser" in profile) {
+    if (account?.provider === "bungie" && user?.id && profile && "bungieNetUser" in profile) {
         await updateBungieAccessTokens({
             userId: user.id,
             access: {
@@ -20,7 +20,9 @@ export const signInCallback: CallbacksOptions<UserMembershipData | Profile>["sig
                 value: account.refresh_token!,
                 expires: new Date(Date.now() + 7_775_777_777)
             }
-        }).catch(console.error)
+        })
+
+        throw new Error("Not ready for this yet, TODO")
     }
     return true
 }

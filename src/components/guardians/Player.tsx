@@ -1,14 +1,14 @@
-import styles from "~/styles/pages/inpsect.module.css"
-import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
-import PlayerItem from "./PlayerItem"
-import Loading from "../global/Loading"
-import PlayerHeader from "./PlayerHeader"
-import { useBungieClient } from "../app/TokenManager"
-import { ReactNode, useMemo } from "react"
-import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
-import Loader from "../reusable/Loader"
+import { ReactNode, useMemo } from "react"
 import { subclassBucket } from "~/data/inventory-item-buckets"
+import styles from "~/styles/pages/inpsect.module.css"
+import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
+import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
+import { useBungieClient } from "../../app/managers/BungieTokenManager"
+import Loading from "../global/Loading"
+import Loader from "../reusable/Loader"
+import PlayerHeader from "./PlayerHeader"
+import PlayerItem from "./PlayerItem"
 
 export default function Player({
     membershipId,

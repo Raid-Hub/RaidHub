@@ -1,13 +1,14 @@
+import "server-only"
+
+import { Adapter, AdapterUser } from "@auth/core/adapters"
 import type { Prisma, PrismaClient } from "@prisma/client"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { zProfile, zUser } from "~/util/zod"
-import { Adapter } from "@auth/core/adapters"
-import { getTwitterProfile } from "./providers/twitter"
+import { BungieAccount } from "../auth"
 import { getDiscordProfile } from "./providers/discord"
 import { getTwitchProfile } from "./providers/twitch"
+import { getTwitterProfile } from "./providers/twitter"
 import { getYoutubeProfile } from "./providers/youtube"
-import { AdapterUser } from "@auth/core/adapters"
-import { BungieAccount } from "."
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 export const prismaAdapter = (prisma: PrismaClient): Adapter => ({
     async createUser(user) {

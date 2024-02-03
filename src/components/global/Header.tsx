@@ -1,11 +1,13 @@
-import Link from "next/link"
-import styles from "../../styles/header.module.css"
-import { useEffect, useState } from "react"
-import SearchBar from "./SearchBar"
+"use client"
+
 import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 import Logo from "../../../public/logo.png"
-import AccountIcon from "./AccountIcon"
+import styles from "../../styles/header.module.css"
 import AccountDropdown from "./AccountDropdown"
+import AccountIcon from "./AccountIcon"
+import SearchBar from "./SearchBar"
 
 const Header = () => {
     const [isScrolled, setIsScrolled] = useState(false)

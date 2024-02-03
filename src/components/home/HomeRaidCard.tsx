@@ -7,7 +7,7 @@ import CloudflareImage from "~/images/CloudflareImage"
 import RightArrow from "~/images/icons/RightArrow"
 import styles from "~/styles/pages/home.module.css"
 import { ListedRaid, RaidHubManifestResponse } from "~/types/raidhub-api"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import { useRaidHubManifest } from "../../app/managers/RaidHubManifestManager"
 
 type HomeRaidCardProps = {
     raid: ListedRaid

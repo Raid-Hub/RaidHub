@@ -1,13 +1,16 @@
+"use client"
+
+import Toolbox from "components/toolbox/Toolbox"
+import Link from "next/link"
 import React from "react"
 import styles from "~/styles/footer.module.css"
 import iconStyles from "~/styles/svg-icons.module.css"
-import Link from "next/link"
 import manifest from "../../../public/manifest.json"
-import DiscordIcon from "~/images/icons/connections/DiscordIcon"
-import TwitterIcon from "~/images/icons/connections/TwitterIcon"
-import Email from "~/images/icons/connections/Email"
-import { SVGProps } from "~/components/reusable/SVG"
-import { useIsVisible } from "~/hooks/util/useIsVisible"
+import { useIsVisible } from "../../hooks/util/useIsVisible"
+import DiscordIcon from "../../images/icons/connections/DiscordIcon"
+import Email from "../../images/icons/connections/Email"
+import TwitterIcon from "../../images/icons/connections/TwitterIcon"
+import { SVGProps } from "../reusable/SVG"
 
 const developers: [display: string, path: string][] = [
     ["Newo", "newo"],
@@ -30,14 +33,15 @@ const contactIcons: { url: string; Icon: React.FC<SVGProps> }[] = [
     }
 ]
 
-export default function Footer({ setIsVisible }: { setIsVisible: (isVisible: boolean) => void }) {
+export default function Footer() {
     const ref = React.useRef<HTMLDivElement>(null)
 
-    useIsVisible(ref, undefined, setIsVisible)
+    const isVisible = useIsVisible(ref, undefined)
 
     const { version } = manifest
     return (
         <footer id="footer" className={styles["footer"]} ref={ref}>
+            <Toolbox isFooterVisible={isVisible} />
             <div className={styles["top"]}>
                 <div className={styles["left"]}>
                     <div>Developed by</div>

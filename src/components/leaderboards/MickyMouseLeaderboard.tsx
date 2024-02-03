@@ -9,8 +9,8 @@ import {
 import { ListedRaid, RaidHubWorldFirstLeaderboardCategory } from "~/types/raidhub-api"
 import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
 import { toCustomDateString } from "~/util/presentation/formatting"
-import { useLocale } from "../app/LocaleManager"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import { useLocale } from "../../app/managers/LocaleManager"
+import { useRaidHubManifest } from "../../app/managers/RaidHubManifestManager"
 import ActivityLeaderboard from "./ActivityLeaderboard"
 import WorldFirstHeader from "./WorldFirstHeader"
 

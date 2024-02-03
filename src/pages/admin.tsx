@@ -1,8 +1,8 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import { Role } from "@prisma/client"
-import AdminPanel from "~/components/admin/AdminPanel"
+import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import Head from "next/head"
-import { auth } from "~/server/next-auth"
+import { auth } from "~/app/api/auth"
+import AdminPanel from "~/components/admin/AdminPanel"
 
 export default function Admin({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (

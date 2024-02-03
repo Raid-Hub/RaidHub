@@ -1,5 +1,5 @@
-import { useLocale } from "~/components/app/LocaleManager"
-import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { useLocale } from "~/app/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
 import { TagStrings } from "~/data/strings/activity-tags"
 import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 import styles from "~/styles/pages/pgcr.module.css"

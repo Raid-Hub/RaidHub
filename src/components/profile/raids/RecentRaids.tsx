@@ -1,11 +1,11 @@
+import { Collection } from "@discordjs/collection"
+import { useMemo, useState } from "react"
+import Activity from "~/models/profile/data/Activity"
+import { useLocale } from "../../../app/managers/LocaleManager"
 import styles from "../../../styles/pages/profile/raids.module.css"
 import Loading from "../../global/Loading"
-import ActivityTile from "./ActivityTile"
-import { useMemo, useState } from "react"
-import { useLocale } from "../../app/LocaleManager"
-import { Collection } from "@discordjs/collection"
-import Activity from "~/models/profile/data/Activity"
 import { useFilterContext } from "../Profile"
+import ActivityTile from "./ActivityTile"
 
 const CARDS_PER_PAGE = 60
 

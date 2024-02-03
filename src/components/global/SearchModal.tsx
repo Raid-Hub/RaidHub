@@ -1,15 +1,17 @@
+"use client"
+
 import { AnimationSequence, animate } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useCallback, useRef, useState } from "react"
 import { useTypewriter } from "react-simple-typewriter"
-import Loader from "~/components/reusable/Loader"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { useKeyPress } from "../../hooks/util/useKeyPress"
 import styles from "../../styles/searchmodal.module.css"
+import Loader from "../reusable/Loader"
 
 const SearchModal = () => {
     const [isDivDisplayed, setIsDivDisplayed] = useState(false)

@@ -2,8 +2,8 @@ import { AdapterUser } from "@auth/core/adapters"
 import type { Session } from "@auth/core/types"
 import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
-import { BungieAccount } from "."
-import { updateBungieAccessTokens } from "./providers/updateBungieAccessTokens"
+import { BungieAccount } from "../auth"
+import { updateBungieAccessTokens } from "../updateBungieAccessTokens"
 
 export const sessionCallback = async ({
     session,
@@ -50,7 +50,7 @@ export const sessionCallback = async ({
                     fetch: async <T>(config: BungieFetchConfig) => {
                         const res = await fetch(config.url, config)
                         if (!res.ok) {
-                            throw await res.json()
+                            throw await res.text()
                         } else {
                             return res.json() as T
                         }
@@ -68,7 +68,7 @@ export const sessionCallback = async ({
                     value: tokens.refresh_token,
                     expires: new Date(Date.now() + tokens.refresh_expires_in * 1000)
                 }
-            }).catch(console.error)
+            })
 
             return {
                 ...session,
@@ -89,12 +89,13 @@ export const sessionCallback = async ({
                     error: "BungieAPIOffline"
                 } satisfies Session
             } else {
-                console.error(e)
-                return {
-                    ...session,
-                    user,
-                    error: "AccessTokenError"
-                } satisfies Session
+                throw e
+                // console.error(e)
+                // return {
+                //     ...session,
+                //     user,
+                //     error: "AccessTokenError"
+                // } satisfies Session
             }
         }
     } else {

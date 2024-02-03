@@ -1,5 +1,5 @@
-import prisma from "~/server/prisma"
-import { BungieToken } from ".."
+import type { AuthToken } from "~/app/api/auth"
+import prisma from "~/app/api/prisma"
 
 export async function updateBungieAccessTokens({
     userId,
@@ -7,12 +7,12 @@ export async function updateBungieAccessTokens({
     refresh
 }: {
     userId: string
-    access: BungieToken
-    refresh: BungieToken
+    access: AuthToken
+    refresh: AuthToken
 }) {
     await prisma.account.update({
         where: {
-            provider_userId: {
+            uniqueProviderUser: {
                 provider: "bungie",
                 userId: userId
             }

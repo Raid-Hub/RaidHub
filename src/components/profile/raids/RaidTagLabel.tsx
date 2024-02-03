@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useLocale } from "~/components/app/LocaleManager"
+import { useLocale } from "~/app/managers/LocaleManager"
 import useHover from "~/hooks/util/useDebouncedHover"
 import BasicDiamond from "~/images/icons/BasicDiamond"
 import styles from "~/styles/pages/profile/raids.module.css"

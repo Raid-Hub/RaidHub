@@ -1,7 +1,7 @@
-import styles from "~/styles/pages/inpsect.module.css"
-import Search from "./Search"
 import { Dispatch, SetStateAction, useState } from "react"
-import { useBungieClient } from "../app/TokenManager"
+import styles from "~/styles/pages/inpsect.module.css"
+import { useBungieClient } from "../../app/managers/BungieTokenManager"
+import Search from "./Search"
 
 export default function InspectionHeader({
     addMember,

@@ -1,7 +1,7 @@
-import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
-import { TokenSet } from "@auth/core/types"
-import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { OAuth2Config, OAuthConfig } from "@auth/core/providers"
+import { TokenSet } from "@auth/core/types"
+import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
+import { BungieAPIError } from "~/models/BungieAPIError"
 
 export default function BungieProvider(creds: {
     apiKey: string

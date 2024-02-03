@@ -1,3 +1,5 @@
+"use client"
+
 import { useQuery } from "@tanstack/react-query"
 import { ReactNode, createContext, useContext, useMemo } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
@@ -8,7 +10,6 @@ import {
     RaidHubRaidPath,
     SunsetRaid
 } from "~/types/raidhub-api"
-import manifest from "../../../manifest.json"
 
 type ManifestContextData = {
     leaderboards: RaidHubManifestResponse["leaderboards"]
@@ -28,15 +29,18 @@ type ManifestContextData = {
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
 
-export function RaidHubManifestManager({ children }: { children: ReactNode }) {
+export function RaidHubManifestManager(props: {
+    children: ReactNode
+    serverManifest: RaidHubManifestResponse
+}) {
     const { data } = useQuery({
         queryKey: ["raidhub-manifest"],
         queryFn: () => getRaidHubApi("/manifest", null, null),
-        initialData: manifest.response as RaidHubManifestResponse,
+        initialData: props.serverManifest,
         staleTime: 1000 * 3600 // 1 hour
     })
 
-    const value = useMemo(() => {
+    const value: ManifestContextData = useMemo(() => {
         return {
             getRaidString: (raid: ListedRaid) => data.raidStrings[raid],
             getDifficultyString: (raid: RaidDifficulty) => data.difficultyStrings[raid],
@@ -61,7 +65,7 @@ export function RaidHubManifestManager({ children }: { children: ReactNode }) {
         }
     }, [data])
 
-    return <ManifestContext.Provider value={value}>{children}</ManifestContext.Provider>
+    return <ManifestContext.Provider value={value}>{props.children}</ManifestContext.Provider>
 }
 
 export function useRaidHubManifest() {

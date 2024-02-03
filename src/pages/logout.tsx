@@ -1,6 +1,6 @@
 import { GetStaticPropsResult, NextPage } from "next"
 import { getSession, signOut } from "next-auth/react"
-import { useLocale } from "../components/app/LocaleManager"
+import { useLocale } from "../app/managers/LocaleManager"
 
 export async function getServerSideProps(): Promise<GetStaticPropsResult<{}>> {
     const session = getSession()

@@ -8,7 +8,7 @@ import {
 } from "~/services/raidhub/searchLeaderboard"
 import { ListedRaid, RaidHubIndividualLeaderboardCategory } from "~/types/raidhub-api"
 import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import { useRaidHubManifest } from "../../app/managers/RaidHubManifestManager"
 import GenericIndividualLeaderboard from "./GenericIndividualLeaderboard"
 
 export const IndividualLeaderboad = ({

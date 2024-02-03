@@ -3,7 +3,7 @@ import { createServerSideHelpers } from "@trpc/react-query/server"
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieMembershipType } from "bungie-net-core/models"
 import superjson from "superjson"
-import { BungieAPIError } from "~/models/errors/BungieAPIError"
+import { BungieAPIError } from "~/models/BungieAPIError"
 import { getBasicProfile } from "~/services/bungie/getProfile"
 import {
     Leaderboard,
@@ -19,7 +19,7 @@ import {
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { ListedRaid } from "~/types/raidhub-api"
 import BungieQuery, { QueryFn } from "~/util/bungieQuery"
-import prisma from "./prisma"
+import prisma from "../app/api/prisma"
 import { appRouter } from "./trpc/router"
 
 export const createServerSideQueryClient = () =>

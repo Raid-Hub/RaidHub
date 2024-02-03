@@ -2,7 +2,7 @@ import { useRouter } from "next/router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { searchRaidHubUser } from "~/services/raidhub/searchPlayer"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { useBungieClient } from "../../components/app/TokenManager"
+import { useBungieClient } from "../../app/managers/BungieTokenManager"
 import { wait } from "../../util/wait"
 
 const DEBOUNCE = 250

@@ -2,7 +2,7 @@ import RaidBanners from "~/data/raid-banners"
 import CloudflareImage from "~/images/CloudflareImage"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { ListedRaid } from "~/types/raidhub-api"
-import { useRaidHubManifest } from "../app/RaidHubManifestManager"
+import { useRaidHubManifest } from "../../app/managers/RaidHubManifestManager"
 
 export default function WorldFirstHeader({
     title,

@@ -1,0 +1,95 @@
+import Footer from "components/global/Footer"
+import { HeaderBanner } from "components/global/HeaderBanner"
+import SearchModal from "components/global/SearchModal"
+import { LazyMotion } from "framer-motion"
+import type { Metadata, Viewport } from "next"
+import ProgressBar from "nextjs-progressbar"
+import { getRaidHubApi } from "~/services/raidhub"
+import Header from "../components/global/Header"
+import { LocaleManager } from "./managers/LocaleManager"
+import { QueryManager } from "./managers/QueryManager"
+import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
+import { SessionManager } from "./managers/SessionManager"
+
+// TODO: WRAP WITH TRPC
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+    const manifest = await getRaidHubApi("/manifest", null, null, undefined, { revalidate: 300 })
+
+    return (
+        <html>
+            <head>
+                <meta property="discord:site" content="https://discord.gg/raidhub" />
+                <meta name="twitter:site" content="@raidhubio" />
+            </head>
+            <body>
+                <QueryManager>
+                    <SessionManager>
+                        <LocaleManager>
+                            <RaidHubManifestManager serverManifest={manifest}>
+                                {children}
+                                <LazyMotion
+                                    features={async () =>
+                                        import("../util/framer-motion-features").then(
+                                            imp => imp.default
+                                        )
+                                    }
+                                    strict>
+                                    <Header />
+                                    <ProgressBar
+                                        options={{
+                                            showSpinner: false,
+                                            parent: "#header",
+                                            trickle: true,
+                                            speed: 700
+                                        }}
+                                        stopDelayMs={50}
+                                        height={3}
+                                        showOnShallow={false}
+                                        color={"orange"}
+                                    />
+                                    <HeaderBanner />
+                                    <SearchModal />
+                                    <main>{children}</main>
+                                    <Footer />
+                                </LazyMotion>
+                            </RaidHubManifestManager>
+                        </LocaleManager>
+                    </SessionManager>
+                </QueryManager>
+            </body>
+        </html>
+    )
+}
+
+export const preferredRegion = "iad1" // us-east-1
+export const runtime = "node"
+export const revalidate = 3600 // static revalidation in seconds
+export const maxDuration = 5 // max lambda duration in seconds
+
+const title: Metadata["title"] = {
+    absolute: "RaidHub",
+    template: "%s | RaidHub"
+}
+const description: Metadata["description"] =
+    "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
+
+export const metadata: Metadata = {
+    title: title,
+    description: description,
+    openGraph: {
+        title: title,
+        description: description,
+        images: ["/logo.png"],
+        type: "website"
+    }
+}
+
+export const viewport: Viewport = {
+    themeColor: "#f0802f",
+    colorScheme: "dark",
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false
+}

@@ -1,13 +1,13 @@
+import { QueryClient } from "@tanstack/react-query"
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
-import { BungieAPIError } from "~/models/errors/BungieAPIError"
 import { PlatformErrorCodes } from "bungie-net-core/models"
-import BungieQuery, { QueryFn } from "./bungieQuery"
-import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
-import { getPGCR } from "../services/bungie/getPGCR"
+import { BungieAPIError } from "~/models/BungieAPIError"
+import { getDestinyStats } from "~/services/bungie/getDestinyStats"
 import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
 import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
-import { QueryClient } from "@tanstack/react-query"
-import { getDestinyStats } from "~/services/bungie/getDestinyStats"
+import { getPGCR } from "../services/bungie/getPGCR"
+import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
+import BungieQuery, { QueryFn } from "./bungieQuery"
 
 const DO_NOT_RETRY_CODES = new Set<PlatformErrorCodes>([
     5, // SystemDisabled

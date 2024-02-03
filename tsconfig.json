@@ -16,17 +16,12 @@
         "isolatedModules": true,
         "baseUrl": "src/",
         "paths": {
-            "~/components/*": ["components/*"],
-            "~/data/*": ["data/*"],
-            "~/hooks/*": ["hooks/*"],
-            "~/images/*": ["images/*"],
-            "~/models/*": ["models/*"],
-            "~/pages/*": ["pages/*"],
-            "~/server/*": ["server/*"],
-            "~/services/*": ["services/*"],
-            "~/styles/*": ["styles/*"],
-            "~/types/*": ["types/*"],
-            "~/util/*": ["util/*"]
+            "~/app/*": ["./app/*"],
+            "~/hooks/*": ["./hooks/*"],
+            "~/models/*": ["./models/*"],
+            "~/services/*": ["./services/*"],
+            "~/types/*": ["./types/*"],
+            "~/util/*": ["./util/*"]
         },
         "plugins": [
             {

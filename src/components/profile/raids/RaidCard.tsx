@@ -1,6 +1,6 @@
 import { m } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
-import { useLocale } from "~/components/app/LocaleManager"
+import { useLocale } from "~/app/managers/LocaleManager"
 import Loading from "~/components/global/Loading"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"

@@ -1,11 +1,12 @@
+import { useRaidHubManifest } from "app/RaidHubManifestManager"
 import { ReactNode } from "react"
-import { useLocale } from "~/components/app/LocaleManager"
-import { useRaidHubManifest } from "~/components/app/RaidHubManifestManager"
+import { useLocale } from "~/app/managers/LocaleManager"
 import { Difficulty } from "~/data/raid"
 import { RaidDifficulty } from "~/types/raidhub-api"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
 import { useActivitiesContext } from "../RaidContext"
 import styles from "./expanded-raid.module.css"
+~/app/aaegmnrs / RaidHubManifestManager
 
 export default function ExpandedStatsTable() {
     const { activities, isLoadingActivities } = useActivitiesContext()

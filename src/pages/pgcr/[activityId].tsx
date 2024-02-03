@@ -1,7 +1,7 @@
 import { NextPage } from "next"
 import Head from "next/head"
 import { z } from "zod"
-import { useLocale } from "~/components/app/LocaleManager"
+import { useLocale } from "~/app/managers/LocaleManager"
 import PGCR from "~/components/pgcr/PGCR"
 import { useRaidHubActivity } from "~/hooks/raidhub/useRaidHubActivity"
 import { getActivity } from "~/services/raidhub/getActivitiy"
