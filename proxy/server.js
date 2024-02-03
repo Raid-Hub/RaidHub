@@ -14,6 +14,7 @@ const httpsOptions = {
 }
 
 const host = process.env.NEXTAUTH_URL
+process.env.DEV_PROXY = true
 app.prepare().then(() => {
     createServer(httpsOptions, (req, res) => {
         const parsedUrl = parse(req.url, true)

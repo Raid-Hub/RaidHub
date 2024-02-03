@@ -1,84 +1,20 @@
-import { User } from "@prisma/client";
-import { BungieMembershipType } from "bungie-net-core/models";
-import {
-    getServerSession,
-    type DefaultSession,
-    type NextAuthOptions,
-  } from "next-auth";
-  import DiscordProvider from "next-auth/providers/discord";
-  
-// declare module "next-auth" {
-//     interface Session  extends DefaultSession{
-//         error?: AuthError
-//         user: AdapterUser
-//         bungieAccessToken?: {
-//             value: string
-//             expires: Date
-//         }
-//         raidHubAccessToken?: {
-//             value: string
-//             expires: Date
-//         }
-//         expires: Date
-//     }
-// }
+import "server-only"
 
-declare module "next-auth/adapters" {
-    interface AdapterUser extends User {
-        image: string
-        name: string
-        destinyMembershipId: string
-        destinyMembershipType: BungieMembershipType
-    }
-}
-
-export type AuthToken = {
-    value: string
-    expires: Date
-}
-
-export type BungieAccount = {
-    refreshToken: string | null
-    accessToken: string | null
-    expiresAt: number | null
-    refreshExpiresAt: number | null
-}
-
-export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
-
-// TODO: Delete this
-// // stupid fuckery to get around a next auth issue, i hate it
-// export const auth: typeof _auth = (...args) => {
-//     // @ts-expect-error
-//     if ("res" in args[0]) {
-//         const { res, ...restOfArgs } = args[0]
-//         const fakeRes = new Response()
-//         // @ts-expect-error
-//         const result = _auth({ ...restOfArgs, res: fakeRes })
-//         fakeRes.headers.forEach((value, key) => {
-//             // @ts-expect-error
-//             args[1].setHeader(key, value)
-//         })
-//         return result
-//     } else if (args[1] instanceof ServerResponse) {
-//         const fakeRes = new Response()
-//         // @ts-expect-error
-//         const result = _auth(args[0], fakeRes)
-//         fakeRes.headers.forEach((value, key) => {
-//             // @ts-expect-error
-//             args[1].setHeader(key, value)
-//         })
-//         return result
-//     }
-//     // @ts-expect-error
-//     else return _auth(args)
-// }
-
-// export { GET, POST }
+import { getServerSession, type NextAuthOptions } from "next-auth"
+import { Provider } from "next-auth/providers"
+import DiscordProvider from "next-auth/providers/discord"
+import GoogleProvider from "next-auth/providers/google"
+import TwitchProvider from "next-auth/providers/twitch"
+import TwitterProvider from "next-auth/providers/twitter"
+import { prisma } from "../prisma"
+import { PrismaAdapter } from "./adapter"
+import BungieProvider from "./providers/BungieProvider"
+import { sessionCallback } from "./sessionCallback"
+import { signInCallback } from "./signInCallback"
 
 export const authOptions: NextAuthOptions = {
     providers: getProviders(),
-    adapter: prismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma),
     pages: {
         signIn: "/login",
         signOut: "/logout",
@@ -95,6 +31,7 @@ export const authOptions: NextAuthOptions = {
         // @ts-expect-error
         signIn: signInCallback
     },
+    // todo improve the logging
     logger: {
         error(code, ...message) {
             console.error(code, message)
@@ -106,7 +43,9 @@ export const authOptions: NextAuthOptions = {
             console.debug(code, message)
         }
     }
-})
+}
+
+export const getServerAuthSession = () => getServerSession(authOptions)
 
 function getProviders(): Provider[] {
     const providers = new Array<Provider>(

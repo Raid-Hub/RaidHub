@@ -77,7 +77,7 @@ model Account {
   sessionState      String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId], name: "uniqueProviderAccountId")
   @@unique([provider, userId], name: "uniqueProviderUser")
   @@index([userId])
   @@map("account")

@@ -1,17 +1,9 @@
-import Footer from "components/global/Footer"
-import { HeaderBanner } from "components/global/HeaderBanner"
-import SearchModal from "components/global/SearchModal"
-import { LazyMotion } from "framer-motion"
 import type { Metadata, Viewport } from "next"
-import ProgressBar from "nextjs-progressbar"
 import { getRaidHubApi } from "~/services/raidhub"
-import Header from "../components/global/Header"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
 import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
 import { SessionManager } from "./managers/SessionManager"
-
-// TODO: WRAP WITH TRPC
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, undefined, { revalidate: 300 })
@@ -27,12 +19,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <SessionManager>
                         <LocaleManager>
                             <RaidHubManifestManager serverManifest={manifest}>
-                                {children}
-                                <LazyMotion
+                                <main>{children}</main>
+                                {/* <LazyMotion
                                     features={async () =>
-                                        import("../util/framer-motion-features").then(
-                                            imp => imp.default
-                                        )
+                                        import("framer-motion").then(module => module.domAnimation)
                                     }
                                     strict>
                                     <Header />
@@ -52,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                     <SearchModal />
                                     <main>{children}</main>
                                     <Footer />
-                                </LazyMotion>
+                                </LazyMotion> */}
                             </RaidHubManifestManager>
                         </LocaleManager>
                     </SessionManager>
@@ -63,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export const preferredRegion = "iad1" // us-east-1
-export const runtime = "node"
+export const runtime = "nodejs"
 export const revalidate = 3600 // static revalidation in seconds
 export const maxDuration = 5 // max lambda duration in seconds
 
@@ -77,6 +67,13 @@ const description: Metadata["description"] =
 export const metadata: Metadata = {
     title: title,
     description: description,
+    metadataBase: new URL(
+        process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : process.env.DEV_PROXY
+            ? `https://127.0.0.1:${process.env.PORT ?? 3000}`
+            : `http://localhost:${process.env.PORT ?? 3000}`
+    ),
     openGraph: {
         title: title,
         description: description,

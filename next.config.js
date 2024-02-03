@@ -1,12 +1,10 @@
-import bundleAnalyzer from "@next/bundle-analyzer"
-
-const withBundleAnalyzer = bundleAnalyzer({
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true"
 })
 
 const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
 
-export default withBundleAnalyzer({
+module.exports = withBundleAnalyzer({
     reactStrictMode: false,
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,

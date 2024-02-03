@@ -37,10 +37,21 @@ export function LocaleManager({ children }: { children: ReactNode }) {
         setLocale(navigator.language)
         const matchedLanguage = match(
             navigator.languages,
-            d2ManifestLocales,
+            d2ManifestLocales.map(locale => {
+                const transformedLocale = locale
+                    .replace(/-chs$/i, "-Hans")
+                    .replace(/-cht$/i, "-Hant")
+
+                return transformedLocale
+            }),
             "en"
-        ) as ManifestLanguage
-        setManifestLanguage(matchedLanguage)
+        )
+        setManifestLanguage(
+            matchedLanguage
+                .toLowerCase()
+                .replace(/-hans$/i, "-chs")
+                .replace(/-hant$/i, "-cht") as ManifestLanguage
+        )
         document.documentElement.setAttribute("lang", matchedLanguage)
     }, [])
 
