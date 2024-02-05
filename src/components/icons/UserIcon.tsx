@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, SVGWrapperProps } from "../SVG"
 
-export default function UserIcon(props: SVGProps) {
+export default function UserIcon(props: SVGWrapperProps) {
     return (
         <SVG
             xmlnsXlink="http://www.w3.org/1999/xlink"

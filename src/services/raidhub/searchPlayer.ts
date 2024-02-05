@@ -1,8 +1,8 @@
 import { BungieClientProtocol } from "bungie-net-core"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { getRaidHubApi } from "."
-import { searchForBungieName } from "../bungie/searchForBungieName"
-import { searchForUsername } from "../bungie/searchForUsername"
+import { searchForBungieName } from "../bungie/_old/searchForBungieName"
+import { searchForUsername } from "../bungie/_old/searchForUsername"
 
 // we have the bungie queries as backups
 export async function searchRaidHubUser(

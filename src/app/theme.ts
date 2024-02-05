@@ -1,41 +1,51 @@
 import { DefaultTheme, createGlobalStyle, css } from "styled-components"
 import { o } from "~/util/o"
 
-const deviceSizes = {
+export const deviceSizes = {
     tiny: { min: "0px", max: "374px" },
     mobile: { min: "320px", max: "768px" },
     tablet: { min: "640px", max: "1024px" },
     laptop: { min: "1025px", max: "2560px" },
     desktop: { min: "1440px", max: "9999px" }
 } as const satisfies Record<string, { min: string; max: string }>
-
 export const theme: DefaultTheme = {
-    socials: {
-        twitch: "#6441a5",
-        twitter: "#1da1f2",
-        youtube: "#f12d2d",
-        bungie: "#9ad5ec",
-        discord: "#6876a7"
-    },
-    text: {
-        primary: "#FFFFFF",
-        secondary: "#E4E4E4",
-        tertiary: "#B7B7B7"
-    },
-    border: {
-        light: "#FFFFFF",
-        medium: "#YourMediumBorderColor",
-        dark: "#YourDarkBorderColor"
-    },
-    background: {
-        light: "#YourLightBackgroundColor",
-        medium: "#YourMediumBackgroundColor",
-        dark: "#YourDarkBackgroundColor"
-    },
-    brand: {},
-    button: {
-        green: "39c383",
-        destructive: "#a04f4f"
+    colors: {
+        icon: {
+            white: "rgb(255, 255, 255)",
+            orange: "rgb(255, 140, 57)",
+            twitch: "rgb(100, 65, 165)",
+            twitter: "rgb(29, 161, 242)",
+            youtube: "rgb(241, 45, 45)",
+            bungie: "rgb(154, 213, 236)",
+            discord: "rgb(104, 118, 167)"
+        },
+        text: {
+            white: "rgb(255, 255, 255)",
+            primary: "rgb(253, 253, 253)",
+            secondary: "rgb(183, 183, 183)",
+            tertiary: "rgb(105, 105, 105)"
+        },
+        border: {
+            light: "rgb(255, 255, 255)",
+            medium: "rgb(170, 170, 170)",
+            dark: "rgb(64, 64, 64)"
+        },
+        background: {
+            light: "rgb(107, 107, 107)",
+            medium: "rgb(51, 51, 51)",
+            dark: "rgb(16, 16, 16)"
+        },
+        brand: {
+            light: "rgb(255, 140, 57, 0.8)",
+            primary: "rgb(240, 128, 47, 1)"
+        },
+        button: {
+            green: "rgb(57, 195, 131)",
+            destructive: "rgb(160, 79, 79)"
+        },
+        highlight: {
+            orange: "rgb(255, 140, 57)"
+        }
     }
 }
 
@@ -46,6 +56,11 @@ export const GlobalStyle = createGlobalStyle<{}>`
     -webkit-box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 html {
     overscroll-behavior-y: contain;
     overflow-y: auto;
@@ -53,8 +68,6 @@ html {
 
 body {
     font-family: "Manrope", sans-serif;
-    padding: 0;
-    margin: 0;
 
     background-color: #010011;
     background: linear-gradient(
@@ -65,6 +78,7 @@ body {
         rgba(1, 0, 17, 1) 91%,
         rgba(19, 3, 1, 1) 100%
     );
+    background-size: 100% 100%;
 }
 
 a {
@@ -79,101 +93,91 @@ img[src=""] {
 
 // Scroll bars
 /* width */
-#content ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 7px;
     height: 7px;
     background-color: transparent;
 }
 
 /* Track */
-#content ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
 /* Handle */
-#content ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: var(--scroll-track);
     border-radius: 7px;
 }
 
 /* Handle on hover */
-#content ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: var(--brand-orange-light);
-}
-
-
-/** Adjust the nprogress bar */
-.nprogress-custom-parent {
-    position: sticky;
-}
-
-#nprogress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-}
-#nprogress .bar {
-    bottom: 0 !important;
-    top: unset !important;
-}
-
-#nprogress .peg {
-    display: none !important;
 }
 `
 
 declare module "styled-components" {
     export interface DefaultTheme {
-        socials: {
-            twitch: string
-            twitter: string
-            youtube: string
-            bungie: string
-            discord: string
-        }
-        text: {
-            primary: string
-            secondary: string
-            tertiary: string
-        }
-        border: {
-            light: string
-            medium: string
-            dark: string
-        }
-        background: {
-            light: string
-            medium: string
-            dark: string
-        }
-        brand: {}
-        button: {
-            green: string
-            destructive: string
+        colors: {
+            icon: {
+                white: string
+                orange: string
+                twitch: string
+                twitter: string
+                youtube: string
+                bungie: string
+                discord: string
+            }
+            text: {
+                white: string
+                primary: string
+                secondary: string
+                tertiary: string
+            }
+            border: {
+                light: string
+                medium: string
+                dark: string
+            }
+            background: {
+                light: string
+                medium: string
+                dark: string
+            }
+            brand: {
+                light: string
+                primary: string
+            }
+            button: {
+                green: string
+                destructive: string
+            }
+            highlight: {
+                orange: string
+            }
         }
     }
 }
 
 export const $media = {
-    min: o.fromEntries(
-        o.keys(deviceSizes).map(device => [device, deviceMediaQuery.bind(null, device, "min")])
-    ),
-    max: o.fromEntries(
-        o.keys(deviceSizes).map(device => [device, deviceMediaQuery.bind(null, device, "max")])
-    )
+    min: queries("min"),
+    max: queries("max")
 }
 
-function deviceMediaQuery(
-    device: keyof typeof deviceSizes,
+function queries(dir: "min" | "max") {
+    return o.mapValuesByKey(deviceSizes, k => deviceMediaQuery.bind(null, dir, k))
+}
+
+function deviceMediaQuery<T extends keyof typeof deviceSizes>(
     dir: "min" | "max",
-    value: TemplateStringsArray
+    device: T,
+    value: TemplateStringsArray,
+    ...values: ((dimensions: (typeof deviceSizes)[T]) => string)[]
 ) {
+    const inner = String.raw(value, ...values.map(fn => fn(deviceSizes[device])))
     return css`
         @media (${dir}-width: ${deviceSizes[device][dir]}) {
-            ${value}
+            ${inner}
         }
     `
 }

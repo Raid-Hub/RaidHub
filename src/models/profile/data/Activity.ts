@@ -6,7 +6,7 @@ import {
     RaidHubActivityPlayer,
     RaidHubPlayerActivitiesResponse
 } from "~/types/raidhub-api"
-import { includedIn } from "~/util/betterIncludes"
+import { includedIn } from "~/util/helpers"
 
 export default class Activity {
     readonly activityId: string

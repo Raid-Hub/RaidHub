@@ -4,7 +4,6 @@ import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
 import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
-import { SessionManager } from "./managers/SessionManager"
 import { StyledComponentsManager } from "./managers/StyledComponentsManager"
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,33 +17,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </head>
             <body>
                 <QueryManager>
-                    <SessionManager>
-                        <LocaleManager>
-                            <RaidHubManifestManager serverManifest={manifest}>
-                                <StyledComponentsManager>
-                                    <FramerMotionManager>
-                                        {/* <Header />
-                                    <ProgressBar
-                                        options={{
-                                            showSpinner: false,
-                                            parent: "#header",
-                                            trickle: true,
-                                            speed: 700
-                                        }}
-                                        stopDelayMs={50}
-                                        height={3}
-                                        showOnShallow={false}
-                                        color={"orange"}
-                                    />
-                                    <HeaderBanner />
-                                    <SearchModal /> */}
-                                        {children}
-                                        {/* <Footer /> */}
-                                    </FramerMotionManager>
-                                </StyledComponentsManager>
-                            </RaidHubManifestManager>
-                        </LocaleManager>
-                    </SessionManager>
+                    {/* <SessionManager> */}
+                    <LocaleManager>
+                        <RaidHubManifestManager serverManifest={manifest}>
+                            <StyledComponentsManager>
+                                <FramerMotionManager>
+                                    {/* <Header />
+                                        <NextTopLoader
+                                            showSpinner={false}
+                                            speed={700}
+                                            height={3}
+                                            color={"orange"}
+                                        />
+                                        <HeaderBanner />
+                                        <SearchModal /> */}
+                                    {children}
+                                    {/* <Footer /> */}
+                                </FramerMotionManager>
+                            </StyledComponentsManager>
+                        </RaidHubManifestManager>
+                    </LocaleManager>
+                    {/* </SessionManager> */}
                 </QueryManager>
             </body>
         </html>
@@ -82,7 +75,6 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-    themeColor: "#f0802f",
     colorScheme: "dark",
     width: "device-width",
     initialScale: 1,

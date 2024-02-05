@@ -11,7 +11,7 @@ import styles from "~/styles/pages/leaderboards.module.css"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
-import Loader from "../reusable/Loader"
+import Loader from "../../components/Loader"
 
 export const Controls = ({
     isLoading,

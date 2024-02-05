@@ -1,13 +1,15 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { Loader } from "~/components/Loader"
+import Search from "~/components/icons/Search"
 import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import Search from "~/images/icons/Search"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import styles from "../../styles/header.module.css"
-import Loader from "../reusable/Loader"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -81,7 +83,7 @@ const SearchBar = ({}: SearchBarProps) => {
         <div className={styles["search-container"]} ref={searchContainerRef}>
             <div className={styles["search-icon"]}>
                 {isLoadingResults || isRedirecting ? (
-                    <Loader stroke={2} size="100%" />
+                    <Loader $stroke={2} $size="100%" />
                 ) : (
                     <Search color="white" />
                 )}

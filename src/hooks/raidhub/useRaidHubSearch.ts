@@ -1,14 +1,16 @@
-import { useRouter } from "next/router"
-import { useCallback, useEffect, useRef, useState } from "react"
+"use client"
+
+import { useCallback, useRef, useState } from "react"
 import { searchRaidHubUser } from "~/services/raidhub/searchPlayer"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { useBungieClient } from "../../app/managers/BungieTokenManager"
 import { wait } from "../../util/wait"
+import { usePageChange } from "../util/usePageChange"
 
 const DEBOUNCE = 250
 
 export function useRaidHubSearch(props?: {
     onRedirect?: (result: RaidHubPlayerSearchResult) => void
+    navigateOnEnter?: boolean
 }) {
     const [enteredText, setEnteredText] = useState("")
     const nextQuery = useRef("")
@@ -17,19 +19,20 @@ export function useRaidHubSearch(props?: {
     const [results, setResults] = useState<readonly RaidHubPlayerSearchResult[]>([])
     const [error, setError] = useState<Error | null>(null)
 
-    const client = useBungieClient()
-    const router = useRouter()
-
     const clearQuery = useCallback(() => {
         nextQuery.current = ""
         setTimeout(() => setEnteredText(""), 200)
     }, [])
 
-    useEffect(() => {
-        router.query
+    const pageChangeCallback = useRef(() => {})
+    pageChangeCallback.current = () => {
         clearQuery()
         setResults([])
-    }, [router.query, clearQuery])
+    }
+
+    usePageChange({
+        callback: pageChangeCallback
+    })
 
     const fetchUsers = useCallback(
         async (query: string) => {
@@ -78,10 +81,10 @@ export function useRaidHubSearch(props?: {
 
         const results = await fetchUsers(enteredText)
 
-        if (props?.onRedirect && results?.length === 1) {
+        if (props?.navigateOnEnter && results?.length === 1) {
             const result = results[0]
 
-            props.onRedirect(result)
+            props.onRedirect?.(result)
 
             router.push(
                 "/profile/[destinyMembershipType]/[destinyMembershipId]",

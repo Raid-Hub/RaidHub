@@ -16,17 +16,15 @@ export function StyledComponentsManager({ children }: { children: ReactNode }) {
         return <>{styles}</>
     })
 
-    if (typeof window !== "undefined") return <>{children}</>
-
     return (
         <ThemeProvider theme={theme}>
-            {typeof window !== "undefined" ? (
-                children
-            ) : (
+            {typeof window === "undefined" ? (
                 <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
                     <GlobalStyle />
                     {children}
                 </StyleSheetManager>
+            ) : (
+                children
             )}
         </ThemeProvider>
     )

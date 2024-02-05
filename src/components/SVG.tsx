@@ -5,7 +5,7 @@ import { AtLeast } from "~/types/generic"
 export type SVGWrapperProps = Omit<
     {
         sx?: number
-        color?: string
+        color?: keyof DefaultTheme["colors"]["icon"]
     } & React.SVGProps<SVGSVGElement>,
     "className"
 >
@@ -14,15 +14,17 @@ export type SVGComponent = (props: SVGWrapperProps) => JSX.Element
 
 interface StyledSvgProps {
     $sx?: number
-    $color?: string
-    $iconId?: keyof DefaultTheme["socials"]
+    $color?: keyof DefaultTheme["colors"]["icon"]
+    $hoverColor?: keyof DefaultTheme["colors"]["icon"]
 }
 const StyledSvg = styled.svg<StyledSvgProps>`
     aspect-ratio: 1/1;
-    fill: ${({ $color }) => $color};
     width: ${({ $sx }) => `${$sx}px`};
-    ${({ theme, $iconId }) =>
-        $iconId && theme.socials[$iconId] ? `&:hover fill: ${theme.socials[$iconId]};` : ""}
+    fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
+    ${({ theme, $hoverColor }) =>
+        $hoverColor && theme.colors.icon[$hoverColor]
+            ? `&:hover fill: ${theme.colors.icon[$hoverColor]};`
+            : ""}
 `
 StyledSvg.defaultProps = {
     $sx: 24,
@@ -32,20 +34,19 @@ StyledSvg.defaultProps = {
 export function SVG({
     sx,
     color,
-    iconId,
+    hoverColor,
     children,
     ...restOfProps
 }: {
     sx?: number
-    color?: string
-    iconId?: keyof DefaultTheme["socials"]
+    color?: keyof DefaultTheme["colors"]["icon"]
+    hoverColor?: keyof DefaultTheme["colors"]["icon"]
 } & AtLeast<React.SVGProps<SVGSVGElement>, "viewBox">) {
     return (
         <StyledSvg
             $sx={sx}
-            $iconId={iconId}
             $color={color}
-            data-icon-id={iconId}
+            $hoverColor={hoverColor}
             width={sx}
             xmlns="http://www.w3.org/2000/svg"
             {...restOfProps}>

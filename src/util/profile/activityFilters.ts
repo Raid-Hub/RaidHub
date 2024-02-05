@@ -7,7 +7,7 @@ import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
 import { FilterCallback } from "~/types/generic"
 import { ActivityFilter } from "~/types/profile"
 import { CommonRaidDifficulties, Difficulty } from "~/types/raidhub-api"
-import { includedIn } from "../betterIncludes"
+import { includedIn } from "../helpers"
 
 export enum FilterOption {
     SUCCESS = "Success",

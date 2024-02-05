@@ -1,29 +1,22 @@
 "use client"
 
 import { signOut, useSession } from "next-auth/react"
-import {
-    MutableRefObject,
-    ReactNode,
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from "react"
+import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import BungieClient from "~/services/bungie/BungieClient"
 
-const BungieClientContext = createContext<MutableRefObject<string | null> | undefined>(undefined)
+const BungieClientContext = createContext<BungieClient | undefined>(undefined)
 export const BungieTokenManager = (props: {
     setRefetchInterval(val: number): void
     children: ReactNode
 }) => {
     const { data: sessionData, status } = useSession()
     const [failedTokenRequests, setFailedTokenRequests] = useState(0)
-    const bungieAccessToken = useRef<string | null>(null)
+    const [bungieClient] = useState(() => new BungieClient())
 
     if (failedTokenRequests >= 3) {
         setFailedTokenRequests(0)
         signOut()
-        bungieAccessToken.current = null
+        bungieClient.clearToken()
     }
 
     // every time the session is updated, we should set the refresh interval to the remaining time on the token
@@ -40,10 +33,11 @@ export const BungieTokenManager = (props: {
         } else if (sessionData?.error == "ExpiredRefreshTokenError") {
             props.setRefetchInterval(0)
             signOut()
-            bungieAccessToken.current = null
+            bungieClient.clearToken()
         } else if (sessionData?.bungieAccessToken) {
             setFailedTokenRequests(0)
-            bungieAccessToken.current = sessionData.bungieAccessToken.value
+            bungieClient.setToken(sessionData.bungieAccessToken.value)
+
             const timeRemaining =
                 // bungieAccessToken.expires is an ISO string, not a date
                 new Date(sessionData.bungieAccessToken.expires).getTime() - Date.now()
@@ -52,15 +46,14 @@ export const BungieTokenManager = (props: {
     }, [sessionData, status, props.setRefetchInterval])
 
     return (
-        <BungieClientContext.Provider value={bungieAccessToken}>
+        <BungieClientContext.Provider value={bungieClient}>
             {props.children}
         </BungieClientContext.Provider>
     )
 }
 
-export const useBungieAccessToken = () => {
-    const tokenRef = useContext(BungieClientContext)
-    if (!tokenRef)
-        throw Error("Cannot use useBungieAccessToken outside a child of BungieTokenManager")
-    return tokenRef.current
+export const useBungieClient = () => {
+    const ctx = useContext(BungieClientContext)
+    if (!ctx) throw Error("Cannot use useBungieClient outside a child of BungieTokenManager")
+    return ctx
 }

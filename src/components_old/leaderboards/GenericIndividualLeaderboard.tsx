@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import CloudflareImage from "~/images/CloudflareImage"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { RaidHubIndividualLeaderboardEntry } from "~/types/raidhub-api"

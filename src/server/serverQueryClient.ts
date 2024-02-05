@@ -4,7 +4,7 @@ import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieMembershipType } from "bungie-net-core/models"
 import superjson from "superjson"
 import { BungieAPIError } from "~/models/BungieAPIError"
-import { getBasicProfile } from "~/services/bungie/getProfile"
+import { getBasicProfile } from "~/services/bungie/_old/getProfile"
 import {
     Leaderboard,
     getIndividualGlobalLeaderboard,

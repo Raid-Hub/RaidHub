@@ -1,7 +1,7 @@
 import { Variants, m } from "framer-motion"
 import { signIn, signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import RightArrow from "~/images/icons/RightArrow"
+import RightChevron from "~/components/icons/RightChevron"
 import styles from "../../styles/header.module.css"
 
 const variants = {
@@ -52,7 +52,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                                     <h4>View Profile</h4>
                                                 </div>
                                                 <div className={styles["content-section-arrow"]}>
-                                                    <RightArrow />
+                                                    <RightChevron />
                                                 </div>
                                             </Link>
                                         </div>
@@ -63,7 +63,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                             <h4>Manage Account</h4>
                                         </div>
                                         <div className={styles["content-section-arrow"]}>
-                                            <RightArrow />
+                                            <RightChevron />
                                         </div>
                                     </Link>
                                 </div>
@@ -74,7 +74,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                         <span>Logout</span>
                                     </div>
                                     <div className={styles["content-section-arrow"]}>
-                                        <RightArrow />
+                                        <RightChevron />
                                     </div>
                                 </div>
                             </>
@@ -90,7 +90,7 @@ const AccountDropdown = ({ isDropdownOpen }: AccountDropdownProps) => {
                                     <span>Log In</span>
                                 </div>
                                 <div className={styles["content-section-arrow"]}>
-                                    <RightArrow />
+                                    <RightChevron />
                                 </div>
                             </div>
                         )}

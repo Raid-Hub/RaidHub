@@ -1,4 +1,4 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useCallback } from "react"
 import styles from "~/styles/pages/pgcr.module.css"
 import DestinyPGCRCharacter from "../../../util/destiny/Character"

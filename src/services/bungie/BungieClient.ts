@@ -1,15 +1,8 @@
-import { QueryClient } from "@tanstack/react-query"
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { PlatformErrorCodes } from "bungie-net-core/models"
 import { BungieAPIError } from "~/models/BungieAPIError"
-import { getDestinyStats } from "~/services/bungie/getDestinyStats"
-import { getClan, getClanForMember, getClanMembers } from "../services/bungie/getClan"
-import { getLinkedProfiles } from "../services/bungie/getLinkedProfiles"
-import { getPGCR } from "../services/bungie/getPGCR"
-import { getProfile, getProfileTransitory } from "../services/bungie/getProfile"
-import BungieQuery, { QueryFn } from "./bungieQuery"
 
-const DO_NOT_RETRY_CODES = new Set<PlatformErrorCodes>([
+const NoNotRetryErrorCodes = new Set<PlatformErrorCodes>([
     5, // SystemDisabled
     217, // UserCannotResolveCentralAccount
     622, // GroupNotFound,
@@ -18,15 +11,6 @@ const DO_NOT_RETRY_CODES = new Set<PlatformErrorCodes>([
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
-    private _queryClient: QueryClient
-
-    constructor(queryClient: QueryClient) {
-        this._queryClient = queryClient
-    }
-
-    get queryClient() {
-        return this._queryClient
-    }
 
     async fetch<T>(config: BungieFetchConfig): Promise<T> {
         const apiKey = process.env.BUNGIE_API_KEY
@@ -71,13 +55,14 @@ export default class BungieClient implements BungieClientProtocol {
             } else if (!res.ok) {
                 throw Error("Error parsing response")
             }
+
             return data as T
         }
 
         try {
             return request()
         } catch (e) {
-            if (e instanceof BungieAPIError && !DO_NOT_RETRY_CODES.has(e.ErrorCode)) {
+            if (e instanceof BungieAPIError && !NoNotRetryErrorCodes.has(e.ErrorCode)) {
                 return request({ retry: true })
             } else if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
                 return request({ cacheBust: true })
@@ -102,26 +87,4 @@ export default class BungieClient implements BungieClientProtocol {
     clearToken() {
         this.accessToken = null
     }
-
-    private query<TParams, TData>({
-        fn,
-        key
-    }: {
-        fn: (client: BungieClientProtocol) => QueryFn<TParams, TData>
-        key: string
-    }) {
-        return BungieQuery<TParams, TData>(this, fn(this), key)
-    }
-
-    clan = {
-        byMember: this.query(getClanForMember),
-        byId: this.query(getClan),
-        members: this.query(getClanMembers)
-    }
-    // we prefetch the profile missing some components
-    profile = this.query(getProfile)
-    profileTransitory = this.query(getProfileTransitory)
-    pgcr = this.query(getPGCR)
-    linkedProfiles = this.query(getLinkedProfiles)
-    stats = this.query(getDestinyStats)
 }

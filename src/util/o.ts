@@ -18,14 +18,19 @@ export const o = {
     ) {
         return Object.fromEntries(entries) as Record<K, T>
     },
-    mapKeys: function <
+    mapValuesByKey: function <
         T extends object,
         N,
         K extends keyof T & TemplatableKey = keyof T & TemplatableKey
     >(obj: T, fn: (key: `${K}`) => N) {
-        return this.keys<T, K>(obj).map(key => [key, fn(key)])
+        const rv = {}
+        this.keys<T, K>(obj).forEach(k => {
+            // @ts-ignore
+            rv[k] = fn(k)
+        })
+        return rv as Record<K, N>
     },
-    mapValues: function <
+    mapValuesByValue: function <
         T extends object,
         N,
         V extends T[keyof T],

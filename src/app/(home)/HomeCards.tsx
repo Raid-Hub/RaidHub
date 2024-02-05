@@ -1,19 +1,20 @@
 "use client"
 
-import { HomeGlobal } from "components_old/home/HomeGlobal"
-import { HomeRaidCard } from "components_old/home/HomeRaidCard"
 import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
 import { Grid } from "~/components/layout/Grid"
+import { HomeCardGlobal } from "./cards/HomeCardGlobal"
+import { HomeCardraid } from "./cards/HomeCardRaid"
 
-export const RaidCards = () => {
+export const Cards = () => {
     const { listedRaids, leaderboards } = useRaidHubManifest()
+
     return (
-        <Grid $minCardWidth={300} $gap={1.5}>
-            <HomeGlobal />
+        <Grid $minCardWidth={350} $gap={1.5}>
+            <HomeCardGlobal />
             {listedRaids.map(raid => (
-                <HomeRaidCard
-                    raid={raid}
+                <HomeCardraid
                     key={raid}
+                    raid={raid}
                     worldFirstLeaderboards={leaderboards.worldFirst[raid] ?? []}
                     individualLeaderboards={leaderboards.individual[raid] ?? {}}
                 />

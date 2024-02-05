@@ -1,3 +1,5 @@
+"use client"
+
 import styled from "styled-components"
 
 export const Grid = styled.section<{
@@ -10,6 +12,6 @@ export const Grid = styled.section<{
 `
 
 Grid.defaultProps = {
-    $minCardWidth: 300,
+    $minCardWidth: 250,
     $gap: 1.5
 }

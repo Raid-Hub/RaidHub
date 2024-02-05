@@ -1,4 +1,4 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { ParsedUrlQuery } from "querystring"
 import { useEffect, useRef, useState } from "react"
 

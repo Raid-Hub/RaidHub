@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, SVGWrapperProps } from "../SVG"
 
-export default function Search(props: SVGProps) {
+export default function Search(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 0 24 24" {...props}>
             <g opacity="0.2">

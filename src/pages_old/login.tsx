@@ -1,6 +1,6 @@
 import { NextPage } from "next"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 
 const Login: NextPage = () => {

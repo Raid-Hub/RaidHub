@@ -1,7 +1,6 @@
 import { BungieClientProtocol } from "bungie-net-core"
-import PrivateProfileError from "~/models/errors/PrivateProfileError"
-import { BungieMembershipType, DestinyCharacterComponent } from "bungie-net-core/models"
 import { getCharacter } from "bungie-net-core/endpoints/Destiny2"
+import { BungieMembershipType, DestinyCharacterComponent } from "bungie-net-core/models"
 
 export async function getDestinyCharacter({
     destinyMembershipId,

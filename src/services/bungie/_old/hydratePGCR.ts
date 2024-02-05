@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { BungieClientProtocol } from "bungie-net-core"
 import { DestinyCharacterComponent, UserInfoCard } from "bungie-net-core/models"
-import DestinyPGCR from "../../util/destiny/PGCR"
+import DestinyPGCR from "../../../util/destiny/PGCR"
 import { getDestinyCharacter } from "./getDestinyCharacter"
 
 export async function hydratePGCR({

@@ -8,8 +8,8 @@ import {
 } from "~/server/serverQueryClient"
 import { Leaderboard } from "~/services/raidhub/getLeaderboard"
 import { ListedRaid } from "~/types/raidhub-api"
-import { includedIn } from "~/util/betterIncludes"
 import { UrlPathsToRaid } from "~/util/destiny/raidUtils"
+import { includedIn } from "~/util/helpers"
 import { zRaidURIComponent } from "~/util/zod"
 
 export const createGetStaticPaths =

@@ -1,7 +1,7 @@
 import Image, { ImageLoader } from "next/image"
 import { type ComponentPropsWithoutRef } from "react"
 
-export default function CloudflareImage({
+export function CloudflareImage({
     cloudflareId,
     alt = "",
     ...props

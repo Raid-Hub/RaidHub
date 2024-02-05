@@ -1,9 +1,9 @@
-import Image from "next/image"
-import styles from "../../styles/header.module.css"
 import { useSession } from "next-auth/react"
+import Image from "next/image"
 import { useEffect, useRef } from "react"
-import QuestionMark from "~/images/icons/QuestionMark"
-import UserIcon from "~/images/icons/UserIcon"
+import QuestionMark from "~/components/icons/QuestionMark"
+import UserIcon from "~/components/icons/UserIcon"
+import styles from "../../styles/header.module.css"
 
 type AccountIconProps = {
     isDropdownOpen: boolean
