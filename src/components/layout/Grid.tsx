@@ -2,7 +2,7 @@
 
 import styled from "styled-components"
 
-export const Grid = styled.section<{
+export const Grid = styled.div<{
     $minCardWidth?: number
     $gap?: number
 }>`

@@ -2,8 +2,8 @@ import { Collection } from "@discordjs/collection"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { useEffect, useMemo } from "react"
 import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
-import { useRaidHubActivities } from "~/hooks/raidhub/useRaidHubActivities"
 import { useQueryParamState } from "~/hooks/util/useQueryParamState"
+import { useRaidHubActivities } from "~/services/raidhub/useRaidHubActivities"
 import styles from "~/styles/pages/profile/raids.module.css"
 import {
     ListedRaid,

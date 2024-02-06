@@ -21,6 +21,29 @@ export function toCustomDateString(date: Date, locale: string): string {
         year: "numeric"
     })
 }
+export function formattedTimeSince(date: Date, locale: string): string {
+    const now = new Date()
+    const secondsPast = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+
+    if (secondsPast < 60) {
+        return rtf.format(-secondsPast, "second")
+    }
+    if (secondsPast < 3600) {
+        return rtf.format(-Math.floor(secondsPast / 60), "minute")
+    }
+    if (secondsPast < 86400) {
+        return rtf.format(-Math.floor(secondsPast / 3600), "hour")
+    }
+    if (secondsPast < 2592000) {
+        return rtf.format(-Math.floor(secondsPast / 86400), "day")
+    }
+    if (secondsPast < 31536000) {
+        return rtf.format(-Math.floor(secondsPast / 2592000), "month")
+    }
+    return rtf.format(-Math.floor(secondsPast / 31536000), "year")
+}
 
 export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean = false): string {
     let time = Math.round(seconds)
@@ -63,8 +86,9 @@ export function secondsToYDHMS(totalSeconds: number): string {
         .join(" ")
 }
 
-const parser = new DOMParser()
+const domParser = typeof window !== "undefined" ? new DOMParser() : null
 export const decodeHtmlEntities = (html: string) => {
-    const doc = parser.parseFromString(html, "text/html")
+    if (typeof window === "undefined") return html
+    const doc = domParser!.parseFromString(html, "text/html")
     return doc.body.textContent || ""
 }

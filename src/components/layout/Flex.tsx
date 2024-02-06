@@ -1,6 +1,9 @@
+"use client"
+
 import styled from "styled-components"
 
 export const Flex = styled.div<{
+    $relative?: boolean
     $padding?: number
     $direction?: "row" | "column"
     $gap?: number
@@ -8,6 +11,7 @@ export const Flex = styled.div<{
     $crossAxis?: "center" | "flex-start" | "flex-end" | "stretch"
 }>`
     display: flex;
+    position: ${({ $relative }) => ($relative ? "relative" : "static")};
 
     justify-content: ${({ $align }) => $align};
     align-items: ${({ $crossAxis }) => $crossAxis};

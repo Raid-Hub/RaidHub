@@ -1,13 +1,16 @@
 import type { Metadata, Viewport } from "next"
+import NextTopLoader from "nextjs-toploader"
 import { getRaidHubApi } from "~/services/raidhub"
+import { Header } from "./header/Header"
 import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
 import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
+import { SessionManager } from "./managers/SessionManager"
 import { StyledComponentsManager } from "./managers/StyledComponentsManager"
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-    const manifest = await getRaidHubApi("/manifest", null, null, undefined, { revalidate: 300 })
+    const manifest = await getRaidHubApi("/manifest", null, null, { next: { revalidate: 300 } })
 
     return (
         <html>
@@ -17,27 +20,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </head>
             <body>
                 <QueryManager>
-                    {/* <SessionManager> */}
-                    <LocaleManager>
-                        <RaidHubManifestManager serverManifest={manifest}>
-                            <StyledComponentsManager>
-                                <FramerMotionManager>
-                                    {/* <Header />
+                    <SessionManager>
+                        <LocaleManager>
+                            <RaidHubManifestManager serverManifest={manifest}>
+                                <StyledComponentsManager>
+                                    <FramerMotionManager>
+                                        <Header />
                                         <NextTopLoader
                                             showSpinner={false}
                                             speed={700}
                                             height={3}
                                             color={"orange"}
                                         />
-                                        <HeaderBanner />
+                                        {/* <HeaderBanner />
                                         <SearchModal /> */}
-                                    {children}
-                                    {/* <Footer /> */}
-                                </FramerMotionManager>
-                            </StyledComponentsManager>
-                        </RaidHubManifestManager>
-                    </LocaleManager>
-                    {/* </SessionManager> */}
+                                        {children}
+                                        {/* <Footer /> */}
+                                    </FramerMotionManager>
+                                </StyledComponentsManager>
+                            </RaidHubManifestManager>
+                        </LocaleManager>
+                    </SessionManager>
                 </QueryManager>
             </body>
         </html>

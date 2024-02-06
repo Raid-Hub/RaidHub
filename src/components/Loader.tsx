@@ -27,5 +27,4 @@ export const Loader = styled.div<{ $stroke: number; $size?: string }>`
             : `width: 100%; height: 100%;`}
     aspectratio: "1/1";
     padding: ${props => props.$stroke}px;
-    position: "relative";
 `

@@ -13,8 +13,7 @@ export async function getRaidHubApi<
     path: T,
     pathParams: "path" extends keyof _P ? _P["path"] : null,
     queryParams: "query" extends keyof _P ? _P["query"] : null,
-    headers?: HeadersInit,
-    nextConfig?: NextFetchRequestConfig
+    config?: Omit<RequestInit, "method" | "body">
 ): Promise<R> {
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
@@ -28,8 +27,8 @@ export async function getRaidHubApi<
     })
 
     return fetchRaidHub<R>(url, {
-        next: nextConfig,
-        headers: { ...createHeaders(), ...headers },
+        ...config,
+        headers: createHeaders(config?.headers),
         method: "GET"
     })
 }
@@ -48,8 +47,7 @@ export async function postRaidHubApi<
     path: T,
     query: "query" extends keyof _P ? _P["query"] : null,
     body: "application/json" extends keyof _RC ? _RC["application/json"] : null,
-    headers?: HeadersInit,
-    nextConfig?: NextFetchRequestConfig
+    config?: Omit<RequestInit, "method" | "body">
 ): Promise<R> {
     // create url
     const url = new URL(path, process.env.RAIDHUB_API_URL!)
@@ -58,17 +56,21 @@ export async function postRaidHubApi<
     })
 
     return fetchRaidHub<R>(url, {
-        next: nextConfig,
-        headers: { ...createHeaders(), "Content-Type": "application/json", ...headers },
+        ...config,
+        headers: createHeaders({ "Content-Type": "application/json", ...config?.headers }),
         method: "POST",
         body: JSON.stringify(body)
     })
 }
 
-function createHeaders(): HeadersInit | undefined {
+function createHeaders(init?: HeadersInit) {
+    const headers = new Headers(init)
     // Server side, we use the private server key, which is undefined client side
     const apiKey = process.env.RAIDHUB_API_KEY_SERVER || process.env.RAIDHUB_API_KEY
-    return apiKey ? { "x-api-key": apiKey } : undefined
+    if (apiKey) {
+        headers.set("x-api-key", apiKey)
+    }
+    return headers
 }
 
 async function fetchRaidHub<R>(url: URL, init: RequestInit) {

@@ -7,14 +7,18 @@ import { Flex } from "~/components/layout/Flex"
 
 export const HomeLogo = () => {
     return (
-        <Flex>
+        <Container>
             <BackgroundLogo src="/logo.png" alt="logo" width={70} height={70} />
             <TextLogo>
                 Raid<TextLogoGlow>Hub</TextLogoGlow>
             </TextLogo>
-        </Flex>
+        </Container>
     )
 }
+
+const Container = styled(Flex)`
+    margin: 1em;
+`
 
 const BackgroundLogo = styled(Image)`
     position: absolute;

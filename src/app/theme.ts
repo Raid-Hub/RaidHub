@@ -2,8 +2,8 @@ import { DefaultTheme, createGlobalStyle, css } from "styled-components"
 import { o } from "~/util/o"
 
 export const deviceSizes = {
-    tiny: { min: "0px", max: "374px" },
-    mobile: { min: "320px", max: "768px" },
+    tiny: { min: "0px", max: "340px" },
+    mobile: { min: "320px", max: "560px" },
     tablet: { min: "640px", max: "1024px" },
     laptop: { min: "1025px", max: "2560px" },
     desktop: { min: "1440px", max: "9999px" }
@@ -57,8 +57,7 @@ export const GlobalStyle = createGlobalStyle<{}>`
 }
 
 html, body {
-    height: 100%;
-    margin: 0;
+    min-width: 300px;
 }
 
 html {
@@ -68,6 +67,7 @@ html {
 
 body {
     font-family: "Manrope", sans-serif;
+    margin: 0;
 
     background-color: #010011;
     background: linear-gradient(
@@ -89,30 +89,6 @@ a {
 img[src=""] {
     font-size: 0;
     position: relative;
-}
-
-// Scroll bars
-/* width */
-::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-    background-color: transparent;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: var(--scroll-track);
-    border-radius: 7px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-orange-light);
 }
 `
 
@@ -172,7 +148,7 @@ function deviceMediaQuery<T extends keyof typeof deviceSizes>(
     dir: "min" | "max",
     device: T,
     value: TemplateStringsArray,
-    ...values: ((dimensions: (typeof deviceSizes)[T]) => string)[]
+    ...values: ((dimensions: (typeof deviceSizes)[T]) => string | number)[]
 ) {
     const inner = String.raw(value, ...values.map(fn => fn(deviceSizes[device])))
     return css`
