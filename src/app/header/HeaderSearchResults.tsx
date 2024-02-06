@@ -44,4 +44,6 @@ const Container = styled.div`
     ${$media.max.mobile`
         max-height: 90vh;
     `}
+
+    backdrop-filter: blur(10px);
 `

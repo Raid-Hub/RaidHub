@@ -9,7 +9,7 @@ export const Cards = () => {
     const { listedRaids, leaderboards } = useRaidHubManifest()
 
     return (
-        <Grid $minCardWidth={350} $gap={1.5}>
+        <Grid $minCardWidth={320} $gap={1.5}>
             <HomeCardGlobal />
             {listedRaids.map(raid => (
                 <HomeCardraid

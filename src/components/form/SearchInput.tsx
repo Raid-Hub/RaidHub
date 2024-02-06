@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react"
+import React, { InputHTMLAttributes } from "react"
 import { AtLeast } from "~/types/generic"
 import { Input, type InputProps } from "./Input"
 
@@ -8,6 +8,8 @@ export type SearchInputProps = AtLeast<
 > &
     InputProps
 
-export const SearchInput = (props: SearchInputProps) => {
-    return <Input type="text" name="search" autoComplete="off" {...props} />
-}
+export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>((props, ref) => {
+    return <Input type="text" name="search" autoComplete="off" {...props} ref={ref} />
+})
+
+SearchInput.displayName = "SearchInput"

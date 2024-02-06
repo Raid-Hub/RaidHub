@@ -13,13 +13,18 @@ import { useEffect } from "react"
  */
 export const useEventListener = <K extends keyof WindowEventMap, R>(
     type: K,
-    listener: (this: Window, ev: WindowEventMap[K]) => R
+    listener: (this: Window, ev: WindowEventMap[K]) => R,
+    options?: {
+        disabled?: boolean
+    }
 ): void => {
     useEffect(() => {
-        window.addEventListener(type, listener)
+        if (!options?.disabled) {
+            window.addEventListener(type, listener)
+        }
 
         return () => {
             window.removeEventListener(type, listener)
         }
-    }, [type, listener])
+    }, [type, listener, options])
 }

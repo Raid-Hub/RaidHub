@@ -71,6 +71,7 @@ export const Footer = () => {
 }
 
 const FooterStyled = styled.footer`
+    overflow: hidden;
     margin-top: auto;
     min-width: 100%;
 
@@ -79,7 +80,7 @@ const FooterStyled = styled.footer`
     backdrop-filter: blur(10px);
     border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 60%);
     border-bottom: 1px solid
-        color-min(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 60%);
+        color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 60%);
 
     font-size: 0.9rem;
     color: ${({ theme }) => theme.colors.text.tertiary};

@@ -71,6 +71,10 @@ body {
     font-family: "Manrope", sans-serif;
     margin: 0;
 
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+
     background-color: #010011;
     background: linear-gradient(
         90deg,

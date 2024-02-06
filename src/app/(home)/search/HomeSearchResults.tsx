@@ -32,4 +32,6 @@ const Container = styled.div`
     background-color: color-mix(in srgb, ${props => props.theme.colors.background.dark}, #0000 5%);
     border-radius: 2px;
     border: 1px solid color-mix(in srgb, ${props => props.theme.colors.border.dark}, #0000 60%);
+
+    backdrop-filter: blur(5px);
 `

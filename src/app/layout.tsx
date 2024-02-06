@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
 import { getRaidHubApi } from "~/services/raidhub"
 import { Footer } from "./Footer"
+import { SearchModal } from "./SearchModal"
 import { Header } from "./header/Header"
 import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
@@ -33,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                             height={3}
                                             color={"orange"}
                                         />
-                                        {/* <SearchModal /> */}
+                                        <SearchModal />
                                         {children}
                                         <Footer />
                                     </FramerMotionManager>
@@ -57,7 +58,7 @@ const title: Metadata["title"] = {
     template: "%s | RaidHub"
 }
 const description: Metadata["description"] =
-    "RaidHub is the world's leading Destiny 2 raid site. View dozens of leaderboards, millions of raid completions, and everything you need to know about Destiny 2"
+    "RaidHub is the fastest Destiny 2 raid analytics site. View dozens of leaderboards, millions of profiles, and millions of raid completions."
 
 export const metadata: Metadata = {
     title: title,
