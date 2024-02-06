@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
 import { getRaidHubApi } from "~/services/raidhub"
+import { Footer } from "./Footer"
 import { Header } from "./header/Header"
 import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
@@ -32,10 +33,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                             height={3}
                                             color={"orange"}
                                         />
-                                        {/* <HeaderBanner />
-                                        <SearchModal /> */}
+                                        {/* <SearchModal /> */}
                                         {children}
-                                        {/* <Footer /> */}
+                                        <Footer />
                                     </FramerMotionManager>
                                 </StyledComponentsManager>
                             </RaidHubManifestManager>

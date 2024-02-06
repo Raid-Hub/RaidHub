@@ -12,6 +12,8 @@ export const theme: DefaultTheme = {
     colors: {
         icon: {
             white: "rgb(255, 255, 255)",
+            lightGray: "rgb(164, 164, 164)",
+            gray: "rgb(103, 103, 103)",
             orange: "rgb(255, 140, 57)",
             twitch: "rgb(100, 65, 165)",
             twitter: "rgb(29, 161, 242)",
@@ -97,6 +99,8 @@ declare module "styled-components" {
         colors: {
             icon: {
                 white: string
+                lightGray: string
+                gray: string
                 orange: string
                 twitch: string
                 twitter: string

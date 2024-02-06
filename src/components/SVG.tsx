@@ -27,9 +27,10 @@ const StyledSvg = styled.svg<StyledSvgProps>`
     ${({ $absolute }) => $absolute && "position: absolute;"}
     width: ${({ $sx }) => `${$sx}px`};
     fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
+
     ${({ theme, $hoverColor }) =>
         $hoverColor && theme.colors.icon[$hoverColor]
-            ? `&:hover fill: ${theme.colors.icon[$hoverColor]};`
+            ? `&:hover {fill: ${theme.colors.icon[$hoverColor]};}`
             : ""}
 `
 StyledSvg.defaultProps = {

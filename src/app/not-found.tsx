@@ -1,6 +1,6 @@
 "use client"
 
-import { PageWrapper } from "~/components/layout/Page"
+import { PageWrapper } from "~/components/layout/PageWrapper"
 
 export default function NotFound() {
     return (
