@@ -19,7 +19,7 @@
 .glossy-bg {
     border-radius: 10px;
     padding: 2em;
-    background-color: var(--modal-background);
+    background-color: #1a191941;
 }
 
 .buttons button,
@@ -36,7 +36,7 @@
 }
 
 .buttons button:hover:not(:disabled) {
-    background-color: var(--brand-orange-light);
+    background-color: #ed904e;
     border-radius: 15px;
     border: none;
 
@@ -45,8 +45,8 @@
 }
 
 .destructive {
-    color: var(--primary-text);
-    background-color: var(--destructive);
+    color: white;
+    background-color: rgb(225, 51, 51);
 }
 
 .form {
@@ -95,7 +95,7 @@
     position: fixed;
     z-index: 10;
 
-    background-color: var(--modal-background);
+    background-color: #1a191941;
     backdrop-filter: blur(25px);
 
     max-width: 700px;
@@ -116,7 +116,7 @@
 }
 
 .api-key-modal a {
-    color: var(--brand-orange-light);
+    color: #ed904e;
 }
 
 .api-key-modal em {

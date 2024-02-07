@@ -1,10 +1,12 @@
-import { SubmitHandler, useForm } from "react-hook-form"
-import { trpc } from "~/util/trpc"
-import { z } from "zod"
-import { zCreateVanity } from "~/util/zod"
-import styles from "~/styles/pages/admin.module.css"
-import Link from "next/link"
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { z } from "zod"
+import { trpc } from "~/app/managers/QueryManager"
+import { zCreateVanity } from "~/util/zod"
+import styles from "./admin.module.css"
 
 type FormValues = z.infer<typeof zCreateVanity>
 

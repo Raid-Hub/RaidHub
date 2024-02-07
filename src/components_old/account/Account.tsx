@@ -1,15 +1,17 @@
+"use client"
+
 import { Session } from "next-auth"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
+import { trpc } from "~/app/managers/QueryManager"
+import DiscordIcon from "~/components/icons/DiscordIcon"
+import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
+import TwitchIcon from "~/components/icons/TwitchIcon"
+import TwitterIcon from "~/components/icons/TwitterIcon"
+import YoutubeIcon from "~/components/icons/YoutubeIcon"
 import { useProviders } from "~/hooks/app/useProviders"
-import BungieShield from "~/images/icons/connections/BungieShield"
-import DiscordIcon from "~/images/icons/connections/DiscordIcon"
-import TwitchIcon from "~/images/icons/connections/TwitchIcon"
-import TwitterIcon from "~/images/icons/connections/TwitterIcon"
-import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
-import styles from "~/styles/pages/account.module.css"
-import { trpc } from "~/util/trpc"
+import styles from ".//account.module.css"
 import Connection from "./Connection"
 import IconUploadForm from "./IconUploadForm"
 import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
@@ -46,9 +48,8 @@ const Account = ({ session }: AccountProps) => {
     )
 
     return (
-        <main>
+        <>
             <SpeedrunAPIKeyModal refetchSocials={refetchSocials} ref={speedrunAPIKeyModalRef} />
-            <h1>Welcome, {session.user.name}</h1>
             <section className={[styles["section"], styles["flex"]].join(" ")}>
                 <div className={[styles["buttons"], styles["glossy-bg"]].join(" ")}>
                     <Link
@@ -117,11 +118,11 @@ const Account = ({ session }: AccountProps) => {
                         link={() => speedrunAPIKeyModalRef.current?.showModal()}
                         serviceName="Speedrun.com"
                         username={socialNames?.get("speedrun") ?? null}
-                        Icon={BungieShield}
+                        Icon={props => <SpeedrunIcon {...props} deepFill="white" />}
                     />
                 </div>
             </section>
-        </main>
+        </>
     )
 }
 

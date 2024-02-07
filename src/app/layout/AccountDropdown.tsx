@@ -55,19 +55,12 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                             <DropdownLink title="Query Tool" href="/query" />
                         )}
                         <DropdownButton
-                            title="Logout"
+                            title="Log Out"
                             onClick={() => signOut({ callbackUrl: "/" })}
                         />
                     </>
                 ) : (
-                    <DropdownButton
-                        title="Logout"
-                        onClick={() =>
-                            signIn("bungie", {
-                                callbackUrl: encodeURI(window.location.href)
-                            })
-                        }
-                    />
+                    <DropdownButton title="Log In" onClick={() => signIn("bungie")} />
                 )}
             </Content>
         </Container>
@@ -85,7 +78,11 @@ const Container = styled(m.div)`
 
     border-radius: 6px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 55%);
+    background-color: color-mix(
+        in srgb,
+        ${({ theme }) => theme.colors.background.medium},
+        #0000 55%
+    );
 
     backdrop-filter: blur(10px);
 

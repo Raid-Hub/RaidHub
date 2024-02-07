@@ -1,10 +1,12 @@
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import React from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-import styles from "~/styles/pages/account.module.css"
-import { trpc } from "~/util/trpc"
+import { trpc } from "~/app/managers/QueryManager"
+import styles from "./account.module.css"
 
 const errMsg = "Invalid API Key format: "
 const zFormSchema = z.object({

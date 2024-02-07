@@ -1,22 +1,38 @@
-import React from "react"
-import SVG, { SVGProps } from "~/components/reusable/SVG"
-import styles from "~/styles/svg-icons.module.css"
+"use client"
 
-export default function SpeedrunIcon({ color, className, ...props }: SVGProps) {
-    const styleProps = color
-        ? ({
-              className: [className, styles["deep-fill"]].filter(Boolean).join(" "),
-              style: { "--fill-color": color },
-              color
-          } as {})
-        : undefined
+import styled from "styled-components"
+import { DefaultTheme } from "styled-components/dist/types"
+import { SVG, SVGWrapperProps } from "../SVG"
+
+const DeepFilledSvg = styled(SVG)<{
+    $fill?: string
+    $hoverFill?: string
+}>`
+    ${({ $fill, $hoverFill }) => `& path {
+            fill: ${$fill}
+        }
+
+        & path:hover {
+            fill: ${$hoverFill}
+        }`}
+`
+
+export default function SpeedrunIcon({
+    color,
+    deepFill,
+    deepHoverFill,
+    ...props
+}: Omit<SVGWrapperProps, "ref"> & {
+    deepFill?: keyof DefaultTheme["colors"]["icon"]
+    deepHoverFill?: keyof DefaultTheme["colors"]["icon"]
+}) {
     return (
-        <SVG
+        <DeepFilledSvg
             viewBox="0 -6.5 102 102"
             fillRule="evenodd"
-            iconId="speedrun"
             {...props}
-            {...styleProps}>
+            $fill={deepFill}
+            $hoverFill={deepHoverFill}>
             <g shapeRendering="crispEdges">
                 <path
                     fill="#b55608"
@@ -199,6 +215,6 @@ export default function SpeedrunIcon({ color, className, ...props }: SVGProps) {
                     fill="#b55608"
                     d="M4.765.47h4.4v4.4h-4.4zM.365 22.48h4.4v4.4h-4.4zM.365 18.08h4.4v4.4h-4.4zM.365 13.68h4.4v4.4h-4.4zM.365 9.28h4.4v4.4h-4.4zM.365 4.87h4.4v4.4h-4.4z"></path>
             </g>
-        </SVG>
+        </DeepFilledSvg>
     )
 }

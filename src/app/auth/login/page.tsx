@@ -1,19 +1,20 @@
-import { NextPage } from "next"
+"use client"
+
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { z } from "zod"
 
-const Login: NextPage = () => {
-    const { query } = useRouter()
+export default function Page() {
+    const query = useSearchParams()
 
     const callbackUrl = z
         .string()
         .url()
         .transform(cb => (cb === "/login" ? "" : cb))
         .default("")
-        .safeParse(query["callbackUrl"])
+        .safeParse(query.get("callbackUrl"))
 
-    const error = query["error"]
+    const error = query.get("error")
 
     return (
         <main>
@@ -32,5 +33,3 @@ const Login: NextPage = () => {
         </main>
     )
 }
-
-export default Login

@@ -1,13 +1,12 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, SVGWrapperProps } from "../SVG"
 
-export default function BungieShield(props: SVGProps) {
+export default function BungieShield(props: SVGWrapperProps) {
     return (
         <SVG
             xmlnsXlink="http://www.w3.org/1999/xlink"
             version="1.1"
             viewBox="0 -5.19 305.93 305.93"
             xmlSpace="preserve"
-            iconId="bungie"
             {...props}>
             <path
                 shapeRendering="geometricPrecision"

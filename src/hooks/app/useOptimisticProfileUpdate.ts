@@ -1,6 +1,6 @@
 import { inferProcedureOutput } from "@trpc/server"
-import { AppRouter } from "~/server/trpc"
-import { trpc } from "~/util/trpc"
+import { type AppRouter } from "~/app/api/trpc"
+import { trpc } from "~/app/managers/QueryManager"
 
 export function useOptimisticProfileUpdate(options?: {
     onSuccess(data: inferProcedureOutput<AppRouter["user"]["profile"]["update"]>): void

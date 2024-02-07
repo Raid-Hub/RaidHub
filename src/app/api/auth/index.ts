@@ -16,9 +16,6 @@ export const authOptions: NextAuthOptions = {
     providers: getProviders(),
     adapter: PrismaAdapter(prisma),
     pages: {
-        signIn: "/login",
-        signOut: "/logout",
-        error: "/error", // Error code passed in query string as ?error=
         newUser: "/account" // New users will be directed here on first sign in
     },
     session: {
@@ -79,6 +76,7 @@ function getProviders(): Provider[] {
     if (process.env.TWITTER_CLIENT_ID && process.env.TWITTER_CLIENT_SECRET) {
         providers.push(
             TwitterProvider({
+                name: "Twitter",
                 clientId: process.env.TWITTER_CLIENT_ID,
                 clientSecret: process.env.TWITTER_CLIENT_SECRET
             })

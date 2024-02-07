@@ -12,13 +12,13 @@ export const PageWrapper = styled.main`
          max-width: 85%;
     `} ${$media.max.laptop`
          min-width: ${dimensions => dimensions.min};
-         max-width: 90%;
+         max-width: 88%;
     `} ${$media.max.tablet`
          min-width: ${dimensions => dimensions.min};
-         max-width: 95%;
+         max-width: 90%;
     `} ${$media.max.mobile`
          min-width: ${dimensions => dimensions.min};
-         max-width: 98%;
+         max-width: 93%;
     `} ${$media.max.tiny`
          min-width: ${dimensions => dimensions.min};
             max-width: 100%;
