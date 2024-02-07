@@ -26,18 +26,18 @@ export function useSearch(props?: {
     const [debouncedQuery, forceUpdateQuery] = useDebounce(enteredText, 250)
 
     const raidHubSearchQuery = useRaidHubPlayerSearch(debouncedQuery)
+    /**
+     * if the raidhub search is done and no results are found,
+     * or the  raidhub search errored, we should use the bungie search
+     * */
+    const shouldUseBungieSearch =
+        !raidHubSearchQuery.isFetching &&
+        (raidHubSearchQuery.data?.length === 0 || raidHubSearchQuery.isError)
     const exactGlobalName = useMemo(() => debouncedQuery.split("#"), [debouncedQuery])
     const bungieDisplayNamePrefixQuery = useSearchByGlobalName(
         { displayNamePrefix: exactGlobalName[0] },
         {
-            /**
-             * enabled if the raidhub search is done and no results are found,
-             * and the query doesnt have a display name code
-             * */
-            enabled:
-                !raidHubSearchQuery.isFetching &&
-                raidHubSearchQuery.data?.length === 0 &&
-                exactGlobalName.length === 1
+            enabled: shouldUseBungieSearch && exactGlobalName.length === 1
         }
     )
     const bungieExactGlobalNameQuery = useDestinyPlayerByBungieName(
@@ -46,14 +46,7 @@ export function useSearch(props?: {
             displayNameCode: Number(exactGlobalName[1]?.substring(0, 4))
         },
         {
-            /**
-             * enabled if the raidhub search is done and no results are found,
-             * and the query has a display name code
-             * */
-            enabled:
-                !raidHubSearchQuery.isFetching &&
-                raidHubSearchQuery.data?.length === 0 &&
-                exactGlobalName.length === 2
+            enabled: shouldUseBungieSearch && exactGlobalName.length === 2
         }
     )
 

@@ -1,28 +1,28 @@
+"use client"
+
 import styled from "styled-components"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import { Grid } from "~/components/layout/Grid"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { $media } from "../theme"
+import { $media } from "../managers/StyledComponentsManager"
 
 export const HeaderSearchResults = (props: {
     results: RaidHubPlayerSearchResult[]
     handleSelect?: () => void
-}) => {
-    return (
-        <Container>
-            <Grid $gap={0} $minCardWidth={200}>
-                {props.results.map((player, idx) => (
-                    <SinglePlayerSearchResult
-                        key={idx}
-                        player={player}
-                        size={1.2}
-                        handleSelect={props.handleSelect}
-                    />
-                ))}
-            </Grid>
-        </Container>
-    )
-}
+}) => (
+    <Container>
+        <Grid $gap={0} $minCardWidth={200}>
+            {props.results.map((player, idx) => (
+                <SinglePlayerSearchResult
+                    key={idx}
+                    player={player}
+                    size={1.2}
+                    handleSelect={props.handleSelect}
+                />
+            ))}
+        </Grid>
+    </Container>
+)
 
 const Container = styled.div`
     z-index: 101;

@@ -9,7 +9,7 @@ import { Flex } from "~/components/layout/Flex"
 import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { useUserAgent } from "~/hooks/util/useUserAgent"
-import { $media } from "../theme"
+import { $media } from "../managers/StyledComponentsManager"
 import { HeaderSearchResults } from "./HeaderSearchResults"
 
 const HIDE_AFTER_CLICK = 100

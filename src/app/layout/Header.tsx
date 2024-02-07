@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useState } from "react"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
-import { $media } from "../theme"
+import { $media } from "../managers/StyledComponentsManager"
 import { SearchBar } from "./SearchBar"
 
 export const Header = () => {

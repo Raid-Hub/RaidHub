@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import styled from "styled-components"
-import { $media } from "~/app/theme"
+import { $media } from "~/app/managers/StyledComponentsManager"
 import { Flex } from "~/components/layout/Flex"
 
 export const HomeLogo = () => {

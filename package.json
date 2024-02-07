@@ -61,6 +61,8 @@
         "@types/react": "18.2.0",
         "@types/react-dom": "18.2.0",
         "@types/uuid": "^9.0.2",
+        "@typescript-eslint/eslint-plugin": "^6.21.0",
+        "@typescript-eslint/parser": "^6.21.0",
         "dotenv": "^16.0.3",
         "eslint": "8.40.0",
         "eslint-config-next": "14.1.0",

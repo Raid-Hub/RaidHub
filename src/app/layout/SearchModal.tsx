@@ -8,7 +8,7 @@ import { Grid } from "~/components/layout/Grid"
 import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { useKeyPress } from "~/hooks/util/useKeyPress"
-import { $media } from "./theme"
+import { $media } from "../managers/StyledComponentsManager"
 
 // TODO: animate the modal
 export const SearchModal = () => {

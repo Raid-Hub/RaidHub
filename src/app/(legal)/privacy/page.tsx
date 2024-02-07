@@ -31,7 +31,7 @@ export default function Page() {
                 including websites which have a link to our Site, is subject to that website&apos;s
                 own terms and policies.
             </p>
-            <h2>Advertising</h2>
+            {/* <h2>Advertising</h2>
             <p>
                 Ads appearing on our site may be delivered to Users by advertising partners, who may
                 set cookies. These cookies allow the ad server to recognize your computer each time
@@ -47,7 +47,7 @@ export default function Page() {
                 will need to return to the opt-out page to renew your choices. However, the DAA
                 offers a tool that helps to preserve your opt-out cookies and prevent them from
                 being deleted. To learn more about how our opt-out process works, click here.
-            </p>
+            </p> */}
             {/* <h2>Google Adsense</h2>
             <p>
                 Some of the ads may be served by Google. Google may use cookies to serve ads based

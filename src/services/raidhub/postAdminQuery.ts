@@ -8,7 +8,9 @@ export async function postAdminQuery(query: string, raidHubAccessToken: string) 
         null,
         { query: query },
         {
-            Authorization: "Bearer " + raidHubAccessToken
+            headers: {
+                Authorization: "Bearer " + raidHubAccessToken
+            }
         }
     )
 }

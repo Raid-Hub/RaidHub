@@ -1,7 +1,7 @@
 "use client"
 
 import styled from "styled-components"
-import { $media } from "~/app/theme"
+import { $media } from "~/app/managers/StyledComponentsManager"
 
 export type InputProps = {
     $size: number

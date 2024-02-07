@@ -27,6 +27,8 @@ export type RaidHubActivityExtended = components["schemas"]["ActivityExtended"]
 export type RaidHubActivityWithPlayer = components["schemas"]["ActivityWithPlayerData"]
 
 export type RaidHubPlayerActivitiesResponse = components["schemas"]["PlayerActivitiesResponse"]
+export type RaidHubPlayerActivitiesActivity =
+    components["schemas"]["PlayerActivitiesResponse"]["activities"][number]
 
 export type RaidHubActivityResponse = components["schemas"]["ActivityResponse"]
 

@@ -9,7 +9,7 @@ import Email from "~/components/icons/Email"
 import TwitterIcon from "~/components/icons/TwitterIcon"
 import { Flex } from "~/components/layout/Flex"
 
-import manifest from "../../public/manifest.json"
+import manifest from "../../../public/manifest.json"
 
 const developers: [display: string, path: string][] = [
     ["Newo", "newo"],
@@ -84,6 +84,10 @@ const FooterStyled = styled.footer`
 
     font-size: 0.9rem;
     color: ${({ theme }) => theme.colors.text.tertiary};
+
+    & a:hover {
+        color: ${({ theme }) => theme.colors.text.secondary};
+    }
 `
 
 const FooterSide = (props: { children: ReactNode; side: "left" | "right" }) => (
