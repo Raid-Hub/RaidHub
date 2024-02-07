@@ -8,17 +8,18 @@ import Search from "~/components/icons/Search"
 import { Flex } from "~/components/layout/Flex"
 import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
+import { usePageChange } from "~/hooks/util/usePageChange"
 import { useUserAgent } from "~/hooks/util/useUserAgent"
 import { $media } from "../managers/StyledComponentsManager"
 import { HeaderSearchResults } from "./HeaderSearchResults"
 
 const HIDE_AFTER_CLICK = 100
 
-type SearchBarProps = {}
-
 export const SearchBar = () => {
     const userAgent = useUserAgent()
     const OSKey = userAgent?.toLowerCase().includes("mac") ? "⌘" : "ctrl"
+
+    const pageChangeCallbackRef = useRef<(() => void) | undefined>(undefined)
 
     const hideResults = useCallback(() => setIsShowingResults(false), [])
 
@@ -38,6 +39,9 @@ export const SearchBar = () => {
         { ref: searchContainerRef, enabled: isShowingResults, lockout: 150 },
         hideResults
     )
+
+    pageChangeCallbackRef.current = clearQuery
+    usePageChange(pageChangeCallbackRef)
 
     return (
         <Container onSubmit={handleFormSubmit} ref={searchContainerRef}>

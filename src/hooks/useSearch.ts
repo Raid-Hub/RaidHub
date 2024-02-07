@@ -2,24 +2,19 @@
 
 import { UserInfoCard, UserSearchResponseDetail } from "bungie-net-core/models"
 import { useRouter } from "next/navigation"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useDestinyPlayerByBungieName } from "~/services/bungie/useDestinyPlayerByBungieName"
 import { useSearchByGlobalName } from "~/services/bungie/useSearchByGlobalName"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { getUserName } from "~/util/destiny/bungieName"
 import { useRaidHubPlayerSearch } from "../services/raidhub/useRaidHubPlayerSearch"
 import { useDebounce } from "./util/useDebounce"
-import { usePageChange } from "./util/usePageChange"
 
 export function useSearch(props?: {
     onRedirect?: (result: RaidHubPlayerSearchResult) => void
     navigateOnEnter?: boolean
 }) {
     const router = useRouter()
-    const pageChangeCallback = useRef(() => {})
-    usePageChange({
-        callback: pageChangeCallback
-    })
 
     const [enteredText, setEnteredText] = useState("")
     const [enterPressed, setEnterPressed] = useState(false)
@@ -89,6 +84,7 @@ export function useSearch(props?: {
     ].filter(r => getUserName(r).toLowerCase().includes(enteredText.toLowerCase()))
 
     const clearQuery = useCallback(() => {
+        setEnteredText("")
         forceUpdateQuery("")
     }, [])
 

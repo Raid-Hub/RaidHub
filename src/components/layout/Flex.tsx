@@ -9,6 +9,7 @@ export const Flex = styled.div<{
     $gap?: number
     $align?: "center" | "flex-start" | "flex-end" | "stretch" | "space-between" | "space-around"
     $crossAxis?: "center" | "flex-start" | "flex-end" | "stretch"
+    $fullWidth?: boolean
 }>`
     display: flex;
     position: ${({ $relative }) => ($relative ? "relative" : "static")};
@@ -19,6 +20,7 @@ export const Flex = styled.div<{
     gap: ${({ $gap }) => $gap}em;
 
     padding: ${({ $padding }) => $padding}em;
+    ${({ $fullWidth }) => $fullWidth && "width: 100%;"}
 `
 
 Flex.defaultProps = {
@@ -26,5 +28,6 @@ Flex.defaultProps = {
     $gap: 1,
     $direction: "row",
     $align: "center",
-    $crossAxis: "center"
+    $crossAxis: "center",
+    $fullWidth: false
 }

@@ -17,8 +17,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     return (
         <html>
             <head>
-                <meta property="discord:site" content="https://discord.gg/raidhub" />
+                <meta name="discord:site" content="https://discord.gg/raidhub" />
                 <meta name="twitter:site" content="@raidhubio" />
+
+                <link rel="shortcut icon" href="/favicon.ico" />
+                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+                    rel="stylesheet"
+                />
             </head>
             <body>
                 <QueryManager>
@@ -63,6 +73,10 @@ const description: Metadata["description"] =
 export const metadata: Metadata = {
     title: title,
     description: description,
+    robots: {
+        follow: true,
+        index: true
+    },
     keywords: "destiny 2, raid, leaderboards, stats, statistics, worldsfirst, raidhub, report",
     metadataBase: new URL(
         process.env.VERCEL_URL

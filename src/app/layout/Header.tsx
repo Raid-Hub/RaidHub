@@ -2,15 +2,14 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 import styled from "styled-components"
+import { BackdropBlur } from "~/components/BackdropBlur"
 import { Flex } from "~/components/layout/Flex"
 import { $media } from "../managers/StyledComponentsManager"
+import { AccountIcon } from "./AccountIcon"
 import { SearchBar } from "./SearchBar"
 
 export const Header = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
     return (
         <StyledHeader id="header">
             <Flex $align="space-between" $padding={0.3}>
@@ -22,13 +21,10 @@ export const Header = () => {
                 </Link>
                 <Flex $padding={0.2}>
                     <SearchBar />
-                    {/* <AccountIcon
-                        isDropdownOpen={isDropdownOpen}
-                        setIsDropdownOpen={setIsDropdownOpen}
-                    /> */}
+                    <AccountIcon />
                 </Flex>
-                {/* <AccountDropdown isDropdownOpen={isDropdownOpen} /> */}
             </Flex>
+            <BackdropBlur $radius={8} />
         </StyledHeader>
     )
 }
@@ -37,6 +33,7 @@ const StyledHeader = styled.header`
     position: sticky;
     top: 0;
     z-index: 100;
+
     min-width: 100%;
     padding: 0.2em;
 
@@ -46,8 +43,6 @@ const StyledHeader = styled.header`
 
     border-bottom: 1px solid
         color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 60%);
-
-    backdrop-filter: blur(10px);
 `
 
 const TextLogo = styled.span`

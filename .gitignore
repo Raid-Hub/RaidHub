@@ -43,6 +43,7 @@ raidhub-app-db/
 
 # test page
 src/pages/test.tsx
+src/app/test
 
 # build artifacts
 manifest.json

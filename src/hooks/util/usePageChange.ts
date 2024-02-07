@@ -3,20 +3,20 @@
 import { useParams, usePathname } from "next/navigation"
 import { MutableRefObject, useEffect } from "react"
 
-export function usePageChange(props: {
+export function usePageChange(
     callback: MutableRefObject<
-        (change: { newPath: string; newParams: ReturnType<typeof useParams> }) => void
+        ((change: { newPath: string; newParams: ReturnType<typeof useParams> }) => void) | undefined
     >
-}) {
+) {
     const pathname = usePathname()
     const params = useParams()
 
     useEffect(() => {
-        props.callback.current({
+        callback.current?.({
             newPath: pathname,
             newParams: params
         })
-    }, [pathname, params, props.callback])
+    }, [pathname, params, callback])
 
     return { pathname, params }
 }
