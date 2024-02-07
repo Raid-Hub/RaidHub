@@ -39,6 +39,12 @@ export type RaidHubManifestResponse = components["schemas"]["ManifestResponse"]
 export type RaidHubPlayerSearchResponse = components["schemas"]["PlayerSearchResponse"]
 export type RaidHubPlayerSearchResult = RaidHubPlayerSearchResponse["results"][number]
 
+export type RaidHubAdminQueryResponse = components["schemas"]["AdminQueryResponse"]
+export type RaidHubAdminQueryBody = Required<
+    paths["/admin/query"]["post"]
+>["requestBody"]["content"]["application/json"]
+export type RaidHubAdminQueryError = components["schemas"]["AdminQuerySyntaxError"]
+
 export type RaidHubPlayerProfileLeaderboardEntry =
     components["schemas"]["PlayerProfileLeaderboardEntry"]
 

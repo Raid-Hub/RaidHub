@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
+import { ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
 import { Footer } from "./layout/Footer"
 import { Header } from "./layout/Header"
@@ -11,7 +12,7 @@ import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
 import { SessionManager } from "./managers/SessionManager"
 import { StyledComponentsManager } from "./managers/StyledComponentsManager"
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, { next: { revalidate: 300 } })
 
     return (
@@ -45,7 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                                             color={"orange"}
                                         />
                                         <SearchModal />
-                                        {children}
+                                        {params.children}
                                         <Footer />
                                     </FramerMotionManager>
                                 </StyledComponentsManager>

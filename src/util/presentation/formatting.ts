@@ -21,7 +21,7 @@ export function toCustomDateString(date: Date, locale: string): string {
         year: "numeric"
     })
 }
-export function formattedTimeSince(date: Date, locale: string): string {
+export function formattedTimeSince(date: Date, locale: string | undefined = undefined): string {
     const now = new Date()
     const secondsPast = Math.floor((now.getTime() - date.getTime()) / 1000)
 

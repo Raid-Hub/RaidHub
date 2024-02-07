@@ -33,15 +33,16 @@ model Profile {
 }
 
 model User {
-  id                 String    @id @default(uuid())
-  bungieMembershipId String    @unique @map("bungie_membership_id")
-  email              String?   @unique
-  emailVerified      DateTime? @map("email_verified")
-  createdAt          DateTime  @default(now())
-  role               Role      @default(USER)
+  id                 String              @id @default(uuid())
+  bungieMembershipId String              @unique @map("bungie_membership_id")
+  email              String?             @unique
+  emailVerified      DateTime?           @map("email_verified")
+  createdAt          DateTime            @default(now())
+  role               Role                @default(USER)
   profile            Profile?
   accounts           Account[]
   sessions           Session[]
+  raidHubAccessToken RaidHubAccessToken?
 
   @@map("user")
 }
@@ -81,6 +82,17 @@ model Account {
   @@unique([provider, userId], name: "uniqueProviderUser")
   @@index([userId])
   @@map("account")
+}
+
+model RaidHubAccessToken {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  value     String
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("raidhub_access_token")
 }
 
 model PGCR {

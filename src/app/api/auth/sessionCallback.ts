@@ -3,14 +3,28 @@ import "server-only"
 import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { Session } from "next-auth"
+import { postRaidHubApi } from "~/services/raidhub"
 import { SessionAndUserData } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export const sessionCallback = async ({
     session,
-    user: { bungieAccount, ...user }
+    user: { bungieAccount, raidHubAccessToken, ...user }
 }: SessionAndUserData) => {
-    // TODO: add raidhub access token
+    let raidhubToken
+
+    if (
+        user.role === "ADMIN" &&
+        (!raidHubAccessToken || Date.now() > raidHubAccessToken.expiresAt.getTime())
+    ) {
+        raidhubToken = postRaidHubApi("/authorize", null, {
+            clientSecret: process.env.ADMIN_CLIENT_SECRET!
+        }).catch(e => {
+            console.error(e)
+            return undefined
+        })
+    }
+
     if (
         bungieAccount.expiresAt &&
         bungieAccount.accessToken &&
@@ -19,11 +33,12 @@ export const sessionCallback = async ({
         // If user access token has not expired yet
         return {
             ...session,
+            user,
             bungieAccessToken: {
                 value: bungieAccount.accessToken,
-                expires: new Date(bungieAccount.expiresAt * 1000)
+                expires: new Date(bungieAccount.expiresAt * 1000).toISOString()
             },
-            user
+            raidHubAccessToken: await raidhubToken
         } satisfies Session
     } else if (
         bungieAccount.refreshToken &&
@@ -31,7 +46,7 @@ export const sessionCallback = async ({
     ) {
         // User access token has expired, but refresh token has not
         try {
-            const tokens = await refreshAuthorization(
+            const bungieTokens = await refreshAuthorization(
                 bungieAccount.refreshToken,
                 {
                     client_id: process.env.BUNGIE_CLIENT_ID!,
@@ -52,12 +67,12 @@ export const sessionCallback = async ({
             await updateBungieAccessTokens({
                 userId: user.id,
                 access: {
-                    value: tokens.access_token,
-                    expires: new Date(Date.now() + tokens.expires_in * 1000)
+                    value: bungieTokens.access_token,
+                    expires: new Date(Date.now() + bungieTokens.expires_in * 1000)
                 },
                 refresh: {
-                    value: tokens.refresh_token,
-                    expires: new Date(Date.now() + tokens.refresh_expires_in * 1000)
+                    value: bungieTokens.refresh_token,
+                    expires: new Date(Date.now() + bungieTokens.refresh_expires_in * 1000)
                 }
             })
 
@@ -65,9 +80,10 @@ export const sessionCallback = async ({
                 ...session,
                 user,
                 bungieAccessToken: {
-                    value: tokens.access_token,
-                    expires: new Date(Date.now() + tokens.expires_in * 1000)
-                }
+                    value: bungieTokens.access_token,
+                    expires: new Date(Date.now() + bungieTokens.expires_in * 1000).toISOString()
+                },
+                raidHubAccessToken: await raidhubToken
             } satisfies Session
         } catch (e: any) {
             if (
@@ -94,6 +110,7 @@ export const sessionCallback = async ({
         return {
             ...session,
             user,
+            raidHubAccessToken: await raidhubToken,
             error: "ExpiredRefreshTokenError"
         } satisfies Session
     }

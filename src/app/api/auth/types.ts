@@ -9,11 +9,11 @@ declare module "next-auth" {
         user: AdapterUser
         bungieAccessToken?: {
             value: string
-            expires: Date
+            expires: string
         }
         raidHubAccessToken?: {
             value: string
-            expires: Date
+            expires: string
         }
         expires: Date
     }
@@ -30,7 +30,13 @@ declare module "next-auth/adapters" {
 
 export type SessionAndUserData = {
     session: Session
-    user: AdapterUser & { bungieAccount: BungieAccount }
+    user: AdapterUser & {
+        bungieAccount: BungieAccount
+        raidHubAccessToken: {
+            value: string
+            expiresAt: Date
+        } | null
+    }
 }
 
 export type AuthToken = {

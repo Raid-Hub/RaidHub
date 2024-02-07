@@ -52,7 +52,7 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                             <DropdownLink title="Admin Panel" href="/admin" />
                         )}
                         {sessionData.user.role === "ADMIN" && (
-                            <DropdownLink title="Query Tool" href="/query" />
+                            <DropdownLink title="Query Tool" href="/admin/query" />
                         )}
                         <DropdownButton
                             title="Log Out"

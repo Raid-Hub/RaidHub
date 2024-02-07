@@ -203,6 +203,12 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             include: {
                 user: {
                     include: {
+                        raidHubAccessToken: {
+                            select: {
+                                expiresAt: true,
+                                value: true
+                            }
+                        },
                         profile: {
                             select: {
                                 name: true,
@@ -228,7 +234,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         })
         if (!userAndSession) return null
         const {
-            user: { profile, accounts, ...restOfUser },
+            user: { profile, accounts, raidHubAccessToken, ...restOfUser },
             ...session
         } = userAndSession
         if (!profile) throw new Error("Profile not found")
@@ -242,7 +248,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                 ...profile,
                 ...restOfUser,
                 email: restOfUser.email || "",
-                bungieAccount: bungieAccount
+                bungieAccount: bungieAccount,
+                raidHubAccessToken: raidHubAccessToken
             },
             session
         } satisfies SessionAndUserData

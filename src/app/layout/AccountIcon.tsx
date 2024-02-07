@@ -6,6 +6,7 @@ import QuestionMark from "~/components/icons/QuestionMark"
 import UserIcon from "~/components/icons/UserIcon"
 import { Flex } from "~/components/layout/Flex"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
+import { usePageChange } from "~/hooks/util/usePageChange"
 import { AccountDropdown } from "./AccountDropdown"
 
 const ICON_SIZE = 32
@@ -25,6 +26,10 @@ export const AccountIcon = () => {
         },
         closeDropdown
     )
+
+    const pageChangeCallback = useRef(() => {})
+    pageChangeCallback.current = closeDropdown
+    usePageChange(pageChangeCallback)
 
     return (
         <Container>

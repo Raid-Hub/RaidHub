@@ -4,6 +4,11 @@
  */
 
 
+/** OneOf type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/manifest": {
     get: {
@@ -422,6 +427,10 @@ export interface paths {
         readonly content: {
           readonly "application/json": {
             readonly query: string;
+            /** @enum {string} */
+            readonly type: "SELECT" | "EXPLAIN";
+            /** @default false */
+            readonly ignoreCost?: boolean;
           };
         };
       };
@@ -436,6 +445,12 @@ export interface paths {
         400: {
           content: {
             readonly "application/json": components["schemas"]["BodyValidationError"];
+          };
+        };
+        /** @description AdminQuerySyntaxError */
+        501: {
+          content: {
+            readonly "application/json": components["schemas"]["AdminQuerySyntaxError"];
           };
         };
       };
@@ -556,7 +571,7 @@ export interface components {
       readonly player: components["schemas"]["ActivityPlayerData"];
     };
     /** @enum {string} */
-    readonly RaidHubErrorCode: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError";
+    readonly RaidHubErrorCode: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError" | "AdminQuerySyntaxError";
     readonly RaidHubError: {
       /** Format: date-time */
       readonly minted: string;
@@ -565,7 +580,7 @@ export interface components {
       readonly success: false;
       readonly error: {
         /** @enum {string} */
-        readonly type: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError";
+        readonly type: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError" | "AdminQuerySyntaxError";
         [key: string]: unknown;
       };
     };
@@ -648,6 +663,11 @@ export interface components {
       readonly count?: number;
       /** @default 1 */
       readonly page?: number;
+    };
+    readonly AdminQuerySyntaxError: {
+      readonly name: string;
+      readonly code: string;
+      readonly message: string;
     };
     /** @enum {string} */
     readonly RaidPath: "leviathan" | "eaterofworlds" | "spireofstars" | "lastwish" | "scourgeofthepast" | "crownofsorrow" | "gardenofsalvation" | "deepstonecrypt" | "vaultofglass" | "vowofthedisciple" | "kingsfall" | "rootofnightmares" | "crotasend";
@@ -765,8 +785,8 @@ export interface components {
     readonly ManifestResponse: {
       readonly hashes: {
         [key: string]: {
-          readonly raid: number;
-          readonly difficulty: number;
+          readonly raid: components["schemas"]["RaidEnum"];
+          readonly difficulty: components["schemas"]["RaidVersionEnum"];
         };
       };
       readonly listed: readonly components["schemas"]["RaidEnum"][];
@@ -1026,9 +1046,27 @@ export interface components {
           };
         })[];
     };
-    readonly AdminQueryResponse: readonly unknown[];
+    readonly AdminQueryResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "SELECT";
+      readonly data: readonly {
+          [key: string]: unknown;
+        }[];
+    }, {
+      /** @enum {string} */
+      readonly type: "HIGH COST";
+      readonly data: unknown;
+      readonly cost: number;
+      readonly estimatedDuration: number;
+    }, {
+      /** @enum {string} */
+      readonly type: "EXPLAIN";
+      readonly data: string;
+    }]>;
     readonly AuthorizeResponse: {
-      readonly token: string;
+      readonly value: string;
+      /** Format: date-time */
+      readonly expires: string;
     };
   };
   responses: never;

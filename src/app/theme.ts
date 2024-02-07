@@ -14,7 +14,7 @@ export const theme: DefaultTheme = {
             white: "rgb(255, 255, 255)",
             lightGray: "rgb(164, 164, 164)",
             gray: "rgb(103, 103, 103)",
-            orange: "rgb(255, 140, 57)",
+            orange: "rgb(255, 100, 57)",
             twitch: "rgb(100, 65, 165)",
             twitter: "rgb(29, 161, 242)",
             youtube: "rgb(241, 45, 45)",
