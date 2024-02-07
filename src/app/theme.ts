@@ -25,7 +25,8 @@ export const theme: DefaultTheme = {
             white: "rgb(255, 255, 255)",
             primary: "rgb(253, 253, 253)",
             secondary: "rgb(183, 183, 183)",
-            tertiary: "rgb(105, 105, 105)"
+            tertiary: "rgb(105, 105, 105)",
+            orange: "rgb(255, 140, 57)"
         },
         border: {
             light: "rgb(255, 255, 255)",
@@ -117,6 +118,7 @@ declare module "styled-components" {
                 primary: string
                 secondary: string
                 tertiary: string
+                orange: string
             }
             border: {
                 light: string

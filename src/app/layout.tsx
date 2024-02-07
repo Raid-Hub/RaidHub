@@ -63,6 +63,7 @@ const description: Metadata["description"] =
 export const metadata: Metadata = {
     title: title,
     description: description,
+    keywords: "destiny 2, raid, leaderboards, stats, statistics, worldsfirst, raidhub, report",
     metadataBase: new URL(
         process.env.VERCEL_URL
             ? `https://${process.env.VERCEL_URL}`
