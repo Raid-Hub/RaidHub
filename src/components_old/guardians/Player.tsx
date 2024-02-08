@@ -1,14 +1,17 @@
 import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
 import { ReactNode, useMemo } from "react"
+import { Loader } from "~/components/Loader"
+import { Loading } from "~/components/Loading"
 import { subclassBucket } from "~/data/inventory-item-buckets"
-import styles from "~/styles/pages/inpsect.module.css"
+import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
+import { useProfile } from "~/services/bungie/useProfile"
+import { useProfileTransitory } from "~/services/bungie/useProfileTransitory"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
 import { useBungieClient } from "../../app/managers/BungieTokenManager"
-import Loader from "../../components/Loader"
-import Loading from "../../components/Loading"
 import PlayerHeader from "./PlayerHeader"
 import PlayerItem from "./PlayerItem"
+import styles from "./guardians.module.css"
 
 export default function Player({
     membershipId,
@@ -21,13 +24,10 @@ export default function Player({
     remove: () => void
     add: (membershipId: string, isFireteamIncluded: boolean) => void
 }) {
-    const bungie = useBungieClient()
-    const { data: linkedProfiles } = bungie.linkedProfiles.useQuery(
-        { membershipId },
-        {
-            staleTime: Infinity
-        }
-    )
+    const { data: linkedProfiles } = useLinkedProfiles({
+        membershipId: membershipId
+    })
+
     const primaryProfile = useMemo(
         () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, membershipId)),
         [linkedProfiles, membershipId]
@@ -67,7 +67,7 @@ function ResolvedPlayer({
         data: profileData,
         isLoading: isLoadingProfile,
         isRefetching: isRefetchingProfile
-    } = bungie.profile.useQuery(
+    } = useProfile(
         {
             membershipType: primaryProfile.membershipType,
             destinyMembershipId: primaryProfile.membershipId
@@ -78,7 +78,7 @@ function ResolvedPlayer({
         data: transitoryComponent,
         isLoading: isLoadingTransitoryComponent,
         isRefetching: isRefetchingTransitoryComponent
-    } = bungie.profileTransitory.useQuery(
+    } = useProfileTransitory(
         {
             membershipType: primaryProfile.membershipType,
             destinyMembershipId: primaryProfile.membershipId
@@ -109,9 +109,9 @@ function ResolvedPlayer({
     )
 
     const items = mostRecentCharacterId
-        ? transitoryComponent?.characterEquipment?.data?.[mostRecentCharacterId].items
+        ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
         : undefined
-    const sockets = transitoryComponent?.itemComponents?.sockets?.data
+    const sockets = profileData?.itemComponents?.sockets?.data
 
     const subclass = items?.find(i => i.bucketHash === subclassBucket)
 
@@ -138,7 +138,7 @@ function ResolvedPlayer({
             {children}
             {(isRefetchingProfile || isRefetchingTransitoryComponent) && (
                 <div className={styles["loader-container"]}>
-                    <Loader stroke={3} size="100%" />
+                    <Loader $stroke={3} />
                 </div>
             )}
             {sockets && (

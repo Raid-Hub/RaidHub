@@ -1,4 +1,4 @@
-import styles from "~/styles/pages/profile/user.module.css"
+import styles from "./user.module.css"
 
 type UserNameProps = {
     membershipId: string

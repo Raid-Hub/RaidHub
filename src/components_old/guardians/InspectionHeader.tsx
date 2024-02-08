@@ -1,7 +1,9 @@
+"use client"
+
+import { useQueryClient } from "@tanstack/react-query"
 import { Dispatch, SetStateAction, useState } from "react"
-import styles from "~/styles/pages/inpsect.module.css"
-import { useBungieClient } from "../../app/managers/BungieTokenManager"
 import Search from "./Search"
+import styles from "./guardians.module.css"
 
 export default function InspectionHeader({
     addMember,
@@ -17,7 +19,7 @@ export default function InspectionHeader({
     isExpanded: boolean
 }) {
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
-    const bungie = useBungieClient()
+    const queryClient = useQueryClient()
 
     return (
         <div className={styles["header"]}>
@@ -27,9 +29,10 @@ export default function InspectionHeader({
                 <Checkbox isChecked={isCheckboxChecked} setIsChecked={setIsCheckboxChecked} />
                 <button
                     onClick={() => {
-                        bungie.profileTransitory.refetchQueries(query =>
-                            Array.from(memberIds).some(id => query.queryHash.includes(id))
-                        )
+                        queryClient.refetchQueries({
+                            queryKey: ["bungie", "profile"],
+                            type: "active"
+                        })
                     }}>
                     Refresh
                 </button>

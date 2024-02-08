@@ -1,6 +1,7 @@
 "use client"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { httpLink, loggerLink } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
 import { useState } from "react"
@@ -49,6 +50,10 @@ export function QueryManager(props: { children: React.ReactNode }) {
 
     return (
         <QueryClientProvider client={queryClient}>
+            {/* By default, React Query Devtools are only included in bundles when 
+            process.env.NODE_ENV === 'development', so you don't need to worry
+             about excluding them during a production build. */}
+            <ReactQueryDevtools initialIsOpen={false} />
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
                 {props.children}
             </trpc.Provider>

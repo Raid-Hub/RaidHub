@@ -30,7 +30,6 @@ export const useLocalStorageObject = <V>(args: {
     useEffect(() => {
         const fromStore = localStorage.getItem(args.storageKey)
         const parsed = fromStore ? JSON.parse(fromStore) : {}
-        console.log(parsed)
         if (args.paramKey in parsed) {
             setValue(fromStore ? parsed[args.paramKey] : args.defaultValue)
         }

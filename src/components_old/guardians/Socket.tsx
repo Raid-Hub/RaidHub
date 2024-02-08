@@ -1,8 +1,10 @@
+"use client"
+
 import { DestinyItemSocketState } from "bungie-net-core/models"
 import Image from "next/image"
 import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
-import styles from "~/styles/pages/inpsect.module.css"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import styles from "./guardians.module.css"
 
 export type EnabledDestinyItemSocketState = DestinyItemSocketState & {
     isEnabled: true

@@ -1,6 +1,6 @@
-import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
-import { useClanBanner } from "../app/DestinyManifestManager"
 import { ClanBanner } from "bungie-net-core/models"
+import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
+import { useClanBanner } from "../../app/managers/DestinyManifestManager"
 
 const mast =
     "https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"

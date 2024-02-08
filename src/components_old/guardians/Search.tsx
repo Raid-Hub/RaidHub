@@ -1,15 +1,17 @@
+"use client"
+
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import styles from "~/styles/pages/inpsect.module.css"
+import { useSearch } from "~/hooks/useSearch"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { usePortal } from "../reusable/Portal"
+import styles from "./guardians.module.css"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
     const ref = useRef<HTMLDivElement>(null)
 
-    const { enteredText, results, handleFormEnter, handleInputChange } = useRaidHubSearch()
+    const { enteredText, results, handleFormSubmit, handleInputChange } = useSearch()
 
     const [isShowingResults, setIsShowingResults] = useState(false)
 
@@ -48,7 +50,7 @@ export default function Search({ addMember }: { addMember: (membershipId: string
 
     return (
         <div className={styles["search"]} ref={ref}>
-            <form onSubmit={handleFormEnter}>
+            <form onSubmit={handleFormSubmit}>
                 <input
                     autoFocus
                     type="text"

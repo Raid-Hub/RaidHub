@@ -5,12 +5,12 @@ import {
 } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
+import { useExpandedContext } from "~/app/guardians/context"
+import { Loading } from "~/components/Loading"
 import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
-import { useExpandedContext } from "~/pages/guardians"
-import styles from "~/styles/pages/inpsect.module.css"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
-import Loading from "../../components/Loading"
 import Socket, { EnabledDestinyItemSocketState } from "./Socket"
+import styles from "./guardians.module.css"
 
 const isExoticArmor = (data: DestinyInventoryItemDefinition) =>
     data?.itemType == 2 && data.inventory?.tierType == 6

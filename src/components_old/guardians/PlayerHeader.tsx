@@ -1,9 +1,9 @@
-import styles from "~/styles/pages/inpsect.module.css"
 import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/models"
-import UserName from "../profile/user/UserName"
 import Image from "next/image"
 import Link from "next/link"
 import { emblemUrl } from "~/util/destiny/bungie-icons"
+import UserName from "../profile/user/UserName"
+import styles from "./guardians.module.css"
 
 export default function PlayerHeader({
     profile,

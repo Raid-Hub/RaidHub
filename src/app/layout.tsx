@@ -5,6 +5,7 @@ import { getRaidHubApi } from "~/services/raidhub"
 import { Footer } from "./layout/Footer"
 import { Header } from "./layout/Header"
 import { SearchModal } from "./layout/SearchModal"
+import { DestinyManifestManager } from "./managers/DestinyManifestManager"
 import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
@@ -36,20 +37,22 @@ export default async function RootLayout(params: { children: ReactNode }) {
                     <SessionManager>
                         <LocaleManager>
                             <RaidHubManifestManager serverManifest={manifest}>
-                                <StyledComponentsManager>
-                                    <FramerMotionManager>
-                                        <Header />
-                                        <NextTopLoader
-                                            showSpinner={false}
-                                            speed={700}
-                                            height={3}
-                                            color={"orange"}
-                                        />
-                                        <SearchModal />
-                                        {params.children}
-                                        <Footer />
-                                    </FramerMotionManager>
-                                </StyledComponentsManager>
+                                <DestinyManifestManager>
+                                    <StyledComponentsManager>
+                                        <FramerMotionManager>
+                                            <Header />
+                                            <NextTopLoader
+                                                showSpinner={false}
+                                                speed={700}
+                                                height={3}
+                                                color={"orange"}
+                                            />
+                                            <SearchModal />
+                                            {params.children}
+                                            <Footer />
+                                        </FramerMotionManager>
+                                    </StyledComponentsManager>
+                                </DestinyManifestManager>
                             </RaidHubManifestManager>
                         </LocaleManager>
                     </SessionManager>
