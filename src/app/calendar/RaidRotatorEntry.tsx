@@ -8,7 +8,7 @@ import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
 import RaidCardBackground from "~/data/raid-backgrounds"
-import { RaidActivityModifier } from "./RaidActivityModifier"
+import { RaidActivity } from "./RaidActivity"
 
 export const RaidRotatorEntry = (props: {
     milestone: DestinyPublicMilestone
@@ -69,30 +69,10 @@ export const FeaturedRaidRotatorEntry = (props: {
                         return (
                             <Fragment key={activity.activityHash}>
                                 {definition && (
-                                    <Container>
-                                        <Flex
-                                            $direction="column"
-                                            $padding={0.5}
-                                            $gap={0.2}
-                                            data-activity-hash={activity.activityHash}>
-                                            <RaidVersion>
-                                                {getDifficultyString(definition.difficulty)}
-                                            </RaidVersion>
-                                            <Container>
-                                                <Flex
-                                                    key={activity.activityHash}
-                                                    $padding={0.3}
-                                                    $wrap>
-                                                    {activity.modifierHashes.map(hash => (
-                                                        <RaidActivityModifier
-                                                            key={hash}
-                                                            hash={hash}
-                                                        />
-                                                    ))}
-                                                </Flex>
-                                            </Container>
-                                        </Flex>
-                                    </Container>
+                                    <RaidActivity
+                                        activity={activity}
+                                        version={getDifficultyString(definition.difficulty)}
+                                    />
                                 )}
                             </Fragment>
                         )
@@ -118,10 +98,5 @@ const Container = styled.div`
 
 const RaidTitle = styled.h3`
     font-size: 1.5rem;
-    margin-block: 0.2em;
-`
-
-const RaidVersion = styled.h4`
-    font-size: 1.25rem;
     margin-block: 0.2em;
 `

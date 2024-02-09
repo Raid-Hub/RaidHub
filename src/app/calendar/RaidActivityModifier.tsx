@@ -1,56 +1,57 @@
 "use client"
 
+import { DestinyActivityModifierDefinition } from "bungie-net-core/models"
 import Image from "next/image"
-import { useState } from "react"
 import styled from "styled-components"
+import { TooltipContainer } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
-import { useActivityModifierDefinition } from "~/hooks/dexie/useActivityModifierDefinition"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
-export const RaidActivityModifier = (props: { hash: number }) => {
-    const [isHovered, setIsHovered] = useState(false)
-    const definition = useActivityModifierDefinition(props.hash)
-    const tooltipId = `tooltip-${props.hash}`
-
-    return definition?.displayProperties.hasIcon ? (
-        <Container
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onFocus={() => setIsHovered(true)}
-            onBlur={() => setIsHovered(false)}>
-            <Flex data-modifier-hash={props.hash} $direction="column" $padding={0.3} $gap={0.5}>
-                {isHovered && (
-                    <ModifierNameTooltip id={tooltipId} role="tooltip">
-                        {definition.displayProperties.name}
-                    </ModifierNameTooltip>
-                )}
+export const RaidActivityModifier = (props: { modifier: DestinyActivityModifierDefinition }) => {
+    return (
+        <TooltipContainer
+            tooltipId={`tooltip-${props.modifier.hash}`}
+            tooltipBody={
+                <TooltipData $direction="column" $gap={0} $padding={0.6}>
+                    <H5>
+                        <b>{props.modifier.displayProperties.name}</b>
+                    </H5>
+                    <div>
+                        {props.modifier.displayProperties.description
+                            .replace(/\{var:\d+\}%/, "25%")
+                            .replace(/\{var:\d+\}/, "unknown")}
+                    </div>
+                </TooltipData>
+            }>
+            <Flex
+                data-modifier-hash={props.modifier.hash}
+                $direction="column"
+                $padding={0.3}
+                $gap={0.5}>
                 <Image
                     unoptimized
-                    alt={definition.displayProperties.name}
-                    src={bungieIconUrl(definition.displayProperties.icon)}
+                    alt={props.modifier.displayProperties.name}
+                    src={bungieIconUrl(props.modifier.displayProperties.icon)}
                     width={40}
                     height={40}
-                    aria-describedby={tooltipId}
                 />
             </Flex>
-        </Container>
-    ) : null
+        </TooltipContainer>
+    )
 }
 
-const Container = styled.div`
-    position: relative;
-`
-
-const ModifierNameTooltip = styled.div`
-    position: absolute;
-    bottom: 100%;
-
+const TooltipData = styled(Flex)`
     font-size: 0.875rem;
+    border-radius: 0.3em;
+
+    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 5%);
     text-align: center;
 
-    width: max-content;
+    border: 0.5px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.light}, #0000 70%);
+`
 
-    padding: 0.3em 0.5em;
-    border-radius: 0.3em;
-    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 10%);
+const H5 = styled.h5`
+    margin-block: 0.2em;
+
+    font-size: 1rem;
 `
