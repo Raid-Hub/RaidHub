@@ -1,35 +1,42 @@
 import { useQuery } from "@tanstack/react-query"
 import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
-import { UserSearchResponseDetail } from "bungie-net-core/models"
+import { UserSearchResponse } from "bungie-net-core/models"
 import { useBungieClient } from "~/app/managers/BungieTokenManager"
 
-export const useSearchByGlobalName = (
-    params: { displayNamePrefix: string },
+export const useSearchByGlobalName = <T>(
+    params: { displayNamePrefix: string; page?: number },
     opts?: {
         enabled?: boolean
+        select?: (data: UserSearchResponse) => T
+        cacheTime?: number
     }
 ) => {
     const bungieClient = useBungieClient()
 
+    const page = params.page ?? 0
+
     return useQuery({
-        queryKey: ["bungie", "player by global name", params] as const,
+        queryKey: ["bungie", "player by prefix", params.displayNamePrefix, page] as const,
         queryFn: ({ queryKey }) =>
             searchByGlobalNamePost(
                 bungieClient,
                 {
-                    page: 0
+                    page: queryKey[3]
                 },
-                queryKey[2]
+                {
+                    displayNamePrefix: queryKey[2]
+                }
             )
-                .then(res =>
-                    res.Response.searchResults.filter(r => r.destinyMemberships.length > 0)
-                )
-                .catch((error): UserSearchResponseDetail[] => {
-                    if (
-                        /**PlatformErrorCodes.UserCannotResolveCentralAccount*/
-                        error.ErrorCode === 217
-                    ) {
-                        return []
+                .then(res => res.Response)
+                .catch((error): UserSearchResponse => {
+                    // If the search returns no results `PlatformErrorCodes.UserCannotResolveCentralAccount`
+                    // we should return an empty array instead of throwing an error
+                    if (error.ErrorCode === 217) {
+                        return {
+                            hasMore: false,
+                            page: queryKey[3],
+                            searchResults: []
+                        }
                     } else {
                         throw error
                     }

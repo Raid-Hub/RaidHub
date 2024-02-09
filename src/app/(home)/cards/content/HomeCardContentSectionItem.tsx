@@ -19,6 +19,8 @@ export function HomeCardContentSectionItem(props: { title: string; href: string 
 const LinkWrapper = styled(Link)`
     min-width: 100%;
 
+    color: ${({ theme }) => theme.colors.text.primary};
+
     &:hover {
         text-decoration: underline;
         background-color: color-mix(

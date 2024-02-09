@@ -1,13 +1,5 @@
 import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
-import { PlatformErrorCodes } from "bungie-net-core/models"
 import { BungieAPIError } from "~/models/BungieAPIError"
-
-const NoNotRetryErrorCodes = new Set<PlatformErrorCodes>([
-    5, // SystemDisabled
-    217, // UserCannotResolveCentralAccount
-    622, // GroupNotFound,
-    1653 // DestinyPGCRNotFound
-])
 
 export default class BungieClient implements BungieClientProtocol {
     private accessToken: string | null = null
@@ -40,13 +32,9 @@ export default class BungieClient implements BungieClientProtocol {
             timer = setTimeout(() => controller.abort(), 3000)
         }
 
-        const request = async (opts?: { retry?: boolean; cacheBust?: true }) => {
-            if (opts?.retry) config.url.searchParams.set("retry", "true")
+        const request = async (opts?: { cacheBust?: true }) => {
             if (opts?.cacheBust)
-                config.url.searchParams.set(
-                    "cacheBust",
-                    String(Math.floor(Math.random() * 7777777))
-                )
+                config.url.searchParams.set("retry", String(Math.floor(Math.random() * 7777777)))
             const res = await fetch(config.url, payload)
             const data = await res.json()
 
@@ -62,9 +50,7 @@ export default class BungieClient implements BungieClientProtocol {
         try {
             return request()
         } catch (e) {
-            if (e instanceof BungieAPIError && !NoNotRetryErrorCodes.has(e.ErrorCode)) {
-                return request({ retry: true })
-            } else if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
+            if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
                 return request({ cacheBust: true })
             } else {
                 throw e

@@ -85,8 +85,11 @@ const FooterStyled = styled.footer`
     font-size: 0.9rem;
     color: ${({ theme }) => theme.colors.text.tertiary};
 
-    & a:hover {
-        color: ${({ theme }) => theme.colors.text.secondary};
+    & a {
+        color: ${({ theme }) => theme.colors.text.tertiary};
+        &:hover {
+            color: ${({ theme }) => theme.colors.text.secondary};
+        }
     }
 `
 

@@ -98,7 +98,7 @@ const GlobalStyle = createGlobalStyle<{}>`
 
     a {
         text-decoration: none;
-        color: inherit;
+        color: ${({ theme }) => theme.colors.text.orange};
     }
 
     img[src=""] {

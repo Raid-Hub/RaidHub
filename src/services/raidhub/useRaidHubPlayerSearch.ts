@@ -17,6 +17,7 @@ export const useRaidHubPlayerSearch = (searchTerm: string) => {
                 }
             ).then(data => data.results),
         keepPreviousData: true,
-        enabled: searchTerm.length > 0
+        enabled: searchTerm.length > 0,
+        cacheTime: 120_000
     })
 }

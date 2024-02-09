@@ -11,6 +11,7 @@ export const useDestinyPlayerByBungieName = <T = UserInfoCard[]>(
     opts?: {
         enabled?: boolean
         select?: (data: UserInfoCard[]) => T
+        cacheTime?: number
     }
 ) => {
     const bungieClient = useBungieClient()

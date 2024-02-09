@@ -1,8 +1,9 @@
 "use client"
 
-import { UserInfoCard, UserSearchResponseDetail } from "bungie-net-core/models"
+import { Collection } from "@discordjs/collection"
+import { UserInfoCard } from "bungie-net-core/models"
 import { useRouter } from "next/navigation"
-import { useCallback, useMemo, useState } from "react"
+import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from "react"
 import { useDestinyPlayerByBungieName } from "~/services/bungie/useDestinyPlayerByBungieName"
 import { useSearchByGlobalName } from "~/services/bungie/useSearchByGlobalName"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
@@ -30,12 +31,6 @@ export function useSearch(props?: {
         !raidHubSearchQuery.isFetching &&
         (raidHubSearchQuery.data?.length === 0 || raidHubSearchQuery.isError)
     const exactGlobalName = useMemo(() => debouncedQuery.split("#"), [debouncedQuery])
-    const bungieDisplayNamePrefixQuery = useSearchByGlobalName(
-        { displayNamePrefix: exactGlobalName[0] },
-        {
-            enabled: shouldUseBungieSearch && exactGlobalName.length === 1
-        }
-    )
     const bungieExactGlobalNameQuery = useDestinyPlayerByBungieName(
         {
             displayName: exactGlobalName[0],
@@ -43,18 +38,59 @@ export function useSearch(props?: {
         },
         {
             enabled: shouldUseBungieSearch && exactGlobalName.length === 2,
+            cacheTime: 60_000,
             select: users => users.filter(p => isPrimaryCrossSave(p))
         }
     )
+    const bungieDisplayNamePrefixQuery = useSearchByGlobalName(
+        { displayNamePrefix: exactGlobalName[0] },
+        {
+            enabled:
+                shouldUseBungieSearch &&
+                (exactGlobalName.length === 1 || bungieExactGlobalNameQuery.data?.length === 0),
+            cacheTime: 60_000,
+            select: ({ searchResults }) =>
+                searchResults.flatMap(res =>
+                    res.destinyMemberships.filter(m => isPrimaryCrossSave(m))
+                )
+        }
+    )
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newQuery = event.target.value
-        setEnteredText(newQuery)
+    const aggregatedResults = useMemo(() => {
+        const results = new Collection<string, RaidHubPlayerSearchResult>()
+        if (raidHubSearchQuery.isSuccess) {
+            raidHubSearchQuery.data.forEach(p => results.set(p.membershipId, p))
+        } else {
+            bungieExactGlobalNameQuery.data
+                ?.map(mapUserInfoCardToSearchResult)
+                .forEach(p => results.set(p.membershipId, p))
+            bungieDisplayNamePrefixQuery.data
+                ?.map(mapUserInfoCardToSearchResult)
+                .forEach(p => results.set(p.membershipId, p))
+        }
+
+        return results
+    }, [bungieExactGlobalNameQuery, bungieDisplayNamePrefixQuery, raidHubSearchQuery])
+
+    const filteredResults = useMemo(
+        () =>
+            aggregatedResults.filter(p =>
+                getUserName(p).toLowerCase().includes(enteredText.toLowerCase())
+            ),
+        [aggregatedResults, enteredText]
+    )
+
+    const clearQuery = useCallback(() => {
+        setEnteredText("")
+        forceUpdateQuery("")
+    }, [])
+
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setEnteredText(event.target.value)
     }
 
-    const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
         forceUpdateQuery(enteredText)
         setEnterPressed(true)
     }
@@ -74,21 +110,6 @@ export function useSearch(props?: {
         props.onRedirect?.(result)
         router.push(`/profile/${result.membershipType}/${result.membershipId}`)
     }
-
-    const filteredResults = [
-        ...(raidHubSearchQuery.data ?? []),
-        ...((bungieExactGlobalNameQuery.data ?? []) as UserInfoCard[]).map(
-            mapUserInfoCardToSearchResult
-        ),
-        ...((bungieDisplayNamePrefixQuery.data ?? []) as UserSearchResponseDetail[]).map(res =>
-            mapUserInfoCardToSearchResult(res.destinyMemberships[0])
-        )
-    ].filter(r => getUserName(r).toLowerCase().includes(enteredText.toLowerCase()))
-
-    const clearQuery = useCallback(() => {
-        setEnteredText("")
-        forceUpdateQuery("")
-    }, [])
 
     return {
         enteredText,

@@ -5,6 +5,7 @@ import { useBungieClient } from "~/app/managers/BungieTokenManager"
 
 export const usePublicMilestones = <T = { [key: number]: DestinyPublicMilestone }>(opts?: {
     select?: (data: { [key: number]: DestinyPublicMilestone }) => T
+    refetchInterval?: (data?: T) => number | false
 }) => {
     const bungieClient = useBungieClient()
 

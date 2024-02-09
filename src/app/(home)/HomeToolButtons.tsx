@@ -34,6 +34,8 @@ const LinkWrapper = styled(Link)`
 
     background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 80%);
 
+    color: ${({ theme }) => theme.colors.text.secondary};
+
     &:hover {
         background-color: color-mix(
             in srgb,
