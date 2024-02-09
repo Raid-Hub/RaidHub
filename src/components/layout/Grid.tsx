@@ -7,7 +7,10 @@ export const Grid = styled.div<{
     $gap?: number
 }>`
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(${props => props.$minCardWidth}px, 1fr));
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(min(${props => props.$minCardWidth}px, 100%)), 1fr)
+    );
     gap: ${props => props.$gap}em;
 `
 

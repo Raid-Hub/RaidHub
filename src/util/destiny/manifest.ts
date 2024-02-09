@@ -1,8 +1,8 @@
 import { BungieClientProtocol } from "bungie-net-core"
-import { Hashed, indexDB } from "../dexie"
-import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
-import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
+import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
+import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
+import { Hashed, indexDB } from "../dexie"
 
 export type RGBA = {
     blue: number
@@ -82,6 +82,16 @@ export async function updateCachedManifest({
         }).then(seasons =>
             indexDB.transaction("rw", indexDB.seasons, () =>
                 indexDB.seasons.bulkPut(Object.values(seasons))
+            )
+        ),
+
+        getDestinyManifestComponent(client, {
+            destinyManifest: manifest,
+            tableName: "DestinyActivityModifierDefinition",
+            language: language
+        }).then(modifiers =>
+            indexDB.transaction("rw", indexDB.activityModifiers, () =>
+                indexDB.activityModifiers.bulkPut(Object.values(modifiers))
             )
         ),
 

@@ -14,13 +14,17 @@ For admins who want to deploy to their namespace, you must set up a `.env.previe
 
 # Tech Stack
 
--   Framework: Next.js (pages) + React
--   Component/CSS Libraries: None, Vanilla CS
--   Other libraries: React Query, Bungie.net Core, dexie db, framer motion
+-   Framework: Next.js + React
+-   Component/CSS Libraries: Styled Components
+-   Other libraries: [React Query v4](https://tanstack.com/query/v4/docs/framework/react/overview), Bungie.net Core, dexie db, framer motion
 -   Host: Vercel
 -   CDN: AWS S3, Cloudflare
 -   ORM: Prisma
 -   Database Provider: Planetscale
+
+## App
+
+The main source for the app.
 
 # Developer Guidelines
 
@@ -30,7 +34,7 @@ To be honest, there is not a lot of documentation. My bad (owen), but if you hav
 
 ## Components
 
-All React components should be placed here. Divide into sub folders as needed, there aren't any specific rules, but if you think components are related, go for it.
+All Global React components should be placed here. Divide into sub folders as needed, there aren't any specific rules, but if you think components are related, go for it.
 
 ## Data
 
@@ -38,23 +42,7 @@ Hash mappings, ids, and other static data for the app. A lot of this is being mo
 
 ## Hooks
 
-Advanced logic that can either be re-used or is too much to put into a single component. All hook files should start with "use" and export a single function.
-
-## Images
-
-Files that deal with the image content on the site
-
-## Models
-
-Complex models can be placed here. Models are useful for handling logic outside of a hook or a component.
-
-## Pages
-
-Every file in the directory is a Next.js page (or API route)
-
-## Server
-
-This file deals with code that will be run server side on a serverless function invocation. Do not import any functions from here into client-facing code.
+Advanced logic that can either be re-used or is too much to put into a single component. All hook files should start with "use" and export a single function and/or types needed.
 
 ## Services
 
@@ -62,7 +50,7 @@ External API calls to Bungie and the public RaidHub API belong here, along with 
 
 ## Styles
 
-CSS files for pages or components. Some styles can be thrown into the components files too, no solid roles here either.
+Deprecated. CSS files for pages or components. Some styles can be thrown into the components files too, no solid roles here either.
 
 ## Types
 

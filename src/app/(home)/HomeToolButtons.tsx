@@ -8,6 +8,7 @@ import { Flex } from "~/components/layout/Flex"
 export const HomeToolButtons = () => {
     return (
         <Flex>
+            <HomeButton href="/calendar" title="Rotator Calendar" />
             <HomeButton href="/guardians" title="Guardian Inspector" />
             <HomeButton href="/find" title="Activity Finder" />
         </Flex>

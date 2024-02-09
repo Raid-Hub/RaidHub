@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query"
 import { searchDestinyPlayerByBungieName } from "bungie-net-core/endpoints/Destiny2"
+import { UserInfoCard } from "bungie-net-core/models"
 import { useBungieClient } from "~/app/managers/BungieTokenManager"
-import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 
-export const useDestinyPlayerByBungieName = (
+export const useDestinyPlayerByBungieName = <T = UserInfoCard[]>(
     params: {
         displayName: string
         displayNameCode: number
     },
     opts?: {
         enabled?: boolean
+        select?: (data: UserInfoCard[]) => T
     }
 ) => {
     const bungieClient = useBungieClient()
@@ -23,7 +24,7 @@ export const useDestinyPlayerByBungieName = (
                     membershipType: -1
                 },
                 queryKey[2]
-            ).then(res => res.Response.filter(p => isPrimaryCrossSave(p))),
+            ).then(res => res.Response),
         ...opts
     })
 }

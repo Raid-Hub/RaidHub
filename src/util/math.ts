@@ -22,3 +22,7 @@ export function medianElement<E>(sortedCollection: Collection<any, E>): E {
         return sortedCollection.at(Math.ceil(mid))!
     }
 }
+
+export function modulo(value: number, modulus: number) {
+    return ((value % modulus) + modulus) % modulus
+}

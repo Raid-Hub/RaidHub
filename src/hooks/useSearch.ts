@@ -7,6 +7,7 @@ import { useDestinyPlayerByBungieName } from "~/services/bungie/useDestinyPlayer
 import { useSearchByGlobalName } from "~/services/bungie/useSearchByGlobalName"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 import { getUserName } from "~/util/destiny/bungieName"
+import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { useRaidHubPlayerSearch } from "../services/raidhub/useRaidHubPlayerSearch"
 import { useDebounce } from "./util/useDebounce"
 
@@ -41,7 +42,8 @@ export function useSearch(props?: {
             displayNameCode: Number(exactGlobalName[1]?.substring(0, 4))
         },
         {
-            enabled: shouldUseBungieSearch && exactGlobalName.length === 2
+            enabled: shouldUseBungieSearch && exactGlobalName.length === 2,
+            select: users => users.filter(p => isPrimaryCrossSave(p))
         }
     )
 

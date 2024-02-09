@@ -6,7 +6,7 @@ import {
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { useBungieClient } from "~/components/app/TokenManager"
-import { useActivityDefiition } from "~/hooks/dexie/useActivityDefinition"
+import { useActivityDefinition } from "~/hooks/dexie/useActivityDefinition"
 import { useActivityModeDefinition } from "~/hooks/dexie/useActivityModeDefinition"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import styles from "../../../styles/pages/profile/mid.module.css"
@@ -52,7 +52,7 @@ function CurrentActivityExisting({
     activitiesComponent: DestinyCharacterActivitiesComponent
     updatedAt: number
 }) {
-    const activity = useActivityDefiition(activitiesComponent.currentActivityHash)
+    const activity = useActivityDefinition(activitiesComponent.currentActivityHash)
     const activityMode = useActivityModeDefinition(activitiesComponent.currentActivityModeHash)
 
     const activityName = useMemo(() => {
