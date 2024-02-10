@@ -7,3 +7,7 @@ export type ReactChildren<T extends JSXElementConstructor<any>> =
     | ReactElement<T, T>
     | undefined
     | Array<ReactElement<T, T> | false>
+export type ErrorBoundaryProps = {
+    error: Error & { digest?: string }
+    reset: () => void
+}

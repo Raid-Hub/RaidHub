@@ -1,6 +1,6 @@
-import ClanBanner from "components_old/reusable/ClanBanner"
 import Link from "next/link"
 import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
+import ClanBanner from "~/components/ClanBanner"
 import styles from "~/styles/pages/profile/clan.module.css"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"

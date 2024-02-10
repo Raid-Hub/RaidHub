@@ -3,7 +3,7 @@ import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { ForceClientSideBungieSignIn } from "~/components/ForceClientSideBungieSignIn"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { getServerAuthSession } from "../api/auth"
+import { getServerAuthSession } from "~/server/api/auth"
 
 export default async function Page() {
     const session = await getServerAuthSession()

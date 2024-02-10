@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { ReactNode } from "react"
-import { getServerAuthSession } from "../api/auth"
+import { getServerAuthSession } from "../(server)/api/auth"
 
 export default async function Layout(params: { children: ReactNode }) {
     const session = await getServerAuthSession()

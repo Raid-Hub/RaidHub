@@ -16,6 +16,7 @@
         "isolatedModules": true,
         "baseUrl": "src/",
         "paths": {
+            "~/server/*": ["./app/(server)/*"],
             "~/app/*": ["./app/*"],
             "~/components/*": ["./components/*"],
             "~/data/*": ["./data/*"],

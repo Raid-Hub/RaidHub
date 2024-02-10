@@ -1,7 +1,6 @@
 {
     "name": "raidhub",
     "private": true,
-    "type": "commonjs",
     "scripts": {
         "dev": "next dev --experimental-https",
         "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types",

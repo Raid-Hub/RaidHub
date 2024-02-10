@@ -1,5 +1,5 @@
 import { ReactNode, Suspense } from "react"
-import { getServerAuthSession } from "../../api/auth"
+import { getServerAuthSession } from "~/server/api/auth"
 import { ClientSessionManager } from "./ClientSessionManager"
 
 /**

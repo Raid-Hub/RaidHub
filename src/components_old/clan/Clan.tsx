@@ -1,98 +1,89 @@
-import Head from "next/head"
+"use client"
+
+import type { GroupResponse } from "bungie-net-core/models"
 import { useMemo } from "react"
-import { BungieAPIError } from "~/models/BungieAPIError"
-import Custom404 from "~/pages/404"
-import { ClanPageProps } from "~/pages/clan/[groupId]"
-import styles from "~/styles/pages/clan.module.css"
+import { useClan } from "~/services/bungie/useClan"
+import { useMembersOfGroup } from "~/services/bungie/useMembersOfGroup"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
-import { useBungieClient } from "../../app/managers/session/BungieTokenManager"
-import Loading from "../../components/Loading"
-import ClanBanner from "../reusable/ClanBanner"
+import { ClanBannerComponent } from "../../components/ClanBanner"
 import ClanMember from "./ClanMember"
+import styles from "./clan.module.css"
 
-export default function Clan({ groupId }: ClanPageProps) {
-    const bungie = useBungieClient()
-    const {
-        data: clan,
-        isError,
-        error
-    } = bungie.clan.byId.useQuery(
-        { groupId },
-        { staleTime: 10 * 60000 /*clan does not update very often*/ }
-    )
-    const { data: clanMembers, isLoading: isLoadingClanMembers } = bungie.clan.members.useQuery(
-        { groupId },
-        { staleTime: 5 * 60000 }
-    )
-
-    const clanName = useMemo(
-        () => (clan ? decodeHtmlEntities(fixClanName(clan.detail.name)) : null),
-        [clan]
-    )
-
-    if (isError) {
-        if (error instanceof BungieAPIError) {
-            error.ErrorCode === 622 // group not found
-            return <Custom404 error={error.Message} />
+/**
+ * @deprecated
+ */
+export function ClanComponent(props: { groupId: string; clan: GroupResponse | null }) {
+    const { data: clan } = useClan(
+        { groupId: props.groupId },
+        {
+            staleTime: 5 * 60000,
+            initialData: props.clan ?? undefined,
+            suspense: true
         }
+    )
+
+    if (!clan) {
+        throw new Error("Suspense fallback not implemented for ClanComponent.")
     }
 
+    const clanMembersQueries = useMembersOfGroup(
+        { groupId: props.groupId, pages: 2 },
+        {
+            select: result => result.results
+        }
+    )
+
+    const allClanMembers = clanMembersQueries.flatMap(q => q.data ?? [])
+    const isLoadingClanMembers = clanMembersQueries.some(q => q.isLoading)
+
+    const clanName = useMemo(() => decodeHtmlEntities(fixClanName(clan.detail.name)), [clan])
+
     return (
-        <>
-            <Head>
-                <title key="title">{clanName ? `${clanName} | RaidHub` : "RaidHub"}</title>
-            </Head>
-            <main className={styles["main"]}>
-                {clan && (
-                    <>
-                        <div className={styles["name-and-motto"]}>
-                            <h1 className={styles["name"]}>
-                                {clanName}{" "}
-                                <span className={styles["call-sign"]}>
-                                    {decodeHtmlEntities(`[${clan.detail.clanInfo.clanCallsign}]`)}
-                                </span>
-                            </h1>
-                            <h3 className={styles["motto"]}>
-                                <i>{decodeHtmlEntities(clan.detail.motto)}</i>
-                            </h3>
-                        </div>
-                        <section className={styles["overview"]}>
-                            <div className={styles["overview-left"]}>
-                                <ClanBanner data={clan.detail.clanInfo.clanBannerData} sx={30} />
-                            </div>
-                            <div className={styles["about"]}>
-                                <p>{urlHighlight(clan.detail.about)}</p>
-                            </div>
-                        </section>
+        <div>
+            <div className={styles["name-and-motto"]}>
+                <h1 className={styles["name"]}>
+                    {clanName}{" "}
+                    <span className={styles["call-sign"]}>
+                        {decodeHtmlEntities(`[${clan.detail.clanInfo.clanCallsign}]`)}
+                    </span>
+                </h1>
+                <h3 className={styles["motto"]}>
+                    <i>{decodeHtmlEntities(clan.detail.motto)}</i>
+                </h3>
+            </div>
+            <section className={styles["overview"]}>
+                <div className={styles["overview-left"]}>
+                    <ClanBannerComponent data={clan.detail.clanInfo.clanBannerData} sx={30} />
+                </div>
+                <div className={styles["about"]}>
+                    <p>{urlHighlight(clan.detail.about)}</p>
+                </div>
+            </section>
 
-                        <section>
-                            {isLoadingClanMembers ? (
-                                <Loading className="" />
-                            ) : (
-                                clanMembers && [
-                                    <h2 key={"title"}>Members ({clanMembers.length} / 100)</h2>,
-                                    <div key={"members"} className={styles["members"]}>
-                                        {clanMembers
-                                            .sort(
-                                                (m1, m2) =>
-                                                    new Date(m1.joinDate).getTime() -
-                                                    new Date(m2.joinDate).getTime()
-                                            )
-                                            .map(member => (
-                                                <ClanMember
-                                                    member={member}
-                                                    isFounder={member.memberType == 5}
-                                                    key={member.destinyUserInfo.membershipId}
-                                                />
-                                            ))}
-                                    </div>
-                                ]
-                            )}
-                        </section>
+            {!isLoadingClanMembers && (
+                <section>
+                    <h2 key={"title"}>Members ({allClanMembers.length} / 100)</h2>
+                    <div key={"members"} className={styles["members"]}>
+                        {allClanMembers
+                            .sort(
+                                (m1, m2) =>
+                                    new Date(m1.joinDate).getTime() -
+                                    new Date(m2.joinDate).getTime()
+                            )
+                            .map(member => (
+                                <ClanMember
+                                    member={member}
+                                    isFounder={member.memberType == 5}
+                                    key={member.destinyUserInfo.membershipId}
+                                />
+                            ))}
+                    </div>
+                </section>
+            )}
 
-                        {/* <section>
+            {/* <section>
                             <h2>Progressions</h2>
                             {Object.values(clan.detail.clanInfo.d2ClanProgressions).map(
                                 progression => (
@@ -103,9 +94,6 @@ export default function Clan({ groupId }: ClanPageProps) {
                                 )
                             )}
                         </section> */}
-                    </>
-                )}
-            </main>
-        </>
+        </div>
     )
 }

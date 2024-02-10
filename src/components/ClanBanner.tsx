@@ -1,16 +1,14 @@
-import { ClanBanner } from "bungie-net-core/models"
+"use client"
+
+import type { ClanBanner } from "bungie-net-core/models"
+import { useClanBanner } from "~/hooks/dexie/useClanBanner"
 import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
-import { useClanBanner } from "../../app/managers/DestinyManifestManager"
 
 const mast =
     "https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"
 
-type ClanBannerProps = { data: ClanBanner; sx: number }
-/**
- * @deprecated
- */
-const ClanBanner = ({ data, sx }: ClanBannerProps) => {
-    const { data: bannerData } = useClanBanner(data)
+export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number }) => {
+    const bannerData = useClanBanner(data)
 
     const mastWidthRaw = 9.4 * sx
     const mastWidth = `${mastWidthRaw}px`

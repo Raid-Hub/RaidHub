@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
-import { protectedProcedure } from "../../"
+import { protectedProcedure } from "../.."
 
 export const updateProfile = protectedProcedure
     .input(

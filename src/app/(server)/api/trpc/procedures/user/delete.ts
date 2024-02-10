@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server"
-import { protectedProcedure } from "../../"
+import { protectedProcedure } from "../.."
 
 export const deleteUser = protectedProcedure.mutation(async ({ ctx }) => {
     try {

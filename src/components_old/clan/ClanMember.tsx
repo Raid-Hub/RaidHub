@@ -1,9 +1,10 @@
-import styles from "~/styles/pages/clan.module.css"
 import { GroupMember } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import styles from "./clan.module.css"
 
+/** @deprecated */
 export default function ClanMember({
     member,
     isFounder

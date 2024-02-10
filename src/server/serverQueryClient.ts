@@ -19,7 +19,7 @@ import {
 } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { ListedRaid } from "~/types/raidhub-api"
 import BungieQuery, { QueryFn } from "~/util/bungieQuery"
-import prisma from "../app/api/prisma"
+import prisma from "../app/(server)/prisma"
 import { appRouter } from "./trpc/router"
 
 export const createServerSideQueryClient = () =>
