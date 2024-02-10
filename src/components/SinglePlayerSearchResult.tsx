@@ -13,14 +13,18 @@ import { formattedTimeSince } from "~/util/presentation/formatting"
 export const SinglePlayerSearchResult = (props: {
     size: number
     player: RaidHubPlayerSearchResult
+    noLink?: boolean
     handleSelect?: () => void
 }) => {
     const { locale } = useLocale()
+    const anchorProps = !props.noLink
+        ? {
+              href: `/profile/${props.player.membershipType ?? 0}/${props.player.membershipId}`,
+              as: Link
+          }
+        : {}
     return (
-        <Container
-            $size={props.size}
-            href={`/profile/${props.player.membershipType ?? 0}/${props.player.membershipId}`}
-            onClick={props.handleSelect}>
+        <Container $size={props.size} {...anchorProps} onClick={props.handleSelect}>
             <Flex $align="flex-start" $padding={props.size / 2} $gap={props.size / 2}>
                 <Icon
                     src={bungieIconUrl(props.player.iconPath)}
@@ -47,7 +51,7 @@ export const SinglePlayerSearchResult = (props: {
     )
 }
 
-const Container = styled(Link)<{
+const Container = styled.div<{
     $size: number
 }>`
     padding: ${({ $size }) => $size * 0.25}em;

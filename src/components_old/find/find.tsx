@@ -1,5 +1,7 @@
+"use client"
+
 import { Collection } from "@discordjs/collection"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
@@ -12,13 +14,17 @@ import {
     useFieldArray,
     useForm
 } from "react-hook-form"
+import { useLocale } from "~/app/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { CloudflareImage } from "~/components/CloudflareImage"
+import { Loading } from "~/components/Loading"
+import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useSeasons } from "~/hooks/dexie/useSeasonDefinition"
-import { useRaidHubSearch } from "~/hooks/raidhub/useRaidHubSearch"
-import CloudflareImage from "~/images/CloudflareImage"
+import { useSearch } from "~/hooks/useSearch"
 import { BungieAPIError } from "~/models/BungieAPIError"
-import { getPlayerBasic, getPlayerBasicKey } from "~/services/raidhub/getPlayer"
 import { activitySearch } from "~/services/raidhub/searchActivities"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
 import {
     ListedRaid,
     RaidHubActivityExtended,
@@ -28,10 +34,6 @@ import {
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import { useLocale } from "../../app/managers/LocaleManager"
-import { useRaidHubManifest } from "../../app/managers/RaidHubManifestManager"
-import Loading from "../../components/Loading"
-import UserName from "../profile/user/UserName"
 import styles from "./find.module.css"
 
 interface ActivitySearchFormState {
@@ -55,10 +57,23 @@ interface ActivitySearchFormState {
 
 const playerCounts = [1, 2, 3, 4, 5, 6, 12, 50]
 
+/**
+ * @deprecated
+ */
 export default function Find({ sessionMembershipId }: { sessionMembershipId: string }) {
-    const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>()
+    const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>({
+        defaultValues: {
+            flawless: -1,
+            fresh: -1,
+            completed: -1,
+            raid: -1,
+            players: []
+        }
+    })
 
     const submitHandler: SubmitHandler<ActivitySearchFormState> = state => {
+        const minDate = new Date(state.dateRange[0])
+        const maxDate = new Date(state.dateRange[1])
         search({
             membershipId: [sessionMembershipId, ...state.players.map(p => p.membershipId)],
             flawless: state.flawless === -1 ? undefined : !!state.flawless,
@@ -69,8 +84,8 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
             maxPlayers: state.playerCountRange[1] === 0 ? undefined : state.playerCountRange[1],
             minSeason: state.seasonRange[0] === 0 ? undefined : state.seasonRange[0],
             maxSeason: state.seasonRange[1] === 0 ? undefined : state.seasonRange[1],
-            minDate: state.dateRange[0].toISOString(),
-            maxDate: state.dateRange[1].toISOString()
+            minDate: !isNaN(minDate.getTime()) ? minDate : undefined,
+            maxDate: !isNaN(maxDate.getTime()) ? maxDate : undefined
         })
     }
 
@@ -78,9 +93,7 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
         mutate: search,
         isLoading,
         isSuccess,
-        data,
-        isError,
-        error
+        data
     } = useMutation<
         Collection<string, RaidHubActivityExtended>,
         BungieAPIError<unknown>,
@@ -147,11 +160,7 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
                     Search
                 </button>
             </form>
-            {isLoading ? (
-                <Loading className={styles["loading"]} />
-            ) : (
-                isSuccess && <Results allResults={data} />
-            )}
+            {isLoading ? <Loading /> : isSuccess && <Results allResults={data} />}
         </main>
     )
 }
@@ -161,7 +170,7 @@ const PlayerLookup = ({
 }: {
     addPlayer: (p: ActivitySearchFormState["players"][number]) => void
 }) => {
-    const playerSearch = useRaidHubSearch()
+    const playerSearch = useSearch()
 
     return (
         <div className={styles["player-search"]}>
@@ -177,22 +186,16 @@ const PlayerLookup = ({
             {playerSearch.enteredText && (
                 <div className={styles["player-search-results"]}>
                     {playerSearch.results.map(r => (
-                        <div
+                        <SinglePlayerSearchResult
                             key={r.membershipId}
-                            onClick={() => {
+                            player={r}
+                            size={2}
+                            noLink
+                            handleSelect={() => {
                                 addPlayer({ ...r, resolved: true })
                                 playerSearch.clearQuery()
-                            }}>
-                            <Image
-                                width={45}
-                                height={45}
-                                alt={getUserName(r)}
-                                unoptimized
-                                src={bungieIconUrl(r.iconPath)}
-                                style={{ borderRadius: "5px" }}
-                            />
-                            <UserName {...r} />
-                        </div>
+                            }}
+                        />
                     ))}
                 </div>
             )}
@@ -234,25 +237,23 @@ const AddedPlayers = ({
 
 const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
     // if we dont have the player we can just use the membershipId to get the player
-    const { data } = useQuery({
-        queryFn: () => getPlayerBasic(player.membershipId),
-        queryKey: getPlayerBasicKey(player.membershipId),
-        initialData: player.resolved ? player : null,
+    const query = useRaidHubResolvePlayer(player.membershipId, {
+        initialData: player.resolved ? player : undefined,
         enabled: !player.resolved,
         staleTime: Infinity
     })
 
-    if (data) {
+    if (query.isSuccess) {
         return (
             <div style={{ display: "flex", alignItems: "center" }}>
                 <Image
                     width={45}
                     height={45}
-                    alt={data.bungieGlobalDisplayName ?? data.displayName ?? "Guardian"}
+                    alt={query.data.bungieGlobalDisplayName ?? query.data.displayName ?? "Guardian"}
                     unoptimized
-                    src={bungieIconUrl(data.iconPath ?? undefined)}
+                    src={bungieIconUrl(query.data.iconPath ?? undefined)}
                 />
-                <UserName {...data} displayName={data.displayName ?? "Guardian"} />
+                <div>{getUserName(query.data)}</div>
             </div>
         )
     } else {

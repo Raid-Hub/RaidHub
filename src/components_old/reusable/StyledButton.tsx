@@ -1,5 +1,8 @@
 import styles from "../../styles/reusable-components/styled-button.module.css"
 
+/**
+ * @deprecated
+ */
 const StyledButton = ({ children, className, ...params }: React.ComponentProps<"button">) => {
     return (
         <button

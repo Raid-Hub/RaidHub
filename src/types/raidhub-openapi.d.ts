@@ -138,24 +138,10 @@ export interface paths {
     };
   };
   "/activity/search": {
-    get: {
-      parameters: {
-        query: {
-          membershipId: string | (readonly string[]);
-          minPlayers?: number | null;
-          maxPlayers?: number | null;
-          minDate?: string | null;
-          maxDate?: string | null;
-          minSeason?: number | null;
-          maxSeason?: number | null;
-          fresh?: boolean;
-          completed?: boolean;
-          flawless?: boolean;
-          raid?: components["schemas"]["RaidEnum"];
-          platformType?: number;
-          reversed?: boolean | null;
-          count?: number;
-          page?: number;
+    post: {
+      readonly requestBody?: {
+        readonly content: {
+          readonly "application/json": components["schemas"]["ActivitySearchBody"];
         };
       };
       responses: {
@@ -168,7 +154,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": components["schemas"]["BodyValidationError"];
           };
         };
       };
@@ -644,7 +630,7 @@ export interface components {
         readonly origin: string | null;
       };
     });
-    readonly ActivitySearchQuery: {
+    readonly ActivitySearchBody: {
       readonly membershipId: string | (readonly string[]);
       readonly minPlayers?: number | null;
       readonly maxPlayers?: number | null;
@@ -895,7 +881,7 @@ export interface components {
       readonly worldFirstEntries: readonly components["schemas"]["PlayerProfileLeaderboardEntry"][];
     };
     readonly ActivitySearchResponse: {
-      readonly query: components["schemas"]["ActivitySearchQuery"];
+      readonly query: components["schemas"]["ActivitySearchBody"];
       readonly results: readonly components["schemas"]["ActivityExtended"][];
     };
     readonly ActivityResponse: components["schemas"]["ActivityExtended"] & {

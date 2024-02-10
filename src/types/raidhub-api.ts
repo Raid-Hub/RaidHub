@@ -33,6 +33,7 @@ export type RaidHubPlayerActivitiesActivity =
 export type RaidHubActivityResponse = components["schemas"]["ActivityResponse"]
 
 export type RaidHubPlayerResponse = components["schemas"]["PlayerProfileResponse"]
+export type RaidHubPlayerBasicResponse = components["schemas"]["PlayerBasicResponse"]
 
 export type RaidHubManifestResponse = components["schemas"]["ManifestResponse"]
 

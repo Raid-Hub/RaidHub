@@ -6,7 +6,7 @@ import NotActivityFilter from "~/models/profile/filters/NotActivityFilter"
 import SingleActivityFilter from "~/models/profile/filters/SingleActivityFilter"
 import { FilterCallback } from "~/types/generic"
 import { ActivityFilter } from "~/types/profile"
-import { CommonRaidDifficulties, Difficulty } from "~/types/raidhub-api"
+import { RaidDifficulty } from "~/types/raidhub-api"
 import { includedIn } from "../helpers"
 
 export enum FilterOption {
@@ -23,7 +23,7 @@ export enum FilterOption {
 }
 
 export const HighOrderActivityFilters = {
-    [FilterOption.DIFFICULTY]: (difficulty: Difficulty) => (activity: Activity) =>
+    [FilterOption.DIFFICULTY]: (difficulty: RaidDifficulty) => (activity: Activity) =>
         difficulty === activity.difficulty,
     [FilterOption.MIN_MINS_PLAYED]: (minutes: number) => (activity: Activity) =>
         activity.durationSeconds >= minutes * 60

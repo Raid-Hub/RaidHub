@@ -39,7 +39,6 @@ export const BungieTokenManager = (props: {
             bungieClient.setToken(sessionData.bungieAccessToken.value)
 
             const timeRemaining =
-                // bungieAccessToken.expires is an ISO string, not a date
                 new Date(sessionData.bungieAccessToken.expires).getTime() - Date.now()
             props.setRefetchInterval(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 0)
         }

@@ -12,9 +12,7 @@ export const trpc = createTRPCReact<AppRouter>()
 function getBaseUrl() {
     if (typeof window !== "undefined") return ""
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-    return process.env.DEV_PROXY
-        ? `https://127.0.0.1:${process.env.PORT ?? 3000}`
-        : `http://localhost:${process.env.PORT ?? 3000}`
+    return `https://localhost:${process.env.PORT ?? 3000}`
 }
 
 export function QueryManager(props: { children: React.ReactNode }) {

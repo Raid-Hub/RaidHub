@@ -1,10 +1,10 @@
-import styles from "~/styles/pages/profile/clan.module.css"
-import ClanBanner from "~/components/reusable/ClanBanner"
-import { fixClanName } from "~/util/destiny/fixClanName"
+import ClanBanner from "components_old/reusable/ClanBanner"
 import Link from "next/link"
-import { useBungieClient } from "~/components/app/TokenManager"
-import { useProfileProps } from "../Profile"
+import { useBungieClient } from "~/app/managers/BungieTokenManager"
+import styles from "~/styles/pages/profile/clan.module.css"
+import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
+import { useProfileProps } from "../Profile"
 
 const ClanCard = () => {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()

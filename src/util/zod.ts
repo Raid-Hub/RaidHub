@@ -1,5 +1,5 @@
-import { Prisma, Role } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/models"
+import { Role, type Prisma } from "@prisma/client"
+import { type BungieMembershipType } from "bungie-net-core/models"
 import { z } from "zod"
 
 // rather than importing the full enum, we make it ourselves
@@ -81,5 +81,6 @@ export const zDeleteVanity = z.object({
 export const numberString = z.coerce.string().regex(/^\d+$/)
 export const booleanString = z
     .string()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .transform(s => JSON.parse(s))
     .pipe(z.boolean())

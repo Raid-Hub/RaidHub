@@ -1,5 +1,5 @@
 import { Difficulty, Raid } from "~/data/raid"
-import Activity from "~/models/profile/data/Activity"
+import type Activity from "~/models/profile/data/Activity"
 
 export enum Tag {
     CHECKPOINT,

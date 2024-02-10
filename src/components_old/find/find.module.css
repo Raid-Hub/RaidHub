@@ -3,7 +3,7 @@
 }
 
 .form-container {
-    background-color: var(--modal-background);
+    background-color: rgba(24, 24, 24, 0.421);
     border-radius: 10px;
     padding: 1em;
 
@@ -60,8 +60,8 @@
     gap: 1em;
 
     border-radius: 10px;
-    border: 2px solid var(--border);
-    background-color: var(--modal-background-opaque);
+    border: 2px solid gray;
+    background-color: rgba(19, 19, 19, 0.67);
 
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
         rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px,
@@ -76,7 +76,7 @@
 
     padding: 1em;
     border-radius: 10px;
-    background-color: var(--modal-background);
+    background-color: rgba(24, 24, 24, 0.421);
 
     cursor: pointer;
 
@@ -84,7 +84,7 @@
 }
 
 .player-search-results > div:hover {
-    background-color: var(--brand-orange);
+    background-color: rgba(245, 181, 103, 0.504);
 }
 
 .selected-players {
@@ -105,7 +105,7 @@
 
     align-items: center;
 
-    border: 1px solid var(--border);
+    border: 1px solid gray;
 
     max-width: 400px;
 }
@@ -113,7 +113,7 @@
 .selected-players button {
     padding: 0.3em;
     cursor: pointer;
-    background-color: var(--destructive);
+    background-color: rgba(171, 2, 2, 0.988);
     border: 1px solid transparent;
     margin-right: 0.7em;
 }
@@ -135,7 +135,7 @@
 
 .gadget-group {
     padding: 0.5em;
-    border: 1px solid var(--border);
+    border: 1px solid gray;
 }
 
 .gadget-group h4 {
@@ -150,7 +150,7 @@
 
 .gadget {
     padding: 0.5em;
-    border: 1px solid var(--border);
+    border: 1px solid gray;
 
     display: flex;
     flex-direction: column;
@@ -163,7 +163,7 @@
 }
 
 .form-container > button {
-    background-color: var(--brand-orange-light);
+    background-color: rgb(255, 186, 58);
 
     margin: 0;
     margin-top: 1em;
@@ -193,8 +193,8 @@
 }
 
 .form-container > button:disabled {
-    color: var(--tertiary-text);
-    background-color: var(--brand-orange-light);
+    color: #5b5b5b;
+    background-color: gray;
     opacity: 0.7;
 }
 
@@ -205,7 +205,7 @@
 }
 
 .form-container > button:active {
-    background-color: var(--brand-orange);
+    background-color: #ffaf7a;
     box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
     transform: translateY(0);
 }
@@ -221,7 +221,7 @@
     display: flex;
     flex-direction: column;
 
-    background-color: var(--modal-background);
+    background-color: rgba(24, 24, 24, 0.421);
     border-radius: 10px;
     padding: 1em;
 }
@@ -246,6 +246,8 @@
 
     border-radius: 10px;
     overflow: hidden;
+
+    color: white;
 }
 
 .tile > img {

@@ -5,6 +5,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
 
 module.exports = withBundleAnalyzer({
+    experimental: {
+        ppr: true
+    },
     reactStrictMode: false,
     compiler: {
         styledComponents: true

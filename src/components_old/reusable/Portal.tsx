@@ -11,8 +11,14 @@ const PortalContext = React.createContext<{
     }
 })
 
+/**
+ * @deprecated
+ */
 export const usePortal = () => React.useContext(PortalContext)
 
+/**
+ * @deprecated
+ */
 export function PortalProvider({
     children,
     target

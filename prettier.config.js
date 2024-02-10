@@ -1,4 +1,5 @@
-{
+/** @type {import("prettier").Config} */
+const config = {
     "printWidth": 100,
     "tabWidth": 4,
     "useTabs": false,
@@ -11,5 +12,7 @@
     "bracketSameLine": true,
     "arrowParens": "avoid",
     "endOfLine": "lf",
-    "plugins": ["prettier-plugin-organize-imports"]
+    "plugins": ["prettier-plugin-organize-imports"],
 }
+
+module.exports = config

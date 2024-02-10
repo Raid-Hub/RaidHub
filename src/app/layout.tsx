@@ -1,9 +1,10 @@
-import type { Metadata, Viewport } from "next"
+import { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
 import { ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
 import { Footer } from "./layout/Footer"
 import { Header } from "./layout/Header"
+import { HeaderContent } from "./layout/HeaderContent"
 import { SearchModal } from "./layout/SearchModal"
 import { DestinyManifestManager } from "./managers/DestinyManifestManager"
 import { FramerMotionManager } from "./managers/FramerMotionManager"
@@ -14,16 +15,15 @@ import { SessionManager } from "./managers/SessionManager"
 import { StyledComponentsManager } from "./managers/StyledComponentsManager"
 
 export default async function RootLayout(params: { children: ReactNode }) {
-    const manifest = await getRaidHubApi("/manifest", null, null, { next: { revalidate: 300 } })
+    const manifest = await getRaidHubApi("/manifest", null, null, {
+        next: { revalidate: 300 }
+    })
 
     return (
         <html>
             <head>
                 <meta name="discord:site" content="https://discord.gg/raidhub" />
                 <meta name="twitter:site" content="@raidhubio" />
-
-                <link rel="shortcut icon" href="/favicon.ico" />
-                <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
 
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -40,13 +40,15 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                 <DestinyManifestManager>
                                     <StyledComponentsManager>
                                         <FramerMotionManager>
-                                            <Header />
-                                            <NextTopLoader
-                                                showSpinner={false}
-                                                speed={700}
-                                                height={3}
-                                                color={"orange"}
-                                            />
+                                            <Header>
+                                                <NextTopLoader
+                                                    showSpinner={false}
+                                                    speed={700}
+                                                    height={3}
+                                                    color={"orange"}
+                                                />
+                                                <HeaderContent />
+                                            </Header>
                                             <SearchModal />
                                             {params.children}
                                             <Footer />
@@ -77,6 +79,9 @@ const description: Metadata["description"] =
 export const metadata: Metadata = {
     title: title,
     description: description,
+    icons: {
+        shortcut: "/favicon.ico"
+    },
     robots: {
         follow: true,
         index: true
@@ -85,16 +90,15 @@ export const metadata: Metadata = {
     metadataBase: new URL(
         process.env.VERCEL_URL
             ? `https://${process.env.VERCEL_URL}`
-            : process.env.DEV_PROXY
-            ? `https://127.0.0.1:${process.env.PORT ?? 3000}`
-            : `http://localhost:${process.env.PORT ?? 3000}`
+            : `https://localhost:${process.env.PORT ?? 3000}`
     ),
     openGraph: {
         title: title,
         description: description,
         images: ["/logo.png"],
         type: "website"
-    }
+    },
+    manifest: "/manifest.json"
 }
 
 export const viewport: Viewport = {

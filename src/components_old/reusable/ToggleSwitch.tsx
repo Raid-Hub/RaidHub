@@ -1,5 +1,5 @@
-import styles from "../../styles/reusable-components/toggle-switch.module.css"
 import { ChangeEvent } from "react"
+import styles from "../../styles/reusable-components/toggle-switch.module.css"
 
 type ToggleProps = {
     value: boolean
@@ -7,7 +7,9 @@ type ToggleProps = {
     size: number
     label: string
 }
-
+/**
+ * @deprecated
+ */
 const ToggleSwitch = ({ onToggle, size, value, label }: ToggleProps) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         onToggle(event.target.checked)

@@ -9,7 +9,7 @@ import Email from "~/components/icons/Email"
 import TwitterIcon from "~/components/icons/TwitterIcon"
 import { Flex } from "~/components/layout/Flex"
 
-import { version } from "../../../public/manifest.json"
+import appManifest from "../../../public/manifest.json"
 
 const developers: [display: string, path: string][] = [
     ["Newo", "newo"],
@@ -49,7 +49,7 @@ export const Footer = () => {
                         </div>
                     </div>
                     <div>
-                        RaidHub <Version>alpha-{version}</Version>
+                        RaidHub <Version>alpha-{appManifest.version}</Version>
                     </div>
                 </FooterSide>
                 <FooterSide side="right">
