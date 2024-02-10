@@ -2,8 +2,6 @@
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
 
 # testing
 /coverage
@@ -35,15 +33,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# JetBrains IDE specific
+# IDE specific
 /.idea/
+/.vscode/
 
 # docker
 raidhub-app-db/
 
-# test page
+# test pages
 src/pages/test.tsx
 src/app/test
 
-# build artifacts
-manifest.json
+# certs
+certificates

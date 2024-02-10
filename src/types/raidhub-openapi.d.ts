@@ -1061,7 +1061,7 @@ export interface components {
     }, {
       /** @enum {string} */
       readonly type: "EXPLAIN";
-      readonly data: string;
+      readonly data: readonly string[];
     }]>;
     readonly AuthorizeResponse: {
       readonly value: string;

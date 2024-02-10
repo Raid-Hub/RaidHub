@@ -87,6 +87,10 @@ const Container = styled(m.div)`
     backdrop-filter: blur(10px);
 
     transform-origin: top;
+
+    & a {
+        color: ${({ theme }) => theme.colors.text.primary};
+    }
 `
 
 const Content = styled(Flex)`

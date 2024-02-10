@@ -16,7 +16,6 @@ const StyledPage = styled(PageWrapper)`
     );
 
     & section a {
-        color: ${({ theme }) => theme.colors.text.orange};
         text-decoration: underline;
     }
 `

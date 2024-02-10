@@ -1,12 +1,10 @@
 # Setup
 
-To init the project, `yarn install`
+Clone the project and then
 
-Create a `.env` file in the root dir with contents matching `example.env`
-
-To run the server, `yarn dev`
-
-Other commands can be found in `package.json`
+1. `yarn install`
+2. `cp example.env .env`
+3. Download [ngrok](https://ngrok.com/download)
 
 # Deployments
 

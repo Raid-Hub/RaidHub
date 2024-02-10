@@ -102,7 +102,7 @@ const DataView = ({
         if (data.type === "EXPLAIN") {
             return (
                 <div>
-                    <pre>{data.data}</pre>
+                    <pre>{data.data.join("\n")}</pre>
                 </div>
             )
         } else if (!data.data.length) {

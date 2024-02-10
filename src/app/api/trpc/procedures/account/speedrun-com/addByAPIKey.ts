@@ -26,7 +26,7 @@ export const addByAPIKey = protectedProcedure
                 } else if (res.status === 403) {
                     throw new Error("Invalid API Key")
                 } else {
-                    throw new Error("IDK")
+                    throw new Error("Something went wrong.")
                 }
             })
 

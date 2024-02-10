@@ -18,7 +18,7 @@ export const sessionCallback = async ({
         (!raidHubAccessToken || Date.now() > raidHubAccessToken.expiresAt.getTime())
     ) {
         raidhubToken = postRaidHubApi("/authorize", null, {
-            clientSecret: process.env.ADMIN_CLIENT_SECRET!
+            clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
         }).catch(e => {
             console.error(e)
             return undefined
