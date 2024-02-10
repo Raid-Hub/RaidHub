@@ -6,6 +6,7 @@ import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
+import { cache } from "react"
 import { prisma } from "../prisma"
 import { PrismaAdapter } from "./adapter"
 import BungieProvider from "./providers/BungieProvider"
@@ -44,7 +45,8 @@ export const authOptions: NextAuthOptions = {
     }
 }
 
-export const getServerAuthSession = () => getServerSession(authOptions)
+// We cache the session for each request to avoid unnecessary database calls
+export const getServerAuthSession = cache(() => getServerSession(authOptions))
 
 function getProviders(): Provider[] {
     const providers = new Array<Provider>(

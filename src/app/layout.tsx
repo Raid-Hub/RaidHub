@@ -11,8 +11,9 @@ import { FramerMotionManager } from "./managers/FramerMotionManager"
 import { LocaleManager } from "./managers/LocaleManager"
 import { QueryManager } from "./managers/QueryManager"
 import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
-import { SessionManager } from "./managers/SessionManager"
 import { StyledComponentsManager } from "./managers/StyledComponentsManager"
+import { BungieClientProvider } from "./managers/session/BungieTokenManager"
+import { SessionManager } from "./managers/session/SessionSessionManager"
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, {
@@ -34,30 +35,32 @@ export default async function RootLayout(params: { children: ReactNode }) {
             </head>
             <body>
                 <QueryManager>
-                    <SessionManager>
-                        <LocaleManager>
-                            <RaidHubManifestManager serverManifest={manifest}>
-                                <DestinyManifestManager>
-                                    <StyledComponentsManager>
-                                        <FramerMotionManager>
-                                            <Header>
-                                                <NextTopLoader
-                                                    showSpinner={false}
-                                                    speed={700}
-                                                    height={3}
-                                                    color={"orange"}
-                                                />
-                                                <HeaderContent />
-                                            </Header>
-                                            <SearchModal />
-                                            {params.children}
-                                            <Footer />
-                                        </FramerMotionManager>
-                                    </StyledComponentsManager>
-                                </DestinyManifestManager>
-                            </RaidHubManifestManager>
-                        </LocaleManager>
-                    </SessionManager>
+                    <BungieClientProvider>
+                        <SessionManager>
+                            <LocaleManager>
+                                <RaidHubManifestManager serverManifest={manifest}>
+                                    <DestinyManifestManager>
+                                        <StyledComponentsManager>
+                                            <FramerMotionManager>
+                                                <Header>
+                                                    <NextTopLoader
+                                                        showSpinner={false}
+                                                        speed={700}
+                                                        height={3}
+                                                        color={"orange"}
+                                                    />
+                                                    <HeaderContent />
+                                                </Header>
+                                                <SearchModal />
+                                                {params.children}
+                                                <Footer />
+                                            </FramerMotionManager>
+                                        </StyledComponentsManager>
+                                    </DestinyManifestManager>
+                                </RaidHubManifestManager>
+                            </LocaleManager>
+                        </SessionManager>
+                    </BungieClientProvider>
                 </QueryManager>
             </body>
         </html>

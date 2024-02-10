@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getGroupsForMember } from "bungie-net-core/endpoints/GroupV2"
 import { BungieMembershipType, GroupsForMemberFilter } from "bungie-net-core/models"
-import { useBungieClient } from "~/app/managers/BungieTokenManager"
+import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
 
 export const useClanForMember = ({
     filter = 0, // GroupsForMemberFilter.All

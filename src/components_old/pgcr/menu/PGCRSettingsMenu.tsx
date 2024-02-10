@@ -1,5 +1,5 @@
-import { useSession } from "next-auth/react"
 import ToggleSwitch from "~/components/reusable/ToggleSwitch"
+import { useSession } from "~/hooks/app/useSession"
 import styles from "~/styles/pages/pgcr.module.css"
 import { usePGCRContext } from "../PGCR"
 import CameraButton from "./CameraButton"

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getGroup } from "bungie-net-core/endpoints/GroupV2"
-import { useBungieClient } from "~/app/managers/BungieTokenManager"
+import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
 
 export const useClan = (params: { groupId: string }) => {
     const bungieClient = useBungieClient()

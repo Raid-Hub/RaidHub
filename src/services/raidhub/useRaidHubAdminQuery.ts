@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
-import { useSession } from "next-auth/react"
 import { useCallback, useRef } from "react"
+import { useSession } from "~/hooks/app/useSession"
 import { RaidHubAdminQueryBody } from "~/types/raidhub-api"
 import { postRaidHubApi } from "."
 

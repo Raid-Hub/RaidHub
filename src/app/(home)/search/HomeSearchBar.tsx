@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react"
 import { useTypewriter } from "react-simple-typewriter"
 import styled from "styled-components"
-import { $media } from "~/app/managers/StyledComponentsManager"
+import { $media } from "~/app/layout/media"
 import { SearchInput, type SearchInputProps } from "~/components/form/SearchInput"
 import Search from "~/components/icons/Search"
 import { Flex } from "~/components/layout/Flex"

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import { Grid } from "~/components/layout/Grid"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { $media } from "../managers/StyledComponentsManager"
+import { $media } from "./media"
 
 export const HeaderSearchResults = (props: {
     results: RaidHubPlayerSearchResult[]

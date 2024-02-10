@@ -10,8 +10,8 @@ import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { usePageChange } from "~/hooks/util/usePageChange"
 import { useUserAgent } from "~/hooks/util/useUserAgent"
-import { $media } from "../managers/StyledComponentsManager"
 import { HeaderSearchResults } from "./HeaderSearchResults"
+import { $media } from "./media"
 
 const HIDE_AFTER_CLICK = 100
 
@@ -65,7 +65,10 @@ export const SearchBar = () => {
                 </Keys>
             )}
             {isShowingResults && (
-                <HeaderSearchResults results={results} handleSelect={handleSelect} />
+                <HeaderSearchResults
+                    results={Array.from(results.values())}
+                    handleSelect={handleSelect}
+                />
             )}
             {/* {isShowingResults && (
                     <ul className={styles["search-results"]}>

@@ -1,11 +1,12 @@
 "use client"
 
 import { Variants, m } from "framer-motion"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import styled from "styled-components"
 import RightChevron from "~/components/icons/RightChevron"
 import { Flex } from "~/components/layout/Flex"
+import { useSession } from "~/hooks/app/useSession"
 
 const variants = {
     open: {

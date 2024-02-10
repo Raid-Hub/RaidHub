@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getProfile } from "bungie-net-core/endpoints/Destiny2"
 import { BungieMembershipType } from "bungie-net-core/models"
 import { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
-import { useBungieClient } from "~/app/managers/BungieTokenManager"
+import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
 
 export const useProfileTransitory = (
     params: {

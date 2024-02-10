@@ -1,12 +1,12 @@
 "use client"
 
 import { AdapterUser } from "next-auth/adapters"
-import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { ChangeEventHandler, useState } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { trpc } from "~/app/managers/QueryManager"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
+import { useSession } from "~/hooks/app/useSession"
 import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
 import styles from "./account.module.css"
 

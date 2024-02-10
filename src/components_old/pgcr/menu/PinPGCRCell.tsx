@@ -1,5 +1,5 @@
-import { useSession } from "next-auth/react"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
+import { useSession } from "~/hooks/app/useSession"
 import PinIcon from "~/images/icons/PinIcon"
 import { trpc } from "~/util/trpc"
 import { usePGCRContext } from "../PGCR"

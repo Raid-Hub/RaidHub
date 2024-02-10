@@ -1,22 +1,26 @@
-"use client"
-
-import { useSession } from "next-auth/react"
 import Image from "next/image"
+import { Suspense } from "react"
 import QuestionMark from "~/components/icons/QuestionMark"
 import UserIcon from "~/components/icons/UserIcon"
+import { getServerAuthSession } from "../api/auth"
 import { AccountIcon } from "./AccountIcon"
 
 const ICON_SIZE = 32
 
-export function AccountIconWrapper() {
-    const session = useSession()
+export const AccountIconWrapper = () => (
+    <Suspense fallback={<QuestionMark color="white" sx={ICON_SIZE} />}>
+        <AccountIconContent />
+    </Suspense>
+)
 
-    if (session.status === "loading") return <QuestionMark color="white" sx={ICON_SIZE} />
+async function AccountIconContent() {
+    const session = await getServerAuthSession()
+
     return (
         <AccountIcon>
-            {session.data?.user.image ? (
+            {session?.user.image ? (
                 <Image
-                    src={session.data.user.image}
+                    src={session.user.image}
                     alt="profile"
                     unoptimized
                     width={ICON_SIZE}

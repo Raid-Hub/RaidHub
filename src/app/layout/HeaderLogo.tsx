@@ -3,7 +3,7 @@
 import Image from "next/image"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
-import { $media } from "../managers/StyledComponentsManager"
+import { $media } from "./media"
 
 export const HeaderLogo = () => (
     <Flex $padding={0.2}>

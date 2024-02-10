@@ -1,6 +1,6 @@
 import { useQueries } from "@tanstack/react-query"
 import { getMembersOfGroup } from "bungie-net-core/endpoints/GroupV2"
-import { useBungieClient } from "~/app/managers/BungieTokenManager"
+import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
 
 export const useMembersOfGroup = (params: { groupId: string; pages: number }) => {
     const bungieClient = useBungieClient()

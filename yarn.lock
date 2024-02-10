@@ -3958,6 +3958,13 @@ eslint-plugin-unused-imports@^2.0.0:
   dependencies:
     eslint-rule-composer "^0.3.0"
 
+eslint-plugin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin/-/eslint-plugin-1.0.1.tgz#24bf3136d167c90ed0d4d5702d8b9b1ed2beef79"
+  integrity sha512-ervp8C09On0fLA258TvE08AqAr/bhRYgHVZd3BrJjD4JfOA2JGANDLGs06j51oWqfPd7Feoo3OoqHD+fuI2sFQ==
+  dependencies:
+    requireindex "~1.1.0"
+
 eslint-rule-composer@^0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz"
@@ -6420,6 +6427,11 @@ require-from-string@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
+
+requireindex@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
+  integrity sha512-LBnkqsDE7BZKvqylbmn7lTIVdpx4K/QCduRATpO5R+wtPmky/a8pN1bO2D6wXppn1497AJF9mNjqAXr6bdl9jg==
 
 resolve-cwd@^3.0.0:
   version "3.0.0"

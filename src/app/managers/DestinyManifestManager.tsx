@@ -7,10 +7,10 @@ import { ReactNode, useEffect, useState } from "react"
 import { DB_VERSION } from "~/util/dexie"
 import { type BungieAPIError } from "../../models/BungieAPIError"
 import { updateCachedManifest } from "../../util/destiny/manifest"
-import { useBungieClient } from "./BungieTokenManager"
 import { useLocale } from "./LocaleManager"
+import { useBungieClient } from "./session/BungieTokenManager"
 
-const KEY_MANIFEST_VERSION = "manifest_version"
+const KEY_MANIFEST_VERSION = "d2_manifest_version"
 
 export const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
     const [manifestVersion, setManifestVersion] = useState<string | null>(null)
@@ -20,7 +20,8 @@ export const DestinyManifestManager = ({ children }: { children: ReactNode }) =>
     useQuery({
         queryKey: ["bungie", "manifest", manifestLanguage],
         queryFn: () => getDestinyManifest(client).then(res => res.Response),
-        staleTime: 3600_000, // 1 hour
+        enabled: typeof navigator !== "undefined", // Wait until the language is set
+        staleTime: 3600_000, // 1 hour,
         onSuccess: async data => {
             const newManifestVersion = [data.version, manifestLanguage, DB_VERSION].join("-")
 
