@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useBungieClient } from "~/app/managers/session/BungieTokenManager"
+import { useBungieClient } from "~/app/managers/session/BungieClientProvider"
 import ClanBanner from "~/components/ClanBanner"
 import styles from "~/styles/pages/profile/clan.module.css"
 import { fixClanName } from "~/util/destiny/fixClanName"

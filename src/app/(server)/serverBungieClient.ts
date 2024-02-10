@@ -1,8 +1,15 @@
-import { BungieFetchConfig } from "bungie-net-core"
 import "server-only"
-import BungieClient from "~/services/bungie/BungieClient"
 
-export default class ServerBungieClient extends BungieClient {
+import { BungieFetchConfig } from "bungie-net-core"
+import { PlatformErrorCodes } from "bungie-net-core/models"
+import { BungieAPIError } from "~/models/BungieAPIError"
+import BaseBungieClient from "~/services/bungie/BungieClient"
+
+const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
+    622 // GroupNotFound
+])
+
+export default class ServerBungieClient extends BaseBungieClient {
     private next: NextFetchRequestConfig
 
     constructor(next: NextFetchRequestConfig) {
@@ -10,9 +17,6 @@ export default class ServerBungieClient extends BungieClient {
         this.next = next
     }
 
-    /**
-     * @override
-     */
     generatePayload(config: BungieFetchConfig): RequestInit {
         if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
             throw new Error("Manifest definitions are not available on the server")
@@ -23,15 +27,15 @@ export default class ServerBungieClient extends BungieClient {
             throw new Error("Missing BUNGIE_API_KEY")
         }
 
-        const payload: RequestInit & { headers: Record<string, string> } = {
+        const payload: RequestInit & { headers: Headers } = {
             method: config.method,
             body: config.body,
-            headers: config.headers ?? {},
+            headers: new Headers(config.headers) ?? {},
             next: this.next
         }
 
-        payload.headers["X-API-KEY"] = apiKey
-        payload.headers["Origin"] = process.env.VERCEL_URL ?? "https://localhost:3000"
+        payload.headers.set("X-API-KEY", apiKey)
+        payload.headers.set("Origin", process.env.VERCEL_URL ?? "https://localhost:3000")
 
         const controller = new AbortController()
         payload.signal = controller.signal
@@ -41,18 +45,13 @@ export default class ServerBungieClient extends BungieClient {
         return payload
     }
 
-    /**
-     * @override
-     * @throws Error if the request times out.
-     */
-    async handle<T>(url: URL, payload: RequestInit): Promise<T> {
+    handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
             return this.request(url, payload)
         } catch (e) {
-            if ((e as Error).name === "AbortError") {
-                throw new Error("Request timed out")
+            if (!(e instanceof BungieAPIError) || !ExpectedErrorCodes.has(e.ErrorCode)) {
+                console.error(e)
             }
-            console.error(e)
             throw e
         }
     }

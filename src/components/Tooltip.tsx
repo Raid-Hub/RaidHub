@@ -2,7 +2,7 @@
 
 import { Children, HTMLAttributes, cloneElement, forwardRef, isValidElement, useState } from "react"
 import styled from "styled-components"
-import { $media } from "~/app/layout/media"
+import { $media } from "~/app/(layout)/media"
 
 export const TooltipContainer = forwardRef<
     HTMLDivElement,

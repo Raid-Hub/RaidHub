@@ -3,7 +3,7 @@
 import { Session } from "next-auth"
 import { SessionProvider, signOut } from "next-auth/react"
 import { ReactNode, useEffect, useState } from "react"
-import { useBungieClient } from "./BungieTokenManager"
+import { useBungieClient } from "./BungieClientProvider"
 
 export function ClientSessionManager(props: {
     children: ReactNode
@@ -31,9 +31,9 @@ export function ClientSessionManager(props: {
             setFailedTokenRequests(prev => prev + 1)
             setSessionRefetchInterval(10)
         } else if (props.serverSession.error === "ExpiredRefreshTokenError") {
-            setSessionRefetchInterval(0)
             signOut()
             bungieClient.clearToken()
+            setSessionRefetchInterval(0)
         } else if (props.serverSession.bungieAccessToken) {
             setFailedTokenRequests(0)
             bungieClient.setToken(props.serverSession.bungieAccessToken.value)
@@ -42,7 +42,7 @@ export function ClientSessionManager(props: {
                 new Date(props.serverSession.bungieAccessToken.expires).getTime() - Date.now()
             setSessionRefetchInterval(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 0)
         }
-    }, [props.serverSession])
+    }, [bungieClient, props.serverSession])
 
     return (
         <SessionProvider

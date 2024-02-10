@@ -1,7 +1,7 @@
 "use client"
 
 import styled from "styled-components"
-import { $media } from "~/app/layout/media"
+import { $media } from "~/app/(layout)/media"
 
 export const PageWrapper = styled.main`
     margin: 0.5em auto;

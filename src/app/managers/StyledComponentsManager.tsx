@@ -3,8 +3,8 @@
 import { useServerInsertedHTML } from "next/navigation"
 import { ReactNode, useState } from "react"
 import { ServerStyleSheet, StyleSheetManager, ThemeProvider } from "styled-components"
-import { GlobalStyle } from "../layout/GlobalStyle"
-import { theme } from "../layout/theme"
+import { GlobalStyle } from "../(layout)/GlobalStyle"
+import { theme } from "../(layout)/theme"
 
 export function StyledComponentsManager({ children }: { children: ReactNode }) {
     // Only create stylesheet once with lazy initial state

@@ -8,7 +8,7 @@ import { DB_VERSION } from "~/util/dexie"
 import { type BungieAPIError } from "../../models/BungieAPIError"
 import { updateCachedManifest } from "../../util/destiny/manifest"
 import { useLocale } from "./LocaleManager"
-import { useBungieClient } from "./session/BungieTokenManager"
+import { useBungieClient } from "./session/BungieClientProvider"
 
 const KEY_MANIFEST_VERSION = "d2_manifest_version"
 
