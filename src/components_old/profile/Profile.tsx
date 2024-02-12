@@ -1,24 +1,13 @@
 import Head from "next/head"
-import { createContext, useContext, useMemo, useRef, useState } from "react"
-import { useBungieClient } from "~/components/app/TokenManager"
+import { createContext, useContext, useRef, useState } from "react"
 import { useActivityFilters } from "~/hooks/util/useActivityFilters"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import Activity from "~/models/profile/data/Activity"
 import { useRaidHubPlayers } from "~/services/raidhub/useRaidHubPlayers"
 import styles from "~/styles/pages/profile/profile.module.css"
-import { ActivityFilter, InitialProfileProps } from "~/types/profile"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { trpc } from "~/util/trpc"
-import Loading from "../../components/Loading"
-import { PortalProvider } from "../reusable/Portal"
-import ClanCard from "./clan/ClanCard"
-import CurrentActivity from "./mid/CurrentActivity"
-import FilterSelector from "./mid/FilterSelector"
-import LayoutToggle, { Layout } from "./mid/LayoutToggle"
-import PinnedActivity from "./mid/PinnedActivity"
-import Raids from "./raids/Raids"
-import ProfileRankings from "./ranks/Rankings"
-import UserCard from "./user/UserCard"
+import { PortalProvider } from "../../components/Portal"
+import { Layout } from "./mid/LayoutToggle"
 
 const PropsContext = createContext<InitialProfileProps | undefined>(undefined)
 const FilterContext = createContext<ActivityFilter | null | undefined>(undefined)
@@ -43,6 +32,7 @@ export const useFilterContext = () => {
     }
 }
 
+/** @deprecated */
 const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileProps) => {
     const bungie = useBungieClient()
     const mainRef = useRef<HTMLElement | null>(null)
@@ -52,33 +42,6 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
         trpc.profile.byDestinyMembershipId.useQuery({
             destinyMembershipId
         })
-
-    const { data: primaryDestinyProfile } = bungie.profile.useQuery(
-        {
-            destinyMembershipId,
-            membershipType: destinyMembershipType
-        },
-        { staleTime: 5 * 60000 }
-    )
-
-    const { data: membershipsData, isFetched: areMembershipsFetched } =
-        bungie.linkedProfiles.useQuery({
-            membershipId: destinyMembershipId
-        })
-
-    const destinyMemberships = useMemo(
-        () =>
-            membershipsData?.profiles.map(p => ({
-                destinyMembershipId: p.membershipId,
-                membershipType: p.membershipType
-            })) ?? [
-                {
-                    destinyMembershipId,
-                    membershipType: destinyMembershipType
-                }
-            ],
-        [membershipsData, destinyMembershipId, destinyMembershipType]
-    )
 
     const [mostRecentActivity, setMostRecentActivity] = useState<string | undefined | null>(
         undefined
@@ -106,9 +69,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
         primaryDestinyProfile?.profile.data?.userInfo.displayName
 
     const title = username ? `${username} | RaidHub` : "RaidHub"
-    const description = `View ${
-        username ? `${username}'s ` : ""
-    }raid stats, achievements, tags, and more`
+
     const image =
         raidHubProfile?.image ??
         bungieIconUrl(primaryDestinyProfile?.profile.data?.userInfo.iconPath)
@@ -134,56 +95,7 @@ const Profile = ({ destinyMembershipId, destinyMembershipType }: InitialProfileP
                 <meta key="twitter:image" property="twitter:image" content={image} />
             </Head>
             <main className={styles["main"]} ref={mainRef}>
-                <PortalProvider target={mainRef}>
-                    <section className={styles["user-info"]}>
-                        <UserCard />
-                        <ClanCard />
-                        {false && <ProfileRankings players={players} />}
-                    </section>
-
-                    <section className={styles["mid"]}>
-                        <CurrentActivity />
-                        {pinnedActivityId ? (
-                            <PinnedActivity
-                                activityId={pinnedActivityId}
-                                isLoadingActivities={mostRecentActivity === undefined}
-                                isLoadingRaidHubProfile={isLoadingRaidHubProfile}
-                                isPinned={pinnedActivityId === raidHubProfile?.pinnedActivityId}
-                            />
-                        ) : (
-                            pinnedActivityId === undefined && (
-                                <Loading className={styles["pinned-activity-loading"]} />
-                            )
-                        )}
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: "1em",
-                                flexWrap: "wrap",
-                                justifyContent: "center"
-                            }}>
-                            <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
-                            {isFilterMounted && (
-                                <FilterSelector
-                                    activeFilter={activeFilter}
-                                    setActiveFilter={setActiveFilter}
-                                />
-                            )}
-                        </div>
-                    </section>
-
-                    <section className={styles["raids"]}>
-                        <FilterContext.Provider value={activeFilter}>
-                            <Raids
-                                destinyMemberships={destinyMemberships}
-                                areMembershipsFetched={areMembershipsFetched}
-                                layout={layout}
-                                setMostRecentActivity={setMostRecentActivity}
-                                players={players}
-                            />
-                        </FilterContext.Provider>
-                    </section>
-                </PortalProvider>
+                <PortalProvider target={mainRef}></PortalProvider>
             </main>
         </PropsContext.Provider>
     )

@@ -1,4 +1,5 @@
-import { DestinyInventoryItemDefinition } from "bungie-net-core/models"
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+import { type DestinyInventoryItemDefinition } from "bungie-net-core/models"
 
 const baseBungieUrl = "https://www.bungie.net"
 

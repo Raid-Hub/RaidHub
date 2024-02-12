@@ -1,4 +1,4 @@
-import { SessionContext, SessionContextValue, UseSessionOptions } from "next-auth/react"
+import { SessionContext, type SessionContextValue, type UseSessionOptions } from "next-auth/react"
 import { useContext, useEffect } from "react"
 
 /**
@@ -13,6 +13,23 @@ export function useSession<R extends boolean>(
     options?: UseSessionOptions<R>
 ): SessionContextValue<R> {
     const ctx = useContext(SessionContext)
+
+    const { required, onUnauthenticated } = options ?? {}
+
+    const requiredAndNotLoading = required && ctx?.status === "unauthenticated"
+
+    useEffect(() => {
+        if (requiredAndNotLoading) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            const url = `/api/auth/signin?${new URLSearchParams({
+                error: "SessionRequired",
+                callbackUrl: window.location.href
+            })}`
+            if (onUnauthenticated) onUnauthenticated()
+            else window.location.href = url
+        }
+    }, [requiredAndNotLoading, onUnauthenticated])
+
     if (!ctx) {
         return {
             data: null,
@@ -22,21 +39,6 @@ export function useSession<R extends boolean>(
             }
         }
     }
-
-    const { required, onUnauthenticated } = options ?? {}
-
-    const requiredAndNotLoading = required && ctx.status === "unauthenticated"
-
-    useEffect(() => {
-        if (requiredAndNotLoading) {
-            const url = `/api/auth/signin?${new URLSearchParams({
-                error: "SessionRequired",
-                callbackUrl: window.location.href
-            })}`
-            if (onUnauthenticated) onUnauthenticated()
-            else window.location.href = url
-        }
-    }, [requiredAndNotLoading, onUnauthenticated])
 
     if (requiredAndNotLoading) {
         return {

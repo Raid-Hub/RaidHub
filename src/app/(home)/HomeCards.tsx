@@ -1,6 +1,6 @@
 "use client"
 
-import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { Grid } from "~/components/layout/Grid"
 import { HomeCardGlobal } from "./cards/HomeCardGlobal"
 import { HomeCardraid } from "./cards/HomeCardRaid"

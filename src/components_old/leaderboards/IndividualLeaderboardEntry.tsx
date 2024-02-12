@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { IndividualLeaderboardEntry } from "~/types/leaderboards"
 import { formattedNumber, secondsToHMS, truncatedNumber } from "~/util/presentation/formatting"
-import { useLocale } from "../../app/managers/LocaleManager"
+import { useLocale } from "../../app/(layout)/managers/LocaleManager"
 
 const defautlIcon = "https://www.bungie.net/img/theme/destiny/icons/missing_emblem.jpg"
 

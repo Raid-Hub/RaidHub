@@ -1,16 +1,22 @@
-import { RefObject, useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, type RefObject } from "react"
+import { type ProfileProps } from "~/app/(profile)/types"
+import { trpc } from "~/app/trpc"
+import { usePageProps } from "~/components/layout/PageWrapper"
 import { useOptimisticProfileUpdate } from "./useOptimisticProfileUpdate"
-import { trpc } from "~/util/trpc"
-import { useProfileProps } from "~/components/profile/Profile"
 
 const defaultColor = ""
 const defaultOpacity = 255
 
 export function useProfileDecoration(ref: RefObject<HTMLElement>) {
-    const { destinyMembershipId } = useProfileProps()
-    const { data: raidHubProfile } = trpc.profile.byDestinyMembershipId.useQuery({
-        destinyMembershipId
-    })
+    const { destinyMembershipId, ready } = usePageProps<ProfileProps>()
+    const { data: raidHubProfile } = trpc.profile.getUnique.useQuery(
+        {
+            destinyMembershipId
+        },
+        {
+            enabled: ready
+        }
+    )
 
     const [isEditing, setIsEditing] = useState(false)
     const [color, setColor] = useState<string>(defaultColor)

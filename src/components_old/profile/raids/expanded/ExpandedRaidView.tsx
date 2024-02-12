@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
-import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { ListedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/helpers"
 import ActivityTile from "../ActivityTile"

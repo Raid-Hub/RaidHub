@@ -1,9 +1,7 @@
 import { BungieMembershipType, GroupV2 } from "bungie-net-core/models"
 import { z } from "zod"
-import { SVGProps } from "~/components/reusable/SVG"
 import { zModifiableProfile } from "~/util/zod"
 import Activity from "../models/profile/data/Activity"
-import { Socials } from "../util/profile/socials"
 import { FilterCallback } from "./generic"
 
 export type InitialProfileProps = {
@@ -36,13 +34,6 @@ export type RaidHubProfile = {
     socials: ProfileSocialData[]
     pinnedActivity: string | null
     background: string | null
-}
-
-export type ProfileSocialData = {
-    id: Socials
-    Icon: React.FC<SVGProps>
-    displayName: string
-    url?: string | null
 }
 
 export interface ActivityFilter {

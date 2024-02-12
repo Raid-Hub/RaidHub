@@ -22,11 +22,12 @@ export const Flex = styled.div<{
     flex-wrap: ${({ $wrap }) => ($wrap ? "wrap" : "nowrap")};
 
     padding: ${({ $padding }) => $padding}em;
-    ${({ $fullWidth }) => $fullWidth && "width: 100%;"}
+    ${({ $fullWidth }) => $fullWidth && "min-width: 100%;"}
 `
 
 Flex.defaultProps = {
-    $padding: 1,
+    $relative: false,
+    $padding: 0,
     $gap: 1,
     $direction: "row",
     $align: "center",

@@ -8,7 +8,7 @@ import styles from "~/styles/pages/pgcr.module.css"
 import PGCRPlayer from "~/util/destiny/Player"
 import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
 import { formattedNumber } from "~/util/presentation/formatting"
-import { useLocale } from "../../../app/managers/LocaleManager"
+import { useLocale } from "../../../app/(layout)/managers/LocaleManager"
 
 type PlayerCellProps = {
     player: PGCRPlayer

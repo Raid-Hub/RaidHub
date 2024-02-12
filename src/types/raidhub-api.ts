@@ -1,5 +1,5 @@
-import { Difficulty, Raid } from "data/raid"
-import { components, paths } from "./raidhub-openapi"
+import type { Difficulty, Raid } from "data/raid"
+import type { components, paths } from "./raidhub-openapi"
 
 export type ListedRaid = (typeof Raid)[keyof typeof Raid]
 export type MasterRaid = components["schemas"]["MasterRaidEnum"]
@@ -62,5 +62,5 @@ export type RaidHubGlobalLeaderboardCategory =
 
 export type RaidHubIndividualLeaderboardEntry = components["schemas"]["IndividualLeaderboardEntry"]
 
-export type RaidHubActivitySearchQuery = components["schemas"]["ActivitySearchQuery"]
+export type RaidHubActivitySearchQuery = components["schemas"]["ActivitySearchBody"]
 export type RaidHubLeaderboardSearchQuery = components["schemas"]["LeaderboardSearchQuery"]

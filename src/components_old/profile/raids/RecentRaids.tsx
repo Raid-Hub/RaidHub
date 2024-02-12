@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection"
 import { useMemo, useState } from "react"
-import Activity from "~/models/profile/data/Activity"
-import { useLocale } from "../../../app/managers/LocaleManager"
+import { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import { useLocale } from "../../../app/(layout)/managers/LocaleManager"
 import Loading from "../../../components/Loading"
 import styles from "../../../styles/pages/profile/raids.module.css"
 import { useFilterContext } from "../Profile"
@@ -12,7 +12,7 @@ const CARDS_PER_PAGE = 60
 type RecentRaidsProps =
     | {
           isLoading: false
-          allActivities: Collection<string, Activity>
+          allActivities: Collection<string, RaidHubPlayerActivitiesActivity>
       }
     | { isLoading: true; allActivities: null }
 

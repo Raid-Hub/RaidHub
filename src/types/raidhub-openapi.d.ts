@@ -823,6 +823,7 @@ export interface components {
         })[];
     };
     readonly PlayerActivitiesResponse: {
+      readonly membershipId: string;
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
           readonly meta: {
             readonly raidId: components["schemas"]["RaidEnum"];

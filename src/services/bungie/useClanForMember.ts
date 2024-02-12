@@ -1,16 +1,26 @@
 import { useQuery } from "@tanstack/react-query"
 import { getGroupsForMember } from "bungie-net-core/endpoints/GroupV2"
-import { BungieMembershipType, GroupsForMemberFilter } from "bungie-net-core/models"
-import { useBungieClient } from "~/app/managers/session/BungieClientProvider"
+import type {
+    BungieMembershipType,
+    GetGroupsForMemberResponse,
+    GroupsForMemberFilter
+} from "bungie-net-core/models"
+import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
 
-export const useClanForMember = ({
-    filter = 0, // GroupsForMemberFilter.All
-    ...params
-}: {
-    membershipId: string
-    membershipType: BungieMembershipType
-    filter: GroupsForMemberFilter // GroupsForMemberFilter.All
-}) => {
+export const useClanForMember = <T = GetGroupsForMemberResponse>(
+    {
+        filter = 0, // GroupsForMemberFilter.All
+        ...params
+    }: {
+        membershipId: string
+        membershipType: BungieMembershipType
+        filter?: GroupsForMemberFilter // GroupsForMemberFilter.All
+    },
+    opts?: {
+        staleTime?: number
+        select?: (data: GetGroupsForMemberResponse) => T
+    }
+) => {
     const bungieClient = useBungieClient()
 
     return useQuery({
@@ -20,6 +30,7 @@ export const useClanForMember = ({
                 ...queryKey[3],
                 filter: queryKey[2],
                 groupType: 1 // GroupType.Clan
-            }).then(res => res.Response)
+            }).then(res => res.Response),
+        ...opts
     })
 }

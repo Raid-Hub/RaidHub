@@ -1,13 +1,13 @@
 import { m } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
-import { useLocale } from "~/app/managers/LocaleManager"
+import { useLocale } from "~/app/(layout)/managers/LocaleManager"
 import Loading from "~/components/global/Loading"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import CloudflareImage from "~/images/CloudflareImage"
 import Expand from "~/images/icons/Expand"
 import Activity from "~/models/profile/data/Activity"
 import styles from "~/styles/pages/profile/raids.module.css"
-import { ListedRaid, RaidHubPlayerProfileLeaderboardEntry } from "~/types/raidhub-api"
+import { RaidHubPlayerProfileLeaderboardEntry } from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { findTags } from "~/util/tags"
@@ -19,18 +19,16 @@ import RaidTagLabel from "./RaidTagLabel"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
 
 type RaidModalProps = {
-    raid: ListedRaid
     expand: () => void
-    clearExpand: () => void
-    leaderboardData: RaidHubPlayerProfileLeaderboardEntry[]
+    closeExpand: () => void
+    leaderboardData: RaidHubPlayerProfileLeaderboardEntry[] | null
     wfBoardId: string
     isExpanded: boolean
 }
 
 export default function RaidCard({
-    raid,
     expand,
-    clearExpand,
+    closeExpand,
     leaderboardData,
     wfBoardId,
     isExpanded

@@ -1,7 +1,7 @@
 import { Hydrate, dehydrate, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { useLocale } from "~/app/managers/LocaleManager"
+import { useLocale } from "~/app/(layout)/managers/LocaleManager"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 import { usePage } from "~/hooks/util/usePage"
 import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"

@@ -1,11 +1,7 @@
 import styles from "../../../styles/pages/profile/mid.module.css"
 import ToggleSwitch from "../../reusable/ToggleSwitch"
 
-export enum Layout {
-    DotCharts,
-    RecentActivities
-}
-
+/** @deprecated */
 const LayoutToggle = ({
     handleLayoutToggle,
     layout

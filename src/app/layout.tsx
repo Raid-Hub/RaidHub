@@ -1,19 +1,18 @@
-import { Metadata, Viewport } from "next"
+import type { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
-import { ReactNode } from "react"
+import { type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
 import { Footer } from "./(layout)/Footer"
 import { Header } from "./(layout)/Header"
 import { HeaderContent } from "./(layout)/HeaderContent"
 import { SearchModal } from "./(layout)/SearchModal"
-import { DestinyManifestManager } from "./managers/DestinyManifestManager"
-import { FramerMotionManager } from "./managers/FramerMotionManager"
-import { LocaleManager } from "./managers/LocaleManager"
-import { QueryManager } from "./managers/QueryManager"
-import { RaidHubManifestManager } from "./managers/RaidHubManifestManager"
-import { StyledComponentsManager } from "./managers/StyledComponentsManager"
-import { BungieClientProvider } from "./managers/session/BungieClientProvider"
-import { SessionManager } from "./managers/session/SessionSessionManager"
+import { ClientManager } from "./(layout)/managers/ClientManager"
+import { DestinyManifestManager } from "./(layout)/managers/DestinyManifestManager"
+import { LocaleManager } from "./(layout)/managers/LocaleManager"
+import { QueryManager } from "./(layout)/managers/QueryManager"
+import { RaidHubManifestManager } from "./(layout)/managers/RaidHubManifestManager"
+import { BungieClientProvider } from "./(layout)/managers/session/BungieClientProvider"
+import { SessionManager } from "./(layout)/managers/session/SessionSessionManager"
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, {
@@ -40,22 +39,20 @@ export default async function RootLayout(params: { children: ReactNode }) {
                             <LocaleManager>
                                 <RaidHubManifestManager serverManifest={manifest}>
                                     <DestinyManifestManager>
-                                        <StyledComponentsManager>
-                                            <FramerMotionManager>
-                                                <Header>
-                                                    <NextTopLoader
-                                                        showSpinner={false}
-                                                        speed={700}
-                                                        height={3}
-                                                        color={"orange"}
-                                                    />
-                                                    <HeaderContent />
-                                                </Header>
-                                                <SearchModal />
-                                                {params.children}
-                                                <Footer />
-                                            </FramerMotionManager>
-                                        </StyledComponentsManager>
+                                        <ClientManager>
+                                            <Header>
+                                                <NextTopLoader
+                                                    showSpinner={false}
+                                                    speed={700}
+                                                    height={3}
+                                                    color={"orange"}
+                                                />
+                                                <HeaderContent />
+                                            </Header>
+                                            <SearchModal />
+                                            {params.children}
+                                            <Footer />
+                                        </ClientManager>
                                     </DestinyManifestManager>
                                 </RaidHubManifestManager>
                             </LocaleManager>

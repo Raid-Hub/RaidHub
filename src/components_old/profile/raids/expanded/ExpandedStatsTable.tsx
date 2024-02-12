@@ -1,6 +1,6 @@
 import { useRaidHubManifest } from "app/RaidHubManifestManager"
 import { ReactNode } from "react"
-import { useLocale } from "~/app/managers/LocaleManager"
+import { useLocale } from "~/app/(layout)/managers/LocaleManager"
 import { Difficulty } from "~/data/raid"
 import { RaidDifficulty } from "~/types/raidhub-api"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"

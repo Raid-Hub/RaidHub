@@ -1,9 +1,8 @@
 "use client"
 
 import { match } from "@formatjs/intl-localematcher"
-import { DestinyManifestLanguage } from "bungie-net-core/manifest"
-import { ManifestLanguage } from "bungie-net-core/manifest/types"
-import { ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { type DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
 const d2ManifestLocales = [
     "en",
@@ -19,7 +18,7 @@ const d2ManifestLocales = [
     "ru",
     "zh-chs",
     "zh-cht"
-] as const satisfies ManifestLanguage[]
+] as const satisfies DestinyManifestLanguage[]
 
 const LanguageContext = createContext<
     | {
@@ -50,7 +49,7 @@ export function LocaleManager({ children }: { children: ReactNode }) {
             matchedLanguage
                 .toLowerCase()
                 .replace(/-hans$/i, "-chs")
-                .replace(/-hant$/i, "-cht") as ManifestLanguage
+                .replace(/-hant$/i, "-cht") as DestinyManifestLanguage
         )
         document.documentElement.setAttribute("lang", matchedLanguage)
     }, [])

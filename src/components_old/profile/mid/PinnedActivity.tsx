@@ -4,7 +4,7 @@ import CloudflareImage from "~/images/CloudflareImage"
 import PinIcon from "~/images/icons/PinIcon"
 import EagerEdge from "~/images/icons/destiny2/EagerEgde"
 import { useRaidHubActivity } from "~/services/raidhub/useRaidHubActivity"
-import { useLocale } from "../../../app/managers/LocaleManager"
+import { useLocale } from "../../../app/(layout)/managers/LocaleManager"
 import Loading from "../../../components/Loading"
 import RaidBanners from "../../../data/raid-banners"
 import styles from "../../../styles/pages/profile/mid.module.css"
@@ -17,6 +17,7 @@ type PinnedActivityProps = {
     isLoadingRaidHubProfile: boolean
 }
 
+/** @deprecated */
 const PinnedActivity = ({
     activityId,
     isPinned,

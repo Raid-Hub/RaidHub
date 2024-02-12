@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, SVGWrapperProps } from "../SVG"
 
-export default function Edit(props: SVGProps) {
+export default function Edit(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 0 528.899 528.899" {...props}>
             <g>

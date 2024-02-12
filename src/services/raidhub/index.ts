@@ -1,5 +1,5 @@
-import { RaidHubAPIResponse, RaidHubPath } from "~/types/raidhub-api"
-import { paths } from "~/types/raidhub-openapi"
+import type { RaidHubAPIResponse, RaidHubPath } from "~/types/raidhub-api"
+import type { paths } from "~/types/raidhub-openapi"
 
 export async function getRaidHubApi<
     T extends RaidHubPath,
@@ -18,12 +18,13 @@ export async function getRaidHubApi<
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
             // @ts-expect-error types don't really work here
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
             return pathParams[paramName]
         }),
         process.env.RAIDHUB_API_URL
     )
     Object.entries(queryParams ?? {}).forEach(([key, value]) => {
-        url.searchParams.set(key, String(value))
+        if (value !== undefined) url.searchParams.set(key, String(value))
     })
 
     return fetchRaidHub<R>(url, {
@@ -50,7 +51,7 @@ export async function postRaidHubApi<
     config?: Omit<RequestInit, "method" | "body">
 ): Promise<R> {
     // create url
-    const url = new URL(path, process.env.RAIDHUB_API_URL!)
+    const url = new URL(path, process.env.RAIDHUB_API_URL)
     Object.entries(query ?? {}).forEach(([key, value]) => {
         url.searchParams.set(key, String(value))
     })
@@ -66,7 +67,7 @@ export async function postRaidHubApi<
 function createHeaders(init?: HeadersInit) {
     const headers = new Headers(init)
     // Server side, we use the private server key, which is undefined client side
-    const apiKey = process.env.RAIDHUB_API_KEY_SERVER || process.env.RAIDHUB_API_KEY
+    const apiKey = process.env.RAIDHUB_API_KEY_SERVER ?? process.env.RAIDHUB_API_KEY
     if (apiKey) {
         headers.set("x-api-key", apiKey)
     }

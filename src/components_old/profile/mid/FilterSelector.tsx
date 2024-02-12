@@ -20,6 +20,7 @@ enum FilterModalScreen {
     Manager
 }
 
+/** @deprecated */
 const FilterSelector = ({ activeFilter, setActiveFilter }: FilterSelectorProps) => {
     const ref = useRef<HTMLDialogElement | null>(null)
     const { sendThroughPortal } = usePortal()

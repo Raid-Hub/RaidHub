@@ -1,7 +1,7 @@
 "use client"
 
 import RaidCardBackground from "data/raid-backgrounds"
-import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { Difficulty } from "~/data/raid"
 import { RTABoard, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { rtaLeaderboardNames } from "~/data/strings/rta-speedrun-names"

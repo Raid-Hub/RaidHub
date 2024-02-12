@@ -1,7 +1,7 @@
 import { animate } from "framer-motion"
 import Link from "next/link"
 import { MouseEvent, useCallback, useEffect, useRef } from "react"
-import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import RaidSkull from "~/images/icons/destiny2/RaidSkull"
 import Activity from "~/models/profile/data/Activity"
 import styles from "~/styles/pages/profile/raids.module.css"

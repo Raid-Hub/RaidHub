@@ -3,12 +3,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { httpLink, loggerLink } from "@trpc/client"
-import { createTRPCReact } from "@trpc/react-query"
 import { useState } from "react"
 import superjson from "superjson"
-import type { AppRouter } from "~/server/api/trpc"
+import { trpc } from "~/app/trpc"
 
-export const trpc = createTRPCReact<AppRouter>()
 function getBaseUrl() {
     if (typeof window !== "undefined") return ""
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`

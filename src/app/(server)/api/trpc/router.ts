@@ -4,7 +4,7 @@ import { removeProvider } from "./procedures/account/removeProvider"
 import { addByAPIKey } from "./procedures/account/speedrun-com/addByAPIKey"
 import { createVanity } from "./procedures/admin/vanity/createVanity"
 import { deleteVanity } from "./procedures/admin/vanity/deleteVanity"
-import { getProfileByDestinyMembershipId } from "./procedures/profile/getProfileByDestinyMembershipId"
+import { getProfileByDestinyMembershipId } from "./procedures/profile/getProfile"
 import { deleteUser } from "./procedures/user/delete"
 import { getAuthenticatedProfile } from "./procedures/user/getAuthenticatedProfile"
 import { getConnections } from "./procedures/user/getConnections"
@@ -29,7 +29,7 @@ export const appRouter = createTRPCRouter({
     }),
     // public router for finding and loading profiles
     profile: createTRPCRouter({
-        byDestinyMembershipId: getProfileByDestinyMembershipId
+        getUnique: getProfileByDestinyMembershipId
     }),
     // admin tools
     admin: createTRPCRouter({

@@ -1,13 +1,24 @@
-import { useQueries } from "@tanstack/react-query"
+import { useQueries, useQuery } from "@tanstack/react-query"
 import { getRaidHubApi } from "~/services/raidhub"
-import { RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { type RaidHubPlayerResponse } from "~/types/raidhub-api"
 
-export function useRaidHubPlayers(membershipIds: string[]) {
+export function useRaidHubPlayers(
+    membershipIds: string[],
+    opts?: {
+        enabled?: boolean
+    }
+) {
     const queries = useQueries({
         queries: membershipIds.map(membershipId => ({
-            queryFn: () => getRaidHubApi("/player/{membershipId}/profile", { membershipId }, null),
-            queryKey: ["raidhub-player", membershipId] as const
-        }))
+            queryFn: () =>
+                getRaidHubApi(
+                    "/player/{membershipId}/profile",
+                    { membershipId: membershipId },
+                    null
+                ),
+            queryKey: ["raidhub", "player", membershipId] as const
+        })),
+        ...opts
     })
 
     const players = queries.map(q => q.data).filter((data): data is RaidHubPlayerResponse => !!data)
@@ -18,3 +29,16 @@ export function useRaidHubPlayers(membershipIds: string[]) {
         isLoading
     }
 }
+
+export const useRaidHubPlayer = (
+    membershipId: string,
+    opts?: {
+        enabled?: boolean
+    }
+) =>
+    useQuery({
+        queryFn: ({ queryKey }) =>
+            getRaidHubApi("/player/{membershipId}/profile", { membershipId: queryKey[2] }, null),
+        queryKey: ["raidhub", "player", membershipId] as const,
+        ...opts
+    })

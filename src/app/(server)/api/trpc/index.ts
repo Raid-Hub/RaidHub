@@ -1,11 +1,11 @@
 import "server-only"
 
-import { inferRouterOutputs, initTRPC, TRPCError } from "@trpc/server"
-import { Session } from "next-auth"
+import { initTRPC, TRPCError } from "@trpc/server"
+import { type Session } from "next-auth"
 import superjson from "superjson"
 import { ZodError } from "zod"
-import { createTRPCContext } from "./context"
-import { appRouter } from "./router"
+import { type createTRPCContext } from "./context"
+import { type appRouter } from "./router"
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
     transformer: superjson,
@@ -25,7 +25,6 @@ export const publicProcedure = t.procedure
 
 // This prevents us from importing server code on the client.
 export type AppRouter = typeof appRouter
-export type RouterOutput = inferRouterOutputs<AppRouter>
 
 export const protectedProcedure = publicProcedure.use(({ ctx, next }) => {
     if (!ctx.session) {

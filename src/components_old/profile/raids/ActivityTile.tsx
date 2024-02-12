@@ -7,7 +7,7 @@ import Activity from "~/models/profile/data/Activity"
 import styles from "~/styles/pages/profile/raids.module.css"
 import { toCustomDateString } from "~/util/presentation/formatting"
 import { Tag } from "~/util/tags"
-import { useLocale } from "../../../app/managers/LocaleManager"
+import { useLocale } from "../../../app/(layout)/managers/LocaleManager"
 
 const ActivityTile = ({ activity }: { activity: Activity }) => {
     const { locale } = useLocale()

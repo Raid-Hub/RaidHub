@@ -2,8 +2,8 @@
 
 import InspectionHeader from "components_old/guardians/InspectionHeader"
 import Player from "components_old/guardians/Player"
-import { PortalProvider } from "components_old/reusable/Portal"
 import { createRef, useState } from "react"
+import { PortalProvider } from "~/components/Portal"
 import { Grid } from "~/components/layout/Grid"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useQueryParams } from "~/hooks/util/useQueryParams"

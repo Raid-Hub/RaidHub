@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getLinkedProfiles } from "bungie-net-core/endpoints/Destiny2"
-import { useBungieClient } from "~/app/managers/session/BungieClientProvider"
+import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
 
 export const useLinkedProfiles = (params: { membershipId: string }) => {
     const bungieClient = useBungieClient()

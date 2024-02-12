@@ -1,79 +1,111 @@
+"use client"
+
 import Image from "next/image"
 import { useMemo, useRef } from "react"
-import { useLocale } from "~/app/managers/LocaleManager"
-import { useBungieClient } from "~/components/app/TokenManager"
-import Loading from "~/components/global/Loading"
+import type { ProfileProps, ProfileSocialData } from "~/app/(profile)/types"
+import { trpc } from "~/app/trpc"
+import { Loading } from "~/components/Loading"
+import DiscordIcon from "~/components/icons/DiscordIcon"
+import Edit from "~/components/icons/Edit"
+import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
+import TwitchIcon from "~/components/icons/TwitchIcon"
+import TwitterIcon from "~/components/icons/TwitterIcon"
+import YoutubeIcon from "~/components/icons/YoutubeIcon"
+import { usePageProps } from "~/components/layout/PageWrapper"
 import { useProfileDecoration } from "~/hooks/app/useProfileDecoration"
 import { useSession } from "~/hooks/app/useSession"
-import Edit from "~/images/icons/Edit"
-import DiscordIcon from "~/images/icons/connections/DiscordIcon"
-import SpeedrunIcon from "~/images/icons/connections/SpeedrunIcon"
-import TwitchIcon from "~/images/icons/connections/TwitchIcon"
-import TwitterIcon from "~/images/icons/connections/TwitterIcon"
-import YoutubeIcon from "~/images/icons/connections/YoutubeIcon"
-import styles from "~/styles/pages/profile/user.module.css"
-import { ProfileSocialData } from "~/types/profile"
+import { useProfile } from "~/services/bungie/useProfile"
 import { bungieIconUrl, emblemUrl } from "~/util/destiny/bungie-icons"
 import { Socials } from "~/util/profile/socials"
-import { trpc } from "~/util/trpc"
-import { useProfileProps } from "../Profile"
 import SocialTag from "./SocialTag"
 import UserName from "./UserName"
+import styles from "./user.module.css"
 
-export default function UserCard() {
-    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
-    const bungie = useBungieClient()
-    const { data: session } = useSession()
-    const { data: bungieProfile, isLoading: isLoadingProfile } = bungie.profile.useQuery({
-        destinyMembershipId,
-        membershipType: destinyMembershipType
-    })
-    const { data: raidHubProfile } = trpc.profile.byDestinyMembershipId.useQuery({
-        destinyMembershipId
-    })
+/** @deprecated */
+export function UserCard() {
+    const session = useSession()
+
+    const props = usePageProps<ProfileProps>()
+
+    const appProfileQuery = trpc.profile.getUnique.useQuery(
+        {
+            destinyMembershipId: props.destinyMembershipId
+        },
+        {
+            // Required to prevent the query from running before the page is ready
+            enabled: props.ready,
+            placeholderData: props.ssrAppProfile ?? undefined
+        }
+    )
+
+    const destinyProfileQuery = useProfile(
+        {
+            destinyMembershipId: props.destinyMembershipId,
+            membershipType: props.destinyMembershipType
+        },
+        {
+            enabled: props.ready,
+            staleTime: 1000 * 60 * 2,
+            // Do not use initialData here, as it will cause hydration issues with RSC
+            placeholderData: props.ssrDestinyProfile ?? undefined
+        }
+    )
 
     const socials = useMemo(() => {
-        if (!raidHubProfile) return null
+        if (!appProfileQuery.data) return null
         const socials = new Array<ProfileSocialData>()
-        const { connections } = raidHubProfile
-        if (connections.has("discord")) {
+        const { connections } = appProfileQuery.data
+        const discord = connections.find(c => c.provider === "discord")
+        if (discord?.displayName) {
             socials.push({
                 id: Socials.Discord,
                 Icon: DiscordIcon,
-                ...connections.get("discord")!
+                url: discord.url,
+                displayName: discord.displayName
             })
         }
-        if (connections.has("twitter")) {
+        const twitter = connections.find(c => c.provider === "twitter")
+        if (twitter?.displayName) {
             socials.push({
                 id: Socials.Twitter,
                 Icon: TwitterIcon,
-                ...connections.get("twitter")!
-            })
-        }
-        if (connections.has("google")) {
-            socials.push({
-                id: Socials.YouTube,
-                Icon: YoutubeIcon,
-                ...connections.get("google")!
-            })
-        }
-        if (connections.has("twitch")) {
-            socials.push({
-                id: Socials.Twitch,
-                Icon: TwitchIcon,
-                ...connections.get("twitch")!
+                url: twitter.url,
+                displayName: twitter.displayName
             })
         }
 
-        if (connections.has("speedrun")) {
+        const google = connections.find(c => c.provider === "google")
+        if (google?.displayName) {
+            socials.push({
+                id: Socials.YouTube,
+                Icon: YoutubeIcon,
+                url: google.url,
+                displayName: google.displayName
+            })
+        }
+
+        const twitch = connections.find(c => c.provider === "twitch")
+        if (twitch?.displayName) {
+            socials.push({
+                id: Socials.Twitch,
+                Icon: TwitchIcon,
+                url: twitch.url,
+                displayName: twitch.displayName
+            })
+        }
+
+        const speedrun = connections.find(c => c.provider === "speedrun")
+        if (speedrun?.displayName) {
             socials.push({
                 id: Socials.Speedrun,
                 Icon: SpeedrunIcon,
-                ...connections.get("speedrun")!
+                url: speedrun.url,
+                displayName: speedrun.displayName
             })
         }
+
         return socials
-    }, [raidHubProfile])
+    }, [appProfileQuery.data])
 
     const ref = useRef<HTMLDivElement>(null)
     const {
@@ -88,28 +120,27 @@ export default function UserCard() {
         setColor
     } = useProfileDecoration(ref)
 
-    const { strings } = useLocale()
-
     const emblem = useMemo(
         () =>
             emblemUrl(
-                bungieProfile?.characters.data
-                    ? Object.values(bungieProfile.characters.data)[0]?.emblemBackgroundPath
+                destinyProfileQuery?.data?.characters?.data
+                    ? Object.values(destinyProfileQuery.data.characters.data)[0]
+                          ?.emblemBackgroundPath
                     : undefined
             ),
-        [bungieProfile?.characters?.data]
+        [destinyProfileQuery]
     )
 
-    const userInfo = bungieProfile?.profile.data?.userInfo
+    const userInfo = destinyProfileQuery?.data?.profile.data?.userInfo
 
     return (
         <>
             {isEditing && (
                 <div className={styles["edit-background-modal"]}>
                     <div className={styles["edit-background-btns"]}>
-                        <button onClick={handleCancel}>{strings.cancel}</button>
-                        <button onClick={handleEditorInputSave}>{strings.save}</button>
-                        <button onClick={handleReset}>{strings.reset}</button>
+                        <button onClick={handleCancel}>Cancel</button>
+                        <button onClick={handleEditorInputSave}>Save</button>
+                        <button onClick={handleReset}>Reset</button>
                     </div>
                     <label htmlFor="colorpicker" style={{ display: "block", margin: "0.7em" }}>
                         Pick a color from the menu below:
@@ -135,12 +166,12 @@ export default function UserCard() {
                     />
                 </div>
             )}
-            <div ref={ref} className={styles["card"]}>
-                {isLoadingProfile ? (
+            <div ref={ref} className={styles.card}>
+                {appProfileQuery.isLoading ? (
                     <Loading className={styles["card-loading"]} />
                 ) : (
                     <>
-                        <div className={styles["banner"]}>
+                        <div className={styles.banner}>
                             <Image
                                 unoptimized
                                 className={styles["image-background"]}
@@ -151,9 +182,12 @@ export default function UserCard() {
                                 alt="profile banner"
                             />
 
-                            <div className={styles["details"]}>
+                            <div className={styles.details}>
                                 <Image
-                                    src={raidHubProfile?.image ?? bungieIconUrl(userInfo?.iconPath)}
+                                    src={
+                                        appProfileQuery.data?.image ??
+                                        bungieIconUrl(userInfo?.iconPath)
+                                    }
                                     unoptimized
                                     width={80}
                                     height={80}
@@ -165,7 +199,7 @@ export default function UserCard() {
                                 </div>
                             </div>
                             {userInfo &&
-                                userInfo.membershipId === session?.user.destinyMembershipId &&
+                                userInfo.membershipId === session.data?.user.destinyMembershipId &&
                                 !isEditing && (
                                     <>
                                         <div
@@ -177,9 +211,10 @@ export default function UserCard() {
                                 )}
                         </div>
 
-                        <div className={styles["icons"]}>
-                            {socials &&
-                                socials.map((social, key) => <SocialTag {...social} key={key} />)}
+                        <div className={styles.icons}>
+                            {socials?.map((social, key) => (
+                                <SocialTag {...social} key={key} />
+                            ))}
                         </div>
                     </>
                 )}

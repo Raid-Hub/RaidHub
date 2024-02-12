@@ -14,8 +14,8 @@ import {
     useFieldArray,
     useForm
 } from "react-hook-form"
-import { useLocale } from "~/app/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/managers/RaidHubManifestManager"
+import { useLocale } from "~/app/(layout)/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"

@@ -1,9 +1,7 @@
-import styles from "~/styles/pages/profile/user.module.css"
-import { ProfileSocialData } from "~/types/profile"
+import { type ProfileSocialData } from "~/app/(profile)/types"
+import styles from "./user.module.css"
 
-type SocialTagProps = ProfileSocialData
-
-const SocialTag = ({ id, displayName: username, url, Icon }: SocialTagProps) => {
+const SocialTag = ({ id, displayName: username, url, Icon }: ProfileSocialData) => {
     const inner = (
         <>
             <div className={styles["img-social"]}>

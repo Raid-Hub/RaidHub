@@ -1,13 +1,14 @@
+"use client"
+
 import { Collection } from "@discordjs/collection"
-import { ReactNode, createContext, useContext } from "react"
-import Activity from "~/models/profile/data/Activity"
-import { ListedRaid } from "~/types/raidhub-api"
+import { createContext, useContext, type ReactNode } from "react"
+import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 
 const RaidContext = createContext<
     | {
           raid: ListedRaid
           isLoadingActivities: false
-          activities: Collection<string, Activity>
+          activities: Collection<string, RaidHubPlayerActivitiesActivity>
       }
     | { raid: ListedRaid; isLoadingActivities: true; activities: null }
     | null
@@ -26,17 +27,20 @@ export function RaidCardContext({
     raid
 }: {
     children: ReactNode
-    activitiesByRaid: Collection<ListedRaid, Collection<string, Activity>> | null
+    activitiesByRaid: Collection<
+        ListedRaid,
+        Collection<string, RaidHubPlayerActivitiesActivity>
+    > | null
     isLoadingActivities: boolean
     raid: ListedRaid
 }) {
     return (
         <RaidContext.Provider
             value={{
+                raid,
                 ...(isLoadingActivities
-                    ? { raid, isLoadingActivities: true, activities: null }
+                    ? { isLoadingActivities: true, activities: null }
                     : {
-                          raid,
                           isLoadingActivities: false,
                           activities: activitiesByRaid?.get(raid) ?? new Collection()
                       })

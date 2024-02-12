@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
 import { UserSearchResponse } from "bungie-net-core/models"
-import { useBungieClient } from "~/app/managers/session/BungieClientProvider"
+import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
 
 export const useSearchByGlobalName = <T>(
     params: { displayNamePrefix: string; page?: number },

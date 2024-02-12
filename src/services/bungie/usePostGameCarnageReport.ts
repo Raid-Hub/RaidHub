@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { getPostGameCarnageReport } from "bungie-net-core/endpoints/Destiny2"
-import { useBungieClient } from "~/app/managers/session/BungieClientProvider"
+import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
 
 export const usePostGameCarnageReport = (params: { activityId: string }) => {
     const bungieClient = useBungieClient()

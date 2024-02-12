@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { useSearch } from "~/hooks/useSearch"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
-import { usePortal } from "../reusable/Portal"
+import { usePortal } from "../../components/Portal"
 import styles from "./guardians.module.css"
 
 export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {

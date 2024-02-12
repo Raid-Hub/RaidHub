@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from "react"
+import { Suspense, type ReactNode } from "react"
 import { getServerAuthSession } from "~/server/api/auth"
 import { ClientSessionManager } from "./ClientSessionManager"
 

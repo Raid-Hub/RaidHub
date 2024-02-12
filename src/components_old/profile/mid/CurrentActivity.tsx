@@ -13,6 +13,7 @@ import styles from "../../../styles/pages/profile/mid.module.css"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { useProfileProps } from "../Profile"
 
+/** @deprecated */
 export default function CurrentActivity() {
     const bungie = useBungieClient()
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()

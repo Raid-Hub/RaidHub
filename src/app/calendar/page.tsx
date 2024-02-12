@@ -11,7 +11,7 @@ import { WeeklyFeaturedRaidChallengeObjectiveHash } from "~/data/weekly-featured
 import { useSeasons } from "~/hooks/dexie/useSeasonDefinition"
 import { usePublicMilestones } from "~/services/bungie/usePublicMilestones"
 import { modulo } from "~/util/math"
-import { useRaidHubManifest } from "../managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "../(layout)/managers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
 
 const raidMilestoneHashes = Object.values(RaidMileStones)
