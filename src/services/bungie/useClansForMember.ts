@@ -7,7 +7,7 @@ import type {
 } from "bungie-net-core/models"
 import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
 
-export const useClanForMember = <T = GetGroupsForMemberResponse>(
+export const useClansForMember = <T = GetGroupsForMemberResponse>(
     {
         filter = 0, // GroupsForMemberFilter.All
         ...params
