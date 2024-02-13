@@ -1,7 +1,7 @@
-import { Session, User } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/models"
-import { DefaultSession } from "next-auth"
-import { AdapterUser } from "next-auth/adapters"
+import { type Session, type User } from "@prisma/client"
+import { type BungieMembershipType } from "bungie-net-core/models"
+import { type DefaultSession } from "next-auth"
+import { type AdapterUser } from "next-auth/adapters"
 
 declare module "next-auth" {
     interface Session extends DefaultSession {
@@ -23,6 +23,7 @@ declare module "next-auth/adapters" {
     interface AdapterUser extends User {
         image: string
         name: string
+        vanity: string | null
         destinyMembershipId: string
         destinyMembershipType: BungieMembershipType
     }

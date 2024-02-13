@@ -1,4 +1,4 @@
-import { SVGComponent } from "~/components/SVG"
+import { type SVGComponent } from "~/components/SVG"
 import styles from "./account.module.css"
 
 export default function Connection({

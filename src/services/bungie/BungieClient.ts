@@ -1,4 +1,4 @@
-import { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
+import type { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/BungieAPIError"
 
 /**
@@ -22,13 +22,23 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
      * @returns A promise that resolves to the response data.
      */
     protected readonly request = async <T>(url: URL, payload: RequestInit): Promise<T> => {
-        const res = await fetch(url, payload)
+        let res
+        try {
+            res = await fetch(url, payload)
+        } catch (error) {
+            console.error(error)
+            throw new Error("Error fetching data")
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const data = await res.json()
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (data.ErrorCode && data.ErrorCode !== 1) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             throw new BungieAPIError(data)
         } else if (!res.ok) {
-            const error = new Error("Error fetching data")
+            const error = new Error("Unknown error")
             throw Object.assign(error, data)
         }
 

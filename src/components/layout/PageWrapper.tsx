@@ -38,19 +38,19 @@ const PageWrapperStyled = styled.main`
     margin-bottom: 1.5em;
 
     ${$media.max.desktop`
-         min-width: ${dimensions => dimensions.min};
-         max-width: 85%;
+        min-width: 50%;
+        max-width: 85%;
     `} ${$media.max.laptop`
-         min-width: ${dimensions => dimensions.min};
-         max-width: 88%;
+        min-width: 70%;
+        max-width: 88%;
     `} ${$media.max.tablet`
-         min-width: ${dimensions => dimensions.min};
-         max-width: 90%;
+        min-width: 85%;
+        max-width: 90%;
     `} ${$media.max.mobile`
-         min-width: ${dimensions => dimensions.min};
-         max-width: 93%;
+        min-width: 93%;
+        max-width: 95%;
     `} ${$media.max.tiny`
-         min-width: ${dimensions => dimensions.min};
-            max-width: 100%;
+        min-width: 98%;
+        max-width: 98%;
     `};
 `

@@ -1,4 +1,4 @@
-import { DefaultTheme } from "styled-components"
+import type { DefaultTheme } from "styled-components"
 
 export const deviceSizes = {
     tiny: { min: "0px", max: "340px" },
@@ -36,7 +36,7 @@ export const theme: DefaultTheme = {
         background: {
             light: "rgb(107, 107, 107)",
             medium: "rgb(51, 51, 51)",
-            dark: "rgb(16, 16, 16)"
+            dark: "rgb(8, 8, 8)"
         },
         brand: {
             light: "rgb(255, 140, 57, 0.8)",

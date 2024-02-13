@@ -1,11 +1,29 @@
 import styled from "styled-components"
 
-export const Card = styled.div`
+export const Card = styled.div<{
+    $fullWidth?: boolean
+    $overflowHidden?: boolean
+    $borderRadius?: number
+    $opacity?: number
+    $color?: "light" | "dark" | "medium"
+}>`
+    position: relative;
     background-color: color-mix(
         in srgb,
-        ${props => props.theme.colors.background.medium},
-        #0000 75%
+        ${props => props.theme.colors.background[props.$color!]},
+        #0000 ${({ $opacity }) => $opacity}%
     );
-    border-radius: 10px;
+    border-radius: ${props => props.$borderRadius}px;
     border: 1px solid color-mix(in srgb, ${props => props.theme.colors.border.dark}, #0000 60%);
+
+    ${props => (props.$fullWidth ? "min-width: 100%;" : "")}
+    ${({ $overflowHidden }) => ($overflowHidden ? "overflow: hidden;" : "")}
 `
+
+Card.defaultProps = {
+    $fullWidth: false,
+    $overflowHidden: false,
+    $borderRadius: 10,
+    $opacity: 75,
+    $color: "medium"
+}

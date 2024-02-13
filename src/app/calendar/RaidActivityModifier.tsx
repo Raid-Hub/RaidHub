@@ -3,7 +3,7 @@
 import { DestinyActivityModifierDefinition } from "bungie-net-core/models"
 import Image from "next/image"
 import styled from "styled-components"
-import { TooltipContainer } from "~/components/Tooltip"
+import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 
@@ -12,15 +12,17 @@ export const RaidActivityModifier = (props: { modifier: DestinyActivityModifierD
         <TooltipContainer
             tooltipId={`tooltip-${props.modifier.hash}`}
             tooltipBody={
-                <TooltipData $direction="column" $gap={0} $padding={0.6}>
-                    <H5>
-                        <b>{props.modifier.displayProperties.name}</b>
-                    </H5>
-                    <div>
-                        {props.modifier.displayProperties.description
-                            .replace(/\{var:\d+\}%/, "25%")
-                            .replace(/\{var:\d+\}/, "unknown")}
-                    </div>
+                <TooltipData>
+                    <Flex $direction="column" $gap={0} $padding={0.6}>
+                        <H5>
+                            <b>{props.modifier.displayProperties.name}</b>
+                        </H5>
+                        <div>
+                            {props.modifier.displayProperties.description
+                                .replace(/\{var:\d+\}%/, "25%")
+                                .replace(/\{var:\d+\}/, "unknown")}
+                        </div>
+                    </Flex>
                 </TooltipData>
             }>
             <Flex
@@ -39,16 +41,6 @@ export const RaidActivityModifier = (props: { modifier: DestinyActivityModifierD
         </TooltipContainer>
     )
 }
-
-const TooltipData = styled(Flex)`
-    font-size: 0.875rem;
-    border-radius: 0.3em;
-
-    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 5%);
-    text-align: center;
-
-    border: 0.5px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.light}, #0000 70%);
-`
 
 const H5 = styled.h5`
     margin-block: 0.2em;

@@ -2,13 +2,13 @@ import "server-only"
 
 import type { Prisma, PrismaClient } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { Adapter } from "next-auth/adapters"
+import { type Adapter } from "next-auth/adapters"
 import { zProfile, zUser } from "~/util/zod"
 import { getDiscordProfile } from "./providers/discord"
 import { getTwitchProfile } from "./providers/twitch"
 import { getTwitterProfile } from "./providers/twitter"
 import { getYoutubeProfile } from "./providers/youtube"
-import { SessionAndUserData } from "./types"
+import { type SessionAndUserData } from "./types"
 
 export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
     async createUser(user) {
@@ -28,7 +28,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                         name: true,
                         image: true,
                         destinyMembershipId: true,
-                        destinyMembershipType: true
+                        destinyMembershipType: true,
+                        vanity: true
                     }
                 }
             }
@@ -37,7 +38,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         return {
             ...rest,
             ...profile,
-            email: rest.email || ""
+            email: rest.email ?? ""
         }
     },
     async updateUser(user) {
@@ -53,7 +54,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                         name: true,
                         image: true,
                         destinyMembershipId: true,
-                        destinyMembershipType: true
+                        destinyMembershipType: true,
+                        vanity: true
                     }
                 }
             }
@@ -63,7 +65,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         return {
             ...updated,
             ...profile,
-            email: updated.email || ""
+            email: updated.email ?? ""
         }
     },
     async getUser(id) {
@@ -77,7 +79,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                         name: true,
                         image: true,
                         destinyMembershipId: true,
-                        destinyMembershipType: true
+                        destinyMembershipType: true,
+                        vanity: true
                     }
                 }
             }
@@ -89,7 +92,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         return {
             ...user,
             ...profile,
-            email: found.email || ""
+            email: found.email ?? ""
         }
     },
     async getUserByAccount(uniqueProviderAccountId) {
@@ -103,7 +106,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                                 name: true,
                                 image: true,
                                 destinyMembershipId: true,
-                                destinyMembershipType: true
+                                destinyMembershipType: true,
+                                vanity: true
                             }
                         }
                     }
@@ -117,7 +121,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         return {
             ...user,
             ...profile,
-            email: user.email || ""
+            email: user.email ?? ""
         }
     },
     async getUserByEmail() {
@@ -214,7 +218,8 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                                 name: true,
                                 image: true,
                                 destinyMembershipId: true,
-                                destinyMembershipType: true
+                                destinyMembershipType: true,
+                                vanity: true
                             }
                         },
                         accounts: {
@@ -247,7 +252,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             user: {
                 ...profile,
                 ...restOfUser,
-                email: restOfUser.email || "",
+                email: restOfUser.email ?? "",
                 bungieAccount: bungieAccount,
                 raidHubAccessToken: raidHubAccessToken
             },

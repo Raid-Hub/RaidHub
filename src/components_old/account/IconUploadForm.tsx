@@ -1,10 +1,10 @@
 "use client"
 
-import { AdapterUser } from "next-auth/adapters"
+import { type AdapterUser } from "next-auth/adapters"
 import Image from "next/image"
-import { ChangeEventHandler, useState } from "react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { trpc } from "~/app/(layout)/managers/QueryManager"
+import { useState, type ChangeEventHandler } from "react"
+import { Controller, useForm, type SubmitHandler } from "react-hook-form"
+import { trpc } from "~/app/trpc"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import { useSession } from "~/hooks/app/useSession"
 import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
@@ -21,7 +21,9 @@ const IconUploadForm = ({ user }: { user: AdapterUser }) => {
     const [err, setErr] = useState<Error | null>(null)
     const { mutateAsync: createPresignedURL } = trpc.user.account.presignedIconURL.useMutation()
     const { mutate: optimisticProfileUpdate, isLoading } = useOptimisticProfileUpdate({
-        onSuccess: () => updateSession()
+        onSuccess: () => {
+            void updateSession()
+        }
     })
 
     const { handleSubmit, control, setValue, resetField } = useForm<FormValues>({

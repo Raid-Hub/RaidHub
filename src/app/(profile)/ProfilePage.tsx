@@ -1,19 +1,13 @@
-import { ClanCard } from "components_old/profile/clan/ClanCard"
-import { ProfileRankings } from "components_old/profile/ranks/Rankings"
-import { UserCard } from "components_old/profile/user/UserCard"
 import { Flex } from "~/components/layout/Flex"
 import { ProfileStateManager } from "./ProfileStateManager"
+import { UserCard } from "./UserCard"
 import { Raids } from "./raids/RaidsLayout"
 
 export function ProfilePage() {
     return (
         <ProfileStateManager>
-            <Flex $direction="column">
-                <Flex as="section" $direction="row" $wrap>
-                    <UserCard />
-                    <ClanCard />
-                    <ProfileRankings />
-                </Flex>
+            <Flex $direction="column" $padding={0}>
+                <UserCard />
 
                 {/* <section className={styles["mid"]}>
                 <CurrentActivity />

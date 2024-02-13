@@ -2,9 +2,9 @@ import "server-only"
 
 import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
-import { Session } from "next-auth"
+import { type Session } from "next-auth"
 import { postRaidHubApi } from "~/services/raidhub"
-import { SessionAndUserData } from "./types"
+import { type SessionAndUserData } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export const sessionCallback = async ({
@@ -85,9 +85,13 @@ export const sessionCallback = async ({
                 },
                 raidHubAccessToken: await raidhubToken
             } satisfies Session
-        } catch (e: any) {
+        } catch (e) {
             if (
+                // @ts-expect-error Error typing...
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 e.response?.error_description === "SystemDisabled" ||
+                // @ts-expect-error Error typing...
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 e.response?.error_description === "Error Response for Shard Relay."
             ) {
                 return {

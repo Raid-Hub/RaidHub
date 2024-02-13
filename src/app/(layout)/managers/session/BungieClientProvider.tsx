@@ -1,7 +1,7 @@
 "use client"
 
-import { BungieFetchConfig } from "bungie-net-core"
-import { ReactNode, createContext, useContext, useState } from "react"
+import type { BungieFetchConfig } from "bungie-net-core"
+import { createContext, useContext, useState, type ReactNode } from "react"
 import BaseBungieClient from "~/services/bungie/BungieClient"
 
 const BungieClientContext = createContext<ClientBungieClient | undefined>(undefined)
@@ -30,17 +30,18 @@ class ClientBungieClient extends BaseBungieClient {
             throw new Error("Missing BUNGIE_API_KEY")
         }
 
-        const payload: RequestInit & { headers: Record<string, string> } = {
+        const payload: RequestInit & { headers: Headers } = {
             method: config.method,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             body: config.body,
-            headers: config.headers ?? {}
+            headers: new Headers(config.headers ?? {})
         }
 
         if (config.url.pathname.match(/\/Platform\//)) {
-            payload.headers["X-API-KEY"] = apiKey
+            payload.headers.set("X-API-KEY", apiKey)
 
             if (this.accessToken) {
-                payload.headers["Authorization"] = `Bearer ${this.accessToken}`
+                payload.headers.set("Authorization", `Bearer ${this.accessToken}`)
             }
         }
 
@@ -54,13 +55,13 @@ class ClientBungieClient extends BaseBungieClient {
         return payload
     }
 
-    protected handle<T>(url: URL, payload: RequestInit): Promise<T> {
+    protected async handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
-            return this.request(url, payload)
+            return await this.request(url, payload)
         } catch (e) {
             if (url.pathname.match(/\/common\/destiny2_content\/json\//)) {
                 url.searchParams.set("retry", String(Math.floor(Math.random() * 7777777)))
-                return this.request(url, payload)
+                return await this.request(url, payload)
             } else {
                 throw e
             }

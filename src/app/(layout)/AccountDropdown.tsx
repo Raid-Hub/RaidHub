@@ -1,6 +1,6 @@
 "use client"
 
-import { Variants, m } from "framer-motion"
+import { m, type Variants } from "framer-motion"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import styled from "styled-components"
@@ -45,7 +45,11 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                             sessionData.user.destinyMembershipId && (
                                 <DropdownLink
                                     title="View Profile"
-                                    href={`/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`}
+                                    href={
+                                        sessionData.user.vanity
+                                            ? `/${sessionData.user.vanity}`
+                                            : `/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`
+                                    }
                                 />
                             )}
                         <DropdownLink title="Manage Account" href="/account" />

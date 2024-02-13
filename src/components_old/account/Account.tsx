@@ -1,10 +1,10 @@
 "use client"
 
-import { Session } from "next-auth"
+import { type Session } from "next-auth"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
-import { trpc } from "~/app/(layout)/managers/QueryManager"
+import { trpc } from "~/app/trpc"
 import DiscordIcon from "~/components/icons/DiscordIcon"
 import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
 import TwitchIcon from "~/components/icons/TwitchIcon"
@@ -25,7 +25,7 @@ const Account = ({ session }: AccountProps) => {
     const { data: socialNames, refetch: refetchSocials } = trpc.user.connections.useQuery()
     const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
         onSuccess() {
-            refetchSocials()
+            void refetchSocials()
         }
     })
     const { mutate: deleteUserMutation } = trpc.user.delete.useMutation()

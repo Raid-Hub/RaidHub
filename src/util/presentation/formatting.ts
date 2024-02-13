@@ -45,7 +45,7 @@ export function formattedTimeSince(date: Date, locale: string | undefined = unde
     return rtf.format(-Math.floor(secondsPast / 31536000), "year")
 }
 
-export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean = false): string {
+export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean): string {
     let time = Math.round(seconds)
     const hours = Math.floor(time / 3600)
     time -= hours * 3600
@@ -90,5 +90,5 @@ const domParser = typeof window !== "undefined" ? new DOMParser() : null
 export const decodeHtmlEntities = (html: string) => {
     if (typeof window === "undefined") return html
     const doc = domParser!.parseFromString(html, "text/html")
-    return doc.body.textContent || ""
+    return doc.body.textContent ?? ""
 }

@@ -1,8 +1,8 @@
-import { BungieClientProtocol } from "bungie-net-core"
+import { type BungieClientProtocol } from "bungie-net-core"
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
-import { DestinyManifestLanguage, getDestinyManifestComponent } from "bungie-net-core/manifest"
-import { ClanBannerSource, DestinyManifest } from "bungie-net-core/models"
-import { Hashed, indexDB } from "../dexie"
+import { getDestinyManifestComponent, type DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { type ClanBannerSource, type DestinyManifest } from "bungie-net-core/models"
+import { indexDB, type Hashed } from "../dexie"
 
 export type RGBA = {
     blue: number
@@ -12,25 +12,27 @@ export type RGBA = {
 }
 
 export interface RawClanBannerData extends ClanBannerSource {
-    clanBannerDecals: {
-        [hash: string]: {
+    clanBannerDecals: Record<
+        string,
+        {
             foregroundPath: string
             backgroundPath: string
         }
-    }
-    clanBannerDecalPrimaryColors: { [hash: string]: RGBA }
-    clanBannerDecalSecondaryColors: { [hash: string]: RGBA }
-    clanBannerGonfalons: { [hash: string]: string }
-    clanBannerGonfalonColors: { [hash: string]: RGBA }
-    clanBannerGonfalonDetails: { [hash: string]: string }
-    clanBannerGonfalonDetailColors: { [hash: string]: RGBA }
-    clanBannerDecalsSquare: {
-        [hash: string]: {
+    >
+    clanBannerDecalPrimaryColors: Record<string, RGBA>
+    clanBannerDecalSecondaryColors: Record<string, RGBA>
+    clanBannerGonfalons: Record<string, string>
+    clanBannerGonfalonColors: Record<string, RGBA>
+    clanBannerGonfalonDetails: Record<string, string>
+    clanBannerGonfalonDetailColors: Record<string, RGBA>
+    clanBannerDecalsSquare: Record<
+        string,
+        {
             foregroundPath: string
             backgroundPath: string
         }
-    }
-    clanBannerGonfalonDetailsSquare: { [hash: string]: string }
+    >
+    clanBannerGonfalonDetailsSquare: Record<string, string>
 }
 
 export async function updateCachedManifest({

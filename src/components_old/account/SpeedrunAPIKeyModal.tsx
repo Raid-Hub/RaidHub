@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import React from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { useForm, type SubmitHandler } from "react-hook-form"
 import { z } from "zod"
-import { trpc } from "~/app/(layout)/managers/QueryManager"
+import { trpc } from "~/app/trpc"
 import styles from "./account.module.css"
 
 const errMsg = "Invalid API Key format: "

@@ -1,8 +1,7 @@
 "use client"
 
 import styled from "styled-components"
-import { DefaultTheme } from "styled-components/dist/types"
-import { SVG, SVGWrapperProps } from "../SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
 const DeepFilledSvg = styled(SVG)<{
     $fill?: string
@@ -19,20 +18,16 @@ const DeepFilledSvg = styled(SVG)<{
 
 export default function SpeedrunIcon({
     color,
-    deepFill,
-    deepHoverFill,
+    hoverColor,
     ...props
-}: Omit<SVGWrapperProps, "ref"> & {
-    deepFill?: keyof DefaultTheme["colors"]["icon"]
-    deepHoverFill?: keyof DefaultTheme["colors"]["icon"]
-}) {
+}: Omit<SVGWrapperProps, "ref">) {
     return (
         <DeepFilledSvg
             viewBox="0 -6.5 102 102"
             fillRule="evenodd"
             {...props}
-            $fill={deepFill}
-            $hoverFill={deepHoverFill}>
+            $fill={color}
+            $hoverFill={hoverColor}>
             <g shapeRendering="crispEdges">
                 <path
                     fill="#b55608"

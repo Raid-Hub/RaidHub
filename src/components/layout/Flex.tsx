@@ -5,6 +5,8 @@ import styled from "styled-components"
 export const Flex = styled.div<{
     $relative?: boolean
     $padding?: number
+    $paddingX?: number
+    $paddingY?: number
     $direction?: "row" | "column"
     $gap?: number
     $align?: "center" | "flex-start" | "flex-end" | "stretch" | "space-between" | "space-around"
@@ -22,12 +24,18 @@ export const Flex = styled.div<{
     flex-wrap: ${({ $wrap }) => ($wrap ? "wrap" : "nowrap")};
 
     padding: ${({ $padding }) => $padding}em;
+    ${({ $paddingX }) =>
+        $paddingX && `padding-left: ${$paddingX}em; padding-right: ${$paddingX}em;`}
+    ${({ $paddingY }) =>
+        $paddingY && `padding-top: ${$paddingY}em; padding-bottom: ${$paddingY}em;`}
     ${({ $fullWidth }) => $fullWidth && "min-width: 100%;"}
 `
 
 Flex.defaultProps = {
     $relative: false,
-    $padding: 0,
+    $padding: 1,
+    $paddingX: undefined,
+    $paddingY: undefined,
     $gap: 1,
     $direction: "row",
     $align: "center",

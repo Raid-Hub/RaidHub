@@ -34,7 +34,12 @@ export function ProfileStateManager(props: { children: ReactNode }) {
     if (ssrDestinyProfile) {
         queryClient.setQueryData<UseProfileQueryData>(
             getUseProfileQueryKey(destinyMembershipId, destinyMembershipType),
-            old => old ?? ssrDestinyProfile
+            old => old ?? ssrDestinyProfile,
+            {
+                // Forces the query to refetch on the next render because the SSR data
+                // only contains some of the components of the response
+                updatedAt: 0
+            }
         )
     }
 
