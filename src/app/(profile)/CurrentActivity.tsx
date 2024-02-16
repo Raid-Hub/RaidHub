@@ -1,11 +1,10 @@
-import {
+import type {
     DestinyCharacterActivitiesComponent,
     DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
-import { useBungieClient } from "~/components/app/TokenManager"
 import { useActivityDefinition } from "~/hooks/dexie/useActivityDefinition"
 import { useActivityModeDefinition } from "~/hooks/dexie/useActivityModeDefinition"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
@@ -13,9 +12,7 @@ import styles from "../../../styles/pages/profile/mid.module.css"
 import { secondsToHMS } from "../../../util/presentation/formatting"
 import { useProfileProps } from "../Profile"
 
-/** @deprecated */
-export default function CurrentActivity() {
-    const bungie = useBungieClient()
+export const CurrentActivity = () => {
     const { destinyMembershipId, destinyMembershipType } = useProfileProps()
     const { data, dataUpdatedAt: updatedAt } = bungie.profileTransitory.useQuery(
         {
