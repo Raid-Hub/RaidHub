@@ -1,49 +1,19 @@
 import { Flex } from "~/components/layout/Flex"
+import { CurrentActivity } from "./CurrentActivity"
 import { ProfileStateManager } from "./ProfileStateManager"
+import { RecentRaid } from "./RecentRaid"
 import { UserCard } from "./UserCard"
 import { Raids } from "./raids/RaidsLayout"
 
-export function ProfilePage() {
-    return (
-        <ProfileStateManager>
-            <Flex $direction="column" $padding={0}>
-                <UserCard />
-
-                {/* <section className={styles["mid"]}>
+export const ProfilePage = () => (
+    <ProfileStateManager>
+        <Flex $direction="column" $padding={0} $crossAxis="flex-start">
+            <UserCard />
+            <Flex $padding={0} $direction="row" $wrap $fullWidth $crossAxis="stretch">
                 <CurrentActivity />
-                {pinnedActivityId ? (
-                    <PinnedActivity
-                        activityId={pinnedActivityId}
-                        isLoadingActivities={mostRecentActivity === undefined}
-                        isLoadingRaidHubProfile={isLoadingRaidHubProfile}
-                        isPinned={pinnedActivityId === raidHubProfile?.pinnedActivityId}
-                    />
-                ) : (
-                    pinnedActivityId === undefined && (
-                        <Loading  />
-                    )
-                )}
-                <div
-                    style={{
-                        display: "flex",
-                        gap: "1em",
-                        flexWrap: "wrap",
-                        justifyContent: "center"
-                    }}>
-                    <LayoutToggle handleLayoutToggle={handleLayoutToggle} layout={layout} />
-                    {isFilterMounted && (
-                        <FilterSelector
-                            activeFilter={activeFilter}
-                            setActiveFilter={setActiveFilter}
-                        />
-                    )}
-                </div>
-            </section> */}
-
-                {/* <FilterContext.Provider value={activeFilter}> */}
-                <Raids />
-                {/* </FilterContext.Provider> */}
+                <RecentRaid />
             </Flex>
-        </ProfileStateManager>
-    )
-}
+            <Raids />
+        </Flex>
+    </ProfileStateManager>
+)

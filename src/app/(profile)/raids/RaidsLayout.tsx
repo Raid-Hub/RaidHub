@@ -1,12 +1,13 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
+import RaidCard from "components_old/profile/raids/RaidCard"
 import { useMemo } from "react"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { type ProfileProps } from "~/app/(profile)/types"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
 import { useRaidHubActivities } from "~/services/raidhub/useRaidHubActivities"
 import { useRaidHubPlayers } from "~/services/raidhub/useRaidHubPlayers"
@@ -15,13 +16,13 @@ import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
 } from "~/types/raidhub-api"
+import { RaidCardContext } from "./RaidContext"
 
 enum Layout {
     DotCharts,
     RecentActivities
 }
 
-/** @deprecated */
 export const Raids = () => {
     const { destinyMembershipId, destinyMembershipType, ready } = usePageProps<ProfileProps>()
 
@@ -75,10 +76,10 @@ export const Raids = () => {
         )
 
         players.forEach(p => {
-            Object.entries(p.worldFirstEntries).forEach(([leaderboardId, data]) => {
-                if (boardIdToRaidLookup.has(leaderboardId)) {
-                    const arr = raidToData.get(boardIdToRaidLookup.get(leaderboardId)!)!
-                    arr.push(data)
+            p.worldFirstEntries.forEach(entry => {
+                if (boardIdToRaidLookup.has(entry.boardId)) {
+                    const arr = raidToData.get(boardIdToRaidLookup.get(entry.boardId)!)!
+                    arr.push(entry)
                 }
             })
         })
@@ -94,19 +95,12 @@ export const Raids = () => {
             Collection<string, RaidHubPlayerActivitiesActivity>
         >()
         activities.forEach(a => {
-            if (!coll.has(a.meta.raidId)) coll.set(a.meta.raidId, new Collection())
-            coll.get(a.meta.raidId)!.set(a.instanceId, a)
+            if (!coll.has(a.meta.raid)) coll.set(a.meta.raid, new Collection())
+            if (!coll.get(a.meta.raid)) coll.set(a.meta.raid, new Collection())
+            coll.get(a.meta.raid)!.set(a.instanceId, a)
         })
         return coll
     }, [activities, areMembershipsFetched, isLoadingActivities])
-
-    // useEffect(() => {
-    //     if (!isLoadingActivities) {
-    //         setMostRecentActivity(activities.find(a => a.completed)?.instanceId ?? null)
-    //     } else {
-    //         setMostRecentActivity(undefined)
-    //     }
-    // }, [activities, isLoadingActivities, setMostRecentActivity])
 
     const queryParams = useQueryParams<{
         raid: string
@@ -127,37 +121,25 @@ export const Raids = () => {
     const layout = Layout.DotCharts // todo
 
     return (
-        <Grid as="section">
-            {/* {
-                layout === Layout.DotCharts
-                    ? listedRaids.map(raid => (
-                          <RaidCardContext
-                              key={raid}
-                              activitiesByRaid={activitiesByRaid}
-                              isLoadingActivities={isLoadingActivities}
-                              raid={raid}>
-                              <RaidCard
-                                  leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
-                                  wfBoardId={
-                                      (leaderboards.worldFirst[raid].find(
-                                          b => b.type === "challenge"
-                                      ) ??
-                                          leaderboards.worldFirst[raid].find(
-                                              b => b.type === "normal"
-                                          ))!.id
-                                  }
-                                  expand={() => setExpandedRaid(raid)}
-                                  closeExpand={clearExpandedRaid}
-                                  isExpanded={raid === getExpandedRaid()}
-                              />
-                          </RaidCardContext>
-                      ))
-                    : null
-                // <RecentRaids
-                //     isLoading={isLoadingActivities}
-                //     allActivities={activities ?? new Collection()}
-                // />
-            } */}
+        <Grid as="section" $minCardWidth={325}>
+            {listedRaids.map(raid => (
+                <RaidCardContext
+                    key={raid}
+                    activitiesByRaid={activitiesByRaid}
+                    isLoadingActivities={isLoadingActivities}
+                    raid={raid}>
+                    <RaidCard
+                        leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
+                        wfBoardId={
+                            (leaderboards.worldFirst[raid].find(b => b.type === "challenge") ??
+                                leaderboards.worldFirst[raid].find(b => b.type === "normal"))!.id
+                        }
+                        expand={() => setExpandedRaid(raid)}
+                        closeExpand={clearExpandedRaid}
+                        isExpanded={raid === getExpandedRaid()}
+                    />
+                </RaidCardContext>
+            ))}
         </Grid>
     )
     // switch (layout) {

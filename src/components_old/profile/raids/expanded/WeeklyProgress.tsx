@@ -1,15 +1,18 @@
-import { useBungieClient } from "~/components/app/TokenManager"
-import { useProfileProps } from "~/components/profile/Profile"
+"use client"
+
+import type { ProfileProps } from "~/app/(profile)/types"
+import { usePageProps } from "~/components/layout/PageWrapper"
 import { RaidMileStones } from "~/data/milestones"
-import { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
+import { useProfile } from "~/services/bungie/useProfile"
+import type { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
 import CharacterWeeklyProgress from "./CharacterWeeklyProgress"
 import styles from "./expanded-raid.module.css"
 
+/**@deprecated */
 export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, SunsetRaid> }) {
-    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
-    const bungie = useBungieClient()
+    const { destinyMembershipId, destinyMembershipType } = usePageProps<ProfileProps>()
 
-    const { data: profile } = bungie.profile.useQuery(
+    const { data: profile } = useProfile(
         {
             destinyMembershipId,
             membershipType: destinyMembershipType

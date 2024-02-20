@@ -1,4 +1,4 @@
-import { BungieNetResponse, PlatformErrorCodes } from "bungie-net-core/models"
+import type { BungieNetResponse, PlatformErrorCodes } from "bungie-net-core/models"
 
 export class BungieAPIError extends Error implements BungieNetResponse<unknown> {
     readonly DetailedErrorTrace: string

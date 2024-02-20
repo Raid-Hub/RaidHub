@@ -1,11 +1,12 @@
 import { useMemo } from "react"
+import { Tag } from "~/hooks/useTags"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import Activity from "../../../models/profile/data/Activity"
-import styles from "../../../styles/pages/profile/raids.module.css"
-import { getRelativeTime } from "../../../util/presentation/pastDates"
-import { Tag } from "../../../util/tags"
+import { getRelativeTime } from "~/util/presentation/pastDates"
 import { Green, Orange, Red, Teal } from "./Dot"
 import { FULL_HEIGHT } from "./DotGraph"
+import styles from "./raids.module.css"
 
 export type DotTooltipProps = {
     offset: {
@@ -13,15 +14,17 @@ export type DotTooltipProps = {
         y: number
     }
     isShowing: boolean
-    activity: Activity
+    activity: RaidHubPlayerActivitiesActivity
 }
 
+/** @deprecated */
 const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
+    const { getDifficultyString } = useRaidHubManifest()
     const dateString = useMemo(
-        () => getRelativeTime(activity.dateCompleted),
+        () => getRelativeTime(new Date(activity.dateCompleted)),
         [activity.dateCompleted]
     )
-    const difficultyString = useMemo(() => raidVersion(activity, strings), [activity, strings])
+
     const lowman = activity.completed
         ? activity.playerCount === 1
             ? Tag.SOLO
@@ -48,13 +51,13 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
                     ? Orange
                     : Red
             }}>
-            <div>{secondsToHMS(activity.durationSeconds)}</div>
+            <div>{secondsToHMS(activity.duration, false)}</div>
             <div className={styles["dot-tooltip-date"]}>{dateString}</div>
             <hr />
             <div className={styles["dot-tooltip-tags"]}>
-                <span>{lowman && strings.tags[lowman]}</span>
-                <span>{activity.flawless && strings.tags[Tag.FLAWLESS]}</span>
-                <span>{difficultyString}</span>
+                <span>{lowman}</span>
+                <span>{activity.flawless && Tag.FLAWLESS}</span>
+                <span>{getDifficultyString(activity.meta.version)}</span>
             </div>
         </div>
     )

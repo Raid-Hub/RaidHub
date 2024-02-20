@@ -1,22 +1,25 @@
+import { Collection } from "@discordjs/collection"
 import { m } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
-import Loading from "~/components/global/Loading"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { CloudflareImage } from "~/components/CloudflareImage"
+import { Loading } from "~/components/Loading"
+import Expand from "~/components/icons/Expand"
 import RaidCardBackground from "~/data/raid-backgrounds"
-import CloudflareImage from "~/images/CloudflareImage"
-import Expand from "~/images/icons/Expand"
-import Activity from "~/models/profile/data/Activity"
-import styles from "~/styles/pages/profile/raids.module.css"
-import { RaidHubPlayerProfileLeaderboardEntry } from "~/types/raidhub-api"
+import { useTags } from "~/hooks/useTags"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type {
+    RaidHubPlayerActivitiesActivity,
+    RaidHubPlayerProfileLeaderboardEntry
+} from "~/types/raidhub-api"
 import { medianElement } from "~/util/math"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import { findTags } from "~/util/tags"
 import BigNumberStatItem from "./BigNumberStatItem"
 import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
 import RaceTagLabel from "./RaceTagLabel"
-import { useActivitiesContext } from "./RaidContext"
 import RaidTagLabel from "./RaidTagLabel"
 import ExpandedRaidView from "./expanded/ExpandedRaidView"
+import styles from "./raids.module.css"
 
 type RaidModalProps = {
     expand: () => void
@@ -26,6 +29,7 @@ type RaidModalProps = {
     isExpanded: boolean
 }
 
+/** @deprecated */
 export default function RaidCard({
     expand,
     closeExpand,
@@ -33,6 +37,9 @@ export default function RaidCard({
     wfBoardId,
     isExpanded
 }: RaidModalProps) {
+    const { activities, isLoadingActivities, raid } = useRaidCardContext()
+    const { getRaidString } = useRaidHubManifest()
+
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
     useEffect(() => {
         if (hoveredTag) {
@@ -47,47 +54,44 @@ export default function RaidCard({
         }
     }, [hoveredTag])
 
-    const { activities, isLoadingActivities } = useActivitiesContext()
-
     const recentClear = useMemo(
-        () => activities?.find(a => a.player.finishedRaid && a.fresh),
+        () => activities?.find(a => a.player.finishedRaid && a.fresh) ?? null,
         [activities]
     )
 
-    const tags = useMemo(() => findTags(Array.from(activities?.values() ?? [])), [activities])
+    const tags = useTags(activities ?? new Collection())
 
-    const { strings } = useLocale()
-
-    const firstTaggedClear: RaidHubPlayerProfileLeaderboardEntry | undefined = useMemo(() => {
+    const firstContestClear: RaidHubPlayerProfileLeaderboardEntry | undefined = useMemo(() => {
         const wfBoardClear = leaderboardData
-            .filter(e => e.boardId === "wfBoardId")
+            ?.filter(e => e.boardId === wfBoardId)
             ?.sort((a, b) => a.rank - b.rank)[0]
         if (wfBoardClear) return wfBoardClear
 
-        const allLeaderboardClears = Array.from(leaderboardData.values())
-            .flat()
+        const allLeaderboardClears = leaderboardData
+            ?.flat()
             .sort(
                 (a, b) => new Date(a.dateCompleted).getTime() - new Date(b.dateCompleted).getTime()
             )
-        return allLeaderboardClears[0]
+        return allLeaderboardClears?.[0]
     }, [leaderboardData, wfBoardId])
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
         const fastestFullClear = freshFulls?.size
-            ? freshFulls.reduce<Activity>((curr, nxt) =>
-                  nxt.durationSeconds < curr.durationSeconds ? nxt : curr
+            ? freshFulls.reduce<RaidHubPlayerActivitiesActivity>((curr, nxt) =>
+                  nxt.duration < curr.duration ? nxt : curr
               )
             : undefined
+
         const averageClear = freshFulls
-            ? medianElement(freshFulls.toSorted((a, b) => a.durationSeconds - b.durationSeconds))
+            ? medianElement(freshFulls.toSorted((a, b) => a.duration - b.duration))
             : undefined
 
         return { fastestFullClear, averageClear }
     }, [activities])
 
     return isExpanded ? (
-        <ExpandedRaidView raid={raid} dismiss={clearExpand} />
+        <ExpandedRaidView raid={raid} dismiss={closeExpand} />
     ) : (
         <m.div
             initial={{
@@ -102,7 +106,7 @@ export default function RaidCard({
             transition={{
                 duration: 0.6
             }}
-            className={styles["card"]}>
+            className={styles.card}>
             <div className={styles["card-img-container"]}>
                 <CloudflareImage
                     className={styles["card-background"]}
@@ -110,17 +114,17 @@ export default function RaidCard({
                     width={960}
                     height={540}
                     cloudflareId={RaidCardBackground[raid]}
-                    alt={strings.raidNames[raid]}
+                    alt={getRaidString(raid)}
                 />
                 <div className={styles["card-top"]}>
-                    {firstTaggedClear && (
+                    {firstContestClear && (
                         <RaceTagLabel
-                            placement={firstTaggedClear.rank}
-                            instanceId={firstTaggedClear.instanceId}
-                            dayOne={firstTaggedClear.dayOne}
-                            contest={firstTaggedClear.contest}
-                            weekOne={firstTaggedClear.weekOne}
-                            challenge={firstTaggedClear.type === "Challenge"}
+                            placement={firstContestClear.rank}
+                            instanceId={firstContestClear.instanceId}
+                            dayOne={firstContestClear.dayOne}
+                            contest={firstContestClear.contest}
+                            weekOne={firstContestClear.weekOne}
+                            challenge={firstContestClear.type === "Challenge"}
                             raid={raid}
                             setActiveId={setHoveredTag}
                         />
@@ -134,23 +138,29 @@ export default function RaidCard({
                 </div>
                 <div className={styles["img-overlay-bottom"]}>
                     <div className={styles["card-challenge-tags"]}>
-                        {tags?.map((tag, key) => (
+                        {tags?.map(tag => (
                             <RaidTagLabel
-                                {...tag}
+                                key={tag.activity.instanceId}
                                 raid={raid}
-                                key={key}
                                 setActiveId={setHoveredTag}
+                                instanceId={tag.activity.instanceId}
+                                isBestPossible={tag.bestPossible}
+                                playerCount={tag.activity.playerCount}
+                                fresh={tag.activity.fresh}
+                                flawless={tag.activity.flawless}
+                                difficulty={tag.activity.meta.version}
+                                contest={tag.activity.contest}
                             />
                         ))}
                     </div>
-                    <span className={styles["card-title"]}>{strings.raidNames[raid]}</span>
+                    <span className={styles["card-title"]}>{getRaidString(raid)}</span>
                 </div>
             </div>
             <div className={styles["card-content"]}>
                 <div className={styles["graph-content"]}>
                     {isLoadingActivities ? (
                         <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
-                            <Loading className={styles["dots-svg-loading"]} />
+                            <Loading />
                         </div>
                     ) : (
                         <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
@@ -159,38 +169,38 @@ export default function RaidCard({
                         <BigNumberStatItem
                             displayValue={activities?.filter(a => a.player.finishedRaid).size ?? 0}
                             isLoading={isLoadingActivities}
-                            name={strings.totalClears.split(" ").join("\n")}
+                            name={"Total\nClears"}
                             extraLarge={true}
                         />
                     </div>
                 </div>
 
-                <div className={styles["timings"]}>
+                <div className={styles.timings}>
                     <BigNumberStatItem
                         displayValue={
-                            recentClear ? secondsToHMS(recentClear.durationSeconds) : strings.na
+                            recentClear ? secondsToHMS(recentClear.duration, false) : "N/A"
                         }
                         isLoading={isLoadingActivities}
                         name="Recent"
-                        href={recentClear ? `/pgcr/${recentClear.activityId}` : undefined}
+                        href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
                     />
                     <BigNumberStatItem
                         displayValue={
                             fastestFullClear
-                                ? secondsToHMS(fastestFullClear.durationSeconds)
-                                : strings.na
+                                ? secondsToHMS(fastestFullClear.duration, false)
+                                : "N/A"
                         }
                         isLoading={isLoadingActivities}
-                        name={strings.fastestClear}
-                        href={fastestFullClear ? `/pgcr/${fastestFullClear.activityId}` : undefined}
+                        name="Fastest"
+                        href={fastestFullClear ? `/pgcr/${fastestFullClear.instanceId}` : undefined}
                     />
                     <BigNumberStatItem
                         displayValue={
-                            averageClear ? secondsToHMS(averageClear.durationSeconds) : strings.na
+                            averageClear ? secondsToHMS(averageClear.duration, false) : "N/A"
                         }
                         isLoading={isLoadingActivities}
-                        name={strings.averageClear}
-                        href={averageClear ? `/pgcr/${averageClear.activityId}` : undefined}
+                        name="Average"
+                        href={averageClear ? `/pgcr/${averageClear.instanceId}` : undefined}
                     />
                 </div>
             </div>

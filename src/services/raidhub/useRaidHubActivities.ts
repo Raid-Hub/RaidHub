@@ -1,58 +1,56 @@
 import { Collection } from "@discordjs/collection"
-import { useQueries, type UseQueryOptions } from "@tanstack/react-query"
+import { useQueries, useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
 import type { RaidHubPlayerActivitiesResponse } from "~/types/raidhub-api"
 import { getRaidHubApi } from "."
 
-export function useRaidHubActivities(
+export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
+    membershipId: string,
+    opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
+) => {
+    return useQuery(useMemo(() => generateQuery(opts)(membershipId), [membershipId, opts]))
+}
+
+export const useRaidHubActivities = (
     membershipIds: string[],
     opts?: {
         enabled?: boolean
     }
-) {
+) => {
     // Collection of membership IDs and their cursors
     const [cursors, setCursors] = useState(() => new Collection<string, Set<string>>())
 
-    const generateQuery = useCallback(
-        (
-            membershipId: string,
-            cursor?: string
-        ): UseQueryOptions<RaidHubPlayerActivitiesResponse> => ({
-            queryKey: ["raidhub", "player", "activities", membershipId, cursor] as const,
-            queryFn: () =>
-                getActivities({
-                    membershipId,
-                    cursor
-                }),
-            staleTime: 60_000,
-            onSuccess: data => {
-                setCursors(oldCursors => {
-                    // If there is no next cursor, we can prevent a state update
-                    if (!data.nextCursor) return oldCursors
-                    // We need to clone the collection for react to register a state update
-                    const newCursors = oldCursors.clone()
-                    if (!newCursors.has(membershipId)) {
-                        newCursors.set(membershipId, new Set([data.nextCursor]))
-                    } else {
-                        newCursors.get(membershipId)!.add(data.nextCursor)
-                    }
-                    return newCursors
-                })
-            },
-            ...opts
-        }),
+    const _generateQuery = useCallback(
+        (membershipId: string, cursor?: string) =>
+            generateQuery({
+                ...opts,
+                onSuccess: data => {
+                    setCursors(oldCursors => {
+                        // If there is no next cursor, we can prevent a state update
+                        if (!data.nextCursor) return oldCursors
+                        // We need to clone the collection for react to register a state update
+                        const newCursors = oldCursors.clone()
+                        if (!newCursors.has(membershipId)) {
+                            newCursors.set(membershipId, new Set([data.nextCursor]))
+                        } else {
+                            newCursors.get(membershipId)!.add(data.nextCursor)
+                        }
+                        return newCursors
+                    })
+                }
+            })(membershipId, cursor),
         [opts]
     )
 
     const queriesOptions = useMemo(
         () =>
             [
-                [membershipIds.map(membershipId => generateQuery(membershipId))],
+                [membershipIds.map(membershipId => _generateQuery(membershipId))],
                 cursors.map((cursors, membershipId) =>
-                    Array.from(cursors).map(cursor => generateQuery(membershipId, cursor))
+                    Array.from(cursors).map(cursor => _generateQuery(membershipId, cursor))
                 )
             ].flat(2),
-        [membershipIds, cursors, generateQuery]
+        [membershipIds, cursors, _generateQuery]
     )
 
     const queries = useQueries({
@@ -69,6 +67,24 @@ export function useRaidHubActivities(
         [queries]
     )
 }
+
+export const generateQuery =
+    <T = RaidHubPlayerActivitiesResponse>(
+        opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
+    ) =>
+    (
+        membershipId: string,
+        cursor?: string
+    ): UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T> => ({
+        queryKey: ["raidhub", "player", "activities", membershipId, cursor] as const,
+        queryFn: () =>
+            getActivities({
+                membershipId,
+                cursor
+            }),
+        staleTime: 60_000,
+        ...opts
+    })
 
 async function getActivities({ membershipId, cursor }: { membershipId: string; cursor?: string }) {
     const response = await getRaidHubApi(

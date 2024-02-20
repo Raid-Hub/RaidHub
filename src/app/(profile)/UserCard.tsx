@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useMemo, useRef } from "react"
+import { useMemo } from "react"
 import styled from "styled-components"
 import type { ProfileProps } from "~/app/(profile)/types"
 import { Card } from "~/components/Card"
@@ -10,22 +10,19 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { TabletDesktopSwitch } from "~/components/util/TabletDesktopSwitch"
-import { useProfileDecoration } from "~/hooks/app/useProfileDecoration"
-import { useSession } from "~/hooks/app/useSession"
 import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
-import { useClanForMember } from "~/services/bungie/useClanForMember"
+import { useClansForMember } from "~/services/bungie/useClansForMember"
 import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
 import { useProfile } from "~/services/bungie/useProfile"
-import { bannerEmblemUrl, bungieIconUrl, emblemUrl } from "~/util/destiny/bungie-icons"
+import { bungieBannerEmblemUrl, bungieEmblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
+import { $media } from "../(layout)/media"
 import { trpc } from "../trpc"
 import { UserCardSocials } from "./UserCardSocials"
 
-/** @deprecated */
 export function UserCard() {
-    const session = useSession()
     const props = usePageProps<ProfileProps>()
 
     const destinyProfileQuery = useProfile(
@@ -34,7 +31,6 @@ export function UserCard() {
             membershipType: props.destinyMembershipType
         },
         {
-            enabled: props.ready,
             staleTime: 1000 * 60 * 2,
             // Do not use initialData here, as it will cause hydration issues with RSC
             placeholderData: props.ssrDestinyProfile ?? undefined
@@ -50,28 +46,16 @@ export function UserCard() {
         }
     )
 
-    const appProfileQuery = trpc.profile.getUnique.useQuery(
+    const { data: appProfileImage } = trpc.profile.getUnique.useQuery(
         {
             destinyMembershipId: props.destinyMembershipId
         },
         {
+            select: data => data?.image ?? null,
             // Required to prevent the query from running before the page is ready
             enabled: props.ready
         }
     )
-
-    const ref = useRef<HTMLDivElement>(null)
-    const {
-        isEditing,
-        opacity,
-        color,
-        handleCancel,
-        handleStartEditing,
-        handleEditorInputSave,
-        handleReset,
-        setOpacity,
-        setColor
-    } = useProfileDecoration(ref)
 
     const { emblemMobileUrl, emblemHash } = useMemo(() => {
         const emblems = destinyProfileQuery?.data?.characters?.data
@@ -79,22 +63,21 @@ export function UserCard() {
             : undefined
 
         return {
-            emblemMobileUrl: emblemUrl(emblems?.emblemBackgroundPath),
+            emblemMobileUrl: bungieEmblemUrl(emblems?.emblemBackgroundPath),
             emblemHash: emblems?.emblemHash
         }
     }, [destinyProfileQuery])
 
-    const emblemDefinition = useItemDefinition(emblemHash ?? 0)
-    const emblemBannerUrl = bannerEmblemUrl(emblemDefinition)
+    const emblemBannerUrl = bungieBannerEmblemUrl(useItemDefinition(emblemHash ?? -1))
 
     const userInfo = destinyProfileQuery?.data?.profile.data?.userInfo ?? bungieProfileQuery.data
 
     const icon =
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        appProfileQuery.data?.image ||
+        appProfileImage ||
         (bungieProfileQuery.data?.iconPath ? bungieIconUrl(bungieProfileQuery.data.iconPath) : null)
 
-    const { data: clan } = useClanForMember(
+    const { data: clan } = useClansForMember(
         { membershipId: props.destinyMembershipId, membershipType: props.destinyMembershipType },
         {
             staleTime: 10 * 60000,
@@ -113,8 +96,7 @@ export function UserCard() {
     return (
         <Card $overflowHidden $fullWidth>
             <TabletDesktopSwitch
-                default="desktop"
-                tablet={
+                sm={
                     <>
                         <Container
                             $aspectRatio={{
@@ -150,7 +132,7 @@ export function UserCard() {
                         </Flex>
                     </>
                 }
-                desktop={
+                lg={
                     <>
                         <Container
                             $aspectRatio={{
@@ -209,6 +191,9 @@ export function UserCard() {
 const Nameplate = styled.h1`
     margin-block: 0.1em;
     font-size: 1.5rem;
+    ${$media.max.mobile`
+        font-size: 1.375rem;
+    `}
 
     color: ${({ theme }) => theme.colors.text.primary};
 `
@@ -216,6 +201,9 @@ const Nameplate = styled.h1`
 const Subtitle = styled.div`
     margin-block: 0.1em;
     font-size: 1.125rem;
+    ${$media.max.mobile`
+        font-size: 1rem;
+    `}
 
     & a {
         color: ${({ theme }) => theme.colors.text.secondary};
@@ -234,6 +222,10 @@ const ProfilePicture = styled(Image)`
 
     border-radius: 50%;
     border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.medium}, #0000 60%);
+
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 0.5em
+        color-mix(in srgb, ${({ theme }) => theme.colors.border.medium}, #0000 60%);
 `
 
 const BannerOverlay = styled.div`
@@ -242,92 +234,3 @@ const BannerOverlay = styled.div`
     transform: translateY(-50%);
     left: 8em;
 `
-
-// return (
-//     <>
-//         {isEditing && (
-//             <div className={styles["edit-background-modal"]}>
-//                 <div className={styles["edit-background-btns"]}>
-//                     <button onClick={handleCancel}>Cancel</button>
-//                     <button onClick={handleEditorInputSave}>Save</button>
-//                     <button onClick={handleReset}>Reset</button>
-//                 </div>
-//                 <label htmlFor="colorpicker" style={{ display: "block", margin: "0.7em" }}>
-//                     Pick a color from the menu below:
-//                 </label>
-//                 <input
-//                     className={styles["custom-color-picker"]}
-//                     type="color"
-//                     id="colorpicker"
-//                     value={color}
-//                     onChange={e => setColor(e.target.value)}
-//                 />
-//                 <label htmlFor="opacityslider" style={{ display: "block", margin: "0.7em" }}>
-//                     Adjust opacity:
-//                 </label>
-//                 <input
-//                     type="range"
-//                     min="0"
-//                     max="255"
-//                     step="1"
-//                     id="opacityslider"
-//                     value={opacity}
-//                     onChange={e => setOpacity(parseInt(e.target.value, 10))}
-//                 />
-//             </div>
-//         )}
-//         <div ref={ref} className={styles.card}>
-//             {appProfileQuery.isLoading ? (
-//                 <Loading className={styles["card-loading"]} />
-//             ) : (
-//                 <>
-//                     <div className={styles.banner}>
-//                         <Image
-//                             unoptimized
-//                             className={styles["image-background"]}
-//                             src={emblem}
-//                             width={474}
-//                             height={96}
-//                             priority
-//                             alt="profile banner"
-//                         />
-
-//                         <div className={styles.details}>
-//                             <Image
-//                                 src={
-//                                     appProfileQuery.data?.image ??
-//                                     bungieIconUrl(userInfo?.iconPath)
-//                                 }
-//                                 unoptimized
-//                                 width={80}
-//                                 height={80}
-//                                 alt="profile picture"
-//                             />
-
-//                             <div className={styles["profile-username"]}>
-//                                 {userInfo && <UserName {...userInfo} />}
-//                             </div>
-//                         </div>
-//                         {userInfo &&
-//                             userInfo.membershipId === session.data?.user.destinyMembershipId &&
-//                             !isEditing && (
-//                                 <>
-//                                     <div
-//                                         className={styles["edit-btn"]}
-//                                         onClick={handleStartEditing}>
-//                                         <Edit />
-//                                     </div>
-//                                 </>
-//                             )}
-//                     </div>
-
-//                     <div className={styles.icons}>
-//                         {socials?.map((social, key) => (
-//                             <SocialTag {...social} key={key} />
-//                         ))}
-//                     </div>
-//                 </>
-//             )}
-//         </div>
-//     </>
-// )

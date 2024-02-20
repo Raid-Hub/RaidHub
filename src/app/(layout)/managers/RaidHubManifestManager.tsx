@@ -1,9 +1,9 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { ReactNode, createContext, useContext, useMemo } from "react"
+import { createContext, useContext, useMemo, type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
-import {
+import type {
     ListedRaid,
     RaidDifficulty,
     RaidHubManifestResponse,
@@ -16,6 +16,7 @@ type ManifestContextData = {
     listedRaids: ListedRaid[]
     elevatedDifficulties: RaidDifficulty[]
     sunsetRaids: SunsetRaid[]
+    reprisedRaids: RaidHubManifestResponse["reprisedChallengePairings"]
     getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
     getDifficultyString(
         raid: RaidDifficulty
@@ -25,6 +26,7 @@ type ManifestContextData = {
         raid: ListedRaid
         difficulty: RaidDifficulty
     } | null
+    getCheckpointName(raid: ListedRaid): RaidHubManifestResponse["checkpointNames"][ListedRaid]
 }
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
@@ -40,11 +42,12 @@ export function RaidHubManifestManager(props: {
         staleTime: 1000 * 3600 // 1 hour
     })
 
-    const value: ManifestContextData = useMemo(() => {
-        return {
+    const value: ManifestContextData = useMemo(
+        () => ({
             getRaidString: (raid: ListedRaid) => data.raidStrings[raid],
             getDifficultyString: (raid: RaidDifficulty) => data.difficultyStrings[raid],
             getUrlPathForRaid: (raid: ListedRaid) => data.raidUrlPaths[raid],
+            getCheckpointName: (raid: ListedRaid) => data.checkpointNames[raid],
             getRaidFromHash: (hash: string | number) => {
                 const raid = data.hashes[String(hash)]
                 if (!raid) {
@@ -61,9 +64,11 @@ export function RaidHubManifestManager(props: {
                 .map(([k, _]) => Number(k) as RaidDifficulty),
             leaderboards: data.leaderboards,
             listedRaids: [...data.listed],
-            sunsetRaids: [...data.sunset]
-        }
-    }, [data])
+            sunsetRaids: [...data.sunset],
+            reprisedRaids: data.reprisedChallengePairings
+        }),
+        [data]
+    )
 
     return <ManifestContext.Provider value={value}>{props.children}</ManifestContext.Provider>
 }

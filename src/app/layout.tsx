@@ -12,7 +12,7 @@ import { LocaleManager } from "./(layout)/managers/LocaleManager"
 import { QueryManager } from "./(layout)/managers/QueryManager"
 import { RaidHubManifestManager } from "./(layout)/managers/RaidHubManifestManager"
 import { BungieClientProvider } from "./(layout)/managers/session/BungieClientProvider"
-import { SessionManager } from "./(layout)/managers/session/SessionSessionManager"
+import { SessionManager } from "./(layout)/managers/session/ServerSessionManager"
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await getRaidHubApi("/manifest", null, null, {

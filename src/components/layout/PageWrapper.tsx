@@ -2,19 +2,19 @@
 
 import { createContext, forwardRef, useContext, type ForwardedRef, type ReactNode } from "react"
 import styled from "styled-components"
-import { $media } from "~/app/(layout)/media"
+import { $media } from "~/layout/media"
 
 const PropsContext = createContext<object | null>(null)
 
 export const PageWrapper = forwardRef(
-    <T extends object>(
+    <T extends object = never>(
         props: {
             children: ReactNode
-            pageProps: T
+            pageProps?: T
         },
         ref: ForwardedRef<HTMLElement>
     ) => (
-        <PropsContext.Provider value={props.pageProps}>
+        <PropsContext.Provider value={props.pageProps ?? {}}>
             <PageWrapperStyled ref={ref}>{props.children}</PageWrapperStyled>
         </PropsContext.Provider>
     )
@@ -34,23 +34,17 @@ export const usePageProps = <T extends object>() => {
 }
 
 const PageWrapperStyled = styled.main`
-    margin: 0.5em auto;
+    margin: 0 auto;
+    margin-top: 0.5em;
     margin-bottom: 1.5em;
 
     ${$media.max.desktop`
-        min-width: 50%;
-        max-width: 85%;
-    `} ${$media.max.laptop`
-        min-width: 70%;
-        max-width: 88%;
-    `} ${$media.max.tablet`
-        min-width: 85%;
-        max-width: 90%;
-    `} ${$media.max.mobile`
-        min-width: 93%;
-        max-width: 95%;
-    `} ${$media.max.tiny`
-        min-width: 98%;
-        max-width: 98%;
-    `};
+        width: 85%;
+    `}
+    ${$media.max.laptop`
+        width: 90%;
+    `}
+    ${$media.max.tablet`
+        width: 95%;
+    `}
 `

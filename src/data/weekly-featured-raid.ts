@@ -1,1 +1,0 @@
-export const WeeklyFeaturedRaidChallengeObjectiveHash = 3180884403

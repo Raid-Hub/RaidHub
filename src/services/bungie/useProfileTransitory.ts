@@ -1,29 +1,24 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { getProfile } from "bungie-net-core/endpoints/Destiny2"
-import { BungieMembershipType } from "bungie-net-core/models"
-import { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
-import { useBungieClient } from "~/app/(layout)/managers/session/BungieClientProvider"
+import type { BungieMembershipType } from "bungie-net-core/models"
+import type { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
+import { useBungieClient } from "~/layout/managers/session/BungieClientProvider"
 
-export const useProfileTransitory = (
+export const useProfileTransitory = <T = DestinyProfileResponse<[1000]>>(
     params: {
         destinyMembershipId: string
         membershipType: BungieMembershipType
     },
-    opts: {
-        refetchOnWindowFocus?: boolean
-        refetchOnMount?: boolean
-        refetchInterval?: number
-        onSuccess?: (data: DestinyProfileResponse<[1000]>) => void
-    }
+    opts?: UseQueryOptions<DestinyProfileResponse<[1000]>, Error, T>
 ) => {
     const bungieClient = useBungieClient()
 
-    return useQuery({
-        queryKey: ["bungie", "profile", "transitory", params] as const,
-        queryFn: ({ queryKey }) =>
+    return useQuery<DestinyProfileResponse<[1000]>, Error, T>({
+        queryKey: ["bungie", "profile", "transitory", params],
+        queryFn: () =>
             getProfile(bungieClient, {
-                ...queryKey[3],
-                components: [1000 /*DestinyComponentType.Transitory */]
+                ...params,
+                components: [1000]
             }).then(res => res.Response),
         ...opts
     })

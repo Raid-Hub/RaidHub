@@ -25,7 +25,7 @@ export const o = {
     >(obj: T, fn: (key: `${K}`) => N) {
         const rv = {}
         this.keys<T, K>(obj).forEach(k => {
-            // @ts-ignore
+            // @ts-expect-error This is the point of this helper
             rv[k] = fn(k)
         })
         return rv as Record<K, N>
@@ -38,7 +38,7 @@ export const o = {
     >(obj: T, fn: (key: V) => N) {
         const rv = {}
         this.entries<T, K>(obj).forEach(([k, v]) => {
-            // @ts-ignore
+            // @ts-expect-error This is the point of this helper
             rv[k] = fn(v)
         })
         return rv as Record<K, N>

@@ -4,7 +4,7 @@ import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
 import styles from "~/styles/pages/pgcr.module.css"
 import PGCRCharacter from "../../../util/destiny/Character"
 import PGCRPlayer from "../../../util/destiny/Player"
-import { bannerEmblemUrl } from "../../../util/destiny/bungie-icons"
+import { bungieBannerEmblemUrl } from "../../../util/destiny/bungie-icons"
 
 type SelectedPlayerProps = {
     player: PGCRPlayer
@@ -34,7 +34,7 @@ const SelectedPlayer = ({ player, character, onClick }: SelectedPlayerProps) => 
             onClick={onClick}>
             <Image
                 unoptimized
-                src={bannerEmblemUrl(emblem ?? null)}
+                src={bungieBannerEmblemUrl(emblem ?? null)}
                 alt=""
                 fill
                 className={styles["emblem"]}

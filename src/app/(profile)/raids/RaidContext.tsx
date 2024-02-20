@@ -14,13 +14,13 @@ const RaidContext = createContext<
     | null
 >(null)
 
-export function useActivitiesContext() {
+export function useRaidCardContext() {
     const ctx = useContext(RaidContext)
     if (!ctx) throw new Error("No RaidContext found")
     return ctx
 }
 
-export function RaidCardContext({
+export const RaidCardContext = ({
     children,
     activitiesByRaid,
     isLoadingActivities,
@@ -33,19 +33,17 @@ export function RaidCardContext({
     > | null
     isLoadingActivities: boolean
     raid: ListedRaid
-}) {
-    return (
-        <RaidContext.Provider
-            value={{
-                raid,
-                ...(isLoadingActivities
-                    ? { isLoadingActivities: true, activities: null }
-                    : {
-                          isLoadingActivities: false,
-                          activities: activitiesByRaid?.get(raid) ?? new Collection()
-                      })
-            }}>
-            {children}
-        </RaidContext.Provider>
-    )
-}
+}) => (
+    <RaidContext.Provider
+        value={{
+            raid,
+            ...(isLoadingActivities
+                ? { isLoadingActivities: true, activities: null }
+                : {
+                      isLoadingActivities: false,
+                      activities: activitiesByRaid?.get(raid) ?? new Collection()
+                  })
+        }}>
+        {children}
+    </RaidContext.Provider>
+)

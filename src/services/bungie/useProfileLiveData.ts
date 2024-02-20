@@ -4,12 +4,12 @@ import { type BungieMembershipType } from "bungie-net-core/models"
 import { type DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
 import { useBungieClient } from "~/layout/managers/session/BungieClientProvider"
 
-type UseProfileQueryData = DestinyProfileResponse<[100, 200, 202]>
+type UseProfileQueryData = DestinyProfileResponse<[204, 205, 305]>
 
 const getUseProfileQueryKey = (destinyMembershipId: string, membershipType: BungieMembershipType) =>
-    ["bungie", "profile", "primary", destinyMembershipId, membershipType] as const
+    ["bungie", "profile", "live data", destinyMembershipId, membershipType] as const
 
-export const useProfile = <T = UseProfileQueryData>(
+export const useProfileLiveData = <T = UseProfileQueryData>(
     params: {
         destinyMembershipId: string
         membershipType: BungieMembershipType
@@ -27,7 +27,9 @@ export const useProfile = <T = UseProfileQueryData>(
             getProfile(bungieClient, {
                 destinyMembershipId: queryKey[3],
                 membershipType: queryKey[4],
-                components: [100 /*Profiles*/, 200 /*Characters*/, 202 /*CharacterProgressions*/]
+                components: [
+                    204 /*CharacterActivities*/, 205 /*CharacterEquipment*/, 305 /*ItemSockets*/
+                ]
             }).then(res => res.Response),
         structuralSharing: (old, current) => ({
             // Just in case we miss some components, we want to keep the old data.

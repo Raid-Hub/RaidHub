@@ -131,7 +131,8 @@
             "@typescript-eslint/array-type": "off",
             "@typescript-eslint/consistent-type-definitions": "off",
             "@next/next/no-page-custom-font": "off",
-            "@typescript-eslint/unbound-method": "off"
+            "@typescript-eslint/unbound-method": "off",
+            "@typescript-eslint/no-unsafe-enum-comparison": "off"
         }
     }
 }

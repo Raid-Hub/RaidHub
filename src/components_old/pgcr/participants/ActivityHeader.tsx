@@ -1,6 +1,6 @@
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { TagStrings } from "~/data/strings/activity-tags"
+import { useLocale } from "~/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { useRaidHubActivity } from "~/services/raidhub/useRaidHubActivity"
 import styles from "~/styles/pages/pgcr.module.css"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"

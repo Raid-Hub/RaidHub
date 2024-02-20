@@ -1,7 +1,8 @@
 import "server-only"
 
-import { BungieFetchConfig } from "bungie-net-core"
-import { PlatformErrorCodes } from "bungie-net-core/models"
+import type { BungieFetchConfig } from "bungie-net-core"
+import type { PlatformErrorCodes } from "bungie-net-core/models"
+import { cache } from "react"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
 
@@ -29,6 +30,7 @@ export default class ServerBungieClient extends BaseBungieClient {
 
         const payload: RequestInit & { headers: Headers } = {
             method: config.method,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             body: config.body,
             headers: new Headers(config.headers) ?? {},
             next: this.next
@@ -46,10 +48,11 @@ export default class ServerBungieClient extends BaseBungieClient {
     }
 
     handle<T>(url: URL, payload: RequestInit): Promise<T> {
+        const reqCached = cache((url: URL, payload: RequestInit) => this.request<T>(url, payload))
         try {
-            return this.request(url, payload)
+            return reqCached(url, payload)
         } catch (e) {
-            if (!(e instanceof BungieAPIError) || !ExpectedErrorCodes.has(e.ErrorCode)) {
+            if (!(e instanceof BungieAPIError && ExpectedErrorCodes.has(e.ErrorCode))) {
                 console.error(e)
             }
             throw e

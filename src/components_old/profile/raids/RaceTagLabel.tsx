@@ -1,50 +1,85 @@
 import Link from "next/link"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
-import useHover from "~/hooks/util/useDebouncedHover"
-import styles from "~/styles/pages/profile/raids.module.css"
-import { RaceTag } from "~/types/profile"
-import { LocalStrings } from "~/util/presentation/localized-strings"
-import { wfRaceMode } from "~/util/tags"
+import { useCallback } from "react"
+import { Tag } from "~/hooks/useTags"
+import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type { ListedRaid } from "~/types/raidhub-api"
+import styles from "./raids.module.css"
 
-type RaidTagLabelProps = {
-    instanceId?: string
+/** @deprecated */
+const RaceTagLabel = ({
+    instanceId,
+    setActiveId,
+    ...tagProps
+}: {
+    placement: number
+    instanceId: string
+    dayOne: boolean
+    contest: boolean
+    weekOne: boolean
+    challenge: boolean
+    raid: ListedRaid
     setActiveId: (instanceId: string) => void
-} & RaceTag
+}) => {
+    const label = useRaceLabel(tagProps)
 
-const RaceTagLabel = (props: RaidTagLabelProps) => {
-    const { strings } = useLocale()
+    const hoverAction = useCallback(() => {
+        setActiveId(instanceId)
+    }, [instanceId, setActiveId])
 
-    const action = () => {
-        props.instanceId && props.setActiveId(props.instanceId)
-    }
-
-    const { handleHover, handleLeave } = useHover({ action, debounce: 750 })
-
-    const label = getRaceLabel(props, strings)
+    const { handleHover, handleLeave } = useDebouncedHover({ action: hoverAction, debounce: 750 })
 
     return label ? (
-        props.instanceId ? (
-            <Link
-                className={styles["race-tag"]}
-                href={`/pgcr/${props.instanceId}`}
-                onMouseEnter={handleHover}
-                onMouseLeave={handleLeave}>
-                <span>{label}</span>
-            </Link>
-        ) : (
-            <div className={styles["race-tag"]}>
-                <span>{label}</span>
-            </div>
-        )
+        <Link
+            className={styles["race-tag"]}
+            href={`/pgcr/${instanceId}`}
+            onMouseEnter={handleHover}
+            onMouseLeave={handleLeave}>
+            <span>{label}</span>
+        </Link>
     ) : null
 }
 
-function getRaceLabel(props: RaceTag, strings: LocalStrings): string | null {
-    const tag = wfRaceMode(props)
+const useRaceLabel = (props: {
+    placement: number
+    dayOne: boolean
+    contest: boolean
+    weekOne: boolean
+    challenge: boolean
+    raid: ListedRaid
+}): string | null => {
+    const tag = useRaceMode(props)
     if (tag) {
-        return `${strings.tags[tag]}${
-            props.placement && props.placement <= 500 ? ` #${props.placement}` : ""
-        }`
+        return `${tag}${props.placement && props.placement <= 500 ? ` #${props.placement}` : ""}`
+    } else {
+        return null
+    }
+}
+
+const useRaceMode = ({
+    challenge,
+    raid,
+    dayOne,
+    contest,
+    weekOne
+}: {
+    raid: ListedRaid
+    dayOne: boolean | undefined
+    challenge: boolean | undefined
+    contest: boolean | undefined
+    weekOne: boolean | undefined
+}) => {
+    const { reprisedRaids } = useRaidHubManifest()
+
+    const challengeName = reprisedRaids.find(r => r.raid === raid)?.triumphName
+    if (challenge && challengeName) {
+        return challengeName
+    } else if (dayOne) {
+        return Tag.DAY_ONE
+    } else if (contest) {
+        return Tag.CONTEST
+    } else if (weekOne) {
+        return Tag.WEEK_ONE
     } else {
         return null
     }

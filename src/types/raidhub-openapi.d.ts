@@ -783,6 +783,7 @@ export interface components {
       readonly reprisedChallengePairings: readonly {
           readonly raid: components["schemas"]["RaidEnum"];
           readonly difficulty: components["schemas"]["RaidVersionEnum"];
+          readonly triumphName: string;
         }[];
       readonly leaderboards: {
         readonly worldFirst: {
@@ -809,6 +810,9 @@ export interface components {
       readonly difficultyStrings: {
         [key: string]: string;
       };
+      readonly checkpointNames: {
+        [key: string]: string;
+      };
     };
     readonly PlayerSearchResponse: {
       readonly params: {
@@ -826,8 +830,8 @@ export interface components {
       readonly membershipId: string;
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
           readonly meta: {
-            readonly raidId: components["schemas"]["RaidEnum"];
-            readonly versionId: components["schemas"]["RaidVersionEnum"];
+            readonly raid: components["schemas"]["RaidEnum"];
+            readonly version: components["schemas"]["RaidVersionEnum"];
           };
         })[];
       readonly nextCursor: string | null;
@@ -893,13 +897,7 @@ export interface components {
       readonly leaderboardEntries: {
         [key: string]: number;
       };
-      readonly players: {
-        [key: string]: {
-          readonly finishedRaid: boolean;
-          readonly creditedSherpas: number;
-          readonly isFirstClear: boolean;
-        };
-      };
+      readonly players: readonly components["schemas"]["PlayerWithActivityData"][];
     };
     readonly LeaderboardSearchResponse: {
       readonly params: {

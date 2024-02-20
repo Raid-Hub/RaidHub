@@ -7,7 +7,6 @@ import styled from "styled-components"
 import { Grid } from "~/components/layout/Grid"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { RaidMileStones } from "~/data/milestones"
-import { WeeklyFeaturedRaidChallengeObjectiveHash } from "~/data/weekly-featured-raid"
 import { useSeasons } from "~/hooks/dexie/useSeasonDefinition"
 import { usePublicMilestones } from "~/services/bungie/usePublicMilestones"
 import { modulo } from "~/util/math"
@@ -42,8 +41,10 @@ export default function Page() {
     const thisWeek = useMemo(
         () =>
             milestones?.find(milestone =>
-                milestone.activities.some(a =>
-                    a.challengeObjectiveHashes.includes(WeeklyFeaturedRaidChallengeObjectiveHash)
+                milestone.activities.some(
+                    a =>
+                        // Apparently the raid milestone is the only one with challengeObjectiveHashes
+                        a.challengeObjectiveHashes.length
                 )
             ) ?? null,
         [milestones]
@@ -101,12 +102,13 @@ export default function Page() {
     }
 
     const seasonEndDate = new Date(seasonEnd)
+
     if (!thisWeek || seasonEndDate.getTime() <= Date.now()) {
         return (
             <PageWrapper>
                 <MessageComponent>
-                    No featured raid this week. If this doesn't seem right, please file a bug report
-                    in <Link href="https://discord.gg/raidhub">discord.gg/raidhub</Link>
+                    No featured raid this week. If this doesn&apos;t seem right, please file a bug
+                    report in <Link href="https://discord.gg/raidhub">discord.gg/raidhub</Link>
                 </MessageComponent>
             </PageWrapper>
         )

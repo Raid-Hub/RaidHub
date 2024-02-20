@@ -1,14 +1,29 @@
 "use client"
 
-import { type ReactNode } from "react"
-import { useMediaQuery } from "~/app/(layout)/media"
+import styled from "styled-components"
+import { $media } from "~/layout/media"
 
-export const TabletDesktopSwitch = (props: {
-    tablet: ReactNode
-    desktop: ReactNode
-    default: "desktop" | "tablet"
-}) => {
-    const isMobile = useMediaQuery("max", "tablet")
-    if (typeof isMobile === "undefined") return props[props.default]
-    return isMobile ? props.tablet : props.desktop
+export const TabletDesktopSwitch = (props: { sm: JSX.Element; lg: JSX.Element }) => {
+    return (
+        <Parent>
+            <div className="sm">{props.sm}</div>
+            <div className="lg">{props.lg}</div>
+        </Parent>
+    )
 }
+
+const Parent = styled.div`
+    & .sm {
+        display: none;
+        ${$media.max.tablet`
+            display: block;
+        `}
+    }
+
+    & .lg {
+        display: block;
+        ${$media.max.tablet`
+            display: none;
+        `}
+    }
+`

@@ -15,6 +15,8 @@ export const theme: DefaultTheme = {
             lightGray: "rgb(164, 164, 164)",
             gray: "rgb(103, 103, 103)",
             orange: "rgb(255, 100, 57)",
+            success: "rgb(57, 195, 131)",
+            error: "rgb(245, 103, 98)",
             twitch: "rgb(100, 65, 165)",
             twitter: "rgb(29, 161, 242)",
             youtube: "rgb(241, 45, 45)",
@@ -60,6 +62,8 @@ declare module "styled-components" {
                 lightGray: string
                 gray: string
                 orange: string
+                success: string
+                error: string
                 twitch: string
                 twitter: string
                 youtube: string

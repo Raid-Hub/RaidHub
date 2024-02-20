@@ -2,7 +2,7 @@
 
 import type { ClanBanner } from "bungie-net-core/models"
 import { useClanBanner } from "~/hooks/dexie/useClanBanner"
-import { clanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
+import { bungieClanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
 
 const mast =
     "https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"
@@ -33,7 +33,7 @@ export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number
                             y={bannerOffset}
                             width={bannerWidth}
                             height={bannerHeight}
-                            xlinkHref={clanBannerBannerLayerUrl(bannerData.gonfalcons.path)}
+                            xlinkHref={bungieClanBannerBannerLayerUrl(bannerData.gonfalcons.path)}
                         />
                     </mask>
                     <mask id="topDecal">
@@ -41,7 +41,7 @@ export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number
                             y={bannerOffset}
                             width={bannerWidth}
                             height={bannerHeight}
-                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalTop.path)}
+                            xlinkHref={bungieClanBannerBannerLayerUrl(bannerData.decalTop.path)}
                             mask="url(#gonfalcons)"
                         />
                     </mask>
@@ -50,7 +50,9 @@ export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number
                             y={bannerOffset}
                             width={bannerWidth}
                             height={bannerHeight}
-                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalSecondary.path)}
+                            xlinkHref={bungieClanBannerBannerLayerUrl(
+                                bannerData.decalSecondary.path
+                            )}
                             mask="url(#gonfalcons)"
                         />
                     </mask>
@@ -59,7 +61,7 @@ export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number
                             y={bannerOffset}
                             width={bannerWidth}
                             height={bannerHeight}
-                            xlinkHref={clanBannerBannerLayerUrl(bannerData.decalPrimary.path)}
+                            xlinkHref={bungieClanBannerBannerLayerUrl(bannerData.decalPrimary.path)}
                             mask="url(#gonfalcons)"
                         />
                     </mask>

@@ -1,9 +1,9 @@
 import { Hydrate, dehydrate, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Head from "next/head"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
 import WorldFirstHeader from "~/components/leaderboards/WorldFirstHeader"
 import { usePage } from "~/hooks/util/usePage"
+import { useLocale } from "~/layout/managers/LocaleManager"
 import { createServerSideQueryClient, prefetchLeaderboard } from "~/server/serverQueryClient"
 import { Leaderboard, getLeaderboard, leaderboardQueryKey } from "~/services/raidhub/getLeaderboard"
 import {

@@ -1,57 +1,82 @@
+"use client"
+
 import type {
     DestinyCharacterActivitiesComponent,
-    DestinyProfileTransitoryComponent,
     DestinyProfileTransitoryPartyMember
 } from "bungie-net-core/models"
+import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
+import { Card } from "~/components/Card"
+import { Container } from "~/components/layout/Container"
+import { Flex } from "~/components/layout/Flex"
+import { Grid } from "~/components/layout/Grid"
+import { usePageProps } from "~/components/layout/PageWrapper"
+import { H4 } from "~/components/typography/H4"
 import { useActivityDefinition } from "~/hooks/dexie/useActivityDefinition"
 import { useActivityModeDefinition } from "~/hooks/dexie/useActivityModeDefinition"
-import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
-import styles from "../../../styles/pages/profile/mid.module.css"
-import { secondsToHMS } from "../../../util/presentation/formatting"
-import { useProfileProps } from "../Profile"
+import { useTimer } from "~/hooks/util/useTimer"
+import { useProfileLiveData } from "~/services/bungie/useProfileLiveData"
+import { useProfileTransitory } from "~/services/bungie/useProfileTransitory"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
+import { bungieIconUrl, bungiePgcrImageUrl } from "~/util/destiny/bungie-icons"
+import { getUserName } from "~/util/destiny/bungieName"
+import type { ProfileProps } from "./types"
+
+const commonTransitoryQuerySettings = {
+    refetchInterval: 45000,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true
+}
 
 export const CurrentActivity = () => {
-    const { destinyMembershipId, destinyMembershipType } = useProfileProps()
-    const { data, dataUpdatedAt: updatedAt } = bungie.profileTransitory.useQuery(
+    const { destinyMembershipId, destinyMembershipType } = usePageProps<ProfileProps>()
+
+    const { data: profileTransitoryData } = useProfileTransitory(
+        { destinyMembershipId, membershipType: destinyMembershipType },
+        {
+            select: data => data?.profileTransitoryData.data,
+            ...commonTransitoryQuerySettings
+        }
+    )
+
+    const { data: characterActivity } = useProfileLiveData(
         {
             destinyMembershipId,
             membershipType: destinyMembershipType
         },
         {
-            refetchInterval: 60000,
-            refetchIntervalInBackground: false,
-            refetchOnReconnect: true,
-            refetchOnWindowFocus: true
+            enabled: !!profileTransitoryData?.currentActivity,
+            select: data =>
+                Object.values(data.characterActivities?.data ?? {}).sort(
+                    (a, b) =>
+                        new Date(b.dateActivityStarted).getTime() -
+                        new Date(a.dateActivityStarted).getTime()
+                )[0] as DestinyCharacterActivitiesComponent | undefined,
+            ...commonTransitoryQuerySettings
         }
     )
 
-    const activities = Object.values(data?.characterActivities.data ?? {}).sort(
-        (a, b) =>
-            new Date(b.dateActivityStarted).getTime() - new Date(a.dateActivityStarted).getTime()
-    )[0] as DestinyCharacterActivitiesComponent | undefined
-
-    return data?.profileTransitoryData.data?.currentActivity && activities ? (
-        <CurrentActivityExisting
-            transitoryComponent={data.profileTransitoryData.data}
-            updatedAt={updatedAt}
-            activitiesComponent={activities}
+    return profileTransitoryData?.currentActivity && characterActivity ? (
+        <CurrentActivityCard
+            characterActivity={characterActivity}
+            startTime={new Date(profileTransitoryData.currentActivity.startTime!)}
+            partyMembers={profileTransitoryData.partyMembers}
         />
     ) : null
 }
 
-function CurrentActivityExisting({
-    transitoryComponent,
-    activitiesComponent,
-    updatedAt
-}: {
-    transitoryComponent: DestinyProfileTransitoryComponent
-    activitiesComponent: DestinyCharacterActivitiesComponent
-    updatedAt: number
-}) {
-    const activity = useActivityDefinition(activitiesComponent.currentActivityHash)
-    const activityMode = useActivityModeDefinition(activitiesComponent.currentActivityModeHash)
+const CurrentActivityCard = (props: {
+    characterActivity: DestinyCharacterActivitiesComponent
+    startTime: Date
+    partyMembers: DestinyProfileTransitoryPartyMember[]
+}) => {
+    const elapsedTime = useTimer({
+        startTimeMS: props.startTime.getTime(),
+        interval: 1000
+    })
+    const activity = useActivityDefinition(props.characterActivity.currentActivityHash)
+    const activityMode = useActivityModeDefinition(props.characterActivity.currentActivityModeHash)
 
     const activityName = useMemo(() => {
         const activityName = activity?.displayProperties.name
@@ -67,75 +92,88 @@ function CurrentActivityExisting({
         }
     }, [activity, activityMode])
 
-    return transitoryComponent?.currentActivity ? (
-        <Link
-            href={{
-                pathname: "/guardians",
-                query: {
-                    membershipId: transitoryComponent.partyMembers.map(pm => pm.membershipId)
-                }
-            }}
-            className={styles["current-activity"]}>
-            <div>
-                <span className={styles["current-activity-label"]}>In Game</span>
-                <span className={styles["activity-name"]}>{activityName}</span>
-            </div>
-            <div>
-                <span className={styles["current-activity-label"]}>Fireteam</span>
-                <div className={styles["fireteam-members"]}>
-                    {transitoryComponent.partyMembers.map(pm => (
+    return (
+        <Card
+            $overflowHidden
+            style={{
+                minWidth: "calc(min(100%, 350px))",
+                // this is a hack to make the card grow with the number of party members
+                flex: props.partyMembers.length
+            }}>
+            <Container $minHeight={80}>
+                <Image
+                    src={bungiePgcrImageUrl(activity?.pgcrImage)}
+                    unoptimized
+                    fill
+                    priority
+                    alt="pgcr background image"
+                    style={{ objectFit: "cover" }}
+                />
+            </Container>
+            <Flex $direction="column" $crossAxis="flex-start" $gap={0.25}>
+                <Link
+                    href={`/guardians?${new URLSearchParams(
+                        props.partyMembers.map(pm => ["membershipId", pm.membershipId])
+                    ).toString()}`}>
+                    <H4 $mBlock={0.25}>
+                        <Flex $padding={0}>
+                            {"In Game"}
+                            <svg width={8} height={8}>
+                                <circle r={3} fill="red" cx="50%" cy="50%" />
+                            </svg>
+                            {formatElapsedTime(elapsedTime)}
+                        </Flex>
+                    </H4>
+                </Link>
+                {activityName}
+                <Grid style={{ marginTop: "1.5em", minWidth: "100%" }}>
+                    {props.partyMembers.map(pm => (
                         <PartyMember key={pm.membershipId} {...pm} />
                     ))}
-                </div>
-            </div>
-            {transitoryComponent.currentActivity.startTime && (
-                <div className={styles["timer-container"]}>
-                    <span className={styles["current-activity-label"]}>Elapsed Time</span>
-                    <Timer
-                        lastRefresh={updatedAt}
-                        startTime={new Date(transitoryComponent.currentActivity.startTime)}
-                    />
-                </div>
-            )}
-        </Link>
-    ) : null
+                </Grid>
+            </Flex>
+        </Card>
+    )
 }
 
-function PartyMember({ membershipId }: DestinyProfileTransitoryPartyMember) {
-    const bungie = useBungieClient()
-    const { data } = bungie.linkedProfiles.useQuery({ membershipId }, { staleTime: Infinity })
-    const primaryProfile = data
-        ? data.profiles.find(p => isPrimaryCrossSave(p, membershipId))!
-        : null
+const PartyMember = ({ membershipId }: DestinyProfileTransitoryPartyMember) => {
+    const playerQuery = useRaidHubResolvePlayer(membershipId)
 
     return (
-        <span>
-            {(primaryProfile?.bungieGlobalDisplayName ?? primaryProfile?.displayName) ||
-                membershipId}
-        </span>
+        <Container>
+            {playerQuery.data ? (
+                <Link
+                    href={`/profile/${playerQuery.data.membershipType ?? 0}/${
+                        playerQuery.data.membershipId
+                    }`}
+                    style={{ color: "unset" }}>
+                    <Flex $padding={0} $align="flex-start">
+                        <Image
+                            src={bungieIconUrl(playerQuery.data.iconPath)}
+                            unoptimized
+                            width={32}
+                            height={32}
+                            alt="player icon"
+                        />
+                        <span>{getUserName(playerQuery.data)}</span>
+                    </Flex>
+                </Link>
+            ) : (
+                membershipId
+            )}
+        </Container>
     )
 }
 
-function Timer({ lastRefresh, startTime }: { lastRefresh: number; startTime: Date }) {
-    const [seconds, setSeconds] = useState(0)
+function formatElapsedTime(ms: number) {
+    const hours = String(Math.floor(ms / 3600_000))
+    const minutes = String(Math.floor((ms % 3600_000) / 60_000))
+    const remainingSeconds = String(Math.floor((ms / 1000) % 60))
 
-    useEffect(() => {
-        const id = setInterval(() => {
-            setSeconds(seconds => seconds + 1)
-        }, 1000)
+    const formattedTime = `${hours.padStart(2, "0")}:${minutes.padStart(
+        2,
+        "0"
+    )}:${remainingSeconds.padStart(2, "0")}`
 
-        return () => {
-            setSeconds(0)
-            clearInterval(id)
-        }
-    }, [lastRefresh])
-
-    const secondsSinceStart = useMemo(
-        () => Math.round((lastRefresh - startTime.getTime()) / 1000),
-        [lastRefresh, startTime]
-    )
-
-    const elapsed = seconds + secondsSinceStart
-
-    return <div className={styles["timer"]}>{secondsToHMS(elapsed, true)}</div>
+    return formattedTime
 }

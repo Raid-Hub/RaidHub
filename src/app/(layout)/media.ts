@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { css } from "styled-components"
 import { o } from "~/util/o"
 import { deviceSizes } from "./theme"
@@ -8,29 +7,6 @@ import { deviceSizes } from "./theme"
 export const $media = {
     min: queries("min"),
     max: queries("max")
-}
-
-export const useMediaQuery = (dir: keyof typeof $media, prop: keyof typeof deviceSizes) => {
-    const [matches, setMatches] = useState<boolean | undefined>(undefined)
-
-    useEffect(() => {
-        const query = `(${dir}-width: ${deviceSizes[prop][dir]})`
-        const mediaQueryList = window.matchMedia(query)
-        // initial value
-        setMatches(mediaQueryList.matches)
-
-        const handleChange = (event: MediaQueryListEvent) => {
-            setMatches(event.matches)
-        }
-
-        mediaQueryList.addEventListener("change", handleChange)
-
-        return () => {
-            mediaQueryList.removeEventListener("change", handleChange)
-        }
-    }, [prop, dir])
-
-    return matches
 }
 
 function queries(dir: "min" | "max") {

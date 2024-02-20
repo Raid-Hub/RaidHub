@@ -1,6 +1,6 @@
 import Link from "next/link"
-import Loading from "../../../components/Loading"
-import styles from "../../../styles/pages/profile/raids.module.css"
+import { Loading } from "~/components/Loading"
+import styles from "./raids.module.css"
 
 type BigNumberStatProps = {
     isLoading: boolean
@@ -10,6 +10,7 @@ type BigNumberStatProps = {
     href?: string
 }
 
+/** @deprecated */
 const BigNumberStatItem = ({
     isLoading,
     displayValue,
@@ -18,7 +19,7 @@ const BigNumberStatItem = ({
     href
 }: BigNumberStatProps) => {
     return (
-        <div className={styles["timing"]}>
+        <div className={styles.timing}>
             {isLoading ? (
                 <Loading className={styles["number-loading"]} />
             ) : (

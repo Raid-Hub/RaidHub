@@ -2,6 +2,7 @@ import styled from "styled-components"
 
 export const Card = styled.div<{
     $fullWidth?: boolean
+    $fullHeight?: boolean
     $overflowHidden?: boolean
     $borderRadius?: number
     $opacity?: number
@@ -17,6 +18,7 @@ export const Card = styled.div<{
     border: 1px solid color-mix(in srgb, ${props => props.theme.colors.border.dark}, #0000 60%);
 
     ${props => (props.$fullWidth ? "min-width: 100%;" : "")}
+    ${props => (props.$fullHeight ? "min-height: 100%;" : "")}
     ${({ $overflowHidden }) => ($overflowHidden ? "overflow: hidden;" : "")}
 `
 

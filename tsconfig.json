@@ -17,6 +17,7 @@
         "baseUrl": "src/",
         "paths": {
             "~/server/*": ["./app/(server)/*"],
+            "~/layout/*": ["./app/(layout)/*"],
             "~/app/*": ["./app/*"],
             "~/components/*": ["./components/*"],
             "~/data/*": ["./data/*"],

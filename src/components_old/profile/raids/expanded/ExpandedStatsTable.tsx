@@ -1,15 +1,17 @@
-import { useRaidHubManifest } from "app/RaidHubManifestManager"
-import { ReactNode } from "react"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
-import { Difficulty } from "~/data/raid"
-import { RaidDifficulty } from "~/types/raidhub-api"
-import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
-import { useActivitiesContext } from "../RaidContext"
-import styles from "./expanded-raid.module.css"
-~/app/aaegmnrs / RaidHubManifestManager
+"use client"
 
+import { type ReactNode } from "react"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { Difficulty } from "~/data/raid"
+import { useLocale } from "~/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type { RaidDifficulty } from "~/types/raidhub-api"
+import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
+import styles from "./expanded-raid.module.css"
+
+/**@deprecated */
 export default function ExpandedStatsTable() {
-    const { activities, isLoadingActivities } = useActivitiesContext()
+    const { activities, isLoadingActivities } = useRaidCardContext()
     const { getDifficultyString } = useRaidHubManifest()
     const { locale } = useLocale()
 
@@ -24,7 +26,7 @@ export default function ExpandedStatsTable() {
     if (isLoadingActivities) return <p>loading...</p>
 
     return (
-        <table className={styles["table"]}>
+        <table className={styles.table}>
             <thead>
                 <tr>
                     <th />
@@ -36,14 +38,14 @@ export default function ExpandedStatsTable() {
             </thead>
             <StatsRow
                 header="Total Attempts"
-                values={versions.map(v => activities.filter(a => a.difficulty === v).size)}
+                values={versions.map(v => activities.filter(a => a.meta.version === v).size)}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
             />
             <StatsRow
                 header="Total Clears"
                 values={versions.map(
-                    v => activities.filter(a => a.difficulty === v && a.player.finishedRaid).size
+                    v => activities.filter(a => a.meta.version === v && a.player.finishedRaid).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
@@ -53,7 +55,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.fresh && a.player.finishedRaid
+                            a => a.meta.version === v && a.fresh && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -63,7 +65,7 @@ export default function ExpandedStatsTable() {
                 header="Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v && a.player.finishedRaid)
+                        .filter(a => a.meta.version === v && a.player.finishedRaid)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -73,7 +75,7 @@ export default function ExpandedStatsTable() {
                 header="Fresh Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v && a.fresh && a.player.finishedRaid)
+                        .filter(a => a.meta.version === v && a.fresh && a.player.finishedRaid)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -84,7 +86,7 @@ export default function ExpandedStatsTable() {
             <StatsRow
                 header="Flawlesses"
                 values={versions.map(
-                    v => activities.filter(a => a.difficulty === v && a.flawless).size
+                    v => activities.filter(a => a.meta.version === v && a.flawless).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
@@ -94,7 +96,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.playerCount <= 3 && a.player.finishedRaid
+                            a => a.meta.version === v && a.playerCount <= 3 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -105,7 +107,8 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.playerCount === 3 && a.player.finishedRaid
+                            a =>
+                                a.meta.version === v && a.playerCount === 3 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -116,7 +119,8 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.playerCount === 2 && a.player.finishedRaid
+                            a =>
+                                a.meta.version === v && a.playerCount === 2 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -127,7 +131,8 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.difficulty === v && a.playerCount === 1 && a.player.finishedRaid
+                            a =>
+                                a.meta.version === v && a.playerCount === 1 && a.player.finishedRaid
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -137,7 +142,7 @@ export default function ExpandedStatsTable() {
                 header="Kills"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v)
+                        .filter(a => a.meta.version === v)
                         .reduce((result, a) => result + a.player.kills, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -147,7 +152,7 @@ export default function ExpandedStatsTable() {
                 header="Deaths"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v)
+                        .filter(a => a.meta.version === v)
                         .reduce((result, a) => result + a.player.deaths, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -157,7 +162,7 @@ export default function ExpandedStatsTable() {
                 header="Assists"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v)
+                        .filter(a => a.meta.version === v)
                         .reduce((result, a) => result + a.player.assists, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -167,7 +172,7 @@ export default function ExpandedStatsTable() {
                 header="In Game Time"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.difficulty === v)
+                        .filter(a => a.meta.version === v)
                         .reduce((result, a) => result + a.player.timePlayedSeconds, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}

@@ -23,7 +23,6 @@ model Profile {
   destinyMembershipId   String  @unique @map("destiny_membership_id")
   destinyMembershipType Int     @map("destiny_membership_type")
   pinnedActivityId      String? @map("pinned_activity_id")
-  profileDecoration     String? @map("profile_decoration") @db.VarChar(512)
   vanity                String? @unique
   user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   pinnedPGCR            PGCR?   @relation(fields: [pinnedActivityId], references: [id], onDelete: SetNull)

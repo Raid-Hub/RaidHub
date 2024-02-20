@@ -1,14 +1,16 @@
+"use client"
+
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
-import { ListedRaid } from "~/types/raidhub-api"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type { ListedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/helpers"
-import ActivityTile from "../ActivityTile"
-import { useActivitiesContext } from "../RaidContext"
 import ExpandedStatsTable from "./ExpandedStatsTable"
 import WeeklyProgress from "./WeeklyProgress"
 import styles from "./expanded-raid.module.css"
 
+/**@deprecated */
 export default function ExpandedRaidView({
     raid,
     dismiss
@@ -18,7 +20,7 @@ export default function ExpandedRaidView({
 }) {
     const { sunsetRaids, getRaidString } = useRaidHubManifest()
 
-    const { activities, isLoadingActivities } = useActivitiesContext()
+    const { activities, isLoadingActivities } = useRaidCardContext()
 
     const recents = useMemo(
         () =>
@@ -50,7 +52,7 @@ export default function ExpandedRaidView({
                 </Link>
             </p>
             <h2>Expanded details for {getRaidString(raid)}</h2>
-            <div className={styles["container"]}>
+            <div className={styles.container}>
                 <div className={styles["bungie-stats"]}>
                     <h3>Stats</h3>
                     {<ExpandedStatsTable />}
@@ -62,13 +64,15 @@ export default function ExpandedRaidView({
                         </div>
                     )}
                 </div>
-                <div className={styles["history"]}>
+                <div className={styles.history}>
                     <h3>Recent Completions</h3>
                     {!isLoadingActivities && (
                         <div className={styles["history-activities"]}>
-                            {recents?.map(a => (
-                                <ActivityTile key={a.activityId} activity={a} />
-                            ))}
+                            {recents?.map(
+                                a => null
+                                // todo
+                                // <ActivityTile key={a.instanceId} activity={a} />
+                            )}
                         </div>
                     )}
                 </div>

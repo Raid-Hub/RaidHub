@@ -1,8 +1,8 @@
 "use client"
 
-import React from "react"
-import styled, { DefaultTheme } from "styled-components"
-import { AtLeast } from "~/types/generic"
+import type { SVGProps } from "react"
+import styled, { type DefaultTheme } from "styled-components"
+import type { AtLeast } from "~/types/generic"
 
 export type SVGWrapperProps = Omit<
     {
@@ -10,7 +10,7 @@ export type SVGWrapperProps = Omit<
         color?: keyof DefaultTheme["colors"]["icon"]
         hoverColor?: keyof DefaultTheme["colors"]["icon"]
         absolute?: boolean
-    } & React.SVGProps<SVGSVGElement>,
+    } & SVGProps<SVGSVGElement>,
     "className"
 >
 

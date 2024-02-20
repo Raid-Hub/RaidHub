@@ -5,4 +5,4 @@ export const useActivityModifierDefinition = (hash: number) =>
     useLiveQuery(() => indexDB.activityModifiers.get({ hash })) ?? null
 
 export const useActivityModifierDefinitions = (hashes: number[]) =>
-    useLiveQuery(() => indexDB.activityModifiers.bulkGet(hashes)) ?? null
+    useLiveQuery(() => indexDB.activityModifiers.bulkGet(hashes), [hashes]) ?? null

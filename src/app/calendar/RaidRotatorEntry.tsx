@@ -3,11 +3,11 @@
 import { DestinyPublicMilestone } from "bungie-net-core/models"
 import { Fragment } from "react"
 import styled from "styled-components"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
 import RaidCardBackground from "~/data/raid-backgrounds"
+import { useLocale } from "~/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { RaidActivity } from "./RaidActivity"
 
 export const RaidRotatorEntry = (props: {

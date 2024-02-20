@@ -1,7 +1,7 @@
 import { DestinyCharacterComponent, DestinyProfileComponent } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
-import { emblemUrl } from "~/util/destiny/bungie-icons"
+import { bungieEmblemUrl } from "~/util/destiny/bungie-icons"
 import UserName from "../profile/user/UserName"
 import styles from "./guardians.module.css"
 
@@ -21,7 +21,7 @@ export default function PlayerHeader({
                 </h3>
             </Link>
             <Image
-                src={emblemUrl(Object.values(characters)[0].emblemBackgroundPath)}
+                src={bungieEmblemUrl(Object.values(characters)[0].emblemBackgroundPath)}
                 alt={""}
                 unoptimized
                 fill

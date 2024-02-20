@@ -1,15 +1,16 @@
-import {
+import type {
     DestinyCharacterComponent,
     DestinyMilestone,
     DestinyMilestoneActivityPhase,
     DestinyMilestoneChallengeActivity
 } from "bungie-net-core/models"
 import Image from "next/image"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
 import { characterNames } from "~/data/strings/character-names"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import styles from "./expanded-raid.module.css"
 
+/**@deprecated */
 export default function CharacterWeeklyProgress({
     character,
     milestone

@@ -2,11 +2,11 @@ import { Hydrate, dehydrate, useQuery } from "@tanstack/react-query"
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next"
 import Head from "next/head"
 import { z } from "zod"
-import { useLocale } from "~/app/(layout)/managers/LocaleManager"
 import Leaderboard, { ENTRIES_PER_PAGE } from "~/components/leaderboards/ActivityLeaderboard"
 import SpeedrunComBanner from "~/components/leaderboards/SpeedrunComBanner"
 import { SpeedData, SpeedrunBoardId, SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { usePage } from "~/hooks/util/usePage"
+import { useLocale } from "~/layout/managers/LocaleManager"
 import {
     createServerSideQueryClient,
     prefetchSpeedrunComLeaderboard

@@ -3,11 +3,10 @@ import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
-import { trpcServer } from "~/server/api/trpc/client"
 import { type AppProfile } from "~/types/api"
 import { ProfileClientWrapper } from "../ProfileClientWrapper"
 import { ProfilePage } from "../ProfilePage"
-import { getDestinyProfile, getRaidHubPlayerProfile } from "../prefetch"
+import { getDestinyProfile, getRaidHubPlayerProfile, getUniqueProfile } from "../prefetch"
 import { type ProfileProps } from "../types"
 
 type PageProps = {
@@ -22,7 +21,7 @@ export default async function Page({ params }: PageProps) {
         ?.match(/\/profile\/(\d+)\/(\d+)/)
 
     if (redirectFrom) {
-        const appProfile = await trpcServer.profile.getUnique.query({
+        const appProfile = await getUniqueProfile({
             destinyMembershipId: redirectFrom[2]
         })
 
@@ -40,7 +39,7 @@ export default async function Page({ params }: PageProps) {
     }
 
     // Find the app profile by vanity, and if it doesn't exist next will render a 404
-    const appProfile = await trpcServer.profile.getUnique.query(params).then(p => p ?? notFound())
+    const appProfile = await getUniqueProfile(params).then(p => p ?? notFound())
 
     return (
         <Suspense
@@ -85,8 +84,7 @@ const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const username = await trpcServer.profile.getUnique
-        .query(params)
+    const username = await getUniqueProfile(params)
         .then(profile => profile?.name)
         .catch(() => null)
 

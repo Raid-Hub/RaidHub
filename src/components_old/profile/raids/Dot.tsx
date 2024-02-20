@@ -1,12 +1,12 @@
 import { animate } from "framer-motion"
 import Link from "next/link"
-import { MouseEvent, useCallback, useEffect, useRef } from "react"
-import { useRaidHubManifest } from "~/app/(layout)/managers/RaidHubManifestManager"
-import RaidSkull from "~/images/icons/destiny2/RaidSkull"
-import Activity from "~/models/profile/data/Activity"
-import styles from "~/styles/pages/profile/raids.module.css"
+import { useCallback, useEffect, useRef, type MouseEvent } from "react"
+import RaidSkull from "~/components/icons/RaidSkull"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
-import { DotTooltipProps } from "./DotTooltip"
+import { type DotTooltipProps } from "./DotTooltip"
+import styles from "./raids.module.css"
 
 export const Red = "#F44336"
 export const Green = "#4CAF50"
@@ -14,7 +14,7 @@ export const Teal = "#36c9bd"
 export const Orange = "#F07C27"
 
 type DotProps = {
-    activity: Activity
+    activity: RaidHubPlayerActivitiesActivity
     centerX: number
     centerY: number
     isTargeted: boolean
@@ -22,6 +22,7 @@ type DotProps = {
     setTooltip(data: DotTooltipProps | null): void
 }
 
+/** @deprecated */
 const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }: DotProps) => {
     const ref = useRef<HTMLAnchorElement | null>(null)
     const handleHover = useCallback(
@@ -62,7 +63,11 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                 behavior: "smooth"
             })
 
-            animate(ref.current, { opacity: [1, 0, 1] }, { repeat: 3, duration: 1, type: "tween" })
+            void animate(
+                ref.current,
+                { opacity: [1, 0, 1] },
+                { repeat: 3, duration: 1, type: "tween" }
+            )
         }
     }, [isTargeted])
 
@@ -70,11 +75,11 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
 
     return (
         <Link
-            href={`/pgcr/${activity.activityId}`}
+            href={`/pgcr/${activity.instanceId}`}
             ref={ref}
             onMouseEnter={handleHover}
             onMouseLeave={handleMouseLeave}
-            className={[styles["dot"], styles["dot-hover"]].join(" ")}>
+            className={[styles.dot, styles["dot-hover"]].join(" ")}>
             <circle
                 fill={
                     activity.player.finishedRaid
@@ -104,7 +109,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     />
                 )
             )}
-            {elevatedDifficulties.includes(activity.difficulty) && (
+            {elevatedDifficulties.includes(activity.meta.version) && (
                 <circle
                     fill="none"
                     stroke="white"

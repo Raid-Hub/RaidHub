@@ -26,7 +26,6 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
         try {
             res = await fetch(url, payload)
         } catch (error) {
-            console.error(error)
             throw new Error("Error fetching data")
         }
 
@@ -55,7 +54,7 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
 
     /**
      * Handles the fetch request by making the request and handling errors.
-     * It shoulddelegate to the `request` method to make the request.
+     * It should delegate to the `request` method to make the request.
      * This is where retries and other custom error handling should be implemented.
      * @param url The URL to send the request to.
      * @param payload The request payload.

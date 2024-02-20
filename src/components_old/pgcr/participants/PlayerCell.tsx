@@ -6,7 +6,7 @@ import Death from "~/images/icons/destiny2/Death"
 import Kill from "~/images/icons/destiny2/Kill"
 import styles from "~/styles/pages/pgcr.module.css"
 import PGCRPlayer from "~/util/destiny/Player"
-import { bannerEmblemUrl } from "~/util/destiny/bungie-icons"
+import { bungieBannerEmblemUrl } from "~/util/destiny/bungie-icons"
 import { formattedNumber } from "~/util/presentation/formatting"
 import { useLocale } from "../../../app/(layout)/managers/LocaleManager"
 
@@ -52,7 +52,7 @@ const PlayerCell = ({
             {!isLoadingEmblems && emblem ? (
                 <Image
                     unoptimized
-                    src={bannerEmblemUrl(emblem)}
+                    src={bungieBannerEmblemUrl(emblem)}
                     alt=""
                     fill
                     className={styles["emblem"]}

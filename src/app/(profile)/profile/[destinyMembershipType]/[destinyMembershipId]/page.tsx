@@ -3,9 +3,9 @@ import { type Metadata } from "next"
 import { RedirectType, permanentRedirect } from "next/navigation"
 import { ProfileClientWrapper } from "~/app/(profile)/ProfileClientWrapper"
 import { ProfilePage } from "~/app/(profile)/ProfilePage"
+import { getUniqueProfile } from "~/app/(profile)/prefetch"
 import { type ProfileProps } from "~/app/(profile)/types"
 import { metadata as rootMetaData } from "~/app/layout"
-import { trpcServer } from "~/server/api/trpc/client"
 
 type PageProps = {
     params: {
@@ -16,7 +16,7 @@ type PageProps = {
 
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
-    const appProfile = await trpcServer.profile.getUnique.query({
+    const appProfile = await getUniqueProfile({
         destinyMembershipId: params.destinyMembershipId
     })
     if (appProfile?.vanity) {
@@ -39,10 +39,9 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const username = await trpcServer.profile.getUnique
-        .query({
-            destinyMembershipId: params.destinyMembershipId
-        })
+    const username = await getUniqueProfile({
+        destinyMembershipId: params.destinyMembershipId
+    })
         .then(profile => profile?.name)
         .catch(() => null)
 

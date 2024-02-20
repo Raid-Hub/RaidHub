@@ -1,11 +1,10 @@
-import styles from "~/styles/pages/profile/raids.module.css"
+import { type Collection } from "@discordjs/collection"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Collection } from "@discordjs/collection"
+import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 import { median } from "~/util/math"
-import Activity from "~/models/profile/data/Activity"
-import DotTooltip, { DotTooltipProps } from "./DotTooltip"
 import Dot from "./Dot"
-import { useFilterContext } from "../Profile"
+import DotTooltip, { type DotTooltipProps } from "./DotTooltip"
+import styles from "./raids.module.css"
 
 // constants used to manage the height of the graph
 const CANVAS_HEIGHT = 60
@@ -38,23 +37,25 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 1.15
 
 type DotGraphWrapperProps = {
-    activities: Collection<string, Activity>
+    activities: Collection<string, RaidHubPlayerActivitiesActivity>
     targetDot: string | null
 }
 
+/** @deprecated */
 export default function DotGraphWrapper({
     activities: unfilteredActivities,
     targetDot
 }: DotGraphWrapperProps) {
-    const filter = useFilterContext()
-    const activities = useMemo(
-        () => unfilteredActivities.filter(filter).reverse(),
-        [unfilteredActivities, filter]
-    )
+    // todo: filters
+    // const filter = useFilterContext()
+    const activities = useMemo(() => {
+        // unfilteredActivities.filter(filter).reverse()
+        return unfilteredActivities.reverse()
+    }, [unfilteredActivities])
     const getHeight = useMemo(() => {
         let { min, max } = activities.reduce(
             (soFar, a) => {
-                const cvTime = a.durationSeconds
+                const cvTime = a.duration
                 return {
                     min: Math.min(soFar.min, cvTime),
                     max: Math.max(soFar.max, cvTime)
@@ -71,7 +72,7 @@ export default function DotGraphWrapper({
             max += 1
         }
 
-        const orderedByDuration = activities.map(a => a.durationSeconds).sort((a, b) => a - b) ?? []
+        const orderedByDuration = activities.map(a => a.duration).sort((a, b) => a - b) ?? []
         const avg = median(orderedByDuration)
         return findCurve([min, MIN_Y], [avg, LINE_Y], [max, MAX_Y])
     }, [activities])
@@ -81,7 +82,7 @@ export default function DotGraphWrapper({
 
 type DotGraphProps = {
     getHeight: (duration: number) => number
-    dots: Collection<string, Activity>
+    dots: Collection<string, RaidHubPlayerActivitiesActivity>
     targetDot: string | null
 }
 
@@ -155,25 +156,25 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
                 />
                 {dotArr.slice(dotRange[0], dotRange[1]).map((a, idx) => (
                     <Dot
-                        key={a.activityId}
+                        key={a.instanceId}
                         centerX={SPACING / 2 + SPACING * (idx + dotRange[0])}
                         activity={a}
-                        centerY={getHeight(a.durationSeconds)}
+                        centerY={getHeight(a.duration)}
                         setTooltip={setDotTooltipData}
                         tooltipData={dotTooltipData}
-                        isTargeted={a.activityId === targetDot}
+                        isTargeted={a.instanceId === targetDot}
                     />
                 ))}
                 {/* Ensure the target dot is rendered */}
                 {targetted && (
                     <Dot
-                        key={targetted.activityId}
+                        key={targetted.instanceId}
                         centerX={
                             SPACING / 2 +
-                            SPACING * dotArr.findIndex(a => a.activityId === targetDot)
+                            SPACING * dotArr.findIndex(a => a.instanceId === targetDot)
                         }
                         activity={targetted}
-                        centerY={getHeight(targetted.durationSeconds)}
+                        centerY={getHeight(targetted.duration)}
                         setTooltip={setDotTooltipData}
                         tooltipData={dotTooltipData}
                         isTargeted={true}
