@@ -1,7 +1,7 @@
 .expanded-raid {
-    background-color: var(--modal-background);
+    background-color: rgba(0, 0, 0, 0.317);
     border-radius: 10px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(128, 128, 128, 0.353);
     padding: 1em;
 
     grid-column-start: 1; /* Start from the first column */
