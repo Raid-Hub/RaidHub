@@ -16,12 +16,8 @@ import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
 } from "~/types/raidhub-api"
-import { RaidCardContext } from "./RaidContext"
-
-enum Layout {
-    DotCharts,
-    RecentActivities
-}
+import { FilterContextProvider } from "./FilterContext"
+import { RaidCardContext } from "./RaidCardContext"
 
 export const Raids = () => {
     const { destinyMembershipId, destinyMembershipType, ready } = usePageProps<ProfileProps>()
@@ -99,7 +95,7 @@ export const Raids = () => {
             if (!coll.get(a.meta.raid)) coll.set(a.meta.raid, new Collection())
             coll.get(a.meta.raid)!.set(a.instanceId, a)
         })
-        return coll
+        return coll.each(raidActivities => raidActivities.reverse())
     }, [activities, areMembershipsFetched, isLoadingActivities])
 
     const queryParams = useQueryParams<{
@@ -118,40 +114,29 @@ export const Raids = () => {
         [queryParams]
     )
 
-    const layout = Layout.DotCharts // todo
-
     return (
-        <Grid as="section" $minCardWidth={325}>
-            {listedRaids.map(raid => (
-                <RaidCardContext
-                    key={raid}
-                    activitiesByRaid={activitiesByRaid}
-                    isLoadingActivities={isLoadingActivities}
-                    raid={raid}>
-                    <RaidCard
-                        leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
-                        wfBoardId={
-                            (leaderboards.worldFirst[raid].find(b => b.type === "challenge") ??
-                                leaderboards.worldFirst[raid].find(b => b.type === "normal"))!.id
-                        }
-                        expand={() => setExpandedRaid(raid)}
-                        closeExpand={clearExpandedRaid}
-                        isExpanded={raid === getExpandedRaid()}
-                    />
-                </RaidCardContext>
-            ))}
-        </Grid>
+        <FilterContextProvider>
+            <Grid as="section" $minCardWidth={325}>
+                {listedRaids.map(raid => (
+                    <RaidCardContext
+                        key={raid}
+                        activitiesByRaid={activitiesByRaid}
+                        isLoadingActivities={isLoadingActivities}
+                        raid={raid}>
+                        <RaidCard
+                            leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
+                            wfBoardId={
+                                (leaderboards.worldFirst[raid].find(b => b.type === "challenge") ??
+                                    leaderboards.worldFirst[raid].find(b => b.type === "normal"))!
+                                    .id
+                            }
+                            expand={() => setExpandedRaid(raid)}
+                            closeExpand={clearExpandedRaid}
+                            isExpanded={raid === getExpandedRaid()}
+                        />
+                    </RaidCardContext>
+                ))}
+            </Grid>
+        </FilterContextProvider>
     )
-    // switch (layout) {
-    //     case Layout.DotCharts:
-    //         return (
-
-    //         )
-    //     case Layout.RecentActivities:
-    //         return isLoadingActivities ? (
-    //             <RecentRaids isLoading={isLoadingActivities} allActivities={null} />
-    //         ) : (
-
-    //         )
-    // }
 }

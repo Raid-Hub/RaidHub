@@ -1,12 +1,15 @@
+"use client"
+
 import { Collection } from "@discordjs/collection"
 import { m } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
-import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { useCallback, useMemo, useState } from "react"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import Expand from "~/components/icons/Expand"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useTags } from "~/hooks/useTags"
+import { useTimeout } from "~/hooks/util/useTimeout"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type {
     RaidHubPlayerActivitiesActivity,
@@ -41,18 +44,12 @@ export default function RaidCard({
     const { getRaidString } = useRaidHubManifest()
 
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
-    useEffect(() => {
-        if (hoveredTag) {
-            // Set a new timeout
-            const timer = setTimeout(() => {
-                setHoveredTag(null)
-            }, 2500)
 
-            return () => {
-                clearTimeout(timer)
-            }
-        }
-    }, [hoveredTag])
+    useTimeout(
+        useCallback(() => setHoveredTag(null), []),
+        2500,
+        [hoveredTag]
+    )
 
     const recentClear = useMemo(
         () => activities?.find(a => a.player.finishedRaid && a.fresh) ?? null,

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
-import { DefaultActivityFilters, decodeFilters } from "../../util/profile/activityFilters"
+import {
+    DefaultActivityFilters,
+    decodeFilters
+} from "../../app/(profile)/raids/filters/activityFilters"
 import { ActivityFilter } from "../../types/profile"
 
 export const KEY_ACTIVITY_FILTER = "profile_activity_filter"

@@ -11,6 +11,7 @@ export const ClientSessionManager = (props: {
     serverSession: Session | null
 }) => {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
+
     return (
         <SessionProvider
             refetchInterval={sessionRefetchInterval}
@@ -61,7 +62,7 @@ const TokenManager = ({ setNextRefetch }: { setNextRefetch: (seconds: number) =>
             })
 
             const timeRemaining = expires.getTime() - Date.now()
-            setNextRefetch(timeRemaining > 0 ? Math.ceil(timeRemaining / 1000) : 1)
+            setNextRefetch(Math.max(Math.ceil(timeRemaining / 1000), 1))
         }
     }, [bungieClient, session, setNextRefetch])
 

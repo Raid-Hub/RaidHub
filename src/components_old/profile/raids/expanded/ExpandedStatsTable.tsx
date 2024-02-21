@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { Difficulty } from "~/data/raid"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"

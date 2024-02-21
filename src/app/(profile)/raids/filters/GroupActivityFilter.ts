@@ -1,60 +1,41 @@
-import { v4 } from "uuid"
-import { ActivityFilter } from "~/types/profile"
-import { Collection } from "@discordjs/collection"
-import Activity from "../data/Activity"
+import { type ActivityFilter } from "~/app/(profile)/raids/filters/activityFilters"
+import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 
-export type ActivityFilterCombinator = "|" | "&"
+type ActivityFilterCombinator = "|" | "&"
 
 export default class GroupActivityFilter implements ActivityFilter {
     combinator: ActivityFilterCombinator
-    children: Collection<string, ActivityFilter>
-    id: string
+    children: ActivityFilter[]
 
-    constructor(combinator: ActivityFilterCombinator, children: (ActivityFilter | null)[]) {
+    constructor(combinator: ActivityFilterCombinator, children: ActivityFilter[]) {
         this.combinator = combinator
-        this.children = new Collection(
-            (children.filter(Boolean) as ActivityFilter[]).map(c => [c.id, c])
-        )
-        this.id = v4()
+        this.children = children
     }
 
-    predicate(a: Activity) {
+    predicate(a: RaidHubPlayerActivitiesActivity) {
         switch (this.combinator) {
             case "&":
-                return !this.children.size
+                return !this.children.length
                     ? true
-                    : Array.from(this.children.values()).reduce(
+                    : this.children.reduce(
                           (base, filter) => activity =>
                               base(activity) && filter.predicate(activity),
-                          (_: Activity) => true
+                          (_: RaidHubPlayerActivitiesActivity) => true
                       )(a)
             case "|":
-                return !this.children.size
+                return !this.children.length
                     ? true
-                    : Array.from(this.children.values()).reduce(
+                    : this.children.reduce(
                           (base, filter) => activity =>
                               base(activity) || filter.predicate(activity),
-                          (_: Activity) => false
+                          (_: RaidHubPlayerActivitiesActivity) => false
                       )(a)
         }
     }
 
     encode() {
         return {
-            [this.combinator]: Array.from(this.children.values()).map(c => c.encode())
+            [this.combinator]: this.children.map(c => c.encode())
         }
-    }
-
-    deepClone(): ActivityFilter {
-        return new GroupActivityFilter(
-            this.combinator,
-            this.children.map(c => c.deepClone())
-        )
-    }
-
-    stringify(): string {
-        return `(${Array.from(this.children.values())
-            .map(c => c.stringify())
-            .join(` ${this.combinator === "&" ? "and" : "or"} `)})`
     }
 }

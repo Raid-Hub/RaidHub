@@ -21,10 +21,11 @@ import { useProfileTransitory } from "~/services/bungie/useProfileTransitory"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
 import { bungieIconUrl, bungiePgcrImageUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
-import type { ProfileProps } from "./types"
+import type { ProfileProps } from "../types"
 
 const commonTransitoryQuerySettings = {
     refetchInterval: 45000,
+    suspense: true,
     refetchOnReconnect: true,
     refetchOnWindowFocus: true
 }

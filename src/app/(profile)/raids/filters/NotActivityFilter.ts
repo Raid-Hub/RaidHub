@@ -1,17 +1,14 @@
-import { v4 } from "uuid"
-import { ActivityFilter } from "~/types/profile"
-import Activity from "../data/Activity"
+import { type ActivityFilter } from "~/app/(profile)/raids/filters/activityFilters"
+import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 
 export default class NotActivityFilter implements ActivityFilter {
     child: ActivityFilter | null
-    id: string
 
     constructor(child: ActivityFilter | null) {
         this.child = child
-        this.id = v4()
     }
 
-    predicate(a: Activity) {
+    predicate(a: RaidHubPlayerActivitiesActivity) {
         return !(this.child?.predicate(a) ?? false)
     }
 
@@ -19,13 +16,5 @@ export default class NotActivityFilter implements ActivityFilter {
         return {
             not: this.child?.encode() ?? null
         }
-    }
-
-    deepClone(): ActivityFilter {
-        return new NotActivityFilter(this.child?.deepClone() ?? null)
-    }
-
-    stringify(): string {
-        return `(not ${this.child?.stringify() ?? ""})`
     }
 }

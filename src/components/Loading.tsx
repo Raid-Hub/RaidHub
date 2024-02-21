@@ -30,7 +30,7 @@ export const Loading = styled.div<{
     animation-fill-mode: none;
     animation-play-state: running;
 
-    border-radius: ${({ $borderRadius }) => $borderRadius || "inherit"};
+    border-radius: ${({ $borderRadius }) => $borderRadius ?? "inherit"};
 
     min-width: ${props => props.$minWidth};
     min-height: ${props => props.$minHeight};

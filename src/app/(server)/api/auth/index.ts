@@ -1,7 +1,7 @@
 import "server-only"
 
 import { getServerSession, type NextAuthOptions } from "next-auth"
-import { Provider } from "next-auth/providers"
+import type { Provider } from "next-auth/providers"
 import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
@@ -26,9 +26,9 @@ export const authOptions: NextAuthOptions = {
         maxAge: 7776000 // 90 days
     },
     callbacks: {
-        // @ts-expect-error
+        // @ts-expect-error Types are wrong
         session: sessionCallback,
-        // @ts-expect-error
+        // @ts-expect-error Types are wrong
         signIn: signInCallback
     },
     // todo improve the logging

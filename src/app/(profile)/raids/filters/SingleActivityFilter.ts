@@ -1,29 +1,19 @@
-import { v4 } from "uuid"
-import { FilterCallback } from "~/types/generic"
-import { ActivityFilter } from "~/types/profile"
-import { SingleActivityFilters } from "~/util/profile/activityFilters"
-import Activity from "../data/Activity"
+import {
+    SingleActivityFilterFunctions,
+    type ActivityFilter,
+    type FilterPredicate
+} from "~/app/(profile)/raids/filters/activityFilters"
 
 export default class SingleActivityFilter implements ActivityFilter {
-    key: keyof typeof SingleActivityFilters
-    predicate: FilterCallback<Activity>
-    id: string
+    key: keyof typeof SingleActivityFilterFunctions
+    predicate: FilterPredicate
 
-    constructor(key: keyof typeof SingleActivityFilters) {
+    constructor(key: keyof typeof SingleActivityFilterFunctions) {
         this.key = key
-        this.predicate = SingleActivityFilters[key]
-        this.id = v4()
+        this.predicate = SingleActivityFilterFunctions[key]
     }
 
-    encode() {
-        return this.key
-    }
-
-    deepClone(): ActivityFilter {
-        return new SingleActivityFilter(this.key)
-    }
-
-    stringify(): string {
+    encode(): string {
         return this.key
     }
 }

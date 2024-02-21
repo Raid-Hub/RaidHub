@@ -72,6 +72,22 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
     )
 }
 
+const DropdownLink = (props: { href: string; title: string }) => (
+    <FullWidthLink href={props.href}>
+        <DropdownItemContainer $padding={0.2} $align="space-between" $fullWidth>
+            <DropDownTitle>{props.title}</DropDownTitle>
+            <RightChevron color="orange" />
+        </DropdownItemContainer>
+    </FullWidthLink>
+)
+
+const DropdownButton = (props: { onClick: () => void; title: string }) => (
+    <DropdownItemContainer onClick={props.onClick} $padding={0.2} $align="space-between" $fullWidth>
+        <DropDownTitle>{props.title}</DropDownTitle>
+        <RightChevron color="orange" />
+    </DropdownItemContainer>
+)
+
 const Container = styled(m.div)`
     position: fixed;
     z-index: 101;
@@ -140,19 +156,3 @@ const DropdownItemContainer = styled(Flex)`
         );
     }
 `
-
-const DropdownLink = (props: { href: string; title: string }) => (
-    <FullWidthLink href={props.href}>
-        <DropdownItemContainer $padding={0.2} $align="space-between" $fullWidth>
-            <DropDownTitle>{props.title}</DropDownTitle>
-            <RightChevron color="orange" />
-        </DropdownItemContainer>
-    </FullWidthLink>
-)
-
-const DropdownButton = (props: { onClick: () => void; title: string }) => (
-    <DropdownItemContainer onClick={props.onClick} $padding={0.2} $align="space-between" $fullWidth>
-        <DropDownTitle>{props.title}</DropDownTitle>
-        <RightChevron color="orange" />
-    </DropdownItemContainer>
-)

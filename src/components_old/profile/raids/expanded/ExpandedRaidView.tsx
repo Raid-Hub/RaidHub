@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
-import { useRaidCardContext } from "~/app/(profile)/raids/RaidContext"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type { ListedRaid } from "~/types/raidhub-api"
 import { includedIn } from "~/util/helpers"

@@ -1,5 +1,6 @@
 import { type Collection } from "@discordjs/collection"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useFilterContext } from "~/app/(profile)/raids/FilterContext"
 import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 import { median } from "~/util/math"
 import Dot from "./Dot"
@@ -46,12 +47,11 @@ export default function DotGraphWrapper({
     activities: unfilteredActivities,
     targetDot
 }: DotGraphWrapperProps) {
-    // todo: filters
-    // const filter = useFilterContext()
-    const activities = useMemo(() => {
-        // unfilteredActivities.filter(filter).reverse()
-        return unfilteredActivities.reverse()
-    }, [unfilteredActivities])
+    const { filterPredicate } = useFilterContext()
+    const activities = useMemo(
+        () => unfilteredActivities.filter(filterPredicate ?? (() => true)),
+        [filterPredicate, unfilteredActivities]
+    )
     const getHeight = useMemo(() => {
         let { min, max } = activities.reduce(
             (soFar, a) => {

@@ -42,6 +42,10 @@ export default class ClientBungieClient extends BaseBungieClient {
         try {
             return await this.request(url, payload)
         } catch (e) {
+            if (e instanceof Error && e.message === "Unauthorized") {
+                this.clearToken()
+                throw e
+            }
             if (url.pathname.match(/\/common\/destiny2_content\/json\//)) {
                 url.searchParams.set("bust", String(Math.floor(Math.random() * 7777777)))
                 return this.request(url, payload)

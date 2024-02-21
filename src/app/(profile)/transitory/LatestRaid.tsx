@@ -12,24 +12,26 @@ import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
 import RaidCardBackground from "~/data/raid-backgrounds"
+import { useLocale } from "~/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { useRaidHubActivtiesFirstPage } from "~/services/raidhub/useRaidHubActivities"
 import { useRaidHubActivity } from "~/services/raidhub/useRaidHubActivity"
 import { getUserName } from "~/util/destiny/bungieName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
-import { useLocale } from "../(layout)/managers/LocaleManager"
-import { useRaidHubManifest } from "../(layout)/managers/RaidHubManifestManager"
-import type { ProfileProps } from "./types"
+import type { ProfileProps } from "../types"
 
-export const RecentRaid = () => {
+export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
     const { locale } = useLocale()
     const { getRaidString, getDifficultyString } = useRaidHubManifest()
     const { data: rawRecentActivity } = useRaidHubActivtiesFirstPage(destinyMembershipId, {
-        select: res => res.activities[0]
+        select: res => res.activities[0],
+        suspense: true
     })
 
     const { data: latestActivity } = useRaidHubActivity(rawRecentActivity?.instanceId ?? "", {
-        enabled: !!rawRecentActivity
+        enabled: !!rawRecentActivity,
+        suspense: true
     })
 
     const { playersToDisplay, hiddenPlayers } = useMemo(() => {

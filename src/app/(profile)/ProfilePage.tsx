@@ -1,18 +1,22 @@
+import { Suspense } from "react"
+import { Loading } from "~/components/Loading"
 import { Flex } from "~/components/layout/Flex"
-import { CurrentActivity } from "./CurrentActivity"
 import { ProfileStateManager } from "./ProfileStateManager"
-import { RecentRaid } from "./RecentRaid"
 import { UserCard } from "./UserCard"
 import { Raids } from "./raids/RaidsLayout"
+import { CurrentActivity } from "./transitory/CurrentActivity"
+import { LatestRaid } from "./transitory/LatestRaid"
 
 export const ProfilePage = () => (
     <ProfileStateManager>
         <Flex $direction="column" $padding={0} $crossAxis="flex-start">
             <UserCard />
-            <Flex $padding={0} $direction="row" $wrap $fullWidth $crossAxis="stretch">
-                <CurrentActivity />
-                <RecentRaid />
-            </Flex>
+            <Suspense fallback={<Loading $fill $minHeight="250px" $borderRadius="10px" />}>
+                <Flex $padding={0} $direction="row" $wrap $fullWidth $crossAxis="stretch">
+                    <CurrentActivity />
+                    <LatestRaid />
+                </Flex>
+            </Suspense>
             <Raids />
         </Flex>
     </ProfileStateManager>

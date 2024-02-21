@@ -52,16 +52,9 @@ export const SearchModal = () => {
         }
     }, [isDisplayed])
 
-    const {
-        enteredText,
-        results,
-        isLoading: isLoadingResults,
-        handleFormSubmit,
-        handleInputChange,
-        clearQuery
-    } = useSearch({
+    const { enteredText, results, handleFormSubmit, handleInputChange } = useSearch({
         onRedirect: () => {
-            hideModal()
+            void hideModal()
         }
     })
 

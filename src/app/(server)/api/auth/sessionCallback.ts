@@ -28,7 +28,7 @@ export const sessionCallback = async ({
     if (
         bungieAccount.expiresAt &&
         bungieAccount.accessToken &&
-        Date.now() < bungieAccount.expiresAt * 1000
+        Date.now() < (bungieAccount.expiresAt - 300) * 1000 // give a 5 minute buffer where it's not expired but we should refresh
     ) {
         // If user access token has not expired yet
         return {
@@ -100,14 +100,12 @@ export const sessionCallback = async ({
                     error: "BungieAPIOffline"
                 } satisfies Session
             } else {
-                throw e
-                // TODO
-                // console.error(e)
-                // return {
-                //     ...session,
-                //     user,
-                //     error: "AccessTokenError"
-                // } satisfies Session
+                console.error(e)
+                return {
+                    ...session,
+                    user,
+                    error: "AccessTokenError"
+                } satisfies Session
             }
         }
     } else {

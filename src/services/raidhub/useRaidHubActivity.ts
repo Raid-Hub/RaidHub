@@ -4,7 +4,7 @@ import { getRaidHubApi } from "."
 
 export const useRaidHubActivity = (
     activityId: string,
-    opts?: { enabled?: boolean; initialData?: RaidHubActivityResponse }
+    opts?: { enabled?: boolean; initialData?: RaidHubActivityResponse; suspense?: boolean }
 ) =>
     useQuery({
         queryKey: ["raidhub", "activity", activityId] as const,

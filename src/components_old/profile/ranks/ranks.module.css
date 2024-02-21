@@ -1,9 +1,0 @@
-.ranks {
-    display: flex;
-    gap: 3em;
-
-    border: 1px solid var(--border);
-    border-radius: 20px;
-
-    padding: 2em;
-}

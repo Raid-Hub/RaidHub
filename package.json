@@ -105,6 +105,9 @@
             "plugin:@typescript-eslint/recommended-type-checked",
             "plugin:@typescript-eslint/stylistic-type-checked"
         ],
+        "ignorePatterns": [
+            "raidhub-openapi.d.ts"
+        ],
         "rules": {
             "@typescript-eslint/consistent-type-imports": [
                 "error",
@@ -119,20 +122,13 @@
                     "argsIgnorePattern": "^_"
                 }
             ],
-            "@typescript-eslint/no-misused-promises": [
-                "error",
-                {
-                    "checksVoidReturn": {
-                        "attributes": false
-                    }
-                }
-            ],
             "@typescript-eslint/require-await": "off",
             "@typescript-eslint/array-type": "off",
             "@typescript-eslint/consistent-type-definitions": "off",
             "@next/next/no-page-custom-font": "off",
             "@typescript-eslint/unbound-method": "off",
-            "@typescript-eslint/no-unsafe-enum-comparison": "off"
+            "@typescript-eslint/no-unsafe-enum-comparison": "off",
+            "@typescript-eslint/no-misused-promises": "off"
         }
     }
 }
