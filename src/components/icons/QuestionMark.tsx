@@ -1,11 +1,11 @@
-import { SVG, SVGWrapperProps } from "../SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
 export default function QuestionMark(props: SVGWrapperProps) {
     return (
         <SVG
             xmlnsXlink="http://www.w3.org/1999/xlink"
             version="1.1"
-            viewBox="0 0 973.1 973.1"
+            viewBox="-160 -160 1300 1300"
             xmlSpace="preserve"
             {...props}>
             <path d="M502.29,788.199h-47c-33.1,0-60,26.9-60,60v64.9c0,33.1,26.9,60,60,60h47c33.101,0,60-26.9,60-60v-64.9   C562.29,815,535.391,788.199,502.29,788.199z" />

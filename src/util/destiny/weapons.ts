@@ -1,24 +1,14 @@
-import { Collection } from "@discordjs/collection"
-import { DestinyHistoricalWeaponStats } from "bungie-net-core/models"
-import { PlayerWeapons } from "../../types/pgcr"
+import { Collection, type ReadonlyCollection } from "@discordjs/collection"
 
-export function parseWeapons(weapons: DestinyHistoricalWeaponStats[]): PlayerWeapons {
-    return new Collection(
-        weapons.map(({ referenceId, values }) => {
-            return [
-                referenceId,
-                {
-                    hash: referenceId,
-                    kills: values.uniqueWeaponKills.basic.value,
-                    precision: values.uniqueWeaponPrecisionKills.basic.value
-                }
-            ]
-        })
-    ).sort((a, b) => b.kills - a.kills)
-}
+export type WeaponKey =
+    | "uniqueWeaponKills"
+    | "uniqueWeaponPrecisionKills"
+    | "uniqueWeaponKillsPrecisionKills"
 
-export function mergeWeaponCollections(collections: PlayerWeapons[]): PlayerWeapons {
-    return collections
+export const mergeWeaponCollections = (
+    collections: ReadonlyCollection<number, Record<WeaponKey, number>>[]
+): ReadonlyCollection<number, Record<WeaponKey, number>> =>
+    collections
         .reduce(
             (collection, weapons) =>
                 collection.merge(
@@ -29,12 +19,12 @@ export function mergeWeaponCollections(collections: PlayerWeapons[]): PlayerWeap
                         keep: true,
                         value: {
                             ...c1,
-                            kills: c1.kills + c2.kills,
-                            precision: c1.precision + c2.precision
+                            uniqueWeaponKills: c1.uniqueWeaponKills + c2.uniqueWeaponKills,
+                            uniqueWeaponPrecisionKills:
+                                c1.uniqueWeaponPrecisionKills + c2.uniqueWeaponPrecisionKills
                         }
                     })
                 ),
-            new Collection()
+            new Collection<number, Record<string, number>>()
         )
-        .sort((a, b) => b.kills - a.kills)
-}
+        .toSorted((a, b) => b.uniqueWeaponKills - a.uniqueWeaponKills)

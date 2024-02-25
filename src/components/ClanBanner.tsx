@@ -1,7 +1,7 @@
 "use client"
 
 import type { ClanBanner } from "bungie-net-core/models"
-import { useClanBanner } from "~/hooks/dexie/useClanBanner"
+import { useClanBanner } from "~/hooks/dexie"
 import { bungieClanBannerBannerLayerUrl } from "~/util/destiny/bungie-icons"
 
 const mast =

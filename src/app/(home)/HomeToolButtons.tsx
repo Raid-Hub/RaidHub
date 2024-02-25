@@ -19,7 +19,7 @@ const HomeButton = (props: { title: string; href: string }) => {
     return (
         <LinkWrapper href={props.href}>
             <Flex $padding={0.5} $gap={0.5} $direction="column">
-                <Search color="white" />
+                <Search color="white" sx={30} />
                 {props.title}
             </Flex>
         </LinkWrapper>

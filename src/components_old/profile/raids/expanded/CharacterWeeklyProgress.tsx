@@ -5,7 +5,7 @@ import type {
     DestinyMilestoneChallengeActivity
 } from "bungie-net-core/models"
 import Image from "next/image"
-import { characterNames } from "~/data/strings/character-names"
+import { useClassDefinition } from "~/hooks/dexie"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { bungieIconUrl } from "~/util/destiny/bungie-icons"
 import styles from "./expanded-raid.module.css"
@@ -18,10 +18,11 @@ export default function CharacterWeeklyProgress({
     character: DestinyCharacterComponent
     milestone: DestinyMilestone
 }) {
+    const classDefinition = useClassDefinition(character.classHash)
     return (
         <div style={{ border: "1px solid var(--border)", padding: "1em" }}>
             <div className={styles["character-progress-header"]}>
-                <h4>{characterNames[character.classType]}</h4>
+                <h4>{classDefinition?.displayProperties.name}</h4>
                 <div className={styles["image-container"]}>
                     <Image src={bungieIconUrl(character.emblemPath)} alt="" fill unoptimized />
                 </div>

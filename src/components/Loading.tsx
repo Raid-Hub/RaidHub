@@ -20,6 +20,7 @@ export const Loading = styled.div<{
     $minWidth?: string
     $minHeight?: string
     $borderRadius?: string
+    $alpha?: number
 }>`
     animation: ${pulse} 1.5s ease-in-out 0.5s infinite;
     animation-duration: ${props => (props.$speed ?? 1) * 1.5}s;
@@ -35,12 +36,13 @@ export const Loading = styled.div<{
     min-width: ${props => props.$minWidth};
     min-height: ${props => props.$minHeight};
     ${props => (props.$fill ? "height: 100%; width: 100%;" : "")}
-    background-color: rgba(255, 255, 255, 0.13);
+    background-color: rgba(20, 20, 20, ${props => props.$alpha});
 `
 
 Loading.defaultProps = {
     $fill: true,
     $speed: 1,
     $minWidth: "100%",
-    $minHeight: "100%"
+    $minHeight: "100%",
+    $alpha: 0.15
 }

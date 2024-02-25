@@ -10,10 +10,11 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { TabletDesktopSwitch } from "~/components/util/TabletDesktopSwitch"
-import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import { useItemDefinition } from "~/hooks/dexie"
 import { useClansForMember } from "~/services/bungie/useClansForMember"
 import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
 import { useProfile } from "~/services/bungie/useProfile"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
 import { bungieBannerEmblemUrl, bungieEmblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { fixClanName } from "~/util/destiny/fixClanName"
@@ -57,6 +58,11 @@ export function UserCard() {
         }
     )
 
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(props.destinyMembershipId, {
+        // We don't need to call this endpoint, but if we have the data, we can use it
+        enabled: false
+    })
+
     const { emblemMobileUrl, emblemHash } = useMemo(() => {
         const emblems = destinyProfileQuery?.data?.characters?.data
             ? Object.values(destinyProfileQuery.data.characters.data)[0]
@@ -70,7 +76,10 @@ export function UserCard() {
 
     const emblemBannerUrl = bungieBannerEmblemUrl(useItemDefinition(emblemHash ?? -1))
 
-    const userInfo = destinyProfileQuery?.data?.profile.data?.userInfo ?? bungieProfileQuery.data
+    const userInfo =
+        destinyProfileQuery?.data?.profile.data?.userInfo ??
+        bungieProfileQuery.data ??
+        resolvedPlayer
 
     const icon =
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

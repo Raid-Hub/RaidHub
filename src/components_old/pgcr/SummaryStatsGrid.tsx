@@ -1,59 +1,78 @@
-import { useMemo } from "react"
-import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
-import Crosshairs from "~/images/icons/Crosshairs"
-import Crown from "~/images/icons/Crown"
-import SplitHeart from "~/images/icons/SplitHeart"
-import Users from "~/images/icons/Users"
-import Ability from "~/images/icons/destiny2/Ability"
-import Ammo from "~/images/icons/destiny2/Ammo"
-import Death from "~/images/icons/destiny2/Death"
-import Intellect from "~/images/icons/destiny2/Intellect"
-import Kill from "~/images/icons/destiny2/Kill"
-import { useLocale } from "../../app/(layout)/managers/LocaleManager"
-import { SVGComponent } from "../../components/SVG"
-import styles from "../../styles/pages/pgcr.module.css"
-import { formattedNumber } from "../../util/presentation/formatting"
-import { usePGCRContext } from "./PGCR"
+"use client"
 
+import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
+import { type SVGComponent } from "~/components/SVG"
+import Ability from "~/components/icons/Ability"
+import Ammo from "~/components/icons/Ammo"
+import Crosshairs from "~/components/icons/Crosshairs"
+import Crown from "~/components/icons/Crown"
+import Death from "~/components/icons/Death"
+import Intellect from "~/components/icons/Intellect"
+import Kill from "~/components/icons/Kill"
+import SplitHeart from "~/components/icons/SplitHeart"
+import Users from "~/components/icons/Users"
+import { useItemDefinition } from "~/hooks/dexie"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
+import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
+import { getUserName } from "~/util/destiny/bungieName"
+import { useLocale } from "../../app/(layout)/managers/LocaleManager"
+import { formattedNumber } from "../../util/presentation/formatting"
+import styles from ".//pgcr.module.css"
+
+/** @deprecated */
 const SummaryStatsGrid = () => {
     const { locale } = useLocale()
-    const { data: pgcr } = usePGCRContext()
+    const { stats, completed } = usePGCRContext()
 
-    const stats = useMemo(() => pgcr?.stats, [pgcr])
-    const weapon = useItemDefinition(stats?.mostUsedWeapon ?? 73015)
+    const weapon = useItemDefinition(stats?.mostUsedWeaponHash ?? 73015)
+    const mvp = stats?.mvp?.firstCharacter().destinyUserInfo
+
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(stats?.mvp?.membershipId ?? "0", {
+        enabled: !!stats?.mvp && !stats.mvp.membershipType,
+        placeholderData: stats?.mvp
+            ? ({
+                  membershipId: stats.mvp.membershipId,
+                  displayName: stats.mvp.characters.first()?.destinyUserInfo.displayName,
+                  bungieGlobalDisplayName:
+                      stats.mvp.characters.first()?.destinyUserInfo.bungieGlobalDisplayName ?? null,
+                  bungieGlobalDisplayNameCode: "foo"
+              } as RaidHubPlayerBasicResponse)
+            : undefined
+    })
+
     const statsData: {
         Icon: SVGComponent
         name: string
         value: number | string
     }[] = [
-        ...(pgcr?.completed
+        ...(completed
             ? [
                   {
                       Icon: Crown,
                       name: "MVP",
-                      value: stats?.mvp ?? "???"
+                      value: mvp ? getUserName(resolvedPlayer!, { excludeCode: true }) : "???"
                   }
               ]
             : []),
         {
             Icon: Kill,
             name: "Total Kills",
-            value: formattedNumber(stats?.totalKills ?? 0, locale)
+            value: formattedNumber(stats?.kills ?? 0, locale)
         },
         {
             Icon: Death,
             name: "Total Deaths",
-            value: formattedNumber(stats?.totalDeaths ?? 0, locale)
+            value: formattedNumber(stats?.deaths ?? 0, locale)
         },
         {
             Icon: SplitHeart,
             name: "Total Assists",
-            value: formattedNumber(stats?.totalAssists ?? 0, locale)
+            value: formattedNumber(stats?.assists ?? 0, locale)
         },
         {
             Icon: Ability,
             name: "Ability Kills",
-            value: formattedNumber(stats?.totalAbilityKills ?? 0, locale)
+            value: formattedNumber(stats?.abilityKills ?? 0, locale)
         },
         {
             Icon: Crosshairs,
@@ -63,12 +82,12 @@ const SummaryStatsGrid = () => {
         {
             Icon: Intellect,
             name: "Super Kills",
-            value: formattedNumber(stats?.totalSuperKills ?? 0, locale)
+            value: formattedNumber(stats?.superKills ?? 0, locale)
         },
         {
             Icon: Users,
             name: "Characters Used",
-            value: stats?.totalCharactersUsed ?? 0
+            value: stats?.charactersUsed ?? 0
         },
         {
             Icon: Ammo,

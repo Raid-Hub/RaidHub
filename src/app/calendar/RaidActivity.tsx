@@ -1,12 +1,12 @@
 "use client"
 
-import {
+import type {
     DestinyActivityModifierDefinition,
     DestinyPublicMilestoneChallengeActivity
 } from "bungie-net-core/models"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
-import { useActivityModifierDefinitions } from "~/hooks/dexie/useActivityModifierDefinition"
+import { useActivityModifierDefinitions } from "~/hooks/dexie"
 import { RaidActivityModifier } from "./RaidActivityModifier"
 
 export const RaidActivity = (props: {

@@ -25,7 +25,7 @@ interface StyledSvgProps {
 const StyledSvg = styled.svg<StyledSvgProps>`
     aspect-ratio: 1/1;
     ${({ $absolute }) => $absolute && "position: absolute;"}
-    width: ${({ $sx }) => `${$sx}px`};
+    ${({ $sx }) => $sx !== undefined && `width: ${$sx}px;`}
     fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
 
     ${({ theme, $hoverColor }) =>
@@ -34,7 +34,6 @@ const StyledSvg = styled.svg<StyledSvgProps>`
             : ""}
 `
 StyledSvg.defaultProps = {
-    $sx: 24,
     $color: "white"
 }
 

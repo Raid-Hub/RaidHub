@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function Ammo(props: SVGProps) {
+export default function Ammo(props: SVGWrapperProps) {
     return (
         <SVG
             viewBox="0 0 16 16"

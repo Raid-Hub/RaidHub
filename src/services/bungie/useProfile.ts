@@ -4,7 +4,9 @@ import { type BungieMembershipType } from "bungie-net-core/models"
 import { type DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
 import { useBungieClient } from "~/layout/managers/session/BungieClientProvider"
 
-type UseProfileQueryData = DestinyProfileResponse<[100, 200, 202]>
+type UseProfileQueryData =
+    | DestinyProfileResponse<[100, 200, 202]>
+    | DestinyProfileResponse<[100, 200]>
 
 const getUseProfileQueryKey = (destinyMembershipId: string, membershipType: BungieMembershipType) =>
     ["bungie", "profile", "primary", destinyMembershipId, membershipType] as const

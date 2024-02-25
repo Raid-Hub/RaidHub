@@ -23,6 +23,7 @@ export const TooltipContainer = forwardRef<
             height: number
         }
         $bottom?: boolean
+        $fullWidth?: boolean
     }
 >(({ children, tooltipId, tooltipBody, $bottom, ...props }, ref) => {
     const [$show, setShow] = useState(false)
@@ -38,7 +39,7 @@ export const TooltipContainer = forwardRef<
                 isValidElement(child)
                     ? cloneElement(
                           child,
-                          ($show ? { "aria-described-by": tooltipId } : {}) as object
+                          ($show ? { "aria-describedby": tooltipId } : {}) as object
                       )
                     : child
             )}
@@ -57,11 +58,14 @@ const StyledTooltipContainer = styled.div<{
         width: number
         height: number
     }
+    $fullWidth?: boolean
 }>`
     display: flex;
     position: relative;
+
     ${({ $aspectRatio }) =>
         $aspectRatio ? `aspect-ratio: ${$aspectRatio.width}/${$aspectRatio.height};` : ""}
+    ${({ $fullWidth }) => $fullWidth && "width: 100%;"}
 `
 
 const StyledTooltip = styled.div<{
@@ -87,6 +91,7 @@ export const TooltipData = styled.div<{
     $mb?: number
     $mt?: number
 }>`
+    overflow: visible;
     padding: 0.3em 0.6em;
     font-size: 0.875rem;
     border-radius: 0.3em;

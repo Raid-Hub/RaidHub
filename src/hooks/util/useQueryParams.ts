@@ -9,7 +9,7 @@ export function useQueryParams<T extends Record<string, string>>() {
     return useMemo(() => {
         const mutableParams = new URLSearchParams(searchParams)
 
-        const replace = (params: URLSearchParams) => router.replace(`${path}?${params.toString()}`)
+        const replace = (params: URLSearchParams) => router.push(`${path}?${params.toString()}`)
 
         const get = <K extends keyof T & string>(key: K) => mutableParams.get(key) as T[K]
 

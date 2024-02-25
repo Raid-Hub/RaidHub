@@ -37,7 +37,7 @@ export const HomeSearchBar = () => {
     return (
         <FormContainer onSubmit={handleFormSubmit} ref={ref} $isFocused={isSearchFocused}>
             <Flex $padding={0}>
-                <SearchIcon color="white" absolute />
+                <SearchIcon color="white" absolute sx={24} />
                 <TypeWriterSearchInput
                     $size={6}
                     $pl={1.5}

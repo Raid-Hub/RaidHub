@@ -1,27 +1,34 @@
+import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
+import { trpc } from "~/app/trpc"
+import PinIcon from "~/components/icons/PinIcon"
 import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import { useSession } from "~/hooks/app/useSession"
-import PinIcon from "~/images/icons/PinIcon"
-import { trpc } from "~/util/trpc"
-import { usePGCRContext } from "../PGCR"
 
+/** @deprecated */
 const PinPCRCell = () => {
-    const { data: pgcr } = usePGCRContext()
+    const { activity } = usePGCRContext()
+
     const { status } = useSession()
     const { data: profile } = trpc.user.profile.get.useQuery(undefined, {
         enabled: status === "authenticated"
     })
     const { mutate: updateProfile } = useOptimisticProfileUpdate()
 
-    const isPinned = profile?.pinnedActivityId !== pgcr?.activityDetails.instanceId
+    const isPinned =
+        typeof profile?.pinnedActivityId !== "undefined" &&
+        profile.pinnedActivityId === activity?.instanceId
 
-    const handlePinClick = () =>
-        updateProfile({
-            pinnedActivityId: isPinned ? pgcr!.activityDetails.instanceId : null
-        })
+    const handlePinClick = () => {
+        if (activity) {
+            updateProfile({
+                pinnedActivityId: isPinned ? null : activity.instanceId
+            })
+        }
+    }
 
-    return profile && pgcr?.activityDetails.mode == 4 ? (
+    return profile && activity ? (
         <div>
-            <span>{isPinned ? "Pin" : "Un-Pin"}</span>
+            <span style={{ whiteSpace: "nowrap" }}>{isPinned ? "Pin" : "Un-Pin"}</span>
             <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>
                 <PinIcon sx={20} color={isPinned ? "white" : "orange"} />
             </button>

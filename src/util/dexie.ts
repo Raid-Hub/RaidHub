@@ -1,44 +1,84 @@
-import {
+/**
+ * @fileoverview This file contains the definition of a custom Dexie class and utility functions for querying data from the Dexie database.
+ * @module util/dexie
+ */
+
+import { Collection } from "@discordjs/collection"
+import type {
     DestinyActivityDefinition,
     DestinyActivityModeDefinition,
     DestinyActivityModifierDefinition,
+    DestinyClassDefinition,
     DestinyInventoryItemDefinition,
     DestinySeasonDefinition
 } from "bungie-net-core/models"
-import Dexie, { Table } from "dexie"
-import { RGBA, RawClanBannerData } from "./destiny/manifest"
+import Dexie, { type Table } from "dexie"
+import { useLiveQuery } from "dexie-react-hooks"
+import { useMemo } from "react"
+import type { RGBA } from "~/layout/managers/DestinyManifestManager"
+import { o } from "./o"
 
-export const DB_VERSION = 7
+/**
+ * The version of the Dexie database.
+ */
+export const DB_VERSION = 8
 
+/**
+ * Represents an object with a hash property.
+ */
 export type Hashed<T> = { hash: number } & T
+
+/**
+ * Represents the paths for the foreground and background clan banner images.
+ */
 type ForegroundBackground = {
     foregroundPath: string
     backgroundPath: string
 }
 
-interface CustomDexieTables extends Record<keyof RawClanBannerData, Table> {
-    items: Table<DestinyInventoryItemDefinition>
-    activities: Table<DestinyActivityDefinition>
-    activityModes: Table<DestinyActivityModeDefinition>
-    activityModifiers: Table<DestinyActivityModifierDefinition>
-    seasons: Table<DestinySeasonDefinition>
-    clanBannerDecalPrimaryColors: Table<Hashed<RGBA>>
-    clanBannerDecalSecondaryColors: Table<Hashed<RGBA>>
-    clanBannerDecals: Table<Hashed<ForegroundBackground>>
-    clanBannerDecalsSquare: Table<Hashed<ForegroundBackground>> // unused
-    clanBannerGonfalonColors: Table<Hashed<RGBA>>
-    clanBannerGonfalonDetailColors: Table<Hashed<RGBA>>
-    clanBannerGonfalonDetails: Table<Hashed<{ value: string }>>
-    clanBannerGonfalonDetailsSquare: Table<Hashed<{ value: string }>> // unused
-    clanBannerGonfalons: Table<Hashed<{ value: string }>>
-}
+/**
+ * The list of table names in the Dexie database.
+ */
+const tables = [
+    "items",
+    "activities",
+    "activityModes",
+    "activityModifiers",
+    "seasons",
+    "characterClasses",
+    "clanBannerDecalPrimaryColors",
+    "clanBannerDecalSecondaryColors",
+    "clanBannerDecals",
+    "clanBannerDecalsSquare",
+    "clanBannerGonfalonColors",
+    "clanBannerGonfalonDetailColors",
+    "clanBannerGonfalonDetails",
+    "clanBannerGonfalonDetailsSquare",
+    "clanBannerGonfalons"
+] as const
 
-class CustomDexie extends Dexie implements CustomDexieTables {
+/**
+ * Represents the Dexie tables.
+ */
+type Tables = Readonly<
+    Record<
+        (typeof tables)[number],
+        Table<{
+            hash: number
+        }>
+    >
+>
+
+/**
+ * Custom Dexie class that extends the Dexie class and implements the Tables interface.
+ */
+class CustomDexie extends Dexie implements Tables {
     items!: Table<DestinyInventoryItemDefinition>
     activities!: Table<DestinyActivityDefinition>
     activityModes!: Table<DestinyActivityModeDefinition>
     activityModifiers!: Table<DestinyActivityModifierDefinition>
     seasons!: Table<DestinySeasonDefinition>
+    characterClasses!: Table<DestinyClassDefinition>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
     clanBannerDecals!: Table<Hashed<ForegroundBackground>>
@@ -49,25 +89,90 @@ class CustomDexie extends Dexie implements CustomDexieTables {
     clanBannerGonfalonDetailsSquare!: Table<Hashed<{ value: string }>> // unused
     clanBannerGonfalons!: Table<Hashed<{ value: string }>>
 
+    /**
+     * The cache object that stores collections of data from each table.
+     */
+    public readonly cache: {
+        [K in (typeof tables)[number]]: Collection<
+            number,
+            CustomDexie[K] extends Table<infer U> ? U : never
+        >
+    }
+
     constructor() {
         super("app")
-        this.version(DB_VERSION).stores({
-            items: "hash",
-            activities: "hash",
-            activityModes: "hash",
-            activityModifiers: "hash",
-            seasons: "hash",
-            clanBannerDecalPrimaryColors: "hash",
-            clanBannerDecalSecondaryColors: "hash",
-            clanBannerDecals: "hash",
-            clanBannerDecalsSquare: "hash", // unused
-            clanBannerGonfalonColors: "hash",
-            clanBannerGonfalonDetailColors: "hash",
-            clanBannerGonfalonDetails: "hash",
-            clanBannerGonfalonDetailsSquare: "hash", // unused
-            clanBannerGonfalons: "hash"
-        } satisfies Record<keyof CustomDexieTables, "hash">)
+        this.version(DB_VERSION).stores(o.fromEntries(tables.map(table => [table, "hash"])))
+        // @ts-expect-error generic is right
+        this.cache = o.fromEntries(tables.map(table => [table, new Collection()]))
     }
 }
 
 export const indexDB = new CustomDexie()
+
+/**
+ * Custom hook for querying a single item from the Dexie database with in-memory caching.
+ * @param table - The name of the table to query.
+ * @param hash - The hash of the item to query.
+ * @returns The queried item or null if not found.
+ */
+export const useDexieGetQuery = <
+    K extends (typeof tables)[number],
+    T extends CustomDexie[K] extends Table<infer U> ? U : never
+>(
+    table: K,
+    hash: number
+) => {
+    const cached = indexDB.cache[table].get(hash)
+
+    return (
+        useLiveQuery<T>(
+            () =>
+                // @ts-expect-error generic is right
+                Promise.resolve(
+                    indexDB[table].get({ hash: hash }).then(data => {
+                        // @ts-expect-error generic is right
+                        if (data) indexDB.cache[table].set(hash, data)
+                        return data
+                    })
+                ),
+            [hash]
+        ) ??
+        cached ??
+        null
+    )
+}
+
+/**
+ * Custom hook for querying multiple items from the Dexie database with in-memory caching.
+ * @param table - The name of the table to query.
+ * @param hashes - The hashes of the items to query.
+ * @returns The queried items.
+ */
+export const useDexieBulkGetQuery = <K extends (typeof tables)[number]>(
+    table: K,
+    hashes: number[]
+) => {
+    const liveQuery = useLiveQuery(
+        () =>
+            // @ts-expect-error generic is right
+            indexDB[table].bulkGet(hashes),
+        [hashes]
+    )
+
+    return useMemo(() => {
+        liveQuery?.forEach(item => {
+            if (item)
+                indexDB.cache[table].set(
+                    item.hash,
+                    // @ts-expect-error item is right type
+                    item
+                )
+        })
+
+        return indexDB.cache[table].filter(item =>
+            // @ts-expect-error hash is a number
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            hashes.includes(item.hash)
+        )
+    }, [hashes, table, liveQuery])
+}

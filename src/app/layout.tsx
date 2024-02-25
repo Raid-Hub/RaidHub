@@ -14,16 +14,18 @@ import { RaidHubManifestManager } from "./(layout)/managers/RaidHubManifestManag
 import { BungieClientProvider } from "./(layout)/managers/session/BungieClientProvider"
 import { SessionManager } from "./(layout)/managers/session/ServerSessionManager"
 
-export default async function RootLayout(params: { children: ReactNode }) {
-    const manifest = await getRaidHubApi("/manifest", null, null, {
+export const prefetchManifest = async () =>
+    getRaidHubApi("/manifest", null, null, {
         next: { revalidate: 300 }
     })
+
+export default async function RootLayout(params: { children: ReactNode }) {
+    const manifest = await prefetchManifest()
 
     return (
         <html>
             <head>
                 <meta name="discord:site" content="https://discord.gg/raidhub" />
-                <meta name="twitter:site" content="@raidhubio" />
 
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -97,6 +99,9 @@ export const metadata: Metadata = {
         description: description,
         images: ["/logo.png"],
         type: "website"
+    },
+    twitter: {
+        creator: "@raidhubio"
     },
     manifest: "/manifest.json"
 }

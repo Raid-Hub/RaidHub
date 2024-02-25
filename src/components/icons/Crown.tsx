@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function Crown(props: SVGProps) {
+export default function Crown(props: SVGWrapperProps) {
     return (
         <SVG
             xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,4 @@
-import { useLiveQuery } from "dexie-react-hooks"
-import { indexDB } from "~/util/dexie"
+import { useDexieGetQuery } from "~/util/dexie"
 
-export function useActivityDefinition(hash: number) {
-    return useLiveQuery(() => indexDB.activities.get({ hash }), [hash]) ?? null
-}
+export const useActivityDefinition = (hash: string | number) =>
+    useDexieGetQuery("activities", Number(hash))

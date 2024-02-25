@@ -1,6 +1,9 @@
-import { useLiveQuery } from "dexie-react-hooks"
-import { indexDB } from "~/util/dexie"
+import { useMemo } from "react"
+import { useDexieBulkGetQuery, useDexieGetQuery } from "~/util/dexie"
 
-export function useItemDefinition(hash: number) {
-    return useLiveQuery(() => indexDB.items.get({ hash }), [hash]) ?? null
+export const useItemDefinition = (hash: number) => useDexieGetQuery("items", hash)
+
+export const useItemDefinitions = (hashes: (number | string)[]) => {
+    const numberHashes = useMemo(() => hashes.map(Number), [hashes])
+    return useDexieBulkGetQuery("items", numberHashes)
 }

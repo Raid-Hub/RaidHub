@@ -2,7 +2,7 @@
 
 import { createGlobalStyle } from "styled-components"
 
-export const GlobalStyle = createGlobalStyle<{}>`
+export const GlobalStyle = createGlobalStyle`
     * {
         box-sizing: border-box;
         -moz-box-sizing: border-box;

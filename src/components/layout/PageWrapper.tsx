@@ -6,19 +6,19 @@ import { $media } from "~/layout/media"
 
 const PropsContext = createContext<object | null>(null)
 
-export const PageWrapper = forwardRef(
-    <T extends object = never>(
-        props: {
-            children: ReactNode
-            pageProps?: T
-        },
-        ref: ForwardedRef<HTMLElement>
-    ) => (
-        <PropsContext.Provider value={props.pageProps ?? {}}>
-            <PageWrapperStyled ref={ref}>{props.children}</PageWrapperStyled>
-        </PropsContext.Provider>
-    )
-)
+export const PageWrapper = forwardRef<
+    HTMLElement,
+    {
+        children: ReactNode
+        pageProps?: object
+    } & PageWrapperStyleProps
+>(({ children, pageProps, ...props }, ref: ForwardedRef<HTMLElement>) => (
+    <PropsContext.Provider value={pageProps ?? {}}>
+        <PageWrapperStyled ref={ref} {...props}>
+            {children}
+        </PageWrapperStyled>
+    </PropsContext.Provider>
+))
 PageWrapper.displayName = "PageWrapper"
 
 /**
@@ -32,19 +32,25 @@ export const usePageProps = <T extends object>() => {
     if (pageProps === null) throw new Error("usePageProps must be used within a PageWrapper")
     return pageProps as T
 }
-
-const PageWrapperStyled = styled.main`
+type PageWrapperStyleProps = {
+    $maxWidth?: number
+}
+const PageWrapperStyled = styled.main<PageWrapperStyleProps>`
     margin: 0 auto;
     margin-top: 0.5em;
     margin-bottom: 1.5em;
 
-    ${$media.max.desktop`
-        width: 85%;
+    ${props => $media.max.desktop`
+        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 85%))` : "85%"};
     `}
-    ${$media.max.laptop`
-        width: 90%;
+    ${props => $media.max.laptop`
+        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 90%))` : "90%"};
     `}
-    ${$media.max.tablet`
-        width: 95%;
+    ${props => $media.max.tablet`
+        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 95%))` : "95%"};
     `}
 `
+
+PageWrapperStyled.defaultProps = {
+    $maxWidth: undefined
+}

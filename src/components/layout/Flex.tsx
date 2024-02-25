@@ -20,14 +20,14 @@ export const Flex = styled.div<{
     justify-content: ${({ $align }) => $align};
     align-items: ${({ $crossAxis }) => $crossAxis};
     flex-direction: ${({ $direction }) => $direction};
-    gap: ${({ $gap }) => $gap}em;
+    gap: ${({ $gap }) => $gap}rem;
     flex-wrap: ${({ $wrap }) => ($wrap ? "wrap" : "nowrap")};
 
-    padding: ${({ $padding }) => $padding}em;
+    padding: ${({ $padding }) => $padding}rem;
     ${({ $paddingX }) =>
-        $paddingX && `padding-left: ${$paddingX}em; padding-right: ${$paddingX}em;`}
+        $paddingX && `padding-left: ${$paddingX}rem; padding-right: ${$paddingX}rem;`}
     ${({ $paddingY }) =>
-        $paddingY && `padding-top: ${$paddingY}em; padding-bottom: ${$paddingY}em;`}
+        $paddingY && `padding-top: ${$paddingY}rem; padding-bottom: ${$paddingY}rem;`}
     ${({ $fullWidth }) => $fullWidth && "min-width: 100%;"}
 `
 

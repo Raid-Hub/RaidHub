@@ -1,6 +1,4 @@
-import { useLiveQuery } from "dexie-react-hooks"
-import { indexDB } from "~/util/dexie"
+import { useDexieGetQuery } from "~/util/dexie"
 
-export function useActivityModeDefinition(hash: number) {
-    return useLiveQuery(() => indexDB.activityModes.get({ hash }), [hash]) ?? null
-}
+export const useActivityModeDefinition = (hash: string | number) =>
+    useDexieGetQuery("activityModes", Number(hash))

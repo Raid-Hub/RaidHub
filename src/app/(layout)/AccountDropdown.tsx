@@ -76,7 +76,7 @@ const DropdownLink = (props: { href: string; title: string }) => (
     <FullWidthLink href={props.href}>
         <DropdownItemContainer $padding={0.2} $align="space-between" $fullWidth>
             <DropDownTitle>{props.title}</DropDownTitle>
-            <RightChevron color="orange" />
+            <RightChevron color="orange" sx={24} />
         </DropdownItemContainer>
     </FullWidthLink>
 )
@@ -84,7 +84,7 @@ const DropdownLink = (props: { href: string; title: string }) => (
 const DropdownButton = (props: { onClick: () => void; title: string }) => (
     <DropdownItemContainer onClick={props.onClick} $padding={0.2} $align="space-between" $fullWidth>
         <DropDownTitle>{props.title}</DropDownTitle>
-        <RightChevron color="orange" />
+        <RightChevron color="orange" sx={24} />
     </DropdownItemContainer>
 )
 

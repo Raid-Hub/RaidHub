@@ -1,5 +1,5 @@
-import { ChangeEvent } from "react"
-import styles from "../../styles/reusable-components/toggle-switch.module.css"
+import { type ChangeEvent } from "react"
+import styles from "./toggle-switch.module.css"
 
 type ToggleProps = {
     value: boolean
@@ -19,13 +19,13 @@ const ToggleSwitch = ({ onToggle, size, value, label }: ToggleProps) => {
     const height = `${size}px`
 
     return (
-        <div className={styles["toggle"]}>
+        <div className={styles.toggle}>
             <input
                 type="checkbox"
                 checked={value}
                 name={label}
                 id={label}
-                className={styles["checkbox"]}
+                className={styles.checkbox}
                 onChange={handleChange}
             />
             <label htmlFor={label} style={{ width, height, borderRadius: height }} />

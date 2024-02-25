@@ -1,38 +1,25 @@
 import type { ClanBanner } from "bungie-net-core/models"
-import { useLiveQuery } from "dexie-react-hooks"
-import type { ClanBannerData } from "~/types/profile"
-import type { RGBA } from "~/util/destiny/manifest"
-import { indexDB } from "~/util/dexie"
+import type { RGBA } from "~/layout/managers/DestinyManifestManager"
+import { useDexieGetQuery } from "~/util/dexie"
+import { o } from "~/util/o"
 
-export function useClanBanner(banner: ClanBanner): ClanBannerData {
-    const decalPrimaryColor = useLiveQuery(
-        () => indexDB.clanBannerDecalPrimaryColors.get({ hash: banner.decalColorId }),
-        [banner.decalColorId]
+export function useClanBanner(banner: ClanBanner) {
+    const decalPath = useDexieGetQuery("clanBannerDecals", banner.decalId)
+
+    const decalPrimaryColor = useDexieGetQuery("clanBannerDecalPrimaryColors", banner.decalColorId)
+    const decalSecondaryColor = useDexieGetQuery(
+        "clanBannerDecalSecondaryColors",
+        banner.decalBackgroundColorId
     )
-    const decalSecondaryColor = useLiveQuery(
-        () => indexDB.clanBannerDecalSecondaryColors.get({ hash: banner.decalBackgroundColorId }),
-        [banner.decalBackgroundColorId]
+
+    const gonfalconsPath = useDexieGetQuery("clanBannerGonfalons", banner.gonfalonId)
+    const gonfalconsColor = useDexieGetQuery("clanBannerGonfalonColors", banner.gonfalonColorId)
+
+    const decalTopColor = useDexieGetQuery(
+        "clanBannerGonfalonDetailColors",
+        banner.gonfalonDetailColorId
     )
-    const decalPath = useLiveQuery(
-        () => indexDB.clanBannerDecals.get({ hash: banner.decalId }),
-        [banner.decalId]
-    )
-    const gonfalconsPath = useLiveQuery(
-        () => indexDB.clanBannerGonfalons.get({ hash: banner.gonfalonId }),
-        [banner.gonfalonId]
-    )
-    const gonfalconsColor = useLiveQuery(
-        () => indexDB.clanBannerGonfalons.get({ hash: banner.gonfalonColorId }),
-        [banner.gonfalonColorId]
-    )
-    const decalTopColor = useLiveQuery(
-        () => indexDB.clanBannerGonfalonDetailColors.get({ hash: banner.gonfalonDetailColorId }),
-        [banner.gonfalonDetailColorId]
-    )
-    const decalTopPath = useLiveQuery(
-        () => indexDB.clanBannerGonfalonDetailColors.get({ hash: banner.gonfalonDetailId }),
-        [banner.gonfalonDetailId]
-    )
+    const decalTopPath = useDexieGetQuery("clanBannerGonfalonDetails", banner.gonfalonDetailId)
 
     return {
         decalPrimary: {
@@ -44,12 +31,12 @@ export function useClanBanner(banner: ClanBanner): ClanBannerData {
             color: RGBAToHex(decalSecondaryColor)
         },
         decalTop: {
-            path: RGBAToHex(decalTopPath),
+            path: decalTopPath,
             color: RGBAToHex(decalTopColor)
         },
         gonfalcons: {
             path: gonfalconsPath?.value ?? "",
-            color: gonfalconsColor?.value ?? ""
+            color: RGBAToHex(gonfalconsColor)
         }
     }
 }
@@ -59,13 +46,11 @@ export function useClanBanner(banner: ClanBanner): ClanBannerData {
  * @param rgba a list of the rgba values
  * @returns a hex string with #
  */
-function RGBAToHex(rgba: RGBA | undefined): string {
-    if (!rgba) return `#00000000`
-    const hex = Object.fromEntries(
-        Object.entries(rgba).map(([channel, value]) => {
-            const str = value.toString(16)
-            return [channel, str.length === 1 ? `0${str}` : str]
-        })
+function RGBAToHex(rgba: RGBA | null): string {
+    if (!rgba) return "#00000000"
+
+    const hex = o.fromEntries(
+        o.map(rgba, (channel, value) => [channel, value.toString(16).padStart(2, "0")])
     )
 
     return `#${hex.red}${hex.green}${hex.blue}${hex.alpha}`

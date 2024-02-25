@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function Intellect(props: SVGProps) {
+export default function Intellect(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 0 51 51" {...props}>
             <polygon points="25.48,11.14 31.6,17.26 33.67,15.19 25.48,7 17.3,15.19 19.36,17.26" />

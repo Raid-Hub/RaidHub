@@ -1,4 +1,4 @@
-import Image, { ImageLoader } from "next/image"
+import Image, { type ImageLoader } from "next/image"
 import { type ComponentPropsWithoutRef } from "react"
 
 export function CloudflareImage({
@@ -36,6 +36,7 @@ const cloudflareVariants: { name: string; w: number; h: number }[] = [
 const cloudflareId = "85AvSk7Z9-QdHfmk4t5dsw"
 
 const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const minWidth = (width * (quality || 75)) / 100
 
     const variant = (

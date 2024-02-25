@@ -1,34 +1,9 @@
 import type { Collection } from "@discordjs/collection"
 import { useCallback, useMemo } from "react"
-import { Difficulty, Raid } from "~/data/raid"
+import { Raid } from "~/data/raid"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
 import { includedIn } from "~/util/helpers"
-
-export enum Tag {
-    CHECKPOINT = "Checkpoint",
-    SOLO = "Solo",
-    DUO = "Duo",
-    TRIO = "Trio",
-    DAY_ONE = "Day One",
-    CONTEST = "Contest",
-    WEEK_ONE = "Week One",
-    MASTER = "Master",
-    PRESTIGE = "Prestige",
-    FLAWLESS = "Flawless",
-    CHALLENGE_VOG = "Tempo's Edge",
-    CHALLENGE_KF = "Regicide",
-    CHALLENGE_CROTA = "Superior Swordplay",
-    ABILITIES_ONLY = "Abilities Only",
-    FRESH = "Full",
-    GUIDEDGAMES = "Guided Games"
-}
-
-export const TagForReprisedContest = {
-    [Difficulty.CHALLENGE_VOG]: Tag.CHALLENGE_VOG,
-    [Difficulty.CHALLENGE_KF]: Tag.CHALLENGE_KF,
-    [Difficulty.CHALLENGE_CROTA]: Tag.CHALLENGE_CROTA
-}
 
 export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesActivity>) => {
     const getWeight = useGetWeight()

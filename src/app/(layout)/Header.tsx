@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode } from "react"
+import { type ReactNode } from "react"
 import styled from "styled-components"
 import { BackdropBlur } from "~/components/BackdropBlur"
 

@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function Users(props: SVGProps) {
+export default function Users(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 2 24 24" {...props}>
             <path

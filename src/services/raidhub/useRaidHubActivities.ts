@@ -21,23 +21,14 @@ export const useRaidHubActivities = (
     const [cursors, setCursors] = useState(() => new Collection<string, Set<string>>())
 
     const _generateQuery = useCallback(
-        (membershipId: string, cursor?: string) =>
+        <T = RaidHubPlayerActivitiesResponse>(
+            membershipId: string,
+            cursor?: string,
+            overrides?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
+        ) =>
             generateQuery({
                 ...opts,
-                onSuccess: data => {
-                    setCursors(oldCursors => {
-                        // If there is no next cursor, we can prevent a state update
-                        if (!data.nextCursor) return oldCursors
-                        // We need to clone the collection for react to register a state update
-                        const newCursors = oldCursors.clone()
-                        if (!newCursors.has(membershipId)) {
-                            newCursors.set(membershipId, new Set([data.nextCursor]))
-                        } else {
-                            newCursors.get(membershipId)!.add(data.nextCursor)
-                        }
-                        return newCursors
-                    })
-                }
+                ...overrides
             })(membershipId, cursor),
         [opts]
     )
@@ -45,7 +36,24 @@ export const useRaidHubActivities = (
     const queriesOptions = useMemo(
         () =>
             [
-                [membershipIds.map(membershipId => _generateQuery(membershipId))],
+                [
+                    membershipIds.map(membershipId =>
+                        _generateQuery(membershipId, undefined, {
+                            onSuccess: data => {
+                                setCursors(oldCursors => {
+                                    // Clear the old cursors when we get the first set again
+                                    oldCursors.get(membershipId)?.clear()
+                                    return oldCursors
+                                        .clone()
+                                        .set(
+                                            membershipId,
+                                            new Set(data.nextCursor ? [data.nextCursor] : [])
+                                        )
+                                })
+                            }
+                        })
+                    )
+                ],
                 cursors.map((cursors, membershipId) =>
                     Array.from(cursors).map(cursor => _generateQuery(membershipId, cursor))
                 )
@@ -55,6 +63,27 @@ export const useRaidHubActivities = (
 
     const queries = useQueries({
         queries: queriesOptions
+    })
+
+    // This updates the cursors collection with the next cursors from the queries
+    queries.forEach(query => {
+        if (query.data) {
+            const { membershipId, nextCursor } = query.data
+            if (!nextCursor) return
+
+            const membershipCursors = cursors.get(membershipId)
+            if (membershipCursors?.has(nextCursor)) return
+
+            setCursors(oldCursors => {
+                const newCursors = oldCursors.clone()
+                if (!membershipCursors) {
+                    newCursors.set(membershipId, new Set([nextCursor]))
+                } else {
+                    newCursors.get(membershipId)!.add(nextCursor)
+                }
+                return newCursors
+            })
+        }
     })
 
     return useMemo(

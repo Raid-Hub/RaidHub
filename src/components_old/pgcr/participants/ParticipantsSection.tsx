@@ -1,136 +1,59 @@
-import { useRouter } from "next/navigation"
+"use client"
+
 import { useCallback } from "react"
-import styles from "~/styles/pages/pgcr.module.css"
-import DestinyPGCRCharacter from "../../../util/destiny/Character"
-import PGCRPlayer from "../../../util/destiny/Player"
-import { usePGCRContext } from "../PGCR"
-import KillsBreakdown from "./KillsBreakdown"
-import PlayerCell from "./PlayerCell"
-import PlayerStatCells from "./PlayerStatCells"
-import SelectedPlayerHeader from "./SelectedPlayerHeader"
+import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
+import { PlayerTab } from "~/app/pgcr/components/PlayerTab"
+import { SelectedPlayerView } from "~/app/pgcr/components/SelectedPlayerView"
+import type { PGCRPageParams } from "~/app/pgcr/types"
+import { Loading } from "~/components/Loading"
+import { useQueryParams } from "~/hooks/util/useQueryParams"
+import styles from "../pgcr.module.css"
 
-type ParticipantsProps = {
-    showScorePref: boolean
-}
+/** @deprecated */
+const ParticipantsSection = () => {
+    const { pgcrPlayers, activity } = usePGCRContext()
+    const { set, get, remove } = useQueryParams<PGCRPageParams>()
 
-const ParticipantsSection = ({ showScorePref }: ParticipantsProps) => {
-    const router = useRouter()
-    const { data: pgcr, isLoading } = usePGCRContext()
-
-    const getQueryValue = useCallback(
-        (key: string) => {
-            const q = router.query[key]
-            if (Array.isArray(q) || q === undefined) {
-                return ""
+    const setPlayer = useCallback(
+        (membershipId: string | null) => {
+            remove("character")
+            if (!membershipId) {
+                remove("player")
             } else {
-                return q
+                set("player", membershipId)
             }
         },
-        [router]
+        [remove, set]
     )
 
-    const setQueryValues = useCallback(
-        (values: Partial<{ player: string; character: string; weapons: boolean }>) => {
-            const query: typeof values = {}
-            const player = values.player ?? router.query.player
-            if (player) {
-                query.player = String(player)
-            }
-            const character = values.character ?? router.query.character
-            if (character) {
-                query.character = String(character)
-            }
-            const weapons = values.weapons ?? router.query.weapons
-            if (weapons === true || weapons === "true") {
-                query.weapons = true
-            }
-            router.push(
-                {
-                    query: {
-                        ...query,
-                        activityId: router.query.activityId
-                    }
-                },
-                undefined,
-                {
-                    shallow: true
-                }
-            )
-        },
-        [router]
-    )
+    const selectedMembershipId = get("player")
 
-    const selectedPlayer: PGCRPlayer | null = pgcr?.players.get(getQueryValue("player")) ?? null
-    const selectedCharacter: DestinyPGCRCharacter | null =
-        selectedPlayer?.characters.get(getQueryValue("character")) ?? null
-    const isShowingWeaponsView = getQueryValue("weapons") === "true"
+    const selectedPlayer = selectedMembershipId
+        ? pgcrPlayers?.get(selectedMembershipId) ?? null
+        : null
 
-    const updatePlayerId = (clicked: string) => {
-        selectedPlayer?.membershipId === clicked
-            ? setQueryValues({
-                  player: "",
-                  character: "",
-                  weapons: false
-              })
-            : setQueryValues({ player: clicked })
-    }
-
-    const updateCharacterId = (clicked: string) => {
-        selectedCharacter?.characterId === clicked
-            ? setQueryValues({ character: "" })
-            : setQueryValues({ character: clicked })
-    }
-
-    const cardLayout = pgcr?.players
-        ? pgcr.players.size < 4
+    const pCount = pgcrPlayers?.size ?? activity?.playerCount ?? 6
+    const cardLayout =
+        pCount < 4
             ? styles["members-low"]
-            : pgcr.players.size % 2
+            : pCount % 2
             ? styles["members-odd"]
             : styles["members-even"]
-        : styles["members-even"]
 
-    // standard view
-    if (!selectedPlayer || !pgcr?.players) {
+    if (!selectedPlayer || !pgcrPlayers) {
         return (
-            <div className={[styles["grid"], cardLayout].join(" ")}>
-                {pgcr &&
-                    pgcr.players.map((player, id) => (
-                        <PlayerCell
-                            key={id}
-                            player={player}
-                            selectedPlayerId={selectedPlayer?.membershipId ?? null}
-                            isLoadingEmblems={isLoading}
-                            dnf={pgcr.completed && !player.didComplete}
-                            solo={pgcr.players.size === 1}
-                            weightedScore={pgcr.weightedScores.get(id) ?? 0}
-                            onClick={() => updatePlayerId(id)}
-                            showScore={showScorePref}
-                        />
+            <div className={[styles.grid, cardLayout].join(" ")}>
+                {pgcrPlayers?.map((player, id) => (
+                    <PlayerTab key={id} player={player} onClick={() => setPlayer(id)} />
+                )) ??
+                    Array.from({ length: pCount }, (_, idx) => (
+                        <Loading key={idx} $minHeight="90px" $alpha={0.8} />
                     ))}
             </div>
         )
     } else {
-        // selected view
         return (
-            <>
-                <SelectedPlayerHeader
-                    selectedPlayer={selectedPlayer}
-                    selectedCharacter={selectedCharacter}
-                    onClick={() => updatePlayerId(selectedPlayer.membershipId)}
-                    updateCharacterId={updateCharacterId}
-                />
-                {!isShowingWeaponsView ? (
-                    <PlayerStatCells
-                        entry={selectedCharacter ?? selectedPlayer}
-                        showWeaponsDetails={() => setQueryValues({ weapons: true })}
-                    />
-                ) : (
-                    <KillsBreakdown
-                        entry={selectedCharacter ?? selectedPlayer}
-                        back={() => setQueryValues({ weapons: false })}
-                    />
-                )}
-            </>
+            <SelectedPlayerView selectedPlayer={selectedPlayer} deselect={() => setPlayer(null)} />
         )
     }
 }

@@ -16,8 +16,13 @@ export function bungieItemUrl(path: string | undefined) {
     return baseBungieUrl + (path || "")
 }
 
-export function bungieEmblemUrl(path: string | undefined) {
-    return baseBungieUrl + (path || defaultEmblem)
+export function bungieEmblemUrl(
+    emblem: DestinyInventoryItemDefinition | null | string | undefined
+) {
+    return (
+        baseBungieUrl +
+        (typeof emblem === "string" ? emblem : emblem?.secondaryIcon || defaultEmblem)
+    )
 }
 
 export function bungieBannerEmblemUrl(emblem: DestinyInventoryItemDefinition | null) {

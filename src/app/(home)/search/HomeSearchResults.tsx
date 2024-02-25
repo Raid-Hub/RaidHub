@@ -1,9 +1,12 @@
+import type { ReadonlyCollection } from "@discordjs/collection"
 import styled from "styled-components"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import { Grid } from "~/components/layout/Grid"
-import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
+import type { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
 
-export const HomeSearchResults = (props: { results: RaidHubPlayerSearchResult[] }) => {
+export const HomeSearchResults = (props: {
+    results: ReadonlyCollection<string, RaidHubPlayerSearchResult>
+}) => {
     return (
         <Container>
             <Grid $gap={0} $minCardWidth={240}>

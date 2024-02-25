@@ -1,16 +1,18 @@
-import { TagStrings } from "~/data/strings/activity-tags"
+import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
+import { useTags } from "~/app/pgcr/hooks/useTags"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { useRaidHubActivity } from "~/services/raidhub/useRaidHubActivity"
-import styles from "~/styles/pages/pgcr.module.css"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"
-import { usePGCRContext } from "../PGCR"
+import styles from "../pgcr.module.css"
 
+/** @deprecated */
 const ActivityHeader = () => {
-    const { data: pgcr, isLoading, activityId } = usePGCRContext()
+    const { completionDate, completed, duration, activity, fresh, isLoading, raid } =
+        usePGCRContext()
+
     const { locale } = useLocale()
-    const { data: activity } = useRaidHubActivity(activityId)
     const { getRaidString } = useRaidHubManifest()
+    const tags = useTags(activity ?? null)
 
     return (
         <div className={styles["activity-tile-header-container"]}>
@@ -18,23 +20,25 @@ const ActivityHeader = () => {
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
-                            {!isLoading
-                                ? toCustomDateString(pgcr.completionDate, locale)
+                            {completionDate
+                                ? toCustomDateString(completionDate, locale)
                                 : "Loading..."}
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
                         {isLoading ? (
                             <span>Loading...</span>
+                        ) : raid ? (
+                            getRaidString(raid)
                         ) : (
-                            <span>{pgcr.raid ? getRaidString(pgcr.raid) : "Non-Raid"}</span>
+                            "Non-Raid"
                         )}
                     </div>
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>
-                        {pgcr &&
-                            secondsToHMS(pgcr.speed)
+                        {typeof duration !== "undefined" &&
+                            secondsToHMS(duration, false)
                                 .split(" ")
                                 .map((t, idx) => (
                                     <span key={idx}>
@@ -42,7 +46,7 @@ const ActivityHeader = () => {
                                         {t[t.length - 1]}
                                     </span>
                                 ))}
-                        {!(pgcr?.completed ?? true) && (
+                        {completed === false && (
                             <span>
                                 <b>{"(Incomplete)"}</b>
                             </span>
@@ -52,20 +56,16 @@ const ActivityHeader = () => {
             </div>
             <div className={styles["activity-tile-header-attributes"]}>
                 <div className={styles["tags-container"]}>
-                    {activity &&
-                        pgcr?.tags(activity).map(({ tag, placement }, idx) => (
-                            <div key={idx} className={styles["tag"]}>
-                                {TagStrings[tag]}
-                                {placement && ` #${placement}`}
-                            </div>
-                        ))}
+                    {tags.map(({ tag, placement }, idx) => (
+                        <div key={idx} className={styles.tag}>
+                            {tag}
+                            {placement && ` #${placement}`}
+                        </div>
+                    ))}
                 </div>
-                {activity?.fresh === null && (
+                {fresh === null && (
                     <div className={styles["cp-error"]}>
-                        <p>
-                            Note: this report may or may not be a checkpoint due to API issues from
-                            Season of the Hunt through Season of the Risen
-                        </p>
+                        <p>Note: this activity may or may not be a checkpoint</p>
                     </div>
                 )}
             </div>

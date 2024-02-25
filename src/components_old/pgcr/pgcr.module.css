@@ -1,8 +1,6 @@
-.main {
-    max-width: 1200px; /* Overrides the global setting */
-}
-
 .summary-card {
+    max-width: 1200px; /* Overrides the global setting */
+    --border: 1px solid rgba(111, 111, 111, 0.229);
     flex: 1;
     padding: 0.8em;
     min-width: 95%;
@@ -10,7 +8,7 @@
     background-color: rgba(30, 30, 30, 0.35);
 
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     position: relative;
 
@@ -31,11 +29,12 @@
 
 .summary-card:has(.summary-card-dnf) {
     background-color: rgba(155, 110, 94, 0.106);
-    color: var(--secondary-text);
+    color: rgb(208, 208, 208);
 }
 
 .summary-card-dnf {
     opacity: 0.2 !important;
+    filter: grayscale(100%);
 }
 
 .summary-card-dnf ~ .grid .entry-card .color-film {
@@ -114,6 +113,7 @@
 }
 
 .cp-error {
+    text-align: right;
     min-width: 40%;
     max-width: 65%;
 }
@@ -136,7 +136,7 @@
 .tag {
     margin: auto 0;
 
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
     border-radius: 6px;
 
     padding: 4px 7px;
@@ -166,9 +166,9 @@
     height: 85px;
 
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
-    background-color: var(--modal-background-opaque);
+    background-color: rgba(30, 30, 30, 0.785);
 
     display: flex;
     flex-direction: row;
@@ -255,7 +255,7 @@
 
 .class-name {
     font-weight: 100;
-    color: var(--tertiary-text);
+    color: rgb(178, 178, 178);
 }
 
 .quick-stats-container {
@@ -266,25 +266,6 @@
     padding-right: 0.5em;
     display: flex;
     justify-content: flex-end;
-}
-
-.score-only {
-    align-self: center;
-
-    text-align: left;
-    min-width: 6.5ch;
-
-    font-size: large;
-    font-style: italic;
-    font-weight: 500;
-
-    color: var(--search-text);
-
-    border-radius: 5px;
-
-    background-color: var(--modal-background);
-    padding: 4px;
-    border-radius: 999px;
 }
 
 .quick-stats {
@@ -306,7 +287,7 @@
 
     justify-content: flex-start;
 
-    background-color: var(--modal-background);
+    background-color: rgba(30, 30, 30, 0.309);
     padding: 2px;
     padding-left: 6px;
     border-radius: 999px;
@@ -320,7 +301,7 @@
     font-size: medium;
     font-style: italic;
     font-weight: 500;
-    color: var(--search-text);
+    color: rgb(221, 221, 221);
 }
 
 .quick-stat img {
@@ -335,7 +316,7 @@
     padding: 0;
 
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     overflow: hidden;
     position: relative;
@@ -377,7 +358,7 @@
     background-color: rgba(151, 151, 151, 0.274);
 
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     display: flex;
     flex-direction: row;
@@ -397,14 +378,14 @@
 
     padding: 1em;
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5em;
 
-    color: var(--primary-text);
+    color: white;
     text-decoration: none;
 }
 
@@ -434,10 +415,10 @@
     min-height: 50px;
     padding: 10px 15px;
 
-    background-color: var(--modal-background);
+    background-color: rgba(30, 30, 30, 0.233);
 
     border-radius: 15px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     display: flex;
 }
@@ -447,7 +428,7 @@
     height: 100%;
     padding: 10px;
 
-    background-color: var(--modal-background-opaque);
+    background-color: rgba(30, 30, 30, 0.689);
 
     display: flex;
     align-items: center;
@@ -485,7 +466,7 @@
     text-transform: uppercase;
     font-size: small;
     font-style: italic;
-    color: var(--secondary-text);
+    color: rgb(198, 198, 198);
     line-height: 100%;
 }
 
@@ -622,8 +603,8 @@
 
     border-radius: 5px;
 
-    background-color: var(--modal-background-opaque);
-    border: 1px solid var(--border);
+    background-color: rgba(30, 30, 30, 0.785);
+    border: 1px solid rgba(111, 111, 111, 0.229);
 
     display: flex;
     flex-direction: column;

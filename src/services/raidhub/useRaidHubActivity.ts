@@ -4,7 +4,13 @@ import { getRaidHubApi } from "."
 
 export const useRaidHubActivity = (
     activityId: string,
-    opts?: { enabled?: boolean; initialData?: RaidHubActivityResponse; suspense?: boolean }
+    opts?: {
+        enabled?: boolean
+        initialData?: RaidHubActivityResponse
+        suspense?: boolean
+        staleTime?: number
+        placeholderData?: RaidHubActivityResponse
+    }
 ) =>
     useQuery({
         queryKey: ["raidhub", "activity", activityId] as const,

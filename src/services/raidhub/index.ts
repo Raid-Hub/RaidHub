@@ -1,3 +1,4 @@
+import type { Prettify } from "~/types/generic"
 import type { RaidHubAPIResponse, RaidHubPath } from "~/types/raidhub-api"
 import type { paths } from "~/types/raidhub-openapi"
 
@@ -14,7 +15,7 @@ export async function getRaidHubApi<
     pathParams: "path" extends keyof _P ? _P["path"] : null,
     queryParams: "query" extends keyof _P ? _P["query"] : null,
     config?: Omit<RequestInit, "method" | "body">
-): Promise<R> {
+): Promise<Prettify<R>> {
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
             // @ts-expect-error types don't really work here
@@ -49,7 +50,7 @@ export async function postRaidHubApi<
     query: "query" extends keyof _P ? _P["query"] : null,
     body: "application/json" extends keyof _RC ? _RC["application/json"] : null,
     config?: Omit<RequestInit, "method" | "body">
-): Promise<R> {
+): Promise<Prettify<R>> {
     // create url
     const url = new URL(path, process.env.RAIDHUB_API_URL)
     Object.entries(query ?? {}).forEach(([key, value]) => {

@@ -1,7 +1,9 @@
+"use client"
+
 import { AnimatePresence, m } from "framer-motion"
-import { ReactNode, useEffect, useRef, useState } from "react"
-import styles from "../../styles/reusable-components/kebab-menu.module.css"
-import { wait } from "../../util/wait"
+import { useEffect, useRef, useState, type ReactNode } from "react"
+import { wait } from "~/util/helpers"
+import styles from "./kebab-menu.module.css"
 
 /**
  * @deprecated
@@ -16,19 +18,19 @@ const KebabMenu = ({
     children: ReactNode
 }) => {
     const [isOpen, setIsOpen] = useState(false)
-    const handleClick = (event: React.MouseEvent<SVGElement>) => {
+    const handleClick = () => {
         setIsOpen(old => !old)
     }
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
+        const handleClickOutside: EventListenerOrEventListenerObject = e => {
             if (!ref.current?.contains(e.target as Node)) {
                 setIsOpen(false)
             }
         }
         if (ref.current && isOpen) {
-            wait(100).then(() => {
+            void wait(100).then(() => {
                 window.addEventListener("click", handleClickOutside)
             })
         }

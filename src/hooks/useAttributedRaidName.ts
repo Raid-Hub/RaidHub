@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { Difficulty, Raid } from "~/data/raid"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import { Tag } from "~/models/tag"
 import type { ListedRaid, RaidDifficulty } from "~/types/raidhub-api"
-import { Tag } from "./useTags"
 
 // todo
 export const useAttributedRaidName = (
@@ -49,5 +49,5 @@ export const useAttributedRaidName = (
         if (wishWall) str += " (Wish Wall)"
         if (tag.fresh === null) str += "*"
         return str
-    }, [tag, getCheckpointName, opts?.excludeRaidName, getRaidString])
+    }, [tag, getCheckpointName, opts?.excludeRaidName, opts?.includeFresh, getRaidString])
 }

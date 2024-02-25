@@ -1,8 +1,8 @@
 "use client"
 
-import { DestinyItemSocketState } from "bungie-net-core/models"
+import type { DestinyItemSocketState } from "bungie-net-core/models"
 import Image from "next/image"
-import { useItemDefinition } from "~/hooks/dexie/useItemDefinition"
+import { useItemDefinition } from "~/hooks/dexie"
 import { bungieItemUrl } from "~/util/destiny/bungie-icons"
 import styles from "./guardians.module.css"
 
