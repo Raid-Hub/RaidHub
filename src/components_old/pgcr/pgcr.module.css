@@ -468,6 +468,7 @@
     font-style: italic;
     color: rgb(198, 198, 198);
     line-height: 100%;
+    padding-right: 3px;
 }
 
 .summary-stat-value {

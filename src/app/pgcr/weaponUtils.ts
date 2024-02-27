@@ -1,9 +1,5 @@
 import { Collection, type ReadonlyCollection } from "@discordjs/collection"
-
-export type WeaponKey =
-    | "uniqueWeaponKills"
-    | "uniqueWeaponPrecisionKills"
-    | "uniqueWeaponKillsPrecisionKills"
+import type { WeaponKey } from "./types"
 
 export const mergeWeaponCollections = (
     collections: ReadonlyCollection<number, Record<WeaponKey, number>>[]

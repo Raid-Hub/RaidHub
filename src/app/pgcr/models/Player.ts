@@ -3,8 +3,9 @@ import type {
     BungieMembershipType,
     DestinyPostGameCarnageReportEntry
 } from "bungie-net-core/models"
-import { mergeWeaponCollections, type WeaponKey } from "~/util/destiny/weapons"
+import { mergeWeaponCollections } from "~/app/pgcr/weaponUtils"
 import { round } from "~/util/math"
+import type { WeaponKey } from "../types"
 import DestinyPGCRCharacter from "./Character"
 
 export default class DestinyPGCRPlayer {
@@ -56,7 +57,23 @@ export default class DestinyPGCRPlayer {
             assists: reduce("assists"),
             weaponKills: reduce("weaponKills"),
             abilityKills: reduce("abilityKills"),
-            timePlayedSeconds: reduce("timePlayedSeconds"),
+            timePlayedSeconds: this.characters.reduce(
+                (base, c) =>
+                    base +
+                    (this.characters.every(
+                        other =>
+                            // if the this character starts after the other one and ends before the other one
+                            // We can ignore that time played since it's baked into the other character's time
+                            !(
+                                c.values.startSeconds > other.values.startSeconds &&
+                                c.values.startSeconds + c.values.timePlayedSeconds <
+                                    other.values.startSeconds + other.values.timePlayedSeconds
+                            )
+                    )
+                        ? c.values.timePlayedSeconds
+                        : 0),
+                0
+            ),
             precisionKills: reduce("precisionKills"),
             superKills: reduce("superKills"),
             grenadeKills: reduce("grenadeKills"),
@@ -70,7 +87,7 @@ export default class DestinyPGCRPlayer {
     public readonly firstCharacter = () => this.characters.first()!
 }
 
-export function getPlayerScore({
+function getPlayerScore({
     kills,
     assists,
     timePlayedSeconds,
@@ -91,6 +108,7 @@ export function getPlayerScore({
     // kills weighted 2x assists, slight diminishing returns
     const killScore =
         (kills + 0.5 * assists) ** 0.95 / Math.sqrt(round(adjustedTimePlayedSeconds, -1) || 1)
+
     // a multiplier based on your time per deaths squared, normalized a bit by using deaths + 7
     const deathScore = (2 * adjustedTimePlayedSeconds) / (deaths + 7) ** 2
 

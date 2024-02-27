@@ -14,16 +14,16 @@ export const TabletDesktopSwitch = (props: { sm: JSX.Element; lg: JSX.Element })
 
 const Parent = styled.div`
     & .sm {
-        display: none;
-        ${$media.max.tablet`
-            display: block;
+        display: block;
+        ${$media.min.tablet`
+            display: none;
         `}
     }
 
     & .lg {
-        display: block;
-        ${$media.max.tablet`
-            display: none;
+        display: none;
+        ${$media.min.tablet`
+            display: block;
         `}
     }
 `

@@ -11,7 +11,8 @@ export const ProfilePage = () => (
     <ProfileStateManager>
         <Flex $direction="column" $padding={0} $crossAxis="flex-start">
             <UserCard />
-            <Suspense fallback={<Loading $fill $minHeight="250px" $borderRadius="10px" />}>
+            <Suspense
+                fallback={<Loading $fill $minHeight="250px" $borderRadius="10px" $alpha={0.5} />}>
                 <Flex $padding={0} $direction="row" $wrap $fullWidth $crossAxis="stretch">
                     <CurrentActivity />
                     <LatestRaid />

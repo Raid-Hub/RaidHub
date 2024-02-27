@@ -1,13 +1,9 @@
 "use client"
 
-import type { DestinyInventoryItemDefinition } from "bungie-net-core/models"
-import Image from "next/image"
-import Link from "next/link"
 import styled from "styled-components"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Card } from "~/components/Card"
 import { TabSelector } from "~/components/TabSelector"
-import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
@@ -15,9 +11,10 @@ import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition, useItemDefinitions } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLocale } from "~/layout/managers/LocaleManager"
+import { $media } from "~/layout/media"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
 import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
-import { bungieEmblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieEmblemUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
@@ -25,6 +22,7 @@ import type DestinyPGCRCharacter from "../models/Character"
 import type DestinyPGCRPlayer from "../models/Player"
 import type { PGCRPageParams } from "../types"
 import { DisplayName } from "./DisplayName"
+import { PlayerWeapon } from "./PlayerWeapon"
 
 export const SelectedPlayerView = (props: {
     selectedPlayer: DestinyPGCRPlayer
@@ -68,11 +66,11 @@ export const SelectedPlayerView = (props: {
     const weaponDefinitions = useItemDefinitions(weapons)
 
     return (
-        <Flex $direction="column" $crossAxis="flex-start">
+        <Flex $direction="column" $crossAxis="flex-start" $padding={0}>
             <SelectedPlayer
                 $aspectRatio={{ width: 474, height: 96 }}
-                $minHeight={96}
-                onClick={props.deselect}>
+                onClick={props.deselect}
+                $fullWidth>
                 <Flex $fullWidth>
                     <DisplayName
                         membershipId={props.selectedPlayer.membershipId}
@@ -151,9 +149,9 @@ export const SelectedPlayerView = (props: {
                     </Stat>
                 </Flex>
                 <H4>Weapon Kills</H4>
-                <Grid $minCardWidth={175} $gap={1}>
+                <Grid $minCardWidth={125} $gap={1}>
                     {focusedEntry.weapons.map((weapon, hash) => (
-                        <WeaponUsed
+                        <PlayerWeapon
                             key={hash}
                             hash={hash}
                             kills={weapon.uniqueWeaponKills}
@@ -187,40 +185,6 @@ const CharacterTab = (props: { character: DestinyPGCRCharacter }) => {
     )
 }
 
-const WeaponUsed = (props: {
-    hash: number
-    kills: number
-    definition: DestinyInventoryItemDefinition | undefined
-}) => {
-    const icon = bungieIconUrl(props.definition?.displayProperties.icon)
-    const { locale } = useLocale()
-    return (
-        <TooltipContainer
-            tooltipId={`weapon-${props.definition?.displayProperties.name ?? props.hash}`}
-            tooltipBody={
-                <TooltipData>{props.definition?.displayProperties.name ?? "Unknown"}</TooltipData>
-            }>
-            <WeaponItem data-weapon-hash={props.hash}>
-                <Link
-                    href={`https://d2foundry.gg/w/${props.hash}?referrer=raidhub`}
-                    target="_blank"
-                    style={{ aspectRatio: "1/1", display: "block", width: "64px", height: "64px" }}>
-                    <Image
-                        src={icon}
-                        unoptimized
-                        width={64}
-                        height={64}
-                        alt={props.definition?.displayProperties.name ?? "Unknown"}
-                    />
-                </Link>
-                <div style={{ flex: 1, textAlign: "center" }}>
-                    {formattedNumber(props.kills, locale)}
-                </div>
-            </WeaponItem>
-        </TooltipContainer>
-    )
-}
-
 const SelectedPlayer = styled(Container)`
     border-radius: 8px;
     overflow: hidden;
@@ -228,6 +192,7 @@ const SelectedPlayer = styled(Container)`
     border: 1px solid ${({ theme }) => theme.colors.border.light};
     cursor: pointer;
     display: flex;
+    max-width: 474px;
 `
 
 const Stat = styled(Flex)`
@@ -237,6 +202,9 @@ const Stat = styled(Flex)`
     background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 30%);
 
     font-size: 1.25rem;
+    ${$media.max.mobile`
+        font-size: 1rem;
+    `}
 
     & *:nth-child(1) {
         font-weight: 200;
@@ -245,6 +213,12 @@ const Stat = styled(Flex)`
     & *:nth-child(2) {
         font-size: 1.625rem;
     }
+
+    ${$media.max.mobile`
+    & *:nth-child(2) {
+        font-size: 1.125rem;
+    }
+`}
 `
 
 Stat.defaultProps = {
@@ -252,19 +226,4 @@ Stat.defaultProps = {
     $crossAxis: "flex-start",
     $direction: "column",
     $gap: 0.2
-}
-
-const WeaponItem = styled(Flex)`
-    &:hover {
-        transform: scale(1.02);
-    }
-    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 30%);
-
-    font-size: 1.625rem;
-`
-
-WeaponItem.defaultProps = {
-    $padding: 0.25,
-    $fullWidth: true,
-    $align: "center"
 }

@@ -24,19 +24,6 @@ import { o } from "./o"
 export const DB_VERSION = 8
 
 /**
- * Represents an object with a hash property.
- */
-export type Hashed<T> = { hash: number } & T
-
-/**
- * Represents the paths for the foreground and background clan banner images.
- */
-type ForegroundBackground = {
-    foregroundPath: string
-    backgroundPath: string
-}
-
-/**
  * The list of table names in the Dexie database.
  */
 const tables = [
@@ -70,6 +57,19 @@ type Tables = Readonly<
 >
 
 /**
+ * Represents an object with a hash property.
+ */
+type Hashed<T> = { hash: number } & T
+
+/**
+ * Represents the paths for the foreground and background clan banner images.
+ */
+type ForegroundBackground = {
+    foregroundPath: string
+    backgroundPath: string
+}
+
+/**
  * Custom Dexie class that extends the Dexie class and implements the Tables interface.
  */
 class CustomDexie extends Dexie implements Tables {
@@ -95,7 +95,7 @@ class CustomDexie extends Dexie implements Tables {
     public readonly cache: {
         [K in (typeof tables)[number]]: Collection<
             number,
-            CustomDexie[K] extends Table<infer U> ? U : never
+            CustomDexie[K] extends Table<infer T> ? T : never
         >
     }
 
@@ -115,31 +115,24 @@ export const indexDB = new CustomDexie()
  * @param hash - The hash of the item to query.
  * @returns The queried item or null if not found.
  */
-export const useDexieGetQuery = <
-    K extends (typeof tables)[number],
-    T extends CustomDexie[K] extends Table<infer U> ? U : never
->(
-    table: K,
-    hash: number
-) => {
-    const cached = indexDB.cache[table].get(hash)
-
-    return (
-        useLiveQuery<T>(
-            () =>
-                // @ts-expect-error generic is right
-                Promise.resolve(
-                    indexDB[table].get({ hash: hash }).then(data => {
-                        // @ts-expect-error generic is right
-                        if (data) indexDB.cache[table].set(hash, data)
-                        return data
-                    })
-                ),
-            [hash]
-        ) ??
-        cached ??
-        null
+export const useDexieGetQuery = <K extends (typeof tables)[number]>(table: K, hash: number) => {
+    const liveQuery = useLiveQuery(
+        () =>
+            // @ts-expect-error generic is right
+            indexDB[table].get({ hash: hash }),
+        [hash]
     )
+
+    return useMemo(() => {
+        if (liveQuery) {
+            indexDB.cache[table].set(
+                liveQuery.hash,
+                // @ts-expect-error item is right type
+                liveQuery
+            )
+        }
+        return indexDB.cache[table].get(hash) ?? null
+    }, [table, liveQuery, hash])
 }
 
 /**

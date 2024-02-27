@@ -1,6 +1,6 @@
 "use client"
 
-import styled from "styled-components"
+import styled, { css, keyframes } from "styled-components"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import type DestinyPGCRPlayer from "~/app/pgcr/models/Player"
 import { BackgroundImage } from "~/components/BackgroundImage"
@@ -30,12 +30,22 @@ export const PlayerTab = ({
     onClick: () => void
 }) => {
     const { activity, pgcrPlayers } = usePGCRContext()
+    const playerData = activity?.players.find(p => p.membershipId === player.membershipId)?.data
+    const isFirstClear =
+        !!playerData?.isFirstClear && !!activity?.players.some(p => p.data.sherpas > 0)
+    const isGoldCarry = playerData
+        ? playerData.sherpas / (Math.max(activity.playerCount, 6) - 1) >= 1 ||
+          (activity.playerCount <= 3 && playerData.sherpas > 0)
+        : false
+    const isSilverCarry = playerData
+        ? playerData.sherpas / (Math.max(activity.playerCount, 6) - 2) >= 1
+        : false
 
     const firstCharacter = player.firstCharacter()
 
     const membershipId = player.membershipId
     const shouldResolve = !player.membershipType && !!pgcrPlayers && pgcrPlayers.size < 15
-    const { data: resolvedPlayer, isSuccess } = useRaidHubResolvePlayer(player.membershipId, {
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(player.membershipId, {
         enabled: shouldResolve,
         placeholderData: {
             membershipId: player.membershipId,
@@ -55,49 +65,61 @@ export const PlayerTab = ({
         excludeCode: true
     })
 
+    console.log(isFirstClear)
+
     const emblem = useItemDefinition(firstCharacter.emblemHash)
 
     return (
-        <StyledTab
-            $relative
-            $align="space-between"
-            $crossAxis="stretch"
-            $padding={0.5}
-            $dnf={!player.completed}
-            onClick={onClick}>
-            <BackgroundImage
-                opacity={0.9}
-                src={bungieBannerEmblemUrl(emblem)}
-                alt={emblem?.displayProperties.name ?? ""}
-            />
-
-            <CharacterLogoStack
-                characters={player.characters}
-                style={{ flex: 1, justifyContent: "flex-start" }}
-            />
-            <Flex style={{ flex: 3 }}>
-                <DisplayName
-                    membershipId={membershipId}
-                    membershipType={resolvedPlayer!.membershipType}
-                    displayName={displayName}
+        <SpecialBorder
+            $firstClear={isFirstClear}
+            $goldCarry={isGoldCarry}
+            $silverCarry={isSilverCarry}>
+            <StyledTab
+                $relative
+                $align="space-between"
+                $crossAxis="stretch"
+                $padding={0.5}
+                $dnf={!player.completed}
+                $firstClear={isFirstClear}
+                onClick={onClick}>
+                <BackgroundImage
+                    opacity={0.9}
+                    src={bungieBannerEmblemUrl(emblem)}
+                    alt={emblem?.displayProperties.name ?? ""}
                 />
-            </Flex>
-            <Flex $padding={0} style={{ flex: 1 }} $align="flex-end">
-                {activity?.playerCount === 1 ? (
-                    activity.completed ? (
-                        <Sparkle sx={50} color="white" />
+
+                <CharacterLogoStack
+                    characters={player.characters}
+                    style={{ flex: 1, justifyContent: "flex-start" }}
+                />
+                <Flex style={{ flex: 3 }}>
+                    <DisplayName
+                        membershipId={membershipId}
+                        membershipType={resolvedPlayer!.membershipType}
+                        displayName={displayName}
+                    />
+                </Flex>
+                <Flex $padding={0} style={{ flex: 1 }} $align="flex-end">
+                    {activity?.playerCount === 1 ? (
+                        activity.completed ? (
+                            <Sparkle sx={50} color="white" />
+                        ) : (
+                            <Xmark sx={50} color="white" />
+                        )
                     ) : (
-                        <Xmark sx={50} color="white" />
-                    )
-                ) : (
-                    <Flex $direction="column" $align="space-around" $padding={0} $gap={0.25}>
-                        <StatValue name="kills" value={player.values.kills} Icon={Kill} />
-                        <StatValue name="assists" value={player.values.assists} Icon={SplitHeart} />
-                        <StatValue name="deaths" value={player.values.deaths} Icon={Death} />
-                    </Flex>
-                )}
-            </Flex>
-        </StyledTab>
+                        <Flex $direction="column" $align="space-around" $padding={0} $gap={0.25}>
+                            <StatValue name="kills" value={player.values.kills} Icon={Kill} />
+                            <StatValue
+                                name="assists"
+                                value={player.values.assists}
+                                Icon={SplitHeart}
+                            />
+                            <StatValue name="deaths" value={player.values.deaths} Icon={Death} />
+                        </Flex>
+                    )}
+                </Flex>
+            </StyledTab>
+        </SpecialBorder>
     )
 }
 
@@ -119,17 +141,14 @@ const StatValue = (props: { name: string; value: number; Icon: SVGComponent }) =
     )
 }
 
-const StyledTab = styled(Flex)<{ $dnf: boolean }>`
+const borderThickness = 5
+const StyledTab = styled(Flex)<{ $dnf: boolean; $firstClear: boolean }>`
     cursor: pointer;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.colors.border.dark};
 
-    transition: transform 0.1s ease-in-out;
-    &:hover {
-        transform: scale(1.025);
-        z-index: 2;
-    }
+    clip-path: inset(
+        ${borderThickness / 1.5}px ${borderThickness / 1.5}px ${borderThickness / 1.5}px
+            ${borderThickness / 1.5}px round ${borderThickness / 2}px
+    );
 
     min-height: 90px;
     ${$media.max.mobile`
@@ -137,6 +156,57 @@ const StyledTab = styled(Flex)<{ $dnf: boolean }>`
     `}
 
     ${props => props.$dnf && `filter: grayscale(75%)  brightness(0.3);`}
+`
+
+const borderAnimation = keyframes`
+    0% {
+        background-position: top 0% left, bottom 0% right, right 33.3% top, left 33.3% bottom, top;
+    }
+    100% {
+        background-position: top 66.7% left, bottom 66.7% right, right 100% top, left 100% bottom, top;
+    }`
+
+const SpecialBorder = styled.div<{
+    $firstClear: boolean
+    $goldCarry: boolean
+    $silverCarry: boolean
+}>`
+    z-index: 1;
+    transition: transform 0.1s ease-in-out;
+    &:hover {
+        transform: scale(1.025);
+        z-index: 2;
+    }
+
+    border-radius: 6px;
+    ${props => {
+        if (props.$firstClear || props.$goldCarry || props.$silverCarry) {
+            const shimmer = props.$firstClear
+                ? "rgba(150, 255, 160, 0.9)" // green
+                : props.$goldCarry
+                ? "rgba(255, 223, 145, 0.9)" // gold
+                : "rgba(218, 221, 224, 0.9)" // silver
+            const background = props.$firstClear
+                ? "rgba(77, 176, 86, 0.5)" // dark green
+                : props.$goldCarry
+                ? "rgba(212, 182, 108, 0.5)" // dark gold
+                : "rgba(163, 163, 163, 0.5)" // dark silver
+            const gradient = `transparent, transparent 7%, ${shimmer} 15%, transparent 23%, transparent 57%, ${shimmer} 65%, transparent 73%, transparent`
+            return css`
+                background: linear-gradient(to bottom, ${gradient}),
+                    linear-gradient(to top, ${gradient}), linear-gradient(to left, ${gradient}),
+                    linear-gradient(to right, ${gradient}), ${background};
+                background-size: ${borderThickness}px 400%, ${borderThickness}px 400%,
+                    400% ${borderThickness}px, 400% ${borderThickness}px, 100% 100%;
+                animation: ${borderAnimation} 1.5s linear infinite;
+            `
+        } else {
+            return css`
+                background-color: ${({ theme }) => theme.colors.border.dark};
+            `
+        }
+    }}
+    background-repeat: no-repeat;
 `
 
 const KDAStat = styled(Flex)`

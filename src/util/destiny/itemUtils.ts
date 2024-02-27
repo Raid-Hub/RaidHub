@@ -1,4 +1,4 @@
-import { DestinyItemComponent } from "bungie-net-core/models"
+import type { DestinyItemComponent } from "bungie-net-core/models"
 import { armorBuckets, weaponBuckets } from "~/data/inventory-item-buckets"
 
 export function findWeaponInBucket(

@@ -36,6 +36,7 @@ export const useProcessPGCR = () => {
             const players = groupedEntries
                 .mapValues(coll => new DestinyPGCRPlayer(coll))
                 .sort((a, b) => {
+                    // sort by completion status, then by score
                     if (+a.completed ^ +b.completed) {
                         return a.completed ? -1 : 1
                     } else {

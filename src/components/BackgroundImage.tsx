@@ -1,5 +1,5 @@
 import Image from "next/image"
-import styled, { type CSSProperties } from "styled-components"
+import styled, { css, type CSSProperties } from "styled-components"
 import { CloudflareImage } from "./CloudflareImage"
 
 type CommonBackgroundImageProps = {
@@ -8,6 +8,7 @@ type CommonBackgroundImageProps = {
     alt: string
     opacity?: number
     style?: CSSProperties
+    radius?: number
 }
 
 export const BackgroundImage = (
@@ -25,6 +26,7 @@ export const BackgroundImage = (
             unoptimized
             fill
             $opacity={props.opacity}
+            $borderRadius={props.radius}
         />
     )
 }
@@ -48,6 +50,7 @@ type Props = {
     $fit?: "contain" | "cover" | "fill"
     $opacity?: number
     $objectPosition?: string
+    $borderRadius?: number
 }
 
 const StyledCloudflareImage = styled(CloudflareImage)<Props>`
@@ -55,6 +58,11 @@ const StyledCloudflareImage = styled(CloudflareImage)<Props>`
     object-position: ${props => props.$objectPosition};
     object-fit: ${props => props.$fit};
     opacity: ${props => props.$opacity};
+    ${props =>
+        props.$borderRadius &&
+        css`
+            ${props.$borderRadius}px;
+        `}
 `
 const defaultProps: Props = {
     $fit: "cover",
@@ -69,6 +77,7 @@ const StyledImage = styled(Image)<Props>`
     object-position: ${props => props.$objectPosition};
     object-fit: ${props => props.$fit};
     opacity: ${props => props.$opacity};
+    border-radius: ${props => props.$borderRadius}px;
 `
 
 StyledImage.defaultProps = defaultProps

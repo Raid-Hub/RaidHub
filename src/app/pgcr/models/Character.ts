@@ -1,12 +1,12 @@
 import { Collection, type ReadonlyCollection } from "@discordjs/collection"
 import type { DestinyPostGameCarnageReportEntry } from "bungie-net-core/models"
-import type { WeaponKey } from "~/util/destiny/weapons"
 import { o } from "~/util/o"
+import type { WeaponKey } from "../types"
 
 export default class DestinyPGCRCharacter {
     readonly characterId: string
     readonly completed: boolean
-    readonly destinyUserInfo: DestinyPostGameCarnageReportEntry["player"]["bungieNetUserInfo"]
+    readonly destinyUserInfo: DestinyPostGameCarnageReportEntry["player"]["destinyUserInfo"]
     readonly emblemHash: number
     readonly classHash: number
     readonly weapons: ReadonlyCollection<number, Record<WeaponKey, number>>
@@ -38,7 +38,6 @@ export default class DestinyPGCRCharacter {
         const kills = getValue("kills")!
         const deaths = getValue("deaths")!
         const assists = getValue("assists")!
-        const startSeconds = getValue("startSeconds")!
         this.completed = !!getValue("completed") && getValue("completionReason") === 0
 
         this.weapons = new Collection(
@@ -65,10 +64,8 @@ export default class DestinyPGCRCharacter {
             superKills: getExtendedValue("weaponKillsSuper")!,
             grenadeKills: getExtendedValue("weaponKillsGrenade")!,
             meleeKills: getExtendedValue("weaponKillsMelee")!,
-            startSeconds,
-            timePlayedSeconds: this.completed
-                ? getValue("activityDurationSeconds")! - startSeconds
-                : getValue("timePlayedSeconds")!
+            startSeconds: getValue("startSeconds")!,
+            timePlayedSeconds: getValue("timePlayedSeconds")!
         }
     }
 }
