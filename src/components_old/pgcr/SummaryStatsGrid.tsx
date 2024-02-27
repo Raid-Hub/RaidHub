@@ -4,12 +4,12 @@ import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { type SVGComponent } from "~/components/SVG"
 import Ability from "~/components/icons/Ability"
 import Ammo from "~/components/icons/Ammo"
+import Assist from "~/components/icons/Assist"
 import Crosshairs from "~/components/icons/Crosshairs"
 import Crown from "~/components/icons/Crown"
 import Death from "~/components/icons/Death"
 import Intellect from "~/components/icons/Intellect"
 import Kill from "~/components/icons/Kill"
-import SplitHeart from "~/components/icons/SplitHeart"
 import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
@@ -65,7 +65,7 @@ const SummaryStatsGrid = () => {
             value: formattedNumber(stats?.deaths ?? 0, locale)
         },
         {
-            Icon: SplitHeart,
+            Icon: Assist,
             name: "Total Assists",
             value: formattedNumber(stats?.assists ?? 0, locale)
         },

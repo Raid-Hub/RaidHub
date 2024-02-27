@@ -5,10 +5,10 @@ import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import type DestinyPGCRPlayer from "~/app/pgcr/models/Player"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import type { SVGComponent } from "~/components/SVG"
+import Assist from "~/components/icons/Assist"
 import Death from "~/components/icons/Death"
 import Kill from "~/components/icons/Kill"
 import Sparkle from "~/components/icons/Sparkle"
-import SplitHeart from "~/components/icons/SplitHeart"
 import Xmark from "~/components/icons/Xmark"
 import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
@@ -83,6 +83,7 @@ export const PlayerTab = ({
                 $firstClear={isFirstClear}
                 onClick={onClick}>
                 <BackgroundImage
+                    brightness={0.8}
                     opacity={0.9}
                     src={bungieBannerEmblemUrl(emblem)}
                     alt={emblem?.displayProperties.name ?? ""}
@@ -109,11 +110,7 @@ export const PlayerTab = ({
                     ) : (
                         <Flex $direction="column" $align="space-around" $padding={0} $gap={0.25}>
                             <StatValue name="kills" value={player.values.kills} Icon={Kill} />
-                            <StatValue
-                                name="assists"
-                                value={player.values.assists}
-                                Icon={SplitHeart}
-                            />
+                            <StatValue name="assists" value={player.values.assists} Icon={Assist} />
                             <StatValue name="deaths" value={player.values.deaths} Icon={Death} />
                         </Flex>
                     )}
@@ -202,7 +199,11 @@ const SpecialBorder = styled.div<{
             `
         } else {
             return css`
-                background-color: ${({ theme }) => theme.colors.border.dark};
+                background-color: color-mix(
+                    in srgb,
+                    ${({ theme }) => theme.colors.border.dark},
+                    #0000 60%
+                );
             `
         }
     }}

@@ -85,6 +85,7 @@ export const SelectedPlayerView = (props: {
                                   filter: "grayscale(100%) brightness(0.5)"
                               }
                     }
+                    brightness={0.85}
                     position="left"
                     opacity={0.95}
                     src={bungieEmblemUrl(emblem)}
