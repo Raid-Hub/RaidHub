@@ -1,5 +1,5 @@
-import { Metadata } from "next"
-import { ReactNode } from "react"
+import { type Metadata } from "next"
+import { type ReactNode } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
 
 export default function Layout(params: { children: ReactNode }) {

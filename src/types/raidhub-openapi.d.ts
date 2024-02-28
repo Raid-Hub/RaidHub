@@ -194,7 +194,7 @@ export interface paths {
           type: "worldfirst" | "individual" | "global";
           membershipId: string;
           count?: number;
-          category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "clears" | "sherpas" | "trios" | "duos" | "solos") | ("clears" | "sherpas" | "fresh" | "speed");
+          category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "total" | "sherpas" | "trios" | "duos" | "solos") | ("total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun");
           raid?: number;
         };
       };
@@ -239,7 +239,7 @@ export interface paths {
           page?: number;
         };
         path: {
-          category: "clears" | "sherpas" | "fresh" | "speed";
+          category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
         };
       };
       responses: {
@@ -319,7 +319,7 @@ export interface paths {
         };
         path: {
           raid: components["schemas"]["RaidPath"];
-          category: "fresh" | "clears" | "sherpas" | "trios" | "duos" | "solos";
+          category: "fresh" | "total" | "sherpas" | "trios" | "duos" | "solos";
         };
       };
       responses: {
@@ -675,7 +675,7 @@ export interface components {
       readonly membershipId: string;
       /** @default 25 */
       readonly count?: number;
-      readonly category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "clears" | "sherpas" | "trios" | "duos" | "solos") | ("clears" | "sherpas" | "fresh" | "speed");
+      readonly category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "total" | "sherpas" | "trios" | "duos" | "solos") | ("total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun");
       readonly raid?: number;
     };
     /** @enum {integer} */
@@ -786,19 +786,30 @@ export interface components {
           readonly triumphName: string;
         }[];
       readonly leaderboards: {
+        readonly global: readonly ({
+            /** @enum {string} */
+            readonly category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
+            readonly displayName: string;
+            /** @enum {string} */
+            readonly format: "number" | "time";
+          })[];
         readonly worldFirst: {
-          [key: string]: readonly {
+          [key: string]: readonly ({
               readonly id: string;
-              readonly type: string;
+              readonly displayName: string;
+              /** @enum {string} */
+              readonly category: "normal" | "prestige" | "challenge" | "master";
               /** Format: date-time */
               readonly date: string;
-            }[];
+            })[];
         };
         readonly individual: {
-          [key: string]: readonly {
-              readonly name: string;
-              readonly category: string;
-            }[];
+          readonly clears: {
+            [key: string]: readonly {
+                readonly name: string;
+                readonly category: string;
+              }[];
+          };
         };
       };
       readonly raidUrlPaths: {
@@ -918,7 +929,7 @@ export interface components {
     readonly LeaderboardGlobalResponse: {
       readonly params: {
         /** @enum {string} */
-        readonly category: "clears" | "sherpas" | "fresh" | "speed";
+        readonly category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
         readonly count: number;
         /** @default 1 */
         readonly page?: number;
@@ -943,7 +954,7 @@ export interface components {
       readonly params: {
         readonly raid: components["schemas"]["RaidPath"];
         /** @enum {string} */
-        readonly category: "fresh" | "clears" | "sherpas" | "trios" | "duos" | "solos";
+        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos" | "solos";
         readonly count: number;
         /** @default 1 */
         readonly page?: number;

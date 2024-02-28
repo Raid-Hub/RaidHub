@@ -4,6 +4,7 @@ import type { components, paths } from "./raidhub-openapi"
 
 type Component<T extends keyof components["schemas"]> = Prettify<components["schemas"][T]>
 
+export type RaidHubManifest = Component<"ManifestResponse">
 export type ListedRaid = (typeof Raid)[keyof typeof Raid]
 export type MasterRaid = Component<"MasterRaidEnum">
 export type PrestigeRaid = Component<"PrestigeRaidEnum">

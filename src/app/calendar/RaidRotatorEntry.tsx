@@ -1,7 +1,7 @@
 "use client"
 
 import type { DestinyPublicMilestone } from "bungie-net-core/models"
-import { Fragment } from "react"
+import { Fragment, type ReactNode } from "react"
 import styled from "styled-components"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
@@ -14,7 +14,7 @@ export const RaidRotatorEntry = (props: {
     milestone: DestinyPublicMilestone
     startDate: Date
     endDate: Date
-    children?: React.ReactNode
+    children?: ReactNode
 }) => {
     const { locale } = useLocale()
     const { getRaidFromHash, getRaidString } = useRaidHubManifest()

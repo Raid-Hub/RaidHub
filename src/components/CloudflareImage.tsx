@@ -13,14 +13,13 @@ const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
     return `https://cdn.raidhub.io/cdn-cgi/imagedelivery/${cloudflareId}/${src}/${variant}`
 }
 
-export function CloudflareImage({
+export const CloudflareImage = ({
     cloudflareId,
     alt = "",
     ...props
-}: { cloudflareId: string } & Omit<ComponentPropsWithoutRef<typeof Image>, "src" | "loader">) {
-    console.log({ cloudflareImageLoader, ...props, cloudflareId, alt })
-    return <Image loader={cloudflareImageLoader} {...props} src={cloudflareId} alt={alt} />
-}
+}: { cloudflareId: string } & Omit<ComponentPropsWithoutRef<typeof Image>, "src" | "loader">) => (
+    <Image loader={cloudflareImageLoader} {...props} src={cloudflareId} alt={alt} />
+)
 
 const cloudflareVariants: { name: string; w: number; h: number }[] = [
     { name: "tiny", w: 320, h: 180 },

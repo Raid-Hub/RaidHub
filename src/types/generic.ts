@@ -9,3 +9,8 @@ export type Prettify<T> = {
     [K in keyof T]: T[K]
     // eslint-disable-next-line @typescript-eslint/ban-types
 } & {}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PageStaticParams<T extends (...args: any[]) => Promise<Record<string, unknown>[]>> = {
+    params: Awaited<ReturnType<T>>[number]
+}

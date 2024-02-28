@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import NextTopLoader from "nextjs-toploader"
 import { type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub"
+import type { RaidHubManifest } from "~/types/raidhub-api"
 import { Footer } from "./(layout)/Footer"
 import { Header } from "./(layout)/Header"
 import { HeaderContent } from "./(layout)/HeaderContent"
@@ -14,7 +15,7 @@ import { RaidHubManifestManager } from "./(layout)/managers/RaidHubManifestManag
 import { BungieClientProvider } from "./(layout)/managers/session/BungieClientProvider"
 import { SessionManager } from "./(layout)/managers/session/ServerSessionManager"
 
-export const prefetchManifest = async () =>
+export const prefetchManifest = async (): Promise<RaidHubManifest> =>
     getRaidHubApi("/manifest", null, null, {
         next: { revalidate: 300 }
     })

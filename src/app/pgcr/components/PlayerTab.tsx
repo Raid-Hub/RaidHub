@@ -65,8 +65,6 @@ export const PlayerTab = ({
         excludeCode: true
     })
 
-    console.log(isFirstClear)
-
     const emblem = useItemDefinition(firstCharacter.emblemHash)
 
     return (
