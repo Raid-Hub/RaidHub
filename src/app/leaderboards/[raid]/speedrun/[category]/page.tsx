@@ -1,6 +1,8 @@
 import { type Metadata } from "next"
 import { prefetchManifest } from "~/app/layout"
+import { PageWrapper } from "~/components/layout/PageWrapper"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
+import { getSpeedrunComLeaderboard } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import type { PageStaticParams } from "~/types/generic"
 import {
     getRaidEnum,
@@ -48,6 +50,23 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
-export default function Page({ params }: StaticParams) {
-    return <div>{JSON.stringify(params, null, 2)}</div>
+export default async function Page({ params }: StaticParams) {
+    const manifest = await prefetchManifest()
+    const raidEnum = getRaidEnum(manifest, params.raid)
+
+    const results = await getSpeedrunComLeaderboard(
+        { raid: raidEnum, category: params.category },
+        {
+            next: {
+                revalidate: 7200
+            }
+        }
+    )
+
+    return (
+        <PageWrapper>
+            <div>{JSON.stringify(params, null, 2)}</div>
+            <div>{JSON.stringify(results, null, 2)}</div>
+        </PageWrapper>
+    )
 }
