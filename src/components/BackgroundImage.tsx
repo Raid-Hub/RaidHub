@@ -23,26 +23,30 @@ export const BackgroundImage = (
               }
         )
 ) => {
-    return (
-        // @ts-expect-error missing src
+    return "src" in props ? (
         <StyledImage
             $fit={props.fit}
             $objectPosition={props.position}
+            $opacity={props.opacity}
+            $borderRadius={props.radius}
+            $brightness={props.brightness}
             alt={props.alt}
             style={props.style}
             unoptimized
             fill
+            src={props.src}
+        />
+    ) : (
+        <StyledCloudflareImage
+            cloudflareId={props.cloudflareId}
+            fill
+            $fit={props.fit}
+            $objectPosition={props.position}
+            style={props.style}
             $opacity={props.opacity}
             $borderRadius={props.radius}
             $brightness={props.brightness}
-            {...("src" in props
-                ? {
-                      src: props.src
-                  }
-                : {
-                      as: CloudflareImage,
-                      cloudflareId: props.cloudflareId
-                  })}
+            alt={props.alt}
         />
     )
 }
@@ -55,9 +59,17 @@ type Props = {
     $brightness?: number
 }
 
-const StyledImage = styled(Image)<Props>`
-    z-index: -1;
+const defaultProps: Props = {
+    $borderRadius: 0,
+    $fit: "cover",
+    $objectPosition: "50% 50%",
+    $opacity: 0.75,
+    $brightness: 1
+}
+
+const style = css<Props>`
     ${props => css`
+        z-index: -1;
         border-radius: ${props.$borderRadius}px;
         object-fit: ${props.$fit};
         object-position: ${props.$objectPosition};
@@ -66,10 +78,13 @@ const StyledImage = styled(Image)<Props>`
     `}
 `
 
-StyledImage.defaultProps = {
-    $borderRadius: 0,
-    $fit: "cover",
-    $objectPosition: "50% 50%",
-    $opacity: 0.75,
-    $brightness: 1
-}
+const StyledImage = styled(Image)<Props>`
+    ${style}
+`
+StyledImage.defaultProps = defaultProps
+
+const StyledCloudflareImage = styled(CloudflareImage)<Props>`
+    ${style}
+`
+
+StyledCloudflareImage.defaultProps = defaultProps

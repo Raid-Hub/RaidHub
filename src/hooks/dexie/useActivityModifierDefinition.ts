@@ -4,4 +4,4 @@ export const useActivityModifierDefinition = (hash: number) =>
     useDexieGetQuery("activityModifiers", hash)
 
 export const useActivityModifierDefinitions = (hashes: number[]) =>
-    useDexieBulkGetQuery("characterClasses", hashes)
+    useDexieBulkGetQuery("activityModifiers", hashes)

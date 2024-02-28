@@ -1,6 +1,6 @@
 "use client"
 
-import { DestinyPublicMilestone } from "bungie-net-core/models"
+import type { DestinyPublicMilestone } from "bungie-net-core/models"
 import { Fragment } from "react"
 import styled from "styled-components"
 import { BackgroundImage } from "~/components/BackgroundImage"

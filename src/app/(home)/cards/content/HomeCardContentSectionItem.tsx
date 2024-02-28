@@ -10,7 +10,7 @@ export function HomeCardContentSectionItem(props: { title: string; href: string 
         <LinkWrapper href={props.href}>
             <Flex $align="space-between" $padding={0.25}>
                 <ContentSectionItemTitle>{props.title}</ContentSectionItemTitle>
-                <RightChevron color="orange" />
+                <RightChevron color="orange" sx={24} />
             </Flex>
         </LinkWrapper>
     )

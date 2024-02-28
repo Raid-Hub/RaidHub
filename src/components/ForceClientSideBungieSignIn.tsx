@@ -8,10 +8,10 @@ export function ForceClientSideBungieSignIn() {
     const params = useSearchParams()
 
     useEffect(() => {
-        signIn("bungie", {
-            callbackUrl: params.get("callbackUrl") || undefined
+        void signIn("bungie", {
+            callbackUrl: params.get("callbackUrl") ?? undefined
         })
-    }, [])
+    }, [params])
 
     return null
 }

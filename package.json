@@ -4,6 +4,7 @@
     "scripts": {
         "dev": "next dev --experimental-https",
         "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types",
+        "docs:dev": "openapi-typescript http://localhost:8000/static/openapi -o ./src/types/raidhub-openapi.d.ts --immutable-types",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:stop": "docker-compose -f docker-compose.yml down",
         "studio": "prisma studio",

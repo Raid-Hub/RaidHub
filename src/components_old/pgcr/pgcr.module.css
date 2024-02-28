@@ -476,6 +476,7 @@
     font-size: x-large;
     text-align: left;
     line-height: 100%;
+    padding-bottom: 2px;
 }
 
 .entry-card.dnf {

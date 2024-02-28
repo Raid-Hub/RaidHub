@@ -1,12 +1,25 @@
 import Image, { type ImageLoader } from "next/image"
 import { type ComponentPropsWithoutRef } from "react"
 
+const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const minWidth = (width * (quality || 75)) / 100
+
+    const variant = (
+        cloudflareVariants.find(item => item.w >= minWidth) ??
+        cloudflareVariants[cloudflareVariants.length - 1]
+    ).name
+
+    return `https://cdn.raidhub.io/cdn-cgi/imagedelivery/${cloudflareId}/${src}/${variant}`
+}
+
 export function CloudflareImage({
     cloudflareId,
     alt = "",
     ...props
 }: { cloudflareId: string } & Omit<ComponentPropsWithoutRef<typeof Image>, "src" | "loader">) {
-    return <Image src={cloudflareId} alt={alt} loader={cloudflareImageLoader} {...props} />
+    console.log({ cloudflareImageLoader, ...props, cloudflareId, alt })
+    return <Image loader={cloudflareImageLoader} {...props} src={cloudflareId} alt={alt} />
 }
 
 const cloudflareVariants: { name: string; w: number; h: number }[] = [
@@ -34,15 +47,3 @@ const cloudflareVariants: { name: string; w: number; h: number }[] = [
 ]
 
 const cloudflareId = "85AvSk7Z9-QdHfmk4t5dsw"
-
-const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const minWidth = (width * (quality || 75)) / 100
-
-    const variant = (
-        cloudflareVariants.find(item => item.w >= minWidth) ??
-        cloudflareVariants[cloudflareVariants.length - 1]
-    ).name
-
-    return `https://cdn.raidhub.io/cdn-cgi/imagedelivery/${cloudflareId}/${src}/${variant}`
-}

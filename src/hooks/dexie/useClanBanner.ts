@@ -31,7 +31,7 @@ export function useClanBanner(banner: ClanBanner) {
             color: RGBAToHex(decalSecondaryColor)
         },
         decalTop: {
-            path: decalTopPath,
+            path: decalTopPath?.value ?? "",
             color: RGBAToHex(decalTopColor)
         },
         gonfalcons: {
