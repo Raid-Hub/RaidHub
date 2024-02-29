@@ -16,7 +16,7 @@ export async function getSpeedrunComLeaderboard(
 ) {
     const boardId = SpeedrunBoardId[params.raid]
     if (!boardId) {
-        return []
+        throw new Error("Not found")
     }
 
     const url = new URL(

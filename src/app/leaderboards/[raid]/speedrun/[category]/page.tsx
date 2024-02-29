@@ -1,6 +1,5 @@
 import { type Metadata } from "next"
 import { prefetchManifest } from "~/app/layout"
-import { PageWrapper } from "~/components/layout/PageWrapper"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { getSpeedrunComLeaderboard } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import type { PageStaticParams } from "~/types/generic"
@@ -9,6 +8,7 @@ import {
     metadata as leaderboardMetadata,
     type RaidLeaderboardStaticParams
 } from "../../layout"
+import { SpeedrunLeaderboardClientComponent } from "./SpeedrunLeaderboardClientComponent"
 
 export async function generateStaticParams({ params: { raid } }: RaidLeaderboardStaticParams) {
     const manifest = await prefetchManifest()
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
             ? SpeedrunVariables[raidEnum]?.values[params.category]?.displayName ?? null
             : null
 
-    const title = [raidName, displayName, "Leaderboards"].filter(Boolean).join(" ")
+    const title = [raidName, displayName, "Speedrun Leaderboards"].filter(Boolean).join(" ")
     return {
         title: title,
         openGraph: {
@@ -50,23 +50,34 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
-export default async function Page({ params }: StaticParams) {
+export default async function Page({
+    params,
+    searchParams
+}: StaticParams & {
+    searchParams: {
+        page: string
+    }
+}) {
     const manifest = await prefetchManifest()
     const raidEnum = getRaidEnum(manifest, params.raid)
 
-    const results = await getSpeedrunComLeaderboard(
+    const ssrData = await getSpeedrunComLeaderboard(
         { raid: raidEnum, category: params.category },
         {
             next: {
                 revalidate: 7200
             }
         }
-    )
+    ).catch(() => null)
+
+    const lastRevalidated = new Date()
 
     return (
-        <PageWrapper>
-            <div>{JSON.stringify(params, null, 2)}</div>
-            <div>{JSON.stringify(results, null, 2)}</div>
-        </PageWrapper>
+        <SpeedrunLeaderboardClientComponent
+            lastRevalidated={lastRevalidated}
+            raid={raidEnum}
+            category={params.category}
+            ssrData={ssrData}
+        />
     )
 }

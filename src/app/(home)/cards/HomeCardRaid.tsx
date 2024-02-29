@@ -57,16 +57,14 @@ export const HomeCardRaid = ({
                             data && (
                                 <HomeCardContentSectionItem
                                     key={data.id}
-                                    title={`${data.displayName} ${getRaidString(
-                                        raid
-                                    )} Speedrun Leaderboard`}
+                                    title={data.displayName}
                                     href={`/leaderboards/${raidUrlPath}/speedrun/${type}`}
                                 />
                             )
                     )
                 ) : (
                     <HomeCardContentSectionItem
-                        title={`${getRaidString(raid)} Speedrun Leaderboard`}
+                        title={`Any %`}
                         href={`/leaderboards/${raidUrlPath}/speedrun/all`}
                     />
                 )}

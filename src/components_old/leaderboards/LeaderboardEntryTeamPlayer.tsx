@@ -1,13 +1,16 @@
-import styles from "../../styles/pages/leaderboards.module.css"
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { LeaderboardEntryParticipant } from "../../types/leaderboards"
+import { LeaderboardEntryPlayer } from "~/app/leaderboards/LeaderboardEntries"
+import styles from "./leaderboards.module.css"
 
 const defautlIcon = "https://www.bungie.net/img/theme/destiny/icons/missing_emblem.jpg"
 
-const LeaderboardEntryUser = ({ user }: { user: LeaderboardEntryParticipant }) => {
-    const [icon, setIcon] = useState(user.iconURL ?? defautlIcon)
+const LeaderboardEntryUser = (player: LeaderboardEntryPlayer) => {
+    const [icon, setIcon] = useState(player.iconUrl ?? defautlIcon)
+
     return (
         <div className={styles["leaderboard-entry-user"]}>
             <div className={styles["user-icon-container"]}>
@@ -15,20 +18,20 @@ const LeaderboardEntryUser = ({ user }: { user: LeaderboardEntryParticipant }) =
                     unoptimized
                     onError={() => setIcon(defautlIcon)}
                     src={icon}
-                    alt={`icon for ${user.displayName}`}
+                    alt={`icon for ${player.displayName}`}
                     fill
                 />
             </div>
-            {user.url ? (
+            {player.url ? (
                 <Link
-                    href={user.url}
+                    href={player.url}
                     className={styles["username"]}
-                    target={user.url.startsWith("/") ? "" : "_blank"}>
-                    <span>{user.displayName}</span>
+                    target={player.url.startsWith("/") ? "" : "_blank"}>
+                    <span>{player.displayName}</span>
                 </Link>
             ) : (
                 <span className={styles["username"]}>
-                    <span>{user.displayName}</span>
+                    <span>{player.displayName}</span>
                 </span>
             )}
         </div>

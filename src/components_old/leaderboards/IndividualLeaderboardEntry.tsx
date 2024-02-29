@@ -29,7 +29,7 @@ export const IndividualLeaderboardEntryComponent = ({
                 block: "center"
             })
         }
-    }, [])
+    }, [scrollTargetRef])
 
     return (
         <div

@@ -1,6 +1,7 @@
 {
     "name": "raidhub",
     "private": true,
+    "license": "UNLICENSED",
     "scripts": {
         "dev": "next dev --experimental-https",
         "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types",
@@ -23,8 +24,8 @@
         "@formatjs/intl-localematcher": "^0.5.4",
         "@hookform/resolvers": "^3.3.4",
         "@planetscale/database": "1.15.0",
-        "@prisma/adapter-planetscale": "5.10.1",
-        "@prisma/client": "5.10.1",
+        "@prisma/adapter-planetscale": "5.10.2",
+        "@prisma/client": "5.10.2",
         "@tanstack/react-query": "^4.36",
         "@trpc/client": "^10.44.1",
         "@trpc/next": "^10.44.1",
@@ -69,7 +70,7 @@
         "openapi-typescript": "^6.7.4",
         "prettier": "2.8.7",
         "prettier-plugin-organize-imports": "^3.2.4",
-        "prisma": "5.10.1",
+        "prisma": "5.10.2",
         "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",
         "tsafe": "^1.6.6",
