@@ -1,12 +1,12 @@
 import type { DefaultTheme } from "styled-components"
 
 export const deviceSizes = {
-    tiny: { min: "0px", max: "340px" },
-    mobile: { min: "320px", max: "560px" },
-    tablet: { min: "640px", max: "1024px" },
-    laptop: { min: "1025px", max: "2560px" },
-    desktop: { min: "1440px", max: "9999px" }
-} as const satisfies Record<string, { min: string; max: string }>
+    tiny: { min: 0, max: 340 },
+    mobile: { min: 320, max: 560 },
+    tablet: { min: 640, max: 1024 },
+    laptop: { min: 1025, max: 2560 },
+    desktop: { min: 1440, max: 9999 }
+} as const satisfies Record<string, { min: number; max: number }>
 
 export const theme: DefaultTheme = {
     colors: {

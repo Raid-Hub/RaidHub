@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { useSearch } from "~/hooks/useSearch"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { usePortal } from "../../components/Portal"
 import styles from "./guardians.module.css"
@@ -77,7 +77,7 @@ export default function Search({ addMember }: { addMember: (membershipId: string
                                     height={45}
                                     alt={getUserName(user)}
                                     unoptimized
-                                    src={bungieIconUrl(user.iconPath)}
+                                    src={bungieProfileIconUrl(user.iconPath)}
                                 />
                                 <p>{getUserName(user)}</p>
                             </li>

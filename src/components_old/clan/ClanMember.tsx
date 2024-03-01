@@ -1,7 +1,7 @@
-import { GroupMember } from "bungie-net-core/models"
+import { type GroupMember } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import styles from "./clan.module.css"
 
 /** @deprecated */
@@ -15,10 +15,10 @@ export default function ClanMember({
     return (
         <Link
             href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}
-            className={styles["member"]}>
+            className={styles.member}>
             <div className={styles["member-icon-container"]}>
                 <Image
-                    src={bungieIconUrl(member.bungieNetUserInfo?.iconPath)}
+                    src={bungieProfileIconUrl(member.bungieNetUserInfo?.iconPath)}
                     alt="icon"
                     unoptimized
                     fill

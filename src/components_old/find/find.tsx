@@ -31,7 +31,7 @@ import {
     RaidHubActivitySearchQuery,
     RaidHubPlayerSearchResult
 } from "~/types/raidhub-api"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import styles from "./find.module.css"
@@ -251,7 +251,7 @@ const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
                     height={45}
                     alt={query.data.bungieGlobalDisplayName ?? query.data.displayName ?? "Guardian"}
                     unoptimized
-                    src={bungieIconUrl(query.data.iconPath ?? undefined)}
+                    src={bungieProfileIconUrl(query.data.iconPath)}
                 />
                 <div>{getUserName(query.data)}</div>
             </div>

@@ -6,7 +6,7 @@ import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { formattedTimeSince } from "~/util/presentation/formatting"
 
@@ -27,7 +27,7 @@ export const SinglePlayerSearchResult = (props: {
         <Container $size={props.size} {...anchorProps} onClick={props.handleSelect}>
             <Flex $align="flex-start" $padding={props.size / 2} $gap={props.size / 2}>
                 <Icon
-                    src={bungieIconUrl(props.player.iconPath)}
+                    src={bungieProfileIconUrl(props.player.iconPath)}
                     alt={getUserName(props.player)}
                     unoptimized
                     width={96}

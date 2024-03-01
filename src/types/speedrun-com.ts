@@ -134,3 +134,22 @@ type SpeedrunLeaderboardPlayer = {
         uri: string
     }[]
 }
+
+export type SpeedrunCategoryResponse = {
+    data: {
+        id: string
+        name: string
+        weblink: string
+        type: "per-game"
+        rules: string
+        players?: {
+            type: string
+            value: number
+        }
+        miscellaneous: boolean
+        links: {
+            rel: string
+            uri: string
+        }[]
+    }
+}

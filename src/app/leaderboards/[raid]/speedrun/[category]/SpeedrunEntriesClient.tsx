@@ -1,20 +1,22 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { RTABoardCategory } from "~/data/speedrun-com-mappings"
+import Image from "next/image"
+import { SpeedrunPlacementIcons, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { getSpeedrunComLeaderboard } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
-import { ListedRaid } from "~/types/raidhub-api"
-import { SpeedrunLeaderboardResponse } from "~/types/speedrun-com"
-import { Leaderboard } from "../../../Leaderboard"
+import type { ListedRaid } from "~/types/raidhub-api"
+import { type SpeedrunLeaderboardResponse } from "~/types/speedrun-com"
+import { o } from "~/util/o"
 import { LeaderboardEntries, type LeaderboardEntry } from "../../../LeaderboardEntries"
 
-export const SpeedrunLeaderboardClientComponent = (props: {
+export const SpeedrunEntriesClient = (props: {
     lastRevalidated: Date
     ssrData: SpeedrunLeaderboardResponse["data"] | null
     raid: ListedRaid
-    category: RTABoardCategory
+    category?: RTABoardCategory
 }) => {
     const { data: results } = useQuery({
+        suspense: true,
         queryKey: ["speedrun-com", "leaderboard", props.raid, props.category] as const,
         queryFn: ({ queryKey }) =>
             getSpeedrunComLeaderboard({
@@ -58,8 +60,18 @@ export const SpeedrunLeaderboardClientComponent = (props: {
     })
 
     return (
-        <Leaderboard heading={<></>} pageProps={{}}>
-            <LeaderboardEntries format="time" entries={results} />
-        </Leaderboard>
+        <LeaderboardEntries
+            format="time"
+            entries={results}
+            icons={o.mapValues(SpeedrunPlacementIcons.variants, (place, path) => (
+                <Image
+                    alt={place}
+                    src={SpeedrunPlacementIcons.base + path}
+                    unoptimized
+                    width={30}
+                    height={30}
+                />
+            ))}
+        />
     )
 }

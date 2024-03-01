@@ -1,6 +1,6 @@
 "use client"
 
-import { DestinyActivityModifierDefinition } from "bungie-net-core/models"
+import { type DestinyActivityModifierDefinition } from "bungie-net-core/models"
 import Image from "next/image"
 import styled from "styled-components"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"

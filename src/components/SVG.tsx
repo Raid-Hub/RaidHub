@@ -10,6 +10,7 @@ export type SVGWrapperProps = Omit<
         color?: keyof DefaultTheme["colors"]["icon"]
         hoverColor?: keyof DefaultTheme["colors"]["icon"]
         absolute?: boolean
+        pointer?: boolean
     } & SVGProps<SVGSVGElement>,
     "className"
 >
@@ -21,9 +22,11 @@ interface StyledSvgProps {
     $color?: keyof DefaultTheme["colors"]["icon"]
     $hoverColor?: keyof DefaultTheme["colors"]["icon"]
     $absolute?: boolean
+    $pointer?: boolean
 }
 const StyledSvg = styled.svg<StyledSvgProps>`
     aspect-ratio: 1/1;
+    c${({ $pointer }) => $pointer && "ursor: pointer"};
     ${({ $absolute }) => $absolute && "position: absolute;"}
     ${({ $sx }) => $sx !== undefined && `width: ${$sx}px;`}
     fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
@@ -43,6 +46,7 @@ export function SVG({
     hoverColor,
     children,
     absolute,
+    pointer,
     ...restOfProps
 }: SVGWrapperProps & AtLeast<React.SVGProps<SVGSVGElement>, "viewBox">) {
     return (
@@ -51,6 +55,7 @@ export function SVG({
             $color={color}
             $hoverColor={hoverColor}
             $absolute={absolute}
+            $pointer={pointer}
             width={sx}
             xmlns="http://www.w3.org/2000/svg"
             {...restOfProps}>

@@ -9,13 +9,17 @@ import { Card } from "~/components/Card"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
-import { TabletDesktopSwitch } from "~/components/util/TabletDesktopSwitch"
+import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useClansForMember } from "~/services/bungie/useClansForMember"
 import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
 import { useProfile } from "~/services/bungie/useProfile"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import { bungieBannerEmblemUrl, bungieEmblemUrl, bungieIconUrl } from "~/util/destiny/bungie-icons"
+import {
+    bungieBannerEmblemUrl,
+    bungieEmblemUrl,
+    bungieProfileIconUrl
+} from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
@@ -84,7 +88,9 @@ export function UserCard() {
     const icon =
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         appProfileImage ||
-        (bungieProfileQuery.data?.iconPath ? bungieIconUrl(bungieProfileQuery.data.iconPath) : null)
+        (bungieProfileQuery.data?.iconPath
+            ? bungieProfileIconUrl(bungieProfileQuery.data.iconPath)
+            : null)
 
     const { data: clan } = useClansForMember(
         { membershipId: props.destinyMembershipId, membershipType: props.destinyMembershipType },
@@ -104,7 +110,7 @@ export function UserCard() {
 
     return (
         <Card $overflowHidden $fullWidth>
-            <TabletDesktopSwitch
+            <MobileDesktopSwitch
                 sm={
                     <>
                         <Container

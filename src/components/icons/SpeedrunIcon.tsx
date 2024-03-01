@@ -1,19 +1,21 @@
 "use client"
 
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { SVG, type SVGWrapperProps } from "../SVG"
 
 const DeepFilledSvg = styled(SVG)<{
     $fill?: string
     $hoverFill?: string
 }>`
-    ${({ $fill, $hoverFill }) => `& path {
-            fill: ${$fill}
+    ${({ $fill, $hoverFill }) => css`
+        & path {
+            fill: ${$fill};
         }
 
         & path:hover {
-            fill: ${$hoverFill}
-        }`}
+            fill: ${$hoverFill};
+        }
+    `}
 `
 
 export default function SpeedrunIcon({

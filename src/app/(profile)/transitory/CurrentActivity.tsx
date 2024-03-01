@@ -18,7 +18,7 @@ import { useTimer } from "~/hooks/util/useTimer"
 import { useProfileLiveData } from "~/services/bungie/useProfileLiveData"
 import { useProfileTransitory } from "~/services/bungie/useProfileTransitory"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import { bungieIconUrl, bungiePgcrImageUrl } from "~/util/destiny/bungie-icons"
+import { bungiePgcrImageUrl, bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import { getUserName } from "~/util/destiny/bungieName"
 import type { ProfileProps } from "../types"
 
@@ -149,7 +149,7 @@ const PartyMember = ({ membershipId }: DestinyProfileTransitoryPartyMember) => {
                     style={{ color: "unset" }}>
                     <Flex $padding={0} $align="flex-start">
                         <Image
-                            src={bungieIconUrl(playerQuery.data.iconPath)}
+                            src={bungieProfileIconUrl(playerQuery.data.iconPath)}
                             unoptimized
                             width={32}
                             height={32}

@@ -20,30 +20,17 @@ export const o = {
     ) {
         return Object.fromEntries(entries) as Record<K, T>
     },
-    mapValuesByKey: function <
-        T extends object,
-        N,
-        K extends keyof T & TemplatableKey = keyof T & TemplatableKey,
-        R extends string = K extends string ? K : `${K}`
-    >(obj: T, fn: (key: R) => N) {
-        const rv = {}
-        this.keys<T, K>(obj).forEach(k => {
-            // @ts-expect-error This is the point of this helper
-            rv[k] = fn(k)
-        })
-        return rv as Record<R, N>
-    },
-    mapValuesByValue: function <
+    mapValues: function <
         T extends object,
         N,
         V extends T[keyof T],
         K extends keyof T & TemplatableKey = keyof T & TemplatableKey,
         R extends string = K extends string ? K : `${K}`
-    >(obj: T, fn: (key: V) => N) {
+    >(obj: T, fn: (key: R, value: V) => N) {
         const rv = {}
         this.entries<T, K>(obj).forEach(([k, v]) => {
             // @ts-expect-error This is the point of this helper
-            rv[k] = fn(v)
+            rv[k] = fn(k, v)
         })
         return rv as Record<R, N>
     },

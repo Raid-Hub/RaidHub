@@ -13,7 +13,7 @@
 }
 .btn-control:not([aria-disabled="true"]):hover {
     cursor: pointer;
-    fill: var(--brand-orange-light);
+    fill: rgba(248, 198, 104, 0.986);
 }
 .leaderboard-container {
     padding: 1em;
@@ -24,7 +24,7 @@
 .leaderboard-divider {
     margin: 1em;
     width: 100%;
-    border-color: var(--border);
+    border-color: rgba(128, 128, 128, 0.507);
 }
 
 .leaderboard-entry {
@@ -39,7 +39,7 @@
     align-items: center;
     justify-content: space-between;
 
-    background-color: var(--modal-background);
+    background-color: rgba(0, 0, 0, 0.434);
     border-radius: 15px;
     margin-bottom: 1.5em;
 }
@@ -96,7 +96,7 @@
 .entry-time {
     flex: 1;
     white-space: nowrap;
-    color: var(--secondary-text);
+    color: rgb(167, 167, 167);
     font-size: x-large;
     padding-right: 2em;
 }
@@ -186,7 +186,7 @@
 }
 
 .rta-info-link {
-    background-color: var(--modal-background);
+    background-color: rgba(31, 31, 31, 0.302);
     border-radius: 10px;
     text-transform: uppercase;
 
@@ -201,7 +201,7 @@
     transition: background-color 0.2s;
 }
 .rta-info-link:hover {
-    background-color: var(--brand-orange);
+    background-color: orange;
 }
 .rta-info-link-child {
     display: flex;
@@ -221,7 +221,7 @@
     align-items: center;
     justify-content: space-between;
 
-    background-color: var(--modal-background);
+    background-color: rgba(0, 0, 0, 0.434);
     border-radius: 15px;
     margin-bottom: 1.5em;
 }
@@ -266,7 +266,7 @@
     margin-bottom: 0.5em;
 
     position: relative;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(128, 128, 128, 0.507);
 }
 
 .individual-leaderboard-banner img {
@@ -303,9 +303,9 @@
         flex: 1;
         align-self: flex-start;
 
-        background-color: rgba(161, 105, 0, 0.857);
-        border-right: 1px solid var(--border);
-        border-bottom: 1px solid var(--border);
+        background-color: rgba(23, 23, 23, 0.857);
+        border-right: 1px solid rgba(128, 128, 128, 0.507);
+        border-bottom: 1px solid rgba(128, 128, 128, 0.507);
         border-bottom-right-radius: 8px;
     }
     .leaderboard-entry-users {
@@ -388,7 +388,7 @@
     margin-bottom: 0.5em;
 
     position: relative;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(128, 128, 128, 0.507);
 }
 .world-first-header-image {
     z-index: -1;
@@ -428,13 +428,12 @@
     z-index: 10;
     display: flex;
     flex-direction: column;
-    background-color: var(--modal-background-opaque);
-
+    background-color: rgba(27, 27, 27, 0.795);
     max-height: 600px;
     overflow: scroll;
 }
 
 .search-results > *:hover {
     cursor: pointer;
-    background-color: var(--brand-orange-light);
+    background-color: orange;
 }

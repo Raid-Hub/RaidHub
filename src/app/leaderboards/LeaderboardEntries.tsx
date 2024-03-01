@@ -1,4 +1,5 @@
-import LeaderboardEntryComponent from "components_old/leaderboards/LeaderboardEntryComponent"
+import { LeaderboardEntryComponent } from "~/app/leaderboards/LeaderboardEntryComponent"
+import { Flex } from "~/components/layout/Flex"
 
 export type LeaderboardEntryPlayer = {
     id: string
@@ -10,7 +11,7 @@ export type LeaderboardEntry = {
     rank: number
     value: number
     id: string
-    url: string
+    url?: string
 } & (
     | {
           type: "player"
@@ -25,12 +26,18 @@ export type LeaderboardEntry = {
 export const LeaderboardEntries = (props: {
     entries: LeaderboardEntry[]
     format: "time" | "number"
+    icons?: Record<number, JSX.Element>
 }) => {
     return (
-        <div>
+        <Flex $direction="column" as="section">
             {props.entries.map(e => (
-                <LeaderboardEntryComponent key={e.id} format={props.format} {...e} />
+                <LeaderboardEntryComponent
+                    key={e.id}
+                    format={props.format}
+                    placementIcon={props.icons?.[e.rank]}
+                    {...e}
+                />
             ))}
-        </div>
+        </Flex>
     )
 }

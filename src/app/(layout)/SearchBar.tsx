@@ -70,40 +70,6 @@ export const SearchBar = () => {
                     handleSelect={handleSelect}
                 />
             )}
-            {/* {isShowingResults && (
-                    <ul className={styles["search-results"]}>
-                        {results.map((user, idx) => (
-                            <li key={idx}>
-                                <Link
-                                    className={styles["search-result"]}
-                                    href={`/profile/${user.membershipType ?? 0}/${
-                                        user.membershipId
-                                    }`}
-                                    onClick={handleSelect}
-                                    style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        gap: "0.5em"
-                                    }}>
-                                    <div
-                                        style={{
-                                            width: "30px",
-                                            height: "30px",
-                                            position: "relative"
-                                        }}>
-                                        <Image
-                                            src={bungieIconUrl(user.iconPath)}
-                                            unoptimized
-                                            fill
-                                            alt={""}
-                                        />
-                                    </div>
-                                    <p style={{ flex: 1 }}>{getUserName(user)}</p>
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                )} */}
         </Container>
     )
 }

@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { z } from "zod"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import { formattedNumber, formattedTimeSince, secondsToYDHMS } from "~/util/presentation/formatting"
 
 export const ColumnFormats = {
@@ -17,7 +17,7 @@ export const ColumnFormats = {
     datetime: (props: { value: string }) => <>{new Date(props.value).toLocaleString()}</>,
     duration: (props: { value: number }) => <>{secondsToYDHMS(props.value)}</>,
     bungieIcon: (props: { value: string }) => {
-        const url = z.string().url().safeParse(bungieIconUrl(props.value))
+        const url = z.string().url().safeParse(bungieProfileIconUrl(props.value))
         return url.success ? (
             <Image src={url.data} width={50} height={50} alt="" unoptimized />
         ) : (

@@ -35,13 +35,11 @@ export const TooltipContainer = forwardRef<
             onMouseLeave={() => setShow(false)}
             onFocus={() => setShow(true)}
             onBlur={() => setShow(false)}>
-            {Children.map(children, child =>
-                isValidElement(child)
-                    ? cloneElement(
-                          child,
-                          ($show ? { "aria-describedby": tooltipId } : {}) as object
-                      )
-                    : child
+            {Children.map(
+                children,
+                child =>
+                    isValidElement(child) &&
+                    cloneElement(child, ($show ? { "aria-describedby": tooltipId } : {}) as object)
             )}
             {$show && (
                 <StyledTooltip $bottom={$bottom} role="tooltip">

@@ -2,9 +2,9 @@ import { ReactNode } from "react"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { LeaderboardEntry } from "~/types/leaderboards"
 import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
+import LeaderboardEntryComponent from "../../app/leaderboards/LeaderboardEntryComponent"
 import Loading from "../../components/Loading"
 import { Controls } from "./LeaderboardControls"
-import LeaderboardEntryComponent from "./LeaderboardEntryComponent"
 
 const ActivityLeaderboard = ({
     entries,

@@ -1,6 +1,7 @@
 "use client"
 
 import { createGlobalStyle } from "styled-components"
+import { $media } from "./media"
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -46,5 +47,17 @@ export const GlobalStyle = createGlobalStyle`
     img[src=""] {
         font-size: 0;
         position: relative;
+    }
+
+   .switch-sm {
+        ${$media.min.tablet`
+            display: none;
+        `}
+    }
+
+    .switch-lg {
+        ${$media.invert.min.tablet`
+            display: none;
+        `}
     }
 `

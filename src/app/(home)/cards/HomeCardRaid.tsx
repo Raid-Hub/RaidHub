@@ -4,23 +4,18 @@ import RaidCardBackground from "data/raid-backgrounds"
 import { Difficulty } from "~/data/raid"
 import { SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { type ListedRaid, type RaidHubManifestResponse } from "~/types/raidhub-api"
+import { type ListedRaid } from "~/types/raidhub-api"
 import { o } from "~/util/o"
 import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"
 
-export const HomeCardRaid = ({
-    raid,
-    worldFirstLeaderboards,
-    individualLeaderboards
-}: {
-    raid: ListedRaid
-    worldFirstLeaderboards: RaidHubManifestResponse["leaderboards"]["worldFirst"][ListedRaid]
-    individualLeaderboards: RaidHubManifestResponse["leaderboards"]["individual"]["clears"][ListedRaid]
-}) => {
-    const { getDifficultyString, getRaidString, getUrlPathForRaid } = useRaidHubManifest()
+export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
+    const { getDifficultyString, getRaidString, getUrlPathForRaid, leaderboards } =
+        useRaidHubManifest()
     const raidUrlPath = getUrlPathForRaid(raid)
+
+    const worldFirstLeaderboards = leaderboards.worldFirst[raid]
 
     return (
         <HomeCardGeneric
@@ -40,19 +35,10 @@ export const HomeCardRaid = ({
                         />
                     ))}
             </HomeCardContentSection>
-            <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                {individualLeaderboards.map(({ name, category }) => (
-                    <HomeCardContentSectionItem
-                        key={category}
-                        title={name}
-                        href={`/leaderboards/${raidUrlPath}/${category}`}
-                    />
-                ))}
-            </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Speedrun Leaderboards">
-                {SpeedrunVariables[raid] ? (
+                {SpeedrunVariables[raid].variable ? (
                     o.map(
-                        SpeedrunVariables[raid]!.values,
+                        SpeedrunVariables[raid].variable!.values,
                         (type, data) =>
                             data && (
                                 <HomeCardContentSectionItem
@@ -68,6 +54,19 @@ export const HomeCardRaid = ({
                         href={`/leaderboards/${raidUrlPath}/speedrun/all`}
                     />
                 )}
+                <HomeCardContentSection sectionTitle="Individual Leaderboards">
+                    <HomeCardContentSectionItem
+                        title="Sherpas"
+                        href={`/leaderboards/${raidUrlPath}/individual/sherpas`}
+                    />
+                    {leaderboards.individual.clears[raid].map(({ name, category }) => (
+                        <HomeCardContentSectionItem
+                            key={category}
+                            title={name}
+                            href={`/leaderboards/${raidUrlPath}/individual/clears/${category}`}
+                        />
+                    ))}
+                </HomeCardContentSection>
             </HomeCardContentSection>
             {worldFirstLeaderboards.length > 1 && (
                 <HomeCardContentSection sectionTitle="Misceallaneous">

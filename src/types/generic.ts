@@ -14,3 +14,5 @@ export type Prettify<T> = {
 export type PageStaticParams<T extends (...args: any[]) => Promise<Record<string, unknown>[]>> = {
     params: Awaited<ReturnType<T>>[number]
 }
+
+export type Truthy<T> = T extends null | undefined | false | "" | 0 ? never : T

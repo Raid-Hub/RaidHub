@@ -4,7 +4,7 @@ import CloudflareImage from "~/images/CloudflareImage"
 import styles from "~/styles/pages/leaderboards.module.css"
 import { RaidHubIndividualLeaderboardEntry } from "~/types/raidhub-api"
 import { LEADERBOARD_ENTRIES_PER_PAGE } from "~/util/constants"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
 import Loading from "../../components/Loading"
 import { IndividualLeaderboardEntryComponent } from "./IndividualLeaderboardEntry"
 import { Controls } from "./LeaderboardControls"
@@ -99,7 +99,7 @@ export default function GenericIndividualLeaderboard({
                                         e.player.bungieGlobalDisplayName ||
                                         e.player.displayName ||
                                         e.player.membershipId,
-                                    iconURL: bungieIconUrl(e.player.iconPath),
+                                    iconURL: bungieProfileIconUrl(e.player.iconPath),
                                     id: e.player.membershipId,
                                     rank: e.rank,
                                     url: `/profile/${e.player.membershipType}/${e.player.membershipId}`,
