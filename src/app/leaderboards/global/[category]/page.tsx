@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 import { z } from "zod"
 import { prefetchManifest, metadata as rootMetadata } from "~/app/layout"
+import { Flex } from "~/components/layout/Flex"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../Leaderboard"
 import { GlobalEntries } from "./GlobalEntries"
@@ -51,7 +52,11 @@ export default async function Page({
     return (
         <Leaderboard
             pageProps={{ format }}
-            heading={<GlobalEntriesBanner category={params.category} title={displayName} />}>
+            heading={
+                <Flex $direction="column" $padding={0} $gap={0}>
+                    <GlobalEntriesBanner category={params.category} title={displayName} />
+                </Flex>
+            }>
             <GlobalEntries
                 category={params.category}
                 page={pageParsed.success ? pageParsed.data : 1}

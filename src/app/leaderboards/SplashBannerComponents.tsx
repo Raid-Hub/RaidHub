@@ -7,6 +7,7 @@ import { Panel } from "~/components/Panel"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
 import { H4 } from "~/components/typography/H4"
+import { $media } from "~/layout/media"
 
 export const Splash = (props: {
     title: string
@@ -32,12 +33,18 @@ const shadow = css`
 const Title = styled.h1`
     ${shadow}
     font-size: 2rem;
+    ${$media.min.desktop`
+        font-size: 3rem;
+    `}
     margin-block: 0;
 `
 
 const Subtitle = styled.div`
     ${shadow}
     font-size: 1.75rem;
+    ${$media.min.desktop`
+        font-size: 2.75rem;
+    `}
 `
 export const TooltipWrapper = ({
     id,

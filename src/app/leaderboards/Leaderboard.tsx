@@ -15,7 +15,7 @@ export const Leaderboard = (props: {
             <Suspense
                 fallback={
                     <Flex $fullWidth $padding={0}>
-                        <Flex $direction="column" style={{ maxWidth: "900px" }} $padding={0}>
+                        <Flex $direction="row" $wrap as="section">
                             {Array.from({ length: 10 }, (_, idx) => (
                                 <MobileDesktopSwitch
                                     key={idx}
@@ -23,11 +23,7 @@ export const Leaderboard = (props: {
                                         <Loading $minHeight="350px" $minWidth="100%" $alpha={0.8} />
                                     }
                                     lg={
-                                        <Loading
-                                            $minHeight="150px"
-                                            $minWidth="800px"
-                                            $alpha={0.8}
-                                        />
+                                        <Loading $minHeight="90px" $minWidth="800px" $alpha={0.8} />
                                     }
                                 />
                             ))}

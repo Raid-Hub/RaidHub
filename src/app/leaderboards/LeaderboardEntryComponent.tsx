@@ -31,7 +31,7 @@ export const LeaderboardEntryComponent = ({
             sm={
                 <Panel $fullWidth>
                     <Flex $gap={2} $padding={0.5}>
-                        <Container style={{ fontSize: "1.375rem", minWidth: "20px" }}>
+                        <Container $flex style={{ fontSize: "1.375rem", minWidth: "20px" }}>
                             {placementIcon ?? truncatedNumber(entry.rank)}
                         </Container>
                         <OptionalWrapper
@@ -65,14 +65,14 @@ export const LeaderboardEntryComponent = ({
                     <Flex $gap={5} $align={entry.type === "team" ? "space-between" : "center"}>
                         <Flex style={{ flex: 1 }} $padding={0} $align="flex-start">
                             <Container
+                                $flex
                                 $aspectRatio={{
                                     width: 1,
                                     height: 1
                                 }}
                                 style={{
                                     fontSize: "1.375rem",
-                                    minWidth: "10%",
-                                    textAlign: "center"
+                                    minWidth: "10%"
                                 }}>
                                 {placementIcon ?? truncatedNumber(entry.rank)}
                             </Container>
