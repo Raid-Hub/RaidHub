@@ -8,42 +8,87 @@ import { Panel } from "~/components/Panel"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
+import { usePageProps } from "~/components/layout/PageWrapper"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useLocale } from "~/layout/managers/LocaleManager"
+import { $media } from "~/layout/media"
 import { formattedNumber, secondsToHMS, truncatedNumber } from "../../util/presentation/formatting"
-import { LeaderboardEntryTeamPlayer } from "./LeaderboardEntryTeamPlayer"
+import { LeaderboardEntryPlayerComponent } from "./LeaderboardEntryPlayer"
 
 export const LeaderboardEntryComponent = ({
-    format,
     placementIcon,
     ...entry
 }: LeaderboardEntry & {
     placementIcon?: JSX.Element
-    format: "time" | "number"
 }) => {
+    const { format } = usePageProps<{ format: "time" | "number" }>()
     const { locale } = useLocale()
     const value =
         format === "time" ? secondsToHMS(entry.value, true) : formattedNumber(entry.value, locale)
 
     return (
         <MobileDesktopSwitch
-            sm={<></>}
-            lg={
-                <Panel $maxWidth={900}>
-                    <Flex $gap={2.5}>
+            sm={
+                <Panel $fullWidth>
+                    <Flex $gap={2} $padding={0.5}>
                         <Container style={{ fontSize: "1.375rem", minWidth: "20px" }}>
                             {placementIcon ?? truncatedNumber(entry.rank)}
                         </Container>
-
+                        <OptionalWrapper
+                            condition={entry.url}
+                            wrapper={({ children, value }) => (
+                                <Link
+                                    style={{ color: "unset" }}
+                                    href={value}
+                                    target={value.startsWith("/") ? "" : "_blank"}>
+                                    {children}
+                                </Link>
+                            )}>
+                            <Value>{value}</Value>
+                        </OptionalWrapper>
+                    </Flex>
+                    <Flex $padding={0.5}>
                         {entry.type === "team" ? (
-                            <Grid $minCardWidth={180} $fullWidth>
+                            <Grid $numCols={1} $fullWidth>
                                 {entry.team.map(player => (
-                                    <LeaderboardEntryTeamPlayer key={player.id} {...player} />
+                                    <LeaderboardEntryPlayerComponent key={player.id} {...player} />
                                 ))}
                             </Grid>
                         ) : (
-                            <>{"todo"}</>
+                            <LeaderboardEntryPlayerComponent {...entry.player} />
                         )}
+                    </Flex>
+                </Panel>
+            }
+            lg={
+                <Panel $maxWidth={entry.type === "team" ? 900 : 450} $fullWidth $growOnHover>
+                    <Flex $gap={5} $align={entry.type === "team" ? "space-between" : "center"}>
+                        <Flex style={{ flex: 1 }} $padding={0} $align="flex-start">
+                            <Container
+                                $aspectRatio={{
+                                    width: 1,
+                                    height: 1
+                                }}
+                                style={{
+                                    fontSize: "1.375rem",
+                                    minWidth: "10%",
+                                    textAlign: "center"
+                                }}>
+                                {placementIcon ?? truncatedNumber(entry.rank)}
+                            </Container>
+                            {entry.type === "team" ? (
+                                <Grid $minCardWidth={180} $fullWidth>
+                                    {entry.team.map(player => (
+                                        <LeaderboardEntryPlayerComponent
+                                            key={player.id}
+                                            {...player}
+                                        />
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <LeaderboardEntryPlayerComponent {...entry.player} />
+                            )}
+                        </Flex>
                         <OptionalWrapper
                             condition={entry.url}
                             wrapper={({ children, value }) => (
@@ -66,5 +111,8 @@ export const LeaderboardEntryComponent = ({
 const Value = styled.span`
     white-space: nowrap;
     font-size: 1.375rem;
+    ${$media.max.mobile`
+        font-size: 1.125rem;
+    `}
     color: ${({ theme }) => theme.colors.text.secondary};
 `

@@ -126,9 +126,12 @@ export const Raids = () => {
                         <RaidCard
                             leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
                             wfBoardId={
-                                (leaderboards.worldFirst[raid].find(b => b.type === "challenge") ??
-                                    leaderboards.worldFirst[raid].find(b => b.type === "normal"))!
-                                    .id
+                                (leaderboards.worldFirst[raid].find(
+                                    b => b.category === "challenge"
+                                ) ??
+                                    leaderboards.worldFirst[raid].find(
+                                        b => b.category === "normal"
+                                    ))!.id
                             }
                             expand={() => setExpandedRaid(raid)}
                             closeExpand={clearExpandedRaid}

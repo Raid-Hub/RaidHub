@@ -10,7 +10,7 @@ export type LeaderboardEntryPlayer = {
 export type LeaderboardEntry = {
     rank: number
     value: number
-    id: string
+    id: string | number
     url?: string
 } & (
     | {
@@ -25,15 +25,13 @@ export type LeaderboardEntry = {
 
 export const LeaderboardEntries = (props: {
     entries: LeaderboardEntry[]
-    format: "time" | "number"
     icons?: Record<number, JSX.Element>
 }) => {
     return (
-        <Flex $direction="column" as="section">
+        <Flex $direction="row" $wrap as="section" $gap={0.25}>
             {props.entries.map(e => (
                 <LeaderboardEntryComponent
                     key={e.id}
-                    format={props.format}
                     placementIcon={props.icons?.[e.rank]}
                     {...e}
                 />

@@ -112,7 +112,7 @@ export function UserCard() {
         <Card $overflowHidden $fullWidth>
             <MobileDesktopSwitch
                 sm={
-                    <>
+                    <div>
                         <Container
                             $aspectRatio={{
                                 width: 474,
@@ -145,10 +145,10 @@ export function UserCard() {
                             {/* Rankings */}
                             <UserCardSocials size="lg" />
                         </Flex>
-                    </>
+                    </div>
                 }
                 lg={
-                    <>
+                    <div>
                         <Container
                             $aspectRatio={{
                                 width: 1958,
@@ -196,7 +196,7 @@ export function UserCard() {
                                 </Flex>
                             </Flex>
                         </Flex>
-                    </>
+                    </div>
                 }
             />
         </Card>

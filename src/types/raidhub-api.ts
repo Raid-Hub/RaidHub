@@ -62,8 +62,9 @@ export type RaidHubWorldFirstLeaderboardCategory =
 export type RaidHubIndividualLeaderboardCategory =
     Component<"LeaderboardIndividualResponse">["params"]["category"]
 
+export type RaidHubGlobalLeaderboardResponse = Component<"LeaderboardGlobalResponse">
 export type RaidHubGlobalLeaderboardCategory =
-    Component<"LeaderboardGlobalResponse">["params"]["category"]
+    RaidHubGlobalLeaderboardResponse["params"]["category"]
 
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
 

@@ -1,8 +1,5 @@
 import { type Metadata } from "next"
-import { Suspense } from "react"
 import { prefetchManifest } from "~/app/layout"
-import { Loading } from "~/components/Loading"
-import { Flex } from "~/components/layout/Flex"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../../Leaderboard"
@@ -65,35 +62,9 @@ export default async function Page({ params }: StaticSpeedrunLeaderboardParams) 
 
     return (
         <Leaderboard
-            heading={
-                <SpeedrunComBanner
-                    raid={raid}
-                    title={manifest.raidStrings[raid]}
-                    subtitle={
-                        category
-                            ? SpeedrunVariables[raid].variable?.values[category]?.displayName
-                            : undefined
-                    }
-                    category={category}
-                />
-            }>
-            <Suspense
-                fallback={
-                    <Flex $fullWidth $padding={0}>
-                        <Flex $direction="column" style={{ maxWidth: "900px" }} $padding={0}>
-                            {Array.from({ length: 10 }, (_, idx) => (
-                                <Loading
-                                    key={idx}
-                                    $minHeight="150px"
-                                    $minWidth="800px"
-                                    $alpha={0.8}
-                                />
-                            ))}
-                        </Flex>
-                    </Flex>
-                }>
-                <SpeedrunEntries raid={raid} category={category} />
-            </Suspense>
+            pageProps={{ format: "time" }}
+            heading={<SpeedrunComBanner raid={raid} category={category} />}>
+            <SpeedrunEntries raid={raid} category={category} />
         </Leaderboard>
     )
 }

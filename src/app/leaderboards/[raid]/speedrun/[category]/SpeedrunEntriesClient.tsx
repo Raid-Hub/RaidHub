@@ -28,9 +28,12 @@ export const SpeedrunEntriesClient = (props: {
         initialData: props.ssrData ?? undefined,
         select: (
             data
-        ): (LeaderboardEntry & {
-            type: "team"
-        })[] => {
+        ): Extract<
+            LeaderboardEntry,
+            {
+                type: "team"
+            }
+        >[] => {
             const playersDict = new Map(data?.players.data.map(p => [p.id, p]))
             return (
                 data?.runs.map(({ place, run }) => ({
@@ -61,7 +64,6 @@ export const SpeedrunEntriesClient = (props: {
 
     return (
         <LeaderboardEntries
-            format="time"
             entries={results}
             icons={o.mapValues(SpeedrunPlacementIcons.variants, (place, path) => (
                 <Image

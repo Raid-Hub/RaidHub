@@ -1,4 +1,4 @@
-import { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
+import type { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
 import { Raid } from "./raid"
 
 export const RaidMileStones = {
@@ -11,5 +11,3 @@ export const RaidMileStones = {
     [Raid.ROOT_OF_NIGHTMARES]: 3699252268,
     [Raid.CROTAS_END]: 540415767
 } satisfies Record<Exclude<ListedRaid, SunsetRaid>, number>
-
-3180884403

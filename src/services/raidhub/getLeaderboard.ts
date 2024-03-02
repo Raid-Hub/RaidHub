@@ -1,4 +1,4 @@
-import {
+import type {
     ListedRaid,
     RaidHubGlobalLeaderboardCategory,
     RaidHubIndividualLeaderboardCategory,
@@ -58,11 +58,14 @@ export async function getIndividualLeaderboard(args: {
     return data.entries
 }
 
-export async function getIndividualGlobalLeaderboard(args: {
-    board: RaidHubGlobalLeaderboardCategory
-    page: number
-    count: number
-}) {
+export async function getIndividualGlobalLeaderboard(
+    args: {
+        board: RaidHubGlobalLeaderboardCategory
+        page: number
+        count: number
+    },
+    config: Omit<RequestInit, "method" | "body"> = {}
+) {
     const data = await getRaidHubApi(
         "/leaderboard/global/{category}",
         {
@@ -71,8 +74,9 @@ export async function getIndividualGlobalLeaderboard(args: {
         {
             count: args.count,
             page: args.page
-        }
+        },
+        config
     )
 
-    return data.entries
+    return data
 }

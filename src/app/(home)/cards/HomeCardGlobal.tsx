@@ -1,5 +1,6 @@
 "use client"
 
+import { RaidHubBannerId } from "~/data/image-ids"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
@@ -11,7 +12,7 @@ export function HomeCardGlobal() {
         <HomeCardGeneric
             id="Global"
             title="All Raids"
-            backgroundImageCloudflareId="5e4dc4de-9417-4aef-2a48-aea495ae3500"
+            backgroundImageCloudflareId={RaidHubBannerId}
             backgroundImageAltText="Splash for All Raids">
             <HomeCardContentSection sectionTitle="Individual Leaderboards">
                 {leaderboards.global.map(board => (

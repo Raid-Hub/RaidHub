@@ -50,13 +50,13 @@ export const GlobalStyle = createGlobalStyle`
     }
 
    .switch-sm {
-        ${$media.min.tablet`
+        ${$media.invert.max.mobile`
             display: none;
         `}
     }
 
     .switch-lg {
-        ${$media.invert.min.tablet`
+        ${$media.max.mobile`
             display: none;
         `}
     }
