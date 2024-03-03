@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import type { ListedRaid } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 import ExpandedStatsTable from "./ExpandedStatsTable"

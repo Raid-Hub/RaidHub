@@ -1,5 +1,5 @@
 import type { ClanBanner } from "bungie-net-core/models"
-import type { RGBA } from "~/layout/managers/DestinyManifestManager"
+import type { RGBA } from "~/app/layout/managers/DestinyManifestManager"
 import { useDexieGetQuery } from "~/util/dexie"
 import { o } from "~/util/o"
 

@@ -1,7 +1,7 @@
 "use client"
 
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { RaidHubBannerId } from "~/data/image-ids"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"

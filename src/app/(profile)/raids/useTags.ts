@@ -1,7 +1,7 @@
 import type { Collection } from "@discordjs/collection"
 import { useCallback, useMemo } from "react"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Raid } from "~/data/raid"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 

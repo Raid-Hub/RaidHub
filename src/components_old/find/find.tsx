@@ -14,14 +14,14 @@ import {
     type SubmitHandler,
     type UseFormRegister
 } from "react-hook-form"
+import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useSeasons } from "~/hooks/dexie"
 import { useSearch } from "~/hooks/useSearch"
-import { useLocale } from "~/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { type BungieAPIError } from "~/models/BungieAPIError"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import { activitySearch } from "~/services/raidhub/searchActivities"

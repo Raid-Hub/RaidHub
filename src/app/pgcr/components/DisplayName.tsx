@@ -1,8 +1,8 @@
 import type { BungieMembershipType } from "bungie-net-core/models"
 import Link from "next/link"
 import styled from "styled-components"
+import { $media } from "~/app/layout/media"
 import ExternalLink from "~/components/icons/ExternalLink"
-import { $media } from "~/layout/media"
 
 export const DisplayName = (props: {
     displayName: string

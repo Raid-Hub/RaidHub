@@ -4,7 +4,7 @@ import type {
     DestinyPostGameCarnageReportEntry
 } from "bungie-net-core/models"
 import { useCallback } from "react"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import DestinyPGCRPlayer from "../models/Player"
 
 export const useProcessPGCR = () => {

@@ -15,7 +15,7 @@ import { useItemDefinition } from "~/hooks/dexie"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
-import { useLocale } from "../../app/(layout)/managers/LocaleManager"
+import { useLocale } from "../../app/layout/managers/LocaleManager"
 import { formattedNumber } from "../../util/presentation/formatting"
 import styles from ".//pgcr.module.css"
 

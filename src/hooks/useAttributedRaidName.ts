@@ -1,6 +1,6 @@
 import { useMemo } from "react"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Difficulty, Raid } from "~/data/raid"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
 import type { ListedRaid, RaidDifficulty } from "~/services/raidhub/types"
 

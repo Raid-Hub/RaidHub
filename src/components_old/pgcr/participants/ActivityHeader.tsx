@@ -1,7 +1,7 @@
+import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { useTags } from "~/app/pgcr/hooks/useTags"
-import { useLocale } from "~/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"
 import styles from "../pgcr.module.css"
 

@@ -2,9 +2,9 @@
 
 import { type ReactNode } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
+import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Difficulty } from "~/data/raid"
-import { useLocale } from "~/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type { RaidDifficulty } from "~/services/raidhub/types"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
 import styles from "./expanded-raid.module.css"

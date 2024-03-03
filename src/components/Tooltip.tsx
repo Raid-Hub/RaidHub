@@ -9,7 +9,7 @@ import {
     type HTMLAttributes
 } from "react"
 import styled from "styled-components"
-import { $media } from "~/layout/media"
+import { $media } from "~/app/layout/media"
 
 export const TooltipContainer = forwardRef<
     HTMLDivElement,

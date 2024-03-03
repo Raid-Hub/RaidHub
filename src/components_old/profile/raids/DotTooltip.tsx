@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
 import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { secondsToHMS } from "~/util/presentation/formatting"

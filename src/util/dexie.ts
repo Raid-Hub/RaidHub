@@ -16,7 +16,7 @@ import type {
 import Dexie, { type Table } from "dexie"
 import { useLiveQuery } from "dexie-react-hooks"
 import { useMemo } from "react"
-import type { RGBA } from "~/layout/managers/DestinyManifestManager"
+import type { RGBA } from "~/app/layout/managers/DestinyManifestManager"
 import { o } from "./o"
 
 /**

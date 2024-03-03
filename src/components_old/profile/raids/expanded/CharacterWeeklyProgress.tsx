@@ -5,8 +5,8 @@ import type {
     DestinyMilestoneChallengeActivity
 } from "bungie-net-core/models"
 import Image from "next/image"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { useClassDefinition } from "~/hooks/dexie"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { bungieIconUrl } from "~/util/destiny"
 import styles from "./expanded-raid.module.css"
 

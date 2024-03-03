@@ -2,7 +2,7 @@
 
 import { createContext, forwardRef, useContext, type ForwardedRef, type ReactNode } from "react"
 import styled from "styled-components"
-import { $media } from "~/layout/media"
+import { $media } from "~/app/layout/media"
 
 const PropsContext = createContext<object | null>(null)
 

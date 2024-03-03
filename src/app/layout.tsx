@@ -2,24 +2,27 @@ import type { Metadata, Viewport } from "next"
 import dynamic from "next/dynamic"
 import NextTopLoader from "nextjs-toploader"
 import { type ReactNode } from "react"
-import { Footer } from "~/layout/Footer"
-import { Header } from "~/layout/Header"
-import { HeaderContent } from "~/layout/HeaderContent"
-import { SearchModal } from "~/layout/SearchModal"
+import { Footer } from "~/app/layout/Footer"
+import { Header } from "~/app/layout/Header"
+import { HeaderContent } from "~/app/layout/HeaderContent"
+import { SearchModal } from "~/app/layout/SearchModal"
 import {
     BungieClientProvider,
     ClientManager,
     LocaleManager,
     QueryManager,
     RaidHubManifestManager
-} from "~/layout/managers"
-import { SessionManager } from "~/layout/managers/session/ServerSessionManager"
+} from "~/app/layout/managers"
+import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 
 // Dynamic import for the dexie DB
-const DestinyManifestManager = dynamic(() => import("~/layout/managers/DestinyManifestManager"), {
-    ssr: false
-})
+const DestinyManifestManager = dynamic(
+    () => import("~/app/layout/managers/DestinyManifestManager"),
+    {
+        ssr: false
+    }
+)
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await prefetchManifest()

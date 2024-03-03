@@ -16,7 +16,7 @@ import { bungieBannerEmblemUrl, bungieEmblemUrl, bungieProfileIconUrl } from "~/
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
-import { $media } from "../(layout)/media"
+import { $media } from "../layout/media"
 import { trpc } from "../trpc"
 import { UserCardSocials } from "./UserCardSocials"
 import type { ProfileProps } from "./types"

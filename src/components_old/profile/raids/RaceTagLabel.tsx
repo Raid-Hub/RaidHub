@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { useCallback } from "react"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
 import type { ListedRaid } from "~/services/raidhub/types"
 import styles from "./raids.module.css"

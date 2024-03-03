@@ -5,12 +5,12 @@ import { m } from "framer-motion"
 import { useCallback, useMemo, useState } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useTags } from "~/app/(profile)/raids/useTags"
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import Expand from "~/components/icons/Expand"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useTimeout } from "~/hooks/util/useTimeout"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry

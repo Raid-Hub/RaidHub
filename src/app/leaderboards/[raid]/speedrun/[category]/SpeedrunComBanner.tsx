@@ -1,8 +1,8 @@
 "use client"
 
+import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
-import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { type ListedRaid } from "~/services/raidhub/types"
 import { Splash } from "../../../SplashBannerComponents"
 
