@@ -9,6 +9,7 @@ import { useBungieClient } from "./BungieClientProvider"
 export const ClientSessionManager = (props: {
     children: ReactNode
     serverSession: Session | null
+    isStatic: boolean
 }) => {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
 
@@ -16,7 +17,12 @@ export const ClientSessionManager = (props: {
         <SessionProvider
             refetchInterval={sessionRefetchInterval}
             refetchOnWindowFocus={false}
-            session={props.serverSession}>
+            /**
+             * When we force-static on a page, the session will be null every time.
+             * In order to prevent the user from appearing to be logged out,
+             * we need force the session to be fetched client-side by setting this value to undefined
+             * */
+            session={!props.isStatic ? props.serverSession : undefined}>
             <TokenManager setNextRefetch={setSessionRefetchInterval} />
             {props.children}
         </SessionProvider>

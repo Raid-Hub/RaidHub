@@ -3,7 +3,7 @@ import "server-only"
 import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { type Session } from "next-auth"
-import { postRaidHubApi } from "~/services/raidhub"
+import { postRaidHubApi } from "~/services/raidhub/common"
 import { type SessionAndUserData } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 

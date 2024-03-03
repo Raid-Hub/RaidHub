@@ -5,7 +5,7 @@ import { useCallback } from "react"
 import BasicDiamond from "~/components/icons/BasicDiamond"
 import { useAttributedRaidName } from "~/hooks/useAttributedRaidName"
 import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
-import type { ListedRaid, RaidDifficulty } from "~/types/raidhub-api"
+import type { ListedRaid, RaidDifficulty } from "~/services/raidhub/types"
 import styles from "./raids.module.css"
 
 /** @deprecated */

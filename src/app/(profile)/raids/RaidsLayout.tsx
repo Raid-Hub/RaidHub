@@ -8,14 +8,13 @@ import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
-import { useRaidHubActivities } from "~/services/raidhub/useRaidHubActivities"
-import { useRaidHubPlayers } from "~/services/raidhub/useRaidHubPlayers"
+import { useLinkedProfiles } from "~/services/bungie/hooks"
+import { useRaidHubActivities, useRaidHubPlayers } from "~/services/raidhub/hooks"
 import type {
     ListedRaid,
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
-} from "~/types/raidhub-api"
+} from "~/services/raidhub/types"
 import { FilterContextProvider } from "./FilterContext"
 import { RaidCardContext } from "./RaidCardContext"
 

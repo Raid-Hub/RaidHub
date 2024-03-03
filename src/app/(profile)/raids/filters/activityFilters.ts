@@ -1,4 +1,4 @@
-import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 import { o } from "~/util/o"
 import GroupActivityFilter from "./GroupActivityFilter"

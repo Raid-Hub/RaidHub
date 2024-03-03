@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function Stopwatch(props: SVGProps) {
+export default function Stopwatch(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 0 24 24" {...props}>
             <path

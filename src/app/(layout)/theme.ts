@@ -2,7 +2,7 @@ import type { DefaultTheme } from "styled-components"
 
 export const deviceSizes = {
     tiny: { min: 0, max: 340 },
-    mobile: { min: 320, max: 560 },
+    mobile: { min: 320, max: 768 },
     tablet: { min: 640, max: 1024 },
     laptop: { min: 1025, max: 2560 },
     desktop: { min: 1440, max: 9999 }

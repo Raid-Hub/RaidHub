@@ -6,13 +6,13 @@ import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
 import {
-    Control,
-    FieldValues,
-    Path,
-    SubmitHandler,
-    UseFormRegister,
     useFieldArray,
-    useForm
+    useForm,
+    type Control,
+    type FieldValues,
+    type Path,
+    type SubmitHandler,
+    type UseFormRegister
 } from "react-hook-form"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
@@ -22,17 +22,17 @@ import { useSeasons } from "~/hooks/dexie"
 import { useSearch } from "~/hooks/useSearch"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import { type BungieAPIError } from "~/models/BungieAPIError"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import { activitySearch } from "~/services/raidhub/searchActivities"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import {
+import type {
     ListedRaid,
     RaidHubActivityExtended,
     RaidHubActivitySearchQuery,
     RaidHubPlayerSearchResult
-} from "~/types/raidhub-api"
-import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+} from "~/services/raidhub/types"
+import { bungieProfileIconUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import styles from "./find.module.css"
 
@@ -84,8 +84,8 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
             maxPlayers: state.playerCountRange[1] === 0 ? undefined : state.playerCountRange[1],
             minSeason: state.seasonRange[0] === 0 ? undefined : state.seasonRange[0],
             maxSeason: state.seasonRange[1] === 0 ? undefined : state.seasonRange[1],
-            minDate: !isNaN(minDate.getTime()) ? minDate : undefined,
-            maxDate: !isNaN(maxDate.getTime()) ? maxDate : undefined
+            minDate: !isNaN(minDate.getTime()) ? minDate.toISOString() : undefined,
+            maxDate: !isNaN(maxDate.getTime()) ? maxDate.toISOString() : undefined
         })
     }
 
@@ -96,7 +96,7 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
         data
     } = useMutation<
         Collection<string, RaidHubActivityExtended>,
-        BungieAPIError<unknown>,
+        BungieAPIError,
         RaidHubActivitySearchQuery
     >({
         mutationFn: activitySearch
@@ -108,8 +108,8 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
         <main>
             <h1>Activity Finder</h1>
             <form onSubmit={handleSubmit(submitHandler)} className={styles["form-container"]}>
-                <div className={styles["form"]}>
-                    <div className={styles["players"]}>
+                <div className={styles.form}>
+                    <div className={styles.players}>
                         <h2>Players</h2>
                         <div className={styles["players-components"]}>
                             <PlayerLookup addPlayer={r => setValue("players", [...players, r])} />
@@ -119,7 +119,7 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
                             />
                         </div>
                     </div>
-                    <div className={styles["gadgets"]}>
+                    <div className={styles.gadgets}>
                         <h2 style={{ width: "100%" }}>Filters</h2>
                         <RaidPicker id="raid" label="Raid" register={register} />
                         <ToggleOption id="completed" label="Completed" register={register} />
@@ -207,7 +207,7 @@ const AddedPlayers = ({
     control,
     sessionMembershipId
 }: {
-    control: Control<ActivitySearchFormState, any>
+    control: Control<ActivitySearchFormState>
     sessionMembershipId: string
 }) => {
     const { fields, remove } = useFieldArray({
@@ -253,7 +253,7 @@ const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
                     unoptimized
                     src={bungieProfileIconUrl(query.data.iconPath)}
                 />
-                <div>{getUserName(query.data)}</div>
+                <div>{getBungieDisplayName(query.data)}</div>
             </div>
         )
     } else {
@@ -271,7 +271,7 @@ function ToggleOption<T extends FieldValues>({
     register: UseFormRegister<T>
 }) {
     return (
-        <div className={styles["gadget"]}>
+        <div className={styles.gadget}>
             <label htmlFor={id}>{label}</label>
             <select id={id} {...register(id, { valueAsNumber: true })}>
                 <option value={-1}>Ignore</option>
@@ -292,7 +292,7 @@ function PlayerCountPicker<T extends FieldValues>({
     register: UseFormRegister<T>
 }) {
     return (
-        <div className={styles["gadget"]}>
+        <div className={styles.gadget}>
             <label htmlFor={id}>{label}</label>
             <select id={id} {...register(id, { valueAsNumber: true })}>
                 <option value={0}>None</option>
@@ -318,7 +318,7 @@ function DatePicker<T extends FieldValues>({
     register: UseFormRegister<T>
 }) {
     return (
-        <div className={styles["gadget"]}>
+        <div className={styles.gadget}>
             <label htmlFor={id}>{label}</label>
             <input type="date" id={id} {...register(id, { valueAsDate: true })} />
         </div>
@@ -339,7 +339,7 @@ function SeasonPicker<T extends FieldValues>({
     })
 
     return (
-        <div className={styles["gadget"]}>
+        <div className={styles.gadget}>
             <label htmlFor={id}>{label}</label>
             <select id={id} {...register(id, { valueAsNumber: true })}>
                 <option value={0}>None</option>
@@ -367,7 +367,7 @@ function RaidPicker<T extends FieldValues>({
     const { listedRaids, getRaidString } = useRaidHubManifest()
 
     return (
-        <div className={styles["gadget"]}>
+        <div className={styles.gadget}>
             <label htmlFor={id}>{label}</label>
             <select id={id} {...register(id, { valueAsNumber: true })}>
                 <option value={-1}>None</option>
@@ -410,7 +410,7 @@ const Results = ({ allResults }: { allResults: Collection<string, RaidHubActivit
     }, [])
 
     return (
-        <section className={styles["results"]} ref={scrollTargetRef}>
+        <section className={styles.results} ref={scrollTargetRef}>
             <h2>Search Results</h2>
             {!!results.size ? (
                 <div>
@@ -452,7 +452,7 @@ const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
     return (
         <Link
             href={`/pgcr/${activity.instanceId}`}
-            className={styles["tile"]}
+            className={styles.tile}
             style={{ border: `1px solid ${activity.completed ? "Green" : "Red"}` }}>
             {meta && (
                 <CloudflareImage
@@ -470,7 +470,10 @@ const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
                     })}
                 </div>
                 <div className={styles["tile-time"]}>
-                    {secondsToHMS(Math.floor((completed.getTime() - started.getTime()) / 1000))}
+                    {secondsToHMS(
+                        Math.floor((completed.getTime() - started.getTime()) / 1000),
+                        false
+                    )}
                 </div>
             </div>
         </Link>

@@ -14,10 +14,10 @@ import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { $media } from "~/layout/media"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
-import { bungieBannerEmblemUrl } from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
+import { bungieBannerEmblemUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber } from "~/util/presentation/formatting"
 import { CharacterLogoStack } from "./CharacterLogoStack"
 import { DisplayName } from "./DisplayName"
@@ -61,7 +61,7 @@ export const PlayerTab = ({
         } as RaidHubPlayerBasicResponse
     })
 
-    const displayName = getUserName(resolvedPlayer!, {
+    const displayName = getBungieDisplayName(resolvedPlayer!, {
         excludeCode: true
     })
 

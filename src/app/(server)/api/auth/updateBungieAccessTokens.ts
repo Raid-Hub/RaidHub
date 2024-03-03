@@ -1,7 +1,7 @@
 import "server-only"
 
 import { prisma } from "../../prisma"
-import { AuthToken } from "./types"
+import { type AuthToken } from "./types"
 
 export async function updateBungieAccessTokens({
     userId,

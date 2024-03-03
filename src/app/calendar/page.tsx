@@ -8,7 +8,7 @@ import { Grid } from "~/components/layout/Grid"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { RaidMileStones } from "~/data/milestones"
 import { useSeasons } from "~/hooks/dexie"
-import { usePublicMilestones } from "~/services/bungie/usePublicMilestones"
+import { usePublicMilestones } from "~/services/bungie/hooks"
 import { modulo } from "~/util/math"
 import { useRaidHubManifest } from "../(layout)/managers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
@@ -16,17 +16,22 @@ import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
 const raidMilestoneHashes = Object.values(RaidMileStones)
 
 export default function Page() {
-    const { getRaidFromHash } = useRaidHubManifest()
-    const seasons = useSeasons()
+    const { getRaidFromHash, listedRaids } = useRaidHubManifest()
     const {
         data: milestones,
         isLoading,
         isError,
         error
     } = usePublicMilestones({
+        suspense: true,
         select: milestones =>
-            new Collection(Object.entries(milestones)).filter((_, hash) =>
-                raidMilestoneHashes.includes(Number(hash))
+            new Collection(Object.entries(milestones)).filter(
+                (m, hash) =>
+                    raidMilestoneHashes.includes(Number(hash)) &&
+                    !m.activities.some(
+                        // Eliminate the current active raid from the list
+                        a => getRaidFromHash(a.activityHash)?.raid === listedRaids[0]
+                    )
             ),
         refetchInterval: milestones => {
             if (!milestones) return false
@@ -37,6 +42,8 @@ export default function Page() {
             return new Date(nextReset).getTime() - now + 2 * 60 * 1000
         }
     })
+
+    const seasons = useSeasons()
 
     const thisWeek = useMemo(
         () =>

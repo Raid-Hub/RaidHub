@@ -6,7 +6,7 @@ import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { $media } from "~/layout/media"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieIconUrl } from "~/util/destiny"
 import { formattedNumber } from "~/util/presentation/formatting"
 
 export const PlayerWeapon = (props: {

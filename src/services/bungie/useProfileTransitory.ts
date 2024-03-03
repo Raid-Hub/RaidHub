@@ -2,7 +2,7 @@ import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { getProfile } from "bungie-net-core/endpoints/Destiny2"
 import type { BungieMembershipType } from "bungie-net-core/models"
 import type { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
-import { useBungieClient } from "~/layout/managers/session/BungieClientProvider"
+import { useBungieClient } from "~/layout/managers/"
 
 export const useProfileTransitory = <T = DestinyProfileResponse<[1000]>>(
     params: {

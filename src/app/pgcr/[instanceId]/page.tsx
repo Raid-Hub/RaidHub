@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
 import { Tag } from "~/models/tag"
-import { getRaidHubApi } from "~/services/raidhub"
+import { getRaidHubApi } from "~/services/raidhub/common"
 import { PGCRPage } from "../PGCRPage"
 
 type PageProps = {
@@ -10,6 +10,8 @@ type PageProps = {
         instanceId: string
     }
 }
+
+export const dynamic = "force-static"
 
 export default function Page({ params }: PageProps) {
     return (
@@ -26,11 +28,7 @@ const HydratedPage = async (props: { instanceId: string }) => {
 }
 
 const prefetchActivity = async (instanceId: string) =>
-    getRaidHubApi("/activity/{instanceId}", { instanceId }, null, {
-        next: {
-            revalidate: 3600
-        }
-    }).catch(() => null)
+    getRaidHubApi("/activity/{instanceId}", { instanceId }, null).catch(() => null)
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const activity = await prefetchActivity(params.instanceId)

@@ -1,7 +1,9 @@
 import { type Metadata } from "next"
-import { metadata as leaderboardMetadata, prefetchManifest } from "~/app/layout"
+import { metadata as leaderboardMetadata } from "~/app/layout"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
-import { getRaidEnum, type RaidLeaderboardStaticParams } from "../../layout"
+import { getRaidEnum } from "../../helpers"
+import { type RaidLeaderboardStaticParams } from "../../layout"
 
 export async function generateStaticParams({ params: { raid } }: RaidLeaderboardStaticParams) {
     const manifest = await prefetchManifest()

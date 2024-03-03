@@ -1,3 +1,5 @@
+"use client"
+
 import { LeaderboardEntryComponent } from "~/app/leaderboards/LeaderboardEntryComponent"
 import { Flex } from "~/components/layout/Flex"
 

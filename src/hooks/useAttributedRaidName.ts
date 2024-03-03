@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { Difficulty, Raid } from "~/data/raid"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
-import type { ListedRaid, RaidDifficulty } from "~/types/raidhub-api"
+import type { ListedRaid, RaidDifficulty } from "~/services/raidhub/types"
 
 // todo
 export const useAttributedRaidName = (

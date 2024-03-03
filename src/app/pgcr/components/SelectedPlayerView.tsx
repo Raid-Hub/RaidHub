@@ -12,10 +12,10 @@ import { useClassDefinition, useItemDefinition, useItemDefinitions } from "~/hoo
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { $media } from "~/layout/media"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
-import { bungieEmblemUrl } from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
+import { bungieEmblemUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
 import type DestinyPGCRCharacter from "../models/Character"
@@ -55,7 +55,7 @@ export const SelectedPlayerView = (props: {
         } as RaidHubPlayerBasicResponse
     })
 
-    const displayName = getUserName(resolvedPlayer!, {
+    const displayName = getBungieDisplayName(resolvedPlayer!, {
         excludeCode: false
     })
 

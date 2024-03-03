@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useExpandedContext } from "~/app/guardians/context"
 import { Loading } from "~/components/Loading"
 import { useItemDefinition } from "~/hooks/dexie"
-import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import { bungieItemUrl } from "~/util/destiny"
 import Socket, { EnabledDestinyItemSocketState } from "./Socket"
 import styles from "./guardians.module.css"
 

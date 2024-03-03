@@ -2,11 +2,10 @@
 
 import { m, type Variants } from "framer-motion"
 import { signIn, signOut } from "next-auth/react"
-import Link from "next/link"
 import styled from "styled-components"
-import RightChevron from "~/components/icons/RightChevron"
 import { Flex } from "~/components/layout/Flex"
 import { useSession } from "~/hooks/app/useSession"
+import { DropdownButton, DropdownLink } from "./DropdownItem"
 
 const variants = {
     open: {
@@ -54,10 +53,10 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                             )}
                         <DropdownLink title="Manage Account" href="/account" />
                         {sessionData.user.role === "ADMIN" && (
-                            <DropdownLink title="Admin Panel" href="/admin" />
-                        )}
-                        {sessionData.user.role === "ADMIN" && (
-                            <DropdownLink title="Query Tool" href="/admin/query" />
+                            <>
+                                <DropdownLink title="Admin Panel" href="/admin" />
+                                <DropdownLink title="Query Tool" href="/admin/query" />
+                            </>
                         )}
                         <DropdownButton
                             title="Log Out"
@@ -71,22 +70,6 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
         </Container>
     )
 }
-
-const DropdownLink = (props: { href: string; title: string }) => (
-    <FullWidthLink href={props.href}>
-        <DropdownItemContainer $padding={0.2} $align="space-between" $fullWidth>
-            <DropDownTitle>{props.title}</DropDownTitle>
-            <RightChevron color="orange" sx={24} />
-        </DropdownItemContainer>
-    </FullWidthLink>
-)
-
-const DropdownButton = (props: { onClick: () => void; title: string }) => (
-    <DropdownItemContainer onClick={props.onClick} $padding={0.2} $align="space-between" $fullWidth>
-        <DropDownTitle>{props.title}</DropDownTitle>
-        <RightChevron color="orange" sx={24} />
-    </DropdownItemContainer>
-)
 
 const Container = styled(m.div)`
     position: fixed;
@@ -136,23 +119,4 @@ const Username = styled.div`
 const MembershipId = styled.div`
     font-size: 0.875rem;
     color: ${({ theme }) => theme.colors.text.secondary};
-`
-
-const DropDownTitle = styled.div`
-    margin: 0.3em 0;
-`
-
-const FullWidthLink = styled(Link)`
-    width: 100%;
-`
-
-const DropdownItemContainer = styled(Flex)`
-    cursor: pointer;
-    &:hover {
-        background-color: color-mix(
-            in srgb,
-            ${({ theme }) => theme.colors.highlight.orange},
-            #0000 60%
-        );
-    }
 `

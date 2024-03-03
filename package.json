@@ -4,8 +4,8 @@
     "license": "UNLICENSED",
     "scripts": {
         "dev": "next dev --experimental-https",
-        "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/types/raidhub-openapi.d.ts --immutable-types",
-        "docs:dev": "openapi-typescript http://localhost:8000/static/openapi -o ./src/types/raidhub-openapi.d.ts --immutable-types",
+        "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/services/raidhub/openapi.d.ts --immutable-types",
+        "docs:dev": "openapi-typescript http://localhost:8000/static/openapi -o ./src/services/raidhub/openapi.d.ts --immutable-types",
         "db:start": "docker-compose -f docker-compose.yml up -d",
         "db:stop": "docker-compose -f docker-compose.yml down",
         "studio": "prisma studio",
@@ -14,7 +14,7 @@
         "test": "jest",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-        "build": "./vercel/build.sh",
+        "build": "next build",
         "deploy": "./vercel/dev-deploy.sh"
     },
     "dependencies": {
@@ -35,7 +35,7 @@
         "dexie": "3.2.4",
         "dexie-react-hooks": "^1.1.7",
         "framer-motion": "^10.13.0",
-        "next": "^14.1.1-canary.82",
+        "next": "canary",
         "next-auth": "^4.24.5",
         "nextjs-toploader": "^1.6.6",
         "react": "18.2.0",
@@ -109,7 +109,7 @@
             "plugin:@typescript-eslint/stylistic-type-checked"
         ],
         "ignorePatterns": [
-            "raidhub-openapi.d.ts"
+            "*.d.ts"
         ],
         "rules": {
             "@typescript-eslint/consistent-type-imports": [

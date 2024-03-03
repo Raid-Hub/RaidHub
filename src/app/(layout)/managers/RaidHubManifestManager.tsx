@@ -2,14 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { createContext, useContext, useMemo, type ReactNode } from "react"
-import { getRaidHubApi } from "~/services/raidhub"
+import { getRaidHubApi } from "~/services/raidhub/common"
 import type {
     ListedRaid,
     RaidDifficulty,
     RaidHubManifestResponse,
     RaidHubRaidPath,
     SunsetRaid
-} from "~/types/raidhub-api"
+} from "~/services/raidhub/types"
 
 type ManifestContextData = {
     leaderboards: RaidHubManifestResponse["leaderboards"]
@@ -55,7 +55,7 @@ export function RaidHubManifestManager(props: {
                 } else {
                     return {
                         raid: raid.raid as ListedRaid,
-                        difficulty: raid.difficulty as RaidDifficulty
+                        difficulty: raid.version as RaidDifficulty
                     }
                 }
             },

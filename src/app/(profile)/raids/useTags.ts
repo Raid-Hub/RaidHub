@@ -2,7 +2,7 @@ import type { Collection } from "@discordjs/collection"
 import { useCallback, useMemo } from "react"
 import { Raid } from "~/data/raid"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
 export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesActivity>) => {

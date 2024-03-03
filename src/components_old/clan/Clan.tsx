@@ -2,8 +2,7 @@
 
 import type { GroupResponse } from "bungie-net-core/models"
 import { useMemo } from "react"
-import { useClan } from "~/services/bungie/useClan"
-import { useMembersOfGroup } from "~/services/bungie/useMembersOfGroup"
+import { useClan, useMembersOfGroup } from "~/services/bungie/hooks"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
 import { urlHighlight } from "~/util/presentation/urlHighlight"

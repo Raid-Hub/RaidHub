@@ -34,7 +34,7 @@ const Account = ({ session }: AccountProps) => {
     const [deleteOnClick, setDeleteOnClick] = useState(false)
     const deleteUser = () => {
         deleteUserMutation()
-        signOut({ callbackUrl: "/" })
+        void signOut({ callbackUrl: "/" })
     }
 
     const { discordProvider, twitchProvider, twitterProvider, googleProvider } = useMemo(
@@ -50,8 +50,8 @@ const Account = ({ session }: AccountProps) => {
     return (
         <>
             <SpeedrunAPIKeyModal refetchSocials={refetchSocials} ref={speedrunAPIKeyModalRef} />
-            <section className={[styles["section"], styles["flex"]].join(" ")}>
-                <div className={[styles["buttons"], styles["glossy-bg"]].join(" ")}>
+            <section className={[styles.section, styles.flex].join(" ")}>
+                <div className={[styles.buttons, styles["glossy-bg"]].join(" ")}>
                     <Link
                         href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
                         <button>View Profile</button>
@@ -65,18 +65,18 @@ const Account = ({ session }: AccountProps) => {
                     )}
                     <button
                         onClick={deleteOnClick ? deleteUser : () => setDeleteOnClick(true)}
-                        className={styles["destructive"]}>
+                        className={styles.destructive}>
                         {deleteOnClick ? "Confirm Deletion" : "Delete Account"}
                     </button>
                 </div>
             </section>
-            <section className={[styles["section"], styles["flex"]].join(" ")}>
+            <section className={[styles.section, styles.flex].join(" ")}>
                 <h2>Manage Account</h2>
                 <IconUploadForm user={session.user} />
             </section>
-            <section className={styles["section"]}>
+            <section className={styles.section}>
                 <h2>Manage Connections</h2>
-                <div className={styles["connections"]}>
+                <div className={styles.connections}>
                     {discordProvider && (
                         <Connection
                             unlink={() => unlinkAccountFromUser({ providerId: "discord" })}
@@ -118,7 +118,7 @@ const Account = ({ session }: AccountProps) => {
                         link={() => speedrunAPIKeyModalRef.current?.showModal()}
                         serviceName="Speedrun.com"
                         username={socialNames?.get("speedrun") ?? null}
-                        Icon={props => <SpeedrunIcon {...props} deepFill="white" />}
+                        Icon={props => <SpeedrunIcon {...props} />}
                     />
                 </div>
             </section>

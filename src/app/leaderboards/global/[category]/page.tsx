@@ -1,11 +1,14 @@
 import { type Metadata } from "next"
-import { z } from "zod"
-import { prefetchManifest, metadata as rootMetadata } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
 import { Flex } from "~/components/layout/Flex"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../Leaderboard"
-import { GlobalEntries } from "./GlobalEntries"
+import { StaticLeaderboardControls } from "../../LeaderboardControls"
+import { LeaderboardEntriesSuspense } from "../../LeaderboardEntriesSuspense"
 import { GlobalEntriesBanner } from "./GlobalEntriesBanner"
+import { GlobalSSREntries } from "./GlobalSSREntries"
+import { ENTRIES_PER_PAGE, createQueryKey } from "./constants"
 
 export async function generateStaticParams() {
     const manifest = await prefetchManifest()
@@ -15,7 +18,11 @@ export async function generateStaticParams() {
     }))
 }
 
-type StaticParams = PageStaticParams<typeof generateStaticParams>
+type StaticParams = PageStaticParams<typeof generateStaticParams> & {
+    searchParams: {
+        page?: string
+    }
+}
 
 export async function generateMetadata({ params }: StaticParams): Promise<Metadata> {
     const manifest = await prefetchManifest()
@@ -34,15 +41,7 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
-export default async function Page({
-    params,
-    searchParams
-}: StaticParams & {
-    searchParams: {
-        page: number
-    }
-}) {
-    const pageParsed = z.number().int().positive().default(1).safeParse(searchParams.page)
+export default async function Page({ params, searchParams }: StaticParams) {
     const globalLeaderboards = await prefetchManifest().then(
         manifest => manifest.leaderboards.global
     )
@@ -51,16 +50,22 @@ export default async function Page({
 
     return (
         <Leaderboard
-            pageProps={{ format }}
+            pageProps={{ format, type: "player", count: ENTRIES_PER_PAGE }}
             heading={
-                <Flex $direction="column" $padding={0} $gap={0}>
-                    <GlobalEntriesBanner category={params.category} title={displayName} />
+                <Flex $padding={0}>
+                    <Flex $direction="column" $padding={0} $gap={0} style={{ flexBasis: "50%" }}>
+                        <GlobalEntriesBanner category={params.category} title={displayName} />
+                        <StaticLeaderboardControls
+                            queryKey={createQueryKey({ page: 1, category: params.category })}
+                        />
+                    </Flex>
                 </Flex>
-            }>
-            <GlobalEntries
-                category={params.category}
-                page={pageParsed.success ? pageParsed.data : 1}
-            />
-        </Leaderboard>
+            }
+            entries={
+                <LeaderboardEntriesSuspense>
+                    <GlobalSSREntries category={params.category} page={searchParams.page ?? "1"} />
+                </LeaderboardEntriesSuspense>
+            }
+        />
     )
 }

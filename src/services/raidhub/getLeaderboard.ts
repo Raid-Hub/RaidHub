@@ -4,8 +4,8 @@ import type {
     RaidHubIndividualLeaderboardCategory,
     RaidHubRaidPath,
     RaidHubWorldFirstLeaderboardCategory
-} from "~/types/raidhub-api"
-import { getRaidHubApi } from "."
+} from "~/services/raidhub/types"
+import { getRaidHubApi } from "./common"
 
 export function leaderboardQueryKey(
     raid: ListedRaid | "global",
@@ -58,14 +58,11 @@ export async function getIndividualLeaderboard(args: {
     return data.entries
 }
 
-export async function getIndividualGlobalLeaderboard(
-    args: {
-        board: RaidHubGlobalLeaderboardCategory
-        page: number
-        count: number
-    },
-    config: Omit<RequestInit, "method" | "body"> = {}
-) {
+export async function getIndividualGlobalLeaderboard(args: {
+    board: RaidHubGlobalLeaderboardCategory
+    page: number
+    count: number
+}) {
     const data = await getRaidHubApi(
         "/leaderboard/global/{category}",
         {
@@ -75,7 +72,11 @@ export async function getIndividualGlobalLeaderboard(
             count: args.count,
             page: args.page
         },
-        config
+        {
+            next: {
+                revalidate: 3600
+            }
+        }
     )
 
     return data

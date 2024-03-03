@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { getRaidHubApi } from "~/services/raidhub"
-import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
+import { getRaidHubApi } from "~/services/raidhub/common"
+import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
 
 export const useRaidHubPlayerSearch = (searchTerm: string) => {
     const queryClient = useQueryClient()

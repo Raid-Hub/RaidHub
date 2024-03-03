@@ -3,7 +3,7 @@ import { useCallback } from "react"
 import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
-import type { ListedRaid } from "~/types/raidhub-api"
+import type { ListedRaid } from "~/services/raidhub/types"
 import styles from "./raids.module.css"
 
 /** @deprecated */

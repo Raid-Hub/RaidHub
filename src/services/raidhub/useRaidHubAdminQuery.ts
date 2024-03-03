@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 import { useCallback, useRef } from "react"
 import { useSession } from "~/hooks/app/useSession"
-import { RaidHubAdminQueryBody } from "~/types/raidhub-api"
-import { postRaidHubApi } from "."
+import type { RaidHubAdminQueryBody } from "~/services/raidhub/types"
+import { postRaidHubApi } from "./common"
 
 export const useRaidHubAdminQuery = () => {
     const abortController = useRef(new AbortController())

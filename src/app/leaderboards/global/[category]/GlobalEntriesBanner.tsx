@@ -1,5 +1,5 @@
 import { RaidHubBannerId } from "~/data/image-ids"
-import type { RaidHubGlobalLeaderboardCategory } from "~/types/raidhub-api"
+import type { RaidHubGlobalLeaderboardCategory } from "~/services/raidhub/types"
 import { Splash } from "../../SplashBannerComponents"
 
 export const GlobalEntriesBanner = (props: {

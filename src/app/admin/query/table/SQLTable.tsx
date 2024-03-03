@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
 import styled from "styled-components"
+import { Panel } from "~/components/Panel"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { Cell } from "./Cell"
 import { ColumnLabel } from "./ColumnLabel"
@@ -82,7 +83,7 @@ export function SQLTable<T extends string[]>({
                                     {Object.values(row).map((value, i) => (
                                         <Cell
                                             key={i}
-                                            value={value as any}
+                                            value={value}
                                             Formatter={fns[columnLabels[i]] ?? ColumnFormats.string}
                                         />
                                     ))}
@@ -100,11 +101,9 @@ export function SQLTable<T extends string[]>({
     )
 }
 
-const TableArea = styled.div`
+const TableArea = styled(Panel)`
     position: relative;
     padding: 2em;
-
-    width: fit-content;
 
     background: linear-gradient(
         78deg,
@@ -114,8 +113,6 @@ const TableArea = styled.div`
         rgba(1, 0, 17, 1) 91%,
         rgba(19, 3, 1, 1) 100%
     );
-
-    border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 40%);
 `
 
 const Table = styled.table`

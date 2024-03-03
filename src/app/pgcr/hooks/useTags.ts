@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { Difficulty } from "~/data/raid"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag, TagForReprisedContest } from "~/models/tag"
-import type { RaidHubActivityResponse } from "~/types/raidhub-api"
+import type { RaidHubActivityResponse } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
 export const useTags = (activity: RaidHubActivityResponse | null) => {
@@ -15,7 +15,7 @@ export const useTags = (activity: RaidHubActivityResponse | null) => {
         if (
             activity.contest &&
             includedIn(
-                reprisedRaids.map(r => r.difficulty),
+                reprisedRaids.map(r => r.version),
                 activity.meta.version
             )
         ) {
@@ -26,7 +26,7 @@ export const useTags = (activity: RaidHubActivityResponse | null) => {
         }
         if (activity.dayOne) {
             const placement = !includedIn(
-                reprisedRaids.map(r => r.difficulty),
+                reprisedRaids.map(r => r.version),
                 activity.meta.version
             )
                 ? activity.leaderboardEntries.normal

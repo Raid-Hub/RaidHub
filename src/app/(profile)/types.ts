@@ -1,6 +1,6 @@
 import type { DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
+import type { RaidHubPlayerResponse } from "~/services/raidhub/types"
 import type { AppProfile } from "~/types/api"
-import type { RaidHubPlayerResponse } from "~/types/raidhub-api"
 
 export type ProfileProps = {
     destinyMembershipId: string

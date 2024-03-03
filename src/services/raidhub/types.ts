@@ -1,6 +1,6 @@
 import type { Difficulty, Raid } from "data/raid"
-import type { Prettify } from "./generic"
-import type { components, paths } from "./raidhub-openapi"
+import type { Prettify } from "../../types/generic"
+import type { components, paths } from "../../types/raidhub-openapi"
 
 type Component<T extends keyof components["schemas"]> = Prettify<components["schemas"][T]>
 

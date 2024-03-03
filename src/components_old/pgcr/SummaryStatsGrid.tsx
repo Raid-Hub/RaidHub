@@ -12,9 +12,9 @@ import Intellect from "~/components/icons/Intellect"
 import Kill from "~/components/icons/Kill"
 import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { useLocale } from "../../app/(layout)/managers/LocaleManager"
 import { formattedNumber } from "../../util/presentation/formatting"
 import styles from ".//pgcr.module.css"
@@ -50,7 +50,9 @@ const SummaryStatsGrid = () => {
                   {
                       Icon: Crown,
                       name: "MVP",
-                      value: mvp ? getUserName(resolvedPlayer!, { excludeCode: true }) : "???"
+                      value: mvp
+                          ? getBungieDisplayName(resolvedPlayer!, { excludeCode: true })
+                          : "???"
                   }
               ]
             : []),

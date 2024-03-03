@@ -1,7 +1,7 @@
 import { type Collection } from "@discordjs/collection"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFilterContext } from "~/app/(profile)/raids/FilterContext"
-import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { median } from "~/util/math"
 import Dot from "./Dot"
 import DotTooltip, { type DotTooltipProps } from "./DotTooltip"

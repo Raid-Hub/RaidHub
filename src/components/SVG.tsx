@@ -26,14 +26,14 @@ interface StyledSvgProps {
 }
 const StyledSvg = styled.svg<StyledSvgProps>`
     aspect-ratio: 1/1;
-    c${({ $pointer }) => $pointer && "ursor: pointer"};
+    ${({ $pointer }) => $pointer && "cursor: pointer"};
     ${({ $absolute }) => $absolute && "position: absolute;"}
     ${({ $sx }) => $sx !== undefined && `width: ${$sx}px;`}
     fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
 
     ${({ theme, $hoverColor }) =>
         $hoverColor && theme.colors.icon[$hoverColor]
-            ? `&:hover {fill: ${theme.colors.icon[$hoverColor]};}`
+            ? `&:hover:not([aria-disabled="true"]) {fill: ${theme.colors.icon[$hoverColor]};}`
             : ""}
 `
 StyledSvg.defaultProps = {

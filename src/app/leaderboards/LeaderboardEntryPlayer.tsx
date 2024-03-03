@@ -7,7 +7,7 @@ import { type LeaderboardEntryPlayer } from "~/app/leaderboards/LeaderboardEntri
 import { OptionalWrapper } from "~/components/OptionalWrapper"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
-import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny"
 
 export const LeaderboardEntryPlayerComponent = (player: LeaderboardEntryPlayer) => {
     const [icon, setIcon] = useState<string>(player.iconUrl ?? bungieProfileIconUrl(null))

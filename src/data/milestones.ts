@@ -1,4 +1,4 @@
-import type { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
+import type { ListedRaid, SunsetRaid } from "~/services/raidhub/types"
 import { Raid } from "./raid"
 
 export const RaidMileStones = {

@@ -1,8 +1,8 @@
 import { type Metadata } from "next"
 import { type ReactNode } from "react"
-import { prefetchManifest } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
-import type { ListedRaid, RaidHubManifest } from "~/types/raidhub-api"
 import { o } from "~/util/o"
 
 export async function generateStaticParams() {
@@ -12,13 +12,6 @@ export async function generateStaticParams() {
         raid: urlPath
     }))
 }
-
-export const getRaidEnum = (manifest: RaidHubManifest, urlPath: string) =>
-    Number(
-        o
-            .entries(manifest.raidUrlPaths)
-            .find(([_, manifestUrlPath]) => urlPath === manifestUrlPath)![0]
-    ) as ListedRaid
 
 export type RaidLeaderboardStaticParams = PageStaticParams<typeof generateStaticParams>
 
@@ -30,4 +23,7 @@ export default function Layout({
 
 export const metadata: Metadata = {
     // TODO we can add generic leaderboard metadata here
+    openGraph: {
+        ...rootMetadata.openGraph
+    }
 }

@@ -1,6 +1,6 @@
+import type { RaidHubAPIResponse, RaidHubPath } from "~/services/raidhub/types"
 import type { Prettify } from "~/types/generic"
-import type { RaidHubAPIResponse, RaidHubPath } from "~/types/raidhub-api"
-import type { paths } from "~/types/raidhub-openapi"
+import type { paths } from "./openapi"
 
 export async function getRaidHubApi<
     T extends RaidHubPath,

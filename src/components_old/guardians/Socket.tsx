@@ -3,7 +3,7 @@
 import type { DestinyItemSocketState } from "bungie-net-core/models"
 import Image from "next/image"
 import { useItemDefinition } from "~/hooks/dexie"
-import { bungieItemUrl } from "~/util/destiny/bungie-icons"
+import { bungieItemUrl } from "~/util/destiny"
 import styles from "./guardians.module.css"
 
 export type EnabledDestinyItemSocketState = DestinyItemSocketState & {

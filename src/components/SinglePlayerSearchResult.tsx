@@ -5,9 +5,9 @@ import Link from "next/link"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
 import { useLocale } from "~/layout/managers/LocaleManager"
-import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+import { RaidHubPlayerSearchResult } from "~/services/raidhub/types"
+import { bungieProfileIconUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince } from "~/util/presentation/formatting"
 
 export const SinglePlayerSearchResult = (props: {
@@ -28,7 +28,7 @@ export const SinglePlayerSearchResult = (props: {
             <Flex $align="flex-start" $padding={props.size / 2} $gap={props.size / 2}>
                 <Icon
                     src={bungieProfileIconUrl(props.player.iconPath)}
-                    alt={getUserName(props.player)}
+                    alt={getBungieDisplayName(props.player)}
                     unoptimized
                     width={96}
                     height={96}
@@ -39,7 +39,7 @@ export const SinglePlayerSearchResult = (props: {
                     $padding={0}
                     $gap={props.size / 2}
                     $crossAxis="flex-start">
-                    <Username $size={props.size}>{getUserName(props.player)}</Username>
+                    <Username $size={props.size}>{getBungieDisplayName(props.player)}</Username>
                     {props.player.lastSeen && (
                         <LastSeen $size={props.size}>
                             {formattedTimeSince(new Date(props.player.lastSeen), locale)}

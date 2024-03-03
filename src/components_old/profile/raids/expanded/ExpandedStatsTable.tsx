@@ -5,7 +5,7 @@ import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { Difficulty } from "~/data/raid"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import type { RaidDifficulty } from "~/types/raidhub-api"
+import type { RaidDifficulty } from "~/services/raidhub/types"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
 import styles from "./expanded-raid.module.css"
 

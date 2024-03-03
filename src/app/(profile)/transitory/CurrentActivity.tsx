@@ -15,11 +15,10 @@ import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
 import { useActivityDefinition, useActivityModeDefinition } from "~/hooks/dexie"
 import { useTimer } from "~/hooks/util/useTimer"
-import { useProfileLiveData } from "~/services/bungie/useProfileLiveData"
-import { useProfileTransitory } from "~/services/bungie/useProfileTransitory"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import { bungiePgcrImageUrl, bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useProfileLiveData, useProfileTransitory } from "~/services/bungie/hooks"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import { bungiePgcrImageUrl, bungieProfileIconUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import type { ProfileProps } from "../types"
 
 const commonTransitoryQuerySettings = {
@@ -155,7 +154,7 @@ const PartyMember = ({ membershipId }: DestinyProfileTransitoryPartyMember) => {
                             height={32}
                             alt="player icon"
                         />
-                        <span>{getUserName(playerQuery.data)}</span>
+                        <span>{getBungieDisplayName(playerQuery.data)}</span>
                     </Flex>
                 </Link>
             ) : (

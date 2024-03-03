@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useCallback, useRef, useState } from "react"
+import { useCallback, useRef, useState, type ReactNode } from "react"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
@@ -22,7 +22,9 @@ export const AccountIcon = (props: { children: ReactNode }) => {
         closeDropdown
     )
 
-    const pageChangeCallback = useRef(() => {})
+    const pageChangeCallback = useRef<() => void>(() => {
+        null
+    })
     pageChangeCallback.current = closeDropdown
     usePageChange(pageChangeCallback)
 

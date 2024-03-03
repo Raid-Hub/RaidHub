@@ -1,4 +1,4 @@
-import { type ListedRaid } from "../types/raidhub-api"
+import { type ListedRaid } from "../services/raidhub/types"
 import { Raid } from "./raid"
 
 export type RTABoardCategory =

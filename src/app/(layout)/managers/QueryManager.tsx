@@ -23,7 +23,9 @@ export function QueryManager(props: { children: React.ReactNode }) {
                         refetchOnWindowFocus: false,
                         retry: false,
                         refetchIntervalInBackground: false,
-                        suspense: false
+                        suspense: false,
+                        useErrorBoundary: false,
+                        retryDelay: failureCount => Math.min(2 ** failureCount * 1000, 30_000)
                     }
                 }
             })
@@ -50,8 +52,8 @@ export function QueryManager(props: { children: React.ReactNode }) {
             {/* By default, React Query Devtools are only included in bundles when 
             process.env.NODE_ENV === 'development', so you don't need to worry
              about excluding them during a production build. */}
-            <ReactQueryDevtools initialIsOpen={false} />
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
+                <ReactQueryDevtools initialIsOpen={false} />
                 {props.children}
             </trpc.Provider>
         </QueryClientProvider>

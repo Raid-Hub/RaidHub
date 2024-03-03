@@ -14,7 +14,7 @@ import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
-} from "~/types/raidhub-api"
+} from "~/services/raidhub/types"
 import { medianElement } from "~/util/math"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import BigNumberStatItem from "./BigNumberStatItem"

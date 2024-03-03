@@ -5,7 +5,7 @@ import Image from "next/image"
 import styled from "styled-components"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieIconUrl } from "~/util/destiny"
 
 export const RaidActivityModifier = (props: { modifier: DestinyActivityModifierDefinition }) => {
     return (

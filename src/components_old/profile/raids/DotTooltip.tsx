@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
-import type { RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { getRelativeTime } from "~/util/presentation/pastDates"
 import { Green, Orange, Red, Teal } from "./Dot"

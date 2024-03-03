@@ -1,6 +1,6 @@
-import SVG from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function XSymbol({ ...props }) {
+export default function XSymbol(props: SVGWrapperProps) {
     return (
         <SVG viewBox="0 0 460.775 460.775" {...props}>
             <path

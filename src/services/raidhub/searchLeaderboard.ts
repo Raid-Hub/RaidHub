@@ -1,5 +1,5 @@
-import { RaidHubLeaderboardSearchQuery } from "~/types/raidhub-api"
-import { getRaidHubApi } from "."
+import { RaidHubLeaderboardSearchQuery } from "~/services/raidhub/types"
+import { getRaidHubApi } from "./common"
 
 export function searchLeaderboardPlayerMutationKey(
     query: Omit<RaidHubLeaderboardSearchQuery, "membershipId">

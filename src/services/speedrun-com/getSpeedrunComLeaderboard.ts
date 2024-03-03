@@ -3,7 +3,7 @@ import {
     destiny2GameId,
     type RTABoardCategory
 } from "~/data/speedrun-com-mappings"
-import type { ListedRaid } from "~/types/raidhub-api"
+import type { ListedRaid } from "~/services/raidhub/types"
 import type { SpeedrunLeaderboardResponse } from "~/types/speedrun-com"
 import { baseUrl } from "./baseUrl"
 

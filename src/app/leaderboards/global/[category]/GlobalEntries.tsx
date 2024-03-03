@@ -1,32 +1,58 @@
+"use client"
+
+import { usePageProps } from "~/components/layout/PageWrapper"
 import { getIndividualGlobalLeaderboard } from "~/services/raidhub/getLeaderboard"
-import type { RaidHubGlobalLeaderboardCategory } from "~/types/raidhub-api"
-import { GlobalEntriesClient } from "./GlobalEntriesClient"
-import { ENTRIES_PER_PAGE } from "./constants"
+import type {
+    RaidHubGlobalLeaderboardCategory,
+    RaidHubGlobalLeaderboardResponse
+} from "~/services/raidhub/types"
+import { bungieProfileIconUrl } from "~/util/destiny"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
+import { type PageProps } from "../../Leaderboard"
+import { LeaderboardEntriesLoadingWrapper } from "../../LeaderboardEntriesLoadingWrapper"
+import { useLeaderboard } from "../../useLeaderboard"
+import { usePage } from "../../usePage"
+import { createQueryKey } from "./constants"
 
-export const GlobalEntries = async (props: {
+export const GlobalEntries = (props: {
+    ssr?: RaidHubGlobalLeaderboardResponse
+    ssrUpdatedAt: number
+    ssrPage: string
     category: RaidHubGlobalLeaderboardCategory
-    page: number
 }) => {
-    const ssrData = await getIndividualGlobalLeaderboard(
-        {
-            board: props.category,
-            page: props.page,
-            count: ENTRIES_PER_PAGE
-        },
-        {
-            next: {
-                revalidate: 3600
-            }
-        }
-    ).catch(() => null)
+    const page = usePage()
+    const { count } = usePageProps<PageProps>()
 
-    const lastRevalidated = new Date()
+    const query = useLeaderboard({
+        // The SSR page may not be the same as the current page, so we need to check
+        initialData: props.ssrPage === String(page) ? props.ssr : undefined,
+        initialDataUpdatedAt: props.ssrUpdatedAt,
+        queryKey: createQueryKey({
+            category: props.category,
+            page
+        }),
+        queryFn: ({ queryKey }) =>
+            getIndividualGlobalLeaderboard({
+                board: queryKey[3],
+                page: queryKey[4],
+                count: count
+            }),
+        select: data =>
+            data?.entries.map(entry => ({
+                type: "player",
+                rank: entry.rank,
+                value: entry.value,
+                id: entry.position,
+                player: {
+                    id: entry.player.membershipId,
+                    displayName: getBungieDisplayName(entry.player),
+                    iconUrl: bungieProfileIconUrl(entry.player.iconPath),
+                    url: entry.player.membershipType
+                        ? `/profile/${entry.player.membershipType}/${entry.player.membershipId}`
+                        : undefined
+                }
+            }))
+    })
 
-    return (
-        <GlobalEntriesClient
-            lastRevalidated={lastRevalidated}
-            ssrData={ssrData}
-            category={props.category}
-        />
-    )
+    return <LeaderboardEntriesLoadingWrapper {...query} />
 }

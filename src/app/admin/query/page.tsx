@@ -1,17 +1,18 @@
 "use client"
 
-import { UseMutationResult } from "@tanstack/react-query"
-import { MouseEventHandler } from "react"
+import { type UseMutationResult } from "@tanstack/react-query"
+import { type MouseEventHandler } from "react"
 import styled from "styled-components"
+import { Panel } from "~/components/Panel"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
-import { useRaidHubAdminQuery } from "~/services/raidhub/useRaidHubAdminQuery"
-import {
+import { useRaidHubAdminQuery } from "~/services/raidhub/hooks"
+import type {
     RaidHubAdminQueryBody,
     RaidHubAdminQueryError,
     RaidHubAdminQueryResponse
-} from "~/types/raidhub-api"
+} from "~/services/raidhub/types"
 import { o } from "~/util/o"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { SQLTable } from "./table/SQLTable"
@@ -31,6 +32,9 @@ export default function Page() {
         mutation.mutate({ query: queryText, type: "EXPLAIN" })
     }
 
+    const submitBtnsDisabled =
+        mutation.data?.type === "HIGH COST" || (!mutation.isIdle && !mutation.isSuccess)
+
     return (
         <PageWrapper>
             <Container onSubmit={e => e.preventDefault()}>
@@ -38,39 +42,44 @@ export default function Page() {
                     placeholder="Enter SQL query here"
                     rows={10}
                     cols={50}
-                    spellCheck="false"
+                    spellCheck={false}
                     value={queryText}
                     onChange={e => setQueryText(e.target.value)}
                 />
                 <Flex $align="flex-start" $padding={0.25}>
-                    <button onClick={handleSubmit} type="submit">
+                    <button onClick={handleSubmit} type="submit" disabled={submitBtnsDisabled}>
                         Submit
                     </button>
-                    <button onClick={handleExplainSubmit} type="submit">
+                    <button
+                        onClick={handleExplainSubmit}
+                        type="submit"
+                        disabled={submitBtnsDisabled}>
                         Explain
                     </button>
-                    <button onClick={mutation.reset} type="reset">
+                    <button
+                        onClick={mutation.reset}
+                        type="reset"
+                        disabled={!mutation.data || mutation.data.type === "HIGH COST"}>
                         Clear Results
                     </button>
-                    {mutation.isLoading && (
-                        <CancelButton onClick={cancel} type="button">
-                            Cancel
-                        </CancelButton>
-                    )}
+                    {mutation.isLoading && <CancelButton onClick={cancel}>Cancel</CancelButton>}
                 </Flex>
             </Container>
             <DataView {...mutation} />
             {mutation.data?.type === "HIGH COST" && (
-                <button
-                    onClick={() =>
-                        mutation.mutate({
-                            query: queryText,
-                            type: "SELECT",
-                            ignoreCost: true
-                        })
-                    }>
-                    Continue anyways
-                </button>
+                <Flex $align="flex-start">
+                    <button
+                        onClick={() =>
+                            mutation.mutate({
+                                query: queryText,
+                                type: "SELECT",
+                                ignoreCost: true
+                            })
+                        }>
+                        Continue anyways
+                    </button>
+                    <CancelButton onClick={() => mutation.reset()}>Cancel</CancelButton>
+                </Flex>
             )}
         </PageWrapper>
     )
@@ -94,19 +103,19 @@ const DataView = ({
         if (data.type === "HIGH COST") {
             return (
                 <WarningMessage>
-                    <div>Warning: High Query Cost</div>Expected Query duration:{" "}
-                    <b>{secondsToHMS(data.estimatedDuration)}</b>
+                    <div>Warning: High Query Cost</div>Estimated Query duration:{" "}
+                    <b>{secondsToHMS(data.estimatedDuration, false)}</b>
                 </WarningMessage>
             )
         }
         if (data.type === "EXPLAIN") {
             return (
-                <div>
+                <Panel>
                     <pre>{data.data.join("\n")}</pre>
-                </div>
+                </Panel>
             )
         } else if (!data.data.length) {
-            return <div>{"No rows :("}</div>
+            return <Panel>{"No rows :("}</Panel>
         } else {
             return <SQLTable columnLabels={o.keys(data.data[0])} rows={data.data} />
         }
@@ -140,6 +149,6 @@ const CodeTextArea = styled.textarea`
     background-color: rgb(26, 26, 26);
 `
 
-const CancelButton = styled.button`
+const CancelButton = styled.button.attrs({ type: "button" })`
     background-color: ${({ theme }) => theme.colors.button.destructive};
 `

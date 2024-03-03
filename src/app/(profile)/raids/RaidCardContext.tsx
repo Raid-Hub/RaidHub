@@ -2,7 +2,7 @@
 
 import { Collection } from "@discordjs/collection"
 import { createContext, useContext, type ReactNode } from "react"
-import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/types/raidhub-api"
+import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 
 const RaidContext = createContext<
     | {

@@ -1,4 +1,4 @@
-import { ListedRaid } from "../types/raidhub-api"
+import { ListedRaid } from "../services/raidhub/types"
 import { Raid } from "./raid"
 
 const RaidBanners: { [key in ListedRaid]: string } = {

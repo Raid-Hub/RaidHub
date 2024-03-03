@@ -4,28 +4,22 @@ import Image from "next/image"
 import Link from "next/link"
 import { useMemo } from "react"
 import styled from "styled-components"
-import type { ProfileProps } from "~/app/(profile)/types"
 import { Card } from "~/components/Card"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useItemDefinition } from "~/hooks/dexie"
-import { useClansForMember } from "~/services/bungie/useClansForMember"
-import { useLinkedProfiles } from "~/services/bungie/useLinkedProfiles"
-import { useProfile } from "~/services/bungie/useProfile"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
-import {
-    bungieBannerEmblemUrl,
-    bungieEmblemUrl,
-    bungieProfileIconUrl
-} from "~/util/destiny/bungie-icons"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useClansForMember, useLinkedProfiles, useProfile } from "~/services/bungie/hooks"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import { bungieBannerEmblemUrl, bungieEmblemUrl, bungieProfileIconUrl } from "~/util/destiny"
 import { fixClanName } from "~/util/destiny/fixClanName"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
 import { $media } from "../(layout)/media"
 import { trpc } from "../trpc"
 import { UserCardSocials } from "./UserCardSocials"
+import type { ProfileProps } from "./types"
 
 export function UserCard() {
     const props = usePageProps<ProfileProps>()
@@ -87,10 +81,7 @@ export function UserCard() {
 
     const icon =
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        appProfileImage ||
-        (bungieProfileQuery.data?.iconPath
-            ? bungieProfileIconUrl(bungieProfileQuery.data.iconPath)
-            : null)
+        appProfileImage || bungieProfileIconUrl(bungieProfileQuery.data?.iconPath)
 
     const { data: clan } = useClansForMember(
         { membershipId: props.destinyMembershipId, membershipType: props.destinyMembershipType },
@@ -134,7 +125,7 @@ export function UserCard() {
                                 $padding={0}
                                 $fullWidth>
                                 <Nameplate>
-                                    {userInfo ? getUserName(userInfo) : "Guardian#0000"}
+                                    {userInfo ? getBungieDisplayName(userInfo) : "Guardian#0000"}
                                 </Nameplate>
                                 {clanTitle && (
                                     <Subtitle>
@@ -174,7 +165,7 @@ export function UserCard() {
                             $fullWidth>
                             <Flex $padding={0}>
                                 <ProfilePicture
-                                    src={icon ?? "https://raidhub.s3.amazonaws.com/d2-logo.jpg"}
+                                    src={icon}
                                     width={50}
                                     height={50}
                                     alt="profile picture"
@@ -186,7 +177,9 @@ export function UserCard() {
                                     $gap={0.1}
                                     $padding={0.3}>
                                     <Nameplate>
-                                        {userInfo ? getUserName(userInfo) : "Guardian#0000"}
+                                        {userInfo
+                                            ? getBungieDisplayName(userInfo)
+                                            : "Guardian#0000"}
                                     </Nameplate>
                                     {clanTitle && (
                                         <Subtitle>

@@ -1,7 +1,7 @@
 import { type GroupMember } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
-import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny"
 import styles from "./clan.module.css"
 
 /** @deprecated */

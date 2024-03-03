@@ -1,10 +1,7 @@
 import { type Metadata } from "next"
-import { prefetchManifest } from "~/app/layout"
-import {
-    getRaidEnum,
-    metadata as leaderboardMetadata,
-    type RaidLeaderboardStaticParams
-} from "../../layout"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
+import { getRaidEnum } from "../../helpers"
+import { metadata as leaderboardMetadata, type RaidLeaderboardStaticParams } from "../../layout"
 
 export async function generateMetadata({ params }: RaidLeaderboardStaticParams): Promise<Metadata> {
     const manifest = await prefetchManifest()

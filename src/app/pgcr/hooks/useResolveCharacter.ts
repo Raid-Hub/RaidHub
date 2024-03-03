@@ -1,6 +1,6 @@
 import type { DestinyCharacterResponse } from "bungie-net-core/models/Destiny/Responses/DestinyCharacterResponse"
-import { useCharacter } from "~/services/bungie/useCharacter"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
+import { useCharacter } from "~/services/bungie/hooks"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import { usePGCRContext } from "../PGCRStateManager"
 import type DestinyPGCRCharacter from "../models/Character"
 

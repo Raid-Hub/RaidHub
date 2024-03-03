@@ -7,7 +7,7 @@ import type {
 import Image from "next/image"
 import { useClassDefinition } from "~/hooks/dexie"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieIconUrl } from "~/util/destiny"
 import styles from "./expanded-raid.module.css"
 
 /**@deprecated */

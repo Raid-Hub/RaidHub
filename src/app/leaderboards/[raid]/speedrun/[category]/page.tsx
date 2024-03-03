@@ -1,15 +1,13 @@
 import { type Metadata } from "next"
-import { prefetchManifest } from "~/app/layout"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../../Leaderboard"
-import {
-    getRaidEnum,
-    metadata as leaderboardMetadata,
-    type RaidLeaderboardStaticParams
-} from "../../layout"
+import { LeaderboardEntriesSuspense } from "../../../LeaderboardEntriesSuspense"
+import { getRaidEnum } from "../../helpers"
+import { metadata as leaderboardMetadata, type RaidLeaderboardStaticParams } from "../../layout"
 import { SpeedrunComBanner } from "./SpeedrunComBanner"
-import { SpeedrunEntries } from "./SpeedrunEntries"
+import { SpeedrunSSREntries } from "./SpeedrunSSREntries"
 
 export async function generateStaticParams({ params: { raid } }: RaidLeaderboardStaticParams) {
     const manifest = await prefetchManifest()
@@ -62,9 +60,12 @@ export default async function Page({ params }: StaticSpeedrunLeaderboardParams) 
 
     return (
         <Leaderboard
-            pageProps={{ format: "time" }}
-            heading={<SpeedrunComBanner raid={raid} category={category} />}>
-            <SpeedrunEntries raid={raid} category={category} />
-        </Leaderboard>
+            pageProps={{ format: "time", type: "team", count: 50 }}
+            heading={<SpeedrunComBanner raid={raid} category={category} />}
+            entries={
+                <LeaderboardEntriesSuspense>
+                    <SpeedrunSSREntries raid={raid} category={category} />
+                </LeaderboardEntriesSuspense>
+            }></Leaderboard>
     )
 }

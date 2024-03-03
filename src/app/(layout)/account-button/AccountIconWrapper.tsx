@@ -2,22 +2,24 @@ import Image from "next/image"
 import { Suspense } from "react"
 import QuestionMark from "~/components/icons/QuestionMark"
 import UserIcon from "~/components/icons/UserIcon"
-import { getServerAuthSession } from "../(server)/api/auth"
+import { getServerAuthSession } from "../../(server)/api/auth"
 import { AccountIcon } from "./AccountIcon"
 
 const ICON_SIZE = 32
 
 export const AccountIconWrapper = () => (
-    <Suspense fallback={<QuestionMark color="white" sx={ICON_SIZE} />}>
-        <AccountIconContent />
-    </Suspense>
+    <AccountIcon>
+        <Suspense fallback={<QuestionMark color="white" sx={ICON_SIZE} />}>
+            <AccountIconContent />
+        </Suspense>
+    </AccountIcon>
 )
 
 async function AccountIconContent() {
     const session = await getServerAuthSession()
 
     return (
-        <AccountIcon>
+        <>
             {session?.user.image ? (
                 <Image
                     src={session.user.image}
@@ -29,6 +31,6 @@ async function AccountIconContent() {
             ) : (
                 <UserIcon color="white" sx={ICON_SIZE} />
             )}
-        </AccountIcon>
+        </>
     )
 }

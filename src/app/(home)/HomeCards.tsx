@@ -6,18 +6,13 @@ import { HomeCardGlobal } from "./cards/HomeCardGlobal"
 import { HomeCardRaid } from "./cards/HomeCardRaid"
 
 export const Cards = () => {
-    const { listedRaids, leaderboards } = useRaidHubManifest()
+    const { listedRaids } = useRaidHubManifest()
 
     return (
         <Grid $minCardWidth={320} $gap={1.5}>
             <HomeCardGlobal />
             {listedRaids.map(raid => (
-                <HomeCardRaid
-                    key={raid}
-                    raid={raid}
-                    worldFirstLeaderboards={leaderboards.worldFirst[raid] ?? []}
-                    individualLeaderboards={leaderboards.individual.clears[raid] ?? []}
-                />
+                <HomeCardRaid key={raid} raid={raid} />
             ))}
         </Grid>
     )

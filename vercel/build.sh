@@ -29,9 +29,4 @@ elif [[ $VERCEL_ENV == "preview" ]] ; then
   yarn prisma db push --skip-generate
 
   yarn next build
-
-else
-  echo "Building local..."
-  
-  yarn next build
 fi

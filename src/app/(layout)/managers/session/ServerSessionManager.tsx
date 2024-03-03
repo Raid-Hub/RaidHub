@@ -1,3 +1,4 @@
+import { cookies } from "next/headers"
 import { Suspense, type ReactNode } from "react"
 import { getServerAuthSession } from "~/server/api/auth"
 import { ClientSessionManager } from "./ClientSessionManager"
@@ -19,5 +20,9 @@ export const SessionManager = (props: { children: ReactNode }) => (
 async function AsyncSessionProvider(props: { children: ReactNode }) {
     const session = await getServerAuthSession()
 
-    return <ClientSessionManager serverSession={session}>{props.children}</ClientSessionManager>
+    return (
+        <ClientSessionManager serverSession={session} isStatic={cookies().size === 0}>
+            {props.children}
+        </ClientSessionManager>
+    )
 }

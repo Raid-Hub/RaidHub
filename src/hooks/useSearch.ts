@@ -1,15 +1,14 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
-import { UserInfoCard } from "bungie-net-core/models"
+import { type UserInfoCard } from "bungie-net-core/models"
 import { useRouter } from "next/navigation"
-import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from "react"
-import { useDestinyPlayerByBungieName } from "~/services/bungie/useDestinyPlayerByBungieName"
-import { useSearchByGlobalName } from "~/services/bungie/useSearchByGlobalName"
-import { RaidHubPlayerSearchResult } from "~/types/raidhub-api"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from "react"
+import { useDestinyPlayerByBungieName, useSearchByGlobalName } from "~/services/bungie/hooks"
+import { useRaidHubPlayerSearch } from "~/services/raidhub/hooks"
+import { type RaidHubPlayerSearchResult } from "~/services/raidhub/types"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
-import { useRaidHubPlayerSearch } from "../services/raidhub/useRaidHubPlayerSearch"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { useDebounce } from "./util/useDebounce"
 
 export function useSearch(props?: {
@@ -75,7 +74,7 @@ export function useSearch(props?: {
     const filteredResults = useMemo(
         () =>
             aggregatedResults.filter(p =>
-                getUserName(p).toLowerCase().includes(enteredText.toLowerCase())
+                getBungieDisplayName(p).toLowerCase().includes(enteredText.toLowerCase())
             ),
         [aggregatedResults, enteredText]
     )

@@ -1,11 +1,20 @@
-import { ColumnFormats } from "./formats"
+import { type ColumnFormats } from "./formats"
 
 export const Cell = ({
     value,
     Formatter
 }: {
-    value: any
+    value: unknown
     Formatter: (typeof ColumnFormats)[keyof typeof ColumnFormats]
 }) => {
-    return <td>{value !== null ? <Formatter value={value as never} /> : null}</td>
+    return (
+        <td>
+            {value !== null ? (
+                <Formatter
+                    // @ts-expect-error Unkown type assigned to never
+                    value={value}
+                />
+            ) : null}
+        </td>
+    )
 }

@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import styled from "styled-components"
-import { type LeaderboardEntry } from "~/app/leaderboards/LeaderboardEntries"
 import { OptionalWrapper } from "~/components/OptionalWrapper"
 import { Panel } from "~/components/Panel"
 import { Container } from "~/components/layout/Container"
@@ -13,6 +12,7 @@ import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { $media } from "~/layout/media"
 import { formattedNumber, secondsToHMS, truncatedNumber } from "../../util/presentation/formatting"
+import { type LeaderboardEntry } from "./LeaderboardEntries"
 import { LeaderboardEntryPlayerComponent } from "./LeaderboardEntryPlayer"
 
 export const LeaderboardEntryComponent = ({
@@ -48,21 +48,21 @@ export const LeaderboardEntryComponent = ({
                         </OptionalWrapper>
                     </Flex>
                     <Flex $padding={0.5}>
-                        {entry.type === "team" ? (
+                        {entry.type === "player" ? (
+                            <LeaderboardEntryPlayerComponent {...entry.player} />
+                        ) : (
                             <Grid $numCols={1} $fullWidth>
                                 {entry.team.map(player => (
                                     <LeaderboardEntryPlayerComponent key={player.id} {...player} />
                                 ))}
                             </Grid>
-                        ) : (
-                            <LeaderboardEntryPlayerComponent {...entry.player} />
                         )}
                     </Flex>
                 </Panel>
             }
             lg={
                 <Panel $maxWidth={entry.type === "team" ? 900 : 450} $fullWidth $growOnHover>
-                    <Flex $gap={5} $align={entry.type === "team" ? "space-between" : "center"}>
+                    <Flex $align={"space-between"}>
                         <Flex style={{ flex: 1 }} $padding={0} $align="flex-start">
                             <Container
                                 $flex

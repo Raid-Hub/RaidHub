@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { type RaidHubActivityResponse } from "~/types/raidhub-api"
-import { getRaidHubApi } from "."
+import { type RaidHubActivityResponse } from "~/services/raidhub/types"
+import { getRaidHubApi } from "./common"
 
 export const useRaidHubActivity = (
     activityId: string,

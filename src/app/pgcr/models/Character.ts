@@ -43,7 +43,7 @@ export default class DestinyPGCRCharacter {
         this.weapons = new Collection(
             data.extended.weapons?.map(
                 ({ referenceId, values }) =>
-                    [referenceId, o.mapValuesByValue(values, value => value.basic.value)] as const
+                    [referenceId, o.mapValues(values, (_, value) => value.basic.value)] as const
             )
         ).sort((a, b) => b.uniqueWeaponKills - a.uniqueWeaponKills)
 

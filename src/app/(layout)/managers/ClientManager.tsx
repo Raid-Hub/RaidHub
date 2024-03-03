@@ -47,7 +47,7 @@ const StyledComponentsManager = ({ children }: { children: ReactNode }) => {
                     {children}
                 </StyleSheetManager>
             ) : (
-                children
+                <>{children}</>
             )}
         </ThemeProvider>
     )

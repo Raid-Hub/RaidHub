@@ -15,10 +15,10 @@ export const o = {
     >(obj: T) {
         return Object.keys(obj) as R[]
     },
-    fromEntries: function <T, K extends string | number | symbol>(
-        entries: Iterable<readonly [K, T]>
+    fromEntries: function <K extends string | number | symbol, V>(
+        entries: Iterable<readonly [K, V]>
     ) {
-        return Object.fromEntries(entries) as Record<K, T>
+        return Object.fromEntries(entries) as Record<K, V>
     },
     mapValues: function <
         T extends object,

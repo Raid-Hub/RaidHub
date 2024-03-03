@@ -14,9 +14,8 @@ import { H4 } from "~/components/typography/H4"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useLocale } from "~/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
-import { useRaidHubActivtiesFirstPage } from "~/services/raidhub/useRaidHubActivities"
-import { useRaidHubActivity } from "~/services/raidhub/useRaidHubActivity"
-import { getUserName } from "~/util/destiny/bungieName"
+import { useRaidHubActivity, useRaidHubActivtiesFirstPage } from "~/services/raidhub/hooks"
+import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
 import type { ProfileProps } from "../types"
 
@@ -94,7 +93,7 @@ export const LatestRaid = () => {
                                     <Xmark sx={18} />
                                 )}
                                 <Player $finished={player.data.finishedRaid}>
-                                    {getUserName(player)}
+                                    {getBungieDisplayName(player)}
                                 </Player>
                             </Flex>
                         ))}

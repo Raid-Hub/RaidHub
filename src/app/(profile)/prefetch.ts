@@ -5,7 +5,7 @@ import { type BungieMembershipType } from "bungie-net-core/models"
 import { cache } from "react"
 import { trpcServer } from "~/server/api/trpc/client"
 import ServerBungieClient from "~/server/serverBungieClient"
-import { getRaidHubApi } from "~/services/raidhub"
+import { getRaidHubApi } from "~/services/raidhub/common"
 
 const serverBungieClient = new ServerBungieClient({
     revalidate: 15 * 60

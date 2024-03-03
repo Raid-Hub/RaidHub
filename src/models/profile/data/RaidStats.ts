@@ -1,5 +1,5 @@
 import { DestinyHistoricalStatsValue } from "bungie-net-core/models"
-import { ListedRaid } from "~/types/raidhub-api"
+import { ListedRaid } from "~/services/raidhub/types"
 
 type DestinyHistoricalStatsDictionary = { [key: string]: DestinyHistoricalStatsValue }
 

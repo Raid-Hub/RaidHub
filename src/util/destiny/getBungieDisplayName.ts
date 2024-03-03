@@ -1,4 +1,4 @@
-export function getUserName(
+export function getBungieDisplayName(
     user: {
         displayName: string | null
         membershipId: string

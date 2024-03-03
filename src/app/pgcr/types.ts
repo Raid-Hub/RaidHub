@@ -1,4 +1,4 @@
-import type { RaidHubActivityResponse } from "~/types/raidhub-api"
+import type { RaidHubActivityResponse } from "~/services/raidhub/types"
 
 export type PGCRPageProps = {
     instanceId: string

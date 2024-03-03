@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { getRaidHubApi } from "~/services/raidhub"
-import type { RaidHubPlayerBasicResponse } from "~/types/raidhub-api"
+import { getRaidHubApi } from "~/services/raidhub/common"
+import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
 
 export function useRaidHubResolvePlayer(
     membershipId: string,

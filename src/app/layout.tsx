@@ -1,24 +1,25 @@
 import type { Metadata, Viewport } from "next"
+import dynamic from "next/dynamic"
 import NextTopLoader from "nextjs-toploader"
 import { type ReactNode } from "react"
-import { getRaidHubApi } from "~/services/raidhub"
-import type { RaidHubManifest } from "~/types/raidhub-api"
-import { Footer } from "./(layout)/Footer"
-import { Header } from "./(layout)/Header"
-import { HeaderContent } from "./(layout)/HeaderContent"
-import { SearchModal } from "./(layout)/SearchModal"
-import { ClientManager } from "./(layout)/managers/ClientManager"
-import { DestinyManifestManager } from "./(layout)/managers/DestinyManifestManager"
-import { LocaleManager } from "./(layout)/managers/LocaleManager"
-import { QueryManager } from "./(layout)/managers/QueryManager"
-import { RaidHubManifestManager } from "./(layout)/managers/RaidHubManifestManager"
-import { BungieClientProvider } from "./(layout)/managers/session/BungieClientProvider"
-import { SessionManager } from "./(layout)/managers/session/ServerSessionManager"
+import { Footer } from "~/layout/Footer"
+import { Header } from "~/layout/Header"
+import { HeaderContent } from "~/layout/HeaderContent"
+import { SearchModal } from "~/layout/SearchModal"
+import {
+    BungieClientProvider,
+    ClientManager,
+    LocaleManager,
+    QueryManager,
+    RaidHubManifestManager
+} from "~/layout/managers"
+import { SessionManager } from "~/layout/managers/session/ServerSessionManager"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 
-export const prefetchManifest = async (): Promise<RaidHubManifest> =>
-    getRaidHubApi("/manifest", null, null, {
-        next: { revalidate: 300 }
-    })
+// Dynamic import for the dexie DB
+const DestinyManifestManager = dynamic(() => import("~/layout/managers/DestinyManifestManager"), {
+    ssr: false
+})
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await prefetchManifest()
@@ -40,9 +41,9 @@ export default async function RootLayout(params: { children: ReactNode }) {
                     <BungieClientProvider>
                         <SessionManager>
                             <LocaleManager>
-                                <RaidHubManifestManager serverManifest={manifest}>
-                                    <DestinyManifestManager>
-                                        <ClientManager>
+                                <ClientManager>
+                                    <RaidHubManifestManager serverManifest={manifest}>
+                                        <DestinyManifestManager>
                                             <Header>
                                                 <NextTopLoader
                                                     showSpinner={false}
@@ -55,9 +56,9 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                             <SearchModal />
                                             {params.children}
                                             <Footer />
-                                        </ClientManager>
-                                    </DestinyManifestManager>
-                                </RaidHubManifestManager>
+                                        </DestinyManifestManager>
+                                    </RaidHubManifestManager>
+                                </ClientManager>
                             </LocaleManager>
                         </SessionManager>
                     </BungieClientProvider>

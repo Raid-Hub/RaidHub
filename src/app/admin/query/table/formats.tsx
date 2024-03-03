@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { z } from "zod"
-import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
+import { bungieProfileIconUrl } from "~/util/destiny"
 import { formattedNumber, formattedTimeSince, secondsToYDHMS } from "~/util/presentation/formatting"
 
 export const ColumnFormats = {

@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { type ReactNode } from "react"
 import { trpc } from "~/app/trpc"
 import { usePageProps } from "~/components/layout/PageWrapper"
-import { type RaidHubPlayerResponse } from "~/types/raidhub-api"
+import { type RaidHubPlayerResponse } from "~/services/raidhub/types"
 import { type ProfileProps } from "./types"
 
 // Ideally, this would move to template.tsx but there are no

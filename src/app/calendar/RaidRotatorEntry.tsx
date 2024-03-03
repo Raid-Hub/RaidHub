@@ -1,7 +1,7 @@
 "use client"
 
 import type { DestinyPublicMilestone } from "bungie-net-core/models"
-import { Fragment, type ReactNode } from "react"
+import { type ReactNode } from "react"
 import styled from "styled-components"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
@@ -66,16 +66,13 @@ export const FeaturedRaidRotatorEntry = (props: {
                 <Flex $direction="column" $gap={0.3}>
                     {props.milestone.activities.map(activity => {
                         const definition = getRaidFromHash(activity.activityHash)
-                        return (
-                            <Fragment key={activity.activityHash}>
-                                {definition && (
-                                    <RaidActivity
-                                        activity={activity}
-                                        version={getDifficultyString(definition.difficulty)}
-                                    />
-                                )}
-                            </Fragment>
-                        )
+                        return definition ? (
+                            <RaidActivity
+                                key={activity.activityHash}
+                                activity={activity}
+                                version={getDifficultyString(definition.difficulty)}
+                            />
+                        ) : null
                     })}
                 </Flex>
             </Container>

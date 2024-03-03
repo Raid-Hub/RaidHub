@@ -3,8 +3,8 @@
 import type { ProfileProps } from "~/app/(profile)/types"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { RaidMileStones } from "~/data/milestones"
-import { useProfile } from "~/services/bungie/useProfile"
-import type { ListedRaid, SunsetRaid } from "~/types/raidhub-api"
+import { useProfile } from "~/services/bungie/hooks"
+import type { ListedRaid, SunsetRaid } from "~/services/raidhub/types"
 import CharacterWeeklyProgress from "./CharacterWeeklyProgress"
 import styles from "./expanded-raid.module.css"
 
@@ -23,8 +23,8 @@ export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, Sun
     const milestone = RaidMileStones[raid]
     if (
         profile &&
-        profile.characterProgressions.disabled !== true &&
-        profile.characterProgressions.data == undefined
+        !profile.characterProgressions?.disabled &&
+        profile.characterProgressions?.data == undefined
     ) {
         return <div className={styles["weekly-progress"]}>Private profile</div>
     }

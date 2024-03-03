@@ -1,15 +1,14 @@
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useMemo } from "react"
 
 export function useQueryParams<T extends Record<string, string>>() {
     const searchParams = useSearchParams()
-    const path = usePathname()
-    const router = useRouter()
 
     return useMemo(() => {
         const mutableParams = new URLSearchParams(searchParams)
 
-        const replace = (params: URLSearchParams) => router.push(`${path}?${params.toString()}`)
+        const replace = (params: URLSearchParams) =>
+            window.history.pushState(null, "", `?${params.toString()}`)
 
         const get = <K extends keyof T & string>(key: K) => mutableParams.get(key) as T[K]
 
@@ -27,7 +26,11 @@ export function useQueryParams<T extends Record<string, string>>() {
             mutableParams.delete(key, value)
             replace(mutableParams)
         }
+        const update = <K extends keyof T & string>(key: K, updater: (old?: T[K]) => T[K]) => {
+            mutableParams.set(key, updater(mutableParams.get(key) as T[K]))
+            replace(mutableParams)
+        }
 
-        return { get, getAll, set, append, remove, replace }
-    }, [path, router, searchParams])
+        return { get, getAll, set, append, remove, replace, update }
+    }, [searchParams])
 }

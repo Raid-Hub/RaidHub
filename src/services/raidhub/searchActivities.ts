@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection"
-import { RaidHubActivityExtended, RaidHubActivitySearchQuery } from "~/types/raidhub-api"
-import { postRaidHubApi } from "."
+import { RaidHubActivityExtended, RaidHubActivitySearchQuery } from "~/services/raidhub/types"
+import { postRaidHubApi } from "./common"
 
 export function activitySearchQueryKey(query: RaidHubActivitySearchQuery) {
     return ["raidhub-activity-search", query] as const

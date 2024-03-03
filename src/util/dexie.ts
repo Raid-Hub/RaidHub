@@ -10,6 +10,7 @@ import type {
     DestinyActivityModifierDefinition,
     DestinyClassDefinition,
     DestinyInventoryItemDefinition,
+    DestinyMilestoneDefinition,
     DestinySeasonDefinition
 } from "bungie-net-core/models"
 import Dexie, { type Table } from "dexie"
@@ -21,7 +22,7 @@ import { o } from "./o"
 /**
  * The version of the Dexie database.
  */
-export const DB_VERSION = 8
+export const DB_VERSION = 9
 
 /**
  * The list of table names in the Dexie database.
@@ -33,6 +34,7 @@ const tables = [
     "activityModifiers",
     "seasons",
     "characterClasses",
+    "milestones",
     "clanBannerDecalPrimaryColors",
     "clanBannerDecalSecondaryColors",
     "clanBannerDecals",
@@ -79,6 +81,7 @@ class CustomDexie extends Dexie implements Tables {
     activityModifiers!: Table<DestinyActivityModifierDefinition>
     seasons!: Table<DestinySeasonDefinition>
     characterClasses!: Table<DestinyClassDefinition>
+    milestones!: Table<Hashed<DestinyMilestoneDefinition>>
     clanBannerDecalPrimaryColors!: Table<Hashed<RGBA>>
     clanBannerDecalSecondaryColors!: Table<Hashed<RGBA>>
     clanBannerDecals!: Table<Hashed<ForegroundBackground>>
@@ -101,7 +104,9 @@ class CustomDexie extends Dexie implements Tables {
 
     constructor() {
         super("app")
-        this.version(DB_VERSION).stores(o.fromEntries(tables.map(table => [table, "hash"])))
+        this.version(DB_VERSION).stores(
+            o.fromEntries(tables.map(table => [table, "hash"] as const))
+        )
         // @ts-expect-error generic is right
         this.cache = o.fromEntries(tables.map(table => [table, new Collection()]))
     }
@@ -131,7 +136,9 @@ export const useDexieGetQuery = <K extends (typeof tables)[number]>(table: K, ha
                 liveQuery
             )
         }
-        return indexDB.cache[table].get(hash) ?? null
+        return (
+            (indexDB.cache[table].get(hash) as ReturnType<CustomDexie["cache"][K]["get"]>) ?? null
+        )
     }, [table, liveQuery, hash])
 }
 

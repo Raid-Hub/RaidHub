@@ -1,8 +1,8 @@
 import { Collection } from "@discordjs/collection"
 import { useQueries, useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
-import type { RaidHubPlayerActivitiesResponse } from "~/types/raidhub-api"
-import { getRaidHubApi } from "."
+import type { RaidHubPlayerActivitiesResponse } from "~/services/raidhub/types"
+import { getRaidHubApi } from "./common"
 
 export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
     membershipId: string,

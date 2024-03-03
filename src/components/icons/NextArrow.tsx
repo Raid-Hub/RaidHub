@@ -1,6 +1,6 @@
-import SVG, { SVGProps } from "~/components/reusable/SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
-export default function NextArrow(props: SVGProps) {
+export default function NextArrow(props: SVGWrapperProps) {
     return (
         <SVG
             viewBox="0 0 55.752 55.752"
