@@ -67,6 +67,11 @@ export type RaidHubGlobalLeaderboardCategory =
     RaidHubGlobalLeaderboardResponse["params"]["category"]
 
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
+export type RaidHubWorldfirstLeaderboardEntry = Component<"WorldFirstLeaderboardEntry">
 
 export type RaidHubActivitySearchQuery = Component<"ActivitySearchBody">
 export type RaidHubLeaderboardSearchQuery = Component<"LeaderboardSearchQuery">
+export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchResponse">
+
+export type RaidHubLeaderboardSearchQueryCategory = RaidHubLeaderboardSearchQuery["category"]
+export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["type"]

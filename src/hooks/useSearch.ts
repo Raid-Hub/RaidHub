@@ -71,18 +71,20 @@ export function useSearch(props?: {
         return results
     }, [bungieExactGlobalNameQuery, bungieDisplayNamePrefixQuery, raidHubSearchQuery])
 
-    const filteredResults = useMemo(
+    const filteredResults = useMemo<typeof aggregatedResults>(
         () =>
-            aggregatedResults.filter(p =>
-                getBungieDisplayName(p).toLowerCase().includes(enteredText.toLowerCase())
-            ),
+            enteredText
+                ? aggregatedResults.filter(p =>
+                      getBungieDisplayName(p).toLowerCase().includes(enteredText.toLowerCase())
+                  )
+                : new Collection(),
         [aggregatedResults, enteredText]
     )
 
     const clearQuery = useCallback(() => {
         setEnteredText("")
         forceUpdateQuery("")
-    }, [])
+    }, [forceUpdateQuery])
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setEnteredText(event.target.value)

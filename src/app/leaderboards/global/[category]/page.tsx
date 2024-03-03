@@ -1,11 +1,8 @@
 import { type Metadata } from "next"
 import { metadata as rootMetadata } from "~/app/layout"
-import { Flex } from "~/components/layout/Flex"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../Leaderboard"
-import { StaticLeaderboardControls } from "../../LeaderboardControls"
-import { LeaderboardEntriesSuspense } from "../../LeaderboardEntriesSuspense"
 import { GlobalEntriesBanner } from "./GlobalEntriesBanner"
 import { GlobalSSREntries } from "./GlobalSSREntries"
 import { ENTRIES_PER_PAGE, createQueryKey } from "./constants"
@@ -51,20 +48,13 @@ export default async function Page({ params, searchParams }: StaticParams) {
     return (
         <Leaderboard
             pageProps={{ format, type: "player", count: ENTRIES_PER_PAGE }}
-            heading={
-                <Flex $padding={0}>
-                    <Flex $direction="column" $padding={0} $gap={0} style={{ flexBasis: "50%" }}>
-                        <GlobalEntriesBanner category={params.category} title={displayName} />
-                        <StaticLeaderboardControls
-                            queryKey={createQueryKey({ page: 1, category: params.category })}
-                        />
-                    </Flex>
-                </Flex>
-            }
+            type="global"
+            category={params.category}
+            hasPages
+            refreshQueryKey={createQueryKey({ page: 1, category: params.category })}
+            heading={<GlobalEntriesBanner category={params.category} title={displayName} />}
             entries={
-                <LeaderboardEntriesSuspense>
-                    <GlobalSSREntries category={params.category} page={searchParams.page ?? "1"} />
-                </LeaderboardEntriesSuspense>
+                <GlobalSSREntries category={params.category} page={searchParams.page ?? "1"} />
             }
         />
     )

@@ -6,8 +6,7 @@ import type {
     RaidHubGlobalLeaderboardCategory,
     RaidHubGlobalLeaderboardResponse
 } from "~/services/raidhub/types"
-import { bungieProfileIconUrl } from "~/util/destiny"
-import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
+import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { type PageProps } from "../../Leaderboard"
 import { LeaderboardEntriesLoadingWrapper } from "../../LeaderboardEntriesLoadingWrapper"
 import { useLeaderboard } from "../../useLeaderboard"
@@ -42,7 +41,7 @@ export const GlobalEntries = (props: {
                 type: "player",
                 rank: entry.rank,
                 value: entry.value,
-                id: entry.position,
+                position: entry.position,
                 player: {
                     id: entry.player.membershipId,
                     displayName: getBungieDisplayName(entry.player),

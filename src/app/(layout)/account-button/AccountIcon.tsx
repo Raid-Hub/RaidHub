@@ -22,11 +22,7 @@ export const AccountIcon = (props: { children: ReactNode }) => {
         closeDropdown
     )
 
-    const pageChangeCallback = useRef<() => void>(() => {
-        null
-    })
-    pageChangeCallback.current = closeDropdown
-    usePageChange(pageChangeCallback)
+    usePageChange(closeDropdown)
 
     return (
         <Container>

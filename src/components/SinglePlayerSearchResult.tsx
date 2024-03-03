@@ -5,7 +5,7 @@ import Link from "next/link"
 import styled from "styled-components"
 import { Flex } from "~/components/layout/Flex"
 import { useLocale } from "~/layout/managers/LocaleManager"
-import { RaidHubPlayerSearchResult } from "~/services/raidhub/types"
+import type { RaidHubPlayerSearchResult } from "~/services/raidhub/types"
 import { bungieProfileIconUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince } from "~/util/presentation/formatting"
@@ -25,7 +25,7 @@ export const SinglePlayerSearchResult = (props: {
         : {}
     return (
         <Container $size={props.size} {...anchorProps} onClick={props.handleSelect}>
-            <Flex $align="flex-start" $padding={props.size / 2} $gap={props.size / 2}>
+            <Flex $align="flex-start" $padding={props.size / 2} $gap={props.size / 2} $wrap>
                 <Icon
                     src={bungieProfileIconUrl(props.player.iconPath)}
                     alt={getBungieDisplayName(props.player)}
@@ -54,6 +54,7 @@ export const SinglePlayerSearchResult = (props: {
 const Container = styled.div<{
     $size: number
 }>`
+    cursor: pointer;
     padding: ${({ $size }) => $size * 0.25}em;
     &:hover {
         background-color: color-mix(

@@ -4,13 +4,13 @@ export function formattedNumber(num: number, locale: string): string {
     return round(num, 2).toLocaleString(locale)
 }
 
-export function truncatedNumber(num: number): string {
-    if (num < 1000) {
-        return num.toString()
+export function truncatedNumber(num: number, locale: string): string {
+    if (num < 100000) {
+        return formattedNumber(num, locale)
     } else if (num < 1000000) {
-        return Math.floor(num / 1000) + "k"
+        return formattedNumber(Math.floor(num / 1000), locale) + "k"
     } else {
-        return Math.floor(num / 1000000) + "M"
+        return formattedNumber(Math.floor(num / 1000000), locale) + "M"
     }
 }
 

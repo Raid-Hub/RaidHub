@@ -19,8 +19,6 @@ export const SearchBar = () => {
     const userAgent = useUserAgent()
     const OSKey = userAgent?.toLowerCase().includes("mac") ? "⌘" : "ctrl"
 
-    const pageChangeCallbackRef = useRef<(() => void) | undefined>(undefined)
-
     const hideResults = useCallback(() => setIsShowingResults(false), [])
 
     const { enteredText, isLoading, results, handleInputChange, handleFormSubmit, clearQuery } =
@@ -30,7 +28,7 @@ export const SearchBar = () => {
     const [isShowingResults, setIsShowingResults] = useState(false)
     const searchContainerRef = useRef<HTMLFormElement>(null)
 
-    const handleSelect = (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const handleSelect = () => {
         clearQuery()
         setTimeout(hideResults, HIDE_AFTER_CLICK)
     }
@@ -40,8 +38,7 @@ export const SearchBar = () => {
         hideResults
     )
 
-    pageChangeCallbackRef.current = clearQuery
-    usePageChange(pageChangeCallbackRef)
+    usePageChange(clearQuery)
 
     return (
         <Container onSubmit={handleFormSubmit} ref={searchContainerRef}>

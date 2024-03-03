@@ -2,18 +2,21 @@ import styled, { css } from "styled-components"
 
 export const Panel = styled.div<{
     $maxWidth?: number
+    $minWidth?: number
     $fullWidth?: boolean
     $growOnHover?: boolean
+    $static?: boolean
+    $padding?: number
 }>`
-    ${({ theme, $maxWidth, $fullWidth, $growOnHover }) => css`
-        position: relative;
-        overflow: scroll;
+    ${({ theme, $maxWidth, $fullWidth, $growOnHover, $static, $minWidth, $padding }) => css`
+        position: ${$static ? "static" : "relative"};
+        overflow: ${$static ? "visible" : "scroll"};
         width: ${$fullWidth ? "100%" : "max-content"};
+        min-width: ${$minWidth ? `${$minWidth}px` : "auto"};
         max-width: ${$maxWidth ? `${$maxWidth}px` : "100%"};
-        padding: 0.5rem;
+        padding: ${$padding}rem;
         background-color: color-mix(in srgb, ${theme.colors.background.dark}, #0000 40%);
         border: 1px solid color-mix(in srgb, ${theme.colors.border.dark}, #0000 40%);
-        margin: 0.5em;
         transition: transform 0.1s ease-in-out;
         ${$growOnHover &&
         css`
@@ -23,3 +26,7 @@ export const Panel = styled.div<{
         `}
     `}
 `
+
+Panel.defaultProps = {
+    $padding: 0.5
+}

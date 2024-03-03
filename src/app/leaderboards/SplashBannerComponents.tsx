@@ -15,7 +15,7 @@ export const Splash = (props: {
     tertiaryTitle: string
     cloudflareImageId: string
 }) => (
-    <Panel>
+    <Panel $fullWidth style={{ marginBottom: "1rem" }}>
         <Flex $direction="column" $gap={0}>
             <H4 $mBlock={0.25}>{props.tertiaryTitle}</H4>
             <Title>{props.title}</Title>
@@ -32,6 +32,7 @@ const shadow = css`
 
 const Title = styled.h1`
     ${shadow}
+    text-align: center;
     font-size: 2rem;
     ${$media.min.desktop`
         font-size: 3rem;
@@ -41,6 +42,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.div`
     ${shadow}
+    text-align: center;
     font-size: 1.75rem;
     ${$media.min.desktop`
         font-size: 2.75rem;

@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useMemo, useRef } from "react"
 import styled from "styled-components"
 import { OptionalWrapper } from "~/components/OptionalWrapper"
 import { Panel } from "~/components/Panel"
@@ -17,8 +18,10 @@ import { LeaderboardEntryPlayerComponent } from "./LeaderboardEntryPlayer"
 
 export const LeaderboardEntryComponent = ({
     placementIcon,
+    isTargetted,
     ...entry
 }: LeaderboardEntry & {
+    isTargetted: boolean
     placementIcon?: JSX.Element
 }) => {
     const { format } = usePageProps<{ format: "time" | "number" }>()
@@ -26,13 +29,44 @@ export const LeaderboardEntryComponent = ({
     const value =
         format === "time" ? secondsToHMS(entry.value, true) : formattedNumber(entry.value, locale)
 
+    const lg = useRef<HTMLDivElement>(null)
+    const sm = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (isTargetted) {
+            if (lg.current && lg.current.getBoundingClientRect().width > 0) {
+                lg.current.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center",
+                    block: "center"
+                })
+            } else if (sm.current && sm.current.getBoundingClientRect().width > 0) {
+                sm.current.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center",
+                    block: "center"
+                })
+            }
+        }
+    }, [isTargetted])
+
+    const targettedStyle = useMemo(
+        () =>
+            isTargetted
+                ? {
+                      border: "2px solid orange"
+                  }
+                : undefined,
+        [isTargetted]
+    )
+
     return (
         <MobileDesktopSwitch
             sm={
-                <Panel $fullWidth>
+                <Panel $fullWidth ref={sm} style={targettedStyle}>
                     <Flex $gap={2} $padding={0.5}>
                         <Container $flex style={{ fontSize: "1.375rem", minWidth: "20px" }}>
-                            {placementIcon ?? truncatedNumber(entry.rank)}
+                            {placementIcon ?? truncatedNumber(entry.rank, locale)}
                         </Container>
                         <OptionalWrapper
                             condition={entry.url}
@@ -61,7 +95,12 @@ export const LeaderboardEntryComponent = ({
                 </Panel>
             }
             lg={
-                <Panel $maxWidth={entry.type === "team" ? 900 : 450} $fullWidth $growOnHover>
+                <Panel
+                    ref={lg}
+                    $maxWidth={entry.type === "team" ? 900 : 450}
+                    $fullWidth
+                    $growOnHover
+                    style={targettedStyle}>
                     <Flex $align={"space-between"}>
                         <Flex style={{ flex: 1 }} $padding={0} $align="flex-start">
                             <Container
@@ -74,7 +113,7 @@ export const LeaderboardEntryComponent = ({
                                     fontSize: "1.375rem",
                                     minWidth: "10%"
                                 }}>
-                                {placementIcon ?? truncatedNumber(entry.rank)}
+                                {placementIcon ?? truncatedNumber(entry.rank, locale)}
                             </Container>
                             {entry.type === "team" ? (
                                 <Grid $minCardWidth={180} $fullWidth>

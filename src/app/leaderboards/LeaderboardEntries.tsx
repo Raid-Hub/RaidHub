@@ -1,5 +1,6 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
 import { LeaderboardEntryComponent } from "~/app/leaderboards/LeaderboardEntryComponent"
 import { Flex } from "~/components/layout/Flex"
 
@@ -11,8 +12,8 @@ export type LeaderboardEntryPlayer = {
 }
 export type LeaderboardEntry = {
     rank: number
+    position: number
     value: number
-    id: string | number
     url?: string
 } & (
     | {
@@ -29,12 +30,21 @@ export const LeaderboardEntries = (props: {
     entries: LeaderboardEntry[]
     icons?: Record<number, JSX.Element>
 }) => {
+    const params = useSearchParams()
+    params.get("position")
     return (
-        <Flex $direction="row" $wrap as="section" $gap={0.25}>
+        <Flex
+            $direction="row"
+            $wrap
+            as="section"
+            $gap={1}
+            $padding={0}
+            style={{ flexBasis: "max-content" }}>
             {props.entries.map(e => (
                 <LeaderboardEntryComponent
-                    key={e.id}
+                    key={e.position}
                     placementIcon={props.icons?.[e.rank]}
+                    isTargetted={String(e.position) === params.get("position")}
                     {...e}
                 />
             ))}

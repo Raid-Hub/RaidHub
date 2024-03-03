@@ -39,7 +39,7 @@ export const SpeedrunEntries = (props: {
                     type: "team",
                     rank: place,
                     value: run.times.primary_t,
-                    id: run.id,
+                    position: place,
                     url: run.weblink,
                     team: run.players.map(player => {
                         if (player.rel === "guest") {

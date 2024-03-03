@@ -12,6 +12,7 @@ export const LeaderboardEntriesLoading = () => {
     return (
         <LeaderboardEntries
             entries={Array.from({ length: count }, (_, idx) => ({
+                position: (page - 1) * count + idx + 1,
                 rank: (page - 1) * count + idx + 1,
                 value: 0,
                 id: idx,

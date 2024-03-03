@@ -9,5 +9,5 @@ export const SpeedrunSSREntries = async (props: {
 }) => {
     const ssrData = await getSpeedrunComLeaderboard(props).catch(() => null)
 
-    return <SpeedrunEntries lastRevalidated={Date.now()} ssrData={ssrData} raid={props.raid} />
+    return <SpeedrunEntries lastRevalidated={Date.now()} ssrData={ssrData} {...props} />
 }

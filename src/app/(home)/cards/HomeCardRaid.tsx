@@ -1,6 +1,7 @@
 "use client"
 
 import RaidCardBackground from "data/raid-backgrounds"
+import { useMemo } from "react"
 import { SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { useRaidHubManifest } from "~/layout/managers/RaidHubManifestManager"
 import { type ListedRaid } from "~/services/raidhub/types"
@@ -9,11 +10,31 @@ import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"
 
+const isWorldFirstBoard = (board: string) => board === "normal" || board === "challenge"
+
 export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
     const { getRaidString, getUrlPathForRaid, leaderboards } = useRaidHubManifest()
     const raidUrlPath = getUrlPathForRaid(raid)
 
     const worldFirstLeaderboards = leaderboards.worldFirst[raid]
+
+    const { worldFirstBoards, miscBoards } = useMemo(() => {
+        const worldFirstBoards: [...typeof worldFirstLeaderboards] = []
+        const miscBoards: [...typeof worldFirstLeaderboards] = []
+
+        for (const board of worldFirstLeaderboards) {
+            if (isWorldFirstBoard(board.category)) {
+                worldFirstBoards.push(board)
+            } else {
+                miscBoards.push(board)
+            }
+        }
+
+        return {
+            worldFirstBoards: worldFirstBoards.sort(b => (b.category === "challenge" ? -1 : 1)),
+            miscBoards
+        }
+    }, [worldFirstLeaderboards])
 
     return (
         <HomeCardGeneric
@@ -22,16 +43,13 @@ export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
             backgroundImageCloudflareId={RaidCardBackground[raid]}
             backgroundImageAltText={`Splash for ${getRaidString(raid)}`}>
             <HomeCardContentSection sectionTitle="World First Race">
-                {worldFirstLeaderboards
-                    .filter(b => b.category === "normal" || b.category === "challenge")
-                    .sort(b => (b.category === "challenge" ? -1 : 1))
-                    .map(b => (
-                        <HomeCardContentSectionItem
-                            key={b.id}
-                            title={b.displayName}
-                            href={`/leaderboards/${raidUrlPath}/worldfirst/${b.category}`}
-                        />
-                    ))}
+                {worldFirstBoards.map(b => (
+                    <HomeCardContentSectionItem
+                        key={b.id}
+                        title={b.displayName}
+                        href={`/leaderboards/${raidUrlPath}/worldfirst/${b.category}`}
+                    />
+                ))}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Speedrun Leaderboards">
                 {SpeedrunVariables[raid].variable ? (
@@ -66,17 +84,17 @@ export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
                     />
                 ))}
             </HomeCardContentSection>
-            <HomeCardContentSection sectionTitle="Miscellaneous">
-                {worldFirstLeaderboards
-                    .filter(b => b.category !== "normal" && b.category !== "challenge")
-                    .map(b => (
+            {!!miscBoards.length && (
+                <HomeCardContentSection sectionTitle="Miscellaneous">
+                    {miscBoards.map(b => (
                         <HomeCardContentSectionItem
                             key={b.id}
                             title={b.displayName}
                             href={`/leaderboards/${raidUrlPath}/worldfirst/${b.category}`}
                         />
                     ))}
-            </HomeCardContentSection>
+                </HomeCardContentSection>
+            )}
         </HomeCardGeneric>
     )
 }

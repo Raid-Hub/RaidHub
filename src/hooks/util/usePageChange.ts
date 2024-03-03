@@ -1,22 +1,24 @@
 "use client"
 
 import { useParams, usePathname } from "next/navigation"
-import { MutableRefObject, useEffect } from "react"
+import { useEffect, useRef } from "react"
 
 export function usePageChange(
-    callback: MutableRefObject<
-        ((change: { newPath: string; newParams: ReturnType<typeof useParams> }) => void) | undefined
-    >
+    callback:
+        | ((change: { newPath: string; newParams: ReturnType<typeof useParams> }) => void)
+        | undefined
 ) {
+    const cb = useRef(callback)
+    cb.current = callback
     const pathname = usePathname()
     const params = useParams()
 
     useEffect(() => {
-        callback.current?.({
+        cb.current?.({
             newPath: pathname,
             newParams: params
         })
-    }, [pathname, params, callback])
+    }, [pathname, params, cb])
 
     return { pathname, params }
 }
