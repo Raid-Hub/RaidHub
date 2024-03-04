@@ -1,5 +1,5 @@
-import { Metadata } from "next"
-import { ReactNode } from "react"
+import { type Metadata } from "next"
+import { type ReactNode } from "react"
 
 // The file exists for metadata
 export const metadata: Metadata = {

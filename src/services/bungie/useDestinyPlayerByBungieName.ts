@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { searchDestinyPlayerByBungieName } from "bungie-net-core/endpoints/Destiny2"
-import { UserInfoCard } from "bungie-net-core/models"
+import { type UserInfoCard } from "bungie-net-core/models"
 import { useBungieClient } from "~/app/layout/managers"
 
 export const useDestinyPlayerByBungieName = <T = UserInfoCard[]>(

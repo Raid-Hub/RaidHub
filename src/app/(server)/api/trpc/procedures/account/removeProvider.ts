@@ -23,13 +23,13 @@ export const removeProvider = protectedProcedure
                     }
                 }
             })
-        } catch (e: any) {
+        } catch (e) {
             if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
                 return
             }
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",
-                message: e.message
+                message: e instanceof Error ? e.message : "Unknown error"
             })
         }
     })

@@ -15,8 +15,8 @@ export const Input = styled.input<InputProps>`
     padding: ${({ $size }) => $size / 4}em;
     padding-left: ${({ $pl, $size }) => $size / 4 + ($pl ?? 0)}em;
     padding-right: ${({ $insetRight, $size }) => $size / 4 + ($insetRight ?? 0)}em;
-    ${({ $insetRight, $size }) => $media.max.tablet`
-        padding-right: ${() => $size / 4}em;
+    ${({ $size }) => $media.max.tablet`
+        padding-right: ${$size / 4}em;
     `}
 
     font-size: ${({ $size }) => $size / 6}rem;

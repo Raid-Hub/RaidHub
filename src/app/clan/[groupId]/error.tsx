@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { BungieAPIError } from "~/models/BungieAPIError"
-import { ErrorBoundaryProps } from "~/types/generic"
+import { type ErrorBoundaryProps } from "~/types/generic"
 
 export default function ClanErrorBoundary({ error, reset }: ErrorBoundaryProps) {
     useEffect(() => {

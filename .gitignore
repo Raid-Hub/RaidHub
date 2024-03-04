@@ -35,7 +35,6 @@ yarn-error.log*
 
 # IDE specific
 /.idea/
-/.vscode/
 
 # docker
 raidhub-app-db/

@@ -30,10 +30,10 @@ export const getConnections = protectedProcedure.query(async ({ ctx }) => {
         } else {
             throw Error("Profile not found")
         }
-    } catch (e: any) {
+    } catch (e) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            message: e.message
+            message: e instanceof Error ? e.message : "Unknown error"
         })
     }
 })

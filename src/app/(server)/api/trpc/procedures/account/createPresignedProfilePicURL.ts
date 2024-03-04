@@ -32,10 +32,10 @@ export const createPresignedProfilePicURL = protectedProcedure
                 Expires: 30,
                 Conditions: [["content-length-range", 0, 102400]]
             })
-        } catch (e: any) {
+        } catch (e) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",
-                message: e.message
+                message: e instanceof Error ? e.message : "Unknown error"
             })
         }
     })

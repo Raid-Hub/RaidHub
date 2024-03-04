@@ -7,14 +7,16 @@ export async function getTwitchProfile(access_token: string) {
         }
     })
 
-    const data = await res.json()
-    if (res.ok) {
-        return data.data[0] as {
+    const data = (await res.json()) as {
+        data: {
             id: string
             login: string
             display_name: string
             email: string
-        }
+        }[]
+    }
+    if (res.ok) {
+        return data.data[0]
     } else {
         throw data
     }

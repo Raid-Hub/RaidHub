@@ -18,10 +18,10 @@ export const deleteVanity = adminProcedure.input(zDeleteVanity).mutation(async (
             }
         })
         return { ...removed, ...input }
-    } catch (e: any) {
+    } catch (e) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            message: e.message
+            message: e instanceof Error ? e.message : "Unknown error"
         })
     }
 })

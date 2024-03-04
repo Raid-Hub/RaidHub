@@ -1,9 +1,10 @@
 import { getGroup } from "bungie-net-core/endpoints/GroupV2"
 import { ClanComponent } from "components_old/clan/Clan"
-import { Metadata, ResolvingMetadata } from "next"
+import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { metadata as rootMetaData } from "~/app/layout"
 import { PageWrapper } from "~/components/layout/PageWrapper"
+import { type BungieAPIError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { fixClanName } from "~/util/destiny/fixClanName"
 
@@ -20,7 +21,7 @@ const bungieClient = new ServerBungieClient({
 export default async function Page({ params }: PageProps) {
     const clan = await getGroup(bungieClient, params)
         .then(res => res.Response)
-        .catch(e => null)
+        .catch(() => null)
 
     return (
         <PageWrapper>
@@ -29,13 +30,10 @@ export default async function Page({ params }: PageProps) {
     )
 }
 
-export async function generateMetadata(
-    { params }: PageProps,
-    parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const clan = await getGroup(bungieClient, params)
         .then(res => res.Response)
-        .catch(e => {
+        .catch((e: BungieAPIError) => {
             if (e.ErrorCode === 622) {
                 notFound()
             } else {

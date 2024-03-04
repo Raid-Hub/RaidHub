@@ -15,7 +15,7 @@ export default function Socket({ socket }: { socket: EnabledDestinyItemSocketSta
     const socketData = useItemDefinition(socket.plugHash)
 
     return socketData?.displayProperties.icon ? (
-        <div className={styles["socket"]} data-socket-hash={socket.plugHash}>
+        <div className={styles.socket} data-socket-hash={socket.plugHash}>
             <Image
                 className={styles["weapon-icon"]}
                 src={bungieItemUrl(socketData.displayProperties.icon)}

@@ -69,7 +69,7 @@ export default function ExpandedRaidView({
                     {!isLoadingActivities && (
                         <div className={styles["history-activities"]}>
                             {recents?.map(
-                                a => null
+                                () => null
                                 // todo
                                 // <ActivityTile key={a.instanceId} activity={a} />
                             )}

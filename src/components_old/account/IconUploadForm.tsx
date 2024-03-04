@@ -80,7 +80,7 @@ const IconUploadForm = ({ user }: { user: AdapterUser }) => {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className={[styles["form"], styles["glossy-bg"]].join(" ")}>
+            className={[styles.form, styles["glossy-bg"]].join(" ")}>
             <div className={styles["form-element"]}>
                 <div>
                     <label>Display Name: </label>

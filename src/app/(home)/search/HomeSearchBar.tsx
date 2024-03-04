@@ -14,14 +14,12 @@ import { HomeSearchResults } from "./HomeSearchResults"
 export const HomeSearchBar = () => {
     const ref = useRef<HTMLFormElement>(null)
     const [showingResults, setShowingResults] = useState(false)
-    const [isRedirecting, setIsRedirecting] = useState(false)
     const [isSearchFocused, setIsSearchFocused] = useState(false)
 
     const { enteredText, handleInputChange, results, handleFormSubmit } = useSearch({
         navigateOnEnter: true,
         onRedirect: () => {
             setShowingResults(false)
-            setIsRedirecting(true)
         }
     })
 

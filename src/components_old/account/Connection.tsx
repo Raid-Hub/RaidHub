@@ -25,7 +25,7 @@ export default function Connection({
                     <Icon color="white" sx={35} />
                 </div>
             </div>
-            <div className={styles["buttons"]}>
+            <div className={styles.buttons}>
                 <button onClick={link} disabled={!canLink}>
                     Add {serviceName}
                 </button>

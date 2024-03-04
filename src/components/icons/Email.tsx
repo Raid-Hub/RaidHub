@@ -1,4 +1,4 @@
-import { SVG, SVGWrapperProps } from "../SVG"
+import { SVG, type SVGWrapperProps } from "../SVG"
 
 export default function Email(props: SVGWrapperProps) {
     return (

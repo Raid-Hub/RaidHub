@@ -1,6 +1,6 @@
-import { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
-import { TokenSet } from "next-auth"
-import { OAuthConfig } from "next-auth/providers"
+import type { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
+import type { TokenSet } from "next-auth"
+import type { OAuthConfig } from "next-auth/providers"
 import { BungieAPIError } from "~/models/BungieAPIError"
 
 export default function BungieProvider(creds: {
@@ -23,7 +23,7 @@ export default function BungieProvider(creds: {
         },
         token: "https://www.bungie.net/platform/app/oauth/token/",
         userinfo: {
-            // @ts-expect-error
+            // @ts-expect-error The types in this library suck
             async request({ tokens }: { tokens: TokenSet }) {
                 const res = await fetch(
                     "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/",

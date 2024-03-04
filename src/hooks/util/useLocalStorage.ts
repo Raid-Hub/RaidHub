@@ -8,7 +8,7 @@ export const useLocalStorage = <V>(
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
-        setValue(fromStore ? JSON.parse(fromStore) : defaultValue)
+        setValue(fromStore ? (JSON.parse(fromStore) as V) : defaultValue)
     }, [key, defaultValue])
 
     const save = (value: V | ((old: V) => V)) => {
@@ -29,7 +29,7 @@ export const useLocalStorageObject = <V>(args: {
 
     useEffect(() => {
         const fromStore = localStorage.getItem(args.storageKey)
-        const parsed = fromStore ? JSON.parse(fromStore) : {}
+        const parsed = fromStore ? (JSON.parse(fromStore) as Record<string, V>) : {}
         if (args.paramKey in parsed) {
             setValue(fromStore ? parsed[args.paramKey] : args.defaultValue)
         }

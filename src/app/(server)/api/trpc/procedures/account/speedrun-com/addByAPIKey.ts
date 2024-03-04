@@ -20,7 +20,13 @@ export const addByAPIKey = protectedProcedure
                 method: "GET",
                 headers: headers
             }).then(async res => {
-                const json = await res.json()
+                const json = (await res.json()) as {
+                    data: {
+                        id: string
+                        weblink: string
+                        names: { international: string }
+                    }
+                }
                 if (res.ok) {
                     return json
                 } else if (res.status === 403) {
@@ -66,11 +72,10 @@ export const addByAPIKey = protectedProcedure
             return {
                 username: username
             }
-        } catch (e: any) {
-            console.error(e)
+        } catch (e) {
             throw new TRPCError({
                 code: "INTERNAL_SERVER_ERROR",
-                message: e.message
+                message: e instanceof Error ? e.message : "Unknown error"
             })
         }
     })

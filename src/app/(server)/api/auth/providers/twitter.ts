@@ -6,13 +6,16 @@ export async function getTwitterProfile(access_token: string) {
         }
     })
 
-    const data = await res.json()
-    if (res.ok) {
-        return data.data as {
+    const data = (await res.json()) as {
+        data: {
             name: string
             id: string
             username: string
         }
+    }
+
+    if (res.ok) {
+        return data.data
     } else {
         throw data
     }

@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { ReactNode } from "react"
+import { type ReactNode } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 

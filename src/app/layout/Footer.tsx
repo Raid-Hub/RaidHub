@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { Fragment, ReactNode } from "react"
+import { Fragment, type ReactNode } from "react"
 import styled from "styled-components"
-import { SVGComponent } from "~/components/SVG"
+import { type SVGComponent } from "~/components/SVG"
 import DiscordIcon from "~/components/icons/DiscordIcon"
 import Email from "~/components/icons/Email"
 import TwitterIcon from "~/components/icons/TwitterIcon"

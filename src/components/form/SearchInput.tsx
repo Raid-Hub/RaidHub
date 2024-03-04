@@ -1,5 +1,5 @@
-import React, { InputHTMLAttributes } from "react"
-import { AtLeast } from "~/types/generic"
+import React, { type InputHTMLAttributes } from "react"
+import { type AtLeast } from "~/types/generic"
 import { Input, type InputProps } from "./Input"
 
 export type SearchInputProps = AtLeast<

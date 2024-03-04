@@ -16,10 +16,10 @@ export const createVanity = adminProcedure.input(zCreateVanity).mutation(async (
             }
         })
         return vanity
-    } catch (e: any) {
+    } catch (e) {
         throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            message: e.message
+            message: e instanceof Error ? e.message : "Unknown error"
         })
     }
 })

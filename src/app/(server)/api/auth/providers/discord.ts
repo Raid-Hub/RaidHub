@@ -1,4 +1,4 @@
-import { DiscordProfile } from "next-auth/providers/discord"
+import type { DiscordProfile } from "next-auth/providers/discord"
 import "server-only"
 
 export async function getDiscordProfile(access_token: string) {
@@ -7,9 +7,9 @@ export async function getDiscordProfile(access_token: string) {
             Authorization: `Bearer ${access_token}`
         }
     })
-    const data = await res.json()
+    const data = (await res.json()) as DiscordProfile
     if (res.ok) {
-        return data as DiscordProfile
+        return data
     } else {
         throw data
     }

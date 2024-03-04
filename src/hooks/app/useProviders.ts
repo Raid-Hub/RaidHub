@@ -1,23 +1,20 @@
 import { Collection } from "@discordjs/collection"
 import { useQuery } from "@tanstack/react-query"
-import { Provider } from "next-auth/providers"
+import { type Provider } from "next-auth/providers"
 
 export const useProviders = () => {
     const { data, ...query } = useQuery({
         queryKey: ["providers"],
         queryFn: () =>
-            fetch("/api/auth/providers")
-                .then(res => {
-                    const data = res.json()
-                    if (res.ok) {
-                        return data
-                    } else {
-                        throw data
-                    }
-                })
-                .then(
-                    providers => new Collection<string, Provider>(Object.entries(providers ?? {}))
-                )
+            fetch("/api/auth/providers").then(async (res): Promise<Record<string, Provider>> => {
+                const data = res.json()
+                if (res.ok) {
+                    return data
+                } else {
+                    throw await data
+                }
+            }),
+        select: data => new Collection(Object.entries(data))
     })
     return {
         providers: data,

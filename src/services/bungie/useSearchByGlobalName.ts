@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
 import { type UserSearchResponse } from "bungie-net-core/models"
 import { useBungieClient } from "~/app/layout/managers"
+import { type BungieAPIError } from "~/models/BungieAPIError"
 
 export const useSearchByGlobalName = <T>(
     params: { displayNamePrefix: string; page?: number },
@@ -28,7 +29,7 @@ export const useSearchByGlobalName = <T>(
                 }
             )
                 .then(res => res.Response)
-                .catch((error): UserSearchResponse => {
+                .catch((error: BungieAPIError): UserSearchResponse => {
                     // If the search returns no results `PlatformErrorCodes.UserCannotResolveCentralAccount`
                     // we should return an empty array instead of throwing an error
                     if (error.ErrorCode === 217) {

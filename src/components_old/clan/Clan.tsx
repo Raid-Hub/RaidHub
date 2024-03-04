@@ -42,21 +42,21 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
     return (
         <div>
             <div className={styles["name-and-motto"]}>
-                <h1 className={styles["name"]}>
+                <h1 className={styles.name}>
                     {clanName}{" "}
                     <span className={styles["call-sign"]}>
                         {decodeHtmlEntities(`[${clan.detail.clanInfo.clanCallsign}]`)}
                     </span>
                 </h1>
-                <h3 className={styles["motto"]}>
+                <h3 className={styles.motto}>
                     <i>{decodeHtmlEntities(clan.detail.motto)}</i>
                 </h3>
             </div>
-            <section className={styles["overview"]}>
+            <section className={styles.overview}>
                 <div className={styles["overview-left"]}>
                     <ClanBannerComponent data={clan.detail.clanInfo.clanBannerData} sx={30} />
                 </div>
-                <div className={styles["about"]}>
+                <div className={styles.about}>
                     <p>{urlHighlight(clan.detail.about)}</p>
                 </div>
             </section>
@@ -64,7 +64,7 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
             {!isLoadingClanMembers && (
                 <section>
                     <h2 key={"title"}>Members ({allClanMembers.length} / 100)</h2>
-                    <div key={"members"} className={styles["members"]}>
+                    <div key={"members"} className={styles.members}>
                         {allClanMembers
                             .sort(
                                 (m1, m2) =>

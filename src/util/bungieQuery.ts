@@ -1,15 +1,15 @@
 import {
-    QueryObserverOptions,
-    RefetchOptions,
-    RefetchQueryFilters,
-    UseQueryOptions,
+    type QueryObserverOptions,
+    type RefetchOptions,
+    type RefetchQueryFilters,
+    type UseQueryOptions,
     useQueries,
     useQuery,
-    FetchQueryOptions,
-    QueryClient,
-    Query
+    type FetchQueryOptions,
+    type QueryClient,
+    type Query
 } from "@tanstack/react-query"
-import { UseQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries"
+import { type UseQueryOptionsForUseQueries } from "@trpc/react-query/dist/internals/useQueries"
 
 export type QueryFn<TParams, TData> = (params: TParams) => Promise<TData>
 
@@ -54,7 +54,7 @@ export default function BungieQuery<TParams, TData>(
         },
 
         getQueryData(params: TParams) {
-            return client.queryClient.getQueryData(this.queryKey(params)) as TData | undefined
+            return client.queryClient.getQueryData(this.queryKey(params))
         },
 
         refetchQueries<TPageData = unknown>(

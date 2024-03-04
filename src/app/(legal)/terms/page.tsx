@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { LegalPage } from "../LegalPage"
 

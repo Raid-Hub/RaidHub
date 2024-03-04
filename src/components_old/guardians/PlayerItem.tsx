@@ -1,7 +1,7 @@
 import {
-    DestinyInventoryItemDefinition,
-    DestinyItemComponent,
-    DestinyItemSocketState
+    type DestinyInventoryItemDefinition,
+    type DestinyItemComponent,
+    type DestinyItemSocketState
 } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,7 +9,7 @@ import { useExpandedContext } from "~/app/guardians/context"
 import { Loading } from "~/components/Loading"
 import { useItemDefinition } from "~/hooks/dexie"
 import { bungieItemUrl } from "~/util/destiny"
-import Socket, { EnabledDestinyItemSocketState } from "./Socket"
+import Socket, { type EnabledDestinyItemSocketState } from "./Socket"
 import styles from "./guardians.module.css"
 
 const isExoticArmor = (data: DestinyInventoryItemDefinition) =>
@@ -26,10 +26,10 @@ export default function PlayerItem({
 
     const isExpanded = useExpandedContext()
 
-    if (!data) return <Loading className={styles["item"]} />
+    if (!data) return <Loading className={styles.item} />
 
     return isExpanded || data.itemType == 16 || data.itemType == 3 || isExoticArmor(data) ? (
-        <div className={styles["item"]} data-item-hash={item.itemHash}>
+        <div className={styles.item} data-item-hash={item.itemHash}>
             <div className={styles["item-main"]}>
                 <Image
                     className={styles["item-icon"]}
@@ -49,7 +49,7 @@ export default function PlayerItem({
                 </div>
             </div>
             {isExpanded && (
-                <div className={styles["sockets"]}>
+                <div className={styles.sockets}>
                     {sockets
                         .filter(
                             (s): s is EnabledDestinyItemSocketState => s.isEnabled && !!s.plugHash

@@ -1,5 +1,5 @@
 import { Collection } from "@discordjs/collection"
-import { RaidHubActivityExtended, RaidHubActivitySearchQuery } from "~/services/raidhub/types"
+import { type RaidHubActivityExtended, type RaidHubActivitySearchQuery } from "~/services/raidhub/types"
 import { postRaidHubApi } from "./common"
 
 export function activitySearchQueryKey(query: RaidHubActivitySearchQuery) {
