@@ -12,6 +12,7 @@ import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
+import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { formattedNumber, secondsToHMS, truncatedNumber } from "../../util/presentation/formatting"
 import { type LeaderboardEntry } from "./LeaderboardEntries"
 import { LeaderboardEntryPlayerComponent } from "./LeaderboardEntryPlayer"
@@ -25,6 +26,9 @@ export const LeaderboardEntryComponent = ({
     placementIcon?: JSX.Element
 }) => {
     const { format } = usePageProps<{ format: "time" | "number" }>()
+    const { remove } = useQueryParams<{
+        position: string
+    }>()
     const { locale } = useLocale()
     const value =
         format === "time" ? secondsToHMS(entry.value, true) : formattedNumber(entry.value, locale)
@@ -48,7 +52,7 @@ export const LeaderboardEntryComponent = ({
                 })
             }
         }
-    }, [isTargetted])
+    }, [isTargetted, remove])
 
     const targettedStyle = useMemo(
         () =>

@@ -10,7 +10,7 @@ export const Panel = styled.div<{
 }>`
     ${({ theme, $maxWidth, $fullWidth, $growOnHover, $static, $minWidth, $padding }) => css`
         position: ${$static ? "static" : "relative"};
-        overflow: ${$static ? "visible" : "scroll"};
+        overflow: ${$static ? "visible" : "auto"};
         width: ${$fullWidth ? "100%" : "max-content"};
         min-width: ${$minWidth ? `${$minWidth}px` : "auto"};
         max-width: ${$maxWidth ? `${$maxWidth}px` : "100%"};
