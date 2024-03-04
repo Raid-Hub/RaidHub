@@ -12,6 +12,7 @@ type PageProps = {
 }
 
 export const dynamic = "force-static"
+export const dynamicParams = true
 
 export default function Page({ params }: PageProps) {
     return (

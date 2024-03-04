@@ -9,6 +9,7 @@ import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import type {
+    ListedRaid,
     RaidHubLeaderboardSearchQueryCategory,
     RaidHubLeaderboardSearchQueryType
 } from "~/services/raidhub/types"
@@ -24,6 +25,7 @@ export const LeaderboardControls = (
               hasPages: true
               type: RaidHubLeaderboardSearchQueryType
               category: RaidHubLeaderboardSearchQueryCategory
+              raid?: ListedRaid
           }
         | { hasPages: false }
     )
@@ -42,13 +44,23 @@ export const LeaderboardControls = (
     const canGoBack = currentPage > 1
 
     const handleForwards = () => {
-        set("page", String(currentPage + 1))
-        remove("position")
+        remove("position", undefined, {
+            commit: false
+        })
+        set("page", String(currentPage + 1), {
+            commit: true,
+            shallow: false
+        })
     }
 
     const handleBackwards = () => {
-        set("page", String(Math.max(1, currentPage - 1)))
-        remove("position")
+        remove("position", undefined, {
+            commit: false
+        })
+        set("page", String(Math.max(1, currentPage - 1)), {
+            commit: true,
+            shallow: false
+        })
     }
 
     return (
@@ -57,6 +69,7 @@ export const LeaderboardControls = (
                 <LeaderboardSearch
                     type={props.type}
                     category={props.category}
+                    raid={props.raid}
                     count={count}
                     resultQueryKey={queryKey}
                 />

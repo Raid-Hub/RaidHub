@@ -23,7 +23,7 @@ export const LeaderboardSearch = (
     const ref = useRef<HTMLFormElement>(null)
     const { enteredText, results, handleFormSubmit, handleInputChange, clearQuery } = useSearch()
 
-    const { mutate: search } = useLeaderboardPlayerSearch(query)
+    const { mutate: search, reset } = useLeaderboardPlayerSearch(query)
 
     useClickOutside(
         {
@@ -57,6 +57,7 @@ export const LeaderboardSearch = (
                                     key={idx}
                                     noLink
                                     handleSelect={() => {
+                                        reset()
                                         search(result.membershipId)
                                         clearQuery()
                                     }}

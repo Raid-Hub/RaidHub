@@ -52,6 +52,9 @@ export async function generateMetadata({
     }
 }
 
+export const revalidate = 1800
+export const dynamic = "force-static"
+
 export default async function Page({ params }: StaticSpeedrunLeaderboardParams) {
     const manifest = await prefetchManifest()
 

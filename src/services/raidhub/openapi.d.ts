@@ -805,10 +805,11 @@ export interface components {
         };
         readonly individual: {
           readonly clears: {
-            [key: string]: readonly {
-                readonly name: string;
-                readonly category: string;
-              }[];
+            [key: string]: readonly ({
+                readonly displayName: string;
+                /** @enum {string} */
+                readonly category: "fresh" | "total" | "trios" | "duos" | "solos";
+              })[];
           };
         };
       };

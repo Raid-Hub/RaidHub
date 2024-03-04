@@ -13,7 +13,7 @@ import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-ma
 import { type ListedRaid } from "~/services/raidhub/types"
 import { useSpeedrunComRules } from "~/services/speedrun-com/useSpeedrunComRules"
 import { includedIn } from "~/util/helpers"
-import { ExtLink, TooltipWrapper } from "../../../SplashBannerComponents"
+import { ExtLink, TooltipWrapper } from "../../../LeaderboardSplashComponents"
 
 export const SpeedrunComControls = (props: { raid: ListedRaid; category?: RTABoardCategory }) => {
     const { sunsetRaids, getRaidString } = useRaidHubManifest()

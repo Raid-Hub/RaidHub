@@ -4,7 +4,7 @@ import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { type ListedRaid } from "~/services/raidhub/types"
-import { Splash } from "../../../SplashBannerComponents"
+import { Splash } from "../../../LeaderboardSplashComponents"
 
 export const SpeedrunComBanner = (props: { raid: ListedRaid; category?: RTABoardCategory }) => {
     const { getRaidString } = useRaidHubManifest()

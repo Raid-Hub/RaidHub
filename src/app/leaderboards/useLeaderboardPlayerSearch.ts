@@ -16,12 +16,15 @@ export const useLeaderboardPlayerSearch = ({
 }: AtLeast<Omit<RaidHubLeaderboardSearchQuery, "membershipId">, "count"> & {
     resultQueryKey: QueryKey
 }) => {
-    const { setMany } = useQueryParams<{ page: string; position: string }>()
+    const { set, update, remove } = useQueryParams<{ page: string; position: string }>()
     const queryClient = useQueryClient()
 
     return useMutation({
         mutationKey: ["raidhub", "leaderboard-player", query],
         mutationFn: (membershipId: string) => searchLeaderboardPlayer(query, membershipId),
+        onMutate: () => {
+            remove("position")
+        },
         onSuccess: data => {
             const qk = Array.from(resultQueryKey)
             qk[resultQueryKey.length - 1] = data.page
@@ -33,10 +36,16 @@ export const useLeaderboardPlayerSearch = ({
                 )[]
             }>(qk, old => ({ ...old, entries: data.entries }))
 
-            setMany([
-                ["page", String(data.page)],
-                ["position", String(data.position)]
-            ])
+            set("position", String(data.position), {
+                commit: false
+            })
+            update("page", old => ({
+                value: String(data.page),
+                args: {
+                    commit: true,
+                    shallow: String(data.page) === old
+                }
+            }))
         }
     })
 }

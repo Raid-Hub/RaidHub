@@ -1,9 +1,10 @@
 import { type Metadata } from "next"
 import { metadata as rootMetadata } from "~/app/layout"
+import { RaidHubBannerId } from "~/data/image-ids"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../Leaderboard"
-import { GlobalEntriesBanner } from "./GlobalEntriesBanner"
+import { Splash } from "../../LeaderboardSplashComponents"
 import { GlobalSSREntries } from "./GlobalSSREntries"
 import { ENTRIES_PER_PAGE, createQueryKey } from "./constants"
 
@@ -38,6 +39,9 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
+export const revalidate = 900
+export const dynamic = "force-static"
+
 export default async function Page({ params, searchParams }: StaticParams) {
     const globalLeaderboards = await prefetchManifest().then(
         manifest => manifest.leaderboards.global
@@ -52,7 +56,13 @@ export default async function Page({ params, searchParams }: StaticParams) {
             category={params.category}
             hasPages
             refreshQueryKey={createQueryKey({ page: 1, category: params.category })}
-            heading={<GlobalEntriesBanner category={params.category} title={displayName} />}
+            heading={
+                <Splash
+                    title={displayName}
+                    tertiaryTitle="Global Leaderboards"
+                    cloudflareImageId={RaidHubBannerId}
+                />
+            }
             entries={
                 <GlobalSSREntries category={params.category} page={searchParams.page ?? "1"} />
             }

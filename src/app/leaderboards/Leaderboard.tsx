@@ -2,6 +2,7 @@ import { Suspense, type ReactNode } from "react"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import type {
+    ListedRaid,
     RaidHubLeaderboardSearchQueryCategory,
     RaidHubLeaderboardSearchQueryType
 } from "~/services/raidhub/types"
@@ -26,6 +27,7 @@ export const Leaderboard = (
               refreshQueryKey: readonly [...unknown[], page: number]
               category: RaidHubLeaderboardSearchQueryCategory
               type: RaidHubLeaderboardSearchQueryType
+              raid?: ListedRaid
           }
         | {
               hasPages: false
@@ -49,7 +51,8 @@ export const Leaderboard = (
                                         ? {
                                               hasPages: true,
                                               category: props.category,
-                                              type: props.type
+                                              type: props.type,
+                                              raid: props.raid
                                           }
                                         : {
                                               hasPages: false

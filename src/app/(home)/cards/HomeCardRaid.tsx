@@ -66,7 +66,7 @@ export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
                     )
                 ) : (
                     <HomeCardContentSectionItem
-                        title={`Any %`}
+                        title="Any %"
                         href={`/leaderboards/${raidUrlPath}/speedrun/all`}
                     />
                 )}
@@ -76,10 +76,10 @@ export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
                     title="Sherpas"
                     href={`/leaderboards/${raidUrlPath}/individual/sherpas`}
                 />
-                {leaderboards.individual.clears[raid].map(({ name, category }) => (
+                {leaderboards.individual.clears[raid].map(({ displayName, category }) => (
                     <HomeCardContentSectionItem
                         key={category}
-                        title={name}
+                        title={`${displayName} Clears`}
                         href={`/leaderboards/${raidUrlPath}/individual/clears/${category}`}
                     />
                 ))}

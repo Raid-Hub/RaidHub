@@ -1,9 +1,14 @@
 import { type Metadata } from "next"
 import { metadata as leaderboardMetadata } from "~/app/layout"
+import RaidCardBackground from "~/data/raid-backgrounds"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
+import { Leaderboard } from "../../../../Leaderboard"
+import { Splash } from "../../../../LeaderboardSplashComponents"
 import { getRaidEnum } from "../../../helpers"
 import { type RaidLeaderboardStaticParams } from "../../../layout"
+import { createQueryKey, ENTRIES_PER_PAGE } from "../../constants"
+import { IndividualSSREntries } from "../../IndividualSSREntries"
 
 export async function generateStaticParams({ params }: RaidLeaderboardStaticParams) {
     const manifest = await prefetchManifest()
@@ -16,7 +21,8 @@ export async function generateStaticParams({ params }: RaidLeaderboardStaticPara
     }))
 }
 
-type StaticParams = RaidLeaderboardStaticParams & PageStaticParams<typeof generateStaticParams>
+type StaticParams = RaidLeaderboardStaticParams &
+    PageStaticParams<typeof generateStaticParams> & { searchParams: { page: string } }
 
 export async function generateMetadata({ params }: StaticParams): Promise<Metadata> {
     const manifest = await prefetchManifest()
@@ -26,8 +32,8 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     const raidName = manifest.raidStrings[raidEnum]
 
     const title = `${raidName} ${
-        clearsBoards.find(p => p.category === params.category)!.name
-    } Leaderboard`
+        clearsBoards.find(p => p.category === params.category)!.displayName
+    } Clears Leaderboard`
     return {
         title: title,
         openGraph: {
@@ -37,6 +43,44 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
-export default function Page({ params }: StaticParams) {
-    return <div>{JSON.stringify(params, null, 2)}</div>
+export const revalidate = 900
+export const dynamic = "force-static"
+
+export default async function Page({ params, searchParams }: StaticParams) {
+    const manifest = await prefetchManifest()
+    const raid = getRaidEnum(manifest, params.raid)
+
+    const { displayName } = manifest.leaderboards.individual.clears[raid].find(
+        l => l.category === params.category
+    )!
+
+    return (
+        <Leaderboard
+            pageProps={{ format: "number", type: "player", count: ENTRIES_PER_PAGE }}
+            type="individual"
+            category={params.category}
+            hasPages
+            raid={raid}
+            refreshQueryKey={createQueryKey({
+                raidPath: params.raid,
+                category: params.category,
+                page: 1
+            })}
+            heading={
+                <Splash
+                    title={`${displayName} Clears`}
+                    subtitle={manifest.raidStrings[raid]}
+                    tertiaryTitle="Individual Leaderboards"
+                    cloudflareImageId={RaidCardBackground[raid]}
+                />
+            }
+            entries={
+                <IndividualSSREntries
+                    category={params.category}
+                    page={searchParams.page ?? "1"}
+                    raidPath={params.raid}
+                />
+            }
+        />
+    )
 }

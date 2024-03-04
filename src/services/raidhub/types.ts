@@ -1,6 +1,6 @@
 import type { Difficulty, Raid } from "data/raid"
 import type { Prettify } from "../../types/generic"
-import type { components, paths } from "../../types/raidhub-openapi"
+import type { components, paths } from "./openapi"
 
 type Component<T extends keyof components["schemas"]> = Prettify<components["schemas"][T]>
 
@@ -52,13 +52,16 @@ export type RaidHubAdminQueryBody = Required<
 >["requestBody"]["content"]["application/json"]
 export type RaidHubAdminQueryError = Component<"AdminQuerySyntaxError">
 
+export type RaidHubActivitySearchQuery = Component<"ActivitySearchBody">
+
 export type RaidHubPlayerProfileLeaderboardEntry = Component<"PlayerProfileLeaderboardEntry">
 
 export type RaidHubRaidPath = Component<"RaidPath">
 
+export type RaidHubWorldfirstLeaderboardResponse = Component<"LeaderboardWorldfirstResponse">
 export type RaidHubWorldFirstLeaderboardCategory =
     Component<"LeaderboardWorldfirstResponse">["params"]["category"]
-
+export type RaidHubIndividualLeaderboardResponse = Component<"LeaderboardIndividualResponse">
 export type RaidHubIndividualLeaderboardCategory =
     Component<"LeaderboardIndividualResponse">["params"]["category"]
 
@@ -69,7 +72,6 @@ export type RaidHubGlobalLeaderboardCategory =
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
 export type RaidHubWorldfirstLeaderboardEntry = Component<"WorldFirstLeaderboardEntry">
 
-export type RaidHubActivitySearchQuery = Component<"ActivitySearchBody">
 export type RaidHubLeaderboardSearchQuery = Component<"LeaderboardSearchQuery">
 export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchResponse">
 

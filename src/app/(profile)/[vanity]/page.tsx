@@ -15,6 +15,9 @@ type PageProps = {
     }
 }
 
+export const dynamic = "force-dynamic"
+export const dynamicParams = true
+
 export default async function Page({ params }: PageProps) {
     const redirectFrom = headers()
         .get("next-url")
@@ -43,6 +46,7 @@ export default async function Page({ params }: PageProps) {
 
     return (
         <Suspense
+            key={params.vanity}
             fallback={
                 <ProfileClientWrapper
                     pageProps={{

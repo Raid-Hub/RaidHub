@@ -14,6 +14,10 @@ type PageProps = {
     }
 }
 
+export const dynamic = "force-static"
+export const dynamicParams = true
+export const revalidate = 900
+
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
     const appProfile = await getUniqueProfile({

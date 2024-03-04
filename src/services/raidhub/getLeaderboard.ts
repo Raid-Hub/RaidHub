@@ -39,14 +39,14 @@ export async function getWorldfirstLeaderboard(args: {
 
 export async function getIndividualLeaderboard(args: {
     raid: RaidHubRaidPath
-    board: RaidHubIndividualLeaderboardCategory
+    category: RaidHubIndividualLeaderboardCategory
     page: number
     count: number
 }) {
     const data = await getRaidHubApi(
         "/leaderboard/{raid}/individual/{category}",
         {
-            category: args.board,
+            category: args.category,
             raid: args.raid
         },
         {
@@ -55,7 +55,7 @@ export async function getIndividualLeaderboard(args: {
         }
     )
 
-    return data.entries
+    return data
 }
 
 export async function getIndividualGlobalLeaderboard(args: {
