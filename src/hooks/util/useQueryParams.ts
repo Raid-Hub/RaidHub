@@ -35,11 +35,14 @@ export function useQueryParams<T extends Record<string, string>>() {
     return useMemo(() => {
         const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)
 
-        const replace = (params: URLSearchParams, shallow?: boolean) =>
+        const clear = () =>
+            mutableParams.current.forEach((_, key) => mutableParams.current.delete(key))
+
+        const replace = (params?: URLSearchParams, shallow?: boolean) =>
             window.history[shallow ? "replaceState" : "pushState"](
                 null,
                 "",
-                `?${params.toString()}`
+                params ? `?${params.toString()}` : undefined
             )
 
         const get = <K extends keyof T & string>(key: K) => mutableParams.current.get(key) as T[K]
@@ -97,7 +100,8 @@ export function useQueryParams<T extends Record<string, string>>() {
             remove,
             update,
             replace,
-            commit
+            commit,
+            clear
         }
     }, [mutableParams])
 }

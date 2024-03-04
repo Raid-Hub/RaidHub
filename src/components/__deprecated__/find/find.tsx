@@ -1,7 +1,7 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useMemo, useRef } from "react"
@@ -14,14 +14,17 @@ import {
     type SubmitHandler,
     type UseFormRegister
 } from "react-hook-form"
+import { z } from "zod"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
+import { Raid } from "~/data/raid"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useSeasons } from "~/hooks/dexie"
 import { useSearch } from "~/hooks/useSearch"
+import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { type BungieAPIError } from "~/models/BungieAPIError"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import { activitySearch } from "~/services/raidhub/searchActivities"
@@ -29,25 +32,26 @@ import type {
     ListedRaid,
     RaidHubActivityExtended,
     RaidHubActivitySearchQuery,
-    RaidHubPlayerSearchResult
+    RaidHubPlayerInfo
 } from "~/services/raidhub/types"
 import { bungieProfileIconUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
+import { includedIn } from "~/util/helpers"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import styles from "./find.module.css"
 
 interface ActivitySearchFormState {
+    membershipIds: { membershipId: string }[]
     flawless: -1 | 0 | 1
     fresh: -1 | 0 | 1
     completed: -1 | 0 | 1
     raid: ListedRaid | -1
-    players: (
-        | { resolved: false; membershipId: string }
-        | ({ resolved: true } & RaidHubPlayerSearchResult)
-    )[]
-    playerCountRange: [number, number]
-    dateRange: [Date, Date]
-    seasonRange: [number, number]
+    minPlayers: number
+    maxPlayers: number
+    minSeason: number
+    maxSeason: number
+    minDate: Date
+    maxDate: Date
 }
 
 //  TODO:
@@ -61,32 +65,145 @@ const playerCounts = [1, 2, 3, 4, 5, 6, 12, 50]
  * @deprecated
  */
 export default function Find({ sessionMembershipId }: { sessionMembershipId: string }) {
+    const { get, getAll, append, set, clear, commit } = useQueryParams<{
+        membershipId?: string
+        flawless?: "true" | "false"
+        fresh?: "true" | "false"
+        completed?: "true" | "false"
+        raid?: `${ListedRaid}`
+        minPlayers?: string
+        maxPlayers?: string
+        minSeason?: string
+        maxSeason?: string
+        minDate?: string
+        maxDate?: string
+    }>()
+
     const { handleSubmit, control, setValue, register, watch } = useForm<ActivitySearchFormState>({
-        defaultValues: {
-            flawless: -1,
-            fresh: -1,
-            completed: -1,
-            raid: -1,
-            players: []
-        }
+        defaultValues: async () => ({
+            membershipIds:
+                getAll("membershipId")
+                    ?.filter((m): m is string => !!m && m !== sessionMembershipId)
+                    .map(m => ({ membershipId: m })) ?? [],
+            flawless: get("flawless") === "true" ? 1 : get("flawless") === "false" ? 0 : -1,
+            fresh: get("fresh") === "true" ? 1 : get("fresh") === "false" ? 0 : -1,
+            completed: get("completed") === "true" ? 1 : get("completed") === "false" ? 0 : -1,
+            raid: (() => {
+                const parsed = z.coerce
+                    .number()
+                    .int()
+                    .positive()
+                    .refine(n => includedIn(Object.values(Raid), n))
+                    .optional()
+                    .safeParse(get("raid"))
+                return parsed.success ? (parsed.data as ListedRaid) : -1
+            })(),
+            minPlayers: (() => {
+                const parsed = z.coerce.number().int().nonnegative().safeParse(get("minPlayers"))
+                return parsed.success ? parsed.data : 0
+            })(),
+            maxPlayers: (() => {
+                const parsed = z.coerce.number().int().nonnegative().safeParse(get("maxPlayers"))
+                return parsed.success ? parsed.data : 0
+            })(),
+            minSeason: (() => {
+                const parsed = z.coerce.number().int().nonnegative().safeParse(get("minSeason"))
+                return parsed.success ? parsed.data : 0
+            })(),
+            maxSeason: (() => {
+                const parsed = z.coerce.number().int().nonnegative().safeParse(get("maxSeason"))
+                return parsed.success ? parsed.data : 0
+            })(),
+            minDate: (() => {
+                const parsed = z.coerce.date().safeParse(get("minDate"))
+                return parsed.success ? parsed.data : new Date(0)
+            })(),
+            maxDate: (() => {
+                const parsed = z.coerce.date().safeParse(get("maxDate"))
+                return parsed.success ? parsed.data : new Date(0)
+            })()
+        })
     })
 
     const submitHandler: SubmitHandler<ActivitySearchFormState> = state => {
-        const minDate = new Date(state.dateRange[0])
-        const maxDate = new Date(state.dateRange[1])
-        search({
-            membershipId: [sessionMembershipId, ...state.players.map(p => p.membershipId)],
+        const minDate = new Date(state.minDate)
+        const maxDate = new Date(state.maxDate)
+
+        const values = {
+            membershipId: Array.from(
+                new Set(state.membershipIds.map(m => m.membershipId)).add(sessionMembershipId)
+            ),
             flawless: state.flawless === -1 ? undefined : !!state.flawless,
             fresh: state.fresh === -1 ? undefined : !!state.fresh,
             completed: state.completed === -1 ? undefined : !!state.completed,
             raid: state.raid === -1 ? undefined : state.raid,
-            minPlayers: state.playerCountRange[0] === 0 ? undefined : state.playerCountRange[0],
-            maxPlayers: state.playerCountRange[1] === 0 ? undefined : state.playerCountRange[1],
-            minSeason: state.seasonRange[0] === 0 ? undefined : state.seasonRange[0],
-            maxSeason: state.seasonRange[1] === 0 ? undefined : state.seasonRange[1],
-            minDate: !isNaN(minDate.getTime()) ? minDate.toISOString() : undefined,
-            maxDate: !isNaN(maxDate.getTime()) ? maxDate.toISOString() : undefined
-        })
+            minPlayers: state.minPlayers === 0 ? undefined : state.minPlayers,
+            maxPlayers: state.maxPlayers === 0 ? undefined : state.maxPlayers,
+            minSeason: state.minSeason === 0 ? undefined : state.minSeason,
+            maxSeason: state.maxSeason === 0 ? undefined : state.maxSeason,
+            minDate: !isNaN(minDate.getTime() || NaN) ? minDate.toISOString() : undefined,
+            maxDate: !isNaN(maxDate.getTime() || NaN) ? maxDate.toISOString() : undefined
+        } as const
+
+        clear()
+        values.membershipId.forEach(m =>
+            append("membershipId", m, {
+                commit: false
+            })
+        )
+        if (values.fresh !== undefined) {
+            set("fresh", `${values.fresh}`, {
+                commit: false
+            })
+        }
+        if (values.completed !== undefined) {
+            set("completed", `${values.completed}`, {
+                commit: false
+            })
+        }
+        if (values.flawless !== undefined) {
+            set("flawless", `${values.flawless}`, {
+                commit: false
+            })
+        }
+        if (values.raid !== undefined) {
+            set("raid", `${values.raid}`, {
+                commit: false
+            })
+        }
+        if (values.minPlayers !== undefined) {
+            set("minPlayers", `${values.minPlayers}`, {
+                commit: false
+            })
+        }
+        if (values.maxPlayers !== undefined) {
+            set("maxPlayers", `${values.maxPlayers}`, {
+                commit: false
+            })
+        }
+        if (values.minSeason !== undefined) {
+            set("minSeason", `${values.minSeason}`, {
+                commit: false
+            })
+        }
+        if (values.maxSeason !== undefined) {
+            set("maxSeason", `${values.maxSeason}`, {
+                commit: false
+            })
+        }
+        if (values.minDate !== undefined) {
+            set("minDate", `${values.minDate}`, {
+                commit: false
+            })
+        }
+        if (values.maxDate !== undefined) {
+            set("maxDate", `${values.maxDate}`, {
+                commit: false
+            })
+        }
+
+        commit()
+        search(values)
     }
 
     const {
@@ -102,7 +219,7 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
         mutationFn: activitySearch
     })
 
-    const players = watch("players")
+    const players = watch("membershipIds")
 
     return (
         <main>
@@ -112,7 +229,11 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
                     <div className={styles.players}>
                         <h2>Players</h2>
                         <div className={styles["players-components"]}>
-                            <PlayerLookup addPlayer={r => setValue("players", [...players, r])} />
+                            <PlayerLookup
+                                addPlayer={membershipId =>
+                                    setValue("membershipIds", [...players, { membershipId }])
+                                }
+                            />
                             <AddedPlayers
                                 control={control}
                                 sessionMembershipId={sessionMembershipId}
@@ -129,12 +250,12 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
                             <h4>Player Count</h4>
                             <div>
                                 <PlayerCountPicker
-                                    id="playerCountRange.0"
+                                    id="minPlayers"
                                     label="Min"
                                     register={register}
                                 />
                                 <PlayerCountPicker
-                                    id="playerCountRange.1"
+                                    id="maxPlayers"
                                     label="Max"
                                     register={register}
                                 />
@@ -143,15 +264,15 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
                         <div className={styles["gadget-group"]}>
                             <h4>Season Range</h4>
                             <div>
-                                <SeasonPicker id="seasonRange.0" label="Min" register={register} />
-                                <SeasonPicker id="seasonRange.1" label="Max" register={register} />
+                                <SeasonPicker id="minSeason" label="Min" register={register} />
+                                <SeasonPicker id="maxSeason" label="Max" register={register} />
                             </div>
                         </div>
                         <div className={styles["gadget-group"]}>
                             <h4>Date Range</h4>
                             <div>
-                                <DatePicker id="dateRange.0" label="Min" register={register} />
-                                <DatePicker id="dateRange.1" label="Max" register={register} />
+                                <DatePicker id="minDate" label="Min" register={register} />
+                                <DatePicker id="maxDate" label="Max" register={register} />
                             </div>
                         </div>
                     </div>
@@ -165,12 +286,9 @@ export default function Find({ sessionMembershipId }: { sessionMembershipId: str
     )
 }
 
-const PlayerLookup = ({
-    addPlayer
-}: {
-    addPlayer: (p: ActivitySearchFormState["players"][number]) => void
-}) => {
+const PlayerLookup = ({ addPlayer }: { addPlayer: (p: string) => void }) => {
     const playerSearch = useSearch()
+    const queryClient = useQueryClient()
 
     return (
         <div className={styles["player-search"]}>
@@ -189,10 +307,14 @@ const PlayerLookup = ({
                         <SinglePlayerSearchResult
                             key={r.membershipId}
                             player={r}
-                            size={2}
+                            size={1.25}
                             noLink
                             handleSelect={() => {
-                                addPlayer({ ...r, resolved: true })
+                                queryClient.setQueryData<RaidHubPlayerInfo>(
+                                    ["raidhub", "player", "basic", r.membershipId],
+                                    r
+                                )
+                                addPlayer(r.membershipId)
                                 playerSearch.clearQuery()
                             }}
                         />
@@ -212,7 +334,7 @@ const AddedPlayers = ({
 }) => {
     const { fields, remove } = useFieldArray({
         control,
-        name: "players"
+        name: "membershipIds"
     })
 
     return (
@@ -220,11 +342,11 @@ const AddedPlayers = ({
             <h3>Selected Players</h3>
             <ul>
                 <li>
-                    <PickedPlayer membershipId={sessionMembershipId} resolved={false} />
+                    <PickedPlayer membershipId={sessionMembershipId} />
                 </li>
-                {fields.map((player, index) => (
-                    <li key={player.id}>
-                        <PickedPlayer {...player} />
+                {fields.map((field, index) => (
+                    <li key={field.id}>
+                        <PickedPlayer membershipId={field.membershipId} />
                         <button type="button" onClick={() => remove(index)} style={{ flexGrow: 0 }}>
                             Remove
                         </button>
@@ -235,17 +357,15 @@ const AddedPlayers = ({
     )
 }
 
-const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
+const PickedPlayer = ({ membershipId }: { membershipId: string }) => {
     // if we dont have the player we can just use the membershipId to get the player
-    const query = useRaidHubResolvePlayer(player.membershipId, {
-        initialData: player.resolved ? player : undefined,
-        enabled: !player.resolved,
+    const query = useRaidHubResolvePlayer(membershipId, {
         staleTime: Infinity
     })
 
     if (query.isSuccess) {
         return (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <Image
                     width={45}
                     height={45}
@@ -257,7 +377,7 @@ const PickedPlayer = (player: ActivitySearchFormState["players"][number]) => {
             </div>
         )
     } else {
-        return <div>{player.membershipId}</div>
+        return <div>{membershipId}</div>
     }
 }
 

@@ -39,7 +39,13 @@ export const o = {
         N,
         K extends keyof T & TemplatableKey,
         R extends string = K extends string ? K : `${K}`
-    >(obj: T, fn: (key: R, value: T[keyof T]) => N) {
-        return o.entries<T>(obj).map(([k, v]) => fn(k as R, v))
+    >(obj: T, fn: (key: R, value: T[K]) => N) {
+        return o.entries<T>(obj).map(([k, v]) =>
+            fn(
+                k as R,
+                // @ts-expect-error This is the point of this helper
+                v
+            )
+        )
     }
 }
