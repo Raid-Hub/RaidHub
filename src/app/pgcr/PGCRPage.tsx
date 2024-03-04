@@ -1,5 +1,5 @@
-import { PGCRContentPanel } from "components_old/pgcr/ContentPanel"
-import SummaryStatsGrid from "components_old/pgcr/SummaryStatsGrid"
+import { PGCRContentPanel } from "~/components/__deprecated__/pgcr/ContentPanel"
+import SummaryStatsGrid from "~/components/__deprecated__/pgcr/SummaryStatsGrid"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { PGCRStateManager } from "./PGCRStateManager"
 import type { PGCRPageProps } from "./types"

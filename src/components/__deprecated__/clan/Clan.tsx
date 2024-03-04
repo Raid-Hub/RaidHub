@@ -6,7 +6,7 @@ import { useClan, useMembersOfGroup } from "~/services/bungie/hooks"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
-import { ClanBannerComponent } from "../../components/ClanBanner"
+import { ClanBannerComponent } from "../../ClanBanner"
 import ClanMember from "./ClanMember"
 import styles from "./clan.module.css"
 

@@ -1,6 +1,6 @@
-import Account from "components_old/account/Account"
 import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
+import Account from "~/components/__deprecated__/account/Account"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { getServerAuthSession } from "~/server/api/auth"
 

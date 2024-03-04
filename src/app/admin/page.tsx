@@ -1,6 +1,6 @@
-import AddVanityForm from "components_old/admin/AddVanityForm"
-import RemoveVanityForm from "components_old/admin/RemoveVanityForm"
 import { type Metadata } from "next"
+import AddVanityForm from "~/components/__deprecated__/admin/AddVanityForm"
+import RemoveVanityForm from "~/components/__deprecated__/admin/RemoveVanityForm"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 

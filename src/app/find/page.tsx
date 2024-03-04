@@ -1,7 +1,7 @@
-import Find from "components_old/find/find"
 import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { ForceClientSideBungieSignIn } from "~/components/ForceClientSideBungieSignIn"
+import Find from "~/components/__deprecated__/find/find"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { getServerAuthSession } from "~/server/api/auth"
 

@@ -1,10 +1,10 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
-import RaidCard from "components_old/profile/raids/RaidCard"
 import { useMemo } from "react"
 import { type ProfileProps } from "~/app/(profile)/types"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
