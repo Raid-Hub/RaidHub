@@ -1,5 +1,5 @@
-import { assert, Equals } from "tsafe"
-import { components } from "~/types/raidhub-openapi"
+import { assert, type Equals } from "tsafe"
+import type { components } from "~/services/raidhub/openapi"
 
 export const Raid = {
     LEVIATHAN: 1,
