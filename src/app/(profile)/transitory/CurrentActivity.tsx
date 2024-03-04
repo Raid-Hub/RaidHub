@@ -31,7 +31,7 @@ const commonTransitoryQuerySettings = {
 export const CurrentActivity = () => {
     const { destinyMembershipId, destinyMembershipType } = usePageProps<ProfileProps>()
 
-    const { data: profileTransitoryData } = useProfileTransitory(
+    const { data: profileTransitoryData, isInitialLoading } = useProfileTransitory(
         { destinyMembershipId, membershipType: destinyMembershipType },
         {
             select: data => data?.profileTransitoryData.data,
@@ -45,13 +45,15 @@ export const CurrentActivity = () => {
             membershipType: destinyMembershipType
         },
         {
-            enabled: !!profileTransitoryData?.currentActivity,
+            enabled: isInitialLoading || !!profileTransitoryData?.currentActivity,
             select: data =>
-                Object.values(data.characterActivities?.data ?? {}).sort(
-                    (a, b) =>
-                        new Date(b.dateActivityStarted).getTime() -
-                        new Date(a.dateActivityStarted).getTime()
-                )[0] as DestinyCharacterActivitiesComponent | undefined,
+                data.characterActivities.data
+                    ? Object.values(data.characterActivities.data).sort(
+                          (a, b) =>
+                              new Date(b.dateActivityStarted).getTime() -
+                              new Date(a.dateActivityStarted).getTime()
+                      )[0]
+                    : null,
             ...commonTransitoryQuerySettings
         }
     )

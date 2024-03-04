@@ -27,14 +27,17 @@ export const DB_VERSION = 9
 /**
  * The list of table names in the Dexie database.
  */
-const tables = [
+const manifestTables = [
     "items",
     "activities",
     "activityModes",
     "activityModifiers",
     "seasons",
     "characterClasses",
-    "milestones",
+    "milestones"
+] as const
+
+const clanBannerTables = [
     "clanBannerDecalPrimaryColors",
     "clanBannerDecalSecondaryColors",
     "clanBannerDecals",
@@ -51,7 +54,7 @@ const tables = [
  */
 type Tables = Readonly<
     Record<
-        (typeof tables)[number],
+        (typeof manifestTables)[number] | (typeof clanBannerTables)[number],
         Table<{
             hash: number
         }>
@@ -93,10 +96,10 @@ class CustomDexie extends Dexie implements Tables {
     clanBannerGonfalons!: Table<Hashed<{ value: string }>>
 
     /**
-     * The cache object that stores collections of data from each table.
+     * The in-memory cache object that stores collections of data from each table.
      */
     public readonly cache: {
-        [K in (typeof tables)[number]]: Collection<
+        [K in (typeof manifestTables)[number] | (typeof clanBannerTables)[number]]: Collection<
             number,
             CustomDexie[K] extends Table<infer T> ? T : never
         >
@@ -104,11 +107,31 @@ class CustomDexie extends Dexie implements Tables {
 
     constructor() {
         super("app")
+        const allTables = [...manifestTables, ...clanBannerTables]
         this.version(DB_VERSION).stores(
-            o.fromEntries(tables.map(table => [table, "hash"] as const))
+            o.fromEntries(allTables.map(table => [table, "hash"] as const))
         )
         // @ts-expect-error generic is right
-        this.cache = o.fromEntries(tables.map(table => [table, new Collection()]))
+        this.cache = o.fromEntries(allTables.map(table => [table, new Collection()]))
+    }
+
+    /**
+     * This is a workaround for the fact that Dexie's bulkPut method is a bit slow
+     * We will seed the cache with the data we are about to put into the database
+     * So that the defs load instantly, however, the memory usage will be higher
+     */
+    public seedCache<K extends (typeof manifestTables)[number]>(
+        key: K,
+        values: NonNullable<ReturnType<CustomDexie["cache"][K]["get"]>>[]
+    ) {
+        values.forEach(v => {
+            // @ts-expect-error generic is right
+            this.cache[key].set(v.hash as number, v)
+        })
+    }
+
+    public clearCache() {
+        Object.values(this.cache).forEach(cache => cache.clear())
     }
 }
 
@@ -120,7 +143,12 @@ export const indexDB = new CustomDexie()
  * @param hash - The hash of the item to query.
  * @returns The queried item or null if not found.
  */
-export const useDexieGetQuery = <K extends (typeof tables)[number]>(table: K, hash: number) => {
+export const useDexieGetQuery = <
+    K extends (typeof manifestTables)[number] | (typeof clanBannerTables)[number]
+>(
+    table: K,
+    hash: number
+) => {
     const liveQuery = useLiveQuery(
         () =>
             // @ts-expect-error generic is right
@@ -148,7 +176,9 @@ export const useDexieGetQuery = <K extends (typeof tables)[number]>(table: K, ha
  * @param hashes - The hashes of the items to query.
  * @returns The queried items.
  */
-export const useDexieBulkGetQuery = <K extends (typeof tables)[number]>(
+export const useDexieBulkGetQuery = <
+    K extends (typeof manifestTables)[number] | (typeof clanBannerTables)[number]
+>(
     table: K,
     hashes: number[]
 ) => {

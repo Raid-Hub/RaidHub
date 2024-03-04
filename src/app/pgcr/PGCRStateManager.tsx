@@ -87,12 +87,12 @@ export const PGCRStateManager = ({
         )
     }
 
-    const processPGCR = useProcessPGCR()
-
     const activityQuery = useRaidHubActivity(instanceId, {
         enabled: isReady,
         staleTime: 3600_000
     })
+
+    const processPGCR = useProcessPGCR()
 
     const pgcrQuery = usePostGameCarnageReport(
         { activityId: instanceId },

@@ -1,5 +1,3 @@
-"use client"
-
 import { LeaderboardEntries } from "./LeaderboardEntries"
 import { LeaderboardEntriesLoading } from "./LeaderboardEntriesLoading"
 import { type UseLeaderboardResult } from "./useLeaderboard"

@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
 import { Tag } from "~/models/tag"
 import { getRaidHubApi } from "~/services/raidhub/common"
@@ -14,18 +13,10 @@ type PageProps = {
 export const dynamic = "force-static"
 export const dynamicParams = true
 
-export default function Page({ params }: PageProps) {
-    return (
-        <Suspense fallback={<PGCRPage instanceId={params.instanceId} isReady={false} />}>
-            <HydratedPage instanceId={params.instanceId} />
-        </Suspense>
-    )
-}
+export default async function Page({ params }: PageProps) {
+    const activity = await prefetchActivity(params.instanceId)
 
-const HydratedPage = async (props: { instanceId: string }) => {
-    const activity = await prefetchActivity(props.instanceId)
-
-    return <PGCRPage instanceId={props.instanceId} ssrActivity={activity ?? undefined} isReady />
+    return <PGCRPage instanceId={params.instanceId} ssrActivity={activity ?? undefined} isReady />
 }
 
 const prefetchActivity = async (instanceId: string) =>

@@ -8,42 +8,36 @@ import {
 } from "react"
 import { createPortal } from "react-dom"
 
-const PortalContext = createContext<{
-    portal: (node: ReactNode) => ReactPortal | null
-} | null>(null)
+const PortalContext = createContext<(node: ReactNode) => ReactPortal | null>((node: ReactNode) => {
+    if (document?.body) {
+        // @ts-expect-error I don't know why create portal wont accept ReactNode
+        return createPortal(node, document.body) as ReactPortal
+    } else {
+        return null
+    }
+})
 
-export const usePortal = () => {
-    const ctx = useContext(PortalContext)
-    if (!ctx) throw Error("This hook must be used inside the PortalProvider")
-    return ctx.portal
-}
+export const usePortal = () => useContext(PortalContext)
 
-export function PortalProvider({
+export const PortalProvider = ({
     children,
     target
 }: {
     children: ReactNode
     target: RefObject<HTMLElement>
-}) {
-    const portal = useCallback(
-        (node: React.ReactNode) => {
-            if (target?.current) {
-                // @ts-expect-error I don't know why create portal wont accept ReactNode
-                return createPortal(node, target.current)
-            } else {
-                return null
-            }
-        },
-        [target]
-    )
-
-    return (
-        <PortalContext.Provider
-            value={{
-                // @ts-expect-error I don't know why create portal wont accept ReactNode
-                portal
-            }}>
-            {children}
-        </PortalContext.Provider>
-    )
-}
+}) => (
+    <PortalContext.Provider
+        value={useCallback(
+            (node: ReactNode) => {
+                if (target?.current) {
+                    // @ts-expect-error I don't know why create portal wont accept ReactNode
+                    return createPortal(node, target.current) as ReactPortal
+                } else {
+                    return null
+                }
+            },
+            [target]
+        )}>
+        {children}
+    </PortalContext.Provider>
+)
