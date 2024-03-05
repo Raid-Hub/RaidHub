@@ -4,24 +4,29 @@ import { type BungieMembershipType } from "bungie-net-core/models"
 import { type DestinyProfileResponse } from "bungie-net-core/models/Destiny/Responses/DestinyProfileResponse"
 import { useBungieClient } from "~/app/layout/managers"
 
-type UseProfileQueryData = DestinyProfileResponse<[204, 205, 305]>
+type UseLiveProfileQueryData = DestinyProfileResponse<[204, 205, 305]>
 
 const getUseProfileQueryKey = (destinyMembershipId: string, membershipType: BungieMembershipType) =>
     ["bungie", "profile", "live data", destinyMembershipId, membershipType] as const
 
-export const useProfileLiveData = <T = UseProfileQueryData>(
+export const useProfileLiveData = <T = UseLiveProfileQueryData>(
     params: {
         destinyMembershipId: string
         membershipType: BungieMembershipType
     },
     opts?: Exclude<
-        UseQueryOptions<UseProfileQueryData, Error, T, ReturnType<typeof getUseProfileQueryKey>>,
+        UseQueryOptions<
+            UseLiveProfileQueryData,
+            Error,
+            T,
+            ReturnType<typeof getUseProfileQueryKey>
+        >,
         "queryFn" | "queryKey" | "structuralSharing"
     >
 ) => {
     const bungieClient = useBungieClient()
 
-    return useQuery<UseProfileQueryData, Error, T, ReturnType<typeof getUseProfileQueryKey>>({
+    return useQuery<UseLiveProfileQueryData, Error, T, ReturnType<typeof getUseProfileQueryKey>>({
         queryKey: getUseProfileQueryKey(params.destinyMembershipId, params.membershipType),
         queryFn: ({ queryKey }) =>
             getProfile(bungieClient, {

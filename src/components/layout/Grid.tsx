@@ -7,7 +7,9 @@ export const Grid = styled.div<{
     $numCols?: number
     $gap?: number
     $fullWidth?: boolean
+    $relative?: boolean
 }>`
+    position: ${props => (props.$relative ? "relative" : "static")};
     display: grid;
     grid-template-columns: repeat(
         ${props => props.$numCols ?? "auto-fill"},

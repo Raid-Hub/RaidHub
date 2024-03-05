@@ -41,16 +41,16 @@ const PageWrapperStyled = styled.main<PageWrapperStyleProps>`
     margin-bottom: 1.5em;
 
     ${props => $media.max.desktop`
-        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 85%))` : "85%"};
+        width: calc(min(${props.$maxWidth}px, 85%));
     `}
     ${props => $media.max.laptop`
-        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 90%))` : "90%"};
+        width: calc(min(${props.$maxWidth}px, 90%));
     `}
     ${props => $media.max.tablet`
-        width: ${props.$maxWidth ? `calc(min(${props.$maxWidth}px, 95%))` : "95%"};
+        width: calc(min(${props.$maxWidth}px, 95%));
     `}
 `
 
 PageWrapperStyled.defaultProps = {
-    $maxWidth: undefined
+    $maxWidth: 1600
 }

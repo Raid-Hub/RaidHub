@@ -40,7 +40,14 @@ export default function PlayerItem({
                     height={48}
                 />
                 <div className={styles["item-details"]}>
-                    <Link href={`https://www.light.gg/db/items/${data.hash}/`} target="_blank">
+                    <Link
+                        href={
+                            data.itemType === 3
+                                ? `https://d2foundry.gg/w/${data.hash}?referrer=raidhub`
+                                : `https://www.light.gg/db/items/${data.hash}?referrer=raidhub`
+                        }
+                        target="_blank"
+                        style={{ color: "unset" }}>
                         <h4 className={styles["item-details-name"]}>
                             {data.displayProperties.name}
                         </h4>

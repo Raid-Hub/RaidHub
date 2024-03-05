@@ -13,7 +13,7 @@ export function ProfileClientWrapper({
 
     return (
         <PortalProvider target={ref}>
-            <PageWrapper ref={ref} pageProps={pageProps} key={pageProps.destinyMembershipId}>
+            <PageWrapper ref={ref} pageProps={pageProps}>
                 {children}
             </PageWrapper>
         </PortalProvider>

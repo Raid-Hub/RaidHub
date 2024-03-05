@@ -1,193 +1,188 @@
-// import { DestinyProfileUserInfoCard } from "bungie-net-core/models"
-// import { ReactNode, useMemo } from "react"
-// import { Loader } from "~/components/Loader"
-// import { Loading } from "~/components/Loading"
-// import { subclassBucket } from "~/data/inventory-item-buckets"
-// import { useLinkedProfiles } from "~/services/bungie/hooks"
-// import { useProfile } from "~/services/bungie/hooks"
-// import { useProfileTransitory } from "~/services/bungie/hooks"
-// import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
-// import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
-// import { useBungieClient } from "../../app/(layout)/managers/session/BungieClientProvider"
-// import PlayerHeader from "./PlayerHeader"
-// import PlayerItem from "./PlayerItem"
-// import styles from "./guardians.module.css"
+import { useMemo, type ReactNode } from "react"
+import { BackgroundImage } from "~/components/BackgroundImage"
+import { Loader } from "~/components/Loader"
+import { Loading } from "~/components/Loading"
+import { Container } from "~/components/layout/Container"
+import { Flex } from "~/components/layout/Flex"
+import { emblemBucket, subclassBucket } from "~/data/inventory-item-buckets"
+import { useItemDefinition } from "~/hooks/dexie"
+import { useProfileLiveData, useProfileTransitory } from "~/services/bungie/hooks"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import { type RaidHubPlayerInfo } from "~/services/raidhub/types"
+import { bungieEmblemUrl, getBungieDisplayName } from "~/util/destiny"
+import { findArmorInBucket, findWeaponInBucket } from "~/util/destiny/itemUtils"
+import PlayerItem from "./PlayerItem"
+import styles from "./guardians.module.css"
 
-// /** @deprecated */
-// export default function Player({
-//     membershipId,
-//     remove,
-//     isFireteamIncluded,
-//     add
-// }: {
-//     membershipId: string
-//     isFireteamIncluded: boolean
-//     remove: () => void
-//     add: (membershipId: string, isFireteamIncluded: boolean) => void
-// }) {
-//     const { data: linkedProfiles } = useLinkedProfiles({
-//         membershipId: membershipId
-//     })
+/** @deprecated */
+export default function Player({
+    membershipId,
+    remove
+}: {
+    membershipId: string
+    remove: () => void
+}) {
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(membershipId)
 
-//     const primaryProfile = useMemo(
-//         () => linkedProfiles?.profiles.find(p => isPrimaryCrossSave(p, membershipId)),
-//         [linkedProfiles, membershipId]
-//     )
+    return resolvedPlayer ? (
+        <ResolvedPlayer {...resolvedPlayer}>
+            <button className={styles["remove-btn"]} onClick={remove}>
+                X
+            </button>
+        </ResolvedPlayer>
+    ) : (
+        <Loading className={styles.player} />
+    )
+}
 
-//     return primaryProfile ? (
-//         <ResolvedPlayer
-//             primaryProfile={primaryProfile}
-//             isFireteamIncluded={isFireteamIncluded}
-//             addMore={add}>
-//             <button className={styles["remove-btn"]} onClick={remove}>
-//                 X
-//             </button>
-//         </ResolvedPlayer>
-//     ) : (
-//         <Loading className={styles["player"]} />
-//     )
-// }
+const queryOptions = {
+    refetchOnWindowFocus: true,
+    staleTime: 20000
+}
 
-// const queryOptions = {
-//     refetchOnWindowFocus: true,
-//     staleTime: 20000
-// }
-// function ResolvedPlayer({
-//     primaryProfile,
-//     isFireteamIncluded,
-//     addMore,
-//     children
-// }: {
-//     primaryProfile: DestinyProfileUserInfoCard
-//     isFireteamIncluded: boolean
-//     addMore: (membershipId: string, isFireteamIncluded: boolean) => void
-//     children: ReactNode
-// }) {
-//     const bungie = useBungieClient()
-//     const {
-//         data: profileData,
-//         isLoading: isLoadingProfile,
-//         isRefetching: isRefetchingProfile
-//     } = useProfile(
-//         {
-//             membershipType: primaryProfile.membershipType,
-//             destinyMembershipId: primaryProfile.membershipId
-//         },
-//         queryOptions
-//     )
-//     const {
-//         data: transitoryComponent,
-//         isLoading: isLoadingTransitoryComponent,
-//         isRefetching: isRefetchingTransitoryComponent
-//     } = useProfileTransitory(
-//         {
-//             membershipType: primaryProfile.membershipType,
-//             destinyMembershipId: primaryProfile.membershipId
-//         },
-//         {
-//             ...queryOptions,
-//             onSuccess(data) {
-//                 if (isFireteamIncluded) {
-//                     data.profileTransitoryData.data?.partyMembers.map(pm =>
-//                         addMore(pm.membershipId, false)
-//                     )
-//                 }
-//             }
-//         }
-//     )
+function ResolvedPlayer({
+    children,
+    ...profile
+}: RaidHubPlayerInfo & {
+    children: ReactNode
+}) {
+    const {
+        data: profileData,
+        isLoading: isLoadingProfile,
+        isRefetching: isRefetchingProfile
+    } = useProfileLiveData(
+        {
+            membershipType: profile.membershipType,
+            destinyMembershipId: profile.membershipId
+        },
+        queryOptions
+    )
 
-//     const mostRecentCharacterId = useMemo(
-//         () =>
-//             profileData?.characters.data
-//                 ? Object.values(profileData.characters.data).reduce((base, current) =>
-//                       new Date(current.dateLastPlayed).getTime() >
-//                       new Date(base.dateLastPlayed).getTime()
-//                           ? current
-//                           : base
-//                   ).characterId
-//                 : null,
-//         [profileData]
-//     )
+    const {
+        isLoading: isLoadingTransitoryComponent,
+        isRefetching: isRefetchingTransitoryComponent
+    } = useProfileTransitory(
+        {
+            membershipType: profile.membershipType,
+            destinyMembershipId: profile.membershipId
+        },
+        {
+            ...queryOptions
+        }
+    )
 
-//     const items = mostRecentCharacterId
-//         ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
-//         : undefined
-//     const sockets = profileData?.itemComponents?.sockets?.data
+    const mostRecentCharacterId = useMemo(
+        () =>
+            profileData?.characterActivities?.data
+                ? Object.entries(profileData.characterActivities.data).reduce<
+                      [string | null, number]
+                  >(
+                      (base, [id, component]) => {
+                          const dateStarted = new Date(component.dateActivityStarted).getTime()
+                          return dateStarted > base[1] ? [id, dateStarted] : base
+                      },
+                      [null, 0]
+                  )[0]
+                : null,
+        [profileData]
+    )
 
-//     const subclass = items?.find(i => i.bucketHash === subclassBucket)
+    const items = mostRecentCharacterId
+        ? profileData?.characterEquipment?.data?.[mostRecentCharacterId].items
+        : undefined
 
-//     const kinetic = findWeaponInBucket(items ?? [], "kinetic")
-//     const energy = findWeaponInBucket(items ?? [], "energy")
-//     const power = findWeaponInBucket(items ?? [], "power")
+    const emblem = useItemDefinition(items?.find(i => i.bucketHash === emblemBucket)?.itemHash ?? 0)
+    const sockets = profileData?.itemComponents?.sockets?.data
 
-//     const helmet = findArmorInBucket(items ?? [], "helmet")
-//     const arms = findArmorInBucket(items ?? [], "arms")
-//     const chest = findArmorInBucket(items ?? [], "chest")
-//     const legs = findArmorInBucket(items ?? [], "legs")
-//     const classItem = findArmorInBucket(items ?? [], "classItem")
+    const { subclass, kinetic, energy, power, helmet, arms, chest, legs, classItem } = useMemo(
+        () => ({
+            subclass: items?.find(i => i.bucketHash === subclassBucket),
 
-//     if (isLoadingProfile || isLoadingTransitoryComponent)
-//         return <Loading className={styles["player"]} />
-//     return profileData ? (
-//         <div className={styles["player"]}>
-//             {profileData.profile?.data && profileData.characters?.data && (
-//                 <PlayerHeader
-//                     profile={profileData.profile.data}
-//                     characters={profileData.characters.data}
-//                 />
-//             )}
-//             {children}
-//             {(isRefetchingProfile || isRefetchingTransitoryComponent) && (
-//                 <div className={styles["loader-container"]}>
-//                     <Loader $stroke={3} />
-//                 </div>
-//             )}
-//             {sockets && (
-//                 <div className={styles["items"]}>
-//                     {subclass?.itemInstanceId && (
-//                         <PlayerItem
-//                             item={subclass}
-//                             sockets={sockets[subclass.itemInstanceId].sockets}
-//                         />
-//                     )}
-//                     {kinetic?.itemInstanceId && (
-//                         <PlayerItem
-//                             item={kinetic}
-//                             sockets={sockets[kinetic.itemInstanceId].sockets}
-//                         />
-//                     )}
-//                     {energy?.itemInstanceId && (
-//                         <PlayerItem
-//                             item={energy}
-//                             sockets={sockets[energy.itemInstanceId].sockets}
-//                         />
-//                     )}
-//                     {power?.itemInstanceId && (
-//                         <PlayerItem item={power} sockets={sockets[power.itemInstanceId].sockets} />
-//                     )}
-//                     {helmet?.itemInstanceId && (
-//                         <PlayerItem
-//                             item={helmet}
-//                             sockets={sockets[helmet.itemInstanceId].sockets}
-//                         />
-//                     )}
-//                     {arms?.itemInstanceId && (
-//                         <PlayerItem item={arms} sockets={sockets[arms.itemInstanceId].sockets} />
-//                     )}
-//                     {chest?.itemInstanceId && (
-//                         <PlayerItem item={chest} sockets={sockets[chest.itemInstanceId].sockets} />
-//                     )}
-//                     {legs?.itemInstanceId && (
-//                         <PlayerItem item={legs} sockets={sockets[legs.itemInstanceId].sockets} />
-//                     )}
-//                     {classItem?.itemInstanceId && (
-//                         <PlayerItem
-//                             item={classItem}
-//                             sockets={sockets[classItem.itemInstanceId].sockets}
-//                         />
-//                     )}
-//                 </div>
-//             )}
-//         </div>
-//     ) : null
-// }
+            kinetic: findWeaponInBucket(items ?? [], "kinetic"),
+            energy: findWeaponInBucket(items ?? [], "energy"),
+            power: findWeaponInBucket(items ?? [], "power"),
+
+            helmet: findArmorInBucket(items ?? [], "helmet"),
+            arms: findArmorInBucket(items ?? [], "arms"),
+            chest: findArmorInBucket(items ?? [], "chest"),
+            legs: findArmorInBucket(items ?? [], "legs"),
+            classItem: findArmorInBucket(items ?? [], "classItem")
+        }),
+        [items]
+    )
+
+    if (isLoadingProfile || isLoadingTransitoryComponent) {
+        return (
+            <Loading className={styles.player} $alpha={0.8} $minWidth="100%" $borderRadius="10px" />
+        )
+    }
+
+    return profileData ? (
+        <div className={styles.player}>
+            {children}
+            {(isRefetchingProfile || isRefetchingTransitoryComponent) && (
+                <div className={styles["loader-container"]}>
+                    <Loader $stroke={3} />
+                </div>
+            )}
+            <Container
+                $aspectRatio={{
+                    width: 474,
+                    height: 96
+                }}>
+                <Flex style={{ fontSize: "1.25rem" }}>{getBungieDisplayName(profile)}</Flex>
+                <BackgroundImage
+                    opacity={1}
+                    src={bungieEmblemUrl(emblem)}
+                    alt={emblem?.displayProperties.name ?? ""}
+                />
+            </Container>
+            {sockets && (
+                <div className={styles.items}>
+                    {subclass?.itemInstanceId && (
+                        <PlayerItem
+                            item={subclass}
+                            sockets={sockets[subclass.itemInstanceId].sockets}
+                        />
+                    )}
+                    {kinetic?.itemInstanceId && (
+                        <PlayerItem
+                            item={kinetic}
+                            sockets={sockets[kinetic.itemInstanceId].sockets}
+                        />
+                    )}
+                    {energy?.itemInstanceId && (
+                        <PlayerItem
+                            item={energy}
+                            sockets={sockets[energy.itemInstanceId].sockets}
+                        />
+                    )}
+                    {power?.itemInstanceId && (
+                        <PlayerItem item={power} sockets={sockets[power.itemInstanceId].sockets} />
+                    )}
+                    {helmet?.itemInstanceId && (
+                        <PlayerItem
+                            item={helmet}
+                            sockets={sockets[helmet.itemInstanceId].sockets}
+                        />
+                    )}
+                    {arms?.itemInstanceId && (
+                        <PlayerItem item={arms} sockets={sockets[arms.itemInstanceId].sockets} />
+                    )}
+                    {chest?.itemInstanceId && (
+                        <PlayerItem item={chest} sockets={sockets[chest.itemInstanceId].sockets} />
+                    )}
+                    {legs?.itemInstanceId && (
+                        <PlayerItem item={legs} sockets={sockets[legs.itemInstanceId].sockets} />
+                    )}
+                    {classItem?.itemInstanceId && (
+                        <PlayerItem
+                            item={classItem}
+                            sockets={sockets[classItem.itemInstanceId].sockets}
+                        />
+                    )}
+                </div>
+            )}
+        </div>
+    ) : null
+}

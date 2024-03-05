@@ -36,7 +36,7 @@ export const Leaderboard = (
     )
 ) => {
     return (
-        <PageWrapper pageProps={props.pageProps}>
+        <PageWrapper pageProps={props.pageProps} $maxWidth={2000}>
             <Flex $padding={0}>
                 <Flex $direction="column" $padding={0} $gap={1.5}>
                     <div style={{ minWidth: "50%" }}>

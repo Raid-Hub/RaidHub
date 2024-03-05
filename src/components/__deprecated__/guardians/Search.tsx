@@ -1,89 +1,77 @@
-// "use client"
+"use client"
 
-// import Image from "next/image"
-// import { useEffect, useRef, useState } from "react"
-// import { useSearch } from "~/hooks/useSearch"
-// import { bungieProfileIconUrl } from "~/util/destiny/bungie-icons"
-// import { getUserName } from "~/util/destiny/bungieName"
-// import { usePortal } from "../../components/Portal"
-// import styles from "./guardians.module.css"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Panel } from "~/components/Panel"
+import { usePortal } from "~/components/Portal"
+import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
+import { Grid } from "~/components/layout/Grid"
+import { useSearch } from "~/hooks/useSearch"
+import { useEventListener } from "~/hooks/util/useEventListener"
+import { useQueryParams } from "~/hooks/util/useQueryParams"
+import styles from "./guardians.module.css"
 
-// export default function Search({ addMember }: { addMember: (membershipId: string) => void }) {
-//     const ref = useRef<HTMLDivElement>(null)
+export default function Search() {
+    const ref = useRef<HTMLDivElement>(null)
+    const { enteredText, results, handleFormSubmit, handleInputChange } = useSearch()
+    const [isShowingResults, setIsShowingResults] = useState(false)
+    const params = useQueryParams<{
+        membershipId: string
+    }>()
 
-//     const { enteredText, results, handleFormSubmit, handleInputChange } = useSearch()
+    // control the hiding of the search bar
+    const handleClickFn = useCallback(
+        (e: MouseEvent) => {
+            if (isShowingResults) {
+                if (!ref.current?.parentNode?.contains(e.target as Node)) {
+                    setIsShowingResults(false)
+                }
+            } else {
+                if (ref.current?.contains(e.target as Node)) {
+                    setIsShowingResults(true)
+                }
+            }
+        },
+        [isShowingResults]
+    )
+    useEventListener("click", handleClickFn)
 
-//     const [isShowingResults, setIsShowingResults] = useState(false)
+    useEffect(() => setIsShowingResults(true), [enteredText])
 
-//     // control the hiding of the search bar
-//     useEffect(() => {
-//         if (isShowingResults) {
-//             const handleClickOutside = (e: MouseEvent) => {
-//                 if (!ref.current?.parentNode?.contains(e.target as Node)) {
-//                     setIsShowingResults(false)
-//                 }
-//             }
+    const portal = usePortal()
 
-//             document.addEventListener("click", handleClickOutside)
-
-//             return () => {
-//                 document.removeEventListener("click", handleClickOutside)
-//             }
-//         } else {
-//             const handleClickIn = (e: MouseEvent) => {
-//                 if (ref.current?.contains(e.target as Node)) {
-//                     setIsShowingResults(true)
-//                 }
-//             }
-
-//             document.addEventListener("click", handleClickIn)
-
-//             return () => {
-//                 document.removeEventListener("click", handleClickIn)
-//             }
-//         }
-//     }, [isShowingResults])
-
-//     useEffect(() => setIsShowingResults(true), [enteredText])
-
-//     const { sendThroughPortal } = usePortal()
-
-//     return (
-//         <div className={styles["search"]} ref={ref}>
-//             <form onSubmit={handleFormSubmit}>
-//                 <input
-//                     autoFocus
-//                     type="text"
-//                     name="search"
-//                     autoComplete="off"
-//                     placeholder={"Search for a Guardian"}
-//                     value={enteredText}
-//                     onChange={handleInputChange}
-//                 />
-//             </form>
-//             {isShowingResults &&
-//                 sendThroughPortal(
-//                     <ol className={styles["search-results"]}>
-//                         {results.map((user, idx) => (
-//                             <li
-//                                 key={idx}
-//                                 className={styles["search-result"]}
-//                                 onClick={() => {
-//                                     addMember(user.membershipId)
-//                                     setIsShowingResults(false)
-//                                 }}>
-//                                 <Image
-//                                     width={45}
-//                                     height={45}
-//                                     alt={getUserName(user)}
-//                                     unoptimized
-//                                     src={bungieProfileIconUrl(user.iconPath)}
-//                                 />
-//                                 <p>{getUserName(user)}</p>
-//                             </li>
-//                         ))}
-//                     </ol>
-//                 )}
-//         </div>
-//     )
-// }
+    return (
+        <div className={styles.search} ref={ref}>
+            <form onSubmit={handleFormSubmit}>
+                <input
+                    autoFocus
+                    type="text"
+                    name="search"
+                    autoComplete="off"
+                    placeholder={"Search for a Guardian"}
+                    value={enteredText}
+                    onChange={handleInputChange}
+                />
+            </form>
+            {isShowingResults &&
+                !!results.size &&
+                portal(
+                    <Panel $fullWidth $backropBlur style={{ position: "absolute", zIndex: 5 }}>
+                        <Grid $gap={0.25}>
+                            {results.map(player => (
+                                <SinglePlayerSearchResult
+                                    key={player.membershipId}
+                                    player={player}
+                                    size={1}
+                                    noLink
+                                    handleSelect={() => {
+                                        setIsShowingResults(false)
+                                        params.append("membershipId", player.membershipId)
+                                    }}
+                                />
+                            ))}
+                        </Grid>
+                    </Panel>
+                )}
+        </div>
+    )
+}

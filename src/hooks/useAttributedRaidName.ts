@@ -39,7 +39,7 @@ export const useAttributedRaidName = (
         if (tag.flawless) descriptors.push(Tag.FLAWLESS)
         if (tag.difficulty === Difficulty.MASTER) descriptors.push(Tag.MASTER)
         else if (tag.contest) descriptors.push(Tag.CONTEST)
-        if (tag.fresh === false) descriptors.push(getCheckpointName(tag.raid))
+        if (!tag.fresh) descriptors.push(getCheckpointName(tag.raid))
         let str = descriptors.join(" ")
 
         if (!opts?.excludeRaidName) {
@@ -47,7 +47,6 @@ export const useAttributedRaidName = (
         }
         // special cases
         if (wishWall) str += " (Wish Wall)"
-        if (tag.fresh === null) str += "*"
         return str
     }, [tag, getCheckpointName, opts?.excludeRaidName, opts?.includeFresh, getRaidString])
 }

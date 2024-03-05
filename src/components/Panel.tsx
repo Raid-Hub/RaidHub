@@ -7,8 +7,19 @@ export const Panel = styled.div<{
     $growOnHover?: boolean
     $static?: boolean
     $padding?: number
+    $backropBlur?: boolean
 }>`
-    ${({ theme, $maxWidth, $fullWidth, $growOnHover, $static, $minWidth, $padding }) => css`
+    ${({
+        theme,
+        $maxWidth,
+        $fullWidth,
+        $growOnHover,
+        $static,
+        $minWidth,
+        $padding,
+        $backropBlur
+    }) => css`
+        ${$backropBlur && "backdrop-filter: blur(5px);"}
         position: ${$static ? "static" : "relative"};
         overflow: ${$static ? "visible" : "auto"};
         width: ${$fullWidth ? "100%" : "max-content"};

@@ -9,7 +9,12 @@ const deviceMediaQuery = <T extends keyof typeof deviceSizes>(
     device: T,
     inverted: boolean,
     value: TemplateStringsArray,
-    ...values: (string | number | ((dimensions: (typeof deviceSizes)[T]) => string | number))[]
+    ...values: (
+        | string
+        | number
+        | undefined
+        | ((dimensions: (typeof deviceSizes)[T]) => string | number)
+    )[]
 ) => css`
     @media (${inverted ? (dir === "max" ? "min" : "max") : dir}-width: ${deviceSizes[device][dir] +
         (inverted ? (dir === "max" ? 1 : -1) : 0)}px) {
