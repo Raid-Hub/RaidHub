@@ -58,7 +58,7 @@ model Session {
   @@map("session")
 }
 
-// Represents an OAuth account. Do not edit these fields.
+// Represents an OAuth account. Do not edit these fields
 model Account {
   id                String  @id @default(uuid())
   userId            String  @map("user_id")
