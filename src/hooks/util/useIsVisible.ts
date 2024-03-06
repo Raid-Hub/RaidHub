@@ -1,4 +1,4 @@
-import { type MutableRefObject, useEffect, useState } from "react"
+import { useEffect, useState, type MutableRefObject } from "react"
 
 export function useIsVisible<E extends HTMLElement>(
     ref: MutableRefObject<E | null>,

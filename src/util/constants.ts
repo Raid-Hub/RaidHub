@@ -1,1 +1,0 @@
-export const LEADERBOARD_ENTRIES_PER_PAGE = 25
