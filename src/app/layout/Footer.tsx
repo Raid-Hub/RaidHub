@@ -9,6 +9,7 @@ import Email from "~/components/icons/Email"
 import TwitterIcon from "~/components/icons/TwitterIcon"
 import { Flex } from "~/components/layout/Flex"
 
+import KofiIcon from "~/components/icons/Kofi"
 import appManifest from "../../../public/manifest.json"
 
 const developers: [display: string, path: string][] = [
@@ -18,6 +19,10 @@ const developers: [display: string, path: string][] = [
 ]
 
 const contactIcons: { url: string; Icon: SVGComponent }[] = [
+    {
+        url: "https://ko-fi.com/raidhub",
+        Icon: KofiIcon
+    },
     {
         url: `https://discord.gg/raidhub`,
         Icon: DiscordIcon

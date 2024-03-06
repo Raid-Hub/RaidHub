@@ -1,7 +1,7 @@
 "use client"
 
-import type { SVGProps } from "react"
-import styled, { type DefaultTheme } from "styled-components"
+import { forwardRef } from "react"
+import styled, { css, type DefaultTheme } from "styled-components"
 import type { AtLeast } from "~/types/generic"
 
 export type SVGWrapperProps = Omit<
@@ -11,8 +11,8 @@ export type SVGWrapperProps = Omit<
         hoverColor?: keyof DefaultTheme["colors"]["icon"]
         absolute?: boolean
         pointer?: boolean
-    } & SVGProps<SVGSVGElement>,
-    "className"
+    } & React.SVGProps<SVGSVGElement>,
+    "className" | "ref"
 >
 
 export type SVGComponent = (props: SVGWrapperProps) => JSX.Element
@@ -40,16 +40,8 @@ StyledSvg.defaultProps = {
     $color: "white"
 }
 
-export function SVG({
-    sx,
-    color,
-    hoverColor,
-    children,
-    absolute,
-    pointer,
-    ...restOfProps
-}: SVGWrapperProps & AtLeast<React.SVGProps<SVGSVGElement>, "viewBox">) {
-    return (
+export const SVG = forwardRef<SVGElement, AtLeast<SVGWrapperProps, "viewBox">>(
+    ({ sx, color, hoverColor, children, absolute, pointer, ...restOfProps }) => (
         <StyledSvg
             $sx={sx}
             $color={color}
@@ -62,4 +54,23 @@ export function SVG({
             {children}
         </StyledSvg>
     )
-}
+)
+
+SVG.displayName = "SVG"
+
+export const DeepFilledSvg = styled(SVG)<{
+    $fill?: string
+    $hoverFill?: string
+}>`
+    ${({ $fill, $hoverFill }) => css`
+        & *:not([data-deep-filled="false"]) {
+            fill: ${$fill};
+        }
+
+        &:hover {
+            & *:not([data-deep-filled="false"]) {
+                fill: ${$hoverFill};
+            }
+        }
+    `}
+`

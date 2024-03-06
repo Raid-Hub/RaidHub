@@ -3,9 +3,13 @@ import { type Metadata } from "next"
 import { RedirectType, permanentRedirect } from "next/navigation"
 import { ProfileClientWrapper } from "~/app/(profile)/ProfileClientWrapper"
 import { ProfilePage } from "~/app/(profile)/ProfilePage"
-import { getUniqueProfile } from "~/app/(profile)/prefetch"
+import { generatePlayerMetadata } from "~/app/(profile)/metadata"
+import {
+    getUniqueProfileByDestinyMembershipId,
+    prefetchRaidHubPlayerBasic
+} from "~/app/(profile)/prefetch"
 import { type ProfileProps } from "~/app/(profile)/types"
-import { metadata as rootMetaData } from "~/app/layout"
+import { bungieProfileIconUrl } from "~/util/destiny"
 
 type PageProps = {
     params: {
@@ -20,16 +24,19 @@ export const revalidate = 900
 
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
-    const appProfile = await getUniqueProfile({
-        destinyMembershipId: params.destinyMembershipId
-    })
+    const appProfile = await getUniqueProfileByDestinyMembershipId(params.destinyMembershipId)
     if (appProfile?.vanity) {
         permanentRedirect(`/${appProfile.vanity}`, RedirectType.replace)
     }
 
+    const basicProfile = await prefetchRaidHubPlayerBasic({
+        membershipId: params.destinyMembershipId
+    }).catch(() => null)
+
     const pageProps: ProfileProps = {
         ...params,
-        ssrAppProfile: appProfile ?? null,
+        ssrRaidHubBasic: basicProfile,
+        ssrAppProfile: appProfile,
         ready: true
     }
 
@@ -43,24 +50,27 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const username = await getUniqueProfile({
-        destinyMembershipId: params.destinyMembershipId
-    })
-        .then(profile => profile?.name)
-        .catch(() => null)
+    const [profile, basic] = await Promise.all([
+        getUniqueProfileByDestinyMembershipId(params.destinyMembershipId).catch(() => null),
+        prefetchRaidHubPlayerBasic({
+            membershipId: params.destinyMembershipId
+        }).catch(() => null)
+    ])
+
+    if (!profile && !basic) {
+        return {}
+    }
+
+    const username = profile?.name ?? basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
 
     if (!username) {
         return {}
     }
 
-    const description = `View ${username}'s raid stats, achievements, tags, and more`
-    return {
-        title: username,
-        description,
-        openGraph: {
-            ...rootMetaData.openGraph,
-            title: username,
-            description
-        }
-    }
+    const image = profile?.image ?? bungieProfileIconUrl(basic?.iconPath)
+
+    return generatePlayerMetadata({
+        username,
+        image
+    })
 }

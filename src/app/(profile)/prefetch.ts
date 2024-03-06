@@ -12,20 +12,15 @@ const serverBungieClient = new ServerBungieClient({
 })
 
 // Caching version of the trpc query
-export const getUniqueProfile = cache(
-    (
-        input:
-            | {
-                  destinyMembershipId: string
-              }
-            | {
-                  vanity: string
-              }
-    ) => trpcServer.profile.getUnique.query(input)
+export const getUniqueProfileByVanity = cache((vanity: string) =>
+    trpcServer.profile.getUnique.query({ vanity })
+)
+export const getUniqueProfileByDestinyMembershipId = cache((destinyMembershipId: string) =>
+    trpcServer.profile.getUnique.query({ destinyMembershipId })
 )
 
 // Get a player's profile from the RaidHub API
-export const getRaidHubPlayerProfile = cache((params: { membershipId: string }) =>
+export const prefetchRaidHubPlayerProfile = cache((params: { membershipId: string }) =>
     getRaidHubApi(
         "/player/{membershipId}/profile",
         {
@@ -40,8 +35,24 @@ export const getRaidHubPlayerProfile = cache((params: { membershipId: string }) 
     )
 )
 
+// Get a player's basic info from the RaidHub API (fast)
+export const prefetchRaidHubPlayerBasic = cache((params: { membershipId: string }) =>
+    getRaidHubApi(
+        "/player/{membershipId}/basic",
+        {
+            membershipId: params.membershipId
+        },
+        null,
+        {
+            next: {
+                revalidate: 24 * 3600
+            }
+        }
+    )
+)
+
 // the results are cached implicitly by the serverBungieClient
-export const getDestinyProfile = (params: {
+export const prefetchDestinyProfile = (params: {
     destinyMembershipId: string
     membershipType: BungieMembershipType
 }) =>

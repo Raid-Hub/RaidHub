@@ -81,7 +81,11 @@ export function UserCard() {
 
     const icon =
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        appProfileImage || bungieProfileIconUrl(bungieProfileQuery.data?.iconPath)
+        appProfileImage ||
+        bungieProfileIconUrl(
+            Object.values(destinyProfileQuery?.data?.characters.data ?? {})[0]?.emblemPath ??
+                resolvedPlayer?.iconPath
+        )
 
     const { data: clan } = useClansForMember(
         { membershipId: props.destinyMembershipId, membershipType: props.destinyMembershipType },
