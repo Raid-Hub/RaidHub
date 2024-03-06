@@ -1,21 +1,25 @@
-/** @type {import('./src/util/presentation/localized-strings').SupportedLanguage[]} */
-const locales = ["en"]
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: process.env.ANALYZE === "true"
+})
 
 const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = withBundleAnalyzer({
+    experimental: {
+        ppr: true
+    },
     reactStrictMode: false,
+    compiler: {
+        styledComponents: true
+    },
     env: {
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         APP_ENV: process.env.APP_ENV,
         RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.io",
         RAIDHUB_API_KEY:
             process.env.RAIDHUB_API_KEY ??
-            Array(32)
-                .fill(null)
-                .map(() => Math.random().toString(36)[2])
-                .join("")
+            Array.from({ length: 32 }, () => Math.random().toString(36)[2]).join("")
     },
     images: {
         remotePatterns: [
@@ -26,18 +30,5 @@ const nextConfig = {
                 pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
             }
         ]
-    },
-    i18n: {
-        locales,
-        defaultLocale: "en"
-    },
-    experimental: {
-        scrollRestoration: true
     }
-}
-
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-    enabled: process.env.ANALYZE === "true"
 })
-
-module.exports = process.env.APP_ENV === "local" ? withBundleAnalyzer(nextConfig) : nextConfig

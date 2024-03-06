@@ -1,7 +1,7 @@
 const urlRegex =
     /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/gim
 
-export function urlHighlight(str: string, anchor: boolean = true): JSX.Element[] {
+export function urlHighlight(str: string, anchor = true): JSX.Element[] {
     const elements: JSX.Element[] = []
     let match
     let lastIndex = 0
@@ -12,7 +12,7 @@ export function urlHighlight(str: string, anchor: boolean = true): JSX.Element[]
             elements.push(<span key={key++}>{str.substring(lastIndex, match.index)}</span>)
         }
         // Capture the matched URL
-        let url = match[0]
+        const url = match[0]
         if (anchor) {
             elements.push(
                 <a key={key++} href={url} target="_blank" rel="noopener noreferrer">

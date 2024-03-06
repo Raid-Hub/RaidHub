@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect } from "react"
+import { useCallback, useEffect, type MutableRefObject } from "react"
 
 export function useClickOutside<T extends HTMLElement>(
     {

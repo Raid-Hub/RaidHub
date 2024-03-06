@@ -1,7 +1,6 @@
+import { Role, type Prisma } from "@prisma/client"
+import { type BungieMembershipType } from "bungie-net-core/models"
 import { z } from "zod"
-import { Role, Prisma } from "@prisma/client"
-import { BungieMembershipType } from "bungie-net-core/models"
-import { UrlPathsToRaid } from "./destiny/raidUtils"
 
 // rather than importing the full enum, we make it ourselves
 const BungieMembershipEnum = z.nativeEnum({
@@ -69,11 +68,6 @@ export const zUniqueDestinyProfile = z.object({
     }
 }
 
-export const zRaidURIComponent = z
-    .string()
-    .refine((key): key is keyof typeof UrlPathsToRaid => key in UrlPathsToRaid)
-    .transform(key => UrlPathsToRaid[key])
-
 export const zCreateVanity = z.object({
     destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
@@ -87,5 +81,6 @@ export const zDeleteVanity = z.object({
 export const numberString = z.coerce.string().regex(/^\d+$/)
 export const booleanString = z
     .string()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .transform(s => JSON.parse(s))
     .pipe(z.boolean())

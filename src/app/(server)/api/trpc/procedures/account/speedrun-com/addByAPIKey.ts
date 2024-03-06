@@ -1,0 +1,81 @@
+import { TRPCError } from "@trpc/server"
+import { z } from "zod"
+import { protectedProcedure } from "../../.."
+
+export const addByAPIKey = protectedProcedure
+    .input(
+        z.object({
+            apiKey: z.string()
+        })
+    )
+    .mutation(async ({ input, ctx }) => {
+        const url = "https://www.speedrun.com/api/v1/profile"
+        const headers = {
+            Accept: "application/json",
+            "X-API-Key": input.apiKey
+        }
+
+        try {
+            const data = await fetch(url, {
+                method: "GET",
+                headers: headers
+            }).then(async res => {
+                const json = (await res.json()) as {
+                    data: {
+                        id: string
+                        weblink: string
+                        names: { international: string }
+                    }
+                }
+                if (res.ok) {
+                    return json
+                } else if (res.status === 403) {
+                    throw new Error("Invalid API Key")
+                } else {
+                    throw new Error("Something went wrong.")
+                }
+            })
+
+            const {
+                data: {
+                    id,
+                    weblink,
+                    names: { international: username }
+                }
+            } = z
+                .object({
+                    data: z.object({
+                        id: z.string(),
+                        weblink: z.string().url(),
+                        names: z.object({
+                            international: z.string()
+                        })
+                    })
+                })
+                .parse(data)
+
+            await ctx.prisma.account.create({
+                data: {
+                    displayName: username,
+                    provider: "speedrun",
+                    providerAccountId: id,
+                    type: "api-key",
+                    url: weblink,
+                    user: {
+                        connect: {
+                            id: ctx.session.user.id
+                        }
+                    }
+                }
+            })
+
+            return {
+                username: username
+            }
+        } catch (e) {
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: e instanceof Error ? e.message : "Unknown error"
+            })
+        }
+    })

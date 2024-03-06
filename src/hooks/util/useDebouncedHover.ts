@@ -1,25 +1,30 @@
-import { useCallback, useState } from "react"
+import { useCallback, useReducer } from "react"
 
-export default function useDebouncedHover({
+const reducer = (prevTimer: NodeJS.Timeout | null, newTimer: NodeJS.Timeout | null) => {
+    if (prevTimer) clearTimeout(prevTimer)
+
+    return newTimer
+}
+
+export const useDebouncedHover = ({
     action,
     debounce
 }: {
     action: () => void
     debounce: number
-}) {
-    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+}) => {
+    const [, setTimer] = useReducer(reducer, null)
 
-    const handleHover = () => {
+    const handleHover = useCallback(() => {
         const timeout = setTimeout(() => {
             action()
         }, debounce)
-        timer && clearTimeout(timer)
         setTimer(timeout)
-    }
+    }, [action, debounce])
 
     const handleLeave = useCallback(() => {
-        timer && clearTimeout(timer)
-    }, [timer])
+        setTimer(null)
+    }, [])
 
     return { handleHover, handleLeave }
 }

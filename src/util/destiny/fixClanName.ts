@@ -5,7 +5,7 @@
  * @returns the fixed clan name
  */
 export function fixClanName(name: string): string {
-    const blanks = ["ㅤ", "ㅤ", " "]
+    const blanks = ["ㅤ", " "]
     let r = name.length
     while (r > 0) {
         if (blanks.includes(name[r - 1])) r--

@@ -1,127 +1,83 @@
-import { LeaderboardResponse } from "~/types/leaderboards"
-import {
-    RaidHubAPIResponse,
-    RaidHubActivityLeaderboardResponse,
-    RaidHubIndividualLeaderboardResponse
-} from "~/types/raidhub-api"
-import { ListedRaid } from "~/types/raids"
-import { bungieIconUrl } from "~/util/destiny/bungie-icons"
-import { RaidToUrlPaths } from "~/util/destiny/raidUtils"
-import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
-
-export enum Leaderboard {
-    WorldFirst = "worldfirst",
-    Sherpa = "sherpas",
-    FullClears = "fresh",
-    Clears = "clears",
-    Trios = "trios",
-    Duos = "duos",
-    Solos = "solos",
-    Speedrun = "speed"
-}
+import type {
+    ListedRaid,
+    RaidHubGlobalLeaderboardCategory,
+    RaidHubIndividualLeaderboardCategory,
+    RaidHubRaidPath,
+    RaidHubWorldFirstLeaderboardCategory
+} from "~/services/raidhub/types"
+import { getRaidHubApi } from "./common"
 
 export function leaderboardQueryKey(
     raid: ListedRaid | "global",
-    board: Leaderboard,
-    paramStrings: string[],
-    page: number
+    category:
+        | RaidHubIndividualLeaderboardCategory
+        | RaidHubWorldFirstLeaderboardCategory
+        | RaidHubGlobalLeaderboardCategory,
+    query: { page: number; count: number }
 ) {
-    return ["raidhub-leaderboard", raid, board, paramStrings, page] as const
+    return ["raidhub-leaderboard", raid, category, query] as const
 }
 
-export async function getLeaderboard(
-    raid: ListedRaid,
-    board: Leaderboard,
-    params: string[],
+export async function getWorldfirstLeaderboard(args: {
+    raid: RaidHubRaidPath
+    category: RaidHubWorldFirstLeaderboardCategory
     page: number
-): Promise<LeaderboardResponse> {
-    const url = new URL(
-        getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/${board}/${params.join("/")}`
+    count: number
+}) {
+    return getRaidHubApi(
+        "/leaderboard/{raid}/worldfirst/{category}",
+        {
+            category: args.category,
+            raid: args.raid
+        },
+        {
+            page: args.page,
+            count: args.count
+        }
     )
-    url.searchParams.append("page", String(page))
-    url.searchParams.append("count", "50")
+}
 
-    try {
-        const res = await fetch(url, { headers: createHeaders() })
+export async function getIndividualLeaderboard(args: {
+    raid: RaidHubRaidPath
+    category: RaidHubIndividualLeaderboardCategory
+    page: number
+    count: number
+}) {
+    const data = await getRaidHubApi(
+        "/leaderboard/{raid}/individual/{category}",
+        {
+            category: args.category,
+            raid: args.raid
+        },
+        {
+            count: args.count,
+            page: args.page
+        }
+    )
 
-        const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivityLeaderboardResponse>
+    return data
+}
 
-        if (data.success) {
-            return {
-                date: data.response.date ?? null,
-                entries: data.response.entries.map(e => ({
-                    id: e.activity.instanceId,
-                    rank: e.rank,
-                    url: `/pgcr/${e.activity.instanceId}`,
-                    participants: e.players
-                        .filter(p => p.data.finishedRaid)
-                        .map(p => ({
-                            id: p.membershipId,
-                            iconURL: bungieIconUrl(p.iconPath),
-                            displayName:
-                                p.bungieGlobalDisplayName || p.displayName || p.membershipId,
-                            url: `/profile/${p.membershipType || 0}/${p.membershipId}`
-                        })),
-                    timeInSeconds: e.value
-                }))
+export async function getIndividualGlobalLeaderboard(args: {
+    board: RaidHubGlobalLeaderboardCategory
+    page: number
+    count: number
+}) {
+    const data = await getRaidHubApi(
+        "/leaderboard/global/{category}",
+        {
+            category: args.board
+        },
+        {
+            count: args.count,
+            page: args.page
+        },
+        {
+            next: {
+                revalidate: 3600
             }
-        } else {
-            throw new Error(data.message)
         }
-    } catch (e) {
-        return {
-            date: null,
-            entries: []
-        }
-    }
-}
-
-export async function getIndividualLeaderboard(
-    raid: ListedRaid,
-    board: Leaderboard,
-    page: number,
-    count: number
-) {
-    const url = new URL(
-        getRaidHubBaseUrl() + `/leaderboard/${RaidToUrlPaths[raid]}/individual/${board}`
     )
-    url.searchParams.append("page", String(page))
-    url.searchParams.append("count", String(count))
 
-    const res = await fetch(url, { headers: createHeaders() })
-
-    const data = (await res.json()) as RaidHubAPIResponse<RaidHubIndividualLeaderboardResponse>
-
-    if (data.success) {
-        return data.response.entries
-    } else {
-        const err = new Error(data.message)
-        Object.assign(err, data.error)
-        throw err
-    }
-}
-
-export async function getIndividualGlobalLeaderboard(
-    board: Leaderboard.Clears | Leaderboard.Sherpa | Leaderboard.FullClears | Leaderboard.Speedrun,
-    page: number,
-    count: number
-) {
-    const url = new URL(getRaidHubBaseUrl() + `/leaderboard/global/${board}`)
-    url.searchParams.append("page", String(page))
-    url.searchParams.append("count", String(count))
-
-    try {
-        const res = await fetch(url, { headers: createHeaders() })
-
-        const data = (await res.json()) as RaidHubAPIResponse<RaidHubIndividualLeaderboardResponse>
-
-        if (data.success) {
-            return data.response.entries
-        } else {
-            throw new Error(data.message)
-        }
-    } catch (e) {
-        return []
-    }
+    return data
 }

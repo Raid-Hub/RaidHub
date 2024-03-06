@@ -13,3 +13,5 @@ export const armorBuckets = {
 }
 
 export const subclassBucket = 3284755031
+
+export const emblemBucket = 4274335291

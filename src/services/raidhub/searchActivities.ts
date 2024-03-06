@@ -1,67 +1,17 @@
-import {
-    RaidHubAPIResponse,
-    RaidHubActivityExtended,
-    RaidHubActivitySearchResponse
-} from "~/types/raidhub-api"
-import { getRaidHubBaseUrl } from "~/util/raidhub/getRaidHubUrl"
-import { createHeaders } from "./_createHeaders"
-import { z } from "zod"
-import { booleanString, numberString } from "~/util/zod"
-import { ListedRaid, ListedRaids } from "~/types/raids"
-import { includedIn } from "~/util/betterIncludes"
 import { Collection } from "@discordjs/collection"
+import {
+    type RaidHubActivityExtended,
+    type RaidHubActivitySearchQuery
+} from "~/services/raidhub/types"
+import { postRaidHubApi } from "./common"
 
-export function activitySearchQueryKey(query: z.infer<typeof activitySearchQuerySchema>) {
+export function activitySearchQueryKey(query: RaidHubActivitySearchQuery) {
     return ["raidhub-activity-search", query] as const
 }
 
-// we have the bungie queries as backups
 export async function activitySearch(
-    queryString: string
+    body: RaidHubActivitySearchQuery
 ): Promise<Collection<string, RaidHubActivityExtended>> {
-    const url = new URL(getRaidHubBaseUrl() + `/activity/search?` + queryString)
-
-    const res = await fetch(url, { headers: createHeaders() })
-
-    const data = (await res.json()) as RaidHubAPIResponse<RaidHubActivitySearchResponse>
-    if (data.success) {
-        return new Collection(data.response.results.map(r => [r.instanceId, r]))
-    } else {
-        const err = new Error(data.message)
-        Object.assign(err, data.error)
-        throw err
-    }
+    const data = await postRaidHubApi("/activity/search", null, body)
+    return new Collection(data.results.map(r => [r.instanceId, r]))
 }
-
-export const activitySearchQuerySchema = z
-    .object({
-        membershipId: z
-            .union([z.array(numberString).min(1), numberString.transform(s => [s])])
-            .optional(),
-        minPlayers: z.coerce.number().int().nonnegative().optional(),
-        maxPlayers: z.coerce.number().int().nonnegative().optional(),
-        minDate: z.coerce.date().optional(),
-        maxDate: z.coerce.date().optional(),
-        minSeason: z.coerce.number().int().nonnegative().optional(),
-        maxSeason: z.coerce.number().int().nonnegative().optional(),
-        fresh: booleanString.optional(),
-        completed: booleanString.optional(),
-        flawless: booleanString.optional(),
-        raid: z.coerce
-            .number()
-            .int()
-            .refine(n => includedIn(ListedRaids, n), {
-                message: "invalid raid value"
-            })
-            .optional(),
-        platformType: z.coerce.number().int().positive().optional(),
-        reversed: z.coerce.boolean().default(false),
-        count: z.coerce.number().int().positive().default(25),
-        page: z.coerce.number().int().positive().default(1)
-    })
-    .strict()
-    .transform(({ membershipId, raid, ...q }) => ({
-        membershipIds: membershipId,
-        raid: raid as ListedRaid | undefined,
-        ...q
-    }))
