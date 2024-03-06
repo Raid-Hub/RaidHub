@@ -40,6 +40,11 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
+            - name: Download dependencies
+              run: |
+                  yarn install
+                  yarn prisma generate
+
             - name: Connect to database branch
               id: create-db-branch-and-connection
               timeout-minutes: 3
