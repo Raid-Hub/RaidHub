@@ -7,6 +7,7 @@ on:
     push:
         branches:
             - main
+            - test
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
@@ -58,7 +59,9 @@ jobs:
               run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Build Project Artifacts
-              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+              run: |
+                  yarn prisma generate
+                  vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
               run: echo "URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --prebuilt -e DATABASE_URL=${{ env.DATABASE_URL }})" >> $GITHUB_ENV
