@@ -47,7 +47,9 @@ jobs:
 
             - name: Clone Repo
               working-directory: ./
-              run: git clone git@github.com:Raid-Hub/${{ github.event.repository.name }}.git
+              run: |
+                  git clone git@github.com:Raid-Hub/${{ github.event.repository.name }}.git
+                  yarn install
 
             - name: Bump Version
               run: |
