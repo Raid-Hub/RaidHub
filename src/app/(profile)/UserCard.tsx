@@ -235,7 +235,8 @@ const ProfilePicture = styled(Image)`
     border-radius: 50%;
     border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border.medium}, #0000 60%);
 
-    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
     box-shadow: 0 0 0.5em
         color-mix(in srgb, ${({ theme }) => theme.colors.border.medium}, #0000 60%);
 `

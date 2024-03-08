@@ -96,6 +96,7 @@ const Container = styled.div<{ $iShowing: boolean }>`
         display: none;
     `}
     backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 `
 
 const Modal = styled.div`
@@ -112,6 +113,7 @@ const Modal = styled.div`
 
     background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 5%);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 `
 
 const Form = styled.form`

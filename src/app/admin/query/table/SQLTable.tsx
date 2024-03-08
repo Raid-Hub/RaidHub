@@ -5,15 +5,16 @@ import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import { Panel } from "~/components/Panel"
-import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { Cell } from "./Cell"
 import { ColumnLabel } from "./ColumnLabel"
 import { ColumnFormats } from "./formats"
 
 export function SQLTable<T extends string[]>({
+    title,
     columnLabels,
     rows
 }: {
+    title: string
     columnLabels: T
     rows: readonly Record<T[number], unknown>[]
 }) {
@@ -22,8 +23,6 @@ export function SQLTable<T extends string[]>({
     const [fns, setFns] = useState<
         Record<string, (typeof ColumnFormats)[keyof typeof ColumnFormats]>
     >({})
-
-    const [queryTitle, setQueryTitle] = useLocalStorage("admin-query-title", "My Table")
 
     const setColumnFn = useMemo(() => {
         return Object.fromEntries(
@@ -51,18 +50,7 @@ export function SQLTable<T extends string[]>({
                     height={30}
                     style={{ position: "absolute", top: 10, left: 10 }}
                 />
-                <h2 style={{ textAlign: "center", marginTop: 0 }}>
-                    {isEditing ? (
-                        <input
-                            id="table-name"
-                            value={queryTitle}
-                            onChange={e => setQueryTitle(e.target.value)}
-                            placeholder="Set a table name"
-                        />
-                    ) : (
-                        queryTitle
-                    )}
-                </h2>
+                <h2 style={{ textAlign: "center", marginTop: 0 }}>{title}</h2>
                 <div>
                     <Table>
                         <thead>

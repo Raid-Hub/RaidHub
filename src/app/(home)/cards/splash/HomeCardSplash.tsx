@@ -17,6 +17,7 @@ export const CardSplash = styled.div`
         right: 0;
         bottom: 0;
         height: 8px;
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
     }
 

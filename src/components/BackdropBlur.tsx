@@ -13,4 +13,5 @@ export const BackdropBlur = styled.div<{
     height: 100%;
 
     backdrop-filter: blur(${({ $radius }) => $radius}px);
+    -webkit-backdrop-filter: blur(${({ $radius }) => $radius}px);
 `
