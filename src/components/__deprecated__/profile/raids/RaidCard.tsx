@@ -28,7 +28,6 @@ type RaidModalProps = {
     expand: () => void
     closeExpand: () => void
     leaderboardData: RaidHubPlayerProfileLeaderboardEntry[] | null
-    wfBoardId: string
     isExpanded: boolean
 }
 
@@ -37,11 +36,12 @@ export default function RaidCard({
     expand,
     closeExpand,
     leaderboardData,
-    wfBoardId,
     isExpanded
 }: RaidModalProps) {
     const { activities, isLoadingActivities, raid } = useRaidCardContext()
-    const { getRaidString } = useRaidHubManifest()
+    const { getRaidString, leaderboards } = useRaidHubManifest()
+    const wfBoardId = (leaderboards.worldFirst[raid].find(b => b.category === "challenge") ??
+        leaderboards.worldFirst[raid].find(b => b.category === "normal"))!.id
 
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
@@ -92,7 +92,7 @@ export default function RaidCard({
     ) : (
         <m.div
             initial={{
-                y: 50,
+                y: 20,
                 opacity: 0
             }}
             whileInView={{
@@ -101,7 +101,7 @@ export default function RaidCard({
             }}
             viewport={{ once: true }}
             transition={{
-                duration: 0.6
+                duration: 0.3
             }}
             className={styles.card}>
             <div className={styles["card-img-container"]}>
@@ -137,6 +137,7 @@ export default function RaidCard({
                     <div className={styles["card-challenge-tags"]}>
                         {tags?.map(tag => (
                             <RaidTagLabel
+                                completed={tag.activity.completed}
                                 key={tag.activity.instanceId}
                                 raid={raid}
                                 setActiveId={setHoveredTag}

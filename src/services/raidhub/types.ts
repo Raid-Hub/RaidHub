@@ -27,6 +27,7 @@ export type RaidHubPlayerInfo = Component<"PlayerInfo">
 export type RaidHubActivityPlayer = Component<"ActivityPlayerData">
 
 export type RaidHubActivityExtended = Component<"ActivityExtended">
+export type RaidHubBaseActivity = Component<"Activity">
 
 export type RaidHubActivityWithPlayer = Component<"ActivityWithPlayerData">
 export type RaidHubPlayerWithActivityData = Component<"PlayerWithActivityData">

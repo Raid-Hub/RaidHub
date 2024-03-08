@@ -1,10 +1,10 @@
 "use client"
 
-import { Collection } from "@discordjs/collection"
+import { type Collection } from "@discordjs/collection"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useRef } from "react"
 import {
     useFieldArray,
     useForm,
@@ -23,6 +23,7 @@ import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import { Raid } from "~/data/raid"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { useSeasons } from "~/hooks/dexie"
+import { useActivitiesByPartition } from "~/hooks/useActivitiesByPartition"
 import { useSearch } from "~/hooks/useSearch"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { type BungieAPIError } from "~/models/BungieAPIError"
@@ -505,23 +506,7 @@ function RaidPicker<T extends FieldValues>({
 
 const Results = ({ allResults }: { allResults: Collection<string, RaidHubActivityExtended> }) => {
     const scrollTargetRef = useRef<HTMLDivElement>(null)
-    const results = useMemo(() => {
-        const partioned = new Collection<string, Collection<string, RaidHubActivityExtended>>()
-        allResults.forEach(a => {
-            const key = `${new Date(a.dateCompleted).getMonth()}-${new Date(
-                a.dateCompleted
-            ).getFullYear()}`
-            if (partioned.has(key)) {
-                partioned.get(key)!.set(a.instanceId, a)
-            } else {
-                partioned.set(
-                    key,
-                    new Collection<string, RaidHubActivityExtended>([[a.instanceId, a]])
-                )
-            }
-        })
-        return partioned
-    }, [allResults])
+    const results = useActivitiesByPartition(allResults)
 
     useEffect(() => {
         if (scrollTargetRef.current) {

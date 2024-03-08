@@ -24,6 +24,7 @@ const RaidTagLabel = ({
     flawless: boolean | null
     difficulty: RaidDifficulty
     contest: boolean
+    completed: boolean
 }) => {
     const hoverAction = useCallback(() => {
         setActiveId(instanceId)

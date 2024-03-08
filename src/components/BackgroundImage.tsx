@@ -10,6 +10,7 @@ type CommonBackgroundImageProps = {
     style?: CSSProperties
     radius?: number
     brightness?: number
+    blur?: number
 }
 
 export const BackgroundImage = (
@@ -30,6 +31,7 @@ export const BackgroundImage = (
             $opacity={props.opacity}
             $borderRadius={props.radius}
             $brightness={props.brightness}
+            $blur={props.blur}
             alt={props.alt}
             style={props.style}
             unoptimized
@@ -46,6 +48,7 @@ export const BackgroundImage = (
             $opacity={props.opacity}
             $borderRadius={props.radius}
             $brightness={props.brightness}
+            $blur={props.blur}
             alt={props.alt}
         />
     )
@@ -57,6 +60,7 @@ type Props = {
     $objectPosition?: string
     $borderRadius?: number
     $brightness?: number
+    $blur?: number
 }
 
 const defaultProps: Props = {
@@ -64,7 +68,8 @@ const defaultProps: Props = {
     $fit: "cover",
     $objectPosition: "50% 50%",
     $opacity: 0.75,
-    $brightness: 1
+    $brightness: 1,
+    $blur: 0
 }
 
 const style = css<Props>`
@@ -74,7 +79,8 @@ const style = css<Props>`
         object-fit: ${props.$fit};
         object-position: ${props.$objectPosition};
         opacity: ${props.$opacity};
-        filter: brightness(${props.$brightness});
+        filter: brightness(${props.$brightness}) blur(${props.$blur}px);
+        -webkit-filter: brightness(${props.$brightness}) blur(${props.$blur}px);
     `}
 `
 
