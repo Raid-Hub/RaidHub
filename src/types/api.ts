@@ -5,3 +5,4 @@ export type RouterOutput = inferRouterOutputs<AppRouter>
 
 export type AppProfile = RouterOutput["profile"]["getUnique"]
 export type AppProfileUpdate = RouterOutput["user"]["profile"]["update"]
+export type AppRole = "ADMIN" | "USER"

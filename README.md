@@ -18,7 +18,7 @@ TBD
 -   Host: Vercel
 -   CDN: AWS S3, Cloudflare
 -   ORM: Prisma
--   Database Provider: Planetscale
+-   Database Provider: Turso
 
 # Developer Guidelines
 

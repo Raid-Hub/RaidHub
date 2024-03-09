@@ -18,7 +18,7 @@ jobs:
         outputs:
             prismaChanges: ${{ steps.filter.outputs.prisma }}
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: dorny/paths-filter@v2
               id: filter
               with:
@@ -37,26 +37,14 @@ jobs:
             APP_ENV: "staging"
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Download dependencies
               run: |
                   yarn install
                   yarn prisma generate
 
-            - name: Connect to database branch
-              id: create-db-branch-and-connection
-              timeout-minutes: 3
-              env:
-                  PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-                  PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-                  BRANCH_NAME: ${{secrets.PLANETSCALE_STAGING_BRANCH}}
-                  ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
-                  DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
-                  GITHUB_USER: ${{github.actor}}
-                  HAS_SCHEMA_CHANGES: ${{needs.paths-filter.outputs.prismaChanges}}
-              working-directory: ${{env.pscale_base_directory}}/cli-helper-scripts/
-              run: ./create-db-branch-and-connection.sh "$BRANCH_NAME"
+              # TODO: Create database branch and connection
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}

@@ -1,4 +1,4 @@
-import { Role, type Prisma } from "@prisma/client"
+import { type Prisma } from "@prisma/client"
 import { type BungieMembershipType } from "bungie-net-core/models"
 import { z } from "zod"
 
@@ -34,7 +34,7 @@ export const zProfile = z.object({
 
 export const zUser = z.object({
     bungieMembershipId: z.string(),
-    role: z.nativeEnum(Role),
+    role: z.enum(["USER", "ADMIN"]),
     email: z.string().nullable().default(null),
     emailVerified: z.nullable(z.date())
 }) satisfies {
