@@ -1,25 +1,30 @@
 "use client"
 
-import { type UseMutationResult } from "@tanstack/react-query"
-import { type MouseEventHandler } from "react"
+import { useEffect, useState, type MouseEventHandler } from "react"
 import styled from "styled-components"
-import { Panel } from "~/components/Panel"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useRaidHubAdminQuery } from "~/services/raidhub/hooks"
-import type {
-    RaidHubAdminQueryBody,
-    RaidHubAdminQueryError,
-    RaidHubAdminQueryResponse
-} from "~/services/raidhub/types"
-import { o } from "~/util/o"
-import { secondsToHMS } from "~/util/presentation/formatting"
-import { SQLTable } from "./table/SQLTable"
+import { DataView } from "./DataView"
+
+const defaultValue = {}
 
 export default function Page() {
-    const [queryText, setQueryText] = useLocalStorage("admin-query-text", "SELECT 1")
-    const { cancel, ...mutation } = useRaidHubAdminQuery()
+    const [queryText, setQueryText] = useState("SELECT 1")
+    const [queryTitle, setQueryTitle] = useState("My Table")
+    const [selectedQueryKey, setSelectedQueryKey] = useState<string | null>(null)
+    const [store, setStore] = useLocalStorage<
+        Record<
+            string,
+            {
+                title: string
+                query: string
+            }
+        >
+    >("admin-queries", defaultValue)
+
+    const { cancel, mutation } = useRaidHubAdminQuery()
 
     const handleSubmit: MouseEventHandler<HTMLButtonElement> = event => {
         event.preventDefault()
@@ -28,15 +33,99 @@ export default function Page() {
 
     const handleExplainSubmit: MouseEventHandler<HTMLButtonElement> = event => {
         event.preventDefault()
-
         mutation.mutate({ query: queryText, type: "EXPLAIN" })
     }
 
-    const submitBtnsDisabled =
-        mutation.data?.type === "HIGH COST" || (!mutation.isIdle && !mutation.isSuccess)
+    const handleSave =
+        (saveNew: boolean): MouseEventHandler<HTMLButtonElement> =>
+        () => {
+            if (saveNew) {
+                const newKey = crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
+                setSelectedQueryKey(newKey)
+                setStore({
+                    ...store,
+                    [newKey]: {
+                        title: queryTitle,
+                        query: queryText
+                    }
+                })
+            } else {
+                if (!selectedQueryKey) return
+                setStore({
+                    ...store,
+                    [selectedQueryKey]: {
+                        title: queryTitle,
+                        query: queryText
+                    }
+                })
+            }
+        }
+
+    const handleDelete: MouseEventHandler<HTMLButtonElement> = () => {
+        if (!selectedQueryKey) return
+        delete store[selectedQueryKey]
+        setStore(store)
+        setSelectedQueryKey(Object.keys(store)[0] ?? null)
+    }
+
+    useEffect(() => {
+        const key = selectedQueryKey ?? Object.keys(store)[0]
+        if (!key) return
+
+        const query = store[key]
+
+        if (query) {
+            setSelectedQueryKey(key)
+            setQueryTitle(query.title)
+            setQueryText(query.query)
+        }
+    }, [selectedQueryKey, setQueryText, store])
+
+    const submitBtnsDisabled = mutation.data?.type === "HIGH COST" || mutation.isLoading
+
+    const unsavedChanges = !selectedQueryKey || store[selectedQueryKey].query !== queryText
 
     return (
         <PageWrapper>
+            <Flex $align="flex-start" $padding={0.25}>
+                {!!Object.keys(store).length && (
+                    <select
+                        name="Load"
+                        id="selector"
+                        value={selectedQueryKey ?? "-"}
+                        onChange={e => setSelectedQueryKey(e.target.value)}>
+                        {Object.entries(store).map(([key, { title }]) => (
+                            <option key={key} label={title} value={key}>
+                                {key}
+                            </option>
+                        ))}
+                    </select>
+                )}
+                <input
+                    type="text"
+                    value={queryTitle}
+                    onChange={e => setQueryTitle(e.target.value)}
+                />
+                <button
+                    type="button"
+                    onClick={handleSave(false)}
+                    disabled={!selectedQueryKey || !queryText}>
+                    Save
+                </button>
+                <button
+                    type="button"
+                    onClick={handleSave(true)}
+                    disabled={!queryText || Object.values(store).some(v => v.title === queryTitle)}>
+                    Save New
+                </button>
+                <button
+                    type="button"
+                    disabled={!selectedQueryKey || Object.values(store).length === 1}
+                    onClick={handleDelete}>
+                    Delete
+                </button>
+                {unsavedChanges && <div>Unsaved Changes</div>}
+            </Flex>
             <Container onSubmit={e => e.preventDefault()}>
                 <CodeTextArea
                     placeholder="Enter SQL query here"
@@ -59,13 +148,18 @@ export default function Page() {
                     <button
                         onClick={mutation.reset}
                         type="reset"
-                        disabled={!mutation.data || mutation.data.type === "HIGH COST"}>
+                        disabled={
+                            mutation.isIdle ||
+                            mutation.isLoading ||
+                            mutation.data?.type === "HIGH COST"
+                        }>
                         Clear Results
                     </button>
+
                     {mutation.isLoading && <CancelButton onClick={cancel}>Cancel</CancelButton>}
                 </Flex>
             </Container>
-            <DataView {...mutation} />
+            <DataView title={queryTitle} mutation={mutation} />
             {mutation.data?.type === "HIGH COST" && (
                 <Flex $align="flex-start">
                     <button
@@ -84,52 +178,6 @@ export default function Page() {
         </PageWrapper>
     )
 }
-
-const DataView = ({
-    isLoading,
-    isError,
-    error,
-    isSuccess,
-    data
-}: UseMutationResult<RaidHubAdminQueryResponse, unknown, RaidHubAdminQueryBody>) => {
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
-    if (isError) {
-        const err = error as RaidHubAdminQueryError
-        return <ErrorMessage>{err.message}</ErrorMessage>
-    }
-    if (isSuccess) {
-        if (data.type === "HIGH COST") {
-            return (
-                <WarningMessage>
-                    <div>Warning: High Query Cost</div>Estimated Query duration:{" "}
-                    <b>{secondsToHMS(data.estimatedDuration, false)}</b>
-                </WarningMessage>
-            )
-        }
-        if (data.type === "EXPLAIN") {
-            return (
-                <Panel>
-                    <pre>{data.data.join("\n")}</pre>
-                </Panel>
-            )
-        } else if (!data.data.length) {
-            return <Panel>{"No rows :("}</Panel>
-        } else {
-            return <SQLTable columnLabels={o.keys(data.data[0])} rows={data.data} />
-        }
-    }
-    return null
-}
-
-const ErrorMessage = styled.div`
-    color: red;
-`
-
-const WarningMessage = styled.div`
-    color: yellow;
-`
 
 const Container = styled.form`
     width: 100%;

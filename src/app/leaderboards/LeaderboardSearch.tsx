@@ -80,4 +80,5 @@ const Results = styled.div`
     right: 0;
     z-index: 1;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5x);
 `

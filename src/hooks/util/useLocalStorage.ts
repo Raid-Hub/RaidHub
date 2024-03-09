@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export const useLocalStorage = <V>(
     key: string,
@@ -11,11 +11,16 @@ export const useLocalStorage = <V>(
         setValue(fromStore ? (JSON.parse(fromStore) as V) : defaultValue)
     }, [key, defaultValue])
 
-    const save = (value: V | ((old: V) => V)) => {
-        const toSave = typeof value === "function" ? (value as (old: V) => V)(_value) : value
-        localStorage.setItem(key, JSON.stringify(toSave))
-        setValue(toSave)
-    }
+    const save = useCallback(
+        (value: V | ((old: V) => V)) => {
+            setValue(old => {
+                const toSave = typeof value === "function" ? (value as (old: V) => V)(old) : value
+                localStorage.setItem(key, JSON.stringify(toSave))
+                return toSave
+            })
+        },
+        [key]
+    )
 
     return [_value, save]
 }
@@ -24,8 +29,9 @@ export const useLocalStorageObject = <V>(args: {
     storageKey: string
     paramKey: string
     defaultValue: V
-}): [V, (value: V | ((old: V) => V)) => void] => {
+}): [V, (value: V | ((old: V) => V)) => void, Record<string, V>] => {
     const [_value, setValue] = useState<V>(args.defaultValue)
+    const [store, setStore] = useState<Record<string, V>>({ [args.paramKey]: args.defaultValue })
 
     useEffect(() => {
         const fromStore = localStorage.getItem(args.storageKey)
@@ -38,15 +44,14 @@ export const useLocalStorageObject = <V>(args: {
     const save = (value: V | ((old: V) => V)) => {
         const toSave = typeof value === "function" ? (value as (old: V) => V)(_value) : value
         const currStore = localStorage.getItem(args.storageKey)
-        localStorage.setItem(
-            args.storageKey,
-            JSON.stringify({
-                ...(currStore ? JSON.parse(currStore) : {}),
-                [args.paramKey]: toSave
-            })
-        )
+        const newValue = {
+            ...(currStore ? (JSON.parse(currStore) as Record<string, V>) : {}),
+            [args.paramKey]: toSave
+        }
+        localStorage.setItem(args.storageKey, JSON.stringify(newValue))
         setValue(toSave)
+        setStore(newValue)
     }
 
-    return [_value, save]
+    return [_value, save, store]
 }

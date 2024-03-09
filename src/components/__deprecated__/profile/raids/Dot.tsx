@@ -1,17 +1,13 @@
 import { animate } from "framer-motion"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, type MouseEvent } from "react"
+import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "~/app/(profile)/raids/constants"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import RaidSkull from "~/components/icons/RaidSkull"
 import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { type DotTooltipProps } from "./DotTooltip"
 import styles from "./raids.module.css"
-
-export const Red = "#F44336"
-export const Green = "#4CAF50"
-export const Teal = "#36c9bd"
-export const Orange = "#F07C27"
 
 type DotProps = {
     activity: RaidHubPlayerActivitiesActivity
@@ -84,11 +80,11 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                 fill={
                     activity.player.finishedRaid
                         ? activity.flawless
-                            ? Teal
-                            : Green
+                            ? DotFlawless
+                            : DotSuccess
                         : activity.completed
-                        ? Orange
-                        : Red
+                        ? DotTaxi
+                        : DotFail
                 }
                 fillOpacity={0.978}
                 r={RADIUS}

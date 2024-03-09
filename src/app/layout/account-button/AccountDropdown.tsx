@@ -89,6 +89,7 @@ const Container = styled(m.div)`
     );
 
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10x);
 
     transform-origin: top;
 

@@ -30,5 +30,5 @@ export const useRaidHubAdminQuery = () => {
         abortController.current.abort()
     }, [abortController])
 
-    return { ...mutation, cancel }
+    return { mutation, cancel }
 }

@@ -42,7 +42,11 @@ export const SearchBar = () => {
 
     return (
         <Container onSubmit={handleFormSubmit} ref={searchContainerRef}>
-            <LeftIcon>{isLoading ? <Loader $stroke={2} /> : <Search color="white" />}</LeftIcon>
+            <Left>
+                <IconContainer>
+                    <Search color="white" />
+                </IconContainer>
+            </Left>
             <SearchInput
                 $size={5}
                 $pl={1.5}
@@ -55,12 +59,19 @@ export const SearchBar = () => {
                     setIsShowingResults(true)
                 }}
             />
-            {userAgent && (
-                <Keys $padding={0} $gap={0.2}>
-                    <kbd>{OSKey}</kbd>
-                    <kbd>k</kbd>
-                </Keys>
-            )}
+            <Right>
+                {isLoading && (
+                    <IconContainer>
+                        <Loader $stroke={2} />
+                    </IconContainer>
+                )}
+                {userAgent && (
+                    <Keys $padding={0} $gap={0.2}>
+                        <kbd>{OSKey}</kbd>
+                        <kbd>k</kbd>
+                    </Keys>
+                )}
+            </Right>
             {isShowingResults && (
                 <HeaderSearchResults
                     results={Array.from(results.values())}
@@ -83,22 +94,31 @@ const Container = styled.form`
     `}
 `
 
-const LeftIcon = styled.div`
+const IconContainer = styled.div`
+    position: relative;
+    min-width: 1.25rem;
+    aspect-ratio: 1/1;
+`
+
+const Left = styled.div`
     position: absolute;
     left: 0.5em;
     top: 50%;
     transform: translateY(-50%);
-
-    min-height: 50%;
-    aspect-ratio: 1/1;
 `
 
-const Keys = styled(Flex)`
+const Right = styled(Flex)`
     position: absolute;
     right: 0.3em;
     top: 50%;
     transform: translateY(-50%);
+`
+Right.defaultProps = {
+    $gap: 0.5,
+    $padding: 0
+}
 
+const Keys = styled(Flex)`
     font-size: 1rem;
     user-select: none;
     color: ${({ theme }) => theme.colors.text.secondary};
@@ -120,6 +140,6 @@ const Keys = styled(Flex)`
     }
 
     ${$media.max.tablet`
-        display: none;
-    `}
+    display: none;
+`}
 `

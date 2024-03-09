@@ -36,5 +36,6 @@ const Container = styled.div`
     border-radius: 2px;
     border: 1px solid color-mix(in srgb, ${props => props.theme.colors.border.dark}, #0000 60%);
 
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
 `

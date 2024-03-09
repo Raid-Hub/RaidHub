@@ -2,11 +2,15 @@
 
 import { Collection } from "@discordjs/collection"
 import { useMemo } from "react"
+import styled from "styled-components"
 import { type ProfileProps } from "~/app/(profile)/types"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { TabSelector } from "~/components/TabSelector"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
+import { H4 } from "~/components/typography/H4"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLinkedProfiles } from "~/services/bungie/hooks"
 import { useRaidHubActivities, useRaidHubPlayers } from "~/services/raidhub/hooks"
@@ -15,6 +19,7 @@ import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
 } from "~/services/raidhub/types"
+import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
 import { RaidCardContext } from "./RaidCardContext"
 
@@ -101,44 +106,55 @@ export const Raids = () => {
         raid: string
     }>()
 
-    const { getExpandedRaid, clearExpandedRaid, setExpandedRaid } = useMemo(
+    const { expandedRaid, clearExpandedRaid, setExpandedRaid } = useMemo(
         () => ({
-            getExpandedRaid: () => {
-                const queryValue = queryParams.get("raid")
-                return queryValue ? (Number(queryValue) as ListedRaid) : null
-            },
+            expandedRaid: Number(queryParams.get("raid")),
             clearExpandedRaid: () => queryParams.remove("raid"),
             setExpandedRaid: (raid: ListedRaid) => queryParams.set("raid", String(raid))
         }),
         [queryParams]
     )
 
+    const [tab, setTab] = useLocalStorage<"classic" | "history">("player-profile-tab", "classic")
+
     return (
         <FilterContextProvider>
-            <Grid as="section" $minCardWidth={325}>
-                {listedRaids.map(raid => (
-                    <RaidCardContext
-                        key={raid}
-                        activitiesByRaid={activitiesByRaid}
-                        isLoadingActivities={isLoadingActivities}
-                        raid={raid}>
-                        <RaidCard
-                            leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
-                            wfBoardId={
-                                (leaderboards.worldFirst[raid].find(
-                                    b => b.category === "challenge"
-                                ) ??
-                                    leaderboards.worldFirst[raid].find(
-                                        b => b.category === "normal"
-                                    ))!.id
-                            }
-                            expand={() => setExpandedRaid(raid)}
-                            closeExpand={clearExpandedRaid}
-                            isExpanded={raid === getExpandedRaid()}
-                        />
-                    </RaidCardContext>
-                ))}
-            </Grid>
+            <TabSelector>
+                <Tab aria-selected={tab === "classic"} onClick={() => setTab("classic")}>
+                    Classic
+                </Tab>
+                <Tab aria-selected={tab === "history"} onClick={() => setTab("history")}>
+                    History
+                </Tab>
+            </TabSelector>
+            {tab === "classic" ? (
+                <Grid as="section" $minCardWidth={325}>
+                    {listedRaids.map(raid => (
+                        <RaidCardContext
+                            key={raid}
+                            activitiesByRaid={activitiesByRaid}
+                            isLoadingActivities={isLoadingActivities}
+                            raid={raid}>
+                            <RaidCard
+                                leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
+                                expand={() => setExpandedRaid(raid)}
+                                closeExpand={clearExpandedRaid}
+                                isExpanded={raid === expandedRaid}
+                            />
+                        </RaidCardContext>
+                    ))}
+                </Grid>
+            ) : (
+                <ActivityHistoryLayout membershipIds={membershipIds} />
+            )}
         </FilterContextProvider>
     )
+}
+
+const Tab = styled(H4)`
+    padding: 0.5rem;
+`
+
+Tab.defaultProps = {
+    $mBlock: 0.2
 }

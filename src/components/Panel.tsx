@@ -19,7 +19,7 @@ export const Panel = styled.div<{
         $padding,
         $backropBlur
     }) => css`
-        ${$backropBlur && "backdrop-filter: blur(5px);"}
+        ${$backropBlur && "backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);"}
         position: ${$static ? "static" : "relative"};
         overflow: ${$static ? "visible" : "auto"};
         width: ${$fullWidth ? "100%" : "max-content"};

@@ -40,9 +40,10 @@ StyledSvg.defaultProps = {
     $color: "white"
 }
 
-export const SVG = forwardRef<SVGElement, AtLeast<SVGWrapperProps, "viewBox">>(
-    ({ sx, color, hoverColor, children, absolute, pointer, ...restOfProps }) => (
+export const SVG = forwardRef<SVGSVGElement, AtLeast<SVGWrapperProps, "viewBox">>(
+    ({ sx, color, hoverColor, children, absolute, pointer, ...restOfProps }, ref) => (
         <StyledSvg
+            ref={ref}
             $sx={sx}
             $color={color}
             $hoverColor={hoverColor}
