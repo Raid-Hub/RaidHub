@@ -25,7 +25,7 @@ export const Card = styled.div<{
 Card.defaultProps = {
     $fullWidth: false,
     $overflowHidden: false,
-    $borderRadius: 10,
+    $borderRadius: 2,
     $opacity: 75,
     $color: "medium"
 }

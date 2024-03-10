@@ -38,6 +38,8 @@ yarn-error.log*
 
 # docker
 raidhub-app-db/
+prisma/raidhub-sqlite.db
+prisma/raidhub-sqlite.db-journal
 
 # test pages
 src/pages/test.tsx

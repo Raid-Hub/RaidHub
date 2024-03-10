@@ -1,16 +1,18 @@
 import "server-only"
 
 import type { Profile } from "@prisma/client"
-import type { UserMembershipData } from "bungie-net-core/models"
-import type { CallbacksOptions } from "next-auth"
+import { type Account } from "next-auth"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
-export const signInCallback: CallbacksOptions<UserMembershipData | Profile>["signIn"] = async ({
+export const signInCallback = async ({
     account,
     user
+}: {
+    account: Account
+    user: Profile & { fresh?: true }
 }) => {
-    // Users from the bungie callback will already have a bungieAccessToken
-    if (account?.provider === "bungie" && !("bungieAccessToken" in user)) {
+    // Users from the bungie callback will not need to refresh their tokens
+    if (account?.provider === "bungie" && !user.fresh) {
         await updateBungieAccessTokens({
             userId: user.id,
             access: {

@@ -1,6 +1,4 @@
-import type { Metadata } from "next"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { metadata as rootMetaData } from "../layout"
 import { Cards } from "./HomeCards"
 import { HomeLogo } from "./HomeLogo"
 import { HomeToolButtons } from "./HomeToolButtons"
@@ -15,12 +13,4 @@ export default async function Page() {
             <Cards />
         </PageWrapper>
     )
-}
-
-export const metadata: Metadata = {
-    title: "Home",
-    openGraph: {
-        ...rootMetaData.openGraph,
-        title: "Home"
-    }
 }

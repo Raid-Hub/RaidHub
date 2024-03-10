@@ -1,4 +1,7 @@
-import { SessionContext, type SessionContextValue, type UseSessionOptions } from "next-auth/react"
+"use client"
+
+import { type UseSessionOptions } from "next-auth/lib/client"
+import { SessionContext, type SessionContextValue } from "next-auth/react"
 import { useContext, useEffect } from "react"
 
 /**

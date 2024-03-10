@@ -1,5 +1,5 @@
 import type { Difficulty, Raid } from "data/raid"
-import type { Prettify } from "../../types/generic"
+import type { KeysWhichValuesExtend, Prettify } from "../../types/generic"
 import type { components, paths } from "./openapi"
 
 type Component<T extends keyof components["schemas"]> = Prettify<components["schemas"][T]>
@@ -13,7 +13,8 @@ export type RaidDifficulty = (typeof Difficulty)[keyof typeof Difficulty]
 
 export type RaidDifficultyTuple = readonly [name: ListedRaid, difficulty: RaidDifficulty]
 
-export type RaidHubPath = keyof paths
+export type RaidHubGetPath = KeysWhichValuesExtend<paths, GetSchema>
+export type RaidHubPostPath = KeysWhichValuesExtend<paths, PostSchema>
 
 export type RaidHubErrorResponseObject = Component<"RaidHubError">
 
@@ -78,3 +79,42 @@ export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchRespo
 
 export type RaidHubLeaderboardSearchQueryCategory = RaidHubLeaderboardSearchQuery["category"]
 export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["type"]
+
+export type RaidHubTokenResponse = Component<"AuthorizeResponse">
+
+interface GetSchema {
+    get: {
+        parameters?: {
+            query?: unknown
+            path?: unknown
+        }
+        responses: {
+            200: {
+                content: {
+                    readonly "application/json": unknown
+                }
+            }
+        }
+    }
+}
+
+interface PostSchema {
+    post: {
+        requestBody?: {
+            content: {
+                "application/json": unknown
+            }
+        }
+        parameters?: {
+            query?: unknown
+            path?: unknown
+        }
+        responses: {
+            200: {
+                content: {
+                    readonly "application/json": unknown
+                }
+            }
+        }
+    }
+}

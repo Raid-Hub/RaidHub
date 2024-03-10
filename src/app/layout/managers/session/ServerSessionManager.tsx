@@ -1,7 +1,6 @@
-import { headers } from "next/headers"
-import { userAgent } from "next/server"
 import { Suspense, type ReactNode } from "react"
 import { getServerAuthSession } from "~/server/api/auth"
+import { isStaticRequest } from "~/server/util"
 import { ClientSessionManager } from "./ClientSessionManager"
 
 /**
@@ -26,12 +25,8 @@ export const SessionManager = (props: { children: ReactNode }) => (
 async function AsyncSessionProvider(props: { children: ReactNode }) {
     const session = await getServerAuthSession()
 
-    const ua = userAgent({
-        headers: headers()
-    }).ua
-
     return (
-        <ClientSessionManager serverSession={session} isStatic={!ua}>
+        <ClientSessionManager serverSession={session} isStatic={isStaticRequest()}>
             {props.children}
         </ClientSessionManager>
     )

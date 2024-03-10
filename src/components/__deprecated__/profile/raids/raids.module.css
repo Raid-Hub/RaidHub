@@ -8,7 +8,7 @@
 
 .card {
     border: 1px solid rgba(111, 111, 111, 0.229);
-    border-radius: 20px;
+    border-radius: 2px;
     flex: 1;
     flex-basis: 0;
 
@@ -112,7 +112,7 @@
 
     background-color: rgba(161, 105, 0, 0.857);
     background-size: 0em;
-    border-bottom-right-radius: 7px;
+    border-bottom-right-radius: 2px;
 
     white-space: nowrap;
 }

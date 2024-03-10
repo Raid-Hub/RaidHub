@@ -4,6 +4,7 @@ import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { type Session } from "next-auth"
 import { postRaidHubApi } from "~/services/raidhub/common"
+import { type RaidHubTokenResponse } from "~/services/raidhub/types"
 import { type SessionAndUserData } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
@@ -11,8 +12,7 @@ export const sessionCallback = async ({
     session,
     user: { bungieAccount, raidHubAccessToken, ...user }
 }: SessionAndUserData) => {
-    let raidhubToken
-
+    let raidhubToken: Promise<RaidHubTokenResponse | undefined> = Promise.resolve(undefined)
     if (
         user.role === "ADMIN" &&
         (!raidHubAccessToken || Date.now() > raidHubAccessToken.expiresAt.getTime())
