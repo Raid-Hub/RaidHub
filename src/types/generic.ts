@@ -16,3 +16,7 @@ export type PageStaticParams<T extends (...args: any[]) => Promise<Record<string
 }
 
 export type Truthy<T> = T extends null | undefined | false | "" | 0 ? never : T
+
+export type KeysWhichValuesExtend<Keys, Schema> = keyof {
+    [key in keyof Keys as Keys[key] extends Schema ? key : never]: Keys[key]
+}
