@@ -2,7 +2,6 @@
 
 import { type Collection } from "@discordjs/collection"
 import { type Session } from "next-auth"
-import { type Provider } from "next-auth/providers"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
@@ -19,7 +18,14 @@ import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
 
 type AccountProps = {
     session: Session
-    providers: Collection<string, Provider>
+    providers: Collection<
+        string,
+        {
+            id: string
+            name: string
+            type: string
+        }
+    >
 }
 
 const Account = ({ session, providers }: AccountProps) => {

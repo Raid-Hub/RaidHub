@@ -1,7 +1,6 @@
 import "server-only"
 
 import NextAuth from "next-auth"
-import type { Provider } from "next-auth/providers"
 import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
@@ -52,8 +51,15 @@ export const {
 // We cache the session for each request to avoid unnecessary database calls
 export const getServerSession = cache(auth)
 
-function getProviders(): Provider[] {
-    const providers = new Array<Provider>(
+type ProviderType =
+    | ReturnType<typeof BungieProvider>
+    | ReturnType<typeof DiscordProvider>
+    | ReturnType<typeof TwitchProvider>
+    | ReturnType<typeof TwitterProvider>
+    | ReturnType<typeof GoogleProvider>
+
+export function getProviders(): ProviderType[] {
+    const providers = new Array<ProviderType>(
         BungieProvider({
             clientId: process.env.BUNGIE_CLIENT_ID!,
             clientSecret: process.env.BUNGIE_CLIENT_SECRET!,
@@ -68,7 +74,7 @@ function getProviders(): Provider[] {
                 clientSecret: process.env.DISCORD_CLIENT_SECRET,
                 // removes the email scope
                 authorization: "https://discord.com/api/oauth2/authorize?scope=identify"
-            })
+            }) as ProviderType
         )
     }
 
@@ -102,7 +108,7 @@ function getProviders(): Provider[] {
                         scope: "openid profile https://www.googleapis.com/auth/youtube.readonly"
                     }
                 }
-            })
+            }) as ProviderType
         )
     }
 
