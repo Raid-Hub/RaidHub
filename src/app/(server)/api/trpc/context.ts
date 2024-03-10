@@ -1,8 +1,10 @@
+import "server-only"
+
 import { prisma } from "../../prisma"
-import { getServerAuthSession } from "../auth"
+import { getServerSession } from "../auth"
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-    const session = await getServerAuthSession()
+    const session = await getServerSession()
 
     return {
         prisma: prisma,

@@ -8,7 +8,6 @@ import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
 import { cache } from "react"
 import { prisma } from "~/server/prisma"
-import { isStaticRequest } from "~/server/util"
 import { PrismaAdapter } from "./adapter"
 import BungieProvider from "./providers/BungieProvider"
 import { sessionCallback } from "./sessionCallback"
@@ -52,7 +51,7 @@ export const {
 })
 
 // We cache the session for each request to avoid unnecessary database calls
-export const getServerAuthSession = cache(() => (isStaticRequest() ? null : auth()))
+export const getServerSession = cache(auth)
 
 function getProviders(): Provider[] {
     const providers = new Array<Provider>(

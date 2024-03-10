@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Suspense } from "react"
 import QuestionMark from "~/components/icons/QuestionMark"
 import UserIcon from "~/components/icons/UserIcon"
-import { getServerAuthSession } from "../../(server)/api/auth"
+import { getServerSession } from "~/server/api/auth"
 import { AccountIcon } from "./AccountIcon"
 
 const ICON_SIZE = 32
@@ -16,7 +16,7 @@ export const AccountIconWrapper = () => (
 )
 
 async function AccountIconContent() {
-    const session = await getServerAuthSession()
+    const session = await getServerSession()
 
     return (
         <>

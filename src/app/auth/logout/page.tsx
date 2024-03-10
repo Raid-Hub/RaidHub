@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation"
-import { getServerAuthSession } from "~/server/api/auth"
+import { getServerSession } from "~/server/api/auth"
 import { SignOut } from "./SignOut"
 
 export default async function Page() {
-    const session = await getServerAuthSession()
+    const session = await getServerSession()
     if (!session) {
         redirect("/")
     } else {

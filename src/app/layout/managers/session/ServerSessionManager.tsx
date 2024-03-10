@@ -1,5 +1,5 @@
 import { Suspense, type ReactNode } from "react"
-import { getServerAuthSession } from "~/server/api/auth"
+import { getServerSession } from "~/server/api/auth"
 import { isStaticRequest } from "~/server/util"
 import { ClientSessionManager } from "./ClientSessionManager"
 
@@ -23,7 +23,7 @@ export const SessionManager = (props: { children: ReactNode }) => (
 )
 
 async function AsyncSessionProvider(props: { children: ReactNode }) {
-    const session = await getServerAuthSession()
+    const session = await getServerSession()
 
     return (
         <ClientSessionManager serverSession={session} isStatic={isStaticRequest()}>

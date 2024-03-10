@@ -1,10 +1,10 @@
 import { type Metadata } from "next"
 import { redirect } from "next/navigation"
 import { type ReactNode } from "react"
-import { getServerAuthSession } from "../(server)/api/auth"
+import { getServerSession } from "~/server/api/auth"
 
 export default async function Layout({ children }: { children: ReactNode }) {
-    const session = await getServerAuthSession()
+    const session = await getServerSession()
 
     if (session?.user.role !== "ADMIN") {
         redirect("/")
