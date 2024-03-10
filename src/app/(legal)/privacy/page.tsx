@@ -10,9 +10,11 @@ export const metadata: Metadata = {
     }
 }
 
+const effectiveDate = new Date("February 6, 2024 9:56 PM EST")
+
 export default function Page() {
     return (
-        <LegalPage title="Privacy Policy" effectiveDate={new Date("February 6, 2024 9:56 PM EST")}>
+        <LegalPage title="Privacy Policy" effectiveDate={effectiveDate}>
             <p>
                 This Privacy Policy governs the manner in which raidhub.io collects, uses, maintains
                 and discloses information collected from users (each, a &quot;User&quot;) of the

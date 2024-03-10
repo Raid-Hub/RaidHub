@@ -10,11 +10,11 @@ export const metadata: Metadata = {
     }
 }
 
+const effectiveDate = new Date("March 9, 2024 10:56 PM EST")
+
 export default function Page() {
     return (
-        <LegalPage
-            title="Terms and Conditions"
-            effectiveDate={new Date("January 19, 2024 3:24 PM EST")}>
+        <LegalPage title="Terms and Conditions" effectiveDate={effectiveDate}>
             <p>
                 These terms and conditions (the &quot;Terms and Conditions&quot;) govern the use of
                 raidhub.io (the &quot;Site&quot;). This Site is owned and operated by RaidHub. This
@@ -150,11 +150,6 @@ export default function Page() {
                 RaidHub directors, officers, agents, employees, subsidiaries, and affiliates from
                 any actions, claims, losses, damages, liabilities and expenses including legal fees
                 arising out of your use of our Site or your violation of these Terms and Conditions.
-            </p>
-            <h2>Applicable Law</h2>
-            <p>
-                These Terms and Conditions are governed by the laws of the State of Victoria,
-                Australia.
             </p>
             <h2>Dispute Resolution</h2>
             <p>
