@@ -37,20 +37,18 @@ export default class ServerBungieClient extends BaseBungieClient {
         }
 
         payload.headers.set("X-API-KEY", apiKey)
-        payload.headers.set("Origin", process.env.VERCEL_URL ?? "https://localhost:3000")
+        if (process.env.VERCEL_URL) payload.headers.set("Origin", process.env.VERCEL_URL)
 
         const controller = new AbortController()
         payload.signal = controller.signal
-
         setTimeout(() => controller.abort(), 2000)
 
         return payload
     }
 
-    handle<T>(url: URL, payload: RequestInit): Promise<T> {
-        const reqCached = cache((url: URL, payload: RequestInit) => this.request<T>(url, payload))
+    async handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
-            return reqCached(url, payload)
+            return (await cache(this.request).call(this, url, payload)) as T
         } catch (e) {
             if (!(e instanceof BungieAPIError && ExpectedErrorCodes.has(e.ErrorCode))) {
                 console.error(e)

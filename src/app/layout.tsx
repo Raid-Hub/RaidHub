@@ -15,6 +15,7 @@ import {
 } from "~/app/layout/managers"
 import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
+import "./layout/global.css"
 
 // Dynamic import for the dexie DB
 const DestinyManifestManager = dynamic(

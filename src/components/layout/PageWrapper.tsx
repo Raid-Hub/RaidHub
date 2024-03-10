@@ -52,5 +52,5 @@ const PageWrapperStyled = styled.main<PageWrapperStyleProps>`
 `
 
 PageWrapperStyled.defaultProps = {
-    $maxWidth: 2400
+    $maxWidth: 1600
 }
