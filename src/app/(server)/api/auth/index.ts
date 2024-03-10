@@ -1,22 +1,26 @@
 import "server-only"
 
-import { getServerSession, type NextAuthOptions } from "next-auth"
+import NextAuth from "next-auth"
 import type { Provider } from "next-auth/providers"
 import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
 import { cache } from "react"
-import { prisma } from "../../prisma"
+import { prisma } from "~/server/prisma"
 import { PrismaAdapter } from "./adapter"
 import BungieProvider from "./providers/BungieProvider"
 import { sessionCallback } from "./sessionCallback"
 import { signInCallback } from "./signInCallback"
 
-export const authOptions: NextAuthOptions = {
+export const {
+    auth,
+    handlers: { GET, POST }
+} = NextAuth({
     providers: getProviders(),
     adapter: PrismaAdapter(prisma),
     pages: {
+        error: "/auth/error",
         signIn: "/auth/login",
         signOut: "/auth/logout",
         newUser: "/account" // New users will be directed here on first sign in
@@ -43,10 +47,10 @@ export const authOptions: NextAuthOptions = {
             console.debug(code, message)
         }
     }
-}
+})
 
 // We cache the session for each request to avoid unnecessary database calls
-export const getServerAuthSession = cache(() => getServerSession(authOptions))
+export const getServerAuthSession = cache(() => auth())
 
 function getProviders(): Provider[] {
     const providers = new Array<Provider>(

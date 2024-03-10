@@ -1,6 +1,8 @@
 "use client"
 
+import { type Collection } from "@discordjs/collection"
 import { type Session } from "next-auth"
+import { type Provider } from "next-auth/providers"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
@@ -10,7 +12,6 @@ import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
 import TwitchIcon from "~/components/icons/TwitchIcon"
 import TwitterIcon from "~/components/icons/TwitterIcon"
 import YoutubeIcon from "~/components/icons/YoutubeIcon"
-import { useProviders } from "~/hooks/app/useProviders"
 import styles from ".//account.module.css"
 import Connection from "./Connection"
 import IconUploadForm from "./IconUploadForm"
@@ -18,10 +19,10 @@ import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
 
 type AccountProps = {
     session: Session
+    providers: Collection<string, Provider>
 }
 
-const Account = ({ session }: AccountProps) => {
-    const { providers } = useProviders()
+const Account = ({ session, providers }: AccountProps) => {
     const { data: socialNames, refetch: refetchSocials } = trpc.user.connections.useQuery()
     const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
         onSuccess() {

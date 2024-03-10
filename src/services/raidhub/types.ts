@@ -80,6 +80,8 @@ export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchRespo
 export type RaidHubLeaderboardSearchQueryCategory = RaidHubLeaderboardSearchQuery["category"]
 export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["type"]
 
+export type RaidHubTokenResponse = Component<"AuthorizeResponse">
+
 interface GetSchema {
     get: {
         parameters?: {

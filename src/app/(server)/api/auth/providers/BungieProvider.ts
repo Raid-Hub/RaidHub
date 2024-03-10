@@ -1,39 +1,35 @@
+import { type TokenSet } from "@auth/core/types"
 import type { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
-import type { TokenSet } from "next-auth"
-import type { OAuthConfig } from "next-auth/providers"
+import { type OAuth2Config } from "next-auth/providers"
 import { BungieAPIError } from "~/models/BungieAPIError"
 
 export default function BungieProvider(creds: {
     apiKey: string
     clientId: string
     clientSecret: string
-}): OAuthConfig<UserMembershipData> {
+}): OAuth2Config<UserMembershipData> {
+    const userInfoUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/"
     return {
         id: "bungie",
         name: "Bungie",
         type: "oauth",
+        checks: ["state"],
         clientId: creds.clientId,
         clientSecret: creds.clientSecret,
-        httpOptions: {
-            headers: { "X-API-Key": creds.apiKey }
-        },
         authorization: {
             url: "https://www.bungie.net/en/OAuth/Authorize",
             params: { scope: "" }
         },
         token: "https://www.bungie.net/platform/app/oauth/token/",
         userinfo: {
-            // @ts-expect-error The types in this library suck
+            url: userInfoUrl,
             async request({ tokens }: { tokens: TokenSet }) {
-                const res = await fetch(
-                    "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/",
-                    {
-                        headers: {
-                            "X-API-KEY": creds.apiKey,
-                            Authorization: `Bearer ${tokens.access_token}`
-                        }
+                const res = await fetch(userInfoUrl, {
+                    headers: {
+                        "X-API-KEY": creds.apiKey,
+                        Authorization: `Bearer ${tokens.access_token}`
                     }
-                )
+                })
                 const data = (await res.json()) as BungieNetResponse<UserMembershipData>
                 if (!res.ok) {
                     throw new BungieAPIError(data)
@@ -42,7 +38,7 @@ export default function BungieProvider(creds: {
                 }
             }
         },
-        profile(data, tokens: TokenSet) {
+        profile(data) {
             const { bungieNetUser, destinyMemberships, primaryMembershipId } = data
             const primaryDestinyMembership =
                 destinyMemberships.find(
@@ -67,16 +63,7 @@ export default function BungieProvider(creds: {
                 role: "USER",
                 email: null,
                 emailVerified: null,
-                bungieAccessToken: {
-                    bungieMembershipId: bungieNetUser.membershipId,
-                    value: tokens.access_token!,
-                    expires: new Date(tokens.expires_at! * 1000)
-                },
-                bungieRefreshToken: {
-                    bungieMembershipId: bungieNetUser.membershipId,
-                    value: tokens.refresh_token!,
-                    expires: new Date(Date.now() + 7_775_777_777) // <90 days
-                }
+                fresh: true
             }
         }
     }

@@ -1,22 +1,34 @@
 import { type Metadata } from "next"
+import { type Provider } from "next-auth/providers"
+import { Suspense } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
-import Account from "~/components/__deprecated__/account/Account"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { getServerAuthSession } from "~/server/api/auth"
+import { Client } from "./Client"
+
+export const revalidate = 20 * 60000
 
 export default async function Page() {
-    const session = await getServerAuthSession()
+    const providers = await fetch(
+        new URL(
+            "/api/auth/providers",
+            process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : `https://localhost:${process.env.PORT ?? 3000}`
+        )
+    ).then(async (res): Promise<Record<string, Provider>> => {
+        const data = res.json()
+        if (res.ok) {
+            return data
+        } else {
+            throw await data
+        }
+    })
 
     return (
         <PageWrapper>
-            {!session ? (
-                <h1>Loading...</h1>
-            ) : (
-                <>
-                    <h1>Welcome, {session.user.name}</h1>
-                    <Account session={session} />
-                </>
-            )}
+            <Suspense>
+                <Client providers={providers} />
+            </Suspense>
         </PageWrapper>
     )
 }
