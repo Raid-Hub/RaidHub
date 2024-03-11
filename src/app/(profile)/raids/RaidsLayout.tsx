@@ -128,7 +128,7 @@ export const Raids = () => {
                 </Tab>
             </TabSelector>
             {tab === "classic" ? (
-                <Grid as="section" $minCardWidth={325}>
+                <Grid as="section" $minCardWidth={325} $minCardWidthMobile={300}>
                     {listedRaids.map(raid => (
                         <RaidCardContext
                             key={raid}

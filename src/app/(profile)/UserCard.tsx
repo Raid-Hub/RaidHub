@@ -104,7 +104,7 @@ export function UserCard() {
     )
 
     return (
-        <Card $overflowHidden $fullWidth>
+        <Card $overflowHidden style={{ width: "calc(min(100%, 1300px))" }}>
             <MobileDesktopSwitch
                 sm={
                     <div>

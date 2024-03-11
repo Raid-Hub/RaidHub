@@ -33,11 +33,7 @@ export const SearchBar = () => {
         setTimeout(hideResults, HIDE_AFTER_CLICK)
     }
 
-    useClickOutside(
-        { ref: searchContainerRef, enabled: isShowingResults, lockout: 150 },
-        hideResults
-    )
-
+    useClickOutside(searchContainerRef, hideResults, { enabled: isShowingResults, lockout: 150 })
     usePageChange(clearQuery)
 
     return (

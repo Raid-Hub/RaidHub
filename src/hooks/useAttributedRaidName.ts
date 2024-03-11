@@ -42,14 +42,18 @@ export const useAttributedRaidName = (
         }
         if (tag.difficulty === Difficulty.MASTER) descriptors.push(Tag.MASTER)
         else if (tag.contest) descriptors.push(Tag.CONTEST)
-        if (!tag.fresh && tag.completed) descriptors.push(getCheckpointName(tag.raid))
-        let str = descriptors.join(" ")
-
+        if (!tag.fresh && tag.completed && tag.playerCount <= 3) {
+            descriptors.push(getCheckpointName(tag.raid))
+        }
         if (!opts?.excludeRaidName) {
-            str = `${str} ${getRaidString(tag.raid)}`
+            descriptors.push(getRaidString(tag.raid))
         }
         // special cases
-        if (wishWall) str += " (Wish Wall)"
-        return str
+        if (wishWall) {
+            descriptors.push("(Wish Wall)")
+        } else if (!tag.fresh && tag.playerCount > 3) {
+            descriptors.push("(Checkpoint)")
+        }
+        return descriptors.join(" ")
     }, [tag, getCheckpointName, opts?.excludeRaidName, opts?.includeFresh, getRaidString])
 }

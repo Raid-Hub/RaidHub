@@ -11,21 +11,15 @@ export const AccountIcon = (props: { children: ReactNode }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
 
-    const closeDropdown = useCallback(() => setIsDropdownOpen(false), [])
+    const closeDropdown = useCallback(() => {
+        setIsDropdownOpen(false)
+    }, [])
 
-    useClickOutside(
-        {
-            ref: ref,
-            enabled: isDropdownOpen,
-            lockout: 50
-        },
-        closeDropdown
-    )
-
+    useClickOutside(ref, closeDropdown, { enabled: isDropdownOpen, lockout: 50 })
     usePageChange(closeDropdown)
 
     return (
-        <Container>
+        <Container ref={ref}>
             <IconContainer $padding={0} onClick={() => setIsDropdownOpen(v => !v)}>
                 {props.children}
             </IconContainer>

@@ -30,7 +30,7 @@ export const HomeSearchBar = () => {
 
     const handleClickOutside = useCallback(() => setShowingResults(false), [])
 
-    useClickOutside({ ref, lockout: 100, enabled: true }, handleClickOutside)
+    useClickOutside(ref, handleClickOutside, { lockout: 100, enabled: true })
 
     return (
         <FormContainer onSubmit={handleFormSubmit} ref={ref} $isFocused={isSearchFocused}>

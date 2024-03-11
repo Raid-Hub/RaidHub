@@ -10,7 +10,7 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { H4 } from "~/components/typography/H4"
-import { useClassDefinition, useItemDefinition, useItemDefinitions } from "~/hooks/dexie"
+import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
@@ -60,10 +60,6 @@ export const SelectedPlayerView = (props: {
     })
 
     const emblem = useItemDefinition(selectedCharacter?.emblemHash ?? firstCharacter.emblemHash)
-
-    const weapons = focusedEntry.weapons.map((_, hash) => hash)
-
-    const weaponDefinitions = useItemDefinitions(weapons)
 
     return (
         <Flex $direction="column" $crossAxis="flex-start" $padding={0}>
@@ -152,12 +148,7 @@ export const SelectedPlayerView = (props: {
                 <H4>Weapon Kills</H4>
                 <Grid $minCardWidth={125} $gap={1}>
                     {focusedEntry.weapons.map((weapon, hash) => (
-                        <PlayerWeapon
-                            key={hash}
-                            hash={hash}
-                            kills={weapon.uniqueWeaponKills}
-                            definition={weaponDefinitions.get(hash)}
-                        />
+                        <PlayerWeapon key={hash} hash={hash} kills={weapon.uniqueWeaponKills} />
                     ))}
                 </Grid>
             </Card>

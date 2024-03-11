@@ -25,14 +25,10 @@ export const LeaderboardSearch = (
 
     const { mutate: search, reset } = useLeaderboardPlayerSearch(query)
 
-    useClickOutside(
-        {
-            ref: ref,
-            lockout: 100,
-            enabled: isShowingResults
-        },
-        () => setIsShowingResults(false)
-    )
+    useClickOutside(ref, () => setIsShowingResults(false), {
+        lockout: 100,
+        enabled: isShowingResults
+    })
 
     return (
         <Flex

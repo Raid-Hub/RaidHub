@@ -1,4 +1,3 @@
-import type { DestinyInventoryItemDefinition } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
@@ -6,21 +5,19 @@ import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { $media } from "~/app/layout/media"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
+import { useItemDefinition } from "~/hooks/dexie"
 import { bungieIconUrl } from "~/util/destiny"
 import { formattedNumber } from "~/util/presentation/formatting"
 
-export const PlayerWeapon = (props: {
-    hash: number
-    kills: number
-    definition: DestinyInventoryItemDefinition | undefined
-}) => {
-    const icon = bungieIconUrl(props.definition?.displayProperties.icon)
+export const PlayerWeapon = (props: { hash: number; kills: number }) => {
+    const definition = useItemDefinition(props.hash)
+    const icon = bungieIconUrl(definition?.displayProperties.icon)
     const { locale } = useLocale()
     return (
         <TooltipContainer
-            tooltipId={`weapon-${props.definition?.displayProperties.name ?? props.hash}`}
+            tooltipId={`weapon-${definition?.displayProperties.name ?? props.hash}`}
             tooltipBody={
-                <TooltipData>{props.definition?.displayProperties.name ?? "Unknown"}</TooltipData>
+                <TooltipData>{definition?.displayProperties.name ?? "Unknown"}</TooltipData>
             }>
             <WeaponItem data-weapon-hash={props.hash}>
                 <WeaponIcon
@@ -30,7 +27,7 @@ export const PlayerWeapon = (props: {
                         src={icon}
                         unoptimized
                         fill
-                        alt={props.definition?.displayProperties.name ?? "Unknown"}
+                        alt={definition?.displayProperties.name ?? "Unknown"}
                     />
                 </WeaponIcon>
                 <div style={{ flex: 1, textAlign: "center" }}>
