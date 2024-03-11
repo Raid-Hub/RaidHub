@@ -1,7 +1,7 @@
 import Image, { type ImageLoader } from "next/image"
 import { type ComponentPropsWithoutRef } from "react"
 
-const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
+export const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const minWidth = (width * (quality || 75)) / 100
 

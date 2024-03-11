@@ -13,10 +13,10 @@ const serverBungieClient = new ServerBungieClient({
 
 // Caching version of the trpc query
 export const getUniqueProfileByVanity = cache((vanity: string) =>
-    trpcServer.profile.getUnique.query({ vanity })
+    trpcServer.profile.getUnique.query({ vanity }).catch(() => null)
 )
 export const getUniqueProfileByDestinyMembershipId = cache((destinyMembershipId: string) =>
-    trpcServer.profile.getUnique.query({ destinyMembershipId })
+    trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(() => null)
 )
 
 // Get a player's profile from the RaidHub API
@@ -32,7 +32,7 @@ export const prefetchRaidHubPlayerProfile = cache((params: { membershipId: strin
                 revalidate: 60
             }
         }
-    )
+    ).catch(() => null)
 )
 
 // Get a player's basic info from the RaidHub API (fast)
@@ -48,7 +48,7 @@ export const prefetchRaidHubPlayerBasic = cache((params: { membershipId: string 
                 revalidate: 24 * 3600
             }
         }
-    )
+    ).catch(() => null)
 )
 
 // the results are cached implicitly by the serverBungieClient
@@ -59,4 +59,6 @@ export const prefetchDestinyProfile = (params: {
     getProfile(serverBungieClient, {
         ...params,
         components: [100, 200]
-    }).then(res => res.Response)
+    })
+        .then(res => res.Response)
+        .catch(() => null)

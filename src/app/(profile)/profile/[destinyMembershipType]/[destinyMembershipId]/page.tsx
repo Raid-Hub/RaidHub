@@ -1,15 +1,15 @@
 import { type BungieMembershipType } from "bungie-net-core/models"
 import { type Metadata } from "next"
 import { RedirectType, permanentRedirect } from "next/navigation"
-import { ProfileClientWrapper } from "~/app/(profile)/ProfileClientWrapper"
-import { ProfilePage } from "~/app/(profile)/ProfilePage"
-import { generatePlayerMetadata } from "~/app/(profile)/metadata"
+import { bungieProfileIconUrl } from "~/util/destiny"
+import { ProfileClientWrapper } from "../../../ProfileClientWrapper"
+import { ProfilePage } from "../../../ProfilePage"
+import { generatePlayerMetadata } from "../../../metadata"
 import {
     getUniqueProfileByDestinyMembershipId,
     prefetchRaidHubPlayerBasic
-} from "~/app/(profile)/prefetch"
-import { type ProfileProps } from "~/app/(profile)/types"
-import { bungieProfileIconUrl } from "~/util/destiny"
+} from "../../../prefetch"
+import { type ProfileProps } from "../../../types"
 
 type PageProps = {
     params: {
@@ -31,7 +31,7 @@ export default async function Page({ params }: PageProps) {
 
     const basicProfile = await prefetchRaidHubPlayerBasic({
         membershipId: params.destinyMembershipId
-    }).catch(() => null)
+    })
 
     const pageProps: ProfileProps = {
         ...params,
@@ -51,10 +51,10 @@ export default async function Page({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const [profile, basic] = await Promise.all([
-        getUniqueProfileByDestinyMembershipId(params.destinyMembershipId).catch(() => null),
+        getUniqueProfileByDestinyMembershipId(params.destinyMembershipId),
         prefetchRaidHubPlayerBasic({
             membershipId: params.destinyMembershipId
-        }).catch(() => null)
+        })
     ])
 
     if (!profile && !basic) {
