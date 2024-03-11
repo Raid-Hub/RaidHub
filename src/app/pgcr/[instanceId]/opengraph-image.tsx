@@ -2,7 +2,6 @@
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import RaidCardBackground from "~/data/raid-backgrounds"
-import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
@@ -15,14 +14,11 @@ const size = {
 }
 
 export async function generateImageMetadata({ params }: PageProps) {
-    const [activity, manifest] = await Promise.all([
-        prefetchActivity(params.instanceId),
-        prefetchManifest()
-    ])
+    const activity = await prefetchActivity(params.instanceId)
 
     if (!activity) return []
 
-    const raidName = manifest.raidStrings[activity.meta.raid]
+    const raidName = activity.meta.raidName
 
     return [
         {
@@ -38,14 +34,11 @@ export async function generateImageMetadata({ params }: PageProps) {
 
 // Image generation
 export default async function Image({ params: { instanceId } }: PageProps) {
-    // const interSemiBold = fetch(new URL("./public/Inter-SemiBold.ttf", import.meta.url)).then(res =>
-    //     res.arrayBuffer()
-    // )
+    const baseUrl = `https://${process.env.VERCEL_URL ?? `localhost:${process.env.PORT ?? 3000}`}`
 
-    const [activity, manifest] = await Promise.all([
-        prefetchActivity(instanceId),
-        prefetchManifest()
-    ])
+    const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
+
+    const activity = await prefetchActivity(instanceId)
 
     if (!activity) return new Response(null, { status: 404 })
 
@@ -56,7 +49,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
             // ImageResponse JSX element
             <div
                 style={{
-                    // fontSize: 128,
+                    fontFamily: "Inter, sans-serif",
                     color: "white",
                     width: "100%",
                     height: "100%",
@@ -195,10 +188,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                             width: 36,
                             height: 36
                         }}>
-                        <img
-                            src={`https://${process.env.VERCEL_URL ?? "localhost:3000"}/logo.png`}
-                            alt=""
-                        />
+                        <img src={baseUrl + "/logo.png"} alt="" />
                     </div>
                     <div
                         style={{
@@ -217,7 +207,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         <div
                             style={{
                                 fontSize: 10
-                            }}>{`https://${process.env.VERCEL_URL ?? "localhost:3000"}`}</div>
+                            }}>
+                            {baseUrl}
+                        </div>
                     </div>
                 </div>
                 <div
@@ -240,15 +232,15 @@ export default async function Image({ params: { instanceId } }: PageProps) {
         ),
         {
             status: 200,
-            ...size
-            // fonts: [
-            //     {
-            //         name: "Inter",
-            //         data: await interSemiBold,
-            //         style: "normal",
-            //         weight: 400
-            //     }
-            // ]
+            ...size,
+            fonts: [
+                {
+                    name: "Inter",
+                    data: await interSemiBold,
+                    style: "normal",
+                    weight: 400
+                }
+            ]
         }
     )
 }
