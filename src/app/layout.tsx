@@ -106,6 +106,7 @@ export const metadata: Metadata = {
         type: "website"
     },
     twitter: {
+        card: "summary",
         creator: "@raidhubio"
     },
     manifest: "/manifest.json"

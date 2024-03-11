@@ -2,6 +2,7 @@
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import RaidCardBackground from "~/data/raid-backgrounds"
+import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
@@ -38,7 +39,10 @@ export default async function Image({ params: { instanceId } }: PageProps) {
 
     const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
 
-    const activity = await prefetchActivity(instanceId)
+    const [activity, manifest] = await Promise.all([
+        prefetchActivity(instanceId),
+        prefetchManifest()
+    ])
 
     if (!activity) return new Response(null, { status: 404 })
 
@@ -227,6 +231,33 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         right: 16
                     }}>
                     {secondsToHMS(activity.duration, false)}
+                </div>
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: 16,
+                        left: 16,
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}>
+                    {Object.entries(activity.leaderboardEntries).map(([category, placement]) => (
+                        <div
+                            key={category}
+                            style={{
+                                backgroundColor: "rgb(201, 125, 2)",
+                                color: "white",
+                                padding: 4,
+                                borderRadius: 4
+                            }}>
+                            {manifest.leaderboards.worldFirst[activity.meta.raid].find(
+                                b => b.category === category
+                            )?.displayName +
+                                " #" +
+                                placement}
+                        </div>
+                    ))}
                 </div>
             </div>
         ),

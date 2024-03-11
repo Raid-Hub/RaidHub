@@ -28,6 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             ...rootOG,
             title: title,
             description: description
+        },
+        twitter: {
+            ...rootMetaData.twitter,
+            card: "summary_large_image"
         }
     }
 }
