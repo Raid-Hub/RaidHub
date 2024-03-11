@@ -69,13 +69,11 @@ export default async function Page({ params }: PageProps) {
 
 const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
     const [raidHubProfile, destinyProfile] = await Promise.all([
-        prefetchRaidHubPlayerProfile({ membershipId: appProfile.destinyMembershipId }).catch(
-            () => null
-        ),
+        prefetchRaidHubPlayerProfile({ membershipId: appProfile.destinyMembershipId }),
         prefetchDestinyProfile({
             destinyMembershipId: appProfile.destinyMembershipId,
             membershipType: appProfile.destinyMembershipType
-        }).catch(() => null)
+        })
     ])
 
     const pageProps: ProfileProps = {
@@ -94,7 +92,7 @@ const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const profile = await getUniqueProfileByVanity(params.vanity).catch(() => null)
+    const profile = await getUniqueProfileByVanity(params.vanity)
 
     if (profile?.name === undefined) {
         return {}
@@ -102,7 +100,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const raidhub = await prefetchRaidHubPlayerProfile({
         membershipId: profile.destinyMembershipId
-    }).catch(() => null)
+    })
 
     const image = profile?.image ?? bungieProfileIconUrl(raidhub?.player.iconPath)
 

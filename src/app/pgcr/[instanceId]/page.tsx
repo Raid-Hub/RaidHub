@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
-import { Tag } from "~/models/tag"
 import { PGCRPage } from "../PGCRPage"
-import { prefetchActivity, type PageProps } from "./common"
+import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 export const dynamic = "force-static"
 export const dynamicParams = true
@@ -18,41 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!activity) return {}
 
-    const title = [
-        activity.completed
-            ? activity.playerCount === 1
-                ? Tag.SOLO
-                : activity.playerCount === 2
-                ? Tag.DUO
-                : activity.playerCount === 3
-                ? Tag.TRIO
-                : null
-            : null,
-        activity.flawless ? "Flawless" : null,
-        activity.meta.raidName,
-        `(${activity.meta.versionName})`
-    ]
-        .filter(Boolean)
-        .join(" ")
-
-    const dateCompleted = new Date(activity.dateCompleted)
-
-    const description = `${
-        activity.completed
-            ? activity.fresh == false
-                ? "Checkpoint cleared on"
-                : "Completed on"
-            : "Attempted on"
-    } ${dateCompleted.toLocaleString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-
-        timeZone: "America/Los_Angeles",
-        timeZoneName: "short"
-    })}`
+    const { title, description } = getMetaData(activity)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { images, ...rootOG } = rootMetaData.openGraph!
