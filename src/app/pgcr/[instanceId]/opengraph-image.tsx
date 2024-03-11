@@ -35,7 +35,11 @@ export async function generateImageMetadata({ params }: PageProps) {
 
 // Image generation
 export default async function Image({ params: { instanceId } }: PageProps) {
-    const baseUrl = `https://${process.env.VERCEL_URL ?? `localhost:${process.env.PORT ?? 3000}`}`
+    const baseUrl = `https://${
+        process.env.APP_ENV === "production"
+            ? "raidhub.io"
+            : process.env.VERCEL_URL ?? `localhost:${process.env.PORT ?? 3000}`
+    }`
 
     const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
 
