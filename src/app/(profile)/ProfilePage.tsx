@@ -8,19 +8,39 @@ import { LatestRaid } from "./transitory/LatestRaid"
 
 export const ProfilePage = () => (
     <Flex $direction="column" $padding={0} $crossAxis="flex-start">
-        <UserCard />
-        <Suspense fallback={<Loading $fill $minHeight="250px" $borderRadius="10px" $alpha={0.5} />}>
-            <Flex
-                $padding={0}
-                $direction="row"
-                $wrap
-                $fullWidth
-                $align="flex-start"
-                $crossAxis="stretch">
-                <CurrentActivity />
-                <LatestRaid />
-            </Flex>
-        </Suspense>
+        <Flex
+            $direction="row"
+            $padding={0}
+            $align="flex-start"
+            $crossAxis="stretch"
+            $fullWidth
+            $wrap
+            style={{ columnGap: "4rem" }}>
+            <UserCard />
+            <Suspense
+                fallback={
+                    <Loading
+                        $fill
+                        $minHeight="250px"
+                        $alpha={0.5}
+                        $minWidth="200px"
+                        style={{ width: "calc(min(100%, 800px))" }}
+                    />
+                }>
+                <Flex
+                    $padding={0}
+                    $direction="row"
+                    $wrap
+                    $align="flex-start"
+                    $crossAxis="stretch"
+                    style={{
+                        flexGrow: 1
+                    }}>
+                    <CurrentActivity />
+                    <LatestRaid />
+                </Flex>
+            </Suspense>
+        </Flex>
         <Raids />
     </Flex>
 )

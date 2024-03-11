@@ -95,9 +95,10 @@ export const metadata: Metadata = {
     },
     keywords: "destiny 2, raid, leaderboards, stats, statistics, worldsfirst, raidhub, report",
     metadataBase: new URL(
-        process.env.VERCEL_URL
-            ? `https://${process.env.VERCEL_URL}`
-            : `https://localhost:${process.env.PORT ?? 3000}`
+        process.env.DEPLOY_URL ??
+            (process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : `https://localhost:${process.env.PORT ?? 3000}`)
     ),
     openGraph: {
         title: title,

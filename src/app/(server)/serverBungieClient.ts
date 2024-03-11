@@ -37,7 +37,13 @@ export default class ServerBungieClient extends BaseBungieClient {
         }
 
         payload.headers.set("X-API-KEY", apiKey)
-        if (process.env.VERCEL_URL) payload.headers.set("Origin", process.env.VERCEL_URL)
+        payload.headers.set(
+            "Origin",
+            process.env.DEPLOY_URL ??
+                (process.env.VERCEL_URL
+                    ? `https://${process.env.VERCEL_URL}`
+                    : `https://localhost:${process.env.PORT ?? 3000}`)
+        )
 
         const controller = new AbortController()
         payload.signal = controller.signal

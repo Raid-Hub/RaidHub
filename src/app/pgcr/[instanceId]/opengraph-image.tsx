@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og"
+import { metadata as rootMetaData } from "~/app/layout"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -13,6 +14,8 @@ const size = {
     width: 800,
     height: 450
 }
+
+const baseUrl = rootMetaData.metadataBase!.toString()
 
 export async function generateImageMetadata({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
@@ -35,12 +38,6 @@ export async function generateImageMetadata({ params }: PageProps) {
 
 // Image generation
 export default async function Image({ params: { instanceId } }: PageProps) {
-    const baseUrl = `https://${
-        process.env.APP_ENV === "production"
-            ? "raidhub.io"
-            : process.env.VERCEL_URL ?? `localhost:${process.env.PORT ?? 3000}`
-    }`
-
     const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
 
     const [activity, manifest] = await Promise.all([
