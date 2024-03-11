@@ -1,14 +1,8 @@
 import type { Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { Tag } from "~/models/tag"
-import { getRaidHubApi } from "~/services/raidhub/common"
 import { PGCRPage } from "../PGCRPage"
-
-type PageProps = {
-    params: {
-        instanceId: string
-    }
-}
+import { prefetchActivity, type PageProps } from "./common"
 
 export const dynamic = "force-static"
 export const dynamicParams = true
@@ -18,9 +12,6 @@ export default async function Page({ params }: PageProps) {
 
     return <PGCRPage instanceId={params.instanceId} ssrActivity={activity ?? undefined} isReady />
 }
-
-const prefetchActivity = async (instanceId: string) =>
-    getRaidHubApi("/activity/{instanceId}", { instanceId }, null).catch(() => null)
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const activity = await prefetchActivity(params.instanceId)
@@ -63,11 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         timeZoneName: "short"
     })}`
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { images, ...rootOG } = rootMetaData.openGraph!
     return {
         title: title,
         description: description,
         openGraph: {
-            ...rootMetaData.openGraph,
+            ...rootOG,
             title: title,
             description: description
         }
