@@ -40,14 +40,7 @@ export const SearchModal = () => {
         handleEvent: hideModal
     })
 
-    useClickOutside(
-        {
-            ref: modalElement,
-            enabled: isDisplayed,
-            lockout: 100
-        },
-        hideModal
-    )
+    useClickOutside(modalElement, hideModal, { enabled: isDisplayed, lockout: 100 })
 
     useEffect(() => {
         if (isDisplayed) {

@@ -2,11 +2,14 @@
 
 import { forwardRef } from "react"
 import styled, { css, type DefaultTheme } from "styled-components"
+import { $media } from "~/app/layout/media"
+import { type deviceSizes } from "~/app/layout/theme"
 import type { AtLeast } from "~/types/generic"
+import { o } from "~/util/o"
 
 export type SVGWrapperProps = Omit<
     {
-        sx?: number
+        sx?: number | Partial<Record<keyof typeof deviceSizes, number>>
         color?: keyof DefaultTheme["colors"]["icon"]
         hoverColor?: keyof DefaultTheme["colors"]["icon"]
         absolute?: boolean
@@ -18,7 +21,7 @@ export type SVGWrapperProps = Omit<
 export type SVGComponent = (props: SVGWrapperProps) => JSX.Element
 
 interface StyledSvgProps {
-    $sx?: number
+    $sx?: number | Partial<Record<keyof typeof deviceSizes, number>>
     $color?: keyof DefaultTheme["colors"]["icon"]
     $hoverColor?: keyof DefaultTheme["colors"]["icon"]
     $absolute?: boolean
@@ -28,7 +31,21 @@ const StyledSvg = styled.svg<StyledSvgProps>`
     aspect-ratio: 1/1;
     ${({ $pointer }) => $pointer && "cursor: pointer"};
     ${({ $absolute }) => $absolute && "position: absolute;"}
-    ${({ $sx }) => $sx !== undefined && `width: ${$sx}px;`}
+    ${({ $sx }) =>
+        typeof $sx === "number"
+            ? `width: ${$sx}px;`
+            : typeof $sx === "object"
+            ? o.map(
+                  $sx,
+                  (device, value) =>
+                      css`
+                          ${$media.max[device]`
+                             width: ${value}px;
+                        `}
+                      `
+              )
+            : ""}
+
     fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
 
     ${({ theme, $hoverColor }) =>
@@ -49,7 +66,7 @@ export const SVG = forwardRef<SVGSVGElement, AtLeast<SVGWrapperProps, "viewBox">
             $hoverColor={hoverColor}
             $absolute={absolute}
             $pointer={pointer}
-            width={sx}
+            width={typeof sx === "number" ? sx : undefined}
             xmlns="http://www.w3.org/2000/svg"
             {...restOfProps}>
             {children}

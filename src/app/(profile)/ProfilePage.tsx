@@ -10,7 +10,13 @@ export const ProfilePage = () => (
     <Flex $direction="column" $padding={0} $crossAxis="flex-start">
         <UserCard />
         <Suspense fallback={<Loading $fill $minHeight="250px" $borderRadius="10px" $alpha={0.5} />}>
-            <Flex $padding={0} $direction="row" $wrap $fullWidth $crossAxis="stretch">
+            <Flex
+                $padding={0}
+                $direction="row"
+                $wrap
+                $fullWidth
+                $align="flex-start"
+                $crossAxis="stretch">
                 <CurrentActivity />
                 <LatestRaid />
             </Flex>

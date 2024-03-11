@@ -20,6 +20,7 @@ import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import { bungiePgcrImageUrl, bungieProfileIconUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import type { ProfileProps } from "../types"
+import { Latest } from "./Latest"
 
 const commonTransitoryQuerySettings = {
     refetchInterval: 45000,
@@ -94,46 +95,45 @@ const CurrentActivityCard = (props: {
     }, [activity, activityMode])
 
     return (
-        <Card
-            $overflowHidden
-            style={{
-                minWidth: "calc(min(100%, 350px))",
-                // this is a hack to make the card grow with the number of party members
-                flex: props.partyMembers.length
-            }}>
-            <Container $minHeight={80}>
-                <Image
-                    src={bungiePgcrImageUrl(activity?.pgcrImage)}
-                    unoptimized
-                    fill
-                    priority
-                    alt="pgcr background image"
-                    style={{ objectFit: "cover" }}
-                />
-            </Container>
-            <Flex $direction="column" $crossAxis="flex-start" $gap={0.25}>
-                <Link
-                    href={`/guardians?${new URLSearchParams(
-                        props.partyMembers.map(pm => ["membershipId", pm.membershipId])
-                    ).toString()}`}>
-                    <H4 $mBlock={0.25}>
-                        <Flex $padding={0}>
-                            {"In Game"}
-                            <svg width={8} height={8}>
-                                <circle r={3} fill="red" cx="50%" cy="50%" />
-                            </svg>
-                            {formatElapsedTime(elapsedTime)}
-                        </Flex>
-                    </H4>
-                </Link>
-                {activityName}
-                <Grid style={{ marginTop: "1.5em", minWidth: "100%" }}>
-                    {props.partyMembers.map(pm => (
-                        <PartyMember key={pm.membershipId} {...pm} />
-                    ))}
-                </Grid>
-            </Flex>
-        </Card>
+        <Latest $playerCount={props.partyMembers.length}>
+            <Card $overflowHidden>
+                <Container $minHeight={80}>
+                    <Image
+                        src={bungiePgcrImageUrl(activity?.pgcrImage)}
+                        unoptimized
+                        fill
+                        priority
+                        alt="pgcr background image"
+                        style={{ objectFit: "cover" }}
+                    />
+                </Container>
+                <Flex $direction="column" $crossAxis="flex-start" $gap={0.25}>
+                    <Link
+                        target="_blank"
+                        href={`https://guardian.report?${new URLSearchParams({
+                            view: "LOADOUT",
+                            guardians: props.partyMembers.map(pm => pm.membershipId).join(","),
+                            referrer: "raidhub"
+                        }).toString()}`}>
+                        <H4 $mBlock={0.25}>
+                            <Flex $padding={0}>
+                                {"In Game"}
+                                <svg width={8} height={8}>
+                                    <circle r={3} fill="red" cx="50%" cy="50%" />
+                                </svg>
+                                {formatElapsedTime(elapsedTime)}
+                            </Flex>
+                        </H4>
+                    </Link>
+                    {activityName}
+                    <Grid style={{ marginTop: "1.5em", minWidth: "100%" }}>
+                        {props.partyMembers.map(pm => (
+                            <PartyMember key={pm.membershipId} {...pm} />
+                        ))}
+                    </Grid>
+                </Flex>
+            </Card>
+        </Latest>
     )
 }
 

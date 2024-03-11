@@ -18,6 +18,7 @@ import { useRaidHubActivity, useRaidHubActivtiesFirstPage } from "~/services/rai
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
 import type { ProfileProps } from "../types"
+import { Latest } from "./Latest"
 
 export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
@@ -46,62 +47,69 @@ export const LatestRaid = () => {
     }, [latestActivity])
 
     return latestActivity ? (
-        <Link
-            href={`/pgcr/${latestActivity.instanceId}`}
-            style={{ color: "unset", minWidth: "calc(min(100%, 350px))", flex: 3 }}>
-            <Card $overflowHidden $fullHeight>
-                <Container $minHeight={80}>
-                    <CloudflareImage
-                        cloudflareId={RaidCardBackground[latestActivity.meta.raid]}
-                        fill
-                        priority
-                        alt="raid background image"
-                        style={{ objectFit: "cover" }}
-                    />
-                </Container>
-                <Flex $direction="column" $crossAxis="flex-start">
-                    <H4 $mBlock={0.25}>
-                        <Flex $padding={0} $wrap>
-                            {"Latest Raid"}
-                            <svg width={8} height={8}>
-                                <circle r={3} fill="gray" cx="50%" cy="50%" />
-                            </svg>
-                            {formattedTimeSince(new Date(latestActivity.dateCompleted), locale)}
-                        </Flex>
-                    </H4>
-                    <Flex $padding={0} $wrap $gap={0.4} $align="flex-start">
-                        {latestActivity.players.find(p => p.membershipId === destinyMembershipId)
-                            ?.data.finishedRaid ? (
-                            <Checkmark sx={24} />
-                        ) : (
-                            <Xmark sx={24} />
-                        )}
-                        <RaidName>
-                            {getRaidString(latestActivity.meta.raid)}
-                            {": "}
-                            {getDifficultyString(latestActivity.meta.version)}
-                        </RaidName>
-
-                        <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>
-                    </Flex>
-                    <Flex $wrap $padding={0} $align="flex-start">
-                        {playersToDisplay?.map(player => (
-                            <Flex key={player.membershipId} $padding={0} $gap={0.4}>
-                                {player.data.finishedRaid ? (
-                                    <Checkmark sx={18} />
-                                ) : (
-                                    <Xmark sx={18} />
-                                )}
-                                <Player $finished={player.data.finishedRaid}>
-                                    {getBungieDisplayName(player)}
-                                </Player>
+        <Latest $playerCount={latestActivity.playerCount ?? 6}>
+            <Link
+                href={`/pgcr/${latestActivity.instanceId}`}
+                style={{
+                    color: "unset"
+                }}>
+                <Card $overflowHidden $fullHeight>
+                    <Container $minHeight={80}>
+                        <CloudflareImage
+                            cloudflareId={RaidCardBackground[latestActivity.meta.raid]}
+                            fill
+                            priority
+                            alt="raid background image"
+                            style={{ objectFit: "cover" }}
+                        />
+                    </Container>
+                    <Flex $direction="column" $crossAxis="flex-start">
+                        <H4 $mBlock={0.25}>
+                            <Flex $padding={0} $wrap>
+                                {"Latest Raid"}
+                                <svg width={8} height={8}>
+                                    <circle r={3} fill="gray" cx="50%" cy="50%" />
+                                </svg>
+                                {formattedTimeSince(new Date(latestActivity.dateCompleted), locale)}
                             </Flex>
-                        ))}
+                        </H4>
+                        <Flex $padding={0} $wrap $gap={0.4} $align="flex-start">
+                            {latestActivity.players.find(
+                                p => p.membershipId === destinyMembershipId
+                            )?.data.finishedRaid ? (
+                                <Checkmark sx={24} />
+                            ) : (
+                                <Xmark sx={24} />
+                            )}
+                            <RaidName>
+                                {getRaidString(latestActivity.meta.raid)}
+                                {": "}
+                                {getDifficultyString(latestActivity.meta.version)}
+                            </RaidName>
+
+                            <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>
+                        </Flex>
+                        <Flex $wrap $padding={0} $align="flex-start">
+                            {playersToDisplay?.map(player => (
+                                <Flex key={player.membershipId} $padding={0} $gap={0.4}>
+                                    {player.data.finishedRaid ? (
+                                        <Checkmark sx={18} />
+                                    ) : (
+                                        <Xmark sx={18} />
+                                    )}
+                                    <Player $finished={player.data.finishedRaid}>
+                                        {getBungieDisplayName(player)}
+                                    </Player>
+                                </Flex>
+                            ))}
+                        </Flex>
+                        {!!hiddenPlayers && (
+                            <HiddenPlayers>and {hiddenPlayers} more...</HiddenPlayers>
+                        )}
                     </Flex>
-                    {!!hiddenPlayers && <HiddenPlayers>and {hiddenPlayers} more...</HiddenPlayers>}
-                </Flex>
-            </Card>
-        </Link>
+                </Card>
+            </Link>
+        </Latest>
     ) : null
 }
 

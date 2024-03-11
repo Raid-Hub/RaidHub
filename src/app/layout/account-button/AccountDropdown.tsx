@@ -3,6 +3,7 @@
 import { m, type Variants } from "framer-motion"
 import { signIn, signOut } from "next-auth/react"
 import styled from "styled-components"
+import { BackdropBlur } from "~/components/BackdropBlur"
 import { Flex } from "~/components/layout/Flex"
 import { useSession } from "~/hooks/app/useSession"
 import { DropdownButton, DropdownLink } from "./DropdownItem"
@@ -67,6 +68,7 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                     <DropdownButton title="Log In" onClick={() => signIn("bungie")} />
                 )}
             </Content>
+            <BackdropBlur $radius={4} />
         </Container>
     )
 }
@@ -87,9 +89,6 @@ const Container = styled(m.div)`
         ${({ theme }) => theme.colors.background.medium},
         #0000 55%
     );
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10x);
 
     transform-origin: top;
 

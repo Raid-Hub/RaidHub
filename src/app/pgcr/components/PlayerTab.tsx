@@ -147,7 +147,7 @@ const StyledTab = styled(Flex)<{ $dnf: boolean; $firstClear: boolean }>`
 
     min-height: 90px;
     ${$media.max.mobile`
-        min-height: 70px;
+        min-height: 60px;
     `}
 
     ${props => props.$dnf && `filter: grayscale(75%)  brightness(0.3);`}
@@ -217,6 +217,6 @@ const KDAStat = styled(Flex)`
 
     font-size: 1.125rem;
     ${$media.max.mobile`
-        font-size: 0.875rem;
+        font-size: 0.75rem;
     `}
 `

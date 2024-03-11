@@ -1,39 +1,38 @@
 "use client"
 
-import { type DestinyActivityModifierDefinition } from "bungie-net-core/models"
 import Image from "next/image"
 import styled from "styled-components"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
+import { useActivityModifierDefinition } from "~/hooks/dexie"
 import { bungieIconUrl } from "~/util/destiny"
 
-export const RaidActivityModifier = (props: { modifier: DestinyActivityModifierDefinition }) => {
+export const RaidActivityModifier = (props: { hash: number }) => {
+    const modifier = useActivityModifierDefinition(props.hash)
+    if (!modifier?.displayInActivitySelection) return null
+
     return (
         <TooltipContainer
-            tooltipId={`tooltip-${props.modifier.hash}`}
+            tooltipId={`tooltip-${modifier.hash}`}
             tooltipBody={
                 <TooltipData>
                     <Flex $direction="column" $gap={0} $padding={0.6}>
                         <H5>
-                            <b>{props.modifier.displayProperties.name}</b>
+                            <b>{modifier.displayProperties.name}</b>
                         </H5>
                         <div>
-                            {props.modifier.displayProperties.description
+                            {modifier.displayProperties.description
                                 .replace(/\{var:\d+\}%/, "25%")
                                 .replace(/\{var:\d+\}/, "unknown")}
                         </div>
                     </Flex>
                 </TooltipData>
             }>
-            <Flex
-                data-modifier-hash={props.modifier.hash}
-                $direction="column"
-                $padding={0.3}
-                $gap={0.5}>
+            <Flex data-modifier-hash={modifier.hash} $direction="column" $padding={0.3} $gap={0.5}>
                 <Image
                     unoptimized
-                    alt={props.modifier.displayProperties.name}
-                    src={bungieIconUrl(props.modifier.displayProperties.icon)}
+                    alt={modifier.displayProperties.name}
+                    src={bungieIconUrl(modifier.displayProperties.icon)}
                     width={40}
                     height={40}
                 />

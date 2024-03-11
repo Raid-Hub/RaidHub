@@ -1,9 +1,8 @@
 .summary-card {
-    max-width: 1200px; /* Overrides the global setting */
     --border: 1px solid rgba(111, 111, 111, 0.229);
     flex: 1;
     padding: 0.8em;
-    min-width: 95%;
+    min-width: min-content;
 
     background-color: rgba(30, 30, 30, 0.35);
 
@@ -85,6 +84,8 @@
     padding-top: 10px;
     padding-right: 10px;
     margin-left: 5px;
+
+    max-width: 50%;
 }
 
 .duration {
@@ -147,6 +148,7 @@
 }
 
 .grid {
+    min-width: 320px;
     margin-top: 10px;
     border-radius: 10px;
     height: auto;
@@ -554,9 +556,6 @@
     }
     .grid {
         grid-template-columns: 1fr;
-    }
-    .summary-card {
-        min-width: 300px;
     }
     .entry-card {
         height: 69px;
