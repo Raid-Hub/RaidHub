@@ -37,7 +37,8 @@ export const ManifestStatusOverlay = (
                 <StyledManifestStatusOverlay>
                     <OverlayContainer>
                         <ErrorMesssage>
-                            Bungie.net manifest failed to load: {props.error.message}
+                            <b>Error</b>: Fail to load Bungie.net manifest:{" "}
+                            <i>{props.error.message}</i>
                         </ErrorMesssage>
                     </OverlayContainer>
                 </StyledManifestStatusOverlay>
@@ -48,7 +49,7 @@ export const ManifestStatusOverlay = (
                     <OverlayContainer>
                         <ErrorMesssage>
                             <div style={{ marginBottom: "1rem" }}>
-                                Failed to save manifest definitions:{" "}
+                                <b>Error:</b> Failed to save manifest definitions:{" "}
                                 {Array.isArray(props.error) ? (
                                     <ul>
                                         {props.error.map((e, idx) => (
@@ -91,6 +92,7 @@ const OverlayContainer = styled.div`
     right: 10px;
     display: flex;
     justify-content: flex-end;
+    max-width: calc(min(50%, 300px));
 `
 
 const rotate = keyframes`
@@ -116,6 +118,5 @@ const SpinnerIcon = styled.div<{
 
 const ErrorMesssage = styled.div`
     background-color: ${({ theme }) => theme.colors.background.error};
-    padding: 1rem;
-    max-width: calc(min(50%, 300px));
+    padding: 0.75rem;
 `

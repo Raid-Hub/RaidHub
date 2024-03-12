@@ -32,6 +32,7 @@ export const CardSplash = styled.div`
 `
 
 export const CardSplashTitleAbsolute = styled(CardTitle)`
+    white-space: wrap;
     position: absolute;
     bottom: 0;
     left: 5%;
