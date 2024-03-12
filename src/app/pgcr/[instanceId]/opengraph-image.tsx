@@ -106,7 +106,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                 flexBasis:
                                     activity.playerCount < 4
                                         ? "100%"
-                                        : activity.playerCount % 2 === 1 && idx == 0
+                                        : activity.playerCount === 5 && idx == 0
                                         ? "55%"
                                         : "48%",
                                 display: "flex",

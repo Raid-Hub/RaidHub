@@ -96,7 +96,7 @@ const CurrentActivityCard = (props: {
 
     return (
         <Latest $playerCount={props.partyMembers.length}>
-            <Card $overflowHidden>
+            <Card $overflowHidden $fullHeight>
                 <Container $minHeight={80}>
                     <Image
                         src={bungiePgcrImageUrl(activity?.pgcrImage)}

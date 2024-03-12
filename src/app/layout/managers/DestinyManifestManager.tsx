@@ -8,7 +8,7 @@ import Dexie from "dexie"
 import { useEffect, useState, type ReactNode } from "react"
 import { type BungieAPIError } from "~/models/BungieAPIError"
 import type { Prettify } from "~/types/generic"
-import { DB_VERSION, indexDB } from "~/util/dexie"
+import { DB_VERSION, dexieDB } from "~/util/dexie"
 import { o } from "~/util/o"
 import { ManifestStatusOverlay } from "../ManifestStatusOverlay"
 import { useLocale } from "./LocaleManager"
@@ -32,7 +32,7 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         onSuccess: newManifestVersion => {
             setManifestVersion(newManifestVersion)
             // Free up some memory
-            indexDB.clearCache()
+            dexieDB.clearCache()
             localStorage.setItem(KEY_MANIFEST_VERSION, newManifestVersion)
         },
         onError: (e: Error | Error[]) => {
@@ -51,7 +51,9 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         queryFn: () => getDestinyManifest(client).then(res => res.Response),
         suspense: false,
         enabled: manifestVersion !== undefined,
-        refetchInterval: 3600_000, // 1 hour
+        staleTime: 3600_000, // 1 hour
+        refetchInterval: 3600_000, // 1 hour,
+        refetchIntervalInBackground: false,
         retry: (failureCount, error: BungieAPIError) => error.ErrorCode !== 5 && failureCount < 3,
         onSuccess: data => {
             const newManifestVersion = [data.version, manifestLanguage, DB_VERSION].join("::")
@@ -109,13 +111,13 @@ const updateCachedManifest = async ({
             tableName: "DestinyInventoryItemLiteDefinition",
             language: language
         }).then(items =>
-            indexDB.transaction("rw", indexDB.items, () => {
+            dexieDB.transaction("rw", dexieDB.items, () => {
                 const itemsWithHashes = Object.entries(items).map(([hash, item]) => ({
                     ...item,
                     hash: Number(hash)
                 }))
-                indexDB.seedCache("items", itemsWithHashes)
-                return indexDB.items.bulkPut(itemsWithHashes)
+                dexieDB.seedCache("items", itemsWithHashes)
+                return dexieDB.items.bulkPut(itemsWithHashes)
             })
         ),
 
@@ -125,10 +127,10 @@ const updateCachedManifest = async ({
             language: language
         }).then(activities => {
             const values = Object.values(activities)
-            indexDB.seedCache("activities", values)
+            dexieDB.seedCache("activities", values)
 
-            return indexDB.transaction("rw", indexDB.activities, () =>
-                indexDB.activities.bulkPut(values)
+            return dexieDB.transaction("rw", dexieDB.activities, () =>
+                dexieDB.activities.bulkPut(values)
             )
         }),
 
@@ -138,9 +140,9 @@ const updateCachedManifest = async ({
             language: language
         }).then(modes => {
             const values = Object.values(modes)
-            indexDB.seedCache("activityModes", values)
-            return indexDB.transaction("rw", indexDB.activityModes, () =>
-                indexDB.activityModes.bulkPut(values)
+            dexieDB.seedCache("activityModes", values)
+            return dexieDB.transaction("rw", dexieDB.activityModes, () =>
+                dexieDB.activityModes.bulkPut(values)
             )
         }),
 
@@ -150,8 +152,8 @@ const updateCachedManifest = async ({
             language: language
         }).then(seasons => {
             const values = Object.values(seasons)
-            indexDB.seedCache("seasons", values)
-            return indexDB.transaction("rw", indexDB.seasons, () => indexDB.seasons.bulkPut(values))
+            dexieDB.seedCache("seasons", values)
+            return dexieDB.transaction("rw", dexieDB.seasons, () => dexieDB.seasons.bulkPut(values))
         }),
 
         getDestinyManifestComponent(client, {
@@ -160,9 +162,9 @@ const updateCachedManifest = async ({
             language: language
         }).then(modifiers => {
             const values = Object.values(modifiers)
-            indexDB.seedCache("activityModifiers", values)
-            return indexDB.transaction("rw", indexDB.activityModifiers, () =>
-                indexDB.activityModifiers.bulkPut(values)
+            dexieDB.seedCache("activityModifiers", values)
+            return dexieDB.transaction("rw", dexieDB.activityModifiers, () =>
+                dexieDB.activityModifiers.bulkPut(values)
             )
         }),
 
@@ -172,9 +174,9 @@ const updateCachedManifest = async ({
             language: language
         }).then(classes => {
             const values = Object.values(classes)
-            indexDB.seedCache("characterClasses", values)
-            return indexDB.transaction("rw", indexDB.characterClasses, () =>
-                indexDB.characterClasses.bulkPut(values)
+            dexieDB.seedCache("characterClasses", values)
+            return dexieDB.transaction("rw", dexieDB.characterClasses, () =>
+                dexieDB.characterClasses.bulkPut(values)
             )
         }),
 
@@ -184,9 +186,9 @@ const updateCachedManifest = async ({
             language: language
         }).then(milestones => {
             const values = Object.values(milestones)
-            indexDB.seedCache("milestones", values)
-            return indexDB.transaction("rw", indexDB.milestones, () =>
-                indexDB.milestones.bulkPut(values)
+            dexieDB.seedCache("milestones", values)
+            return dexieDB.transaction("rw", dexieDB.milestones, () =>
+                dexieDB.milestones.bulkPut(values)
             )
         }),
 
@@ -207,7 +209,7 @@ const updateCachedManifest = async ({
         )
     ) {
         // Force a reset if there was a dexie related error
-        await indexDB.delete()
+        await dexieDB.delete()
     }
 
     throw errors.map(e => (e instanceof Error ? e : new Error(String(e.reason))))
@@ -226,16 +228,16 @@ async function updateClanBannerData(banners: RawClanBannerData) {
 
     const clanBannerTableKeys = Object.keys(banners) as (keyof RawClanBannerData)[]
 
-    return indexDB.transaction(
+    return dexieDB.transaction(
         "rw",
-        clanBannerTableKeys.map(key => indexDB[key]),
+        clanBannerTableKeys.map(key => dexieDB[key]),
         () =>
             Promise.all(
                 clanBannerTableKeys.map(key => {
                     const data = hash(key)
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                     return (
-                        indexDB[key]
+                        dexieDB[key]
                             // @ts-expect-error Can't type this
                             .bulkPut(data)
                     )

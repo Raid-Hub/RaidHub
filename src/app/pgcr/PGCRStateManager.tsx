@@ -2,10 +2,10 @@
 
 import type { Collection, ReadonlyCollection } from "@discordjs/collection"
 import { useQueryClient } from "@tanstack/react-query"
-import { createContext, useContext, useMemo, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react"
 import { mergeWeaponCollections } from "~/app/pgcr/weaponUtils"
 import { usePostGameCarnageReport } from "~/services/bungie/hooks"
-import { useRaidHubActivity } from "~/services/raidhub/hooks"
+import { useRaidHubActivity, useRaidHubPGCR } from "~/services/raidhub/hooks"
 import type { ListedRaid, RaidHubActivityResponse } from "~/services/raidhub/types"
 import { useProcessPGCR } from "./hooks/useProcessPGCR"
 import type DestinyPGCRPlayer from "./models/Player"
@@ -80,12 +80,14 @@ export const PGCRStateManager = ({
 }: PGCRPageProps & { children: ReactNode }) => {
     const queryClient = useQueryClient()
 
-    if (ssrActivity) {
-        queryClient.setQueryData<RaidHubActivityResponse>(
-            ["raidhub", "activity", instanceId],
-            old => old ?? ssrActivity
-        )
-    }
+    useEffect(() => {
+        if (ssrActivity) {
+            queryClient.setQueryData<RaidHubActivityResponse>(
+                ["raidhub", "activity", instanceId],
+                old => old ?? ssrActivity
+            )
+        }
+    }, [queryClient, ssrActivity, instanceId])
 
     const activityQuery = useRaidHubActivity(instanceId, {
         enabled: isReady,
@@ -101,6 +103,10 @@ export const PGCRStateManager = ({
             select: data => processPGCR(data)
         }
     )
+
+    useRaidHubPGCR(instanceId, {
+        enabled: pgcrQuery.isLoadingError // Initial load failed, hit the raidhub endpoint instead
+    })
 
     const ctxValue = useMemo((): PGCRContextValue => {
         if (!(activityQuery.isSuccess || pgcrQuery.isSuccess)) {

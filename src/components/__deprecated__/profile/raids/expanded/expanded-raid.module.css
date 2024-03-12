@@ -1,11 +1,14 @@
 .expanded-raid {
-    background-color: rgba(0, 0, 0, 0.317);
+    background-color: rgba(0, 0, 0, 1);
     border-radius: 10px;
     border: 1px solid rgba(128, 128, 128, 0.353);
     padding: 1em;
-
-    grid-column-start: 1; /* Start from the first column */
-    grid-column-end: -1; /* End at the last column */
+    position: fixed;
+    z-index: 100;
+    top: 80px;
+    max-height: 90%;
+    max-width: 95%;
+    overflow: auto;
 }
 
 .container {

@@ -12,13 +12,19 @@ export const useDialog = () => {
 
     return useMemo(
         () => ({
+            ref,
             close: () => {
                 ref.current?.close()
             },
             open: () => {
                 ref.current?.showModal()
             },
-            Dialog: ({ children, ...props }: ComponentPropsWithoutRef<typeof Dialog>) => (
+            Dialog: ({
+                children,
+                ...props
+            }: ComponentPropsWithoutRef<typeof Dialog> & {
+                onClose?: () => void
+            }) => (
                 <Dialog {...props} ref={ref}>
                     {children}
                 </Dialog>
@@ -28,11 +34,16 @@ export const useDialog = () => {
     )
 }
 
-const Dialog = forwardRef<HTMLDialogElement, ComponentPropsWithoutRef<"dialog">>(
-    ({ children, onClick, style, ...props }, ref) => {
-        const _onClick: MouseEventHandler<HTMLDialogElement> = useCallback(
-            event => {
-                if (typeof ref === "object" && ref?.current?.contains(event.target as Node)) {
+const Dialog = forwardRef<
+    HTMLDialogElement,
+    ComponentPropsWithoutRef<"dialog"> & {
+        onClose?: () => void
+    }
+>(({ children, onClick, onClose, ...props }, ref) => {
+    const _onClick: MouseEventHandler<HTMLDialogElement> = useCallback(
+        event => {
+            if (typeof ref === "object" && ref?.current)
+                if (ref.current.contains(event.target as Node)) {
                     const dialogRect = ref.current.getBoundingClientRect()
 
                     if (
@@ -41,35 +52,37 @@ const Dialog = forwardRef<HTMLDialogElement, ComponentPropsWithoutRef<"dialog">>
                         event.clientY < dialogRect.top ||
                         event.clientY > dialogRect.bottom
                     ) {
+                        onClose?.()
                         ref.current.close()
                     }
+                } else {
+                    onClose?.()
+                    ref.current.close()
                 }
-            },
-            [ref]
-        )
+        },
+        [onClose, ref]
+    )
 
-        return (
-            <dialog
-                {...props}
-                ref={ref}
-                onClick={e => {
-                    onClick?.(e)
-                    _onClick(e)
-                }}
-                style={{ ...style, position: "relative" }}>
-                <button
-                    onClick={() => typeof ref === "object" && ref?.current?.close()}
-                    style={{
-                        position: "absolute",
-                        right: "0.5rem",
-                        top: "0.5rem"
-                    }}>
-                    X
-                </button>
-                {children}
-            </dialog>
-        )
-    }
-)
+    return (
+        <dialog
+            {...props}
+            ref={ref}
+            onClick={e => {
+                onClick?.(e)
+                _onClick(e)
+            }}>
+            <div
+                style={{
+                    top: 0,
+                    position: "sticky",
+                    display: "flex",
+                    justifyContent: "flex-end"
+                }}>
+                <button onClick={() => typeof ref === "object" && ref?.current?.close()}>X</button>
+            </div>
+            {children}
+        </dialog>
+    )
+})
 
 Dialog.displayName = "Dialog"

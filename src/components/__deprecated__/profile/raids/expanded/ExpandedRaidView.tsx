@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useMemo, useRef } from "react"
-import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { useDialog } from "~/components/Dialog"
+import { usePortal } from "~/components/Portal"
+import { useClickOutside } from "~/hooks/util/useClickOutside"
 import type { ListedRaid } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 import ExpandedStatsTable from "./ExpandedStatsTable"
@@ -18,29 +19,26 @@ export default function ExpandedRaidView({
     raid: ListedRaid
     dismiss: () => void
 }) {
+    const { Dialog, ref } = useDialog()
+    const portal = usePortal()
     const { sunsetRaids, getRaidString } = useRaidHubManifest()
+    // const { activities, isLoadingActivities } = useRaidCardContext()
 
-    const { activities, isLoadingActivities } = useRaidCardContext()
+    // const recents = useMemo(
+    //     () =>
+    //         Array.from(activities?.values() ?? [])
+    //             .filter(a => a.completed)
+    //             .slice(0, 24),
+    //     [activities]
+    // )
 
-    const recents = useMemo(
-        () =>
-            Array.from(activities?.values() ?? [])
-                .filter(a => a.completed)
-                .slice(0, 24),
-        [activities]
-    )
+    useClickOutside(ref, dismiss, {
+        enabled: true,
+        lockout: 50
+    })
 
-    const scrollTargetRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        if (scrollTargetRef.current) {
-            scrollTargetRef.current.scrollIntoView({ behavior: "smooth" })
-        }
-    }, [])
-
-    return (
-        <div className={styles["expanded-raid"]} ref={scrollTargetRef}>
-            <button onClick={dismiss}>close</button>
+    return portal(
+        <Dialog data-newo-id="newoewew" className={styles["expanded-raid"]} onClose={dismiss} open>
             <p>
                 This view is still a work in progress. <b>Have an idea or suggestion?</b> Join our
                 discord:{" "}
@@ -54,29 +52,29 @@ export default function ExpandedRaidView({
             <h2>Expanded details for {getRaidString(raid)}</h2>
             <div className={styles.container}>
                 <div className={styles["bungie-stats"]}>
-                    <h3>Stats</h3>
-                    {<ExpandedStatsTable />}
-
                     {!includedIn(sunsetRaids, raid) && (
                         <div>
                             <h3>Weekly Progress</h3>
                             <WeeklyProgress raid={raid} />
                         </div>
                     )}
+                    <h3>Stats</h3>
+                    <ExpandedStatsTable />
                 </div>
-                <div className={styles.history}>
+                {/* // todo */}
+                {/* <div className={styles.history}>
                     <h3>Recent Completions</h3>
                     {!isLoadingActivities && (
                         <div className={styles["history-activities"]}>
                             {recents?.map(
                                 () => null
-                                // todo
+                                
                                 // <ActivityTile key={a.instanceId} activity={a} />
                             )}
                         </div>
                     )}
-                </div>
+                </div> */}
             </div>
-        </div>
+        </Dialog>
     )
 }

@@ -135,7 +135,7 @@ class CustomDexie extends Dexie implements Tables {
     }
 }
 
-export const indexDB = new CustomDexie()
+export const dexieDB = new CustomDexie()
 
 /**
  * Custom hook for querying a single item from the Dexie database with in-memory caching.
@@ -152,20 +152,20 @@ export const useDexieGetQuery = <
     const liveQuery = useLiveQuery(
         () =>
             // @ts-expect-error generic is right
-            indexDB[table].get({ hash: hash }),
+            dexieDB[table].get({ hash: hash }),
         [hash]
     )
 
     return useMemo(() => {
         if (liveQuery) {
-            indexDB.cache[table].set(
+            dexieDB.cache[table].set(
                 liveQuery.hash,
                 // @ts-expect-error item is right type
                 liveQuery
             )
         }
         return (
-            (indexDB.cache[table].get(hash) as ReturnType<CustomDexie["cache"][K]["get"]>) ?? null
+            (dexieDB.cache[table].get(hash) as ReturnType<CustomDexie["cache"][K]["get"]>) ?? null
         )
     }, [table, liveQuery, hash])
 }

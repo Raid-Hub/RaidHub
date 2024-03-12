@@ -3,14 +3,18 @@
 import styled, { css } from "styled-components"
 import { $media } from "~/app/layout/media"
 
-export const Grid = styled.div<{
+export const Grid = styled.div.attrs<{
     $minCardWidth?: number
     $minCardWidthMobile?: number
     $numCols?: number
     $gap?: number
     $fullWidth?: boolean
     $relative?: boolean
-}>`
+}>(attrs => ({
+    ...attrs,
+    $minCardWidth: attrs.$minCardWidth ?? 250,
+    $minCardWidthMobile: attrs.$minCardWidthMobile ?? (attrs.$minCardWidth ?? 250) * 0.8
+}))`
     position: ${props => (props.$relative ? "relative" : "static")};
     display: grid;
     ${props => css`
@@ -32,7 +36,5 @@ export const Grid = styled.div<{
 `
 
 Grid.defaultProps = {
-    $minCardWidth: 250,
-    $minCardWidthMobile: 200,
     $gap: 1.5
 }
