@@ -62,8 +62,8 @@ function EncounterProgress({ phase }: { phase: DestinyMilestoneActivityPhase }) 
             <rect
                 width={20}
                 height={20}
-                stroke="var(--border)"
-                strokeWidth={4}
+                stroke="gray"
+                strokeWidth={2}
                 fill={phase.complete ? "#0CA51240" : "none"}
             />
         </svg>

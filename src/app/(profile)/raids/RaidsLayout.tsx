@@ -106,14 +106,15 @@ export const Raids = () => {
         raid: string
     }>()
 
-    const { expandedRaid, clearExpandedRaid, setExpandedRaid } = useMemo(
-        () => ({
-            expandedRaid: Number(queryParams.get("raid")),
-            clearExpandedRaid: () => queryParams.remove("raid"),
-            setExpandedRaid: (raid: ListedRaid) => queryParams.set("raid", String(raid))
-        }),
+    const [clearExpandedRaid, setExpandedRaid] = useMemo(
+        () => [
+            () => queryParams.remove("raid"),
+            (raid: ListedRaid) => queryParams.set("raid", String(raid))
+        ],
         [queryParams]
     )
+
+    const expandedRaid = Number(queryParams.get("raid"))
 
     const [tab, setTab] = useLocalStorage<"classic" | "history">("player-profile-tab", "classic")
 
@@ -128,7 +129,12 @@ export const Raids = () => {
                 </Tab>
             </TabSelector>
             {tab === "classic" ? (
-                <Grid as="section" $minCardWidth={325} $minCardWidthMobile={300} $fullWidth>
+                <Grid
+                    as="section"
+                    $minCardWidth={325}
+                    $minCardWidthMobile={300}
+                    $fullWidth
+                    $relative>
                     {listedRaids.map(raid => (
                         <RaidCardContext
                             key={raid}

@@ -87,121 +87,131 @@ export default function RaidCard({
         return { fastestFullClear, averageClear }
     }, [activities])
 
-    return isExpanded ? (
-        <ExpandedRaidView raid={raid} dismiss={closeExpand} />
-    ) : (
-        <m.div
-            initial={{
-                y: 20,
-                opacity: 0
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1
-            }}
-            viewport={{ once: true }}
-            transition={{
-                duration: 0.3
-            }}
-            className={styles.card}>
-            <div className={styles["card-img-container"]}>
-                <CloudflareImage
-                    className={styles["card-background"]}
-                    priority
-                    width={960}
-                    height={540}
-                    cloudflareId={RaidCardBackground[raid]}
-                    alt={getRaidString(raid)}
-                />
-                <div className={styles["card-top"]}>
-                    {firstContestClear && (
-                        <RaceTagLabel
-                            placement={firstContestClear.rank}
-                            instanceId={firstContestClear.instanceId}
-                            dayOne={firstContestClear.dayOne}
-                            contest={firstContestClear.contest}
-                            weekOne={firstContestClear.weekOne}
-                            challenge={firstContestClear.type === "Challenge"}
-                            raid={raid}
-                            setActiveId={setHoveredTag}
-                        />
-                    )}
-                    <div
-                        className={[styles["card-top-right"], styles["visible-on-card-hover"]].join(
-                            " "
-                        )}>
-                        <Expand color="white" sx={25} onClick={expand} />
-                    </div>
-                </div>
-                <div className={styles["img-overlay-bottom"]}>
-                    <div className={styles["card-challenge-tags"]}>
-                        {tags?.map(tag => (
-                            <RaidTagLabel
-                                completed={tag.activity.completed}
-                                key={tag.activity.instanceId}
+    return (
+        <>
+            {isExpanded && <ExpandedRaidView raid={raid} dismiss={closeExpand} />}
+            <m.div
+                initial={{
+                    y: 20,
+                    opacity: 0
+                }}
+                whileInView={{
+                    y: 0,
+                    opacity: 1
+                }}
+                viewport={{ once: true }}
+                transition={{
+                    duration: 0.3
+                }}
+                className={styles.card}>
+                <div className={styles["card-img-container"]}>
+                    <CloudflareImage
+                        className={styles["card-background"]}
+                        priority
+                        width={960}
+                        height={540}
+                        cloudflareId={RaidCardBackground[raid]}
+                        alt={getRaidString(raid)}
+                    />
+                    <div className={styles["card-top"]}>
+                        {firstContestClear && (
+                            <RaceTagLabel
+                                placement={firstContestClear.rank}
+                                instanceId={firstContestClear.instanceId}
+                                dayOne={firstContestClear.dayOne}
+                                contest={firstContestClear.contest}
+                                weekOne={firstContestClear.weekOne}
+                                challenge={firstContestClear.type === "Challenge"}
                                 raid={raid}
                                 setActiveId={setHoveredTag}
-                                instanceId={tag.activity.instanceId}
-                                isBestPossible={tag.bestPossible}
-                                playerCount={tag.activity.playerCount}
-                                fresh={tag.activity.fresh}
-                                flawless={tag.activity.flawless}
-                                difficulty={tag.activity.meta.version}
-                                contest={tag.activity.contest}
                             />
-                        ))}
-                    </div>
-                    <span className={styles["card-title"]}>{getRaidString(raid)}</span>
-                </div>
-            </div>
-            <div className={styles["card-content"]}>
-                <div className={styles["graph-content"]}>
-                    {isLoadingActivities ? (
-                        <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
-                            <Loading />
+                        )}
+                        <div
+                            className={[
+                                styles["card-top-right"],
+                                styles["visible-on-card-hover"]
+                            ].join(" ")}>
+                            <Expand color="white" sx={25} onClick={expand} />
                         </div>
-                    ) : (
-                        <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
-                    )}
-                    <div className={styles["graph-right"]}>
+                    </div>
+                    <div className={styles["img-overlay-bottom"]}>
+                        <div className={styles["card-challenge-tags"]}>
+                            {tags?.map(tag => (
+                                <RaidTagLabel
+                                    completed={tag.activity.completed}
+                                    key={tag.activity.instanceId}
+                                    raid={raid}
+                                    setActiveId={setHoveredTag}
+                                    instanceId={tag.activity.instanceId}
+                                    isBestPossible={tag.bestPossible}
+                                    playerCount={tag.activity.playerCount}
+                                    fresh={tag.activity.fresh}
+                                    flawless={tag.activity.flawless}
+                                    difficulty={tag.activity.meta.version}
+                                    contest={tag.activity.contest}
+                                />
+                            ))}
+                        </div>
+                        <span className={styles["card-title"]}>{getRaidString(raid)}</span>
+                    </div>
+                </div>
+                <div className={styles["card-content"]}>
+                    <div className={styles["graph-content"]}>
+                        {isLoadingActivities ? (
+                            <div
+                                className={styles["dots-container"]}
+                                style={{ height: FULL_HEIGHT }}>
+                                <Loading />
+                            </div>
+                        ) : (
+                            <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
+                        )}
+                        <div className={styles["graph-right"]}>
+                            <BigNumberStatItem
+                                displayValue={
+                                    activities?.filter(a => a.player.finishedRaid).size ?? 0
+                                }
+                                isLoading={isLoadingActivities}
+                                name={"Total\nClears"}
+                                extraLarge={true}
+                            />
+                        </div>
+                    </div>
+
+                    <div className={styles.timings}>
                         <BigNumberStatItem
-                            displayValue={activities?.filter(a => a.player.finishedRaid).size ?? 0}
+                            displayValue={
+                                recentClear ? secondsToHMS(recentClear.duration, false) : "N/A"
+                            }
                             isLoading={isLoadingActivities}
-                            name={"Total\nClears"}
-                            extraLarge={true}
+                            name="Recent"
+                            href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
+                        />
+                        <BigNumberStatItem
+                            displayValue={
+                                fastestFullClear
+                                    ? secondsToHMS(fastestFullClear.duration, false)
+                                    : "N/A"
+                            }
+                            isLoading={isLoadingActivities}
+                            name="Fastest"
+                            href={
+                                fastestFullClear
+                                    ? `/pgcr/${fastestFullClear.instanceId}`
+                                    : undefined
+                            }
+                        />
+                        <BigNumberStatItem
+                            displayValue={
+                                averageClear ? secondsToHMS(averageClear.duration, false) : "N/A"
+                            }
+                            isLoading={isLoadingActivities}
+                            name="Average"
+                            href={averageClear ? `/pgcr/${averageClear.instanceId}` : undefined}
                         />
                     </div>
                 </div>
-
-                <div className={styles.timings}>
-                    <BigNumberStatItem
-                        displayValue={
-                            recentClear ? secondsToHMS(recentClear.duration, false) : "N/A"
-                        }
-                        isLoading={isLoadingActivities}
-                        name="Recent"
-                        href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
-                    />
-                    <BigNumberStatItem
-                        displayValue={
-                            fastestFullClear
-                                ? secondsToHMS(fastestFullClear.duration, false)
-                                : "N/A"
-                        }
-                        isLoading={isLoadingActivities}
-                        name="Fastest"
-                        href={fastestFullClear ? `/pgcr/${fastestFullClear.instanceId}` : undefined}
-                    />
-                    <BigNumberStatItem
-                        displayValue={
-                            averageClear ? secondsToHMS(averageClear.duration, false) : "N/A"
-                        }
-                        isLoading={isLoadingActivities}
-                        name="Average"
-                        href={averageClear ? `/pgcr/${averageClear.instanceId}` : undefined}
-                    />
-                </div>
-            </div>
-        </m.div>
+            </m.div>
+        </>
     )
 }
