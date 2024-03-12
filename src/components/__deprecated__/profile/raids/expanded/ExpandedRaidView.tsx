@@ -1,8 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo } from "react"
-import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { useDialog } from "~/components/Dialog"
 import { usePortal } from "~/components/Portal"
@@ -21,18 +19,18 @@ export default function ExpandedRaidView({
     raid: ListedRaid
     dismiss: () => void
 }) {
-    const { Dialog, close, ref } = useDialog()
+    const { Dialog, ref } = useDialog()
     const portal = usePortal()
     const { sunsetRaids, getRaidString } = useRaidHubManifest()
-    const { activities, isLoadingActivities } = useRaidCardContext()
+    // const { activities, isLoadingActivities } = useRaidCardContext()
 
-    const recents = useMemo(
-        () =>
-            Array.from(activities?.values() ?? [])
-                .filter(a => a.completed)
-                .slice(0, 24),
-        [activities]
-    )
+    // const recents = useMemo(
+    //     () =>
+    //         Array.from(activities?.values() ?? [])
+    //             .filter(a => a.completed)
+    //             .slice(0, 24),
+    //     [activities]
+    // )
 
     useClickOutside(ref, dismiss, {
         enabled: true,

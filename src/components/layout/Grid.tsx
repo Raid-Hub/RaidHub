@@ -12,7 +12,8 @@ export const Grid = styled.div.attrs<{
     $relative?: boolean
 }>(attrs => ({
     ...attrs,
-    $minCardWidthMobile: attrs.$minCardWidthMobile ?? ((attrs.$minCardWidth ?? 250) * 4) / 5
+    $minCardWidth: attrs.$minCardWidth ?? 250,
+    $minCardWidthMobile: attrs.$minCardWidthMobile ?? (attrs.$minCardWidth ?? 250) * 0.8
 }))`
     position: ${props => (props.$relative ? "relative" : "static")};
     display: grid;
