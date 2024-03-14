@@ -4,10 +4,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { type ReactNode } from "react"
 import { trpc } from "~/app/trpc"
 import { usePageProps } from "~/components/layout/PageWrapper"
-import {
-    type RaidHubPlayerBasicResponse,
-    type RaidHubPlayerResponse
-} from "~/services/raidhub/types"
+import { type RaidHubPlayerBasic, type RaidHubPlayerResponse } from "~/services/raidhub/types"
 import { type ProfileProps } from "./types"
 
 export function ProfileStateManager(props: { children: ReactNode }) {
@@ -32,13 +29,13 @@ export function ProfileStateManager(props: { children: ReactNode }) {
             // Set the query data if it doesn't exist
             old => old ?? ssrRaidHubProfile
         )
-        queryClient.setQueryData<RaidHubPlayerBasicResponse>(
+        queryClient.setQueryData<RaidHubPlayerBasic>(
             ["raidhub", "player", "basic", destinyMembershipId],
             // Set the query data if it doesn't exist
             old => old ?? ssrRaidHubProfile.player
         )
     } else if (ssrRaidHubBasic) {
-        queryClient.setQueryData<RaidHubPlayerBasicResponse>(
+        queryClient.setQueryData<RaidHubPlayerBasic>(
             ["raidhub", "player", "basic", destinyMembershipId],
             // Set the query data if it doesn't exist
             old => old ?? ssrRaidHubBasic

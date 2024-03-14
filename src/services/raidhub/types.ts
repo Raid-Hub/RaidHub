@@ -41,7 +41,7 @@ export type RaidHubPlayerActivitiesActivity = Prettify<
 export type RaidHubActivityResponse = Component<"ActivityResponse">
 
 export type RaidHubPlayerResponse = Component<"PlayerProfileResponse">
-export type RaidHubPlayerBasicResponse = Component<"PlayerBasicResponse">
+export type RaidHubPlayerBasic = Component<"PlayerBasicResponse">
 
 export type RaidHubManifestResponse = Component<"ManifestResponse">
 
