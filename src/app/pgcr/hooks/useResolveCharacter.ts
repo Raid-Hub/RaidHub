@@ -16,7 +16,7 @@ export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
     const isEnabled =
         !character.destinyUserInfo.membershipType &&
         (!!opts?.forceOnLargePGCR ||
-            (pgcrPlayers && pgcrPlayers.reduce((count, p) => count + p.characters.size, 0) < 20))
+            (pgcrPlayers && pgcrPlayers.reduce((count, p) => count + p.characters.size, 0) <= 50))
 
     const resolveQuery = useRaidHubResolvePlayer(character.destinyUserInfo.membershipId, {
         enabled: isEnabled

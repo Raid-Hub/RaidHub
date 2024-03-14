@@ -13,7 +13,7 @@ import Kill from "~/components/icons/Kill"
 import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
+import type { RaidHubPlayerBasic } from "~/services/raidhub/types"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { useLocale } from "../../../app/layout/managers/LocaleManager"
 import { formattedNumber } from "../../../util/presentation/formatting"
@@ -36,7 +36,7 @@ const SummaryStatsGrid = () => {
                   bungieGlobalDisplayName:
                       stats.mvp.characters.first()?.destinyUserInfo.bungieGlobalDisplayName ?? null,
                   bungieGlobalDisplayNameCode: "foo"
-              } as RaidHubPlayerBasicResponse)
+              } as RaidHubPlayerBasic)
             : undefined
     })
 

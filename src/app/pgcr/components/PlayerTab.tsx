@@ -14,8 +14,6 @@ import Sparkle from "~/components/icons/Sparkle"
 import Xmark from "~/components/icons/Xmark"
 import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
-import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
 import { bungieBannerEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber } from "~/util/presentation/formatting"
@@ -29,42 +27,39 @@ export const PlayerTab = ({
     player: DestinyPGCRPlayer
     onClick: () => void
 }) => {
-    const { activity, pgcrPlayers } = usePGCRContext()
-    const playerData = activity?.players.find(p => p.membershipId === player.membershipId)?.data
+    const { activity, players } = usePGCRContext()
+    const activityPlayer = players?.get(player.membershipId)
+
     const isFirstClear =
-        !!playerData?.isFirstClear && !!activity?.players.some(p => p.data.sherpas > 0)
-    const isGoldCarry = playerData
-        ? playerData.sherpas / (Math.max(activity.playerCount, 6) - 1) >= 1 ||
-          (activity.playerCount <= 3 && playerData.sherpas > 0)
-        : false
-    const isSilverCarry = playerData
-        ? playerData.sherpas / (Math.max(activity.playerCount, 6) - 2) >= 1
-        : false
+        !!activityPlayer?.data?.isFirstClear && !!activity?.players.some(p => p.data.sherpas > 0)
+    const isGoldCarry =
+        activityPlayer && activity
+            ? activityPlayer.data.sherpas / (Math.max(activity.playerCount, 6) - 1) >= 1 ||
+              (activity.playerCount <= 3 && activityPlayer.data.sherpas > 0)
+            : false
+    const isSilverCarry =
+        activityPlayer && activity
+            ? activityPlayer.data.sherpas / (Math.max(activity.playerCount, 6) - 2) >= 1
+            : false
 
     const firstCharacter = player.firstCharacter()
 
-    const membershipId = player.membershipId
-    const shouldResolve = !player.membershipType && !!pgcrPlayers && pgcrPlayers.size < 15
-    const { data: resolvedPlayer } = useRaidHubResolvePlayer(player.membershipId, {
-        enabled: shouldResolve,
-        placeholderData: {
+    const displayName = getBungieDisplayName(
+        {
             membershipId: player.membershipId,
-            membershipType: player.membershipType,
-            displayName: firstCharacter.destinyUserInfo.displayName,
-            bungieGlobalDisplayName: firstCharacter.destinyUserInfo.bungieGlobalDisplayName ?? null,
-            bungieGlobalDisplayNameCode: firstCharacter.destinyUserInfo.bungieGlobalDisplayNameCode
-                ? String(firstCharacter.destinyUserInfo.bungieGlobalDisplayNameCode).padStart(
-                      4,
-                      "0"
-                  )
-                : null
-        } as RaidHubPlayerBasicResponse
-    })
-
-    const displayName = getBungieDisplayName(resolvedPlayer!, {
-        excludeCode: true
-    })
-
+            displayName:
+                player.firstCharacter().destinyUserInfo.displayName || activityPlayer?.displayName,
+            bungieGlobalDisplayName:
+                player.firstCharacter().destinyUserInfo.bungieGlobalDisplayName ||
+                activityPlayer?.bungieGlobalDisplayName,
+            bungieGlobalDisplayNameCode:
+                player.firstCharacter().destinyUserInfo.bungieGlobalDisplayNameCode ??
+                activityPlayer?.bungieGlobalDisplayNameCode
+        },
+        {
+            excludeCode: true
+        }
+    )
     const emblem = useItemDefinition(firstCharacter.emblemHash)
 
     return (
@@ -93,8 +88,8 @@ export const PlayerTab = ({
                 />
                 <Flex style={{ flex: 3 }}>
                     <DisplayName
-                        membershipId={membershipId}
-                        membershipType={resolvedPlayer!.membershipType}
+                        membershipId={player.membershipId}
+                        membershipType={activityPlayer?.membershipType ?? 0}
                         displayName={displayName}
                     />
                 </Flex>

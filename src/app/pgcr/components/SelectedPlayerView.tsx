@@ -13,7 +13,7 @@ import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import type { RaidHubPlayerBasicResponse } from "~/services/raidhub/types"
+import type { RaidHubPlayerBasic } from "~/services/raidhub/types"
 import { bungieEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
@@ -52,7 +52,7 @@ export const SelectedPlayerView = (props: {
                       "0"
                   )
                 : null
-        } as RaidHubPlayerBasicResponse
+        } as RaidHubPlayerBasic
     })
 
     const displayName = getBungieDisplayName(resolvedPlayer!, {

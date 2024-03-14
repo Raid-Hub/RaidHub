@@ -1,12 +1,16 @@
 "use client"
 
-import type { Collection, ReadonlyCollection } from "@discordjs/collection"
+import { Collection, type ReadonlyCollection } from "@discordjs/collection"
 import { useQueryClient } from "@tanstack/react-query"
 import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react"
 import { mergeWeaponCollections } from "~/app/pgcr/weaponUtils"
 import { usePostGameCarnageReport } from "~/services/bungie/hooks"
 import { useRaidHubActivity, useRaidHubPGCR } from "~/services/raidhub/hooks"
-import type { ListedRaid, RaidHubActivityResponse } from "~/services/raidhub/types"
+import type {
+    ListedRaid,
+    RaidHubActivityResponse,
+    RaidHubPlayerWithActivityData
+} from "~/services/raidhub/types"
 import { useProcessPGCR } from "./hooks/useProcessPGCR"
 import type DestinyPGCRPlayer from "./models/Player"
 import type { PGCRPageProps } from "./types"
@@ -21,6 +25,7 @@ type PGCRContextValue =
           duration: number
           activity: RaidHubActivityResponse | undefined
           fresh: boolean | undefined | null
+          players: ReadonlyCollection<string, RaidHubPlayerWithActivityData>
       } & (
           | {
                 isPGCRLoading: false
@@ -61,6 +66,7 @@ type PGCRContextValue =
           weightedScores: undefined
           stats: undefined
           weapons: undefined
+          players: undefined
       }
 
 const PGCRContext = createContext<PGCRContextValue | undefined>(undefined)
@@ -123,7 +129,8 @@ export const PGCRStateManager = ({
                 weightedScores: undefined,
                 isPGCRLoading: pgcrQuery.isLoading,
                 stats: undefined,
-                weapons: undefined
+                weapons: undefined,
+                players: undefined
             }
         }
 
@@ -141,6 +148,9 @@ export const PGCRStateManager = ({
             duration: activityQuery.data?.duration ?? pgcrQuery.data!.duration,
             activity: activityQuery.data,
             fresh: activityQuery.data?.fresh,
+            players: new Collection(
+                activityQuery.data?.players.map(p => [p.membershipId, p]) ?? []
+            ),
             ...(pgcrQuery.isSuccess
                 ? {
                       isPGCRLoading: false,
