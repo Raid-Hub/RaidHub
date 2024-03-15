@@ -1,7 +1,7 @@
 import "server-only"
 
-import { Client as PlanetScaleClient } from "@planetscale/database"
-import { PrismaPlanetScale } from "@prisma/adapter-planetscale"
+import { createClient } from "@libsql/client"
+import { PrismaLibSQL } from "@prisma/adapter-libsql"
 import { PrismaClient } from "@prisma/client"
 
 const globalForPrisma = globalThis as unknown as {
@@ -12,10 +12,16 @@ export const prisma =
     globalForPrisma.prisma ??
     new PrismaClient({
         log: process.env.APP_ENV === "local" ? ["query", "error", "warn"] : ["error"],
-        adapter:
-            process.env.APP_ENV === "local"
-                ? null
-                : new PrismaPlanetScale(new PlanetScaleClient({ url: process.env.DATABASE_URL }))
+        adapter: new PrismaLibSQL(
+            createClient(
+                process.env.APP_ENV === "local"
+                    ? { url: "file:./prisma/raidhub-sqlite.db" }
+                    : {
+                          url: process.env.TURSO_DATABASE_URL!,
+                          authToken: process.env.TURSO_AUTH_TOKEN
+                      }
+            )
+        )
     })
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma

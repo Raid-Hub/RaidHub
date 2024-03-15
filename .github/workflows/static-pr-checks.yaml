@@ -1,0 +1,53 @@
+name: Static Pull Request Checks
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    tsc:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: "tsc"
+              run: yarn tsc
+
+    format:
+        name: Formatting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: "format:check"
+              run: yarn format:check
+
+    lint:
+        runs-on: ubuntu-latest
+        needs: ["tsc", "format"]
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: "eslint"
+              run: yarn lint --max-warnings=0
+
+    migrate-drift:
+        name: Migrate Drift
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: "migrate:drift"
+              run: yarn migrate:drift

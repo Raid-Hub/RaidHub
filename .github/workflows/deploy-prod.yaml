@@ -62,16 +62,24 @@ jobs:
                   git add public/manifest.json
                   git commit -m "Bump $VERSION"
 
-            - name: Merge latest PlanetScale deployment request
-              timeout-minutes: 2
+            - name: Install Turso CLI
+              working-directory: ./
               env:
-                  PLANETSCALE_SERVICE_TOKEN_ID: ${{secrets.PLANETSCALE_SERVICE_TOKEN_ID}}
-                  PLANETSCALE_SERVICE_TOKEN: ${{secrets.PLANETSCALE_SERVICE_TOKEN}}
-                  ORG_NAME: ${{secrets.PLANETSCALE_ORG_NAME}}
-                  DB_NAME: ${{secrets.PLANETSCALE_DB_NAME}}
-                  GITHUB_USER: ${{github.actor}}
-              working-directory: ./${{ github.event.repository.name }}/${{env.pscale_base_directory}}
-              run: ./merge-latest-open-deploy-request.sh
+                  TURSO_INSTALL_SKIP_SIGNUP: true
+              run: curl -sSfL https://get.tur.so/install.sh | bash
+
+            - name: Apply Database Migrations
+              working-directory: ./
+              timeout-minutes: 4
+              env:
+                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+              run: ./.github/scripts/turso-migrate.sh
+
+            - name: Upload Migration Artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: migration
+                  path: ./script.sql
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
