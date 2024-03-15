@@ -12,7 +12,7 @@ elif [ $exit_code -eq 1 ]; then
     exit 1
 fi
 
-command -v turso &> /dev/null || curl -sSfL https://get.tur.so/install.sh | bash 1>/dev/null
+command -v turso &> /dev/null || curl -sSfL https://get.tur.so/install.sh | bash
 
 # read applied schema from the database
 schema=prisma/turso_migrations
