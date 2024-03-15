@@ -14,7 +14,9 @@ jobs:
             - name: Install Turso CLI
               env:
                   TURSO_INSTALL_SKIP_SIGNUP: true
-              run: curl -sSfL https://get.tur.so/install.sh | bash
+              run: |
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  source /home/runner/.bashrc
 
             - name: Apply Database Migrations
               timeout-minutes: 4
