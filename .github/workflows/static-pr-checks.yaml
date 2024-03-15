@@ -1,0 +1,52 @@
+name: Static Pull Request Checks
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    tsc:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: "install"
+              run: yarn install
+
+            - name: "tsc"
+              run: yarn tsc
+
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: "install"
+              run: yarn install
+
+            - name: "lint"
+              run: yarn lint --max-warnings=0
+
+    format:
+        name: Formatting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: "install"
+              run: yarn install
+
+            - name: "format:check"
+              run: yarn format:check
+
+    migrate-diff:
+        name: Migrate Diff
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: "install"
+              run: yarn install
+
+            - name: "migrate:diff"
+              run: yarn migrate:diff
