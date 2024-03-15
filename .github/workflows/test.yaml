@@ -11,11 +11,15 @@ jobs:
             - name: Install dependencies
               run: yarn install
 
+            - name: Install Turso CLI
+              env:
+                  TURSO_INSTALL_SKIP_SIGNUP: true
+              run: curl -sSfL https://get.tur.so/install.sh | bash
+
             - name: Apply Database Migrations
               timeout-minutes: 4
               env:
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
-                  TURSO_INSTALL_SKIP_SIGNUP: true
               run: ./.github/scripts/turso-migrate.sh
 
             - name: Upload Migration Artifact
