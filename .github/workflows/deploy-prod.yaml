@@ -63,13 +63,11 @@ jobs:
                   git commit -m "Bump $VERSION"
 
             - name: Install Turso CLI
-              working-directory: ./
               env:
                   TURSO_INSTALL_SKIP_SIGNUP: true
               run: curl -sSfL https://get.tur.so/install.sh | bash
 
             - name: Apply Database Migrations
-              working-directory: ./
               timeout-minutes: 4
               env:
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
