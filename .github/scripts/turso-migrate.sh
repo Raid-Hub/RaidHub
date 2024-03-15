@@ -15,7 +15,7 @@ fi
 schema=prisma/turso_migrations
 mkdir -p ./$schema/ci/
 cp ./prisma/migrations/migration_lock.toml $schema/migration_lock.toml
-turso db shell raidhub "SELECT CONCAT(sql, ';') FROM sqlite_master WHERE type='table' OR type='index' AND sql IS NOT NULL;" > $schema/tmp.sql
+/home/runner/.turso/turso db shell raidhub "SELECT CONCAT(sql, ';') FROM sqlite_master WHERE type='table' OR type='index' AND sql IS NOT NULL;" > $schema/tmp.sql
 sed '1d' $schema/tmp.sql > $schema/ci/migration.sql
 rm $schema/tmp.sql
 
@@ -24,5 +24,5 @@ yarn prisma migrate diff --from-migrations "$schema" --to-migrations "./prisma/m
 cat script.sql
 
 # apply the migration script
-turso db shell raidhub < script.sql
+/home/runner/.turso/turso db shell raidhub < script.sql
 echo "Migrations applied successfully"
