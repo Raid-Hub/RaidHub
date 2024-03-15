@@ -5,48 +5,39 @@ on:
             - main
 
 jobs:
-    tsc:
+    common-setup:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-
-            - name: "install"
+            - name: Install dependencies
               run: yarn install
 
+    tsc:
+        runs-on: ubuntu-latest
+        needs: common-setup
+        steps:
             - name: "tsc"
               run: yarn tsc
 
     lint:
         runs-on: ubuntu-latest
+        needs: common-setup
         steps:
-            - uses: actions/checkout@v4
-
-            - name: "install"
-              run: yarn install
-
-            - name: "lint"
+            - name: "eslint"
               run: yarn lint --max-warnings=0
 
     format:
         name: Formatting
         runs-on: ubuntu-latest
+        needs: common-setup
         steps:
-            - uses: actions/checkout@v4
-
-            - name: "install"
-              run: yarn install
-
             - name: "format:check"
               run: yarn format:check
 
-    migrate-diff:
-        name: Migrate Diff
+    migrate-drift:
+        name: Migrate Drift
         runs-on: ubuntu-latest
+        needs: common-setup
         steps:
-            - uses: actions/checkout@v4
-
-            - name: "install"
-              run: yarn install
-
-            - name: "migrate:diff"
-              run: yarn migrate:diff
+            - name: "migrate:drift"
+              run: yarn migrate:drift

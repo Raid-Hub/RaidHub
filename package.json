@@ -8,7 +8,7 @@
         "docs": "openapi-typescript https://api-docs.raidhub.io/openapi.json -o ./src/services/raidhub/openapi.d.ts --immutable-types",
         "docs:dev": "openapi-typescript http://localhost:8000/static/openapi -o ./src/services/raidhub/openapi.d.ts --immutable-types",
         "migrate:create": "yarn prisma migrate dev --create-only",
-        "migrate:diff": "yarn prisma migrate diff --from-migrations \"./prisma/migrations\" --to-schema-datamodel \"./prisma/schema.prisma\" --exit-code",
+        "migrate:drift": "yarn prisma migrate diff --from-migrations \"./prisma/migrations\" --to-schema-datamodel \"./prisma/schema.prisma\" --exit-code",
         "studio": "prisma studio",
         "analyze": "ANALYZE=true yarn build",
         "lint": "next lint",
