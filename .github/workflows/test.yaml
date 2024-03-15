@@ -22,10 +22,7 @@ jobs:
               env:
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: |
-                  ls -a /home/runner/
-                  cat /home/runner/.bashrc
-                  source /home/runner/.bashrc
-                  which turso
+                  echo "export PATH=\"/home/runner/.turso:\$PATH\"" >> $GITHUB_ENV
                   ./.github/scripts/turso-migrate.sh
 
             - name: Upload Migration Artifact
