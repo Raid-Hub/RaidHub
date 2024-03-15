@@ -44,7 +44,9 @@ jobs:
                   yarn install
                   yarn prisma generate
 
-              # TODO: Create database branch and connection
+            # TODO: Create database branch and connection
+            - name: Create Database Branch
+              run: exit 1
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
