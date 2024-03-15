@@ -12,11 +12,11 @@ elif [ $exit_code -eq 1 ]; then
     exit 1
 fi
 
-command -v turso &> /dev/null || curl -sSfL https://get.tur.so/install.sh | bash
+command -v turso &> /dev/null || curl -sSfL https://get.tur.so/install.sh | bash 1>/dev/null
 
 # read applied schema from the database
 schema=prisma/turso_migrations
-mkdir -p ./$folder/ci/
+mkdir -p ./$schema/ci/
 cp ./prisma/migrations/migration_lock.toml $schema/migration_lock.toml
 turso db shell raidhub "SELECT CONCAT(sql, ';') FROM sqlite_master WHERE type='table' OR type='index' AND sql IS NOT NULL;" > $schema/tmp.sql
 sed '1d' $schema/tmp.sql > $schema/ci/migration.sql
