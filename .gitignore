@@ -41,6 +41,10 @@ raidhub-app-db/
 prisma/raidhub-sqlite.db
 prisma/raidhub-sqlite.db-journal
 
+# ci
+prisma/turso_migrations
+script.sql
+
 # test pages
 src/pages/test.tsx
 src/app/test

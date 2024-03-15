@@ -12,15 +12,16 @@ export const prisma =
     globalForPrisma.prisma ??
     new PrismaClient({
         log: process.env.APP_ENV === "local" ? ["query", "error", "warn"] : ["error"],
-        adapter:
-            process.env.APP_ENV === "local"
-                ? null
-                : new PrismaLibSQL(
-                      createClient({
+        adapter: new PrismaLibSQL(
+            createClient(
+                process.env.APP_ENV === "local"
+                    ? { url: "file:./prisma/raidhub-sqlite.db" }
+                    : {
                           url: process.env.TURSO_DATABASE_URL!,
                           authToken: process.env.TURSO_AUTH_TOKEN
-                      })
-                  )
+                      }
+            )
+        )
     })
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma

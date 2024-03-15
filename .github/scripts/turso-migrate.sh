@@ -2,32 +2,30 @@
 
 # Check if the schema matches the migration files
 yarn prisma migrate diff --from-migrations "./prisma/migrations" --to-schema-datamodel "./prisma/schema.prisma" --exit-code 1>/dev/null
+exit_code=$?
 
-if [ $? -eq 2 ]; then
+if [ $exit_code -eq 2 ]; then
     echo "Invalid migration files"
     exit 1
-elif [ $? -eq 1 ]; then
-    echo "Error while checking migration files"
+elif [ $exit_code -eq 1 ]; then
+    echo "Error while reading migration files"
     exit 1
 fi
 
-# Check if there are any changes to apply to prod
-migrations=$(yarn prisma migrate status 2>/dev/null | awk '/^[0-9]{14}_/ {print $1}')
-
-if [ -z "$(echo $migrations)" ]; then
-    echo "No migration files found."
-    exit 0
-fi
 command -v turso &> /dev/null || curl -sSfL https://get.tur.so/install.sh | bash
 
-# Iterate over each migration file and run the turso db shell command
-for file in $migrations; do
-  echo "Applying migration $file..."
-  turso db shell raidhub < "./prisma/migrations/$file/migration.sql"
-    if [ $? -ne 0 ]; then
-        echo "Failed to apply migration $file"
-        exit 1
-    else
-        echo "Migration $file applied successfully"
-    fi
-done
+# read applied schema from the database
+schema=prisma/turso_migrations
+mkdir -p ./$folder/ci/
+cp ./prisma/migrations/migration_lock.toml $schema/migration_lock.toml
+turso db shell raidhub "SELECT CONCAT(sql, ';') FROM sqlite_master WHERE type='table' OR type='index' AND sql IS NOT NULL;" > $schema/tmp.sql
+sed '1d' $schema/tmp.sql > $schema/ci/migration.sql
+rm $schema/tmp.sql
+
+# generate the migration script
+yarn prisma migrate diff --from-migrations "$schema" --to-migrations "./prisma/migrations" --script | sed '1,2d' | sed '$d'| sed '$d' > script.sql
+cat script.sql
+
+# apply the migration script
+turso db shell raidhub < script.sql
+echo "Migrations applied successfully"
