@@ -77,7 +77,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: migration
-                  path: ./script.sql
+                  path: ./${{ github.event.repository.name }}/script.sql
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
