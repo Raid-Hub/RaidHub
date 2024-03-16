@@ -68,8 +68,8 @@ jobs:
               run: curl -sSfL https://get.tur.so/install.sh | bash
 
             - name: Apply Database Migrations
-              timeout-minutes: 4
               env:
+                  TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 

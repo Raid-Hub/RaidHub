@@ -71,7 +71,7 @@ export default async function RootLayout(params: { children: ReactNode }) {
     )
 }
 
-export const preferredRegion = "iad1" // us-east-1
+export const preferredRegion = ["iad1"] // us-east-1
 export const runtime = "nodejs"
 export const revalidate = 3600 // static revalidation in seconds
 export const maxDuration = 5 // max lambda duration in seconds

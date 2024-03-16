@@ -14,8 +14,8 @@ module.exports = withBundleAnalyzer({
         styledComponents: true
     },
     env: {
-        BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         APP_ENV: process.env.APP_ENV,
+        BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.io",
         RAIDHUB_API_KEY:
             process.env.RAIDHUB_API_KEY ??
