@@ -18,5 +18,15 @@ export const useActivitiesByPartition = <T extends RaidHubBaseActivity>(
             }
         })
         return partioned
+            .sort(
+                (a, b) =>
+                    new Date(b.first()?.dateCompleted ?? 0).getTime() -
+                    new Date(a.first()?.dateCompleted ?? 0).getTime()
+            )
+            .each(part =>
+                part.sort(
+                    (a, b) => new Date(b.dateStarted).getTime() - new Date(a.dateStarted).getTime()
+                )
+            )
     }, [allResults])
 }
