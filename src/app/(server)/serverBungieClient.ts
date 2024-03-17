@@ -13,7 +13,7 @@ const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
 export default class ServerBungieClient extends BaseBungieClient {
     private next: NextFetchRequestConfig
 
-    constructor(next: NextFetchRequestConfig) {
+    constructor(next: NextFetchRequestConfig = {}) {
         super()
         this.next = next
     }

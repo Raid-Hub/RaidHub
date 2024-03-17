@@ -6,7 +6,7 @@ import { Raids } from "./raids/RaidsLayout"
 import { CurrentActivity } from "./transitory/CurrentActivity"
 import { LatestRaid } from "./transitory/LatestRaid"
 
-export const ProfilePage = () => (
+export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: string }) => (
     <Flex $direction="column" $padding={0} $crossAxis="flex-start">
         <Flex
             $direction="row"
@@ -18,6 +18,7 @@ export const ProfilePage = () => (
             style={{ columnGap: "4rem" }}>
             <UserCard />
             <Suspense
+                key={destinyMembershipId}
                 fallback={
                     <Loading
                         $fill

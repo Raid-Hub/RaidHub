@@ -30,5 +30,11 @@ module.exports = withBundleAnalyzer({
                 pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
             }
         ]
-    }
+    },
+    rewrites: () => [
+        {
+            source: "/:vanity([a-zA-Z0-9]+)",
+            destination: "/user/:vanity"
+        }
+    ]
 })

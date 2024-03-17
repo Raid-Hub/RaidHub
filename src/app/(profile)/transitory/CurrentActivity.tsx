@@ -24,7 +24,6 @@ import { Latest } from "./Latest"
 
 const commonTransitoryQuerySettings = {
     refetchInterval: 45000,
-    suspense: true,
     refetchOnReconnect: true,
     refetchOnWindowFocus: true
 }
@@ -36,6 +35,7 @@ export const CurrentActivity = () => {
         { destinyMembershipId, membershipType: destinyMembershipType },
         {
             select: data => data?.profileTransitoryData.data,
+            suspense: true,
             ...commonTransitoryQuerySettings
         }
     )
@@ -47,14 +47,13 @@ export const CurrentActivity = () => {
         },
         {
             enabled: isInitialLoading || !!profileTransitoryData?.currentActivity,
+            suspense: true,
             select: data =>
-                data.characterActivities.data
-                    ? Object.values(data.characterActivities.data).sort(
-                          (a, b) =>
-                              new Date(b.dateActivityStarted).getTime() -
-                              new Date(a.dateActivityStarted).getTime()
-                      )[0]
-                    : null,
+                Object.values(data.characterActivities.data ?? {}).sort(
+                    (a, b) =>
+                        new Date(b.dateActivityStarted).getTime() -
+                        new Date(a.dateActivityStarted).getTime()
+                )[0] ?? null,
             ...commonTransitoryQuerySettings
         }
     )
