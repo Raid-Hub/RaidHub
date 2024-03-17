@@ -48,13 +48,11 @@ export const CurrentActivity = () => {
         {
             enabled: isInitialLoading || !!profileTransitoryData?.currentActivity,
             select: data =>
-                data.characterActivities.data
-                    ? Object.values(data.characterActivities.data).sort(
-                          (a, b) =>
-                              new Date(b.dateActivityStarted).getTime() -
-                              new Date(a.dateActivityStarted).getTime()
-                      )[0]
-                    : null,
+                Object.values(data.characterActivities.data ?? {}).sort(
+                    (a, b) =>
+                        new Date(b.dateActivityStarted).getTime() -
+                        new Date(a.dateActivityStarted).getTime()
+                )[0] ?? null,
             ...commonTransitoryQuerySettings
         }
     )
