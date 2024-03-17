@@ -7,7 +7,6 @@ on:
     push:
         branches:
             - main
-            - turso-ci
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
