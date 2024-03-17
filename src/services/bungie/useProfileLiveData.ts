@@ -36,11 +36,6 @@ export const useProfileLiveData = <T = UseLiveProfileQueryData>(
                     204 /*CharacterActivities*/, 205 /*CharacterEquipment*/, 305 /*ItemSockets*/
                 ]
             }).then(res => res.Response),
-        structuralSharing: (old, current) => ({
-            // Just in case we miss some components, we want to keep the old data.
-            ...old,
-            ...current
-        }),
         ...opts
     })
 }
