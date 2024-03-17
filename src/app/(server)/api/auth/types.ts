@@ -5,7 +5,7 @@ import { type AdapterUser } from "next-auth/adapters"
 
 declare module "next-auth" {
     interface Session extends DefaultSession {
-        error?: AuthError
+        errors: AuthError[]
         user: AdapterUser
         bungieAccessToken?: {
             value: string
@@ -52,4 +52,9 @@ export type BungieAccount = {
     refreshExpiresAt: number | null
 }
 
-export type AuthError = "BungieAPIOffline" | "AccessTokenError" | "ExpiredRefreshTokenError"
+export type AuthError =
+    | "BungieAPIOffline"
+    | "AccessTokenError"
+    | "ExpiredRefreshTokenError"
+    | "RaidHubAPIError"
+    | "PrismaError"

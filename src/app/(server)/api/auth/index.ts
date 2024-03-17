@@ -16,6 +16,7 @@ export const {
     auth,
     handlers: { GET, POST }
 } = NextAuth({
+    trustHost: true,
     providers: getProviders(),
     adapter: PrismaAdapter(prisma),
     pages: {

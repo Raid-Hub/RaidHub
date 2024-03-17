@@ -36,7 +36,7 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
             localStorage.setItem(KEY_MANIFEST_VERSION, newManifestVersion)
         },
         onError: (e: Error | Error[]) => {
-            console.log(
+            console.warn(
                 `Failed to store the Destiny 2 manifest definitions with error(s): ${
                     Array.isArray(e)
                         ? "\n" + e.map((e, idx) => `${idx + 1}. ${e.message}`).join(",\n")
