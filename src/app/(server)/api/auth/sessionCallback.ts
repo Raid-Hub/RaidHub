@@ -1,71 +1,80 @@
 import "server-only"
 
-import type { BungieFetchConfig } from "bungie-net-core"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { type Session } from "next-auth"
+import { prisma } from "~/server/prisma"
+import ServerBungieClient from "~/server/serverBungieClient"
 import { postRaidHubApi } from "~/services/raidhub/common"
-import { type RaidHubTokenResponse } from "~/services/raidhub/types"
-import { type SessionAndUserData } from "./types"
+import { type AuthError, type BungieAccount, type SessionAndUserData } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export const sessionCallback = async ({
     session,
     user: { bungieAccount, raidHubAccessToken, ...user }
-}: SessionAndUserData) => {
-    let raidhubToken: Promise<RaidHubTokenResponse | undefined> = Promise.resolve(undefined)
-    if (
-        user.role === "ADMIN" &&
-        (!raidHubAccessToken || Date.now() > raidHubAccessToken.expiresAt.getTime())
-    ) {
-        raidhubToken = postRaidHubApi("/authorize", null, {
-            clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
-        }).catch(e => {
-            console.error(e)
-            return undefined
-        })
-    }
+}: SessionAndUserData): Promise<Session> => {
+    const [bungieToken, raidhubToken] = await Promise.all([
+        refreshBungieAuth(bungieAccount, user.id),
+        user.role === "ADMIN"
+            ? refreshRaidHubAdminAuth(raidHubAccessToken, user.id)
+            : Promise.resolve(undefined)
+    ])
 
+    return {
+        ...session,
+        user,
+        bungieAccessToken: bungieToken.token,
+        raidHubAccessToken: raidhubToken?.token ?? undefined,
+        errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors]))
+    }
+}
+
+async function refreshBungieAuth(bungie: BungieAccount, userId: string) {
     if (
-        bungieAccount.expiresAt &&
-        bungieAccount.accessToken &&
-        Date.now() < (bungieAccount.expiresAt - 300) * 1000 // give a 5 minute buffer where it's not expired but we should refresh
+        bungie.expiresAt &&
+        bungie.accessToken &&
+        Date.now() < (bungie.expiresAt - 300) * 1000 // give a 5 minute buffer where it's not expired but we should refresh
     ) {
         // If user access token has not expired yet
         return {
-            ...session,
-            user,
-            bungieAccessToken: {
-                value: bungieAccount.accessToken,
-                expires: new Date(bungieAccount.expiresAt * 1000).toISOString()
+            token: {
+                value: bungie.accessToken,
+                expires: new Date(bungie.expiresAt * 1000).toISOString()
             },
-            raidHubAccessToken: await raidhubToken
-        } satisfies Session
+            errors: []
+        }
     } else if (
-        bungieAccount.refreshToken &&
-        (!bungieAccount.refreshExpiresAt || Date.now() < bungieAccount.refreshExpiresAt * 1000)
+        bungie.refreshToken &&
+        (!bungie.refreshExpiresAt || Date.now() < bungie.refreshExpiresAt * 1000)
     ) {
-        // User access token has expired, but refresh token has not
-        try {
-            const bungieTokens = await refreshAuthorization(
-                bungieAccount.refreshToken,
-                {
-                    client_id: process.env.BUNGIE_CLIENT_ID!,
-                    client_secret: process.env.BUNGIE_CLIENT_SECRET!
-                },
-                {
-                    fetch: async <T>(config: BungieFetchConfig) => {
-                        const res = await fetch(config.url, config)
-                        if (!res.ok) {
-                            throw await res.text()
-                        } else {
-                            return res.json() as T
-                        }
-                    }
-                }
-            )
+        // The refresh token is still valid
 
+        const errors: AuthError[] = []
+
+        const bungieTokens = await refreshAuthorization(
+            bungie.refreshToken,
+            {
+                client_id: process.env.BUNGIE_CLIENT_ID!,
+                client_secret: process.env.BUNGIE_CLIENT_SECRET!
+            },
+            new ServerBungieClient()
+        ).catch(e => {
+            if (
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                e.response?.error_description === "SystemDisabled" ||
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                e.response?.error_description === "Error Response for Shard Relay."
+            ) {
+                errors.push("BungieAPIOffline")
+            } else {
+                console.error("Failed to refresh Bungie access token", e)
+                errors.push("AccessTokenError")
+            }
+            return null
+        })
+
+        if (bungieTokens) {
             await updateBungieAccessTokens({
-                userId: user.id,
+                userId,
                 access: {
                     value: bungieTokens.access_token,
                     expires: new Date(Date.now() + bungieTokens.expires_in * 1000)
@@ -74,46 +83,81 @@ export const sessionCallback = async ({
                     value: bungieTokens.refresh_token,
                     expires: new Date(Date.now() + bungieTokens.refresh_expires_in * 1000)
                 }
+            }).catch(e => {
+                errors.push("PrismaError")
+                console.error("Failed to update Bungie access token", e)
+                return null
             })
+        }
 
-            return {
-                ...session,
-                user,
-                bungieAccessToken: {
-                    value: bungieTokens.access_token,
-                    expires: new Date(Date.now() + bungieTokens.expires_in * 1000).toISOString()
-                },
-                raidHubAccessToken: await raidhubToken
-            } satisfies Session
-        } catch (e) {
-            if (
-                // @ts-expect-error Error typing...
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                e.response?.error_description === "SystemDisabled" ||
-                // @ts-expect-error Error typing...
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                e.response?.error_description === "Error Response for Shard Relay."
-            ) {
-                return {
-                    ...session,
-                    user,
-                    error: "BungieAPIOffline"
-                } satisfies Session
-            } else {
-                console.error(e)
-                return {
-                    ...session,
-                    user,
-                    error: "AccessTokenError"
-                } satisfies Session
-            }
+        return {
+            token: bungieTokens
+                ? {
+                      value: bungieTokens.access_token,
+                      expires: new Date(Date.now() + bungieTokens.expires_in * 1000).toISOString()
+                  }
+                : undefined,
+            errors
         }
     } else {
         return {
-            ...session,
-            user,
-            raidHubAccessToken: await raidhubToken,
-            error: "ExpiredRefreshTokenError"
-        } satisfies Session
+            token: undefined,
+            errors: ["ExpiredRefreshTokenError" as const]
+        }
+    }
+}
+
+async function refreshRaidHubAdminAuth(
+    databaseToken: {
+        value: string
+        expiresAt: Date
+    } | null,
+    userId: string
+) {
+    if (databaseToken && databaseToken.expiresAt.getTime() - 120_000 > Date.now()) {
+        return {
+            token: {
+                value: databaseToken.value,
+                expires: databaseToken.expiresAt.toISOString()
+            },
+            errors: []
+        }
+    }
+
+    const errors: AuthError[] = []
+
+    const token = await postRaidHubApi("/authorize", null, {
+        clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
+    }).catch(e => {
+        errors.push("RaidHubAPIError")
+        console.error("Failed to refresh RaidHub admin token", e)
+        return null
+    })
+
+    if (token) {
+        await prisma.raidHubAccessToken
+            .upsert({
+                where: {
+                    userId
+                },
+                create: {
+                    userId,
+                    value: token.value,
+                    expiresAt: token.expires
+                },
+                update: {
+                    value: token.value,
+                    expiresAt: token.expires
+                }
+            })
+            .catch(e => {
+                errors.push("PrismaError")
+                console.error("Failed to update RaidHub admin token", e)
+            })
+    }
+
+    return {
+        token,
+        errors
     }
 }

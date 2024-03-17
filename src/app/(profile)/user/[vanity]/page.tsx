@@ -1,19 +1,18 @@
 import { type Metadata } from "next"
-import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { type AppProfile } from "~/types/api"
 import { bungieProfileIconUrl } from "~/util/destiny"
-import { ProfileClientWrapper } from "../ProfileClientWrapper"
-import { ProfilePage } from "../ProfilePage"
-import { generatePlayerMetadata } from "../metadata"
+import { ProfileClientWrapper } from "../../ProfileClientWrapper"
+import { ProfilePage } from "../../ProfilePage"
+import { generatePlayerMetadata } from "../../metadata"
 import {
-    getUniqueProfileByDestinyMembershipId,
     getUniqueProfileByVanity,
     prefetchDestinyProfile,
+    prefetchRaidHubPlayerBasic,
     prefetchRaidHubPlayerProfile
-} from "../prefetch"
-import { type ProfileProps } from "../types"
+} from "../../prefetch"
+import { type ProfileProps } from "../../types"
 
 type PageProps = {
     params: {
@@ -21,30 +20,13 @@ type PageProps = {
     }
 }
 
-export const dynamic = "force-dynamic"
 export const dynamicParams = true
+// export const dynamic = "force-dynamic"
 
+/**
+ * This page preferably should be accessed at /:vanity through rewrites in next.config.js
+ */
 export default async function Page({ params }: PageProps) {
-    const redirectFrom = headers()
-        .get("next-url")
-        ?.match(/\/profile\/(\d+)\/(\d+)/)
-
-    if (redirectFrom) {
-        const appProfile = await getUniqueProfileByDestinyMembershipId(redirectFrom[2])
-
-        const pageProps: ProfileProps = {
-            destinyMembershipId: redirectFrom[2],
-            destinyMembershipType: Number(redirectFrom[1]),
-            ssrAppProfile: appProfile,
-            ready: true
-        }
-        return (
-            <ProfileClientWrapper pageProps={pageProps}>
-                <ProfilePage />
-            </ProfileClientWrapper>
-        )
-    }
-
     // Find the app profile by vanity, and if it doesn't exist next will render a 404
     const appProfile = await getUniqueProfileByVanity(params.vanity).then(p => p ?? notFound())
 
@@ -59,7 +41,7 @@ export default async function Page({ params }: PageProps) {
                         destinyMembershipType: appProfile.destinyMembershipType,
                         ready: false
                     }}>
-                    <ProfilePage />
+                    <ProfilePage destinyMembershipId={appProfile.destinyMembershipId} />
                 </ProfileClientWrapper>
             }>
             <HydratedVanityPage {...appProfile} />
@@ -86,23 +68,25 @@ const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
     }
     return (
         <ProfileClientWrapper pageProps={pageProps}>
-            <ProfilePage />
+            <ProfilePage destinyMembershipId={pageProps.destinyMembershipId} />
         </ProfileClientWrapper>
     )
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    // If the vanity is not a word, it's not a valid vanity
+
     const profile = await getUniqueProfileByVanity(params.vanity)
 
     if (profile?.name === undefined) {
         return {}
     }
 
-    const raidhub = await prefetchRaidHubPlayerProfile({
+    const raidhub = await prefetchRaidHubPlayerBasic({
         membershipId: profile.destinyMembershipId
     })
 
-    const image = profile?.image ?? bungieProfileIconUrl(raidhub?.player.iconPath)
+    const image = profile?.image ?? bungieProfileIconUrl(raidhub?.iconPath)
 
     return generatePlayerMetadata({
         username: profile.name,

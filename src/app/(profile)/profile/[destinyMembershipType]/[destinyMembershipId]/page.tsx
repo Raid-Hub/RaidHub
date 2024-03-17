@@ -1,6 +1,5 @@
 import { type BungieMembershipType } from "bungie-net-core/models"
 import { type Metadata } from "next"
-import { RedirectType, permanentRedirect } from "next/navigation"
 import { bungieProfileIconUrl } from "~/util/destiny"
 import { ProfileClientWrapper } from "../../../ProfileClientWrapper"
 import { ProfilePage } from "../../../ProfilePage"
@@ -24,14 +23,12 @@ export const revalidate = 900
 
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
-    const appProfile = await getUniqueProfileByDestinyMembershipId(params.destinyMembershipId)
-    if (appProfile?.vanity) {
-        permanentRedirect(`/${appProfile.vanity}`, RedirectType.replace)
-    }
-
-    const basicProfile = await prefetchRaidHubPlayerBasic({
-        membershipId: params.destinyMembershipId
-    })
+    const [appProfile, basicProfile] = await Promise.all([
+        getUniqueProfileByDestinyMembershipId(params.destinyMembershipId),
+        prefetchRaidHubPlayerBasic({
+            membershipId: params.destinyMembershipId
+        })
+    ])
 
     const pageProps: ProfileProps = {
         ...params,
@@ -44,7 +41,7 @@ export default async function Page({ params }: PageProps) {
     // vanity pages, but we could do that here if we wanted to
     return (
         <ProfileClientWrapper pageProps={pageProps}>
-            <ProfilePage />
+            <ProfilePage destinyMembershipId={pageProps.destinyMembershipId} />
         </ProfileClientWrapper>
     )
 }
