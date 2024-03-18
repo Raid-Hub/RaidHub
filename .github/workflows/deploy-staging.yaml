@@ -18,6 +18,8 @@ jobs:
         runs-on: ubuntu-latest
         env:
             APP_ENV: "staging"
+            TURSO_DATABASE_NAME: "staging"
+            TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
             TURSO_DATABASE_URL: ${{ secrets.STAGING_TURSO_DATABASE_URL }}
             TURSO_AUTH_TOKEN: ${{ secrets.STAGING_TURSO_AUTH_TOKEN }}
         steps:
@@ -35,9 +37,6 @@ jobs:
               run: curl -sSfL https://get.tur.so/install.sh | bash
 
             - name: Apply Database Migrations
-              env:
-                  TURSO_DATABASE_NAME: "staging"
-                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 
             - name: Pull Vercel Environment Information
@@ -47,7 +46,7 @@ jobs:
               run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
-              run: echo "URL=$(vercel deploy --prebuilt -e TURSO_DATABASE_URL=${{ secrets.STAGING_TURSO_DATABASE_URL }} -e TURSO_AUTH_TOKEN=${{ secrets.STAGING_TURSO_AUTH_TOKEN }} --token=${{ secrets.VERCEL_TOKEN }} )" >> $GITHUB_ENV
+              run: echo "URL=$(vercel deploy --prebuilt --archive -e TURSO_DATABASE_URL=${{ secrets.STAGING_TURSO_DATABASE_URL }} -e TURSO_AUTH_TOKEN=${{ secrets.STAGING_TURSO_AUTH_TOKEN }} --token=${{ secrets.VERCEL_TOKEN }} )" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $URL staging.raidhub.io --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}

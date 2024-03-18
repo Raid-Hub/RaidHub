@@ -13,22 +13,28 @@ elif [ $exit_code -eq 1 ]; then
 fi
 
 # read applied schema from the database
-response=$(curl -X POST \
-  'https://$TURSO_DATABASE_NAME-raidhub.turso.io/v2/pipeline' \
-  -H 'Authorization: Bearer $TURSO_API_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "requests": [
-      { "type": "execute", "stmt": { "sql": "SELECT * FROM _migration WHERE is_applied = true" } },
-      { "type": "close" }
-    ]
-  }')
+applied_migrations_list=$(turso db shell $TURSO_DATABASE_NAME "SELECT id FROM _migration WHERE is_applied = true")
 
 if [ $? -ne 0 ]; then
     echo "Failed to read from database"
     exit 1
 fi
-
-files=$(find ./prisma/migrations -type d | grep -v -f <(echo $response | jq -r '.results[] | select(.response.type == "execute") | .response.result.rows[]'))
-
-echo $files
+# apply the migrations
+for dir in ./prisma/migrations/*/; do
+    migration=$(basename "$dir")
+    if ! grep -q "$migration" <<< "$applied_migrations_list"; then
+        /home/runner/.turso/turso db shell $TURSO_DATABASE_NAME < $dir/migration.sql
+        if [ $? -ne 0 ]; then
+          echo "Failed to apply migration $migration"
+          exit 1
+        else
+          /home/runner/.turso/turso db shell $TURSO_DATABASE_NAME "INSERT INTO _migration (id, is_applied) VALUES ('$migration', true) ON CONFLICT(id) DO UPDATE SET is_applied = excluded.is_applied;"
+          if [ $? -ne 0 ]; then
+            echo "Failed to update database"
+            exit 1
+          fi
+          echo "Migration $migration applied successfully"
+        fi
+    fi
+done
+echo "Migrations applied successfully"

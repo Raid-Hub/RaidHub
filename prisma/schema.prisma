@@ -12,7 +12,6 @@ datasource db {
 model Profile {
   id                    String  @id @default(uuid())
   name                  String
-  name2                 String  @default("name2")
   image                 String
   userId                String  @unique @map("user_id")
   destinyMembershipId   String  @unique @map("destiny_membership_id")
@@ -99,7 +98,7 @@ model PGCR {
 model Migration {
   id        String   @id
   isApplied Boolean  @map("is_applied")
-  appliedAt DateTime @map("applied_at")
+  appliedAt DateTime @default(now()) @map("applied_at")
 
   @@map("_migration")
 }

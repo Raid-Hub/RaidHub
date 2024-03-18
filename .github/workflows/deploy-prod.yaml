@@ -73,12 +73,6 @@ jobs:
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 
-            - name: Upload Migration Artifact
-              uses: actions/upload-artifact@v3
-              with:
-                  name: migration
-                  path: ./${{ github.event.repository.name }}/script.sql
-
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
@@ -88,7 +82,7 @@ jobs:
                   vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
-              run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+              run: vercel deploy --prebuilt --archive --prod --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Create Tag
               run: |
