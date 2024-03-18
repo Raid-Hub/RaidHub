@@ -80,7 +80,8 @@ jobs:
                     sleep 5
                     list=$(vercel list --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1 1>/dev/null)
                     echo $list
-                    deployment=$(echo $(echo $list | grep "Building" | awk '{print $2}') | vercel inspect --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+                    echo $list | grep "Building" | awk '{print $2}'
+                    deployment=$(vercel inspect $(echo $list | grep "Building" | awk '{print $2}') --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
                     echo $deployment
 
                     if echo $deployment | grep -q "● Ready"; then
