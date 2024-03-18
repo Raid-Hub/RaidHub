@@ -65,19 +65,15 @@ jobs:
             - name: Install Turso CLI
               env:
                   TURSO_INSTALL_SKIP_SIGNUP: true
-              run: curl -sSfL https://get.tur.so/install.sh | bash
+              run: |
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
             - name: Apply Database Migrations
-              timeout-minutes: 4
               env:
+                  TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
-
-            - name: Upload Migration Artifact
-              uses: actions/upload-artifact@v3
-              with:
-                  name: migration
-                  path: ./${{ github.event.repository.name }}/script.sql
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}

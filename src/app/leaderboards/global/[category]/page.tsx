@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
 
 export const revalidate = 900
 export const dynamic = "force-static"
+export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
 
 export default async function Page({ params, searchParams }: StaticParams) {
     const globalLeaderboards = await prefetchManifest().then(

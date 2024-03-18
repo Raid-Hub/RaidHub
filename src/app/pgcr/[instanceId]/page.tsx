@@ -5,6 +5,7 @@ import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 export const dynamic = "force-static"
 export const dynamicParams = true
+export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
 
 export default async function Page({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)

@@ -11,18 +11,31 @@ elif [ $exit_code -eq 1 ]; then
     echo "Error while reading migration files"
     exit 1
 fi
+
+turso --version
 # read applied schema from the database
-schema=prisma/turso_migrations
-mkdir -p ./$schema/ci/
-cp ./prisma/migrations/migration_lock.toml $schema/migration_lock.toml
-/home/runner/.turso/turso db shell raidhub "SELECT CONCAT(sql, ';') FROM sqlite_master WHERE type='table' OR type='index' AND sql IS NOT NULL;" > $schema/tmp.sql
-sed '1d' $schema/tmp.sql > $schema/ci/migration.sql
-rm $schema/tmp.sql
+applied_migrations_list=$(turso db shell $TURSO_DATABASE_NAME "SELECT id FROM _migration WHERE is_applied = true")
 
-# generate the migration script
-yarn prisma migrate diff --from-migrations "$schema" --to-migrations "./prisma/migrations" --script | sed '1,2d' | sed '$d'| sed '$d' > script.sql
-cat script.sql
-
-# apply the migration script
-/home/runner/.turso/turso db shell raidhub < script.sql
+if [ $? -ne 0 ]; then
+    echo "Failed to read from database"
+    exit 1
+fi
+# apply the migrations
+for dir in ./prisma/migrations/*/; do
+    migration=$(basename "$dir")
+    if ! grep -q "$migration" <<< "$applied_migrations_list"; then
+        turso db shell $TURSO_DATABASE_NAME < $dir/migration.sql
+        if [ $? -ne 0 ]; then
+          echo "Failed to apply migration $migration"
+          exit 1
+        else
+          turso db shell $TURSO_DATABASE_NAME "INSERT INTO _migration (id, is_applied) VALUES ('$migration', true) ON CONFLICT(id) DO UPDATE SET is_applied = excluded.is_applied;"
+          if [ $? -ne 0 ]; then
+            echo "Failed to update database"
+            exit 1
+          fi
+          echo "Migration $migration applied successfully"
+        fi
+    fi
+done
 echo "Migrations applied successfully"

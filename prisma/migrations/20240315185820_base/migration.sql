@@ -71,3 +71,9 @@ CREATE TABLE "pgcr" (
     "instance_id" TEXT NOT NULL PRIMARY KEY,
     "video_url" TEXT
 );
+
+CREATE TABLE "_migration" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "is_applied" BOOLEAN NOT NULL,
+    "applied_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -94,3 +94,11 @@ model PGCR {
 
   @@map("pgcr")
 }
+
+model Migration {
+  id        String   @id
+  isApplied Boolean  @map("is_applied")
+  appliedAt DateTime @default(now()) @map("applied_at")
+
+  @@map("_migration")
+}
