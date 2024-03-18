@@ -37,7 +37,6 @@ jobs:
               run: |
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
-                  source /home/runner/.bashrc
 
             - name: Apply Database Migrations
               run: ./.github/scripts/turso-migrate.sh

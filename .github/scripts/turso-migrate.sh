@@ -1,6 +1,4 @@
 #!/bin/bash
-echo $PATH
-turso --version
 
 # Check if the schema matches the migration files
 yarn prisma migrate diff --from-migrations "./prisma/migrations" --to-schema-datamodel "./prisma/schema.prisma" --exit-code 1>/dev/null
@@ -14,6 +12,7 @@ elif [ $exit_code -eq 1 ]; then
     exit 1
 fi
 
+turso --version
 # read applied schema from the database
 applied_migrations_list=$(turso db shell $TURSO_DATABASE_NAME "SELECT id FROM _migration WHERE is_applied = true")
 
