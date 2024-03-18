@@ -34,9 +34,9 @@ jobs:
             - name: Set APP_VERSION
               shell: bash
               run: |
-                  VERSION=$(grep -E '^APP_VERSION=' .vercel/.env.production.local | cut -d '=' -f 2)
+                  VERSION=$(grep -E '^APP_VERSION=' .vercel/.env.production.local | cut -d '=' -f 2 | sed 's/"//g; s/\\n//')
 
-                  VERSION_ARRAY=(${VERSION//./ })
+                  VERSION_ARRAY=($(echo -n "$VERSION" | awk -F'.' '{print $1,$2,$3,$4}'))
 
                   # Get the first three numbers in the version
                   YEAR=${VERSION_ARRAY[0]}
