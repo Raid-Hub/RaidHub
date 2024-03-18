@@ -24,12 +24,12 @@ jobs:
                   yarn install
                   yarn prisma generate
 
-            - name: Install Turso CLI
-              env:
-                  TURSO_INSTALL_SKIP_SIGNUP: true
-              run: |
-                  curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+            # - name: Install Turso CLI
+            #   env:
+            #       TURSO_INSTALL_SKIP_SIGNUP: true
+            #   run: |
+            #       curl -sSfL https://get.tur.so/install.sh | bash
+            #       echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
@@ -59,8 +59,7 @@ jobs:
                     PATCH=0
                   fi
 
-                  vercel env add APP_VERSION production $("${CURRENT_YEAR}.${CURRENT_MONTH}.${CURRENT_DAY}.${PATCH}") --token=${{ secrets.VERCEL_TOKEN }}
-                  grep -E '^APP_VERSION=' ./.vercel/.env.production.local | cut -d '=' -f 2
+                  echo "APP_VERSION=${CURRENT_YEAR}.${CURRENT_MONTH}.${CURRENT_DAY}.${PATCH}" >> $GITHUB_ENV
 
             # - name: Apply Database Migrations
             #   env:
@@ -75,6 +74,11 @@ jobs:
 
             # - name: Deploy Project Artifacts to Vercel
             #   run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+            - name: Update Vercel Environment Information
+              run: |
+                  vercel env rm APP_VERSION production --yes --token=${{ secrets.VERCEL_TOKEN }}
+                  echo "$APP_VERSION" | vercel env add APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
 
             # - name: Create Tag
             #   run: |
