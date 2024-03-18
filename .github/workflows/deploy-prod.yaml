@@ -31,23 +31,14 @@ jobs:
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
-            - name: Install Turso CLI
-              env:
-                  TURSO_INSTALL_SKIP_SIGNUP: true
-              run: |
-                  curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
-
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Set APP_VERSION
               shell: bash
               run: |
-                  # Read current version number from package.json
-                  VERSION=$(grep -E '^APP_VERSION=' ./.vercel/.env.production.local | cut -d '=' -f 2)
+                  VERSION=$(grep -E '^APP_VERSION=' .vercel/.env.production.local | cut -d '=' -f 2)
 
-                  # Split the version into an array using the dot as a delimiter
                   VERSION_ARRAY=(${VERSION//./ })
 
                   # Get the first three numbers in the version
@@ -68,7 +59,6 @@ jobs:
                     PATCH=0
                   fi
 
-                  vercel env rm APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
                   vercel env add APP_VERSION production $("${CURRENT_YEAR}.${CURRENT_MONTH}.${CURRENT_DAY}.${PATCH}") --token=${{ secrets.VERCEL_TOKEN }}
                   grep -E '^APP_VERSION=' ./.vercel/.env.production.local | cut -d '=' -f 2
 
