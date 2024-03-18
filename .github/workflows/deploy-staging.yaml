@@ -6,6 +6,7 @@ on:
     push:
         branches:
             - main
+            - ci-improvements
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,10 +18,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             APP_ENV: "staging"
-            TURSO_DATABASE_NAME: "staging"
-            TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
-            TURSO_DATABASE_URL: ${{ secrets.STAGING_TURSO_DATABASE_URL }}
-            TURSO_AUTH_TOKEN: ${{ secrets.STAGING_TURSO_AUTH_TOKEN }}
+
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -37,17 +35,23 @@ jobs:
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
-            - name: Apply Database Migrations
-              run: ./.github/scripts/turso-migrate.sh
-
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
+            - name: Set APP_VERSION
+              run: echo "APP_VERSION=$(date '+%Y%m%d')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+            - name: Apply Database Migrations
+              env:
+                  TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
+                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+              run: ./.github/scripts/turso-migrate.sh
+
             - name: Build Project Artifacts
-              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+              run: vercel build  --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Deploy Project Artifacts to Vercel
-              run: echo "URL=$(vercel deploy --prebuilt -e TURSO_DATABASE_URL=${{ secrets.STAGING_TURSO_DATABASE_URL }} -e TURSO_AUTH_TOKEN=${{ secrets.STAGING_TURSO_AUTH_TOKEN }} --token=${{ secrets.VERCEL_TOKEN }} )" >> $GITHUB_ENV
+              run: echo "URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} )" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $URL staging.raidhub.io --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}

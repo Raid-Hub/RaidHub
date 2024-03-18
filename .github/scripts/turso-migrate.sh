@@ -20,6 +20,7 @@ if [ $? -ne 0 ]; then
     echo "Failed to read from database"
     exit 1
 fi
+
 # apply the migrations
 for dir in ./prisma/migrations/*/; do
     migration=$(basename "$dir")
@@ -38,4 +39,4 @@ for dir in ./prisma/migrations/*/; do
         fi
     fi
 done
-echo "Migrations applied successfully"
+echo "All migrations applied successfully"

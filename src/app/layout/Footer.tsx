@@ -6,11 +6,27 @@ import styled from "styled-components"
 import { type SVGComponent } from "~/components/SVG"
 import DiscordIcon from "~/components/icons/DiscordIcon"
 import Email from "~/components/icons/Email"
+import KofiIcon from "~/components/icons/Kofi"
 import TwitterIcon from "~/components/icons/TwitterIcon"
 import { Flex } from "~/components/layout/Flex"
 
-import KofiIcon from "~/components/icons/Kofi"
-import appManifest from "../../../public/manifest.json"
+let version = ""
+switch (process.env.APP_ENV) {
+    case "local":
+        version = "local"
+        break
+    case "preview":
+        version = `preview-${process.env.VERCEL_GIT_COMMIT_SHA}`
+        break
+    case "staging":
+        version = `staging-${process.env.APP_VERSION}`
+        break
+    case "production":
+        version = `alpha-${process.env.APP_VERSION}`
+        break
+    default:
+        version = "unknown"
+}
 
 const developers: [display: string, path: string][] = [
     ["Newo", "newo"],
@@ -54,7 +70,7 @@ export const Footer = () => {
                         </div>
                     </div>
                     <div>
-                        RaidHub <Version>alpha-{appManifest.version}</Version>
+                        RaidHub <Version>{version}</Version>
                     </div>
                 </FooterSide>
                 <FooterSide side="right">

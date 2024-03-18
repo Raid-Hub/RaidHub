@@ -3,55 +3,30 @@ name: Deploy to Production
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-    pscale_base_directory: .pscale/cli-helper-scripts
 
 on:
     workflow_dispatch:
 
 jobs:
-    Deploy-to-Production:
+    deploy:
+        name: Deploy to Production
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./${{ github.event.repository.name }}
+
         steps:
-            - name: Fail if branch is not main
-              if: github.ref != 'refs/heads/main'
-              run: |
-                  echo "This workflow should not be triggered on a branch other than main"
-                  exit 1
+            - name: Checkout
+              uses: actions/checkout@v4
 
-            - name: Check if user is a repo admin
-              working-directory: ./
+            - name: Download dependencies
               run: |
-                  if [[ $(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" | jq -r '.permission') != "admin" ]]; then
-                    echo "Only repo admins can run this action."
-                    exit 1
-                  fi
+                  yarn install
+                  yarn prisma generate
 
-            - name: Set up SSH
-              working-directory: ./
+            - name: Install Turso CLI
+              env:
+                  TURSO_INSTALL_SKIP_SIGNUP: true
               run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-                  chmod 600 ~/.ssh/id_ed25519
-                  eval "$(ssh-agent -s)"
-                  ssh-add ~/.ssh/id_ed25519
-
-            - name: Config
-              working-directory: ./
-              run: |
-                  git config --global credential.helper store
-                  git config --global user.email "github-actions@raidhub.io"
-                  git config --global user.name "GitHub Actions"
-
-            - name: Clone Repo
-              working-directory: ./
-              run: |
-                  git clone git@github.com:Raid-Hub/${{ github.event.repository.name }}.git
-
-            - name: Yarn install
-              run: yarn install
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
             - name: Bump Version
               run: |
@@ -69,14 +44,14 @@ jobs:
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
+            - name: Pull Vercel Environment Information
+              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
             - name: Apply Database Migrations
               env:
                   TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
-
-            - name: Pull Vercel Environment Information
-              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
             - name: Build Project Artifacts
               run: |

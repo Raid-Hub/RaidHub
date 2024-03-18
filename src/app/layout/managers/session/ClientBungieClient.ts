@@ -17,6 +17,7 @@ export default class ClientBungieClient extends BaseBungieClient {
             method: config.method,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             body: config.body,
+            credentials: "omit",
             headers: new Headers(config.headers ?? {})
         }
 
