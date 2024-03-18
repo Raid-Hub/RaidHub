@@ -2,7 +2,6 @@ name: Deploy to Staging
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-    pscale_base_directory: .pscale
 on:
     push:
         branches:
@@ -37,7 +36,7 @@ jobs:
                   TURSO_INSTALL_SKIP_SIGNUP: true
               run: |
                   curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "export PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+                  echo "export PATH=$PATH:/home/runner/.turso" >> $HOME/.bashrc
 
             - name: Apply Database Migrations
               run: ./.github/scripts/turso-migrate.sh
