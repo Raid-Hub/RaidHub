@@ -79,9 +79,8 @@ jobs:
                     echo "Deployment is pending"
                     sleep 5
                     list=$(vercel list --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1 1>/dev/null)
-                    echo $list
-                    echo $list | grep "Building" | awk '{print $2}'
-                    deployment=$(vercel inspect $(echo $list | grep "Building" | awk '{print $2}') --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+                    echo $list | awk '/● Building/ {print $2}'
+                    deployment=$(vercel inspect $(echo $list | awk '/● Building/ {print $2}') --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
                     echo $deployment
 
                     if echo $deployment | grep -q "● Ready"; then
