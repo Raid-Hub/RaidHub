@@ -42,7 +42,7 @@ jobs:
 
             - name: Apply Database Migrations
               env:
-                  TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
+                  TURSO_DATABASE_NAME: "staging"
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 
