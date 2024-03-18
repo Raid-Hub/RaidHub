@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+echo $PATH
+turso --version
 
 # Check if the schema matches the migration files
 yarn prisma migrate diff --from-migrations "./prisma/migrations" --to-schema-datamodel "./prisma/schema.prisma" --exit-code 1>/dev/null

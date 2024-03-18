@@ -36,12 +36,9 @@ jobs:
                   TURSO_INSTALL_SKIP_SIGNUP: true
               run: |
                   curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "export PATH=$PATH:/home/runner/.turso" >> $HOME/.bashrc
+                  echo "export PATH=$PATH:/home/runner/.turso/turso" >> $HOME/.bashrc
                   source /home/runner/.bashrc
-                  cat $HOME/.bashrc
                   echo $PATH
-                  echo $SHELL
-                  turso --version
 
             - name: Apply Database Migrations
               run: ./.github/scripts/turso-migrate.sh
