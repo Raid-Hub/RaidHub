@@ -6,9 +6,6 @@ env:
 
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - tmp
 
 jobs:
     deploy:
@@ -82,10 +79,10 @@ jobs:
                     url=$(echo $list | awk '{for(i=1;i<=NF;i++) if($i == "●" && $(i+1) == "Building") print $(i-1)}')
                     echo "Deployment URL: $url"
                     deployment=$(vercel inspect $url --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
-                    echo $deployment
 
                     if echo $deployment | grep -q "● Ready"; then
                       echo "Deployment successful"
+                      vercel inspect $url --scope raidhub --token=${{ secrets.VERCEL_TOKEN }}
                     else
                       echo "Deployment failed"
                       exit 1
