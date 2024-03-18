@@ -6,9 +6,6 @@ env:
 
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - ci-improvements
 
 jobs:
     deploy:
@@ -86,4 +83,11 @@ jobs:
                     -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$COMMIT_SHA\",\"tagger\":{\"name\":\"${{ github.actor }}\",\"email\":\"${{ github.actor }}@users.noreply.github.com\",\"date\":\"$(date --iso-8601=seconds)\"}}"
 
             - name: Deploy Project to Vercel
-              run: curl -X POST ${{ secrets.VERCEL_PROD_DEPLOYMENT_HOOK }}
+              run: |
+                  res=$(curl -X POST ${{ secrets.VERCEL_PROD_DEPLOYMENT_HOOK }})
+                  if [[ $(echo "$res" | jq '.job.state == "PENDING"') == true ]]; then
+                    echo "Deployment is pending"
+                  else
+                    echo "Deployment failed"
+                    exit 1
+                  fi
