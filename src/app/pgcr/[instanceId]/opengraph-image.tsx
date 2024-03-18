@@ -8,8 +8,6 @@ import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
-export const runtime = "nodejs"
-
 const size = {
     width: 800,
     height: 450
