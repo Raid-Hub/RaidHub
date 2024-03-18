@@ -80,8 +80,15 @@ jobs:
                   vercel env rm APP_VERSION production --yes --token=${{ secrets.VERCEL_TOKEN }}
                   echo "$APP_VERSION" | vercel env add APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
 
-            # - name: Create Tag
-            #   run: |
-            #       git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
-            #       git push origin
-            #       git push --tags
+            - name: Create Tag
+              run: |
+                  TAG_NAME="v$APP_VERSION"
+                  COMMIT_SHA="${{ github.sha }}"
+                  OWNER=$(echo "${{ github.repository }}" | cut -d '/' -f 1)
+                  REPO=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+
+                  curl -X POST \
+                    -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    "https://api.github.com/repos/$OWNER/$REPO/git/refs" \
+                    -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$COMMIT_SHA\",\"tagger\":{\"name\":\"${{ github.actor }}\",\"email\":\"${{ github.actor }}@users.noreply.github.com\",\"date\":\"$(date --iso-8601=seconds)\"}}"
