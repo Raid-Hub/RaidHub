@@ -6,6 +6,9 @@ env:
 
 on:
     workflow_dispatch:
+    push:
+        branches:
+            - tmp
 
 jobs:
     deploy:
@@ -64,11 +67,6 @@ jobs:
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 
-            - name: Update Vercel Environment Information
-              run: |
-                  vercel env rm APP_VERSION production --yes --token=${{ secrets.VERCEL_TOKEN }}
-                  echo "$APP_VERSION" | vercel env add APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
-
             - name: Deploy Project to Vercel
               run: |
                   # Deployments are triggered when DEPLOY_HOOK_TRIGGER environment variable is set
@@ -78,8 +76,18 @@ jobs:
 
                   if [[ $(echo "$res" | jq '.job.state == "PENDING"') == true ]]; then
                     echo "Deployment is pending"
+                    list=$(vercel ls --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1 1>/dev/null)
+                    deployment=$(echo $(echo $list | grep "Building" | awk '{print $2}') | vercel inspect --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
+                    echo $deployment
+
+                    if echo $deployment | grep -q "● Ready"; then
+                      echo "Deployment successful"
+                    else
+                      echo "Deployment failed"
+                      exit 1
+                    fi
                   else
-                    echo "Deployment failed"
+                    echo "Deployment trigger failed"
                     exit 1
                   fi
 
@@ -95,3 +103,8 @@ jobs:
                     -H "Accept: application/vnd.github.v3+json" \
                     "https://api.github.com/repos/$OWNER/$REPO/git/refs" \
                     -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$COMMIT_SHA\",\"tagger\":{\"name\":\"${{ github.actor }}\",\"email\":\"${{ github.actor }}@users.noreply.github.com\",\"date\":\"$(date --iso-8601=seconds)\"}}"
+
+            - name: Update Vercel Environment Information
+              run: |
+                  vercel env rm APP_VERSION production --yes --token=${{ secrets.VERCEL_TOKEN }}
+                  echo "$APP_VERSION" | vercel env add APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
