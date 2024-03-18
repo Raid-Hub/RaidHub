@@ -49,7 +49,7 @@ jobs:
 
                   # Get the current year, month, and day
                   CURRENT_YEAR=$(date +%Y)
-                  CURRENT_MONTH=$(date +%-m)
+                  CURRENT_MONTH=$(date +%-m) f
                   CURRENT_DAY=$(date +%-d)
 
                   # Check if the major, minor, and patch version numbers match the current date
@@ -76,7 +76,7 @@ jobs:
 
                   if [[ $(echo "$res" | jq '.job.state == "PENDING"') == true ]]; then
                     echo "Deployment is pending"
-                    list=$(vercel ls --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1 1>/dev/null)
+                    list=$(vercel list --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
                     deployment=$(echo $(echo $list | grep "Building" | awk '{print $2}') | vercel inspect --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
                     echo $deployment
 
