@@ -6,6 +6,9 @@ env:
 
 on:
     workflow_dispatch:
+    push:
+        branches:
+            - ci-improvements
 
 jobs:
     deploy:
@@ -28,15 +31,6 @@ jobs:
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
-            - name: Bump Version
-              run: |
-                  VERSION=$(./bump.sh)
-                  echo "Version: $VERSION"
-                  echo "VERSION=$VERSION" >> $GITHUB_ENV
-                  git add package.json
-                  git add public/manifest.json
-                  git commit -m "Bump $VERSION"
-
             - name: Install Turso CLI
               env:
                   TURSO_INSTALL_SKIP_SIGNUP: true
@@ -47,22 +41,53 @@ jobs:
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-            - name: Apply Database Migrations
-              env:
-                  TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
-                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
-              run: ./.github/scripts/turso-migrate.sh
-
-            - name: Build Project Artifacts
+            - name: Set APP_VERSION
+              shell: bash
               run: |
-                  yarn prisma generate
-                  vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+                  # Read current version number from package.json
+                  VERSION=$(grep -E '^APP_VERSION=' ./.vercel/.env.production.local | cut -d '=' -f 2)
 
-            - name: Deploy Project Artifacts to Vercel
-              run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+                  # Split the version into an array using the dot as a delimiter
+                  VERSION_ARRAY=(${VERSION//./ })
 
-            - name: Create Tag
-              run: |
-                  git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
-                  git push origin
-                  git push --tags
+                  # Get the first three numbers in the version
+                  YEAR=${VERSION_ARRAY[0]}
+                  MONTH=${VERSION_ARRAY[1]}
+                  DAY=${VERSION_ARRAY[2]}
+                  PATCH=${VERSION_ARRAY[3]}
+
+                  # Get the current year, month, and day
+                  CURRENT_YEAR=$(date +%Y)
+                  CURRENT_MONTH=$(date +%-m)
+                  CURRENT_DAY=$(date +%-d)
+
+                  # Check if the major, minor, and patch version numbers match the current date
+                  if [[ "$YEAR" == "$CURRENT_YEAR" && "$MONTH" == "$CURRENT_MONTH" && "$DAY" == "$CURRENT_DAY" ]]; then
+                    PATCH=$((PATCH+1))
+                  else
+                    PATCH=0
+                  fi
+
+                  vercel env rm APP_VERSION production --token=${{ secrets.VERCEL_TOKEN }}
+                  vercel env add APP_VERSION production $("${CURRENT_YEAR}.${CURRENT_MONTH}.${CURRENT_DAY}.${PATCH}") --token=${{ secrets.VERCEL_TOKEN }}
+                  grep -E '^APP_VERSION=' ./.vercel/.env.production.local | cut -d '=' -f 2
+
+            # - name: Apply Database Migrations
+            #   env:
+            #       TURSO_DATABASE_NAME: ${{ secrets.TURSO_PROD_DATABASE_NAME }}
+            #       TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+            #   run: ./.github/scripts/turso-migrate.sh
+
+            # - name: Build Project Artifacts
+            #   run: |
+            #       yarn prisma generate
+            #       vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+            # - name: Deploy Project Artifacts to Vercel
+            #   run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+            # - name: Create Tag
+            #   run: |
+            #       git tag -a v$${{ env.VERSION }} main -m "$(git log --pretty=format:"%s" main..HEAD)"
+            #       git push origin
+            #       git push --tags
