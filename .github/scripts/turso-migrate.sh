@@ -13,7 +13,7 @@ elif [ $exit_code -eq 1 ]; then
 fi
 
 # read applied schema from the database
-applied_migrations_list=$(turso db shell $TURSO_DATABASE_NAME "SELECT id FROM _migration WHERE is_applied = true")
+applied_migrations_list=$(/home/runner/.turso/turso db shell $TURSO_DATABASE_NAME "SELECT id FROM _migration WHERE is_applied = true")
 
 if [ $? -ne 0 ]; then
     echo "Failed to read from database"
