@@ -36,10 +36,8 @@ jobs:
                   TURSO_INSTALL_SKIP_SIGNUP: true
               run: |
                   curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "PATH=$PATH:/home/runner/.turso/turso" >> $GITHUB_ENV
-                  echo "PATH $PATH"
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
                   source /home/runner/.bashrc
-                  echo $PATH
 
             - name: Apply Database Migrations
               run: ./.github/scripts/turso-migrate.sh
