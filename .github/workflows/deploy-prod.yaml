@@ -24,12 +24,12 @@ jobs:
                   yarn install
                   yarn prisma generate
 
-            # - name: Install Turso CLI
-            #   env:
-            #       TURSO_INSTALL_SKIP_SIGNUP: true
-            #   run: |
-            #       curl -sSfL https://get.tur.so/install.sh | bash
-            #       echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+            - name: Install Turso CLI
+              env:
+                  TURSO_INSTALL_SKIP_SIGNUP: true
+              run: |
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
             - name: Pull Vercel Environment Information
               run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
