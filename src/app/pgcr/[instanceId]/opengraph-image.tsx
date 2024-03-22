@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og"
-import { metadata as rootMetaData } from "~/app/layout"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import RaidCardBackground from "~/data/raid-backgrounds"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -13,8 +12,13 @@ const size = {
     height: 450
 }
 
-const baseUrl = rootMetaData.metadataBase!.toString()
+const baseUrl =
+    process.env.DEPLOY_URL ??
+    (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : `https://localhost:${process.env.PORT ?? 3000}`)
 
+export const runtime = "edge"
 export async function generateImageMetadata({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
 

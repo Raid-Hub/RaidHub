@@ -1,72 +1,48 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "isolatedModules": true,
-    "baseUrl": "src/",
-    "paths": {
-      "~/server/*": [
-        "./app/(server)/*"
-      ],
-      "~/app/*": [
-        "./app/*"
-      ],
-      "~/components/*": [
-        "./components/*"
-      ],
-      "~/data/*": [
-        "./data/*"
-      ],
-      "~/hooks/*": [
-        "./hooks/*"
-      ],
-      "~/models/*": [
-        "./models/*"
-      ],
-      "~/services/*": [
-        "./services/*"
-      ],
-      "~/types/*": [
-        "./types/*"
-      ],
-      "~/util/*": [
-        "./util/*"
-      ]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "next.config.js",
-    "C:\\Users\\Owen\\RaidHub\\RaidHub-Website\\.next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "ts-node": {
     "compilerOptions": {
-      "module": "commonjs"
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "isolatedModules": true,
+        "baseUrl": "src/",
+        "paths": {
+            "~/server/*": ["./app/(server)/*"],
+            "~/app/*": ["./app/*"],
+            "~/components/*": ["./components/*"],
+            "~/data/*": ["./data/*"],
+            "~/hooks/*": ["./hooks/*"],
+            "~/models/*": ["./models/*"],
+            "~/services/*": ["./services/*"],
+            "~/types/*": ["./types/*"],
+            "~/util/*": ["./util/*"]
+        },
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ]
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        "next.config.js",
+        "C:\\Users\\Owen\\RaidHub\\RaidHub-Website\\.next/types/**/*.ts"
+    ],
+    "exclude": ["node_modules"],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "commonjs"
+        }
     }
-  }
 }
