@@ -86,7 +86,7 @@ export const PlayerTab = ({
                     characters={player.characters}
                     style={{ flex: 1, justifyContent: "flex-start" }}
                 />
-                <Flex style={{ flex: 3 }}>
+                <Flex style={{ flex: 3, maxWidth: "50%" }}>
                     <DisplayName
                         membershipId={player.membershipId}
                         membershipType={activityPlayer?.membershipType ?? 0}

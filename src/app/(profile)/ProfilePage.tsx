@@ -25,7 +25,7 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
                         $minHeight="250px"
                         $alpha={0.5}
                         $minWidth="200px"
-                        style={{ width: "calc(min(100%, 800px))" }}
+                        style={{ width: "min(100%, 800px)" }}
                     />
                 }>
                 <Flex

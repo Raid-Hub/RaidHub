@@ -41,13 +41,13 @@ const PageWrapperStyled = styled.main<PageWrapperStyleProps>`
     margin-bottom: 1.5em;
 
     ${props => $media.max.desktop`
-        width: calc(min(${props.$maxWidth}px, 85%));
+        width: min(${props.$maxWidth}px, 85%);
     `}
     ${props => $media.max.laptop`
-        width: calc(min(${props.$maxWidth}px, 90%));
+        width: min(${props.$maxWidth}px, 90%);
     `}
     ${props => $media.max.tablet`
-        width: calc(min(${props.$maxWidth}px, 95%));
+        width: min(${props.$maxWidth}px, 95%);
     `}
 `
 
