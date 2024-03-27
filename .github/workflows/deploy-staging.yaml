@@ -54,4 +54,4 @@ jobs:
               run: echo "VERCEL_DEPLOYMENT_URL=$(vercel deploy --prebuilt -e DEPLOY_URL=$DEPLOY_URL --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
 
             - name: Set Alias
-              run: vercel alias set $VERCEL_DEPLOYMENT_URL $DEPLOY_URL --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}
+              run: vercel alias set $VERCEL_DEPLOYMENT_URL staging.raidhub.io --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}
