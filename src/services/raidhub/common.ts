@@ -61,7 +61,7 @@ function createHeaders(init?: HeadersInit) {
         headers.set("x-api-key", apiKey)
     }
 
-    if (typeof window === undefined) {
+    if (typeof window === "undefined") {
         headers.set(
             "Origin",
             process.env.DEPLOY_URL ??
