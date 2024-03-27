@@ -90,7 +90,7 @@ export const useRaidHubActivities = (
         () => ({
             activities: new Collection(
                 queries.flatMap(q => q.data?.activities ?? []).map(a => [a.instanceId, a])
-            ),
+            ).sort((a, b) => (b.dateStarted < a.dateStarted ? -1 : 1)),
             isLoading: queries.some(q => q.isLoading)
         }),
         [queries]

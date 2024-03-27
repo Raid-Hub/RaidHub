@@ -46,22 +46,20 @@ export const CurrentActivity = () => {
             membershipType: destinyMembershipType
         },
         {
-            enabled: isInitialLoading || !!profileTransitoryData?.currentActivity,
+            enabled: isInitialLoading || !!profileTransitoryData?.currentActivity?.startTime,
             suspense: true,
             select: data =>
-                Object.values(data.characterActivities.data ?? {}).sort(
-                    (a, b) =>
-                        new Date(b.dateActivityStarted).getTime() -
-                        new Date(a.dateActivityStarted).getTime()
+                Object.values(data.characterActivities.data ?? {}).sort((a, b) =>
+                    new Date(b.dateActivityStarted) < new Date(a.dateActivityStarted) ? -1 : 1
                 )[0] ?? null,
             ...commonTransitoryQuerySettings
         }
     )
 
-    return profileTransitoryData?.currentActivity && characterActivity ? (
+    return profileTransitoryData?.currentActivity?.startTime && characterActivity ? (
         <CurrentActivityCard
             characterActivity={characterActivity}
-            startTime={new Date(profileTransitoryData.currentActivity.startTime!)}
+            startTime={new Date(profileTransitoryData.currentActivity.startTime)}
             partyMembers={profileTransitoryData.partyMembers}
         />
     ) : null

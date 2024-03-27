@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, type ReactNode } from "react"
-import ClientBungieClient from "./ClientBungieClient"
+import ClientBungieClient from "~/services/bungie/ClientBungieClient"
 
 const BungieClientContext = createContext<ClientBungieClient | undefined>(undefined)
 
