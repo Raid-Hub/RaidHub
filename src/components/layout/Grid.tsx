@@ -20,13 +20,13 @@ export const Grid = styled.div.attrs<{
     ${props => css`
         grid-template-columns: repeat(
             ${props.$numCols ?? "auto-fill"},
-            minmax(calc(min(${props.$minCardWidth}px, 100%)), 1fr)
+            minmax(min(${props.$minCardWidth}px, 100%), 1fr)
         );
 
         ${$media.max.mobile`
             grid-template-columns: repeat(
                 ${props.$numCols ?? "auto-fill"},
-                minmax(calc(min(${props.$minCardWidthMobile}px, 100%)), 1fr)
+                minmax(min(${props.$minCardWidthMobile}px, 100%), 1fr)
             );
         `}
     `}

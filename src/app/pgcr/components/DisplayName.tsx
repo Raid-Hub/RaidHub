@@ -30,7 +30,7 @@ export const DisplayName = (props: {
 const StyledDisplayName = styled(Link)`
     font-size: 1.5rem;
     ${$media.max.mobile`
-        font-size: 1.125rem;
+        font-size: 1rem;
     `}
     text-align: center;
     font-weight: 600;
@@ -38,6 +38,7 @@ const StyledDisplayName = styled(Link)`
     text-shadow: 2px 2px 3px ${({ theme }) => theme.colors.background.dark};
 
     position: relative;
+    word-wrap: break-word;
 
     & *[data-player] {
         opacity: 0;

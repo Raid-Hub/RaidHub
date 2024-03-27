@@ -92,7 +92,7 @@ const OverlayContainer = styled.div`
     right: 10px;
     display: flex;
     justify-content: flex-end;
-    max-width: calc(min(50%, 300px));
+    max-width: min(50%, 300px);
 `
 
 const rotate = keyframes`
