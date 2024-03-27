@@ -56,11 +56,21 @@ export async function postRaidHubApi<
 
 function createHeaders(init?: HeadersInit) {
     const headers = new Headers(init)
-    // Server side, we use the private server key, which is undefined client side
-    const apiKey = process.env.RAIDHUB_API_KEY_SERVER ?? process.env.RAIDHUB_API_KEY
+    const apiKey = process.env.RAIDHUB_API_KEY
     if (apiKey) {
         headers.set("x-api-key", apiKey)
     }
+
+    if (typeof window === undefined) {
+        headers.set(
+            "Origin",
+            process.env.DEPLOY_URL ??
+                (process.env.VERCEL_URL
+                    ? `https://${process.env.VERCEL_URL}`
+                    : `https://localhost:${process.env.PORT ?? 3000}`)
+        )
+    }
+
     return headers
 }
 
