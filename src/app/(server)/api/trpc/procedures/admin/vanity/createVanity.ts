@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server"
+import { revalidatePath } from "next/cache"
 import { zCreateVanity } from "~/util/zod"
 import { adminProcedure } from "../../.."
 
@@ -15,6 +16,8 @@ export const createVanity = adminProcedure.input(zCreateVanity).mutation(async (
                 vanity: true
             }
         })
+        revalidatePath(`/profile/${input.destinyMembershipType}/${input.destinyMembershipId}`)
+        revalidatePath(`/user/${vanity.vanity}`)
         return vanity
     } catch (e) {
         throw new TRPCError({
