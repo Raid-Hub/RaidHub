@@ -80,8 +80,8 @@ export default function Page() {
     const seasonEnd = useMemo(
         () =>
             seasons?.length
-                ? seasons.findLast(season => new Date(season.startDate!).getTime() < Date.now())
-                      ?.endDate ?? null
+                ? seasons.findLast(season => new Date(season.startDate!) < new Date())?.endDate ??
+                  null
                 : null,
         [seasons]
     )

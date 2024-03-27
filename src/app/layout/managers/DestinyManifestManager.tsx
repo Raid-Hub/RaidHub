@@ -10,10 +10,10 @@ import { type BungieAPIError } from "~/models/BungieAPIError"
 import type { Prettify } from "~/types/generic"
 import { DB_VERSION, dexieDB } from "~/util/dexie"
 import { o } from "~/util/o"
+import type ClientBungieClient from "../../../services/bungie/ClientBungieClient"
 import { ManifestStatusOverlay } from "../ManifestStatusOverlay"
 import { useLocale } from "./LocaleManager"
 import { useBungieClient } from "./session/BungieClientProvider"
-import type ClientBungieClient from "./session/ClientBungieClient"
 
 const KEY_MANIFEST_VERSION = "d2_manifest_version"
 

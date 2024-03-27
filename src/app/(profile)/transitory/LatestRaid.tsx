@@ -13,7 +13,7 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import RaidBanners from "~/data/raid-banners"
 import { useRaidHubActivity, useRaidHubActivtiesFirstPage } from "~/services/raidhub/hooks"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
@@ -56,7 +56,7 @@ export const LatestRaid = () => {
                 <Card $overflowHidden $fullHeight>
                     <Container $minHeight={80}>
                         <CloudflareImage
-                            cloudflareId={RaidCardBackground[latestActivity.meta.raid]}
+                            cloudflareId={RaidBanners[latestActivity.meta.raid]}
                             fill
                             priority
                             alt="raid background image"

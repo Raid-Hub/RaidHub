@@ -18,8 +18,9 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
             .sort(
                 (a, b) =>
                     b.weight - a.weight ||
-                    new Date(a.activity.dateCompleted).getTime() -
-                        new Date(b.activity.dateCompleted).getTime()
+                    (new Date(a.activity.dateCompleted) < new Date(b.activity.dateCompleted)
+                        ? -1
+                        : 1)
             )
 
         let bitfield = 0

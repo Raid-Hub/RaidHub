@@ -18,9 +18,7 @@ module.exports = withBundleAnalyzer({
         APP_VERSION: process.env.APP_VERSION,
         BUNGIE_API_KEY: process.env.BUNGIE_API_KEY,
         RAIDHUB_API_URL: process.env.RAIDHUB_API_URL ?? "https://api.raidhub.io",
-        RAIDHUB_API_KEY:
-            process.env.RAIDHUB_API_KEY ??
-            Array.from({ length: 32 }, () => Math.random().toString(36)[2]).join("")
+        RAIDHUB_API_KEY: process.env.RAIDHUB_API_KEY
     },
     images: {
         remotePatterns: [

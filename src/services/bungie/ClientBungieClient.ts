@@ -1,6 +1,6 @@
 import type { BungieFetchConfig } from "bungie-net-core"
 import { BungieAPIError } from "~/models/BungieAPIError"
-import BaseBungieClient from "~/services/bungie/BungieClient"
+import BaseBungieClient from "./BungieClient"
 
 export default class ClientBungieClient extends BaseBungieClient {
     private accessToken: string | null = null
