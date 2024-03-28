@@ -34,3 +34,25 @@ body {
     );
     background-size: 100% 100%;
 }
+
+img[src=""] {
+    font-size: 0;
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(255, 140, 57);
+}
+
+@media (max-width: 768px) {
+    .switch-lg {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .switch-sm {
+        display: none;
+    }
+}
