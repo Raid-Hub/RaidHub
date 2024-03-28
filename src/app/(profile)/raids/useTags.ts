@@ -41,14 +41,13 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
             const covers = isElevatedDifficulty
                 ? weight & ~bitfieldForElevatedDifficulty
                 : weight & ~bitfield
+
             if (covers) {
                 if (isElevatedDifficulty) {
-                    bitfieldForElevatedDifficulty = weight | bitfieldForElevatedDifficulty
+                    bitfieldForElevatedDifficulty = bitfieldForElevatedDifficulty | weight
                 }
-                bitfield = weight | bitfield
+                bitfield = bitfield | weight
 
-                if (activities.first()?.meta.raid === 9)
-                    console.log(weight.toString(2), bitfield.toString(2))
                 result.push({
                     activity,
                     bestPossible: isBestTag({ raid: activity.meta.raid, weight })
@@ -159,7 +158,7 @@ function isBestTag(activity: { raid: ListedRaid; weight: number }): boolean {
             // trio flawless master
             return bitfieldMatches(activity.weight, 0b001111)
         case Raid.VAULT_OF_GLASS:
-            // solo vog or duo flawless master
+            // solo atheon or duo flawless master
             return (
                 bitfieldMatches(activity.weight, 0b111000) ||
                 bitfieldMatches(activity.weight, 0b011111)
