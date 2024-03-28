@@ -35,7 +35,6 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
             activity: RaidHubPlayerActivitiesActivity
             bestPossible: boolean
         }>()
-        if (activities.first()?.meta.raid === 9) console.log(sorted)
         for (const { activity, weight } of sorted) {
             const isElevatedDifficulty = weight % 2 == 1
             const covers = isElevatedDifficulty
