@@ -19,6 +19,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["ManifestResponse"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
       };
     };
   };
@@ -41,6 +47,12 @@ export interface paths {
         400: {
           content: {
             readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
       };
@@ -70,6 +82,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["QueryValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
         /** @description Not found */
         404: {
           content: {
@@ -97,6 +115,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["PlayerBasicResponse"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
         /** @description Not found */
         404: {
           content: {
@@ -122,6 +146,12 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": components["schemas"]["PlayerProfileResponse"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description Not found */
@@ -157,6 +187,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["BodyValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
       };
     };
   };
@@ -172,6 +208,12 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": components["schemas"]["ActivityResponse"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description Not found */
@@ -209,6 +251,12 @@ export interface paths {
         400: {
           content: {
             readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description LeaderboardNotFoundError */
@@ -255,6 +303,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["QueryValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
         /** @description Not found */
         404: {
           content: {
@@ -287,6 +341,12 @@ export interface paths {
         400: {
           content: {
             readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description Not found */
@@ -335,6 +395,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["QueryValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
         /** @description Not found */
         404: {
           content: {
@@ -371,6 +437,12 @@ export interface paths {
             readonly "application/json": components["schemas"]["QueryValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
         /** @description Not found */
         404: {
           content: {
@@ -392,6 +464,12 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": components["schemas"]["PgcrResponse"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description Not found */
@@ -433,6 +511,18 @@ export interface paths {
             readonly "application/json": components["schemas"]["BodyValidationError"];
           };
         };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description Forbidden */
+        403: {
+          content: {
+            readonly "application/json": components["schemas"]["InsufficientPermissionsError"];
+          };
+        };
         /** @description AdminQuerySyntaxError */
         501: {
           content: {
@@ -462,6 +552,12 @@ export interface paths {
         400: {
           content: {
             readonly "application/json": components["schemas"]["BodyValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
         /** @description InvalidClientSecretError */
@@ -829,10 +925,7 @@ export interface components {
     readonly PlayerSearchResponse: {
       readonly params: {
         readonly count: number;
-        readonly term: {
-          readonly name: string;
-          readonly nameWithCode: string | null;
-        };
+        readonly query: string;
       };
       readonly results: readonly (components["schemas"]["PlayerInfo"] & {
           readonly clears: number;
