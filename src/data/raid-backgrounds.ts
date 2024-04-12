@@ -1,7 +1,6 @@
 import { Raid } from "~/data/raid"
-import type { ListedRaid } from "~/services/raidhub/types"
 
-const RaidCardBackground: { [key in ListedRaid]: string } = {
+const RaidCardBackground: { [key in number]: string } = {
     /** The ID of the image on Cloudflare */
     [Raid.LEVIATHAN]: "c5d17820-4d9e-4de4-cc6b-3c6fab866d00",
     [Raid.EATER_OF_WORLDS]: "9ac2c107-52ca-4299-e976-be52d1044600",

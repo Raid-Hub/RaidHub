@@ -46,8 +46,6 @@ export const LatestRaid = () => {
         }
     }, [latestActivity])
 
-    const raid = getRaidFromHash(latestActivity?.hash ?? "")
-
     return latestActivity ? (
         <Latest $playerCount={latestActivity.playerCount ?? 6}>
             <Link
@@ -57,15 +55,13 @@ export const LatestRaid = () => {
                 }}>
                 <Card $overflowHidden $fullHeight>
                     <Container $minHeight={80}>
-                        {raid?.raid && (
-                            <CloudflareImage
-                                cloudflareId={RaidBanners[raid.raid]}
-                                fill
-                                priority
-                                alt="raid background image"
-                                style={{ objectFit: "cover" }}
-                            />
-                        )}
+                        <CloudflareImage
+                            cloudflareId={RaidBanners[latestActivity.meta.activityId]}
+                            fill
+                            priority
+                            alt="raid background image"
+                            style={{ objectFit: "cover" }}
+                        />
                     </Container>
                     <Flex $direction="column" $crossAxis="flex-start">
                         <H4 $mBlock={0.25}>
@@ -88,7 +84,7 @@ export const LatestRaid = () => {
                             <RaidName>
                                 {latestActivity.meta.activityName}
                                 {": "}
-                                {latestActivity.meta.versionId}
+                                {latestActivity.meta.versionName}
                             </RaidName>
 
                             <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>

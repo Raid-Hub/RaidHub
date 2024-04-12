@@ -1,10 +1,10 @@
 "use client"
 
+import { useMemo } from "react"
 import styled, { css, keyframes } from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { $media } from "~/app/layout/media"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
-import type DestinyPGCRPlayer from "~/app/pgcr/models/Player"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import type { SVGComponent } from "~/components/SVG"
 import Assist from "~/components/icons/Assist"
@@ -14,6 +14,7 @@ import Sparkle from "~/components/icons/Sparkle"
 import Xmark from "~/components/icons/Xmark"
 import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
+import { type RaidHubPlayerWithExtendedActivityData } from "~/services/raidhub/types"
 import { bungieBannerEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber } from "~/util/presentation/formatting"
@@ -21,58 +22,47 @@ import { CharacterLogoStack } from "./CharacterLogoStack"
 import { DisplayName } from "./DisplayName"
 
 export const PlayerTab = ({
-    player,
+    activityPlayer,
     onClick
 }: {
-    player: DestinyPGCRPlayer
+    activityPlayer: RaidHubPlayerWithExtendedActivityData
     onClick: () => void
 }) => {
-    const { activity, players } = usePGCRContext()
-    const activityPlayer = players?.get(player.membershipId)
+    const { data } = usePGCRContext()
 
     const isFirstClear =
-        !!activityPlayer?.data?.isFirstClear && !!activity?.players.some(p => p.data.sherpas > 0)
-    const isGoldCarry =
-        activityPlayer && activity
-            ? activityPlayer.data.sherpas / (Math.max(activity.playerCount, 6) - 1) >= 1 ||
-              (activity.playerCount <= 3 && activityPlayer.data.sherpas > 0)
-            : false
-    const isSilverCarry =
-        activityPlayer && activity
-            ? activityPlayer.data.sherpas / (Math.max(activity.playerCount, 6) - 2) >= 1
-            : false
+        !!activityPlayer?.data?.isFirstClear && !!data?.players.some(p => p.data.sherpas > 0)
 
-    const firstCharacter = player.firstCharacter()
+    const displayName = getBungieDisplayName(activityPlayer.player, {
+        excludeCode: true
+    })
+    const emblem = useItemDefinition(Number(activityPlayer.data.characters[0].emblemHash))
 
-    const displayName = getBungieDisplayName(
-        {
-            membershipId: player.membershipId,
-            displayName:
-                player.firstCharacter().destinyUserInfo.displayName || activityPlayer?.displayName,
-            bungieGlobalDisplayName:
-                player.firstCharacter().destinyUserInfo.bungieGlobalDisplayName ||
-                activityPlayer?.bungieGlobalDisplayName,
-            bungieGlobalDisplayNameCode:
-                player.firstCharacter().destinyUserInfo.bungieGlobalDisplayNameCode ??
-                activityPlayer?.bungieGlobalDisplayNameCode
-        },
-        {
-            excludeCode: true
-        }
+    const stats = useMemo(
+        () =>
+            activityPlayer.data.characters.reduce(
+                (acc, curr) => ({
+                    kills: acc.kills + curr.kills,
+                    assists: acc.assists + curr.assists,
+                    deaths: acc.deaths + curr.deaths
+                }),
+                {
+                    kills: 0,
+                    assists: 0,
+                    deaths: 0
+                }
+            ),
+        [activityPlayer.data.characters]
     )
-    const emblem = useItemDefinition(firstCharacter.emblemHash)
 
     return (
-        <SpecialBorder
-            $firstClear={isFirstClear}
-            $goldCarry={isGoldCarry}
-            $silverCarry={isSilverCarry}>
+        <SpecialBorder $firstClear={isFirstClear}>
             <StyledTab
                 $relative
                 $align="space-between"
                 $crossAxis="stretch"
                 $padding={0.5}
-                $dnf={!player.completed}
+                $dnf={!activityPlayer.data.completed}
                 $firstClear={isFirstClear}
                 onClick={onClick}>
                 <BackgroundImage
@@ -83,28 +73,28 @@ export const PlayerTab = ({
                 />
 
                 <CharacterLogoStack
-                    characters={player.characters}
+                    characters={activityPlayer.data.characters}
                     style={{ flex: 1, justifyContent: "flex-start" }}
                 />
                 <Flex style={{ flex: 3, maxWidth: "50%" }}>
                     <DisplayName
-                        membershipId={player.membershipId}
-                        membershipType={activityPlayer?.membershipType ?? 0}
+                        membershipId={activityPlayer.player.membershipId}
+                        membershipType={activityPlayer.player.membershipType || 0}
                         displayName={displayName}
                     />
                 </Flex>
                 <Flex $padding={0} style={{ flex: 1 }} $align="flex-end">
-                    {activity?.playerCount === 1 ? (
-                        activity.completed ? (
+                    {data?.playerCount === 1 ? (
+                        data.completed ? (
                             <Sparkle sx={50} color="white" />
                         ) : (
                             <Xmark sx={50} color="white" />
                         )
                     ) : (
                         <Flex $direction="column" $align="space-around" $padding={0} $gap={0.25}>
-                            <StatValue name="kills" value={player.values.kills} Icon={Kill} />
-                            <StatValue name="assists" value={player.values.assists} Icon={Assist} />
-                            <StatValue name="deaths" value={player.values.deaths} Icon={Death} />
+                            <StatValue name="kills" value={stats.kills} Icon={Kill} />
+                            <StatValue name="assists" value={stats.assists} Icon={Assist} />
+                            <StatValue name="deaths" value={stats.deaths} Icon={Death} />
                         </Flex>
                     )}
                 </Flex>
@@ -158,8 +148,6 @@ const borderAnimation = keyframes`
 
 const SpecialBorder = styled.div<{
     $firstClear: boolean
-    $goldCarry: boolean
-    $silverCarry: boolean
 }>`
     z-index: 1;
     transition: transform 0.1s ease-in-out;
@@ -170,17 +158,9 @@ const SpecialBorder = styled.div<{
 
     border-radius: 6px;
     ${props => {
-        if (props.$firstClear || props.$goldCarry || props.$silverCarry) {
-            const shimmer = props.$firstClear
-                ? "rgba(150, 255, 160, 0.9)" // green
-                : props.$goldCarry
-                ? "rgba(255, 223, 145, 0.9)" // gold
-                : "rgba(218, 221, 224, 0.9)" // silver
-            const background = props.$firstClear
-                ? "rgba(77, 176, 86, 0.5)" // dark green
-                : props.$goldCarry
-                ? "rgba(212, 182, 108, 0.5)" // dark gold
-                : "rgba(163, 163, 163, 0.5)" // dark silver
+        if (props.$firstClear) {
+            const shimmer = "rgba(150, 255, 160, 0.9)" // green
+            const background = "rgba(77, 176, 86, 0.5)" // dark green
             const gradient = `transparent, transparent 7%, ${shimmer} 15%, transparent 23%, transparent 57%, ${shimmer} 65%, transparent 73%, transparent`
             return css`
                 background: linear-gradient(to bottom, ${gradient}),

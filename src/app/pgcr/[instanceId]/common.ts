@@ -22,7 +22,7 @@ export const getMetaData = (activity: RaidHubActivityResponse) => {
                 : null
             : null,
         activity.flawless ? "Flawless" : null,
-        activity.meta.raidName,
+        activity.meta.activityName,
         `(${activity.meta.versionName})`
     ]
         .filter(Boolean)

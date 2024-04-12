@@ -642,6 +642,7 @@ export interface components {
     readonly ActivityCharacter: {
       readonly characterId: string;
       readonly classHash: string | null;
+      readonly emblemHash: string | null;
       readonly completed: boolean;
       readonly timePlayedSeconds: number;
       readonly startSeconds: number;
