@@ -31,7 +31,7 @@ export type RaidHubActivityExtended = Component<"ActivityExtended">
 export type RaidHubBaseActivity = Component<"Activity">
 
 export type RaidHubActivityWithPlayer = Component<"ActivityWithPlayerData">
-export type RaidHubPlayerWithActivityData = Component<"PlayerWithActivityData">
+export type RaidHubPlayerWithExtendedActivityData = Component<"PlayerWithExtendedActivityData">
 
 export type RaidHubPlayerActivitiesResponse = Component<"PlayerActivitiesResponse">
 export type RaidHubPlayerActivitiesActivity = Prettify<

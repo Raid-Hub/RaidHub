@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     const raidEnum = getRaidEnum(manifest, params.raid)
     const clearsBoards = manifest.leaderboards.individual.clears[raidEnum]
 
-    const raidName = manifest.raidStrings[raidEnum]
+    const raidName = manifest.activityStrings[raidEnum]
 
     const title = `${raidName} ${
         clearsBoards.find(p => p.category === params.category)!.displayName
@@ -70,7 +70,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
             heading={
                 <Splash
                     title={`${displayName} Clears`}
-                    subtitle={manifest.raidStrings[raid]}
+                    subtitle={manifest.activityStrings[raid]}
                     tertiaryTitle="Individual Leaderboards"
                     cloudflareImageId={RaidCardBackground[raid]}
                 />

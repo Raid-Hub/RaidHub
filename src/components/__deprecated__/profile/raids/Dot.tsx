@@ -67,7 +67,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
         }
     }, [isTargeted])
 
-    const { elevatedDifficulties } = useRaidHubManifest()
+    const { elevatedRaidDifficulties } = useRaidHubManifest()
 
     return (
         <Link
@@ -78,7 +78,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             className={[styles.dot, styles["dot-hover"]].join(" ")}>
             <circle
                 fill={
-                    activity.player.finishedRaid
+                    activity.player.completed
                         ? activity.flawless
                             ? DotFlawless
                             : DotSuccess
@@ -105,7 +105,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     />
                 )
             )}
-            {elevatedDifficulties.includes(activity.meta.version) && (
+            {elevatedRaidDifficulties.includes(activity.meta.versionId) && (
                 <circle
                     fill="none"
                     stroke="white"

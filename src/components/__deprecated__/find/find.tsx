@@ -551,7 +551,7 @@ const Results = ({ allResults }: { allResults: Collection<string, RaidHubActivit
 const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
     const { locale } = useLocale()
     const { getRaidFromHash, getRaidString } = useRaidHubManifest()
-    const meta = getRaidFromHash(activity.raidHash)
+    const meta = getRaidFromHash(activity.hash)
     const completed = new Date(activity.dateCompleted)
     const started = new Date(activity.dateStarted)
     return (

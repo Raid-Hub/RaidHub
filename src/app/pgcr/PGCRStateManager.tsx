@@ -9,7 +9,7 @@ import { useRaidHubActivity, useRaidHubPGCR } from "~/services/raidhub/hooks"
 import type {
     ListedRaid,
     RaidHubActivityResponse,
-    RaidHubPlayerWithActivityData
+    RaidHubPlayerWithExtendedActivityData
 } from "~/services/raidhub/types"
 import { useProcessPGCR } from "./hooks/useProcessPGCR"
 import type DestinyPGCRPlayer from "./models/Player"
@@ -25,7 +25,7 @@ type PGCRContextValue =
           duration: number
           activity: RaidHubActivityResponse | undefined
           fresh: boolean | undefined | null
-          players: ReadonlyCollection<string, RaidHubPlayerWithActivityData>
+          players: ReadonlyCollection<string, RaidHubPlayerWithExtendedActivityData>
       } & (
           | {
                 isPGCRLoading: false
@@ -137,10 +137,10 @@ export const PGCRStateManager = ({
         const weapons = mergeWeaponCollections(pgcrQuery.data?.players.map(p => p.weapons) ?? [])
         return {
             isLoading: false,
-            raid: activityQuery.data?.meta.raid ?? pgcrQuery.data!.meta?.raid ?? null,
+            raid: activityQuery.data?.meta.activityId ?? pgcrQuery.data!.meta?.raid ?? null,
             completed: activityQuery.data?.completed ?? pgcrQuery.data!.completed,
-            hash: activityQuery.data?.raidHash
-                ? Number(activityQuery.data.raidHash)
+            hash: activityQuery.data?.hash
+                ? Number(activityQuery.data.hash)
                 : undefined ?? pgcrQuery.data!.hash,
             completionDate: activityQuery.data?.dateCompleted
                 ? new Date(activityQuery.data.dateCompleted)

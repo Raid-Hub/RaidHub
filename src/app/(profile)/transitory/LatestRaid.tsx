@@ -23,7 +23,7 @@ import { Latest } from "./Latest"
 export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
     const { locale } = useLocale()
-    const { getRaidString, getDifficultyString } = useRaidHubManifest()
+    const { getRaidFromHash } = useRaidHubManifest()
     const { data: rawRecentActivity } = useRaidHubActivtiesFirstPage(destinyMembershipId, {
         select: res => res.activities[0],
         suspense: true
@@ -46,6 +46,8 @@ export const LatestRaid = () => {
         }
     }, [latestActivity])
 
+    const raid = getRaidFromHash(latestActivity?.hash ?? "")
+
     return latestActivity ? (
         <Latest $playerCount={latestActivity.playerCount ?? 6}>
             <Link
@@ -55,13 +57,15 @@ export const LatestRaid = () => {
                 }}>
                 <Card $overflowHidden $fullHeight>
                     <Container $minHeight={80}>
-                        <CloudflareImage
-                            cloudflareId={RaidBanners[latestActivity.meta.raid]}
-                            fill
-                            priority
-                            alt="raid background image"
-                            style={{ objectFit: "cover" }}
-                        />
+                        {raid?.raid && (
+                            <CloudflareImage
+                                cloudflareId={RaidBanners[raid.raid]}
+                                fill
+                                priority
+                                alt="raid background image"
+                                style={{ objectFit: "cover" }}
+                            />
+                        )}
                     </Container>
                     <Flex $direction="column" $crossAxis="flex-start">
                         <H4 $mBlock={0.25}>
@@ -75,30 +79,30 @@ export const LatestRaid = () => {
                         </H4>
                         <Flex $padding={0} $wrap $gap={0.4} $align="flex-start">
                             {latestActivity.players.find(
-                                p => p.membershipId === destinyMembershipId
-                            )?.data.finishedRaid ? (
+                                p => p.player.membershipId === destinyMembershipId
+                            )?.data.completed ? (
                                 <Checkmark sx={24} />
                             ) : (
                                 <Xmark sx={24} />
                             )}
                             <RaidName>
-                                {getRaidString(latestActivity.meta.raid)}
+                                {latestActivity.meta.activityName}
                                 {": "}
-                                {getDifficultyString(latestActivity.meta.version)}
+                                {latestActivity.meta.versionId}
                             </RaidName>
 
                             <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>
                         </Flex>
                         <Flex $wrap $padding={0} $align="flex-start">
                             {playersToDisplay?.map(player => (
-                                <Flex key={player.membershipId} $padding={0} $gap={0.4}>
-                                    {player.data.finishedRaid ? (
+                                <Flex key={player.player.membershipId} $padding={0} $gap={0.4}>
+                                    {player.data.completed ? (
                                         <Checkmark sx={18} />
                                     ) : (
                                         <Xmark sx={18} />
                                     )}
-                                    <Player $finished={player.data.finishedRaid}>
-                                        {getBungieDisplayName(player)}
+                                    <Player $finished={player.data.completed}>
+                                        {getBungieDisplayName(player.player)}
                                     </Player>
                                 </Flex>
                             ))}

@@ -13,7 +13,7 @@ const PGCRSettingsMenu = () => {
     return (
         <div className={styles["settings-menu-dropdown"]}>
             {activity?.players.some(
-                p => p.membershipId === sessionData?.user.destinyMembershipId
+                p => p.player.membershipId === sessionData?.user.destinyMembershipId
             ) && <PinPCRCell />}
         </div>
     )

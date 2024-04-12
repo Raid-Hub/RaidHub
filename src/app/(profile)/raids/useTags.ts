@@ -9,7 +9,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
     const getWeight = useGetWeight()
     return useMemo(() => {
         const sorted = activities
-            .filter(a => a.player.finishedRaid)
+            .filter(a => a.player.completed)
             .map(activity => ({
                 activity,
                 weight: getWeight(activity)
@@ -17,7 +17,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
             .filter(
                 a =>
                     !isIllegalTag({
-                        raid: a.activity.meta.raid,
+                        raid: a.activity.meta.activityId,
                         weight: a.weight
                     })
             )
@@ -49,7 +49,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
 
                 result.push({
                     activity,
-                    bestPossible: isBestTag({ raid: activity.meta.raid, weight })
+                    bestPossible: isBestTag({ raid: activity.meta.activityId, weight })
                 })
                 if (result.length >= 3) break
             }
@@ -60,7 +60,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
 }
 
 const useGetWeight = () => {
-    const { elevatedDifficulties } = useRaidHubManifest()
+    const { elevatedRaidDifficulties } = useRaidHubManifest()
 
     return useCallback(
         (activity: RaidHubPlayerActivitiesActivity) => {
@@ -70,7 +70,10 @@ const useGetWeight = () => {
             // solo => 8 => 7
             const adjustedPlayerCount =
                 (1 << Math.max(0, 4 - Math.min(activity.playerCount, 6))) - 1
-            const isElevatedDifficulty = includedIn(elevatedDifficulties, activity.meta.version)
+            const isElevatedDifficulty = includedIn(
+                elevatedRaidDifficulties,
+                activity.meta.versionId
+            )
             /*
         This is a bitfield to measure the weight of an activity. If its not flawless or a lowman, it has 0 weight.
         From the right,
@@ -87,7 +90,7 @@ const useGetWeight = () => {
                       +isElevatedDifficulty
                 : 0
         },
-        [elevatedDifficulties]
+        [elevatedRaidDifficulties]
     )
 }
 

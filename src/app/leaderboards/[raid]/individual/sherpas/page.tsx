@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     const manifest = await prefetchManifest()
     const raidEnum = getRaidEnum(manifest, params.raid)
 
-    const raidName = manifest.raidStrings[raidEnum]
+    const raidName = manifest.activityStrings[raidEnum]
 
     const title = `${raidName} Sherpa Leaderboard`
     return {
@@ -49,7 +49,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
             heading={
                 <Splash
                     title="Sherpas"
-                    subtitle={manifest.raidStrings[raid]}
+                    subtitle={manifest.activityStrings[raid]}
                     tertiaryTitle="Individual Leaderboards"
                     cloudflareImageId={RaidCardBackground[raid]}
                 />
