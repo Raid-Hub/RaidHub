@@ -1,10 +1,9 @@
-import { type ReadonlyCollection } from "@discordjs/collection"
 import { useMemo, type HTMLProps } from "react"
 import type { SVGWrapperProps } from "~/components/SVG"
 import { Flex } from "~/components/layout/Flex"
+import { type RaidHubActivityCharacter } from "~/services/raidhub/types"
 import { useCharacterClass } from "../hooks/useCharacterClass"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
-import type DestinyPGCRCharacter from "../models/Character"
 
 const sizes = [
     {
@@ -41,25 +40,25 @@ export const CharacterLogoStack = ({
     characters,
     ...otherProps
 }: {
-    characters: ReadonlyCollection<string, DestinyPGCRCharacter>
+    characters: readonly RaidHubActivityCharacter[]
 } & Omit<HTMLProps<HTMLDivElement>, "ref">) => {
     const content = useMemo(() => {
-        switch (characters.size) {
+        switch (characters.length) {
             case 1:
-                return <CharacterLogo character={characters.first()!} sx={sizes[0]} />
+                return <CharacterLogo character={characters[0]} sx={sizes[0]} />
             case 2:
                 return (
                     <Flex $gap={0.4} $padding={0} $fullWidth $align="flex-start">
-                        <CharacterLogo character={characters.first()!} sx={sizes[1][0]} />
+                        <CharacterLogo character={characters[0]} sx={sizes[1][0]} />
                         <CharacterLogo
-                            character={characters.last()!}
+                            character={characters[1]}
                             sx={sizes[1][1]}
                             color="lightGray"
                         />
                     </Flex>
                 )
             case 3:
-                const [first, second, third] = Array.from(characters.values())
+                const [first, second, third] = characters
                 return (
                     <Flex
                         $direction="column"
@@ -88,7 +87,7 @@ export const CharacterLogoStack = ({
 const CharacterLogo = ({
     character,
     ...styleProps
-}: { character: DestinyPGCRCharacter } & SVGWrapperProps) => {
+}: { character: RaidHubActivityCharacter } & SVGWrapperProps) => {
     const { data: classHash } = useResolveCharacter(character, {
         select: data => data.character.data?.classHash ?? null
     })

@@ -16,7 +16,7 @@ export interface ActivityFilter {
 }
 
 export const SingleActivityFilterFunctions = {
-    Success: (activity: RaidHubPlayerActivitiesActivity) => activity.player.finishedRaid,
+    Success: (activity: RaidHubPlayerActivitiesActivity) => activity.player.completed,
     Flawless: (activity: RaidHubPlayerActivitiesActivity) => !!activity.flawless,
     CheckpointBot: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount > 50,
     Lowman: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount <= 3,

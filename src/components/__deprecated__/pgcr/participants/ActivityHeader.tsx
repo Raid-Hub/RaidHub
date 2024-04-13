@@ -2,17 +2,19 @@ import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { useTags } from "~/app/pgcr/hooks/useTags"
+import { includedIn } from "~/util/helpers"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"
 import styles from "../pgcr.module.css"
 
 /** @deprecated */
 const ActivityHeader = () => {
-    const { completionDate, completed, duration, activity, fresh, isLoading, raid } =
-        usePGCRContext()
+    const { data, isLoading } = usePGCRContext()
 
     const { locale } = useLocale()
-    const { getRaidString } = useRaidHubManifest()
-    const tags = useTags(activity ?? null)
+    const { getRaidString, listedRaids } = useRaidHubManifest()
+    const tags = useTags(data ?? null)
+
+    const activityId = data?.meta.activityId
 
     return (
         <div className={styles["activity-tile-header-container"]}>
@@ -20,16 +22,16 @@ const ActivityHeader = () => {
                 <div className={styles["left-info"]}>
                     <div className={styles["raid-info-top"]}>
                         <span className={styles["completion-time"]}>
-                            {completionDate
-                                ? toCustomDateString(completionDate, locale)
+                            {data?.dateCompleted
+                                ? toCustomDateString(new Date(data.dateCompleted), locale)
                                 : "Loading..."}
                         </span>
                     </div>
                     <div className={styles["raid-name"]}>
                         {isLoading ? (
                             <span>Loading...</span>
-                        ) : raid ? (
-                            getRaidString(raid)
+                        ) : includedIn(listedRaids, activityId) ? (
+                            getRaidString(activityId)
                         ) : (
                             "Non-Raid"
                         )}
@@ -37,8 +39,8 @@ const ActivityHeader = () => {
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>
-                        {typeof duration !== "undefined" &&
-                            secondsToHMS(duration, false)
+                        {data?.duration &&
+                            secondsToHMS(data.duration, false)
                                 .split(" ")
                                 .map((t, idx) => (
                                     <span key={idx}>
@@ -46,7 +48,7 @@ const ActivityHeader = () => {
                                         {t[t.length - 1]}
                                     </span>
                                 ))}
-                        {completed === false && (
+                        {data?.completed === false && (
                             <span>
                                 <b>{"(Incomplete)"}</b>
                             </span>
@@ -63,7 +65,7 @@ const ActivityHeader = () => {
                         </div>
                     ))}
                 </div>
-                {fresh === null && (
+                {data?.fresh === null && (
                     <div className={styles["cp-error"]}>
                         <p>Note: this activity may or may not be a checkpoint</p>
                     </div>

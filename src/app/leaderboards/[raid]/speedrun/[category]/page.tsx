@@ -36,7 +36,7 @@ export async function generateMetadata({
     const manifest = await prefetchManifest()
 
     const raidEnum = getRaidEnum(manifest, params.raid)
-    const raidName = manifest.raidStrings[raidEnum]
+    const raidName = manifest.activityStrings[raidEnum]
     const displayName =
         params.category !== "all"
             ? SpeedrunVariables[raidEnum]?.variable?.values[params.category]?.displayName ?? null

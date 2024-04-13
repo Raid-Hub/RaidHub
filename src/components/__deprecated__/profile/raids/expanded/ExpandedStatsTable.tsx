@@ -38,14 +38,14 @@ export default function ExpandedStatsTable() {
             </thead>
             <StatsRow
                 header="Total Attempts"
-                values={versions.map(v => activities.filter(a => a.meta.version === v).size)}
+                values={versions.map(v => activities.filter(a => a.meta.versionId === v).size)}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
             />
             <StatsRow
                 header="Total Clears"
                 values={versions.map(
-                    v => activities.filter(a => a.meta.version === v && a.player.finishedRaid).size
+                    v => activities.filter(a => a.meta.versionId === v && a.player.completed).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
@@ -55,7 +55,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.meta.version === v && a.fresh && a.player.finishedRaid
+                            a => a.meta.versionId === v && a.fresh && a.player.completed
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -65,7 +65,7 @@ export default function ExpandedStatsTable() {
                 header="Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.meta.version === v && a.player.finishedRaid)
+                        .filter(a => a.meta.versionId === v && a.player.completed)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -75,7 +75,7 @@ export default function ExpandedStatsTable() {
                 header="Fresh Sherpas"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.meta.version === v && a.fresh && a.player.finishedRaid)
+                        .filter(a => a.meta.versionId === v && a.fresh && a.player.completed)
                         .reduce((result, a) => result + a.player.sherpas, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -86,7 +86,7 @@ export default function ExpandedStatsTable() {
             <StatsRow
                 header="Flawlesses"
                 values={versions.map(
-                    v => activities.filter(a => a.meta.version === v && a.flawless).size
+                    v => activities.filter(a => a.meta.versionId === v && a.flawless).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
@@ -96,7 +96,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a => a.meta.version === v && a.playerCount <= 3 && a.player.finishedRaid
+                            a => a.meta.versionId === v && a.playerCount <= 3 && a.player.completed
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -107,8 +107,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.meta.version === v && a.playerCount === 3 && a.player.finishedRaid
+                            a => a.meta.versionId === v && a.playerCount === 3 && a.player.completed
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -119,8 +118,7 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.meta.version === v && a.playerCount === 2 && a.player.finishedRaid
+                            a => a.meta.versionId === v && a.playerCount === 2 && a.player.completed
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
@@ -131,14 +129,13 @@ export default function ExpandedStatsTable() {
                 values={versions.map(
                     v =>
                         activities.filter(
-                            a =>
-                                a.meta.version === v && a.playerCount === 1 && a.player.finishedRaid
+                            a => a.meta.versionId === v && a.playerCount === 1 && a.player.completed
                         ).size
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
             />
-            <StatsRow
+            {/* <StatsRow
                 header="Kills"
                 values={versions.map(v =>
                     activities
@@ -167,22 +164,17 @@ export default function ExpandedStatsTable() {
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={a => formattedNumber(a, locale)}
-            />
+            /> */}
             <StatsRow
                 header="In Game Time"
                 values={versions.map(v =>
                     activities
-                        .filter(a => a.meta.version === v)
+                        .filter(a => a.meta.versionId === v)
                         .reduce((result, a) => result + a.player.timePlayedSeconds, 0 as number)
                 )}
                 totalsReducer={(prev, curr) => prev + curr}
                 formatter={secondsToYDHMS}
             />
-            {/* // todo
-            <StatsRow header="time played" values={versions.map(v => "123")} />
-            <StatsRow header="kills" values={versions.map(v => "123")} />
-            <StatsRow header="assists" values={versions.map(v => "123")} />
-            <StatsRow header="deaths" values={versions.map(v => "123")} /> */}
         </table>
     )
 }

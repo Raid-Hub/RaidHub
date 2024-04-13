@@ -19,10 +19,10 @@ export const useRaidHubActivity = (
             getRaidHubApi("/activity/{instanceId}", { instanceId: queryKey[2] }, null),
         staleTime: 3600_000,
         onSuccess: data => {
-            data.players.forEach(player => {
+            data.players.forEach(entry => {
                 queryClient.setQueryData<RaidHubPlayerBasic>(
-                    ["raidhub", "player", "basic", player.membershipId],
-                    old => old ?? player
+                    ["raidhub", "player", "basic", entry.player.membershipId],
+                    old => old ?? entry.player
                 )
             })
         },

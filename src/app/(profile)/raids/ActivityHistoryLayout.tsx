@@ -65,11 +65,11 @@ export const ActivityHistoryLayout = ({ membershipIds }: { membershipIds: string
 const Activity = (activity: RaidHubPlayerActivitiesActivity) => {
     const raidName = useAttributedRaidName(
         {
-            raid: activity.meta.raid,
+            raid: activity.meta.activityId,
             playerCount: activity.playerCount,
             fresh: activity.fresh,
             flawless: activity.flawless,
-            difficulty: activity.meta.version,
+            difficulty: activity.meta.versionId,
             contest: activity.contest,
             completed: activity.completed
         },
@@ -83,13 +83,13 @@ const Activity = (activity: RaidHubPlayerActivitiesActivity) => {
             href={`/pgcr/${activity.instanceId}`}
             $completed={activity.completed}
             $flawless={!!activity.flawless}
-            $playerFinished={activity.player.finishedRaid}>
+            $playerFinished={activity.player.completed}>
             <Flex $direction="column">
                 <RaidTitle>{raidName}</RaidTitle>
                 <RaidDuration>{secondsToHMS(activity.duration, false)}</RaidDuration>
             </Flex>
             <BackgroundImage
-                cloudflareId={RaidCardBackground[activity.meta.raid]}
+                cloudflareId={RaidCardBackground[activity.meta.activityId]}
                 alt=""
                 brightness={0.75}
                 blur={1}

@@ -52,7 +52,7 @@ export default function RaidCard({
     )
 
     const recentClear = useMemo(
-        () => activities?.find(a => a.player.finishedRaid && a.fresh) ?? null,
+        () => activities?.find(a => a.player.completed && a.fresh) ?? null,
         [activities]
     )
 
@@ -147,7 +147,7 @@ export default function RaidCard({
                                     playerCount={tag.activity.playerCount}
                                     fresh={tag.activity.fresh}
                                     flawless={tag.activity.flawless}
-                                    difficulty={tag.activity.meta.version}
+                                    difficulty={tag.activity.meta.versionId}
                                     contest={tag.activity.contest}
                                 />
                             ))}
@@ -168,9 +168,7 @@ export default function RaidCard({
                         )}
                         <div className={styles["graph-right"]}>
                             <BigNumberStatItem
-                                displayValue={
-                                    activities?.filter(a => a.player.finishedRaid).size ?? 0
-                                }
+                                displayValue={activities?.filter(a => a.player.completed).size ?? 0}
                                 isLoading={isLoadingActivities}
                                 name={"Total\nClears"}
                                 extraLarge={true}

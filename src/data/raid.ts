@@ -1,4 +1,4 @@
-import { assert, type Equals } from "tsafe"
+import { type Equals } from "tsafe"
 import type { components } from "~/services/raidhub/openapi"
 
 export const Raid = Object.freeze({
@@ -24,13 +24,17 @@ export const Difficulty = Object.freeze({
     MASTER: 4,
     CHALLENGE_VOG: 64,
     CHALLENGE_KF: 65,
-    CHALLENGE_CROTA: 66
+    CHALLENGE_CROTA: 66,
+    PANTHEON: 128
 }) satisfies Record<string, components["schemas"]["RaidVersionEnum"]>
 
 // These checks are here to make sure that the types of the enums are correct.
 // We should use the manifest enums instead of hardcoding the values as much as possible,
 // There are some places where it makes sense to use front end enums, but we should try to avoid it.
-assert<Equals<(typeof Raid)[keyof typeof Raid], components["schemas"]["RaidEnum"]>>(true)
-assert<
-    Equals<(typeof Difficulty)[keyof typeof Difficulty], components["schemas"]["RaidVersionEnum"]>
->(true)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const a: Equals<(typeof Raid)[keyof typeof Raid], components["schemas"]["RaidEnum"]> = true
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const b: Equals<
+    (typeof Difficulty)[keyof typeof Difficulty],
+    components["schemas"]["RaidVersionEnum"]
+> = true

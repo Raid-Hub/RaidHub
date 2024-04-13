@@ -10,18 +10,19 @@ import type {
     RaidHubRaidPath,
     SunsetRaid
 } from "~/services/raidhub/types"
+import { includedIn } from "~/util/helpers"
 
 type ManifestContextData = {
     leaderboards: RaidHubManifestResponse["leaderboards"]
     listedRaids: ListedRaid[]
-    elevatedDifficulties: RaidDifficulty[]
+    elevatedRaidDifficulties: RaidDifficulty[]
     sunsetRaids: SunsetRaid[]
     reprisedRaids: RaidHubManifestResponse["reprisedChallengePairings"]
     getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
     getDifficultyString(
         raid: RaidDifficulty
-    ): RaidHubManifestResponse["difficultyStrings"][RaidDifficulty]
-    getRaidString(raid: ListedRaid): RaidHubManifestResponse["raidStrings"][ListedRaid]
+    ): RaidHubManifestResponse["versionStrings"][RaidDifficulty]
+    getRaidString(raid: ListedRaid): RaidHubManifestResponse["activityStrings"][ListedRaid]
     getRaidFromHash: (hash: string | number) => {
         raid: ListedRaid
         difficulty: RaidDifficulty
@@ -44,22 +45,22 @@ export function RaidHubManifestManager(props: {
 
     const value: ManifestContextData = useMemo(
         () => ({
-            getRaidString: (raid: ListedRaid) => data.raidStrings[raid],
-            getDifficultyString: (raid: RaidDifficulty) => data.difficultyStrings[raid],
+            getRaidString: (raid: ListedRaid) => data.activityStrings[raid],
+            getDifficultyString: (raid: RaidDifficulty) => data.versionStrings[raid],
             getUrlPathForRaid: (raid: ListedRaid) => data.raidUrlPaths[raid],
             getCheckpointName: (raid: ListedRaid) => data.checkpointNames[raid],
             getRaidFromHash: (hash: string | number) => {
                 const raid = data.hashes[String(hash)]
-                if (!raid) {
+                if (!raid || !includedIn(data.listed, raid.activityId)) {
                     return null
                 } else {
                     return {
-                        raid: raid.raid as ListedRaid,
-                        difficulty: raid.version as RaidDifficulty
+                        raid: raid.activityId as ListedRaid,
+                        difficulty: raid.versionId as RaidDifficulty
                     }
                 }
             },
-            elevatedDifficulties: Object.entries(data.difficultyStrings)
+            elevatedRaidDifficulties: Object.entries(data.versionStrings)
                 .filter(([_, v]) => v === "Master" || v === "Prestige")
                 .map(([k, _]) => Number(k) as RaidDifficulty),
             leaderboards: data.leaderboards,

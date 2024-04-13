@@ -95,9 +95,9 @@ export const Raids = () => {
             Collection<string, RaidHubPlayerActivitiesActivity>
         >()
         activities.forEach(a => {
-            if (!coll.has(a.meta.raid)) coll.set(a.meta.raid, new Collection())
-            if (!coll.get(a.meta.raid)) coll.set(a.meta.raid, new Collection())
-            coll.get(a.meta.raid)!.set(a.instanceId, a)
+            if (!coll.has(a.meta.activityId)) coll.set(a.meta.activityId, new Collection())
+            if (!coll.get(a.meta.activityId)) coll.set(a.meta.activityId, new Collection())
+            coll.get(a.meta.activityId)!.set(a.instanceId, a)
         })
         return coll.each(raidActivities => raidActivities.reverse())
     }, [activities, areMembershipsFetched, isLoadingActivities])

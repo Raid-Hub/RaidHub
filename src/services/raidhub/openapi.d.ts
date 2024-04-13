@@ -581,9 +581,11 @@ export interface components {
     /** @enum {integer} */
     readonly BungieMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 254 | -1;
     /** @enum {integer} */
+    readonly ActivityEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1 | 101 | 102 | 103 | 104;
+    /** @enum {integer} */
     readonly RaidEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1;
     /** @enum {integer} */
-    readonly RaidVersionEnum: 1 | 2 | 3 | 4 | 64 | 65 | 66;
+    readonly RaidVersionEnum: 1 | 2 | 3 | 4 | 64 | 65 | 66 | 128;
     /**
      * @example {
      *   "bungieGlobalDisplayName": "Newo",
@@ -608,7 +610,7 @@ export interface components {
     };
     readonly Activity: {
       readonly instanceId: string;
-      readonly raidHash: string;
+      readonly hash: string;
       readonly completed: boolean;
       readonly flawless: boolean | null;
       readonly fresh: boolean | null;
@@ -619,6 +621,7 @@ export interface components {
       readonly dateCompleted: string;
       readonly duration: number;
       readonly platformType?: components["schemas"]["BungieMembershipType"];
+      readonly score: number;
     };
     readonly ActivityExtended: components["schemas"]["Activity"] & {
       readonly dayOne: boolean;
@@ -626,28 +629,42 @@ export interface components {
       readonly weekOne: boolean;
     };
     readonly ActivityPlayerData: {
-      readonly finishedRaid: boolean;
-      readonly kills: number;
-      readonly assists: number;
-      readonly deaths: number;
-      readonly timePlayedSeconds: number;
-      readonly classHash: string | null;
+      readonly completed: boolean;
       readonly sherpas: number;
       readonly isFirstClear: boolean;
+      readonly timePlayedSeconds: number;
     };
-    /**
-     * @example {
-     *   "bungieGlobalDisplayName": "Newo",
-     *   "bungieGlobalDisplayNameCode": "9010",
-     *   "membershipId": "4611686018488107374",
-     *   "displayName": "xx_newo_xx",
-     *   "iconPath": "/common/destiny2_content/icons/93844c8b76ea80683a880479e3506980.jpg",
-     *   "membershipType": 3,
-     *   "lastSeen": "2021-05-01T00:00:00.000Z"
-     * }
-     */
-    readonly PlayerWithActivityData: components["schemas"]["PlayerInfo"] & {
-      readonly data: components["schemas"]["ActivityPlayerData"];
+    readonly ActivityCharacterWeapon: {
+      readonly weaponHash: string;
+      readonly kills: number;
+      readonly precisionKills: number;
+    };
+    readonly ActivityCharacter: {
+      readonly characterId: string;
+      readonly classHash: string | null;
+      readonly emblemHash: string | null;
+      readonly completed: boolean;
+      readonly timePlayedSeconds: number;
+      readonly startSeconds: number;
+      readonly score: number;
+      readonly kills: number;
+      readonly deaths: number;
+      readonly assists: number;
+      readonly precisionKills: number;
+      readonly superKills: number;
+      readonly grenadeKills: number;
+      readonly meleeKills: number;
+      readonly weapons: readonly components["schemas"]["ActivityCharacterWeapon"][];
+    };
+    readonly PlayerWithExtendedActivityData: {
+      readonly player: components["schemas"]["PlayerInfo"];
+      readonly data: {
+        readonly completed: boolean;
+        readonly sherpas: number;
+        readonly isFirstClear: boolean;
+        readonly timePlayedSeconds: number;
+        readonly characters: readonly components["schemas"]["ActivityCharacter"][];
+      };
     };
     readonly ActivityWithPlayerData: components["schemas"]["ActivityExtended"] & {
       readonly player: components["schemas"]["ActivityPlayerData"];
@@ -764,7 +781,10 @@ export interface components {
       readonly rank: number;
       readonly value: number;
       readonly activity: components["schemas"]["Activity"];
-      readonly players: readonly components["schemas"]["PlayerWithActivityData"][];
+      readonly players: readonly {
+          readonly player: components["schemas"]["PlayerInfo"];
+          readonly data: components["schemas"]["ActivityPlayerData"];
+        }[];
     };
     readonly LeaderboardSearchQuery: {
       readonly type: "worldfirst" | "individual" | "global";
@@ -774,6 +794,8 @@ export interface components {
       readonly category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "total" | "sherpas" | "trios" | "duos" | "solos") | ("total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun");
       readonly raid?: number;
     };
+    /** @enum {integer} */
+    readonly PantheonEnum: 101 | 102 | 103 | 104;
     /** @enum {integer} */
     readonly SunsetRaidEnum: 1 | 2 | 3 | 5 | 6;
     /** @enum {integer} */
@@ -857,7 +879,7 @@ export interface components {
       readonly boardId: string;
       /** @enum {string} */
       readonly type: "Normal" | "Challenge" | "Prestige" | "Master";
-      readonly raidHash: string;
+      readonly activityHash: string;
       /** Format: date-time */
       readonly dateCompleted: string;
       readonly dayOne: boolean;
@@ -867,11 +889,12 @@ export interface components {
     readonly ManifestResponse: {
       readonly hashes: {
         [key: string]: {
-          readonly raid: components["schemas"]["RaidEnum"];
-          readonly version: components["schemas"]["RaidVersionEnum"];
+          readonly activityId: components["schemas"]["ActivityEnum"];
+          readonly versionId: components["schemas"]["RaidVersionEnum"];
         };
       };
       readonly listed: readonly components["schemas"]["RaidEnum"][];
+      readonly pantheon: readonly components["schemas"]["PantheonEnum"][];
       readonly sunset: readonly components["schemas"]["SunsetRaidEnum"][];
       readonly contest: readonly components["schemas"]["ContestRaidEnum"][];
       readonly master: readonly components["schemas"]["MasterRaidEnum"][];
@@ -912,10 +935,10 @@ export interface components {
       readonly raidUrlPaths: {
         [key: string]: components["schemas"]["RaidPath"];
       };
-      readonly raidStrings: {
+      readonly activityStrings: {
         [key: string]: string;
       };
-      readonly difficultyStrings: {
+      readonly versionStrings: {
         [key: string]: string;
       };
       readonly checkpointNames: {
@@ -935,8 +958,8 @@ export interface components {
       readonly membershipId: string;
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
           readonly meta: {
-            readonly raid: components["schemas"]["RaidEnum"];
-            readonly version: components["schemas"]["RaidVersionEnum"];
+            readonly activityId: components["schemas"]["RaidEnum"];
+            readonly versionId: components["schemas"]["RaidVersionEnum"];
           };
         })[];
       readonly nextCursor: string | null;
@@ -996,15 +1019,15 @@ export interface components {
     };
     readonly ActivityResponse: components["schemas"]["ActivityExtended"] & {
       readonly meta: {
-        readonly raid: components["schemas"]["RaidEnum"];
-        readonly raidName: string;
-        readonly version: components["schemas"]["RaidVersionEnum"];
+        readonly activityId: components["schemas"]["ActivityEnum"];
+        readonly activityName: string;
+        readonly versionId: components["schemas"]["RaidVersionEnum"];
         readonly versionName: string;
       };
       readonly leaderboardEntries: {
         [key: string]: number;
       };
-      readonly players: readonly components["schemas"]["PlayerWithActivityData"][];
+      readonly players: readonly components["schemas"]["PlayerWithExtendedActivityData"][];
     };
     readonly LeaderboardSearchResponse: {
       readonly params: {
@@ -1070,7 +1093,10 @@ export interface components {
           /** Format: date-time */
           readonly dateCompleted: string;
           readonly duration: number;
-          readonly players: readonly components["schemas"]["PlayerWithActivityData"][];
+          readonly players: readonly {
+              readonly player: components["schemas"]["PlayerInfo"];
+              readonly data: components["schemas"]["ActivityPlayerData"];
+            }[];
         }[];
     };
     /** @description A raw PGCR with a few redundant fields removed */

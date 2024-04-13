@@ -1,30 +1,32 @@
 import type { DestinyCharacterResponse } from "bungie-net-core/models/Destiny/Responses/DestinyCharacterResponse"
 import { useCharacter } from "~/services/bungie/hooks"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
+import { type RaidHubActivityCharacter } from "~/services/raidhub/types"
 import { usePGCRContext } from "../PGCRStateManager"
-import type DestinyPGCRCharacter from "../models/Character"
 
 export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
-    character: DestinyPGCRCharacter,
+    character: RaidHubActivityCharacter,
     opts?: {
         forceOnLargePGCR?: boolean
         select?: (data: DestinyCharacterResponse<[200]>) => T
     }
 ) => {
-    const { pgcrPlayers } = usePGCRContext()
+    const { data } = usePGCRContext()
+
+    const player = data?.players.find(p =>
+        p.data.characters.find(c => c.characterId === character.characterId)
+    )?.player
 
     const isEnabled =
-        !character.destinyUserInfo.membershipType &&
-        (!!opts?.forceOnLargePGCR ||
-            (pgcrPlayers && pgcrPlayers.reduce((count, p) => count + p.characters.size, 0) <= 50))
+        data && !player?.membershipType && (!!opts?.forceOnLargePGCR || data.playerCount <= 50)
 
-    const resolveQuery = useRaidHubResolvePlayer(character.destinyUserInfo.membershipId, {
+    const resolveQuery = useRaidHubResolvePlayer(player?.membershipId ?? "", {
         enabled: isEnabled
     })
 
     return useCharacter(
         {
-            destinyMembershipId: character.destinyUserInfo.membershipId,
+            destinyMembershipId: resolveQuery.data?.membershipId ?? "",
             membershipType: resolveQuery.data?.membershipType ?? 0,
             characterId: character.characterId
         },
@@ -33,7 +35,7 @@ export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
             placeholderData: {
                 character: {
                     data: {
-                        classHash: character.classHash ?? 0
+                        classHash: Number(character.classHash ?? 0)
                     }
                 }
             } as DestinyCharacterResponse<[200]>,

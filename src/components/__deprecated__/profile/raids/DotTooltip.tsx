@@ -43,7 +43,7 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
                 top: `${(offset.y / FULL_HEIGHT) * 100}%`,
                 left: `${offset.x}px`,
                 opacity: isShowing ? 1 : 0,
-                borderColor: activity.player.finishedRaid
+                borderColor: activity.player.completed
                     ? activity.flawless
                         ? DotFlawless
                         : DotSuccess
@@ -57,7 +57,7 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
             <div className={styles["dot-tooltip-tags"]}>
                 <span>{lowman}</span>
                 <span>{activity.flawless && Tag.FLAWLESS}</span>
-                <span>{getDifficultyString(activity.meta.version)}</span>
+                <span>{getDifficultyString(activity.meta.versionId)}</span>
             </div>
         </div>
     )

@@ -48,13 +48,13 @@ export const WorldfirstEntries = (props: {
                 position: entry.position,
                 url: `/pgcr/${entry.activity.instanceId}`,
                 team: entry.players
-                    .filter(p => p.data.finishedRaid)
+                    .filter(p => p.data.completed)
                     .map(player => ({
-                        id: player.membershipId,
-                        displayName: getBungieDisplayName(player),
-                        iconUrl: bungieProfileIconUrl(player.iconPath),
-                        url: player.membershipType
-                            ? `/profile/${player.membershipType}/${player.membershipId}`
+                        id: player.player.membershipId,
+                        displayName: getBungieDisplayName(player.player),
+                        iconUrl: bungieProfileIconUrl(player.player.iconPath),
+                        url: player.player.membershipType
+                            ? `/profile/${player.player.membershipType}/${player.player.membershipId}`
                             : undefined
                     }))
             }))
