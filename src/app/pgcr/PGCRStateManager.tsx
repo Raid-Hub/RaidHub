@@ -8,6 +8,7 @@ import { usePostGameCarnageReport } from "~/services/bungie/hooks"
 import { useRaidHubActivity, useRaidHubPGCR } from "~/services/raidhub/hooks"
 import type {
     ListedRaid,
+    PantheonId,
     RaidHubActivityResponse,
     RaidHubPlayerWithExtendedActivityData
 } from "~/services/raidhub/types"
@@ -18,7 +19,7 @@ import type { PGCRPageProps } from "./types"
 type PGCRContextValue =
     | ({
           isLoading: false
-          raid: ListedRaid | null
+          raid: ListedRaid | PantheonId | null
           completed: boolean
           hash: number
           completionDate: Date
@@ -149,7 +150,7 @@ export const PGCRStateManager = ({
             activity: activityQuery.data,
             fresh: activityQuery.data?.fresh,
             players: new Collection(
-                activityQuery.data?.players.map(p => [p.membershipId, p]) ?? []
+                activityQuery.data?.players.map(p => [p.player.membershipId, p]) ?? []
             ),
             ...(pgcrQuery.isSuccess
                 ? {

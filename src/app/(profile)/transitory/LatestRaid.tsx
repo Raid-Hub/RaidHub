@@ -4,7 +4,6 @@ import Link from "next/link"
 import { useMemo } from "react"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Card } from "~/components/Card"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import Checkmark from "~/components/icons/Checkmark"
@@ -23,7 +22,6 @@ import { Latest } from "./Latest"
 export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
     const { locale } = useLocale()
-    const { getRaidFromHash } = useRaidHubManifest()
     const { data: rawRecentActivity } = useRaidHubActivtiesFirstPage(destinyMembershipId, {
         select: res => res.activities[0],
         suspense: true
@@ -46,8 +44,6 @@ export const LatestRaid = () => {
         }
     }, [latestActivity])
 
-    const raid = getRaidFromHash(latestActivity?.hash ?? "")
-
     return latestActivity ? (
         <Latest $playerCount={latestActivity.playerCount ?? 6}>
             <Link
@@ -57,15 +53,13 @@ export const LatestRaid = () => {
                 }}>
                 <Card $overflowHidden $fullHeight>
                     <Container $minHeight={80}>
-                        {raid?.raid && (
-                            <CloudflareImage
-                                cloudflareId={RaidBanners[raid.raid]}
-                                fill
-                                priority
-                                alt="raid background image"
-                                style={{ objectFit: "cover" }}
-                            />
-                        )}
+                        <CloudflareImage
+                            cloudflareId={RaidBanners[latestActivity.meta.activityId]}
+                            fill
+                            priority
+                            alt="raid background image"
+                            style={{ objectFit: "cover" }}
+                        />
                     </Container>
                     <Flex $direction="column" $crossAxis="flex-start">
                         <H4 $mBlock={0.25}>
@@ -88,7 +82,7 @@ export const LatestRaid = () => {
                             <RaidName>
                                 {latestActivity.meta.activityName}
                                 {": "}
-                                {latestActivity.meta.versionId}
+                                {latestActivity.meta.versionName}
                             </RaidName>
 
                             <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>

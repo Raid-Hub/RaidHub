@@ -48,13 +48,14 @@ export const PlayerTab = ({
         {
             membershipId: player.membershipId,
             displayName:
-                player.firstCharacter().destinyUserInfo.displayName || activityPlayer?.displayName,
+                player.firstCharacter().destinyUserInfo.displayName ||
+                activityPlayer?.player.displayName,
             bungieGlobalDisplayName:
                 player.firstCharacter().destinyUserInfo.bungieGlobalDisplayName ||
-                activityPlayer?.bungieGlobalDisplayName,
+                activityPlayer?.player.bungieGlobalDisplayName,
             bungieGlobalDisplayNameCode:
                 player.firstCharacter().destinyUserInfo.bungieGlobalDisplayNameCode ??
-                activityPlayer?.bungieGlobalDisplayNameCode
+                activityPlayer?.player.bungieGlobalDisplayNameCode
         },
         {
             excludeCode: true
@@ -89,7 +90,7 @@ export const PlayerTab = ({
                 <Flex style={{ flex: 3, maxWidth: "50%" }}>
                     <DisplayName
                         membershipId={player.membershipId}
-                        membershipType={activityPlayer?.membershipType ?? 0}
+                        membershipType={activityPlayer?.player.membershipType ?? 0}
                         displayName={displayName}
                     />
                 </Flex>

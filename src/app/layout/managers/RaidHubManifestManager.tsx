@@ -5,6 +5,7 @@ import { createContext, useContext, useMemo, type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import type {
     ListedRaid,
+    PantheonId,
     RaidDifficulty,
     RaidHubManifestResponse,
     RaidHubRaidPath,
@@ -22,7 +23,9 @@ type ManifestContextData = {
     getDifficultyString(
         raid: RaidDifficulty
     ): RaidHubManifestResponse["versionStrings"][RaidDifficulty]
-    getRaidString(raid: ListedRaid): RaidHubManifestResponse["activityStrings"][ListedRaid]
+    getRaidString(
+        raid: ListedRaid | PantheonId
+    ): RaidHubManifestResponse["activityStrings"][ListedRaid]
     getRaidFromHash: (hash: string | number) => {
         raid: ListedRaid
         difficulty: RaidDifficulty
@@ -43,13 +46,13 @@ export function RaidHubManifestManager(props: {
         staleTime: 1000 * 3600 // 1 hour
     })
 
-    const value: ManifestContextData = useMemo(
-        () => ({
-            getRaidString: (raid: ListedRaid) => data.activityStrings[raid],
-            getDifficultyString: (raid: RaidDifficulty) => data.versionStrings[raid],
-            getUrlPathForRaid: (raid: ListedRaid) => data.raidUrlPaths[raid],
-            getCheckpointName: (raid: ListedRaid) => data.checkpointNames[raid],
-            getRaidFromHash: (hash: string | number) => {
+    const value = useMemo(
+        (): ManifestContextData => ({
+            getRaidString: raid => data.activityStrings[raid],
+            getDifficultyString: raid => data.versionStrings[raid],
+            getUrlPathForRaid: raid => data.raidUrlPaths[raid],
+            getCheckpointName: raid => data.checkpointNames[raid],
+            getRaidFromHash: hash => {
                 const raid = data.hashes[String(hash)]
                 if (!raid || !includedIn(data.listed, raid.activityId)) {
                     return null

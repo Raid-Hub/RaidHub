@@ -24,7 +24,7 @@ export async function generateImageMetadata({ params }: PageProps) {
 
     if (!activity) return []
 
-    const raidName = activity.meta.raidName
+    const raidName = activity.meta.activityName
 
     return [
         {
@@ -68,7 +68,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                 <div
                     style={{
                         backgroundImage: `url(${cloudflareImageLoader({
-                            src: RaidCardBackground[activity.meta.raid],
+                            src: RaidCardBackground[activity.meta.activityId],
                             width: size.width,
                             quality: 100
                         })})`,
@@ -101,7 +101,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         fontSize: 24,
                         padding: "10px"
                     }}>
-                    {activity.players.slice(0, 6).map((player, idx) => (
+                    {activity.players.slice(0, 6).map(({ player, data }, idx) => (
                         <div
                             key={player.membershipId}
                             style={{
@@ -119,13 +119,10 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                 borderRadius: 2,
                                 overflow: "hidden",
                                 filter:
-                                    activity.completed && !player.data.finishedRaid
+                                    activity.completed && !data.completed
                                         ? "grayscale(100%) opacity(0.6)"
                                         : "none",
-                                color:
-                                    activity.completed && !player.data.finishedRaid
-                                        ? "gray"
-                                        : "white"
+                                color: activity.completed && !data.completed ? "gray" : "white"
                             }}>
                             <div
                                 style={{
@@ -147,7 +144,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                 </div>
                                 <div>{getBungieDisplayName(player)}</div>
                             </div>
-                            {player.data.finishedRaid ? (
+                            {data.completed ? (
                                 <svg
                                     viewBox="0 0 32 32"
                                     width={32}
@@ -254,7 +251,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                 padding: 4,
                                 borderRadius: 4
                             }}>
-                            {manifest.leaderboards.worldFirst[activity.meta.raid].find(
+                            {manifest.leaderboards.worldFirst[activity.meta.activityId].find(
                                 b => b.category === category
                             )?.displayName +
                                 " #" +

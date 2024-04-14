@@ -7,6 +7,7 @@ import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
 
 const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
+    5, // SystemDisabled
     622 // GroupNotFound
 ])
 
@@ -32,7 +33,7 @@ export default class ServerBungieClient extends BaseBungieClient {
             method: config.method,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             body: config.body,
-            headers: new Headers(config.headers) ?? {},
+            headers: new Headers(config.headers),
             next: this.next
         }
 
@@ -47,7 +48,7 @@ export default class ServerBungieClient extends BaseBungieClient {
 
         const controller = new AbortController()
         payload.signal = controller.signal
-        setTimeout(() => controller.abort(), 2000)
+        setTimeout(() => controller.abort(), 5000)
 
         return payload
     }
