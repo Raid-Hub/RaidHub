@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styled, { css, type CSSProperties } from "styled-components"
-import { CloudflareImage } from "./CloudflareImage"
+import { CloudflareImage, type CloudflareImageId } from "./CloudflareImage"
 
 type CommonBackgroundImageProps = {
     fit?: "contain" | "cover" | "fill"
@@ -20,7 +20,7 @@ export const BackgroundImage = (
                   src: string
               }
             | {
-                  cloudflareId: string
+                  cloudflareId: CloudflareImageId
               }
         )
 ) => {

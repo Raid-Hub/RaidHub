@@ -1,11 +1,9 @@
 "use client"
 
-import Image from "next/image"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
-import RaidCardBackground from "~/data/raid-backgrounds"
-import { useActivityDefinition } from "~/hooks/dexie"
-import { bungiePgcrImageUrl } from "~/util/destiny"
+import { RaidSplash } from "~/data/activity-images"
+import { isRaid } from "~/util/raidhub/util"
 import KebabMenu from "../reusable/KebabMenu"
 import PGCRSettingsMenu from "./menu/PGCRSettingsMenu"
 import ActivityHeader from "./participants/ActivityHeader"
@@ -14,32 +12,21 @@ import styles from "./pgcr.module.css"
 
 /** @deprecated */
 export const PGCRContentPanel = () => {
-    const { hash, raid, completed } = usePGCRContext()
-    const manifestDef = useActivityDefinition(hash ?? 0)
+    const { data } = usePGCRContext()
 
     return (
         <section className={styles["summary-card"]}>
-            {typeof raid === "number" && (
+            {typeof data?.meta.activityId === "number" && (
                 <CloudflareImage
-                    cloudflareId={RaidCardBackground[raid]}
+                    cloudflareId={
+                        isRaid(data.meta.activityId)
+                            ? RaidSplash[data.meta.activityId]
+                            : "pantheonSplash"
+                    }
                     priority
                     className={[
                         styles["summary-card-background"],
-                        completed ? "" : styles["summary-card-dnf"]
-                    ].join(" ")}
-                    alt="background image"
-                    fill
-                    style={{ opacity: 0.85 }}
-                />
-            )}
-            {raid === null && (
-                <Image
-                    src={bungiePgcrImageUrl(manifestDef?.pgcrImage)}
-                    priority
-                    unoptimized
-                    className={[
-                        styles["summary-card-background"],
-                        completed ?? true ? "" : styles["summary-card-dnf"]
+                        data.completed ? "" : styles["summary-card-dnf"]
                     ].join(" ")}
                     alt="background image"
                     fill

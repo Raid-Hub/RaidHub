@@ -20,8 +20,8 @@ import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
+import { RaidSplash } from "~/data/activity-images"
 import { Raid } from "~/data/raid"
-import RaidCardBackground from "~/data/raid-backgrounds"
 import { useSeasons } from "~/hooks/dexie"
 import { useActivitiesByPartition } from "~/hooks/useActivitiesByPartition"
 import { useSearch } from "~/hooks/useSearch"
@@ -561,7 +561,7 @@ const Tile = ({ activity }: { activity: RaidHubActivityExtended }) => {
             style={{ border: `1px solid ${activity.completed ? "Green" : "Red"}` }}>
             {meta && (
                 <CloudflareImage
-                    cloudflareId={RaidCardBackground[meta.raid]}
+                    cloudflareId={RaidSplash[meta.raid]}
                     alt={`Raid card for ${getRaidString(meta.raid)}`}
                     fill
                     sizes="160px"

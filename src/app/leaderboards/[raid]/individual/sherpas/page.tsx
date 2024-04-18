@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { Leaderboard } from "../../../Leaderboard"
 import { Splash } from "../../../LeaderboardSplashComponents"
@@ -51,7 +51,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
                     title="Sherpas"
                     subtitle={manifest.activityStrings[raid]}
                     tertiaryTitle="Individual Leaderboards"
-                    cloudflareImageId={RaidCardBackground[raid]}
+                    cloudflareImageId={RaidSplash[raid]}
                 />
             }
             entries={

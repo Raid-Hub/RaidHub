@@ -3,8 +3,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: process.env.ANALYZE === "true"
 })
 
-const cloudflareHost = "85AvSk7Z9-QdHfmk4t5dsw"
-
 module.exports = withBundleAnalyzer({
     experimental: {
         ppr: true
@@ -25,8 +23,7 @@ module.exports = withBundleAnalyzer({
             /** Only optimize images from our cdn */
             {
                 protocol: "https",
-                hostname: "cdn.raidhub.io",
-                pathname: `/cdn-cgi/imagedelivery/${cloudflareHost}/*`
+                hostname: "cdn.raidhub.io"
             }
         ]
     },

@@ -8,11 +8,11 @@ import PinPCRCell from "./PinPGCRCell"
 /** @deprecated */
 const PGCRSettingsMenu = () => {
     const { data: sessionData } = useSession()
-    const { activity } = usePGCRContext()
+    const { data } = usePGCRContext()
 
     return (
         <div className={styles["settings-menu-dropdown"]}>
-            {activity?.players.some(
+            {data?.players.some(
                 p => p.player.membershipId === sessionData?.user.destinyMembershipId
             ) && <PinPCRCell />}
         </div>

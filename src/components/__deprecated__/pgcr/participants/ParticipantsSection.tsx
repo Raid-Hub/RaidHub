@@ -11,7 +11,7 @@ import styles from "../pgcr.module.css"
 
 /** @deprecated */
 const ParticipantsSection = () => {
-    const { pgcrPlayers, activity } = usePGCRContext()
+    const { data, isLoading } = usePGCRContext()
     const { set, get, remove } = useQueryParams<PGCRPageParams>()
 
     const setPlayer = useCallback(
@@ -29,10 +29,10 @@ const ParticipantsSection = () => {
     const selectedMembershipId = get("player")
 
     const selectedPlayer = selectedMembershipId
-        ? pgcrPlayers?.get(selectedMembershipId) ?? null
+        ? data?.players.find(p => p.player.membershipId === selectedMembershipId) ?? null
         : null
 
-    const pCount = pgcrPlayers?.size ?? activity?.playerCount ?? 6
+    const pCount = data?.playerCount ?? 6
     const cardLayout =
         pCount < 4
             ? styles["members-low"]
@@ -40,11 +40,15 @@ const ParticipantsSection = () => {
             ? styles["members-odd"]
             : styles["members-even"]
 
-    if (!selectedPlayer || !pgcrPlayers) {
+    if (!selectedPlayer || isLoading) {
         return (
             <div className={[styles.grid, cardLayout].join(" ")}>
-                {pgcrPlayers?.map((player, id) => (
-                    <PlayerTab key={id} player={player} onClick={() => setPlayer(id)} />
+                {data?.players?.map(player => (
+                    <PlayerTab
+                        key={player.player.membershipId}
+                        activityPlayer={player}
+                        onClick={() => setPlayer(player.player.membershipId)}
+                    />
                 )) ??
                     Array.from({ length: pCount }, (_, idx) => (
                         <Loading key={idx} $minHeight="90px" $alpha={0.8} />

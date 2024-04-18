@@ -1,6 +1,6 @@
 import { type Metadata } from "next"
 import { metadata as leaderboardMetadata } from "~/app/layout"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../../../Leaderboard"
@@ -72,7 +72,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
                     title={`${displayName} Clears`}
                     subtitle={manifest.activityStrings[raid]}
                     tertiaryTitle="Individual Leaderboards"
-                    cloudflareImageId={RaidCardBackground[raid]}
+                    cloudflareImageId={RaidSplash[raid]}
                 />
             }
             entries={

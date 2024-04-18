@@ -1,6 +1,5 @@
 import { type Metadata } from "next"
 import { metadata as rootMetadata } from "~/app/layout"
-import { RaidHubBannerId } from "~/data/image-ids"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import type { PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../Leaderboard"
@@ -61,7 +60,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
                 <Splash
                     title={displayName}
                     tertiaryTitle="Global Leaderboards"
-                    cloudflareImageId={RaidHubBannerId}
+                    cloudflareImageId="raidhubCitySplash"
                 />
             }
             entries={

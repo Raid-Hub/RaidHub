@@ -1,10 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
+import { isRaid } from "~/util/raidhub/util"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 const size = {
@@ -68,7 +69,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                 <div
                     style={{
                         backgroundImage: `url(${cloudflareImageLoader({
-                            src: RaidCardBackground[activity.meta.activityId],
+                            src: isRaid(activity.meta.activityId)
+                                ? RaidSplash[activity.meta.activityId]
+                                : "pantheonSplash",
                             width: size.width,
                             quality: 100
                         })})`,

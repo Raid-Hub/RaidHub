@@ -6,7 +6,7 @@ import { useSession } from "~/hooks/app/useSession"
 
 /** @deprecated */
 const PinPCRCell = () => {
-    const { activity } = usePGCRContext()
+    const { data } = usePGCRContext()
 
     const { status } = useSession()
     const { data: profile } = trpc.user.profile.get.useQuery(undefined, {
@@ -16,17 +16,17 @@ const PinPCRCell = () => {
 
     const isPinned =
         typeof profile?.pinnedActivityId !== "undefined" &&
-        profile.pinnedActivityId === activity?.instanceId
+        profile.pinnedActivityId === data?.instanceId
 
     const handlePinClick = () => {
-        if (activity) {
+        if (data) {
             updateProfile({
-                pinnedActivityId: isPinned ? null : activity.instanceId
+                pinnedActivityId: isPinned ? null : data.instanceId
             })
         }
     }
 
-    return profile && activity ? (
+    return profile && data ? (
         <div>
             <span style={{ whiteSpace: "nowrap" }}>{isPinned ? "Pin" : "Un-Pin"}</span>
             <button style={{ width: "50%", cursor: "pointer" }} onClick={() => handlePinClick()}>

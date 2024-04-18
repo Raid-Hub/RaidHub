@@ -1,27 +1,57 @@
 import Image, { type ImageLoader } from "next/image"
 import { type ComponentPropsWithoutRef } from "react"
+import { R2RaidSplash } from "~/data/activity-images"
 
-export const cloudflareImageLoader: ImageLoader = ({ src, width, quality }) => {
+export const cloudflareImageLoader: ImageLoader = ({ src: id, width, quality }) => {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const minWidth = (width * (quality || 75)) / 100
 
-    const variant = (
-        cloudflareVariants.find(item => item.w >= minWidth) ??
-        cloudflareVariants[cloudflareVariants.length - 1]
-    ).name
+    const img = CloudflareImages[id as keyof typeof CloudflareImages]
 
-    return `https://cdn.raidhub.io/cdn-cgi/imagedelivery/${cloudflareId}/${src}/${variant}`
+    const variants = cloudflareVariants.filter(item => item.name in img.variants)
+    const variant = (variants.find(item => item.w >= minWidth) ?? variants[variants.length - 1])
+        .name
+
+    return `https://cdn.raidhub.io/content/${img.path}/${
+        img.variants[variant as keyof typeof img.variants]
+    }`
 }
 
 export const CloudflareImage = ({
     cloudflareId,
     alt = "",
     ...props
-}: { cloudflareId: string } & Omit<ComponentPropsWithoutRef<typeof Image>, "src" | "loader">) => (
-    <Image loader={cloudflareImageLoader} {...props} src={cloudflareId} alt={alt} />
-)
+}: { cloudflareId: keyof typeof CloudflareImages } & Omit<
+    ComponentPropsWithoutRef<typeof Image>,
+    "src" | "loader"
+>) => <Image loader={cloudflareImageLoader} {...props} src={cloudflareId} alt={alt} />
 
-const cloudflareVariants: { name: string; w: number; h: number }[] = [
+const CloudflareImages = {
+    raidhubCitySplash: {
+        path: "splash/raidhub/city",
+        variants: {
+            tiny: "tiny.avif",
+            small: "small.avif",
+            medium: "medium.avif",
+            large: "large.avif"
+        }
+    },
+    pantheonSplash: {
+        path: "splash/pantheon",
+        variants: {
+            small: "small.png",
+            large: "large.png"
+        }
+    },
+    ...R2RaidSplash
+} as const satisfies Record<
+    string,
+    { path: string; variants: Partial<Record<(typeof cloudflareVariants)[number]["name"], string>> }
+>
+
+export type CloudflareImageId = keyof typeof CloudflareImages
+
+const cloudflareVariants = [
     { name: "tiny", w: 320, h: 180 },
     {
         name: "small",
@@ -43,6 +73,4 @@ const cloudflareVariants: { name: string; w: number; h: number }[] = [
         w: 2560,
         h: 1440
     }
-]
-
-const cloudflareId = "85AvSk7Z9-QdHfmk4t5dsw"
+] as const satisfies { name: string; w: number; h: number }[]

@@ -1,5 +1,7 @@
 "use client"
 
+import { Collection } from "@discordjs/collection"
+import { useMemo } from "react"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { $media } from "~/app/layout/media"
@@ -13,19 +15,20 @@ import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import type { RaidHubPlayerBasic } from "~/services/raidhub/types"
+import type {
+    RaidHubActivityCharacter,
+    RaidHubPlayerWithExtendedActivityData
+} from "~/services/raidhub/types"
 import { bungieEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
-import type DestinyPGCRCharacter from "../models/Character"
-import type DestinyPGCRPlayer from "../models/Player"
 import type { PGCRPageParams } from "../types"
 import { DisplayName } from "./DisplayName"
 import { PlayerWeapon } from "./PlayerWeapon"
 
 export const SelectedPlayerView = (props: {
-    selectedPlayer: DestinyPGCRPlayer
+    selectedPlayer: RaidHubPlayerWithExtendedActivityData
     deselect: () => void
 }) => {
     const { locale } = useLocale()
@@ -33,33 +36,28 @@ export const SelectedPlayerView = (props: {
     const selectedCharacterId = get("character")
 
     const selectedCharacter = selectedCharacterId
-        ? props.selectedPlayer.characters.get(selectedCharacterId)
+        ? props.selectedPlayer.data.characters.find(c => c.characterId === selectedCharacterId)
         : null
 
-    const focusedEntry = selectedCharacter ?? props.selectedPlayer
+    const stats = useEntryStats(props.selectedPlayer, selectedCharacter)
 
-    const firstCharacter = props.selectedPlayer.firstCharacter()
-    const { data: resolvedPlayer } = useRaidHubResolvePlayer(props.selectedPlayer.membershipId, {
-        enabled: props.selectedPlayer.membershipType === 0,
-        placeholderData: {
-            membershipId: props.selectedPlayer.membershipId,
-            membershipType: props.selectedPlayer.membershipType,
-            displayName: firstCharacter.destinyUserInfo.displayName,
-            bungieGlobalDisplayName: firstCharacter.destinyUserInfo.bungieGlobalDisplayName ?? null,
-            bungieGlobalDisplayNameCode: firstCharacter.destinyUserInfo.bungieGlobalDisplayNameCode
-                ? String(firstCharacter.destinyUserInfo.bungieGlobalDisplayNameCode).padStart(
-                      4,
-                      "0"
-                  )
-                : null
-        } as RaidHubPlayerBasic
-    })
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(
+        props.selectedPlayer.player.membershipId,
+        {
+            enabled: props.selectedPlayer.player.membershipType === 0,
+            placeholderData: props.selectedPlayer.player
+        }
+    )
 
     const displayName = getBungieDisplayName(resolvedPlayer!, {
         excludeCode: false
     })
 
-    const emblem = useItemDefinition(selectedCharacter?.emblemHash ?? firstCharacter.emblemHash)
+    const emblem = useItemDefinition(
+        Number(
+            selectedCharacter?.emblemHash ?? props.selectedPlayer.data.characters[0].emblemHash ?? 0
+        )
+    )
 
     return (
         <Flex $direction="column" $crossAxis="flex-start" $padding={0}>
@@ -69,13 +67,13 @@ export const SelectedPlayerView = (props: {
                 $fullWidth>
                 <Flex $fullWidth>
                     <DisplayName
-                        membershipId={props.selectedPlayer.membershipId}
-                        membershipType={resolvedPlayer!.membershipType}
+                        membershipId={props.selectedPlayer.player.membershipId}
+                        membershipType={resolvedPlayer?.membershipType ?? 0}
                         displayName={displayName}></DisplayName>
                 </Flex>
                 <BackgroundImage
                     style={
-                        focusedEntry.completed
+                        stats.completed
                             ? {}
                             : {
                                   filter: "grayscale(100%) brightness(0.5)"
@@ -94,7 +92,7 @@ export const SelectedPlayerView = (props: {
                 $fullWidth
                 style={{ padding: "1em" }}
                 $borderRadius={5}>
-                {props.selectedPlayer.characters.size > 1 && (
+                {props.selectedPlayer.data.characters.length > 1 && (
                     <TabSelector $wrap>
                         <H4
                             $mBlock={0.2}
@@ -105,7 +103,7 @@ export const SelectedPlayerView = (props: {
                             }}>
                             All Classes
                         </H4>
-                        {props.selectedPlayer.characters.map(c => (
+                        {props.selectedPlayer.data.characters.map(c => (
                             <CharacterTab key={c.characterId} character={c} />
                         ))}
                     </TabSelector>
@@ -114,41 +112,41 @@ export const SelectedPlayerView = (props: {
                 <Flex $wrap $align="flex-start" $padding={0} $gap={0.5}>
                     <Stat>
                         <div>Time Played</div>
-                        <div>{secondsToHMS(focusedEntry.values.timePlayedSeconds, true)}</div>
+                        <div>{secondsToHMS(stats.timePlayedSeconds, true)}</div>
                     </Stat>
                     <Stat>
                         <div>Kills</div>
-                        <div>{formattedNumber(focusedEntry.values.kills, locale)}</div>
+                        <div>{formattedNumber(stats.kills, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Assists</div>
-                        <div>{formattedNumber(focusedEntry.values.assists, locale)}</div>
+                        <div>{formattedNumber(stats.assists, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Deaths</div>
-                        <div>{formattedNumber(focusedEntry.values.deaths, locale)}</div>
+                        <div>{formattedNumber(stats.deaths, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Precision Kills</div>
-                        <div>{formattedNumber(focusedEntry.values.precisionKills, locale)}</div>
+                        <div>{formattedNumber(stats.precisionKills, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Super Kills</div>
-                        <div>{formattedNumber(focusedEntry.values.superKills, locale)}</div>
+                        <div>{formattedNumber(stats.superKills, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Melee Kills</div>
-                        <div>{formattedNumber(focusedEntry.values.meleeKills, locale)}</div>
+                        <div>{formattedNumber(stats.meleeKills, locale)}</div>
                     </Stat>
                     <Stat>
                         <div>Grenade Kills</div>
-                        <div>{formattedNumber(focusedEntry.values.grenadeKills, locale)}</div>
+                        <div>{formattedNumber(stats.grenadeKills, locale)}</div>
                     </Stat>
                 </Flex>
                 <H4>Weapon Kills</H4>
                 <Grid $minCardWidth={125} $gap={1}>
-                    {focusedEntry.weapons.map((weapon, hash) => (
-                        <PlayerWeapon key={hash} hash={hash} kills={weapon.uniqueWeaponKills} />
+                    {stats.weapons.map((weapon, hash) => (
+                        <PlayerWeapon key={hash} hash={hash} kills={weapon.kills} />
                     ))}
                 </Grid>
             </Card>
@@ -156,7 +154,96 @@ export const SelectedPlayerView = (props: {
     )
 }
 
-const CharacterTab = (props: { character: DestinyPGCRCharacter }) => {
+const useEntryStats = (
+    selectedPlayer: RaidHubPlayerWithExtendedActivityData,
+    selectedCharacter?: RaidHubActivityCharacter | null
+) =>
+    useMemo((): {
+        completed: boolean
+        kills: number
+        assists: number
+        deaths: number
+        precisionKills: number
+        superKills: number
+        meleeKills: number
+        grenadeKills: number
+        timePlayedSeconds: number
+        weapons: Collection<number, { kills: number; precisionKills: number }>
+    } => {
+        if (!selectedCharacter) {
+            return selectedPlayer.data.characters.reduce(
+                (acc, c) => ({
+                    completed: acc.completed,
+                    kills: acc.kills + c.kills,
+                    assists: acc.assists + c.assists,
+                    deaths: acc.deaths + c.deaths,
+                    precisionKills: acc.precisionKills + c.precisionKills,
+                    superKills: acc.superKills + c.superKills,
+                    meleeKills: acc.meleeKills + c.meleeKills,
+                    grenadeKills: acc.grenadeKills + c.grenadeKills,
+                    timePlayedSeconds: acc.timePlayedSeconds,
+                    weapons: acc.weapons
+                        .merge(
+                            new Collection(
+                                c.weapons.map(c => [
+                                    Number(c.weaponHash),
+                                    {
+                                        kills: c.kills,
+                                        precisionKills: c.precisionKills
+                                    }
+                                ])
+                            ),
+                            c1 => ({ keep: true, value: c1 }),
+                            c2 => ({ keep: true, value: c2 }),
+                            (c1, c2) => ({
+                                keep: true,
+                                value: {
+                                    ...c1,
+                                    kills: c1.kills + c2.kills,
+                                    precisionKills: c1.precisionKills + c2.precisionKills
+                                }
+                            })
+                        )
+                        .sort((a, b) => b.kills - a.kills)
+                }),
+                {
+                    completed: selectedPlayer.data.characters.some(c => c.completed),
+                    kills: 0,
+                    assists: 0,
+                    deaths: 0,
+                    precisionKills: 0,
+                    superKills: 0,
+                    meleeKills: 0,
+                    grenadeKills: 0,
+                    timePlayedSeconds: selectedPlayer.data.timePlayedSeconds,
+                    weapons: new Collection<number, { kills: number; precisionKills: number }>()
+                }
+            )
+        } else {
+            return {
+                completed: selectedCharacter.completed,
+                kills: selectedCharacter.kills,
+                assists: selectedCharacter.assists,
+                deaths: selectedCharacter.deaths,
+                precisionKills: selectedCharacter.precisionKills,
+                superKills: selectedCharacter.superKills,
+                meleeKills: selectedCharacter.meleeKills,
+                grenadeKills: selectedCharacter.grenadeKills,
+                timePlayedSeconds: selectedCharacter.timePlayedSeconds,
+                weapons: new Collection(
+                    selectedCharacter.weapons.map(c => [
+                        Number(c.weaponHash),
+                        {
+                            kills: c.kills,
+                            precisionKills: c.precisionKills
+                        }
+                    ])
+                ).sort((a, b) => b.kills - a.kills)
+            }
+        }
+    }, [selectedCharacter, selectedPlayer])
+
+const CharacterTab = (props: { character: RaidHubActivityCharacter }) => {
     const { set, get } = useQueryParams<PGCRPageParams>()
     const { data: classHash } = useResolveCharacter(props.character, {
         forceOnLargePGCR: true,
