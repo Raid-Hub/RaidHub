@@ -3,14 +3,14 @@
 import { type ReactNode } from "react"
 import styled from "styled-components"
 import { Card } from "~/components/Card"
-import { CloudflareImage } from "~/components/CloudflareImage"
+import { CloudflareImage, type CloudflareImageId } from "~/components/CloudflareImage"
 import { Flex } from "~/components/layout/Flex"
 import { CardSplash, CardSplashTitleAbsolute } from "./splash/HomeCardSplash"
 
 export const HomeCardGeneric = (props: {
     id: string
     title: string
-    backgroundImageCloudflareId: string
+    backgroundImageCloudflareId: CloudflareImageId
     backgroundImageAltText: string
     children: ReactNode
 }) => (

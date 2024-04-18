@@ -4,7 +4,6 @@ import Link from "next/link"
 import { useMemo } from "react"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Card } from "~/components/Card"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import Checkmark from "~/components/icons/Checkmark"
@@ -13,17 +12,17 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
-import RaidBanners from "~/data/raid-banners"
+import { RaidSplash } from "~/data/activity-images"
 import { useRaidHubActivity, useRaidHubActivtiesFirstPage } from "~/services/raidhub/hooks"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
+import { isRaid } from "~/util/raidhub/util"
 import type { ProfileProps } from "../types"
 import { Latest } from "./Latest"
 
 export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
     const { locale } = useLocale()
-    const { getRaidFromHash } = useRaidHubManifest()
     const { data: rawRecentActivity } = useRaidHubActivtiesFirstPage(destinyMembershipId, {
         select: res => res.activities[0],
         suspense: true
@@ -56,7 +55,11 @@ export const LatestRaid = () => {
                 <Card $overflowHidden $fullHeight>
                     <Container $minHeight={80}>
                         <CloudflareImage
-                            cloudflareId={RaidBanners[latestActivity.meta.activityId]}
+                            cloudflareId={
+                                isRaid(latestActivity.meta.activityId)
+                                    ? RaidSplash[latestActivity.meta.activityId]
+                                    : "pantheonSplash"
+                            }
                             fill
                             priority
                             alt="raid background image"

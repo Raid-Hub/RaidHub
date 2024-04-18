@@ -1,10 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
+import { isRaid } from "~/util/raidhub/util"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 const size = {
@@ -68,7 +69,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                 <div
                     style={{
                         backgroundImage: `url(${cloudflareImageLoader({
-                            src: RaidCardBackground[activity.meta.activityId],
+                            src: isRaid(activity.meta.activityId)
+                                ? RaidSplash[activity.meta.activityId]
+                                : "pantheonSplash",
                             width: size.width,
                             quality: 100
                         })})`,
@@ -101,9 +104,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         fontSize: 24,
                         padding: "10px"
                     }}>
-                    {activity.players.slice(0, 6).map((player, idx) => (
+                    {activity.players.slice(0, 6).map(({ player, data }, idx) => (
                         <div
-                            key={player.player.membershipId}
+                            key={player.membershipId}
                             style={{
                                 flexBasis:
                                     activity.playerCount < 4
@@ -119,11 +122,10 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                 borderRadius: 2,
                                 overflow: "hidden",
                                 filter:
-                                    activity.completed && !player.data.completed
+                                    activity.completed && !data.completed
                                         ? "grayscale(100%) opacity(0.6)"
                                         : "none",
-                                color:
-                                    activity.completed && !player.data.completed ? "gray" : "white"
+                                color: activity.completed && !data.completed ? "gray" : "white"
                             }}>
                             <div
                                 style={{
@@ -141,11 +143,11 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                         width: 48,
                                         height: 48
                                     }}>
-                                    <img src={bungieIconUrl(player.player.iconPath)} alt="" />
+                                    <img src={bungieIconUrl(player.iconPath)} alt="" />
                                 </div>
-                                <div>{getBungieDisplayName(player.player)}</div>
+                                <div>{getBungieDisplayName(player)}</div>
                             </div>
-                            {player.data.completed ? (
+                            {data.completed ? (
                                 <svg
                                     viewBox="0 0 32 32"
                                     width={32}

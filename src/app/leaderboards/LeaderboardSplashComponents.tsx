@@ -4,6 +4,7 @@ import Link from "next/link"
 import styled, { css } from "styled-components"
 import { $media } from "~/app/layout/media"
 import { BackgroundImage } from "~/components/BackgroundImage"
+import { type CloudflareImageId } from "~/components/CloudflareImage"
 import { Panel } from "~/components/Panel"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
 import { Flex } from "~/components/layout/Flex"
@@ -13,7 +14,7 @@ export const Splash = (props: {
     title: string
     subtitle?: string
     tertiaryTitle: string
-    cloudflareImageId: string
+    cloudflareImageId: CloudflareImageId
 }) => (
     <Panel $fullWidth style={{ marginBottom: "1rem" }}>
         <Flex $direction="column" $gap={0}>

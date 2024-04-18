@@ -2,7 +2,8 @@
 
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
+import { isRaid } from "~/util/raidhub/util"
 import KebabMenu from "../reusable/KebabMenu"
 import PGCRSettingsMenu from "./menu/PGCRSettingsMenu"
 import ActivityHeader from "./participants/ActivityHeader"
@@ -17,7 +18,11 @@ export const PGCRContentPanel = () => {
         <section className={styles["summary-card"]}>
             {typeof data?.meta.activityId === "number" && (
                 <CloudflareImage
-                    cloudflareId={RaidCardBackground[data.meta.activityId]}
+                    cloudflareId={
+                        isRaid(data.meta.activityId)
+                            ? RaidSplash[data.meta.activityId]
+                            : "pantheonSplash"
+                    }
                     priority
                     className={[
                         styles["summary-card-background"],

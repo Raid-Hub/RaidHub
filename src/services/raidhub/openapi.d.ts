@@ -581,11 +581,11 @@ export interface components {
     /** @enum {integer} */
     readonly BungieMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 254 | -1;
     /** @enum {integer} */
-    readonly ActivityEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1 | 101 | 102 | 103 | 104;
+    readonly ActivityEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1 | 101;
     /** @enum {integer} */
     readonly RaidEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1;
     /** @enum {integer} */
-    readonly RaidVersionEnum: 1 | 2 | 3 | 4 | 64 | 65 | 66 | 128;
+    readonly ActivityVersionEnum: 1 | 2 | 3 | 4 | 64 | 65 | 66 | 128 | 129 | 130 | 131;
     /**
      * @example {
      *   "bungieGlobalDisplayName": "Newo",
@@ -795,7 +795,7 @@ export interface components {
       readonly raid?: number;
     };
     /** @enum {integer} */
-    readonly PantheonEnum: 101 | 102 | 103 | 104;
+    readonly PantheonEnum: 128 | 129 | 130 | 131;
     /** @enum {integer} */
     readonly SunsetRaidEnum: 1 | 2 | 3 | 5 | 6;
     /** @enum {integer} */
@@ -890,7 +890,7 @@ export interface components {
       readonly hashes: {
         [key: string]: {
           readonly activityId: components["schemas"]["ActivityEnum"];
-          readonly versionId: components["schemas"]["RaidVersionEnum"];
+          readonly versionId: components["schemas"]["ActivityVersionEnum"];
         };
       };
       readonly listed: readonly components["schemas"]["RaidEnum"][];
@@ -901,7 +901,7 @@ export interface components {
       readonly prestige: readonly components["schemas"]["PrestigeRaidEnum"][];
       readonly reprisedChallengePairings: readonly {
           readonly raid: components["schemas"]["RaidEnum"];
-          readonly version: components["schemas"]["RaidVersionEnum"];
+          readonly version: components["schemas"]["ActivityVersionEnum"];
           readonly triumphName: string;
         }[];
       readonly leaderboards: {
@@ -959,7 +959,7 @@ export interface components {
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
           readonly meta: {
             readonly activityId: components["schemas"]["RaidEnum"];
-            readonly versionId: components["schemas"]["RaidVersionEnum"];
+            readonly versionId: components["schemas"]["ActivityVersionEnum"];
           };
         })[];
       readonly nextCursor: string | null;
@@ -1021,7 +1021,7 @@ export interface components {
       readonly meta: {
         readonly activityId: components["schemas"]["ActivityEnum"];
         readonly activityName: string;
-        readonly versionId: components["schemas"]["RaidVersionEnum"];
+        readonly versionId: components["schemas"]["ActivityVersionEnum"];
         readonly versionName: string;
       };
       readonly leaderboardEntries: {

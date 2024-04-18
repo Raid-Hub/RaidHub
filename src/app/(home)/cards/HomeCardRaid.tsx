@@ -1,8 +1,8 @@
 "use client"
 
-import RaidCardBackground from "data/raid-backgrounds"
 import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { RaidSplash } from "~/data/activity-images"
 import { SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { type ListedRaid } from "~/services/raidhub/types"
 import { o } from "~/util/o"
@@ -40,7 +40,7 @@ export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
         <HomeCardGeneric
             id={raidUrlPath}
             title={getRaidString(raid)}
-            backgroundImageCloudflareId={RaidCardBackground[raid]}
+            backgroundImageCloudflareId={RaidSplash[raid]}
             backgroundImageAltText={`Splash for ${getRaidString(raid)}`}>
             <HomeCardContentSection sectionTitle="World First Race">
                 {worldFirstBoards.map(b => (

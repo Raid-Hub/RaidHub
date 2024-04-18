@@ -7,7 +7,7 @@ import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { RaidActivity } from "./RaidActivity"
 
 export const RaidRotatorEntry = (props: {
@@ -38,11 +38,7 @@ export const RaidRotatorEntry = (props: {
                 </RotatorDates>
             </Flex>
             {props.children}
-            <BackgroundImage
-                cloudflareId={RaidCardBackground[a.raid]}
-                alt={raidName}
-                opacity={0.65}
-            />
+            <BackgroundImage cloudflareId={RaidSplash[a.raid]} alt={raidName} opacity={0.65} />
         </Main>
     )
 }

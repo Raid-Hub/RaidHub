@@ -1,7 +1,7 @@
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
-import { useTags } from "~/app/pgcr/hooks/useTags"
+import { usePGCRTags } from "~/app/pgcr/hooks/usePGCRTags"
 import { includedIn } from "~/util/helpers"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"
 import styles from "../pgcr.module.css"
@@ -12,7 +12,7 @@ const ActivityHeader = () => {
 
     const { locale } = useLocale()
     const { getRaidString, listedRaids } = useRaidHubManifest()
-    const tags = useTags(data ?? null)
+    const tags = usePGCRTags(data ?? null)
 
     const activityId = data?.meta.activityId
 

@@ -5,7 +5,7 @@ import { Tag, TagForReprisedContest } from "~/models/tag"
 import type { RaidHubActivityResponse } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
-export const useTags = (activity: RaidHubActivityResponse | null) => {
+export const usePGCRTags = (activity: RaidHubActivityResponse | null) => {
     const { listedRaids, reprisedRaids } = useRaidHubManifest()
     return useMemo(() => {
         if (!activity) return []

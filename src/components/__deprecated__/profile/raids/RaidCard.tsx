@@ -9,7 +9,7 @@ import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import Expand from "~/components/icons/Expand"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { useTimeout } from "~/hooks/util/useTimeout"
 import type {
     RaidHubPlayerActivitiesActivity,
@@ -110,7 +110,7 @@ export default function RaidCard({
                         priority
                         width={960}
                         height={540}
-                        cloudflareId={RaidCardBackground[raid]}
+                        cloudflareId={RaidSplash[raid]}
                         alt={getRaidString(raid)}
                     />
                     <div className={styles["card-top"]}>

@@ -25,8 +25,11 @@ export const Difficulty = Object.freeze({
     CHALLENGE_VOG: 64,
     CHALLENGE_KF: 65,
     CHALLENGE_CROTA: 66,
-    PANTHEON: 128
-}) satisfies Record<string, components["schemas"]["RaidVersionEnum"]>
+    ATRAKS_SOVREIGN: 128,
+    ORXY_EXHALTED: 129,
+    RHULK_INDOMITABLE: 130,
+    NEZAREC_SUBLIME: 131
+}) satisfies Record<string, components["schemas"]["ActivityVersionEnum"]>
 
 // These checks are here to make sure that the types of the enums are correct.
 // We should use the manifest enums instead of hardcoding the values as much as possible,
@@ -36,5 +39,5 @@ const a: Equals<(typeof Raid)[keyof typeof Raid], components["schemas"]["RaidEnu
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const b: Equals<
     (typeof Difficulty)[keyof typeof Difficulty],
-    components["schemas"]["RaidVersionEnum"]
+    components["schemas"]["ActivityVersionEnum"]
 > = true

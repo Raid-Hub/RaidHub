@@ -1,7 +1,7 @@
 "use client"
 
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { type ListedRaid } from "~/services/raidhub/types"
 import { Splash } from "../../../LeaderboardSplashComponents"
@@ -19,7 +19,7 @@ export const SpeedrunComBanner = (props: { raid: ListedRaid; category?: RTABoard
             title={title}
             subtitle={subtitle}
             tertiaryTitle="Speedrun Leaderboards"
-            cloudflareImageId={RaidCardBackground[props.raid]}
+            cloudflareImageId={RaidSplash[props.raid]}
         />
     )
 }

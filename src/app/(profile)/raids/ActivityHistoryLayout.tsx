@@ -9,12 +9,13 @@ import { Card } from "~/components/Card"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
-import RaidCardBackground from "~/data/raid-backgrounds"
+import { RaidSplash } from "~/data/activity-images"
 import { useActivitiesByPartition } from "~/hooks/useActivitiesByPartition"
 import { useAttributedRaidName } from "~/hooks/useAttributedRaidName"
 import { type RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { useRaidHubActivities } from "~/services/raidhub/useRaidHubActivities"
 import { secondsToHMS } from "~/util/presentation/formatting"
+import { isRaid } from "~/util/raidhub/util"
 import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "./constants"
 
 export const ActivityHistoryLayout = ({ membershipIds }: { membershipIds: string[] }) => {
@@ -89,7 +90,11 @@ const Activity = (activity: RaidHubPlayerActivitiesActivity) => {
                 <RaidDuration>{secondsToHMS(activity.duration, false)}</RaidDuration>
             </Flex>
             <BackgroundImage
-                cloudflareId={RaidCardBackground[activity.meta.activityId]}
+                cloudflareId={
+                    isRaid(activity.meta.activityId)
+                        ? RaidSplash[activity.meta.activityId]
+                        : "pantheonSplash"
+                }
                 alt=""
                 brightness={0.75}
                 blur={1}
