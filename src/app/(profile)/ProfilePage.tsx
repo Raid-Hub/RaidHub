@@ -9,12 +9,11 @@ import { LatestRaid } from "./transitory/LatestRaid"
 export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: string }) => (
     <Flex $direction="column" $padding={0} $crossAxis="flex-start">
         <Flex
-            $direction="row"
+            $direction="column"
             $padding={0}
             $align="flex-start"
             $crossAxis="stretch"
             $fullWidth
-            $wrap
             style={{ columnGap: "4rem" }}>
             <UserCard />
             <Suspense
@@ -35,7 +34,8 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
                     $align="flex-start"
                     $crossAxis="stretch"
                     style={{
-                        flexGrow: 1
+                        flexGrow: 1,
+                        flexBasis: "100%"
                     }}>
                     <CurrentActivity />
                     <LatestRaid />
