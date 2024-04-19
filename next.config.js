@@ -27,6 +27,15 @@ module.exports = withBundleAnalyzer({
             }
         ]
     },
+    redirects: async () => {
+        return [
+            {
+                source: "/profile/:membershipType/:destinyMembershipId",
+                destination: "/profile/:destinyMembershipId",
+                permanent: true
+            }
+        ]
+    },
     rewrites: () => [
         {
             source: "/:vanity([a-zA-Z0-9]+)",

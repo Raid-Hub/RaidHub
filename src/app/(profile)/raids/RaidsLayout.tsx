@@ -36,7 +36,7 @@ export const Raids = () => {
                 destinyMembershipId: p.membershipId,
                 membershipType: p.membershipType
             })) ?? [
-                // Fallback to the current profile if the linked profiles are not yet fetched
+                // Fallback to the only current profile if the linked profiles are not yet fetched
                 {
                     destinyMembershipId: destinyMembershipId,
                     membershipType: destinyMembershipType

@@ -6,6 +6,7 @@ import { getMetaData, prefetchActivity, type PageProps } from "./common"
 export const dynamic = "force-static"
 export const dynamicParams = true
 export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+export const revalidate = 86400
 
 export default async function Page({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
@@ -16,7 +17,13 @@ export default async function Page({ params }: PageProps) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const activity = await prefetchActivity(params.instanceId)
 
-    if (!activity) return {}
+    if (!activity)
+        return {
+            robots: {
+                follow: false,
+                index: false
+            }
+        }
 
     const { title, description } = getMetaData(activity)
 
@@ -33,6 +40,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         twitter: {
             ...rootMetaData.twitter,
             card: "summary_large_image"
+        },
+        robots: {
+            follow: true,
+            // Only index top 25 pgcrs for any leaderboard
+            index: Object.values(activity.leaderboardEntries).some(v => v <= 25)
         }
     }
 }

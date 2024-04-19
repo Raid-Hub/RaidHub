@@ -7,6 +7,7 @@ export const useLinkedProfiles = <T = DestinyLinkedProfilesResponse>(
     params: { membershipId: string },
     opts?: {
         select: (data: DestinyLinkedProfilesResponse) => T
+        onSuccess?: (data: T) => void
     }
 ) => {
     const bungieClient = useBungieClient()

@@ -11,22 +11,21 @@ export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
         select?: (data: DestinyCharacterResponse<[200]>) => T
     }
 ) => {
-    const { data } = usePGCRContext()
+    const { data, isSuccess } = usePGCRContext()
 
     const player = data?.players.find(p =>
         p.data.characters.find(c => c.characterId === character.characterId)
     )?.player
 
-    const isEnabled =
-        data && !player?.membershipType && (!!opts?.forceOnLargePGCR || data.playerCount <= 50)
+    const isEnabled = isSuccess && (!!opts?.forceOnLargePGCR || data.playerCount <= 50)
 
-    const resolveQuery = useRaidHubResolvePlayer(player?.membershipId ?? "", {
+    const resolveQuery = useRaidHubResolvePlayer(player?.membershipId ?? "0", {
         enabled: isEnabled
     })
 
     return useCharacter(
         {
-            destinyMembershipId: resolveQuery.data?.membershipId ?? "",
+            destinyMembershipId: resolveQuery.data?.membershipId ?? "0",
             membershipType: resolveQuery.data?.membershipType ?? 0,
             characterId: character.characterId
         },

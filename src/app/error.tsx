@@ -18,6 +18,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
                 }>
                 Try again
             </button>
+            <button onClick={() => window.location.reload()}>Hard reload</button>
         </div>
     )
 }

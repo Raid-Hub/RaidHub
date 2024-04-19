@@ -6,6 +6,7 @@ import { type SVGComponent } from "~/components/SVG"
 import Ammo from "~/components/icons/Ammo"
 import Assist from "~/components/icons/Assist"
 import Crosshairs from "~/components/icons/Crosshairs"
+import Crown from "~/components/icons/Crown"
 import Death from "~/components/icons/Death"
 import Grenade from "~/components/icons/Grenade"
 import Intellect from "~/components/icons/Intellect"
@@ -13,6 +14,8 @@ import Kill from "~/components/icons/Kill"
 import Melee from "~/components/icons/Melee"
 import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
+import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
+import { getBungieDisplayName } from "~/util/destiny"
 import { useLocale } from "../../../app/layout/managers/LocaleManager"
 import { formattedNumber } from "../../../util/presentation/formatting"
 import styles from ".//pgcr.module.css"
@@ -20,7 +23,7 @@ import styles from ".//pgcr.module.css"
 /** @deprecated */
 const SummaryStatsGrid = () => {
     const { locale } = useLocale()
-    const { data } = usePGCRContext()
+    const { data, sortScores } = usePGCRContext()
 
     const mostUsedWeaponHash = useMemo(() => {
         const record =
@@ -71,35 +74,29 @@ const SummaryStatsGrid = () => {
 
     const weapon = useItemDefinition(Number(mostUsedWeaponHash) ?? 73015)
 
-    // const { data: resolvedPlayer } = useRaidHubResolvePlayer(stats?.mvp?.membershipId ?? "0", {
-    //     enabled: !!stats?.mvp && !stats.mvp.membershipType,
-    //     placeholderData: stats?.mvp
-    //         ? ({
-    //               membershipId: stats.mvp.membershipId,
-    //               displayName: stats.mvp.characters.first()?.destinyUserInfo.displayName,
-    //               bungieGlobalDisplayName:
-    //                   stats.mvp.characters.first()?.destinyUserInfo.bungieGlobalDisplayName ?? null,
-    //               bungieGlobalDisplayNameCode: "foo"
-    //           } as RaidHubPlayerBasic)
-    //         : undefined
-    // })
+    const mvpId = sortScores.firstKey()
+    const { data: resolvedPlayer } = useRaidHubResolvePlayer(mvpId ?? "0", {
+        enabled: !!sortScores.size,
+        initialData: data?.players.find(p => p.player.membershipId === mvpId)?.player
+    })
 
     const statsData: {
         Icon: SVGComponent
         name: string
         value: number | string
     }[] = [
-        // ...(completed
-        //     ? [
-        //           {
-        //               Icon: Crown,
-        //               name: "MVP",
-        //               value: mvp
-        //                   ? getBungieDisplayName(resolvedPlayer!, { excludeCode: true })
-        //                   : "???"
-        //           }
-        //       ]
-        //     : []),
+        ...(data?.completed
+            ? [
+                  {
+                      Icon: Crown,
+                      name: "MVP",
+                      value:
+                          mvpId && resolvedPlayer
+                              ? getBungieDisplayName(resolvedPlayer, { excludeCode: true })
+                              : "???"
+                  }
+              ]
+            : []),
         {
             Icon: Kill,
             name: "Total Kills",
