@@ -8,7 +8,8 @@ export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse
     membershipId: string,
     opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
 ) => {
-    return useQuery(useMemo(() => generateQuery(opts)(membershipId), [membershipId, opts]))
+    const query = useMemo(() => generateQuery(opts)(membershipId), [membershipId, opts])
+    return useQuery(query)
 }
 
 export const useRaidHubActivities = (
@@ -91,7 +92,7 @@ export const useRaidHubActivities = (
             activities: new Collection(
                 queries.flatMap(q => q.data?.activities ?? []).map(a => [a.instanceId, a])
             ).sort((a, b) => (b.dateStarted < a.dateStarted ? -1 : 1)),
-            isLoading: queries.some(q => q.isLoading)
+            isLoading: queries.length === 0 || queries.some(q => q.isLoading)
         }),
         [queries]
     )

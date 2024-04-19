@@ -88,7 +88,7 @@ export const Raids = () => {
     }, [isLoadingPlayers, areMembershipsFetched, leaderboards.worldFirst, listedRaids, players])
 
     const activitiesByRaid = useMemo(() => {
-        if (isLoadingActivities || !areMembershipsFetched) return null
+        if (isLoadingActivities) return null
 
         const coll = new Collection<
             ListedRaid,
@@ -100,7 +100,7 @@ export const Raids = () => {
             coll.get(a.meta.activityId)!.set(a.instanceId, a)
         })
         return coll.each(raidActivities => raidActivities.reverse())
-    }, [activities, areMembershipsFetched, isLoadingActivities])
+    }, [activities, isLoadingActivities])
 
     const queryParams = useQueryParams<{
         raid: string
@@ -139,7 +139,7 @@ export const Raids = () => {
                         <RaidCardContext
                             key={raid}
                             activitiesByRaid={activitiesByRaid}
-                            isLoadingActivities={isLoadingActivities}
+                            isLoadingActivities={isLoadingActivities || !areMembershipsFetched}
                             raid={raid}>
                             <RaidCard
                                 leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}

@@ -4,13 +4,13 @@ import styled, { keyframes } from "styled-components"
 
 const pulse = keyframes`
     0% {
-        opacity: 1;
+        opacity: 0.95;
     }
     50% {
-        opacity: 0.4;
+        opacity: 0.5;
     }
     100% {
-        opacity: 1;
+        opacity: 0.95;
     }
 `
 export const Loading = styled.div<{
@@ -22,7 +22,7 @@ export const Loading = styled.div<{
     $borderRadius?: string
     $alpha?: number
 }>`
-    animation: ${pulse} 1.5s ease-in-out 0.5s infinite;
+    animation: ${pulse} 4s ease-in-out 0.5s infinite;
     animation-duration: ${props => (props.$speed ?? 1) * 1.5}s;
     animation-timing-function: ease-in-out;
     animation-delay: 0.5s;
@@ -33,8 +33,6 @@ export const Loading = styled.div<{
 
     border-radius: ${({ $borderRadius }) => $borderRadius ?? "inherit"};
 
-    min-width: ${props => props.$minWidth};
-    min-height: ${props => props.$minHeight};
     ${props => (props.$fill ? "height: 100%; width: 100%;" : "")}
     background-color: rgba(20, 20, 20, ${props => props.$alpha});
 `
@@ -44,5 +42,5 @@ Loading.defaultProps = {
     $speed: 1,
     $minWidth: "100%",
     $minHeight: "100%",
-    $alpha: 0.15
+    $alpha: 0.5
 }

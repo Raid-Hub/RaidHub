@@ -21,7 +21,7 @@ const BigNumberStatItem = ({
     return (
         <div className={styles.timing}>
             {isLoading ? (
-                <Loading className={styles["number-loading"]} />
+                <Loading className={styles["number-loading"]} $alpha={0.75} />
             ) : (
                 <p
                     className={

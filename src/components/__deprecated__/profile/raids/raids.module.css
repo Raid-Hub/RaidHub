@@ -129,7 +129,7 @@
     font-size: x-large;
     font-weight: 800;
     text-transform: uppercase;
-    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.6);
 }
 
 .card-challenge-tags {
@@ -151,7 +151,7 @@
     position: relative;
 
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
 
     gap: 0.5em;
@@ -160,6 +160,10 @@
 .graph-right {
     flex: 0;
     margin-left: 1em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .dots-container {
@@ -263,15 +267,16 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
-    justify-content: center;
+    justify-content: space-around;
     align-items: flex-start;
 
     text-align: center;
 }
 
 .timing {
-    flex: 1;
-    flex-basis: 69px;
+    display: flex;
+    flex-direction: column;
+
     text-align: center;
 }
 
