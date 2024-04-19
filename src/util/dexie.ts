@@ -22,7 +22,7 @@ import { o } from "./o"
 /**
  * The version of the Dexie database.
  */
-export const DB_VERSION = 9
+export const DB_VERSION = 10
 
 /**
  * The list of table names in the Dexie database.

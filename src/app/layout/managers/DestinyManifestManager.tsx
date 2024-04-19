@@ -43,6 +43,7 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
                         : e.message
                 }.`
             )
+            dexieDB.delete().catch(console.error)
         }
     })
 
@@ -52,9 +53,10 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         suspense: false,
         enabled: manifestVersion !== undefined,
         staleTime: 3600_000, // 1 hour
-        refetchInterval: 3600_000, // 1 hour,
+        refetchInterval: 3600_000,
         refetchIntervalInBackground: false,
-        retry: (failureCount, error: BungieAPIError) => error.ErrorCode !== 5 && failureCount < 3,
+        retry: (failureCount, error: BungieAPIError) => error.ErrorCode === 5 || failureCount < 3,
+        retryDelay: failureCount => Math.min(2 ** failureCount * 1000, 600_000),
         onSuccess: data => {
             const newManifestVersion = [data.version, manifestLanguage, DB_VERSION].join("::")
 
@@ -111,12 +113,16 @@ const updateCachedManifest = async ({
             tableName: "DestinyInventoryItemLiteDefinition",
             language: language
         }).then(items =>
-            dexieDB.transaction("rw", dexieDB.items, () => {
-                const itemsWithHashes = Object.entries(items).map(([hash, item]) => ({
-                    ...item,
-                    hash: Number(hash)
-                }))
+            dexieDB.transaction("rw", dexieDB.items, async () => {
+                const itemsWithHashes = Object.entries(items)
+                    // Weapon & Emblems
+                    .filter(([, item]) => item.itemType === 3 || item.itemType == 14)
+                    .map(([hash, item]) => ({
+                        ...item,
+                        hash: Number(hash)
+                    }))
                 dexieDB.seedCache("items", itemsWithHashes)
+                await dexieDB.items.clear()
                 return dexieDB.items.bulkPut(itemsWithHashes)
             })
         ),

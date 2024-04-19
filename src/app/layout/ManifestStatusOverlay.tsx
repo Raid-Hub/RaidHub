@@ -1,5 +1,7 @@
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import styled, { keyframes } from "styled-components"
+import { useTimeout } from "~/hooks/util/useTimeout"
 
 export const ManifestStatusOverlay = (
     props:
@@ -15,6 +17,22 @@ export const ManifestStatusOverlay = (
               error: Error | Error[]
           }
 ) => {
+    const [isErrorHidden, setIsErrorHidden] = useState(false)
+
+    useEffect(() => {
+        setIsErrorHidden(false)
+    }, [props.status])
+
+    useTimeout(
+        props.status.includes("error")
+            ? () => {
+                  setIsErrorHidden(true)
+              }
+            : () => null,
+        10_000,
+        [props.status]
+    )
+
     switch (props.status) {
         case "bungie-loading":
             return (
@@ -34,46 +52,50 @@ export const ManifestStatusOverlay = (
             )
         case "bungie-error":
             return (
-                <StyledManifestStatusOverlay>
-                    <OverlayContainer>
-                        <ErrorMesssage>
-                            <b>Error</b>: Fail to load Bungie.net manifest:{" "}
-                            <i>{props.error.message}</i>
-                        </ErrorMesssage>
-                    </OverlayContainer>
-                </StyledManifestStatusOverlay>
+                !isErrorHidden && (
+                    <StyledManifestStatusOverlay>
+                        <OverlayContainer>
+                            <ErrorMesssage>
+                                <b>Error</b>: Fail to load Bungie.net manifest:{" "}
+                                <i>{props.error.message}</i>
+                            </ErrorMesssage>
+                        </OverlayContainer>
+                    </StyledManifestStatusOverlay>
+                )
             )
         case "dexie-error":
             return (
-                <StyledManifestStatusOverlay>
-                    <OverlayContainer>
-                        <ErrorMesssage>
-                            <div style={{ marginBottom: "1rem" }}>
-                                <b>Error:</b> Failed to save manifest definitions:{" "}
-                                {Array.isArray(props.error) ? (
-                                    <ul>
-                                        {props.error.map((e, idx) => (
-                                            <li key={idx}>{e.message}</li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    props.error.message
-                                )}
-                            </div>
-                            <div>
-                                Please try refreshing the page. If that does not work, please
-                                contact us at{" "}
-                                <Link
-                                    href="https://discord.gg/raidhub"
-                                    target="_blank"
-                                    style={{ color: "lightblue" }}>
-                                    discord.gg/raidhub
-                                </Link>
-                                .
-                            </div>
-                        </ErrorMesssage>
-                    </OverlayContainer>
-                </StyledManifestStatusOverlay>
+                !isErrorHidden && (
+                    <StyledManifestStatusOverlay>
+                        <OverlayContainer>
+                            <ErrorMesssage>
+                                <div style={{ marginBottom: "1rem" }}>
+                                    <b>Error:</b> Failed to save manifest definitions:{" "}
+                                    {Array.isArray(props.error) ? (
+                                        <ul>
+                                            {props.error.slice(0, 3).map((e, idx) => (
+                                                <li key={idx}>{e.message}</li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        props.error.message
+                                    )}
+                                </div>
+                                <div>
+                                    Please try refreshing the page. If that does not work, please
+                                    contact us at{" "}
+                                    <Link
+                                        href="https://discord.gg/raidhub"
+                                        target="_blank"
+                                        style={{ color: "lightblue" }}>
+                                        discord.gg/raidhub
+                                    </Link>
+                                    .
+                                </div>
+                            </ErrorMesssage>
+                        </OverlayContainer>
+                    </StyledManifestStatusOverlay>
+                )
             )
     }
 }
