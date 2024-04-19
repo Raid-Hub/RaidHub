@@ -22,9 +22,9 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
                     <Loading
                         $fill
                         $minHeight="250px"
-                        $alpha={0.5}
+                        $alpha={0.75}
                         $minWidth="200px"
-                        style={{ width: "min(100%, 800px)" }}
+                        style={{ width: "min(100%, 800px)", minHeight: "250px" }}
                     />
                 }>
                 <Flex
