@@ -13,9 +13,7 @@ export default function ClanMember({
     isFounder: boolean
 }) {
     return (
-        <Link
-            href={`/profile/${member.destinyUserInfo.membershipType}/${member.destinyUserInfo.membershipId}`}
-            className={styles.member}>
+        <Link href={`/profile/${member.destinyUserInfo.membershipId}`} className={styles.member}>
             <div className={styles["member-icon-container"]}>
                 <Image
                     src={bungieProfileIconUrl(member.bungieNetUserInfo?.iconPath)}

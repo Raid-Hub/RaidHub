@@ -120,7 +120,7 @@ async function getActivities({ membershipId, cursor }: { membershipId: string; c
     const response = await getRaidHubApi(
         "/player/{membershipId}/activities",
         { membershipId },
-        { cursor }
+        { cursor, count: cursor ? 2000 : 250 }
     )
     return response
 }

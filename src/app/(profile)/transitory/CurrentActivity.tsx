@@ -140,11 +140,7 @@ const PartyMember = ({ membershipId }: DestinyProfileTransitoryPartyMember) => {
     return (
         <Container>
             {playerQuery.data ? (
-                <Link
-                    href={`/profile/${playerQuery.data.membershipType ?? 0}/${
-                        playerQuery.data.membershipId
-                    }`}
-                    style={{ color: "unset" }}>
+                <Link href={`/profile/${playerQuery.data.membershipId}`} style={{ color: "unset" }}>
                     <Flex $padding={0} $align="flex-start">
                         <Image
                             src={bungieProfileIconUrl(playerQuery.data.iconPath)}

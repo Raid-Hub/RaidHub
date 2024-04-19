@@ -46,9 +46,7 @@ export const GlobalEntries = (props: {
                     id: entry.player.membershipId,
                     displayName: getBungieDisplayName(entry.player),
                     iconUrl: bungieProfileIconUrl(entry.player.iconPath),
-                    url: entry.player.membershipType
-                        ? `/profile/${entry.player.membershipType}/${entry.player.membershipId}`
-                        : undefined
+                    url: `/profile/${entry.player.membershipId}`
                 }
             }))
     })

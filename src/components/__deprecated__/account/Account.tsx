@@ -59,8 +59,7 @@ const Account = ({ session, providers }: AccountProps) => {
             <SpeedrunAPIKeyModal refetchSocials={refetchSocials} ref={speedrunAPIKeyModalRef} />
             <section className={[styles.section, styles.flex].join(" ")}>
                 <div className={[styles.buttons, styles["glossy-bg"]].join(" ")}>
-                    <Link
-                        href={`/profile/${session.user.destinyMembershipType}/${session.user.destinyMembershipId}`}>
+                    <Link href={`/profile/${session.user.destinyMembershipId}`}>
                         <button>View Profile</button>
                     </Link>
                     <button onClick={() => signIn("bungie", {}, "reauth=true")}>

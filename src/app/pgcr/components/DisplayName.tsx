@@ -9,9 +9,7 @@ export const DisplayName = (props: {
     membershipId: string
     membershipType: BungieMembershipType
 }) => (
-    <StyledDisplayName
-        onClick={e => e.stopPropagation()}
-        href={`/profile/${props.membershipType}/${props.membershipId}`}>
+    <StyledDisplayName onClick={e => e.stopPropagation()} href={`/profile/${props.membershipId}`}>
         {props.displayName}
         <ExternalLink
             sx={24}

@@ -53,9 +53,7 @@ export const WorldfirstEntries = (props: {
                         id: player.player.membershipId,
                         displayName: getBungieDisplayName(player.player),
                         iconUrl: bungieProfileIconUrl(player.player.iconPath),
-                        url: player.player.membershipType
-                            ? `/profile/${player.player.membershipType}/${player.player.membershipId}`
-                            : undefined
+                        url: `/profile/${player.player.membershipId}`
                     }))
             }))
     })

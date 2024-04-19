@@ -109,7 +109,7 @@ export function useSearch(props?: {
         const result = raidHubSearchQuery.data[0]
         setEnterPressed(false)
         props.onRedirect?.(result)
-        router.push(`/profile/${result.membershipType}/${result.membershipId}`)
+        router.push(`/profile/${result.membershipId}`)
     }
 
     return {

@@ -14,11 +14,10 @@ export const deleteVanity = adminProcedure.input(zDeleteVanity).mutation(async (
             },
             select: {
                 destinyMembershipId: true,
-                destinyMembershipType: true,
                 name: true
             }
         })
-        revalidatePath(`/profile/${removed.destinyMembershipType}/${removed.destinyMembershipId}`)
+        revalidatePath(`/profile/${removed.destinyMembershipId}`)
         revalidatePath(`/user/${input.vanity}`)
         return { ...removed, ...input }
     } catch (e) {
