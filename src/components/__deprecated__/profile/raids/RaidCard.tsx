@@ -161,7 +161,7 @@ export default function RaidCard({
                             <div
                                 className={styles["dots-container"]}
                                 style={{ height: FULL_HEIGHT }}>
-                                <Loading />
+                                <Loading $alpha={0.75} />
                             </div>
                         ) : (
                             <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
