@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import styled from "styled-components"
 import { $media } from "~/app/layout/media"
 import { BackgroundImage } from "~/components/BackgroundImage"
@@ -23,10 +23,10 @@ export const ActivityHistoryLayout = ({ membershipIds }: { membershipIds: string
     const { activities, isLoading } = useRaidHubActivities(membershipIds)
     const partitioned = useActivitiesByPartition(activities)
 
-    return (
-        <Flex $direction="column" $fullWidth $crossAxis="flex-start" $padding={0}>
-            {Array.from(partitioned)
-                .slice(0, sections * 2)
+    const history = useMemo(
+        () =>
+            Array.from(partitioned)
+                .slice(0, sections)
                 .map(([k, activities]) => {
                     const first = activities.first()
                     if (!first) return null
@@ -48,14 +48,24 @@ export const ActivityHistoryLayout = ({ membershipIds }: { membershipIds: string
                             </Grid>
                         </Container>
                     )
-                })}
+                }),
+        [partitioned, sections]
+    )
+
+    return (
+        <Flex $direction="column" $fullWidth $crossAxis="flex-start" $padding={0}>
+            {history}
             <Flex $fullWidth $padding={1}>
                 <Card
                     role="button"
                     $color="light"
                     aria-disabled={isLoading}
                     onClick={() => !isLoading && setSections(old => old + 1)}
-                    style={{ padding: "1rem", cursor: "pointer" }}>
+                    style={{
+                        padding: "1rem",
+                        cursor: "pointer",
+                        color: isLoading ? "gray" : undefined
+                    }}>
                     Load More
                 </Card>
             </Flex>
