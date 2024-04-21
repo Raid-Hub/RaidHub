@@ -1,5 +1,6 @@
 "use client"
 
+import { type Collection } from "@discordjs/collection"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import styled from "styled-components"
@@ -13,14 +14,18 @@ import { RaidSplash } from "~/data/activity-images"
 import { useActivitiesByPartition } from "~/hooks/useActivitiesByPartition"
 import { useAttributedRaidName } from "~/hooks/useAttributedRaidName"
 import { type RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
-import { useRaidHubActivities } from "~/services/raidhub/useRaidHubActivities"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { isRaid } from "~/util/raidhub/util"
 import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "./constants"
 
-export const ActivityHistoryLayout = ({ membershipIds }: { membershipIds: string[] }) => {
+export const ActivityHistoryLayout = ({
+    activities,
+    isLoading
+}: {
+    activities: Collection<string, RaidHubPlayerActivitiesActivity>
+    isLoading: boolean
+}) => {
     const [sections, setSections] = useState(3)
-    const { activities, isLoading } = useRaidHubActivities(membershipIds)
     const partitioned = useActivitiesByPartition(activities)
 
     const history = useMemo(

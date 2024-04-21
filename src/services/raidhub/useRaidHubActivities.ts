@@ -113,6 +113,9 @@ export const generateQuery =
                 cursor
             }),
         staleTime: 60_000,
+        refetchInterval: 300_000,
+        refetchIntervalInBackground: false,
+        retry: false,
         ...opts
     })
 

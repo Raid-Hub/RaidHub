@@ -66,12 +66,6 @@ export const CurrentActivity = () => {
         }
     )
 
-    console.log({
-        enabled: isInitialLoading || !!profileTransitoryData?.currentActivity?.startTime,
-        startTime: profileTransitoryData?.currentActivity?.startTime,
-        characterActivity
-    })
-
     return profileTransitoryData?.currentActivity?.startTime && characterActivity ? (
         <CurrentActivityCard
             characterActivity={characterActivity}
