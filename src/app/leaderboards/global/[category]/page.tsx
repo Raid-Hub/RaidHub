@@ -54,6 +54,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
             pageProps={{ format, type: "player", count: ENTRIES_PER_PAGE }}
             type="global"
             category={params.category}
+            hasSearch
             hasPages
             refreshQueryKey={createQueryKey({ page: 1, category: params.category })}
             heading={

@@ -142,7 +142,7 @@ const SummaryStatsGrid = () => {
         },
         {
             Icon: Ammo,
-            name: "Mosted Used Weapon",
+            name: "Most Used Weapon",
             value: weapon?.displayProperties.name ?? "None"
         }
     ]

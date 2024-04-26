@@ -60,6 +60,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
             pageProps={{ format: "time", type: "team", count: ENTRIES_PER_PAGE }}
             type="worldfirst"
             category={params.category}
+            hasSearch
             hasPages
             raid={raid}
             refreshQueryKey={createQueryKey({

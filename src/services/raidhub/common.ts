@@ -4,8 +4,8 @@ import type { paths } from "./openapi"
 
 export async function getRaidHubApi<
     T extends RaidHubGetPath,
-    P = "parameters" extends keyof paths[T]["get"] ? paths[T]["get"]["parameters"] : null,
-    R = paths[T]["get"]["responses"][200]["content"]["application/json"]
+    R = paths[T]["get"]["responses"][200]["content"]["application/json"],
+    P = "parameters" extends keyof paths[T]["get"] ? paths[T]["get"]["parameters"] : null
 >(
     path: T,
     pathParams: "path" extends keyof P ? P["path"] : null,

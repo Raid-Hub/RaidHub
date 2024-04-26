@@ -120,7 +120,7 @@ export const LeaderboardEntryComponent = ({
                                 {placementIcon ?? truncatedNumber(entry.rank, locale)}
                             </Container>
                             {entry.type === "team" ? (
-                                <Grid $minCardWidth={180} $fullWidth>
+                                <Grid $minCardWidth={190} $fullWidth>
                                     {entry.team.map(player => (
                                         <LeaderboardEntryPlayerComponent
                                             key={player.id}

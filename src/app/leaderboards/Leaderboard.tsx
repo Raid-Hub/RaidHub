@@ -21,16 +21,17 @@ export const Leaderboard = (
         entries: ReactNode
         extraControls?: ReactNode
         pageProps: PageProps
+        hasPages: boolean
     } & (
         | {
-              hasPages: true
+              hasSearch: true
               refreshQueryKey: readonly [...unknown[], page: number]
               category: RaidHubLeaderboardSearchQueryCategory
               type: RaidHubLeaderboardSearchQueryType
               raid?: ListedRaid
           }
         | {
-              hasPages: false
+              hasSearch: false
               refreshQueryKey: readonly unknown[]
           }
     )
@@ -39,23 +40,24 @@ export const Leaderboard = (
         <PageWrapper pageProps={props.pageProps} $maxWidth={2000}>
             <Flex $padding={0}>
                 <Flex $direction="column" $padding={0} $gap={1.5}>
-                    <div style={{ minWidth: "50%" }}>
+                    <div style={{ minWidth: "calc(max(100%, 500px))" }}>
                         {props.heading}
                         <Flex $padding={0} $relative>
                             {/* Required to suspend because of the useSearchParams() hook */}
                             <Suspense>
                                 {props.extraControls}
                                 <LeaderboardControls
-                                    queryKey={props.refreshQueryKey}
-                                    {...(props.hasPages
+                                    refreshQueryKey={props.refreshQueryKey}
+                                    hasPages={props.hasPages}
+                                    {...(props.hasSearch
                                         ? {
-                                              hasPages: true,
+                                              hasSearch: true,
                                               category: props.category,
                                               type: props.type,
                                               raid: props.raid
                                           }
                                         : {
-                                              hasPages: false
+                                              hasSearch: false
                                           })}
                                 />
                             </Suspense>
