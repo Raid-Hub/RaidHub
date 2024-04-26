@@ -19,6 +19,8 @@ type ManifestContextData = {
     elevatedRaidDifficulties: RaidDifficulty[]
     sunsetRaids: SunsetRaid[]
     reprisedRaids: RaidHubManifestResponse["reprisedChallengePairings"]
+    pantheonId: RaidHubManifestResponse["pantheonId"]
+    pantheonmodes: RaidHubManifestResponse["pantheonModes"]
     getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
     getDifficultyString(
         raid: RaidDifficulty
@@ -69,7 +71,9 @@ export function RaidHubManifestManager(props: {
             leaderboards: data.leaderboards,
             listedRaids: [...data.listed],
             sunsetRaids: [...data.sunset],
-            reprisedRaids: data.reprisedChallengePairings
+            reprisedRaids: data.reprisedChallengePairings,
+            pantheonId: data.pantheonId,
+            pantheonmodes: data.pantheonModes
         }),
         [data]
     )

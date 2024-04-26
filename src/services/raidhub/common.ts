@@ -75,8 +75,8 @@ function createHeaders(init?: HeadersInit) {
 }
 
 async function fetchRaidHub<R>(url: URL, init: RequestInit) {
-    if (new Date() < new Date("2024-04-15T00:00:00Z")) {
-        url.searchParams.set("cache", "4-13-24")
+    if (new Date() < new Date("2024-04-27T00:00:00Z")) {
+        url.searchParams.set("cache", "4-27-24")
     }
     const res = await fetch(url, init)
 

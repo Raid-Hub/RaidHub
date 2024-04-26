@@ -1,7 +1,10 @@
 "use client"
 
 import { usePageProps } from "~/components/layout/PageWrapper"
-import type { LeaderboardPantheonTotalClearsResponse } from "~/services/raidhub/types"
+import type {
+    LeaderboardPantheonTotalClearsResponse,
+    RaidHubIndividualLeaderboardCategory
+} from "~/services/raidhub/types"
 import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { type PageProps } from "../../Leaderboard"
 import { LeaderboardEntriesLoadingWrapper } from "../../LeaderboardEntriesLoadingWrapper"
@@ -13,7 +16,7 @@ export const IndividualEntries = (props: {
     ssr?: LeaderboardPantheonTotalClearsResponse
     ssrUpdatedAt: number
     ssrPage: string
-    category: "total-clears"
+    category: RaidHubIndividualLeaderboardCategory
 }) => {
     const page = usePage()
     const { count } = usePageProps<PageProps>()
