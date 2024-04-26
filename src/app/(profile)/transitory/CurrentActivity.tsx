@@ -28,6 +28,16 @@ const commonTransitoryQuerySettings = {
     refetchOnWindowFocus: true
 }
 
+const defaultCharacterActivity: DestinyCharacterActivitiesComponent = {
+    currentActivityHash: 0,
+    currentActivityModeHash: 0,
+    lastCompletedStoryHash: 0,
+    dateActivityStarted: "1970-01-01T00:00:00Z",
+    currentActivityModeHashes: [],
+    currentActivityModeTypes: [],
+    availableActivities: []
+}
+
 export const CurrentActivity = () => {
     const { destinyMembershipId, destinyMembershipType } = usePageProps<ProfileProps>()
 
@@ -51,7 +61,7 @@ export const CurrentActivity = () => {
             select: data =>
                 Object.values(data.characterActivities.data ?? {}).sort((a, b) =>
                     new Date(b.dateActivityStarted) < new Date(a.dateActivityStarted) ? -1 : 1
-                )[0] ?? null,
+                )[0] ?? defaultCharacterActivity,
             ...commonTransitoryQuerySettings
         }
     )
@@ -140,11 +150,7 @@ const PartyMember = ({ membershipId }: DestinyProfileTransitoryPartyMember) => {
     return (
         <Container>
             {playerQuery.data ? (
-                <Link
-                    href={`/profile/${playerQuery.data.membershipType ?? 0}/${
-                        playerQuery.data.membershipId
-                    }`}
-                    style={{ color: "unset" }}>
+                <Link href={`/profile/${playerQuery.data.membershipId}`} style={{ color: "unset" }}>
                     <Flex $padding={0} $align="flex-start">
                         <Image
                             src={bungieProfileIconUrl(playerQuery.data.iconPath)}

@@ -1,25 +1,19 @@
 "use client"
 
 import { usePageProps } from "~/components/layout/PageWrapper"
-import { getIndividualLeaderboard } from "~/services/raidhub/getLeaderboard"
-import type {
-    RaidHubIndividualLeaderboardCategory,
-    RaidHubIndividualLeaderboardResponse,
-    RaidHubRaidPath
-} from "~/services/raidhub/types"
+import type { LeaderboardPantheonTotalClearsResponse } from "~/services/raidhub/types"
 import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { type PageProps } from "../../Leaderboard"
 import { LeaderboardEntriesLoadingWrapper } from "../../LeaderboardEntriesLoadingWrapper"
 import { useLeaderboard } from "../../useLeaderboard"
 import { usePage } from "../../usePage"
-import { createQueryKey } from "./constants"
+import { createIndividualQueryKey, getIndividualLeaderboard } from "../common"
 
 export const IndividualEntries = (props: {
-    ssr?: RaidHubIndividualLeaderboardResponse
+    ssr?: LeaderboardPantheonTotalClearsResponse
     ssrUpdatedAt: number
     ssrPage: string
-    raidPath: RaidHubRaidPath
-    category: RaidHubIndividualLeaderboardCategory
+    category: "total-clears"
 }) => {
     const page = usePage()
     const { count } = usePageProps<PageProps>()
@@ -28,17 +22,16 @@ export const IndividualEntries = (props: {
         // The SSR page may not be the same as the current page, so we need to check
         initialData: props.ssrPage === String(page) ? props.ssr : undefined,
         initialDataUpdatedAt: props.ssrUpdatedAt,
-        queryKey: createQueryKey({
-            raidPath: props.raidPath,
+        queryKey: createIndividualQueryKey({
             category: props.category,
-            page
+            page,
+            count
         }),
         queryFn: ({ queryKey }) =>
             getIndividualLeaderboard({
-                raid: queryKey[3],
-                category: queryKey[4],
-                page: queryKey[5],
-                count: count
+                category: queryKey[2],
+                count: queryKey[3],
+                page: queryKey[4]
             }),
         select: data =>
             data?.entries.map(entry => ({

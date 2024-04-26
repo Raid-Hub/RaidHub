@@ -113,6 +113,9 @@ export const generateQuery =
                 cursor
             }),
         staleTime: 60_000,
+        refetchInterval: 300_000,
+        refetchIntervalInBackground: false,
+        retry: false,
         ...opts
     })
 
@@ -120,7 +123,7 @@ async function getActivities({ membershipId, cursor }: { membershipId: string; c
     const response = await getRaidHubApi(
         "/player/{membershipId}/activities",
         { membershipId },
-        { cursor }
+        { cursor, count: cursor ? 2000 : 250 }
     )
     return response
 }

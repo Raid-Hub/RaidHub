@@ -82,6 +82,11 @@ export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchRespo
 export type RaidHubLeaderboardSearchQueryCategory = RaidHubLeaderboardSearchQuery["category"]
 export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["type"]
 
+export type RaidHubPantheonPath = Component<"PantheonPath">
+export type RaidHubPantheonFirstResponse = Component<"LeaderboardPantheonFirstResponse">
+export type LeaderboardPantheonTotalClearsResponse =
+    Component<"LeaderboardPantheonTotal-clearsResponse">
+
 export type RaidHubTokenResponse = Component<"AuthorizeResponse">
 
 interface GetSchema {

@@ -16,7 +16,7 @@ export const createVanity = adminProcedure.input(zCreateVanity).mutation(async (
                 vanity: true
             }
         })
-        revalidatePath(`/profile/${input.destinyMembershipType}/${input.destinyMembershipId}`)
+        revalidatePath(`/profile/${input.destinyMembershipId}`)
         revalidatePath(`/user/${vanity.vanity}`)
         return vanity
     } catch (e) {

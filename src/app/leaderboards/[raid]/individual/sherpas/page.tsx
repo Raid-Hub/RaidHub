@@ -40,6 +40,7 @@ export default async function Page({ params, searchParams }: StaticParams) {
             type="individual"
             category="sherpas"
             hasPages
+            hasSearch
             raid={raid}
             refreshQueryKey={createQueryKey({
                 raidPath: params.raid,

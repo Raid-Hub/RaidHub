@@ -19,7 +19,7 @@ export const SinglePlayerSearchResult = (props: {
     const { locale } = useLocale()
     const anchorProps = !props.noLink
         ? {
-              href: `/profile/${props.player.membershipType ?? 0}/${props.player.membershipId}`,
+              href: `/profile/${props.player.membershipId}`,
               as: Link
           }
         : {}

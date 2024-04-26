@@ -23,6 +23,8 @@ import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
 import { RaidCardContext } from "./RaidCardContext"
 
+type TabTitle = "classic" | "pantheon" | "history"
+
 export const Raids = () => {
     const { destinyMembershipId, destinyMembershipType, ready } = usePageProps<ProfileProps>()
 
@@ -36,7 +38,7 @@ export const Raids = () => {
                 destinyMembershipId: p.membershipId,
                 membershipType: p.membershipType
             })) ?? [
-                // Fallback to the current profile if the linked profiles are not yet fetched
+                // Fallback to the only current profile if the linked profiles are not yet fetched
                 {
                     destinyMembershipId: destinyMembershipId,
                     membershipType: destinyMembershipType
@@ -51,6 +53,7 @@ export const Raids = () => {
         () => destinyMemberships?.map(dm => dm.destinyMembershipId) ?? [],
         [destinyMemberships]
     )
+
     const { players, isLoading: isLoadingPlayers } = useRaidHubPlayers(membershipIds, {
         enabled: ready
     })
@@ -104,7 +107,10 @@ export const Raids = () => {
 
     const queryParams = useQueryParams<{
         raid: string
+        tab: TabTitle
     }>()
+
+    const [tabLocal, setTabLocal] = useLocalStorage<TabTitle>("player-profile-tab", "classic")
 
     const [clearExpandedRaid, setExpandedRaid] = useMemo(
         () => [
@@ -114,45 +120,83 @@ export const Raids = () => {
         [queryParams]
     )
 
-    const expandedRaid = Number(queryParams.get("raid"))
+    const [getTab, setTab] = useMemo(
+        () => [
+            () => queryParams.get("tab") ?? tabLocal,
+            (tab: TabTitle) => {
+                setTabLocal(tab)
+                queryParams.set("tab", tab)
+            }
+        ],
+        [tabLocal, setTabLocal, queryParams]
+    )
 
-    const [tab, setTab] = useLocalStorage<"classic" | "history">("player-profile-tab", "classic")
+    const TabView = useMemo(() => {
+        const expandedRaid = Number(queryParams.get("raid"))
+        const tab = getTab()
+
+        switch (tab) {
+            case "classic":
+                return (
+                    <Grid
+                        as="section"
+                        $minCardWidth={325}
+                        $minCardWidthMobile={300}
+                        $fullWidth
+                        $relative>
+                        {listedRaids.map(raid => (
+                            <RaidCardContext
+                                key={raid}
+                                activitiesByRaid={activitiesByRaid}
+                                isLoadingActivities={isLoadingActivities || !areMembershipsFetched}
+                                raid={raid}>
+                                <RaidCard
+                                    leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
+                                    expand={() => setExpandedRaid(raid)}
+                                    closeExpand={clearExpandedRaid}
+                                    isExpanded={raid === expandedRaid}
+                                />
+                            </RaidCardContext>
+                        ))}
+                    </Grid>
+                )
+            case "history":
+                return (
+                    <ActivityHistoryLayout
+                        activities={activities}
+                        isLoading={isLoadingActivities}
+                    />
+                )
+            default:
+                return null
+        }
+    }, [
+        queryParams,
+        getTab,
+        listedRaids,
+        activities,
+        isLoadingActivities,
+        activitiesByRaid,
+        areMembershipsFetched,
+        leaderboardEntriesByRaid,
+        clearExpandedRaid,
+        setExpandedRaid
+    ])
 
     return (
         <FilterContextProvider>
             <TabSelector>
-                <Tab aria-selected={tab === "classic"} onClick={() => setTab("classic")}>
+                <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
                     Classic
                 </Tab>
-                <Tab aria-selected={tab === "history"} onClick={() => setTab("history")}>
+                <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
+                    Pantheon
+                </Tab>
+                <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
                     History
                 </Tab>
             </TabSelector>
-            {tab === "classic" ? (
-                <Grid
-                    as="section"
-                    $minCardWidth={325}
-                    $minCardWidthMobile={300}
-                    $fullWidth
-                    $relative>
-                    {listedRaids.map(raid => (
-                        <RaidCardContext
-                            key={raid}
-                            activitiesByRaid={activitiesByRaid}
-                            isLoadingActivities={isLoadingActivities || !areMembershipsFetched}
-                            raid={raid}>
-                            <RaidCard
-                                leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
-                                expand={() => setExpandedRaid(raid)}
-                                closeExpand={clearExpandedRaid}
-                                isExpanded={raid === expandedRaid}
-                            />
-                        </RaidCardContext>
-                    ))}
-                </Grid>
-            ) : (
-                <ActivityHistoryLayout membershipIds={membershipIds} />
-            )}
+            {TabView}
         </FilterContextProvider>
     )
 }

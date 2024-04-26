@@ -74,12 +74,15 @@ const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    // If the vanity is not a word, it's not a valid vanity
-
     const profile = await getUniqueProfileByVanity(params.vanity)
 
     if (profile?.name === undefined) {
-        return {}
+        return {
+            robots: {
+                follow: false,
+                index: false
+            }
+        }
     }
 
     const raidhub = await prefetchRaidHubPlayerBasic({

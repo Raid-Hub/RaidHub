@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { PlayerTab } from "~/app/pgcr/components/PlayerTab"
 import { SelectedPlayerView } from "~/app/pgcr/components/SelectedPlayerView"
@@ -11,7 +11,7 @@ import styles from "../pgcr.module.css"
 
 /** @deprecated */
 const ParticipantsSection = () => {
-    const { data, isLoading } = usePGCRContext()
+    const { data, sortScores, isLoading } = usePGCRContext()
     const { set, get, remove } = useQueryParams<PGCRPageParams>()
 
     const setPlayer = useCallback(
@@ -40,10 +40,20 @@ const ParticipantsSection = () => {
             ? styles["members-odd"]
             : styles["members-even"]
 
+    const playersSorted = useMemo(
+        () =>
+            data?.players.toSorted(
+                (a, b) =>
+                    (sortScores.get(b.player.membershipId) ?? 0) -
+                    (sortScores.get(a.player.membershipId) ?? 0)
+            ) ?? [],
+        [data?.players, sortScores]
+    )
+
     if (!selectedPlayer || isLoading) {
         return (
             <div className={[styles.grid, cardLayout].join(" ")}>
-                {data?.players?.map(player => (
+                {playersSorted.map(player => (
                     <PlayerTab
                         key={player.player.membershipId}
                         activityPlayer={player}

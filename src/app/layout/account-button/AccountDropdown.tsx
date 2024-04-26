@@ -48,7 +48,7 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                                     href={
                                         sessionData.user.vanity
                                             ? `/${sessionData.user.vanity}`
-                                            : `/profile/${sessionData.user.destinyMembershipType}/${sessionData.user.destinyMembershipId}`
+                                            : `/profile/${sessionData.user.destinyMembershipId}`
                                     }
                                 />
                             )}

@@ -4,7 +4,6 @@ import {
     defaultBannerEmblem,
     defaultEmblem,
     defaultIcon,
-    defaultPgcrImage,
     defaultProfileIcon
 } from "~/data/bungie-images"
 
@@ -40,5 +39,5 @@ export function bungieClanBannerBannerLayerUrl(path: string | undefined) {
 }
 
 export function bungiePgcrImageUrl(path: string | undefined) {
-    return baseBungieUrl + (path || defaultPgcrImage)
+    return path ? baseBungieUrl + path : "https://cdn.raidhub.io/content/orbit/medium.jpg"
 }

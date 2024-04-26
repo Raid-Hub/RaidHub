@@ -1,19 +1,14 @@
-import { type BungieMembershipType } from "bungie-net-core/models"
 import { type Metadata } from "next"
 import { bungieProfileIconUrl } from "~/util/destiny"
-import { ProfileClientWrapper } from "../../../ProfileClientWrapper"
-import { ProfilePage } from "../../../ProfilePage"
-import { generatePlayerMetadata } from "../../../metadata"
-import {
-    getUniqueProfileByDestinyMembershipId,
-    prefetchRaidHubPlayerBasic
-} from "../../../prefetch"
-import { type ProfileProps } from "../../../types"
+import { ProfileClientWrapper } from "../../ProfileClientWrapper"
+import { ProfilePage } from "../../ProfilePage"
+import { generatePlayerMetadata } from "../../metadata"
+import { getUniqueProfileByDestinyMembershipId, prefetchRaidHubPlayerBasic } from "../../prefetch"
+import { type ProfileProps } from "../../types"
 
 type PageProps = {
     params: {
         destinyMembershipId: string
-        destinyMembershipType: BungieMembershipType
     }
 }
 
@@ -32,6 +27,7 @@ export default async function Page({ params }: PageProps) {
 
     const pageProps: ProfileProps = {
         ...params,
+        destinyMembershipType: basicProfile?.membershipType ?? 0,
         ssrRaidHubBasic: basicProfile,
         ssrAppProfile: appProfile,
         ready: true
@@ -55,13 +51,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ])
 
     if (!profile && !basic) {
-        return {}
+        return {
+            robots: {
+                follow: false,
+                index: false
+            }
+        }
     }
 
     const username = profile?.name ?? basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
 
     if (!username) {
-        return {}
+        return {
+            robots: {
+                follow: false,
+                index: false
+            }
+        }
     }
 
     const image = profile?.image ?? bungieProfileIconUrl(basic?.iconPath)

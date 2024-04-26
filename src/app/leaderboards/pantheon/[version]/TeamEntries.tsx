@@ -1,25 +1,20 @@
 "use client"
 
 import { usePageProps } from "~/components/layout/PageWrapper"
-import { getWorldfirstLeaderboard } from "~/services/raidhub/getLeaderboard"
-import type {
-    RaidHubRaidPath,
-    RaidHubWorldFirstLeaderboardCategory,
-    RaidHubWorldfirstLeaderboardResponse
-} from "~/services/raidhub/types"
+import type { RaidHubPantheonFirstResponse, RaidHubPantheonPath } from "~/services/raidhub/types"
 import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
-import { type PageProps } from "../../../Leaderboard"
-import { LeaderboardEntriesLoadingWrapper } from "../../../LeaderboardEntriesLoadingWrapper"
-import { useLeaderboard } from "../../../useLeaderboard"
-import { usePage } from "../../../usePage"
-import { createQueryKey } from "./constants"
+import { type PageProps } from "../../Leaderboard"
+import { LeaderboardEntriesLoadingWrapper } from "../../LeaderboardEntriesLoadingWrapper"
+import { useLeaderboard } from "../../useLeaderboard"
+import { usePage } from "../../usePage"
+import { createTeamQueryKey, getTeamLeaderboard } from "../common"
 
-export const WorldfirstEntries = (props: {
-    ssr?: RaidHubWorldfirstLeaderboardResponse
+export const TeamEntries = (props: {
+    ssr?: RaidHubPantheonFirstResponse
     ssrUpdatedAt: number
     ssrPage: string
-    raidPath: RaidHubRaidPath
-    category: RaidHubWorldFirstLeaderboardCategory
+    category: "first" | "speedrun"
+    pantheonPath: RaidHubPantheonPath
 }) => {
     const page = usePage()
     const { count } = usePageProps<PageProps>()
@@ -28,17 +23,18 @@ export const WorldfirstEntries = (props: {
         // The SSR page may not be the same as the current page, so we need to check
         initialData: props.ssrPage === String(page) ? props.ssr : undefined,
         initialDataUpdatedAt: props.ssrUpdatedAt,
-        queryKey: createQueryKey({
-            raidPath: props.raidPath,
+        queryKey: createTeamQueryKey({
             category: props.category,
-            page
+            pantheonPath: props.pantheonPath,
+            page,
+            count
         }),
         queryFn: ({ queryKey }) =>
-            getWorldfirstLeaderboard({
-                raid: queryKey[3],
-                category: queryKey[4],
-                page: queryKey[5],
-                count: count
+            getTeamLeaderboard({
+                version: queryKey[1],
+                category: queryKey[2],
+                count: queryKey[3],
+                page: queryKey[4]
             }),
         select: data =>
             data?.entries.map(entry => ({

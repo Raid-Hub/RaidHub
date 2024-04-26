@@ -7,6 +7,7 @@ import { includedIn } from "~/util/helpers"
 
 export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesActivity>) => {
     const getWeight = useGetWeight()
+
     return useMemo(() => {
         const sorted = activities
             .filter(a => a.player.completed)

@@ -452,6 +452,114 @@ export interface paths {
       };
     };
   };
+  "/leaderboard/pantheon/{version}/first": {
+    get: {
+      parameters: {
+        query?: {
+          count?: number;
+          page?: number;
+        };
+        path: {
+          version: components["schemas"]["PantheonPath"];
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": components["schemas"]["LeaderboardPantheonFirstResponse"];
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": components["schemas"]["PathValidationError"];
+          };
+        };
+      };
+    };
+  };
+  "/leaderboard/pantheon/{version}/speedrun": {
+    get: {
+      parameters: {
+        query?: {
+          count?: number;
+          page?: number;
+        };
+        path: {
+          version: components["schemas"]["PantheonPath"];
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": components["schemas"]["LeaderboardPantheonSpeedrunResponse"];
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": components["schemas"]["PathValidationError"];
+          };
+        };
+      };
+    };
+  };
+  "/leaderboard/pantheon/total-clears": {
+    get: {
+      parameters: {
+        query?: {
+          count?: number;
+          page?: number;
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": components["schemas"]["LeaderboardPantheonTotal-clearsResponse"];
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+      };
+    };
+  };
   "/pgcr/{instanceId}": {
     get: {
       parameters: {
@@ -786,6 +894,8 @@ export interface components {
           readonly data: components["schemas"]["ActivityPlayerData"];
         }[];
     };
+    /** @enum {string} */
+    readonly PantheonPath: "atraks" | "oryx" | "rhulk" | "nezarec";
     readonly LeaderboardSearchQuery: {
       readonly type: "worldfirst" | "individual" | "global";
       readonly membershipId: string;
@@ -931,9 +1041,24 @@ export interface components {
               })[];
           };
         };
+        readonly pantheon: {
+          readonly first: readonly {
+              readonly versionId: components["schemas"]["PantheonEnum"];
+              readonly path: string;
+              readonly displayName: string;
+            }[];
+          readonly speedrun: readonly {
+              readonly versionId: components["schemas"]["PantheonEnum"];
+              readonly path: string;
+              readonly displayName: string;
+            }[];
+        };
       };
       readonly raidUrlPaths: {
         [key: string]: components["schemas"]["RaidPath"];
+      };
+      readonly pantheonUrlPaths: {
+        [key: string]: components["schemas"]["PantheonPath"];
       };
       readonly activityStrings: {
         [key: string]: string;
@@ -1098,6 +1223,35 @@ export interface components {
               readonly data: components["schemas"]["ActivityPlayerData"];
             }[];
         }[];
+    };
+    readonly LeaderboardPantheonFirstResponse: {
+      readonly params: {
+        readonly version: components["schemas"]["PantheonPath"];
+        /** @default 50 */
+        readonly count?: number;
+        /** @default 1 */
+        readonly page?: number;
+      };
+      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
+    };
+    readonly LeaderboardPantheonSpeedrunResponse: {
+      readonly params: {
+        readonly version: components["schemas"]["PantheonPath"];
+        /** @default 50 */
+        readonly count?: number;
+        /** @default 1 */
+        readonly page?: number;
+      };
+      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
+    };
+    readonly "LeaderboardPantheonTotal-clearsResponse": {
+      readonly params: {
+        /** @default 50 */
+        readonly count?: number;
+        /** @default 1 */
+        readonly page?: number;
+      };
+      readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     };
     /** @description A raw PGCR with a few redundant fields removed */
     readonly PgcrResponse: {
