@@ -65,6 +65,7 @@ export default async function Page({ params }: StaticSpeedrunLeaderboardParams) 
         <Leaderboard
             pageProps={{ format: "time", type: "team", count: 50 }}
             hasPages={false}
+            hasSearch={false}
             refreshQueryKey={["speedrun-com", "leaderboard", raid, category]}
             heading={<SpeedrunComBanner raid={raid} category={category} />}
             extraControls={<SpeedrunComControls raid={raid} category={category} />}
