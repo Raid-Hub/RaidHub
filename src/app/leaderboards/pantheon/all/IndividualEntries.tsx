@@ -3,7 +3,7 @@
 import { usePageProps } from "~/components/layout/PageWrapper"
 import type {
     LeaderboardPantheonTotalClearsResponse,
-    RaidHubIndividualLeaderboardCategory
+    RaidHubPantheonIndividualCategory
 } from "~/services/raidhub/types"
 import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { type PageProps } from "../../Leaderboard"
@@ -16,7 +16,7 @@ export const IndividualEntries = (props: {
     ssr?: LeaderboardPantheonTotalClearsResponse
     ssrUpdatedAt: number
     ssrPage: string
-    category: RaidHubIndividualLeaderboardCategory
+    category: RaidHubPantheonIndividualCategory
 }) => {
     const page = usePage()
     const { count } = usePageProps<PageProps>()

@@ -1266,7 +1266,7 @@ export interface components {
         /** @default 1 */
         readonly page?: number;
         /** @enum {string} */
-        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos" | "solos";
+        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos";
       };
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     };

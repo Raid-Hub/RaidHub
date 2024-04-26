@@ -2,8 +2,8 @@ import { notFound } from "next/navigation"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import {
     type PantheonId,
-    type RaidHubIndividualLeaderboardCategory,
     type RaidHubManifest,
+    type RaidHubPantheonIndividualCategory,
     type RaidHubPantheonPath
 } from "~/services/raidhub/types"
 
@@ -52,7 +52,7 @@ export const getTeamLeaderboard = async (props: {
     )
 
 export const createIndividualQueryKey = (args: {
-    category: RaidHubIndividualLeaderboardCategory
+    category: RaidHubPantheonIndividualCategory
     page: number
     count: number
 }) => {
@@ -60,7 +60,7 @@ export const createIndividualQueryKey = (args: {
 }
 
 export const getIndividualLeaderboard = async (props: {
-    category: RaidHubIndividualLeaderboardCategory
+    category: RaidHubPantheonIndividualCategory
     page: number
     count: number
 }) =>

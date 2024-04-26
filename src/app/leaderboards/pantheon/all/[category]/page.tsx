@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { metadata as leaderboardMetadata } from "~/app/layout"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
-import { type RaidHubIndividualLeaderboardCategory } from "~/services/raidhub/types"
+import { type RaidHubPantheonIndividualCategory } from "~/services/raidhub/types"
 import { type PageStaticParams } from "~/types/generic"
 import { Leaderboard } from "../../../Leaderboard"
 import { Splash } from "../../../LeaderboardSplashComponents"
@@ -80,10 +80,7 @@ export default async function Page({ searchParams, params }: StaticParams) {
     )
 }
 
-const SSREntries = async (props: {
-    page: string
-    category: RaidHubIndividualLeaderboardCategory
-}) => {
+const SSREntries = async (props: { page: string; category: RaidHubPantheonIndividualCategory }) => {
     const ssrData =
         props.page === "1"
             ? await getIndividualLeaderboard({
