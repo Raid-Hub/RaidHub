@@ -32,10 +32,13 @@ export function HomeCardPantheon() {
                 ))}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                <HomeCardContentSectionItem
-                    title="Total Full Clears"
-                    href="/leaderboards/pantheon/all/full-clears"
-                />
+                {leaderboards.pantheon.individual.map(board => (
+                    <HomeCardContentSectionItem
+                        key={board.category}
+                        title={board.displayName}
+                        href={`/leaderboards/pantheon/all/${board.category}`}
+                    />
+                ))}
             </HomeCardContentSection>
         </HomeCardGeneric>
     )

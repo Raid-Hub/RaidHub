@@ -530,19 +530,22 @@ export interface paths {
       };
     };
   };
-  "/leaderboard/pantheon/total-clears": {
+  "/leaderboard/pantheon/all/{category}": {
     get: {
       parameters: {
         query?: {
           count?: number;
           page?: number;
         };
+        path: {
+          category: "fresh" | "total" | "sherpas" | "trios" | "duos";
+        };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardPantheonTotal-clearsResponse"];
+            readonly "application/json": components["schemas"]["LeaderboardPantheonAllResponse"];
           };
         };
         /** @description Bad request */
@@ -555,6 +558,12 @@ export interface paths {
         401: {
           content: {
             readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": components["schemas"]["PathValidationError"];
           };
         };
       };
@@ -1004,7 +1013,8 @@ export interface components {
         };
       };
       readonly listed: readonly components["schemas"]["RaidEnum"][];
-      readonly pantheon: readonly components["schemas"]["PantheonEnum"][];
+      readonly pantheonId: components["schemas"]["ActivityEnum"];
+      readonly pantheonModes: readonly components["schemas"]["PantheonEnum"][];
       readonly sunset: readonly components["schemas"]["SunsetRaidEnum"][];
       readonly contest: readonly components["schemas"]["ContestRaidEnum"][];
       readonly master: readonly components["schemas"]["MasterRaidEnum"][];
@@ -1042,6 +1052,11 @@ export interface components {
           };
         };
         readonly pantheon: {
+          readonly individual: readonly ({
+              readonly displayName: string;
+              /** @enum {string} */
+              readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos";
+            })[];
           readonly first: readonly {
               readonly versionId: components["schemas"]["PantheonEnum"];
               readonly path: string;
@@ -1244,12 +1259,14 @@ export interface components {
       };
       readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
     };
-    readonly "LeaderboardPantheonTotal-clearsResponse": {
+    readonly LeaderboardPantheonAllResponse: {
       readonly params: {
         /** @default 50 */
         readonly count?: number;
         /** @default 1 */
         readonly page?: number;
+        /** @enum {string} */
+        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos";
       };
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     };

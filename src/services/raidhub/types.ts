@@ -84,8 +84,9 @@ export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["t
 
 export type RaidHubPantheonPath = Component<"PantheonPath">
 export type RaidHubPantheonFirstResponse = Component<"LeaderboardPantheonFirstResponse">
-export type LeaderboardPantheonTotalClearsResponse =
-    Component<"LeaderboardPantheonTotal-clearsResponse">
+export type LeaderboardPantheonTotalClearsResponse = Component<"LeaderboardPantheonAllResponse">
+export type RaidHubPantheonIndividualCategory =
+    LeaderboardPantheonTotalClearsResponse["params"]["category"]
 
 export type RaidHubTokenResponse = Component<"AuthorizeResponse">
 

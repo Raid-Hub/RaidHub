@@ -3,6 +3,7 @@ import { getRaidHubApi } from "~/services/raidhub/common"
 import {
     type PantheonId,
     type RaidHubManifest,
+    type RaidHubPantheonIndividualCategory,
     type RaidHubPantheonPath
 } from "~/services/raidhub/types"
 
@@ -51,7 +52,7 @@ export const getTeamLeaderboard = async (props: {
     )
 
 export const createIndividualQueryKey = (args: {
-    category: "total-clears"
+    category: RaidHubPantheonIndividualCategory
     page: number
     count: number
 }) => {
@@ -59,11 +60,17 @@ export const createIndividualQueryKey = (args: {
 }
 
 export const getIndividualLeaderboard = async (props: {
-    category: "total-clears"
+    category: RaidHubPantheonIndividualCategory
     page: number
     count: number
 }) =>
-    getRaidHubApi(`/leaderboard/pantheon/${props.category}`, null, {
-        page: props.page,
-        count: props.count
-    })
+    getRaidHubApi(
+        `/leaderboard/pantheon/all/{category}`,
+        {
+            category: props.category
+        },
+        {
+            page: props.page,
+            count: props.count
+        }
+    )
