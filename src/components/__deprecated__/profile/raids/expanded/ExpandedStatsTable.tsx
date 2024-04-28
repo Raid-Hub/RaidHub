@@ -12,7 +12,7 @@ import styles from "./expanded-raid.module.css"
 /**@deprecated */
 export default function ExpandedStatsTable() {
     const { activities, isLoadingActivities } = useRaidCardContext()
-    const { getDifficultyString } = useRaidHubManifest()
+    const { getVersionString } = useRaidHubManifest()
     const { locale } = useLocale()
 
     // the order of the columns in the chart
@@ -32,7 +32,7 @@ export default function ExpandedStatsTable() {
                     <th />
                     <th>Total</th>
                     {versions.map((v, idx) => (
-                        <th key={idx}>{getDifficultyString(v)}</th>
+                        <th key={idx}>{getVersionString(v)}</th>
                     ))}
                 </tr>
             </thead>

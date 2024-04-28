@@ -55,7 +55,7 @@ export const FeaturedRaidRotatorEntry = (props: {
     startDate: Date
     endDate: Date
 }) => {
-    const { getRaidFromHash, getDifficultyString } = useRaidHubManifest()
+    const { getRaidFromHash, getVersionString } = useRaidHubManifest()
     return (
         <RaidRotatorEntry {...props}>
             <Container>
@@ -66,7 +66,7 @@ export const FeaturedRaidRotatorEntry = (props: {
                             <RaidActivity
                                 key={activity.activityHash}
                                 activity={activity}
-                                version={getDifficultyString(definition.difficulty)}
+                                version={getVersionString(definition.difficulty)}
                             />
                         ) : null
                     })}
