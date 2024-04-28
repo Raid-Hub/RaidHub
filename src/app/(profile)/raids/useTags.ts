@@ -2,7 +2,7 @@ import type { Collection } from "@discordjs/collection"
 import { useCallback, useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Raid } from "~/data/raid"
-import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
 export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesActivity>) => {
@@ -95,7 +95,7 @@ const useGetWeight = () => {
     )
 }
 
-function isIllegalTag(activity: { raid: ListedRaid; weight: number }): boolean {
+function isIllegalTag(activity: { raid: number; weight: number }): boolean {
     switch (activity.raid) {
         case Raid.CROTAS_END:
             // solo
@@ -135,7 +135,7 @@ function isIllegalTag(activity: { raid: ListedRaid; weight: number }): boolean {
     }
 }
 
-function isBestTag(activity: { raid: ListedRaid; weight: number }): boolean {
+function isBestTag(activity: { raid: number; weight: number }): boolean {
     switch (activity.raid) {
         case Raid.CROTAS_END:
             // duo flawless or trio flawless master

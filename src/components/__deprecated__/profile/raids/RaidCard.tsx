@@ -15,6 +15,7 @@ import type {
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
 } from "~/services/raidhub/types"
+import { includedIn } from "~/util/helpers"
 import { medianElement } from "~/util/math"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import BigNumberStatItem from "./BigNumberStatItem"
@@ -25,23 +26,28 @@ import ExpandedRaidView from "./expanded/ExpandedRaidView"
 import styles from "./raids.module.css"
 
 type RaidModalProps = {
-    expand: () => void
-    closeExpand: () => void
     leaderboardData: RaidHubPlayerProfileLeaderboardEntry[] | null
-    isExpanded: boolean
-}
+} & (
+    | {
+          canExpand: true
+          expand: () => void
+          closeExpand: () => void
+          isExpanded: boolean
+      }
+    | {
+          canExpand: false
+      }
+)
 
 /** @deprecated */
-export default function RaidCard({
-    expand,
-    closeExpand,
-    leaderboardData,
-    isExpanded
-}: RaidModalProps) {
+export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) {
     const { activities, isLoadingActivities, raid } = useRaidCardContext()
-    const { getRaidString, leaderboards } = useRaidHubManifest()
-    const wfBoardId = (leaderboards.worldFirst[raid].find(b => b.category === "challenge") ??
-        leaderboards.worldFirst[raid].find(b => b.category === "normal"))!.id
+    const { getRaidString, getVersionString, leaderboards, listedRaids, pantheonId } =
+        useRaidHubManifest()
+    const wfBoardId = (
+        leaderboards.worldFirst[raid]?.find(b => b.category === "challenge") ??
+        leaderboards.worldFirst[raid]?.find(b => b.category === "normal")
+    )?.id
 
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
@@ -59,6 +65,7 @@ export default function RaidCard({
     const tags = useTags(activities ?? new Collection())
 
     const firstContestClear: RaidHubPlayerProfileLeaderboardEntry | undefined = useMemo(() => {
+        if (!wfBoardId) return undefined
         const wfBoardClear = leaderboardData
             ?.filter(e => e.boardId === wfBoardId)
             ?.sort((a, b) => a.rank - b.rank)[0]
@@ -89,7 +96,9 @@ export default function RaidCard({
 
     return (
         <>
-            {isExpanded && <ExpandedRaidView raid={raid} dismiss={closeExpand} />}
+            {props.canExpand && props.isExpanded && includedIn(listedRaids, raid) && (
+                <ExpandedRaidView raid={raid} dismiss={props.closeExpand} />
+            )}
             <m.div
                 initial={{
                     y: 20,
@@ -110,11 +119,17 @@ export default function RaidCard({
                         priority
                         width={960}
                         height={540}
-                        cloudflareId={RaidSplash[raid]}
-                        alt={getRaidString(raid)}
+                        cloudflareId={
+                            includedIn(listedRaids, raid) ? RaidSplash[raid] : "pantheonSplash"
+                        }
+                        alt={
+                            includedIn(listedRaids, raid)
+                                ? getRaidString(raid)
+                                : getVersionString(raid)
+                        }
                     />
                     <div className={styles["card-top"]}>
-                        {firstContestClear && (
+                        {includedIn(listedRaids, raid) && firstContestClear && (
                             <RaceTagLabel
                                 placement={firstContestClear.rank}
                                 instanceId={firstContestClear.instanceId}
@@ -126,13 +141,15 @@ export default function RaidCard({
                                 setActiveId={setHoveredTag}
                             />
                         )}
-                        <div
-                            className={[
-                                styles["card-top-right"],
-                                styles["visible-on-card-hover"]
-                            ].join(" ")}>
-                            <Expand color="white" sx={25} onClick={expand} />
-                        </div>
+                        {props.canExpand && (
+                            <div
+                                className={[
+                                    styles["card-top-right"],
+                                    styles["visible-on-card-hover"]
+                                ].join(" ")}>
+                                <Expand color="white" sx={25} onClick={props.expand} />
+                            </div>
+                        )}
                     </div>
                     <div className={styles["img-overlay-bottom"]}>
                         <div className={styles["card-challenge-tags"]}>
@@ -140,7 +157,7 @@ export default function RaidCard({
                                 <RaidTagLabel
                                     completed={tag.activity.completed}
                                     key={tag.activity.instanceId}
-                                    raid={raid}
+                                    raid={includedIn(listedRaids, raid) ? raid : pantheonId}
                                     setActiveId={setHoveredTag}
                                     instanceId={tag.activity.instanceId}
                                     isBestPossible={tag.bestPossible}
@@ -152,7 +169,11 @@ export default function RaidCard({
                                 />
                             ))}
                         </div>
-                        <span className={styles["card-title"]}>{getRaidString(raid)}</span>
+                        <span className={styles["card-title"]}>
+                            {includedIn(listedRaids, raid)
+                                ? getRaidString(raid)
+                                : getVersionString(raid)}
+                        </span>
                     </div>
                 </div>
                 <div className={styles["card-content"]}>

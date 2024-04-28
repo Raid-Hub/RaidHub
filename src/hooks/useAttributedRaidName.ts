@@ -2,11 +2,12 @@ import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Difficulty, Raid } from "~/data/raid"
 import { Tag } from "~/models/tag"
-import type { ListedRaid, RaidDifficulty } from "~/services/raidhub/types"
+import type { ActivityId, RaidDifficulty } from "~/services/raidhub/types"
+import { includedIn } from "~/util/helpers"
 
 export const useAttributedRaidName = (
     tag: {
-        raid: ListedRaid
+        raid: ActivityId
         playerCount: number
         fresh: boolean | null
         flawless: boolean | null
@@ -19,7 +20,7 @@ export const useAttributedRaidName = (
         excludeRaidName?: boolean
     }
 ): string | null => {
-    const { getCheckpointName, getRaidString } = useRaidHubManifest()
+    const { getCheckpointName, getRaidString, getVersionString, listedRaids } = useRaidHubManifest()
 
     return useMemo(() => {
         const wishWall =
@@ -46,7 +47,11 @@ export const useAttributedRaidName = (
             descriptors.push(getCheckpointName(tag.raid))
         }
         if (!opts?.excludeRaidName) {
-            descriptors.push(getRaidString(tag.raid))
+            descriptors.push(
+                includedIn(listedRaids, tag.raid)
+                    ? getRaidString(tag.raid)
+                    : getVersionString(tag.difficulty)
+            )
         }
         // special cases
         if (wishWall) {
@@ -55,5 +60,19 @@ export const useAttributedRaidName = (
             descriptors.push("(Checkpoint)")
         }
         return descriptors.join(" ")
-    }, [tag, getCheckpointName, opts?.excludeRaidName, opts?.includeFresh, getRaidString])
+    }, [
+        tag.raid,
+        tag.playerCount,
+        tag.fresh,
+        tag.completed,
+        tag.difficulty,
+        tag.contest,
+        tag.flawless,
+        opts?.excludeRaidName,
+        opts?.includeFresh,
+        getCheckpointName,
+        listedRaids,
+        getRaidString,
+        getVersionString
+    ])
 }

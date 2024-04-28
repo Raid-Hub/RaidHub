@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query"
 import { createContext, useContext, useMemo, type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import type {
+    ActivityId,
     ListedRaid,
-    PantheonId,
     RaidDifficulty,
     RaidHubManifestResponse,
     RaidHubRaidPath,
@@ -20,19 +20,17 @@ type ManifestContextData = {
     sunsetRaids: SunsetRaid[]
     reprisedRaids: RaidHubManifestResponse["reprisedChallengePairings"]
     pantheonId: RaidHubManifestResponse["pantheonId"]
-    pantheonmodes: RaidHubManifestResponse["pantheonModes"]
+    pantheonModes: RaidHubManifestResponse["pantheonModes"]
     getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
-    getDifficultyString(
-        raid: RaidDifficulty
+    getVersionString(
+        version: RaidDifficulty
     ): RaidHubManifestResponse["versionStrings"][RaidDifficulty]
-    getRaidString(
-        raid: ListedRaid | PantheonId
-    ): RaidHubManifestResponse["activityStrings"][ListedRaid]
+    getRaidString(raid: ListedRaid): RaidHubManifestResponse["activityStrings"][ListedRaid]
     getRaidFromHash: (hash: string | number) => {
         raid: ListedRaid
         difficulty: RaidDifficulty
     } | null
-    getCheckpointName(raid: ListedRaid): RaidHubManifestResponse["checkpointNames"][ListedRaid]
+    getCheckpointName(raid: ActivityId): RaidHubManifestResponse["checkpointNames"][ListedRaid]
 }
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
@@ -51,7 +49,7 @@ export function RaidHubManifestManager(props: {
     const value = useMemo(
         (): ManifestContextData => ({
             getRaidString: raid => data.activityStrings[raid],
-            getDifficultyString: raid => data.versionStrings[raid],
+            getVersionString: version => data.versionStrings[version],
             getUrlPathForRaid: raid => data.raidUrlPaths[raid],
             getCheckpointName: raid => data.checkpointNames[raid],
             getRaidFromHash: hash => {
@@ -73,7 +71,7 @@ export function RaidHubManifestManager(props: {
             sunsetRaids: [...data.sunset],
             reprisedRaids: data.reprisedChallengePairings,
             pantheonId: data.pantheonId,
-            pantheonmodes: data.pantheonModes
+            pantheonModes: data.pantheonModes.toSorted((a, b) => b - a)
         }),
         [data]
     )

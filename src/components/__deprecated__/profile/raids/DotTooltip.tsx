@@ -19,7 +19,7 @@ export type DotTooltipProps = {
 
 /** @deprecated */
 const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
-    const { getDifficultyString } = useRaidHubManifest()
+    const { getVersionString } = useRaidHubManifest()
     const dateString = useMemo(
         () => getRelativeTime(new Date(activity.dateCompleted)),
         [activity.dateCompleted]
@@ -57,7 +57,7 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
             <div className={styles["dot-tooltip-tags"]}>
                 <span>{lowman}</span>
                 <span>{activity.flawless && Tag.FLAWLESS}</span>
-                <span>{getDifficultyString(activity.meta.versionId)}</span>
+                <span>{getVersionString(activity.meta.versionId)}</span>
             </div>
         </div>
     )

@@ -2,15 +2,19 @@
 
 import { Collection } from "@discordjs/collection"
 import { createContext, useContext, type ReactNode } from "react"
-import type { ListedRaid, RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type {
+    ListedRaid,
+    PantheonId,
+    RaidHubPlayerActivitiesActivity
+} from "~/services/raidhub/types"
 
 const RaidContext = createContext<
     | {
-          raid: ListedRaid
+          raid: ListedRaid | PantheonId
           isLoadingActivities: false
           activities: Collection<string, RaidHubPlayerActivitiesActivity>
       }
-    | { raid: ListedRaid; isLoadingActivities: true; activities: null }
+    | { raid: ListedRaid | PantheonId; isLoadingActivities: true; activities: null }
     | null
 >(null)
 
@@ -22,17 +26,14 @@ export function useRaidCardContext() {
 
 export const RaidCardContext = ({
     children,
-    activitiesByRaid,
+    activities = new Collection(),
     isLoadingActivities,
     raid
 }: {
     children: ReactNode
-    activitiesByRaid: Collection<
-        ListedRaid,
-        Collection<string, RaidHubPlayerActivitiesActivity>
-    > | null
+    activities: Collection<string, RaidHubPlayerActivitiesActivity> | undefined
     isLoadingActivities: boolean
-    raid: ListedRaid
+    raid: ListedRaid | PantheonId
 }) => (
     <RaidContext.Provider
         value={{
@@ -41,7 +42,7 @@ export const RaidCardContext = ({
                 ? { isLoadingActivities: true, activities: null }
                 : {
                       isLoadingActivities: false,
-                      activities: activitiesByRaid?.get(raid) ?? new Collection()
+                      activities
                   })
         }}>
         {children}

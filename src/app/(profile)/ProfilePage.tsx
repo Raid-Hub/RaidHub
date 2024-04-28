@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { Loading } from "~/components/Loading"
 import { Flex } from "~/components/layout/Flex"
 import { UserCard } from "./UserCard"
-import { Raids } from "./raids/RaidsLayout"
+import { RaidsWrapper } from "./raids/RaidsWrapper"
 import { CurrentActivity } from "./transitory/CurrentActivity"
 import { LatestRaid } from "./transitory/LatestRaid"
 
@@ -42,6 +42,6 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
                 </Flex>
             </Suspense>
         </Flex>
-        <Raids />
+        <RaidsWrapper />
     </Flex>
 )

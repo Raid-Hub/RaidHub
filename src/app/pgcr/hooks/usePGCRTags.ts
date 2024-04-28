@@ -6,10 +6,14 @@ import type { RaidHubActivityResponse } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
 export const usePGCRTags = (activity: RaidHubActivityResponse | null) => {
-    const { listedRaids, reprisedRaids } = useRaidHubManifest()
+    const { listedRaids, pantheonModes, reprisedRaids } = useRaidHubManifest()
     return useMemo(() => {
         if (!activity) return []
-        if (!includedIn(listedRaids, activity.meta.activityId)) return []
+        if (
+            !includedIn(listedRaids, activity.meta.activityId) &&
+            !includedIn(pantheonModes, activity.meta.versionId)
+        )
+            return []
 
         const tags = new Array<{ tag: Tag; placement?: number }>()
         if (
@@ -51,5 +55,5 @@ export const usePGCRTags = (activity: RaidHubActivityResponse | null) => {
             if (activity.flawless) tags.push({ tag: Tag.FLAWLESS })
         }
         return tags
-    }, [listedRaids, reprisedRaids, activity])
+    }, [activity, listedRaids, pantheonModes, reprisedRaids])
 }

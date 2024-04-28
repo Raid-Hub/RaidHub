@@ -37,12 +37,12 @@ export default function CharacterWeeklyProgress({
 }
 
 function MilestoneActivity({ activity }: { activity: DestinyMilestoneChallengeActivity }) {
-    const { getDifficultyString, getRaidFromHash } = useRaidHubManifest()
+    const { getVersionString, getRaidFromHash } = useRaidHubManifest()
     const metaData = getRaidFromHash(activity.activityHash)
     if (!metaData) return null
     return (
         <div>
-            <h5>{getDifficultyString(metaData.difficulty)}</h5>
+            <h5>{getVersionString(metaData.difficulty)}</h5>
             <div
                 className={styles["progress-boxes"]}
                 style={{

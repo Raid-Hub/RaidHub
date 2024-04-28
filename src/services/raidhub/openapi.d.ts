@@ -413,45 +413,6 @@ export interface paths {
       };
     };
   };
-  "/leaderboard/{raid}/speedrun": {
-    get: {
-      parameters: {
-        query?: {
-          count?: number;
-          page?: number;
-        };
-        path: {
-          raid: components["schemas"]["RaidPath"];
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            readonly "application/json": components["schemas"]["LeaderboardSpeedrunResponse"];
-          };
-        };
-        /** @description Bad request */
-        400: {
-          content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
-          };
-        };
-        /** @description Unauthorized */
-        401: {
-          content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
-          };
-        };
-        /** @description Not found */
-        404: {
-          content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
-          };
-        };
-      };
-    };
-  };
   "/leaderboard/pantheon/{version}/first": {
     get: {
       parameters: {
@@ -1098,7 +1059,7 @@ export interface components {
       readonly membershipId: string;
       readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
           readonly meta: {
-            readonly activityId: components["schemas"]["RaidEnum"];
+            readonly activityId: components["schemas"]["ActivityEnum"];
             readonly versionId: components["schemas"]["ActivityVersionEnum"];
           };
         })[];
@@ -1217,27 +1178,6 @@ export interface components {
         readonly page?: number;
       };
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
-    };
-    readonly LeaderboardSpeedrunResponse: {
-      readonly params: {
-        readonly count: number;
-        /** @default 1 */
-        readonly page?: number;
-        readonly raid: components["schemas"]["RaidPath"];
-      };
-      readonly entries: readonly {
-          readonly rank: number;
-          readonly instanceId: string;
-          /** Format: date-time */
-          readonly dateStarted: string;
-          /** Format: date-time */
-          readonly dateCompleted: string;
-          readonly duration: number;
-          readonly players: readonly {
-              readonly player: components["schemas"]["PlayerInfo"];
-              readonly data: components["schemas"]["ActivityPlayerData"];
-            }[];
-        }[];
     };
     readonly LeaderboardPantheonFirstResponse: {
       readonly params: {
