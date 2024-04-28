@@ -7,6 +7,7 @@ type Component<T extends keyof components["schemas"]> = Prettify<components["sch
 export type RaidHubManifest = Component<"ManifestResponse">
 export type ListedRaid = (typeof Raid)[keyof typeof Raid]
 export type PantheonId = Component<"PantheonEnum">
+export type ActivityId = Component<"ActivityEnum">
 export type MasterRaid = Component<"MasterRaidEnum">
 export type PrestigeRaid = Component<"PrestigeRaidEnum">
 export type SunsetRaid = Component<"SunsetRaidEnum">

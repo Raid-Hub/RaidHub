@@ -15,17 +15,19 @@ import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLinkedProfiles } from "~/services/bungie/hooks"
 import { useRaidHubActivities, useRaidHubPlayers } from "~/services/raidhub/hooks"
 import type {
+    ActivityId,
     ListedRaid,
     RaidHubPlayerActivitiesActivity,
     RaidHubPlayerProfileLeaderboardEntry
 } from "~/services/raidhub/types"
 import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
+import { PantheonLayout } from "./PantheonLayout"
 import { RaidCardContext } from "./RaidCardContext"
 
 type TabTitle = "classic" | "pantheon" | "history"
 
-export const Raids = () => {
+export const RaidsWrapper = () => {
     const { destinyMembershipId, destinyMembershipType, ready } = usePageProps<ProfileProps>()
 
     const { data: membershipsData, isFetched: areMembershipsFetched } = useLinkedProfiles({
@@ -60,7 +62,7 @@ export const Raids = () => {
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(membershipIds)
 
-    const { leaderboards, listedRaids } = useRaidHubManifest()
+    const { leaderboards, listedRaids, pantheonId } = useRaidHubManifest()
 
     const leaderboardEntriesByRaid = useMemo(() => {
         if (isLoadingPlayers || !areMembershipsFetched) return null
@@ -94,12 +96,11 @@ export const Raids = () => {
         if (isLoadingActivities) return null
 
         const coll = new Collection<
-            ListedRaid,
+            ActivityId,
             Collection<string, RaidHubPlayerActivitiesActivity>
         >()
         activities.forEach(a => {
             if (!coll.has(a.meta.activityId)) coll.set(a.meta.activityId, new Collection())
-            if (!coll.get(a.meta.activityId)) coll.set(a.meta.activityId, new Collection())
             coll.get(a.meta.activityId)!.set(a.instanceId, a)
         })
         return coll.each(raidActivities => raidActivities.reverse())
@@ -147,11 +148,12 @@ export const Raids = () => {
                         {listedRaids.map(raid => (
                             <RaidCardContext
                                 key={raid}
-                                activitiesByRaid={activitiesByRaid}
+                                activities={activitiesByRaid?.get(raid)}
                                 isLoadingActivities={isLoadingActivities || !areMembershipsFetched}
                                 raid={raid}>
                                 <RaidCard
                                     leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
+                                    canExpand
                                     expand={() => setExpandedRaid(raid)}
                                     closeExpand={clearExpandedRaid}
                                     isExpanded={raid === expandedRaid}
@@ -159,6 +161,13 @@ export const Raids = () => {
                             </RaidCardContext>
                         ))}
                     </Grid>
+                )
+            case "pantheon":
+                return (
+                    <PantheonLayout
+                        instances={activitiesByRaid?.get(pantheonId)}
+                        isLoading={isLoadingActivities || !areMembershipsFetched}
+                    />
                 )
             case "history":
                 return (
@@ -180,7 +189,8 @@ export const Raids = () => {
         areMembershipsFetched,
         leaderboardEntriesByRaid,
         clearExpandedRaid,
-        setExpandedRaid
+        setExpandedRaid,
+        pantheonId
     ])
 
     return (

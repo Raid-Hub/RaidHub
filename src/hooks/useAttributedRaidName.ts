@@ -2,11 +2,11 @@ import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Difficulty, Raid } from "~/data/raid"
 import { Tag } from "~/models/tag"
-import type { ListedRaid, RaidDifficulty } from "~/services/raidhub/types"
+import type { ActivityId, RaidDifficulty } from "~/services/raidhub/types"
 
 export const useAttributedRaidName = (
     tag: {
-        raid: ListedRaid
+        raid: ActivityId
         playerCount: number
         fresh: boolean | null
         flawless: boolean | null

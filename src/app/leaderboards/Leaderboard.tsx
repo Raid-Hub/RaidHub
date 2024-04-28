@@ -40,7 +40,7 @@ export const Leaderboard = (
         <PageWrapper pageProps={props.pageProps} $maxWidth={2000}>
             <Flex $padding={0}>
                 <Flex $direction="column" $padding={0} $gap={1.5}>
-                    <div style={{ minWidth: "calc(max(100%, 500px))" }}>
+                    <div style={{ minWidth: "calc(min(95%, 500px))" }}>
                         {props.heading}
                         <Flex $padding={0} $relative>
                             {/* Required to suspend because of the useSearchParams() hook */}

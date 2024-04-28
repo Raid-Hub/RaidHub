@@ -11,7 +11,7 @@ const ActivityHeader = () => {
     const { data, isLoading } = usePGCRContext()
 
     const { locale } = useLocale()
-    const { getRaidString, listedRaids } = useRaidHubManifest()
+    const { getRaidString, getVersionString, listedRaids, pantheonModes } = useRaidHubManifest()
     const tags = usePGCRTags(data ?? null)
 
     const activityId = data?.meta.activityId
@@ -32,6 +32,8 @@ const ActivityHeader = () => {
                             <span>Loading...</span>
                         ) : includedIn(listedRaids, activityId) ? (
                             getRaidString(activityId)
+                        ) : includedIn(pantheonModes, data?.meta.versionId) ? (
+                            data.meta.activityName + ": " + getVersionString(data.meta.versionId)
                         ) : (
                             "Non-Raid"
                         )}
