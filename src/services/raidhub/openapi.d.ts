@@ -452,6 +452,45 @@ export interface paths {
       };
     };
   };
+  "/leaderboard/pantheon/{version}/score": {
+    get: {
+      parameters: {
+        query?: {
+          count?: number;
+          page?: number;
+        };
+        path: {
+          version: components["schemas"]["PantheonPath"];
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": components["schemas"]["LeaderboardPantheonScoreResponse"];
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": components["schemas"]["QueryValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": components["schemas"]["PathValidationError"];
+          };
+        };
+      };
+    };
+  };
   "/leaderboard/pantheon/{version}/speedrun": {
     get: {
       parameters: {
@@ -1180,6 +1219,16 @@ export interface components {
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     };
     readonly LeaderboardPantheonFirstResponse: {
+      readonly params: {
+        readonly version: components["schemas"]["PantheonPath"];
+        /** @default 50 */
+        readonly count?: number;
+        /** @default 1 */
+        readonly page?: number;
+      };
+      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
+    };
+    readonly LeaderboardPantheonScoreResponse: {
       readonly params: {
         readonly version: components["schemas"]["PantheonPath"];
         /** @default 50 */
