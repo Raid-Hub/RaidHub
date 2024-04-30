@@ -26,7 +26,7 @@ export const getPantheonVersion = (path: RaidHubPantheonPath, manifest: RaidHubM
 }
 
 export const createTeamQueryKey = (args: {
-    category: "first" | "speedrun"
+    category: "first" | "speedrun" | "score"
     pantheonPath: RaidHubPantheonPath
     page: number
     count: number
@@ -35,7 +35,7 @@ export const createTeamQueryKey = (args: {
 }
 
 export const getTeamLeaderboard = async (props: {
-    category: "first" | "speedrun"
+    category: "first" | "speedrun" | "score"
     version: RaidHubPantheonPath
     page: number
     count: number

@@ -22,6 +22,15 @@ export function HomeCardPantheon() {
                     />
                 ))}
             </HomeCardContentSection>
+            <HomeCardContentSection sectionTitle="High Score">
+                {leaderboards.pantheon.first.map(board => (
+                    <HomeCardContentSectionItem
+                        key={board.versionId}
+                        title={board.displayName}
+                        href={`/leaderboards/pantheon/${board.path}/score`}
+                    />
+                ))}
+            </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Speedrun">
                 {leaderboards.pantheon.speedrun.map(board => (
                     <HomeCardContentSectionItem

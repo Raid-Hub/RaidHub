@@ -13,7 +13,7 @@ export const TeamEntries = (props: {
     ssr?: RaidHubPantheonFirstResponse
     ssrUpdatedAt: number
     ssrPage: string
-    category: "first" | "speedrun"
+    category: "first" | "speedrun" | "score"
     pantheonPath: RaidHubPantheonPath
 }) => {
     const page = usePage()
