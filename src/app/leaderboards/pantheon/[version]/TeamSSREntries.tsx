@@ -5,7 +5,7 @@ import { TeamEntries } from "./TeamEntries"
 export const SSREntries = async (props: {
     version: RaidHubPantheonPath
     page: string
-    category: "first" | "speedrun"
+    category: "first" | "speedrun" | "score"
 }) => {
     const ssrData =
         props.page === "1"
