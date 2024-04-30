@@ -67,7 +67,7 @@ export const SpeedrunVariables: Record<
         }
     },
     [Raid.CROWN_OF_SORROW]: {
-        categoryId: "9d8g973k"
+        categoryId: "8241elw2"
     },
     [Raid.GARDEN_OF_SALVATION]: {
         categoryId: "7dgng872",
