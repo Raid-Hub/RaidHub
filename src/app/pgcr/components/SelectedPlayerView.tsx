@@ -114,6 +114,12 @@ export const SelectedPlayerView = (props: {
                         <div>Time Played</div>
                         <div>{secondsToHMS(stats.timePlayedSeconds, true)}</div>
                     </Stat>
+                    {!!stats.score && (
+                        <Stat>
+                            <div>Score</div>
+                            <div>{secondsToHMS(stats.score, true)}</div>
+                        </Stat>
+                    )}
                     <Stat>
                         <div>Kills</div>
                         <div>{formattedNumber(stats.kills, locale)}</div>
@@ -160,6 +166,7 @@ const useEntryStats = (
 ) =>
     useMemo((): {
         completed: boolean
+        score: number
         kills: number
         assists: number
         deaths: number
@@ -173,7 +180,7 @@ const useEntryStats = (
         if (!selectedCharacter) {
             return selectedPlayer.data.characters.reduce(
                 (acc, c) => ({
-                    completed: acc.completed,
+                    completed: acc.completed || c.completed,
                     kills: acc.kills + c.kills,
                     assists: acc.assists + c.assists,
                     deaths: acc.deaths + c.deaths,
@@ -181,6 +188,7 @@ const useEntryStats = (
                     superKills: acc.superKills + c.superKills,
                     meleeKills: acc.meleeKills + c.meleeKills,
                     grenadeKills: acc.grenadeKills + c.grenadeKills,
+                    score: acc.score + c.score,
                     timePlayedSeconds: acc.timePlayedSeconds,
                     weapons: acc.weapons
                         .merge(
@@ -207,7 +215,8 @@ const useEntryStats = (
                         .sort((a, b) => b.kills - a.kills)
                 }),
                 {
-                    completed: selectedPlayer.data.characters.some(c => c.completed),
+                    completed: false as boolean,
+                    score: 0,
                     kills: 0,
                     assists: 0,
                     deaths: 0,
@@ -222,6 +231,7 @@ const useEntryStats = (
         } else {
             return {
                 completed: selectedCharacter.completed,
+                score: selectedCharacter.score,
                 kills: selectedCharacter.kills,
                 assists: selectedCharacter.assists,
                 deaths: selectedCharacter.deaths,

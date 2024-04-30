@@ -23,7 +23,7 @@ export const PantheonLayout = ({
             if (!coll.has(a.meta.versionId)) coll.set(a.meta.versionId, new Collection())
             coll.get(a.meta.versionId)!.set(a.instanceId, a)
         })
-        return coll.each(raidActivities => raidActivities.reverse())
+        return coll
     }, [instances, isLoading])
 
     return (
