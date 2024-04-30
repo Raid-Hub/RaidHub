@@ -12,6 +12,7 @@ import Grenade from "~/components/icons/Grenade"
 import Intellect from "~/components/icons/Intellect"
 import Kill from "~/components/icons/Kill"
 import Melee from "~/components/icons/Melee"
+import Trophy from "~/components/icons/Trophy"
 import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
@@ -94,6 +95,15 @@ const SummaryStatsGrid = () => {
                           mvpId && resolvedPlayer
                               ? getBungieDisplayName(resolvedPlayer, { excludeCode: true })
                               : "???"
+                  }
+              ]
+            : []),
+        ...(data?.score
+            ? [
+                  {
+                      Icon: Trophy,
+                      name: "Score",
+                      value: formattedNumber(data.score, locale)
                   }
               ]
             : []),
