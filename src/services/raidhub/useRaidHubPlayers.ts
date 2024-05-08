@@ -15,7 +15,7 @@ export function useRaidHubPlayers(
                     "/player/{membershipId}/profile",
                     { membershipId: membershipId },
                     null
-                ),
+                ).then(res => res.response),
             queryKey: ["raidhub", "player", membershipId] as const
         })),
         ...opts

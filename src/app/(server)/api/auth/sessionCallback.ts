@@ -128,11 +128,13 @@ async function refreshRaidHubAdminAuth(
 
     const token = await postRaidHubApi("/authorize", null, {
         clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
-    }).catch(e => {
-        errors.push("RaidHubAPIError")
-        console.error("Failed to refresh RaidHub admin token", e)
-        return null
     })
+        .then(res => res.response)
+        .catch(e => {
+            errors.push("RaidHubAPIError")
+            console.error("Failed to refresh RaidHub admin token", e)
+            return null
+        })
 
     if (token) {
         await prisma.raidHubAccessToken

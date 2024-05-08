@@ -20,8 +20,8 @@ export const SSREntries = async (props: {
     return (
         <TeamEntries
             category={props.category}
-            ssr={ssrData}
-            ssrUpdatedAt={Date.now()}
+            ssr={ssrData?.response}
+            ssrUpdatedAt={new Date(ssrData?.minted ?? Date.now()).getTime()}
             pantheonPath={props.version}
             ssrPage={props.page}
         />

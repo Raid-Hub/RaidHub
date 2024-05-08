@@ -24,6 +24,7 @@ export type RaidHubAPIResponse<T> = {
     minted: string // ISO date string
     message?: string
 } & ({ success: true; response: T } | RaidHubErrorResponseObject)
+export type RaidHubAPISuccessResponse<T> = RaidHubAPIResponse<T> & { success: true }
 
 export type RaidHubPlayerInfo = Component<"PlayerInfo">
 

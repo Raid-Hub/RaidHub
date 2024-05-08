@@ -1,14 +1,18 @@
 import { Tag } from "~/models/tag"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubActivityResponse } from "~/services/raidhub/types"
+import { reactDedupe } from "~/util/react-cache"
 
 export type PageProps = {
     params: {
         instanceId: string
     }
 }
-export const prefetchActivity = async (instanceId: string) =>
-    getRaidHubApi("/activity/{instanceId}", { instanceId }, null).catch(() => null)
+export const prefetchActivity = reactDedupe((instanceId: string) =>
+    getRaidHubApi("/activity/{instanceId}", { instanceId }, null)
+        .then(res => res.response)
+        .catch(() => null)
+)
 
 export const getMetaData = (activity: RaidHubActivityResponse) => {
     const title = [

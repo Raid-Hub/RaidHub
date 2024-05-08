@@ -2,9 +2,9 @@ import "server-only"
 
 import type { BungieFetchConfig } from "bungie-net-core"
 import type { PlatformErrorCodes } from "bungie-net-core/models"
-import { cache } from "react"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
+import { reactDedupe } from "~/util/react-cache"
 
 const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
     5, // SystemDisabled
@@ -55,7 +55,7 @@ export default class ServerBungieClient extends BaseBungieClient {
 
     async handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
-            return (await cache(this.request).call(this, url, payload)) as T
+            return (await reactDedupe(this.request).call(this, url, payload)) as T
         } catch (e) {
             if (!(e instanceof BungieAPIError && ExpectedErrorCodes.has(e.ErrorCode))) {
                 console.error(e)

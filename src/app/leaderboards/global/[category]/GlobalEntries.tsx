@@ -35,7 +35,7 @@ export const GlobalEntries = (props: {
                 board: queryKey[3],
                 page: queryKey[4],
                 count: count
-            }),
+            }).then(res => res.response),
         select: data =>
             data?.entries.map(entry => ({
                 type: "player",

@@ -1,4 +1,9 @@
-import type { RaidHubAPIResponse, RaidHubGetPath, RaidHubPostPath } from "~/services/raidhub/types"
+import type {
+    RaidHubAPIResponse,
+    RaidHubAPISuccessResponse,
+    RaidHubGetPath,
+    RaidHubPostPath
+} from "~/services/raidhub/types"
 import type { Prettify } from "~/types/generic"
 import type { paths } from "./openapi"
 
@@ -11,7 +16,7 @@ export async function getRaidHubApi<
     pathParams: "path" extends keyof P ? P["path"] : null,
     queryParams: "query" extends keyof P ? P["query"] : null,
     config?: Omit<RequestInit, "method" | "body">
-): Promise<Prettify<R>> {
+): Promise<RaidHubAPISuccessResponse<Prettify<R>>> {
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
             // @ts-expect-error types don't really work here
@@ -40,7 +45,7 @@ export async function postRaidHubApi<
     queryParams: "query" extends keyof P ? P["query"] : null,
     body?: NonNullable<paths[T]["post"]["requestBody"]>["content"]["application/json"],
     config?: Omit<RequestInit, "method" | "body">
-): Promise<Prettify<R>> {
+): Promise<RaidHubAPISuccessResponse<Prettify<R>>> {
     const url = new URL(path, process.env.RAIDHUB_API_URL)
     Object.entries(queryParams ?? {}).forEach(([key, value]) => {
         url.searchParams.set(key, String(value))
@@ -74,7 +79,7 @@ function createHeaders(init?: HeadersInit) {
     return headers
 }
 
-async function fetchRaidHub<R>(url: URL, init: RequestInit) {
+async function fetchRaidHub<R>(url: URL, init: RequestInit): Promise<RaidHubAPISuccessResponse<R>> {
     if (new Date() < new Date("2024-04-27T00:00:00Z")) {
         url.searchParams.set("cache", "4-27-24")
     }
@@ -92,7 +97,7 @@ async function fetchRaidHub<R>(url: URL, init: RequestInit) {
     }
 
     if (data.success) {
-        return data.response
+        return data
     } else {
         const err = new Error(data.message)
         Object.assign(err, data.error)

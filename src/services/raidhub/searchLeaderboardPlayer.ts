@@ -17,7 +17,7 @@ export async function searchLeaderboardPlayer(
                 membershipId: membershipId,
                 count: query.count,
                 category: query.category
-            })
+            }).then(res => res.response)
         case "individual":
             return getRaidHubApi("/leaderboard/search", null, {
                 type: query.type,
@@ -25,7 +25,7 @@ export async function searchLeaderboardPlayer(
                 count: query.count,
                 category: query.category,
                 raid: query.raid
-            })
+            }).then(res => res.response)
         case "worldfirst":
             return getRaidHubApi("/leaderboard/search", null, {
                 type: query.type,
@@ -33,6 +33,6 @@ export async function searchLeaderboardPlayer(
                 count: query.count,
                 category: query.category,
                 raid: query.raid
-            })
+            }).then(res => res.response)
     }
 }

@@ -17,7 +17,7 @@ export const useRaidHubPlayerSearch = (searchTerm: string) => {
                 {
                     signal: signal
                 }
-            ).then(data => data.results),
+            ).then(res => res.response.results),
         onSuccess: data => {
             // This allows us to store this data in the cache for later use
             data.forEach(player => {

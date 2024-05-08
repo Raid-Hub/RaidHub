@@ -12,6 +12,6 @@ export function activitySearchQueryKey(query: RaidHubActivitySearchQuery) {
 export async function activitySearch(
     body: RaidHubActivitySearchQuery
 ): Promise<Collection<string, RaidHubActivityExtended>> {
-    const data = await postRaidHubApi("/activity/search", null, body)
+    const data = await postRaidHubApi("/activity/search", null, body).then(res => res.response)
     return new Collection(data.results.map(r => [r.instanceId, r]))
 }

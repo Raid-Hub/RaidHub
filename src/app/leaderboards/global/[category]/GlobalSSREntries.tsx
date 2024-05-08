@@ -19,9 +19,9 @@ export const GlobalSSREntries = async (props: {
     return (
         <GlobalEntries
             category={props.category}
-            ssr={ssr}
+            ssr={ssr?.response}
             ssrPage={props.page}
-            ssrUpdatedAt={Date.now()}
+            ssrUpdatedAt={new Date(ssr?.minted ?? Date.now()).getTime()}
         />
     )
 }

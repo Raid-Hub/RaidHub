@@ -25,9 +25,9 @@ export const IndividualSSREntries = async (props: {
         <IndividualEntries
             category={props.category}
             raidPath={props.raidPath}
-            ssr={ssr}
+            ssr={ssr?.response}
             ssrPage={props.page}
-            ssrUpdatedAt={Date.now()}
+            ssrUpdatedAt={new Date(ssr?.minted ?? Date.now()).getTime()}
         />
     )
 }
