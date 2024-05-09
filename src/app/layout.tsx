@@ -25,6 +25,12 @@ const DestinyManifestManager = dynamic(
     }
 )
 
+export const preferredRegion = ["iad1"] // us-east-1
+export const runtime = "nodejs"
+export const fetchCache = "default-no-store"
+export const revalidate = 86400 // static revalidation (1 day in seconds)
+export const maxDuration = 5 // max lambda duration in seconds
+
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await prefetchManifest()
 
@@ -70,11 +76,6 @@ export default async function RootLayout(params: { children: ReactNode }) {
         </html>
     )
 }
-
-export const preferredRegion = ["iad1"] // us-east-1
-export const runtime = "nodejs"
-export const revalidate = 3600 // static revalidation in seconds
-export const maxDuration = 5 // max lambda duration in seconds
 
 const title: Metadata["title"] = {
     absolute: "RaidHub",

@@ -18,7 +18,7 @@ export const useRaidHubAdminQuery = () => {
                       }
                     : {},
                 signal: abortController.current.signal
-            })
+            }).then(res => res.response)
     })
 
     if (mutation.error instanceof Error && mutation.error.name === "AbortError") {

@@ -5,8 +5,8 @@ import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
-import { cache } from "react"
 import { prisma } from "~/server/prisma"
+import { reactDedupe } from "~/util/react-cache"
 import { PrismaAdapter } from "./adapter"
 import BungieProvider from "./providers/BungieProvider"
 import { sessionCallback } from "./sessionCallback"
@@ -50,7 +50,7 @@ export const {
 })
 
 // We cache the session for each request to avoid unnecessary database calls
-export const getServerSession = cache(auth)
+export const getServerSession = reactDedupe(auth)
 
 type ProviderType =
     | ReturnType<typeof BungieProvider>

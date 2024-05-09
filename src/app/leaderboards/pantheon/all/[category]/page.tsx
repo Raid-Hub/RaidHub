@@ -93,8 +93,8 @@ const SSREntries = async (props: { page: string; category: RaidHubPantheonIndivi
     return (
         <IndividualEntries
             category={props.category}
-            ssr={ssrData}
-            ssrUpdatedAt={Date.now()}
+            ssr={ssrData?.response}
+            ssrUpdatedAt={new Date(ssrData?.minted ?? Date.now()).getTime()}
             ssrPage={props.page}
         />
     )

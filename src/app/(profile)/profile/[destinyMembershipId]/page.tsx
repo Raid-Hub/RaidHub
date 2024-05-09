@@ -12,17 +12,14 @@ type PageProps = {
     }
 }
 
-export const dynamic = "force-static"
+export const dynamic = "force-dynamic"
 export const dynamicParams = true
-export const revalidate = 900
 
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
     const [appProfile, basicProfile] = await Promise.all([
         getUniqueProfileByDestinyMembershipId(params.destinyMembershipId),
-        prefetchRaidHubPlayerBasic({
-            membershipId: params.destinyMembershipId
-        })
+        prefetchRaidHubPlayerBasic(params.destinyMembershipId)
     ])
 
     const pageProps: ProfileProps = {
@@ -45,9 +42,7 @@ export default async function Page({ params }: PageProps) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const [profile, basic] = await Promise.all([
         getUniqueProfileByDestinyMembershipId(params.destinyMembershipId),
-        prefetchRaidHubPlayerBasic({
-            membershipId: params.destinyMembershipId
-        })
+        prefetchRaidHubPlayerBasic(params.destinyMembershipId)
     ])
 
     if (!profile && !basic) {

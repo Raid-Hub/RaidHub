@@ -21,7 +21,8 @@ type PageProps = {
 }
 
 export const dynamicParams = true
-// export const dynamic = "force-dynamic"
+export const dynamic = "force-static"
+export const revalidate = 900
 
 /**
  * This page preferably should be accessed at /:vanity through rewrites in next.config.js
@@ -51,7 +52,7 @@ export default async function Page({ params }: PageProps) {
 
 const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
     const [raidHubProfile, destinyProfile] = await Promise.all([
-        prefetchRaidHubPlayerProfile({ membershipId: appProfile.destinyMembershipId }),
+        prefetchRaidHubPlayerProfile(appProfile.destinyMembershipId),
         prefetchDestinyProfile({
             destinyMembershipId: appProfile.destinyMembershipId,
             membershipType: appProfile.destinyMembershipType
@@ -85,9 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const raidhub = await prefetchRaidHubPlayerBasic({
-        membershipId: profile.destinyMembershipId
-    })
+    const raidhub = await prefetchRaidHubPlayerBasic(profile.destinyMembershipId)
 
     const image = profile?.image ?? bungieProfileIconUrl(raidhub?.iconPath)
 
