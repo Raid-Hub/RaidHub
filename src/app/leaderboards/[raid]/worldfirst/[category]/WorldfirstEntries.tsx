@@ -39,7 +39,7 @@ export const WorldfirstEntries = (props: {
                 category: queryKey[4],
                 page: queryKey[5],
                 count: count
-            }),
+            }).then(res => res.response),
         select: data =>
             data?.entries.map(entry => ({
                 type: "team",

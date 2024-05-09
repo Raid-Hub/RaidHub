@@ -111,7 +111,7 @@ export const generateQuery =
             getActivities({
                 membershipId,
                 cursor
-            }),
+            }).then(res => res.response),
         staleTime: 60_000,
         refetchInterval: 300_000,
         refetchIntervalInBackground: false,

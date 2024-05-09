@@ -35,7 +35,7 @@ export const TeamEntries = (props: {
                 category: queryKey[2],
                 count: queryKey[3],
                 page: queryKey[4]
-            }),
+            }).then(res => res.response),
         select: data =>
             data?.entries.map(entry => ({
                 type: "team",

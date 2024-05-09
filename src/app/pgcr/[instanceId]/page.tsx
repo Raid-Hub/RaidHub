@@ -3,10 +3,9 @@ import { metadata as rootMetaData } from "~/app/layout"
 import { PGCRPage } from "../PGCRPage"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
-export const dynamic = "force-static"
+export const dynamic = "force-dynamic"
 export const dynamicParams = true
 export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
-export const revalidate = 86400
 
 export default async function Page({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
