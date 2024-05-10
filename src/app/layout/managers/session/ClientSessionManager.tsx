@@ -1,7 +1,7 @@
 "use client"
 
 import { type Session } from "next-auth"
-import { SessionProvider, getSession, signOut } from "next-auth/react"
+import { SessionProvider, signOut } from "next-auth/react"
 import { useEffect, useState, type ReactNode } from "react"
 import { useSession } from "~/hooks/app/useSession"
 import { useBungieClient } from "./BungieClientProvider"
@@ -17,39 +17,28 @@ import { useBungieClient } from "./BungieClientProvider"
 
 export const ClientSessionManager = (props: {
     children: ReactNode
-    serverSession: Session | null
-    isStatic: boolean
+    serverSession: Session | null | undefined
 }) => {
     const [sessionRefetchInterval, setSessionRefetchInterval] = useState(0)
-    const [initialSession, setInitialSession] = useState<Session | null | undefined>(() =>
-        !props.isStatic ? props.serverSession : undefined
-    )
 
-    useEffect(() => {
-        if (props.isStatic) {
-            void getSession({
-                broadcast: true
-            }).then(setInitialSession)
-        }
-    }, [props.isStatic])
-
-    return typeof initialSession !== "undefined" ? (
+    return (
         <SessionProvider
-            refetchInterval={sessionRefetchInterval}
+            refetchInterval={sessionRefetchInterval / 1000}
             refetchOnWindowFocus={false}
-            session={initialSession}>
+            refetchWhenOffline={false}
+            session={props.serverSession}>
             <TokenManager setNextRefetch={setSessionRefetchInterval} />
             {props.children}
         </SessionProvider>
-    ) : null
+    )
 }
 
-const TokenManager = ({ setNextRefetch }: { setNextRefetch: (seconds: number) => void }) => {
+const TokenManager = ({ setNextRefetch }: { setNextRefetch: (milliseconds: number) => void }) => {
     const [failedTokenRequests, setFailedTokenRequests] = useState(0)
     const bungieClient = useBungieClient()
     const session = useSession<false>()
 
-    if (failedTokenRequests >= 3) {
+    if (failedTokenRequests >= 4) {
         setFailedTokenRequests(0)
         void signOut()
         bungieClient.clearToken()
@@ -63,11 +52,11 @@ const TokenManager = ({ setNextRefetch }: { setNextRefetch: (seconds: number) =>
         } else if (!session.data) {
             // loading, do nothing
         } else if (session.data.errors.includes("BungieAPIOffline")) {
-            setNextRefetch(120)
+            setNextRefetch(120_000)
         } else if (session.data.errors.includes("AccessTokenError")) {
             console.error(new Error("Access Token Error"))
+            setNextRefetch(10_000)
             setFailedTokenRequests(prev => prev + 1)
-            setNextRefetch(10)
         } else if (session.data.errors.includes("ExpiredRefreshTokenError")) {
             bungieClient.clearToken()
             void signOut()
@@ -81,7 +70,9 @@ const TokenManager = ({ setNextRefetch }: { setNextRefetch: (seconds: number) =>
             })
 
             const timeRemaining = expires.getTime() - Date.now()
-            setNextRefetch(Math.max(Math.ceil(timeRemaining / 1000), 1))
+            setNextRefetch(Math.max(timeRemaining, 1000))
+
+            return bungieClient.onUnauthorized(session.update)
         }
     }, [bungieClient, session, setNextRefetch])
 

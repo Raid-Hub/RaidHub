@@ -2,7 +2,7 @@
 
 import { Collection } from "@discordjs/collection"
 import { m } from "framer-motion"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useTags } from "~/app/(profile)/raids/useTags"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
@@ -51,11 +51,7 @@ export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) 
 
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
-    useTimeout(
-        useCallback(() => setHoveredTag(null), []),
-        2500,
-        [hoveredTag]
-    )
+    useTimeout(() => setHoveredTag(null), 2500, [hoveredTag])
 
     const recentClear = useMemo(
         () => activities?.find(a => a.player.completed && a.fresh) ?? null,
