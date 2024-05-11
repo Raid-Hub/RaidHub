@@ -40,7 +40,7 @@ export default function BungieProvider(creds: {
         },
         profile(data) {
             return {
-                id: "",
+                id: data.bungieNetUser.membershipId,
                 ...data
             }
         }
