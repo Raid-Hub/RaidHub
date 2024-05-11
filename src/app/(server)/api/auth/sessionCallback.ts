@@ -20,11 +20,11 @@ export const sessionCallback = async ({
     ])
 
     return {
-        ...session,
         user,
         bungieAccessToken: bungieToken.token,
         raidHubAccessToken: raidhubToken?.token ?? undefined,
-        errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors]))
+        errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors])),
+        expires: session.expires
     }
 }
 

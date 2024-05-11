@@ -24,24 +24,19 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
     protected readonly request = async <T>(url: URL, payload: RequestInit): Promise<T> => {
         const res = await fetch(url, payload)
 
-        let data
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            data = await res.json()
-        } catch (e) {
-            if (e instanceof SyntaxError && res.status === 500) {
-                throw new Error("Unauthorized")
-            }
-            throw new Error("Unknown error")
+        if (!res.headers.get("Content-Type")?.includes("application/json")) {
+            throw res
         }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data = await res.json()
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (data.ErrorCode && data.ErrorCode !== 1) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             throw new BungieAPIError(data)
         } else if (!res.ok) {
-            const error = new Error("Unknown error")
-            throw Object.assign(error, data)
+            throw new SyntaxError("Unable to parse the JSON response")
         }
 
         return data as T

@@ -117,7 +117,7 @@ export const SelectedPlayerView = (props: {
                     {!!stats.score && (
                         <Stat>
                             <div>Score</div>
-                            <div>{secondsToHMS(stats.score, true)}</div>
+                            <div>{formattedNumber(stats.score, locale)}</div>
                         </Stat>
                     )}
                     <Stat>

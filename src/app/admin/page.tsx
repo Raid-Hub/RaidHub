@@ -1,8 +1,8 @@
 import { type Metadata } from "next"
-import AddVanityForm from "~/components/__deprecated__/admin/AddVanityForm"
-import RemoveVanityForm from "~/components/__deprecated__/admin/RemoveVanityForm"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
+import { AddVanityForm } from "./AddVanityForm"
+import { RemoveVanityForm } from "./DeleteVanityForm"
 
 export default async function Page() {
     return (

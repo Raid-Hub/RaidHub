@@ -10,52 +10,51 @@ datasource db {
 }
 
 model Profile {
-  id                    String  @id @default(uuid())
+  destinyMembershipId   String  @id @map("destiny_membership_id")
+  destinyMembershipType Int     @map("destiny_membership_type")
+  bungieMembershipId    String  @unique @map("bungie_membership_id")
   name                  String
   image                 String
-  userId                String  @unique @map("user_id")
-  destinyMembershipId   String  @unique @map("destiny_membership_id")
-  destinyMembershipType Int     @map("destiny_membership_type")
   pinnedActivityId      String? @map("pinned_activity_id")
   vanity                String? @unique
-  user                  User    @relation(name: "UserToProfile", fields: [userId], references: [id], onDelete: Cascade)
-  pinnedPGCR            PGCR?   @relation(name: "PGCRToProfile", fields: [pinnedActivityId], references: [id], onDelete: SetNull)
+  bungieUser            User?   @relation("UserToProfilePrimary")
+  user                  User    @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
+  pinnedPGCR            PGCR?   @relation("PGCRToProfile", fields: [pinnedActivityId], references: [id])
 
   @@index([pinnedActivityId])
-  @@map("profile")
+  @@map("destiny_profile")
 }
 
 model User {
-  id                 String              @id @default(uuid())
-  bungieMembershipId String              @unique @map("bungie_membership_id")
-  email              String?             @unique
-  emailVerified      DateTime?           @map("email_verified")
-  createdAt          DateTime            @default(now()) @map("created_at")
-  role               String              @default("USER")
-  profile            Profile?            @relation(name: "UserToProfile")
-  accounts           Account[]           @relation(name: "UserToAccount")
-  sessions           Session[]           @relation(name: "UserToSession")
-  raidHubAccessToken RaidHubAccessToken? @relation(name: "UserToRaidHubAccessToken")
+  id                         String              @id @map("bungie_membership_id")
+  primaryDestinyMembershipId String?             @unique(map: "user_primary_destiny_membership_id") @map("primary_destiny_membership_id")
+  email                      String?             @unique(map: "user_email_key")
+  emailVerified              DateTime?           @map("email_verified")
+  createdAt                  DateTime            @default(now()) @map("created_at")
+  role                       String              @default("USER")
+  accounts                   Account[]           @relation("UserToAccount")
+  primaryProfile             Profile?            @relation("UserToProfilePrimary", fields: [primaryDestinyMembershipId], references: [destinyMembershipId])
+  profiles                   Profile[]           @relation("UserToProfile")
+  raidHubAccessToken         RaidHubAccessToken? @relation("UserToRaidHubAccessToken")
+  sessions                   Session[]           @relation("UserToSession")
 
-  @@map("user")
+  @@map("bungie_user")
 }
 
-// Represents an OAuth session. Do not edit these fields.
 model Session {
   id           String   @id @default(uuid())
-  userId       String   @map("user_id")
+  userId       String   @map("bungie_membership_id")
   sessionToken String   @unique @map("session_token")
   expires      DateTime @default(now())
-  user         User     @relation(name: "UserToSession", fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation("UserToSession", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("session")
 }
 
-// Represents an OAuth account. Do not edit these fields.
 model Account {
   id                String  @id @default(uuid())
-  userId            String  @map("user_id")
+  userId            String  @map("bungie_membership_id")
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
@@ -69,7 +68,7 @@ model Account {
   scope             String?
   idToken           String? @map("id_token")
   sessionState      String? @map("session_state")
-  user              User    @relation(name: "UserToAccount", fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation("UserToAccount", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId], name: "uniqueProviderAccountId")
   @@unique([provider, userId], name: "uniqueProviderUser")
@@ -79,10 +78,10 @@ model Account {
 
 model RaidHubAccessToken {
   id        String   @id @default(uuid())
-  userId    String   @unique @map("user_id")
+  userId    String   @unique @map("bungie_membership_id")
   value     String
   expiresAt DateTime @map("expires_at")
-  user      User     @relation(name: "UserToRaidHubAccessToken", fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserToRaidHubAccessToken", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("raidhub_access_token")
 }
@@ -90,7 +89,7 @@ model RaidHubAccessToken {
 model PGCR {
   id                 String    @id @map("instance_id")
   videoURL           String?   @map("video_url")
-  profilesWithPinned Profile[] @relation(name: "PGCRToProfile")
+  profilesWithPinned Profile[] @relation("PGCRToProfile")
 
   @@map("pgcr")
 }

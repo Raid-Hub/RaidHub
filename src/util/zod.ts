@@ -22,6 +22,7 @@ export const zProfile = z.object({
     vanity: z.string().nullable().optional(),
     destinyMembershipId: z.string(),
     destinyMembershipType: BungieMembershipEnum,
+    bungieMembershipId: z.string(),
     pinnedActivityId: z.string().regex(/^\d+$/).nullable().optional(),
     profileDecoration: z
         .string()
@@ -32,21 +33,9 @@ export const zProfile = z.object({
     _output: Omit<Prisma.ProfileCreateInput, "user">
 }
 
-export const zUser = z.object({
-    bungieMembershipId: z.string(),
-    role: z.enum(["USER", "ADMIN"]),
-    email: z.string().nullable().default(null),
-    emailVerified: z.nullable(z.date())
-}) satisfies {
-    _output: Prisma.UserCreateInput
-}
-
-const zProfileDecoration = z.string().regex(/^#[A-Fa-f0-9]{8}$/, "Invalid color code")
-
 export const zModifiableProfile = z
     .object({
-        pinnedActivityId: z.nullable(z.string().regex(/^\d+$/)),
-        profileDecoration: zProfileDecoration.nullable()
+        pinnedActivityId: z.nullable(z.string().regex(/^\d+$/))
     })
     .partial() satisfies {
     _output: Partial<z.infer<typeof zProfile>>
@@ -67,16 +56,6 @@ export const zUniqueDestinyProfile = z.object({
         destinyMembershipType: BungieMembershipType
     }
 }
-
-export const zCreateVanity = z.object({
-    destinyMembershipId: z.string(),
-    destinyMembershipType: BungieMembershipEnum,
-    string: z.string().transform(s => s.toLowerCase())
-})
-
-export const zDeleteVanity = z.object({
-    vanity: z.string().toLowerCase()
-})
 
 export const numberString = z.coerce.string().regex(/^\d+$/)
 export const booleanString = z

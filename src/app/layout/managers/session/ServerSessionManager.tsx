@@ -9,7 +9,7 @@ import { ClientSessionManager } from "./ClientSessionManager"
  * Once the page is rendered on the client, the session will be managed by the `ClientSessionManager`.
  *
  * This means that useSession() will not work on the client until the session is fetched.
- * So any components that rely on useSession() should call getServerAuthSession() first
+ * So any components that rely on useSession() should call getServerSession() first
  *
  * Additionally, some pages are rendered statically, meaning the session will be null. We can
  * force the session to be fetched client-side by setting the session to undefined, basically tricking
@@ -26,7 +26,7 @@ async function AsyncSessionProvider(props: { children: ReactNode }) {
     const session = await getServerSession()
 
     return (
-        <ClientSessionManager serverSession={session} isStatic={isStaticRequest()}>
+        <ClientSessionManager serverSession={!isStaticRequest() ? session : undefined}>
             {props.children}
         </ClientSessionManager>
     )

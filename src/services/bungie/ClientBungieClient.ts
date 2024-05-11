@@ -1,11 +1,24 @@
 import type { BungieFetchConfig } from "bungie-net-core"
+import type { PlatformErrorCodes } from "bungie-net-core/models"
+import EventEmitter from "events"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "./BungieClient"
+
+const AuthErrorCodes = new Set<PlatformErrorCodes>([
+    99, // WebAuthRequired
+    22, // WebAuthModuleAsyncFailed
+    2124, // AuthorizationRecordRevoked
+    2123, // AuthorizationRecordExpired
+    2122, // AuthorizationCodeStale
+    2106 // AuthorizationCodeInvalid
+])
 
 export default class ClientBungieClient extends BaseBungieClient {
     private accessToken: string | null = null
     // An interval to clear the access token.
     private tokenClearTimeout: NodeJS.Timeout | null = null
+
+    private readonly emitter = new EventEmitter()
 
     protected generatePayload(config: BungieFetchConfig): RequestInit {
         const apiKey = process.env.BUNGIE_API_KEY
@@ -42,19 +55,33 @@ export default class ClientBungieClient extends BaseBungieClient {
     protected async handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
             return await this.request(url, payload)
-        } catch (e) {
-            if (e instanceof Error && e.message === "Unauthorized") {
-                this.clearToken()
-                throw e
-            }
+        } catch (err) {
             if (url.pathname.match(/\/common\/destiny2_content\/json\//)) {
                 url.searchParams.set("bust", String(Math.floor(Math.random() * 7777777)))
                 return this.request(url, payload)
-            } else if (e instanceof BungieAPIError && e.ErrorCode === 1688) {
+            } else if (
+                (err instanceof Response && err.status === 401) ||
+                (err instanceof BungieAPIError && AuthErrorCodes.has(err.ErrorCode))
+            ) {
+                this.clearToken()
+                this.emitter.emit("unauthorized")
+
+                return await new Promise(resolve => {
+                    const timeout = setTimeout(() => {
+                        this.emitter.off("authorized", listener)
+                        resolve(this.request(url, payload))
+                    }, 5000)
+                    const listener = () => {
+                        clearTimeout(timeout)
+                        resolve(this.request(url, payload))
+                    }
+                    this.emitter.once("authorized", listener)
+                })
+            } else if (err instanceof BungieAPIError && err.ErrorCode === 1688) {
                 url.searchParams.set("retry", "DestinyDirectBabelClientTimeout")
                 return this.request(url, payload)
             } else {
-                throw e
+                throw err
             }
         }
     }
@@ -73,6 +100,7 @@ export default class ClientBungieClient extends BaseBungieClient {
      * @param token.expires The expiration date of the access token.
      */
     public readonly setToken = (token: { value: string; expires: Date }) => {
+        this.emitter.emit("authorized")
         if (this.tokenClearTimeout) {
             clearTimeout(this.tokenClearTimeout)
         }
@@ -89,6 +117,14 @@ export default class ClientBungieClient extends BaseBungieClient {
         this.accessToken = null
         if (this.tokenClearTimeout) {
             clearTimeout(this.tokenClearTimeout)
+        }
+    }
+
+    public readonly onUnauthorized = (listener: () => void) => {
+        this.emitter.once("unauthorized", listener)
+
+        return () => {
+            this.emitter.off("unauthorized", listener)
         }
     }
 }

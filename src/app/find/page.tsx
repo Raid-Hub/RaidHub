@@ -8,7 +8,11 @@ export default function Page() {
     return (
         <PageWrapper>
             <ForceClientSideBungieSignIn
-                whenSignedIn={({ user }) => <Find sessionMembershipId={user.destinyMembershipId} />}
+                whenSignedIn={({ user }) =>
+                    !!user.primaryDestinyMembershipId && (
+                        <Find sessionMembershipId={user.primaryDestinyMembershipId} />
+                    )
+                }
             />
         </PageWrapper>
     )
