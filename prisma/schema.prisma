@@ -34,7 +34,7 @@ model User {
   role                       String              @default("USER")
   accounts                   Account[]           @relation("UserToAccount")
   primaryProfile             Profile?            @relation("UserToProfilePrimary", fields: [primaryDestinyMembershipId], references: [destinyMembershipId])
-  profiles                   Profile[]            @relation("UserToProfile")
+  profiles                   Profile[]           @relation("UserToProfile")
   raidHubAccessToken         RaidHubAccessToken? @relation("UserToRaidHubAccessToken")
   sessions                   Session[]           @relation("UserToSession")
 
