@@ -5,25 +5,31 @@ import { protectedProcedure } from "../.."
 export const updateProfile = protectedProcedure
     .input(
         z.object({
-            name: z.string().optional(),
-            image: z.string().url().optional(),
-            pinnedActivityId: z.string().nullable().optional(),
-            profileDecoration: z.string().nullable().optional()
+            destinyMembershipId: z.string(),
+            data: z.object({
+                name: z.string().optional(),
+                image: z.string().url().optional(),
+                pinnedActivityId: z.string().nullable().optional(),
+                profileDecoration: z.string().nullable().optional()
+            })
         })
     )
     .mutation(async ({ input, ctx }) => {
-        try {
-            const profile = await ctx.prisma.profile.update({
-                where: {
-                    userId: ctx.session.user.id
-                },
-                data: input
-            })
-            return profile
-        } catch (e) {
+        if (
+            !ctx.session.user.profiles.some(
+                p => p.destinyMembershipId === input.destinyMembershipId
+            )
+        ) {
             throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: e instanceof Error ? e.message : "Unknown error"
+                code: "FORBIDDEN",
+                message: "You do not have access to this profile."
             })
         }
+
+        return await ctx.prisma.profile.update({
+            where: {
+                destinyMembershipId: input.destinyMembershipId
+            },
+            data: input.data
+        })
     })

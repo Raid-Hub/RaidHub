@@ -13,7 +13,6 @@ import TwitterIcon from "~/components/icons/TwitterIcon"
 import YoutubeIcon from "~/components/icons/YoutubeIcon"
 import styles from ".//account.module.css"
 import Connection from "./Connection"
-import IconUploadForm from "./IconUploadForm"
 import SpeedrunAPIKeyModal from "./SpeedrunAPIKeyModal"
 
 type AccountProps = {
@@ -59,9 +58,13 @@ const Account = ({ session, providers }: AccountProps) => {
             <SpeedrunAPIKeyModal refetchSocials={refetchSocials} ref={speedrunAPIKeyModalRef} />
             <section className={[styles.section, styles.flex].join(" ")}>
                 <div className={[styles.buttons, styles["glossy-bg"]].join(" ")}>
-                    <Link href={`/profile/${session.user.destinyMembershipId}`}>
-                        <button>View Profile</button>
-                    </Link>
+                    {session.user.profiles.map(profile => (
+                        <Link
+                            key={profile.destinyMembershipId}
+                            href={`/profile/${profile.destinyMembershipId}`}>
+                            <button>View Profile ({profile.name})</button>
+                        </Link>
+                    ))}
                     <button onClick={() => signIn("bungie", {}, "reauth=true")}>
                         Sign in with a different bungie account
                     </button>
@@ -78,7 +81,7 @@ const Account = ({ session, providers }: AccountProps) => {
             </section>
             <section className={[styles.section, styles.flex].join(" ")}>
                 <h2>Manage Account</h2>
-                <IconUploadForm user={session.user} />
+                {/* <IconUploadForm user={session.user} /> */}
             </section>
             <section className={styles.section}>
                 <h2>Manage Connections</h2>

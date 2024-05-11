@@ -31,6 +31,10 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
 
     const animate: keyof typeof variants = props.isDropdownOpen ? "open" : "closed"
 
+    const primaryProfile = sessionData?.user?.profiles?.find(
+        p => p.destinyMembershipId === sessionData.user.primaryDestinyMembershipId
+    )
+
     return (
         <Container initial={"closed"} animate={animate} variants={variants}>
             <Content $direction="column" $crossAxis="flex-start" $gap={0.25} $padding={0.85}>
@@ -38,20 +42,22 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                     <>
                         <div>
                             <Username>{sessionData.user.name}</Username>
-                            <MembershipId>{sessionData.user.destinyMembershipId}</MembershipId>
+                            <MembershipId>
+                                {primaryProfile?.destinyMembershipId ??
+                                    "No linked Destiny Accounts"}
+                            </MembershipId>
                         </div>
                         <hr />
-                        {sessionData.user.destinyMembershipType &&
-                            sessionData.user.destinyMembershipId && (
-                                <DropdownLink
-                                    title="View Profile"
-                                    href={
-                                        sessionData.user.vanity
-                                            ? `/${sessionData.user.vanity}`
-                                            : `/profile/${sessionData.user.destinyMembershipId}`
-                                    }
-                                />
-                            )}
+                        {primaryProfile && (
+                            <DropdownLink
+                                title="View Profile"
+                                href={
+                                    primaryProfile.vanity
+                                        ? `/${primaryProfile.vanity}`
+                                        : `/profile/${primaryProfile.destinyMembershipId}`
+                                }
+                            />
+                        )}
                         <DropdownLink title="Manage Account" href="/account" />
                         {sessionData.user.role === "ADMIN" && (
                             <>

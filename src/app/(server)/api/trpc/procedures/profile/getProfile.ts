@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { publicProcedure } from "../.."
 
-export const getProfileByDestinyMembershipId = publicProcedure
+export const getProfile = publicProcedure
     .input(
         z.union([
             z.object({
@@ -37,11 +37,14 @@ export const getProfileByDestinyMembershipId = publicProcedure
                 }
             }
         })
+
         if (!data?.user) return null
+
         const {
             user: { accounts },
             ...profile
         } = data
+
         return {
             ...profile,
             connections: accounts

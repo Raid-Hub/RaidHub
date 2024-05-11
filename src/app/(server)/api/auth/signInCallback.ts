@@ -12,16 +12,21 @@ export const signInCallback = async ({
     user: Profile & { fresh?: true }
 }) => {
     // Users from the bungie callback will not need to refresh their tokens
-    if (account?.provider === "bungie" && !user.fresh) {
+    console.log("sign in callback xx", { account, user })
+    if (
+        account?.provider === "bungie" &&
+        // @ts-expect-error Types are wrong
+        user.createdAt
+    ) {
         await updateBungieAccessTokens({
-            userId: user.id,
+            userId: account.providerAccountId,
             access: {
                 value: account.access_token!,
                 expires: new Date(account.expires_at! * 1000)
             },
             refresh: {
                 value: account.refresh_token!,
-                expires: new Date(Date.now() + 7_775_777_777)
+                expires: new Date(Date.now() + (account.refresh_expires_in as number) * 1000)
             }
         })
     }
