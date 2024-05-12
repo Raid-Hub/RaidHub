@@ -41,7 +41,7 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
                 {status === "authenticated" ? (
                     <>
                         <div>
-                            <Username>{sessionData.user.name}</Username>
+                            {primaryProfile && <Username>{primaryProfile.name}</Username>}
                             <MembershipId>
                                 {primaryProfile?.destinyMembershipId ??
                                     "No linked Destiny Accounts"}

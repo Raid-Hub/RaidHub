@@ -23,7 +23,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
 
         const primaryDestinyMembershipId =
             data.primaryMembershipId ?? data.destinyMemberships[0].membershipId
-
+        console.log(data.destinyMemberships)
         const profiles = await Promise.all(
             data.destinyMemberships.map(membership =>
                 prisma.profile.upsert({

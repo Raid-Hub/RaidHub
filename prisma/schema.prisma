@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  binaryTargets   = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -12,7 +12,7 @@ datasource db {
 model Profile {
   destinyMembershipId   String  @id @map("destiny_membership_id")
   destinyMembershipType Int     @map("destiny_membership_type")
-  bungieMembershipId    String  @unique @map("bungie_membership_id")
+  bungieMembershipId    String  @map("bungie_membership_id")
   name                  String
   image                 String
   pinnedActivityId      String? @map("pinned_activity_id")
@@ -22,6 +22,7 @@ model Profile {
   pinnedPGCR            PGCR?   @relation("PGCRToProfile", fields: [pinnedActivityId], references: [id])
 
   @@index([pinnedActivityId])
+  @@index([bungieMembershipId])
   @@map("destiny_profile")
 }
 

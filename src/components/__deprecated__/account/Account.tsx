@@ -27,6 +27,19 @@ type AccountProps = {
     >
 }
 
+const bungieMembershipTypeMap = {
+    "-1": "???",
+    0: "???",
+    1: "Xbox",
+    2: "PSN",
+    3: "Steam",
+    4: "Blizzard",
+    5: "Stadia",
+    6: "Epic",
+    10: "Demon",
+    254: "Bungie.net"
+}
+
 const Account = ({ session, providers }: AccountProps) => {
     const { data: socialNames, refetch: refetchSocials } = trpc.user.connections.useQuery()
     const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
@@ -62,7 +75,10 @@ const Account = ({ session, providers }: AccountProps) => {
                         <Link
                             key={profile.destinyMembershipId}
                             href={`/profile/${profile.destinyMembershipId}`}>
-                            <button>View Profile ({profile.name})</button>
+                            <button>
+                                View Profile (
+                                {bungieMembershipTypeMap[profile.destinyMembershipType]})
+                            </button>
                         </Link>
                     ))}
                     <button onClick={() => signIn("bungie", {}, "reauth=true")}>

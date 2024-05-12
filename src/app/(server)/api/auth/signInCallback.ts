@@ -12,7 +12,6 @@ export const signInCallback = async ({
     user: Profile & { fresh?: true }
 }) => {
     // Users from the bungie callback will not need to refresh their tokens
-    console.log("sign in callback xx", { account, user })
     if (
         account?.provider === "bungie" &&
         // @ts-expect-error Types are wrong
