@@ -33,6 +33,7 @@
         "@trpc/react-query": "^10.44.1",
         "@trpc/server": "^10.44.1",
         "bungie-net-core": "latest",
+        "core-js": "^3.37.1",
         "dexie": "3.2.4",
         "dexie-react-hooks": "^1.1.7",
         "framer-motion": "^10.13.0",
