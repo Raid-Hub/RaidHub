@@ -51,9 +51,7 @@ export const usePGCRTags = (activity: RaidHubActivityResponse | null) => {
         if (activity.playerCount === 1) tags.push({ tag: Tag.SOLO })
         else if (activity.playerCount === 2) tags.push({ tag: Tag.DUO })
         else if (activity.playerCount === 3) tags.push({ tag: Tag.TRIO })
-        if (activity.fresh && activity.completed) {
-            if (activity.flawless) tags.push({ tag: Tag.FLAWLESS })
-        }
+        if (activity.flawless) tags.push({ tag: Tag.FLAWLESS })
         return tags
     }, [activity, listedRaids, pantheonModes, reprisedRaids])
 }
