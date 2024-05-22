@@ -43,7 +43,7 @@ export const useAttributedRaidName = (
         }
         if (tag.difficulty === Difficulty.MASTER) descriptors.push(Tag.MASTER)
         else if (tag.contest) descriptors.push(Tag.CONTEST)
-        if (!tag.fresh && tag.completed && tag.playerCount <= 3) {
+        if (!tag.fresh && !tag.flawless && tag.completed && tag.playerCount <= 3) {
             descriptors.push(getCheckpointName(tag.raid))
         }
         if (!opts?.excludeRaidName) {
@@ -56,7 +56,7 @@ export const useAttributedRaidName = (
         // special cases
         if (wishWall) {
             descriptors.push("(Wish Wall)")
-        } else if (!tag.fresh && tag.playerCount > 3) {
+        } else if (!tag.fresh && !tag.flawless && tag.playerCount > 3) {
             descriptors.push("(Checkpoint)")
         }
         return descriptors.join(" ")

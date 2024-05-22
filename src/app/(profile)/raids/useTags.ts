@@ -140,59 +140,58 @@ function isBestTag(activity: { raid: number; weight: number }): boolean {
         case Raid.CROTAS_END:
             // duo flawless or trio flawless master
             return (
-                bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b011110) ||
-                bitfieldMatches(activity.weight, 0b001111)
+                bitfieldMatches(activity.weight, 0b011100) ||
+                bitfieldMatches(activity.weight, 0b001101)
             )
 
         case Raid.ROOT_OF_NIGHTMARES:
             // solo flawless or duo flawless master
             return (
-                bitfieldMatches(activity.weight, 0b111110) ||
-                bitfieldMatches(activity.weight, 0b011111)
+                bitfieldMatches(activity.weight, 0b111100) ||
+                bitfieldMatches(activity.weight, 0b011101)
             )
         case Raid.KINGS_FALL:
             // duo master oryx or trio flawless master
             return (
                 bitfieldMatches(activity.weight, 0b011001) ||
-                bitfieldMatches(activity.weight, 0b001111)
+                bitfieldMatches(activity.weight, 0b001101)
             )
         case Raid.VOW_OF_THE_DISCIPLE:
             // trio flawless master
-            return bitfieldMatches(activity.weight, 0b001111)
+            return bitfieldMatches(activity.weight, 0b001101)
         case Raid.VAULT_OF_GLASS:
             // solo atheon or duo flawless master
             return (
                 bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b011111)
+                bitfieldMatches(activity.weight, 0b011101)
             )
         case Raid.DEEP_STONE_CRYPT:
             // duo flawless
-            return bitfieldMatches(activity.weight, 0b011110)
+            return bitfieldMatches(activity.weight, 0b011100)
         case Raid.GARDEN_OF_SALVATION:
             // solo sanc or trio flawless
             return (
                 bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b001110)
+                bitfieldMatches(activity.weight, 0b001100)
             )
         case Raid.CROWN_OF_SORROW:
             // duo flawless
-            return bitfieldMatches(activity.weight, 0b011110)
+            return bitfieldMatches(activity.weight, 0b011100)
         case Raid.SCOURGE_OF_THE_PAST:
             // duo insurrection or trio flawless
             return (
                 bitfieldMatches(activity.weight, 0b011000) ||
-                bitfieldMatches(activity.weight, 0b001110)
+                bitfieldMatches(activity.weight, 0b001100)
             )
         case Raid.LAST_WISH:
             // solo queens or trio flawless
             return (
                 bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b001110)
+                bitfieldMatches(activity.weight, 0b001100)
             )
         case Raid.SPIRE_OF_STARS:
             // flawless prestige :(
-            return bitfieldMatches(activity.weight, 0b000111)
+            return bitfieldMatches(activity.weight, 0b000101)
         case Raid.EATER_OF_WORLDS:
             // solo argos
             return bitfieldMatches(activity.weight, 0b111000)
