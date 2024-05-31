@@ -1,83 +1,70 @@
-import type {
-    ListedRaid,
-    RaidHubGlobalLeaderboardCategory,
-    RaidHubIndividualLeaderboardCategory,
-    RaidHubRaidPath,
-    RaidHubWorldFirstLeaderboardCategory
-} from "~/services/raidhub/types"
 import { getRaidHubApi } from "./common"
+import { type RaidHubLeaderboardPagination } from "./types"
 
-export function leaderboardQueryKey(
-    raid: ListedRaid | "global",
-    category:
-        | RaidHubIndividualLeaderboardCategory
-        | RaidHubWorldFirstLeaderboardCategory
-        | RaidHubGlobalLeaderboardCategory,
-    query: { page: number; count: number }
-) {
-    return ["raidhub-leaderboard", raid, category, query] as const
-}
-
-export async function getWorldfirstLeaderboard(args: {
-    raid: RaidHubRaidPath
-    category: RaidHubWorldFirstLeaderboardCategory
-    page: number
-    count: number
-}) {
+export async function getWorldFirstLeaderboard(raid: string, query: RaidHubLeaderboardPagination) {
     return getRaidHubApi(
-        "/leaderboard/{raid}/worldfirst/{category}",
+        "/leaderboard/team/contest/{raid}",
         {
-            category: args.category,
-            raid: args.raid
+            raid
         },
-        {
-            page: args.page,
-            count: args.count
-        }
+        query
     )
 }
 
-export async function getIndividualLeaderboard(args: {
-    raid: RaidHubRaidPath
-    category: RaidHubIndividualLeaderboardCategory
-    page: number
-    count: number
-}) {
-    const data = await getRaidHubApi(
-        "/leaderboard/{raid}/individual/{category}",
+export async function getActivityFirstLeaderboard(
+    activity: string,
+    version: string,
+    query: RaidHubLeaderboardPagination
+) {
+    return getRaidHubApi(
+        "/leaderboard/team/first/{activity}/{version}",
         {
-            category: args.category,
-            raid: args.raid
+            activity,
+            version
         },
-        {
-            count: args.count,
-            page: args.page
-        }
+        query
     )
-
-    return data
 }
 
-export async function getIndividualGlobalLeaderboard(args: {
-    board: RaidHubGlobalLeaderboardCategory
-    page: number
-    count: number
-}) {
-    const data = await getRaidHubApi(
-        "/leaderboard/global/{category}",
+export async function getIndividualGlobalLeaderboard(
+    category: "clears" | "freshClears" | "sherpas" | "speedrun",
+    query: RaidHubLeaderboardPagination
+) {
+    return getRaidHubApi(
+        "/leaderboard/individual/global/{category}",
         {
-            category: args.board
+            category
         },
-        {
-            count: args.count,
-            page: args.page
-        },
-        {
-            next: {
-                revalidate: 3600
-            }
-        }
+        query
     )
+}
 
-    return data
+export async function getIndividualRaidLeaderboard(
+    raid: string,
+    category: "clears" | "freshClears" | "sherpas",
+    query: RaidHubLeaderboardPagination
+) {
+    return getRaidHubApi(
+        "/leaderboard/individual/raid/{raid}/{category}",
+        {
+            raid,
+            category
+        },
+        query
+    )
+}
+
+export async function getIndividualPantheonLeaderboard(
+    version: string,
+    category: "clears" | "freshClears" | "score",
+    query: RaidHubLeaderboardPagination
+) {
+    return getRaidHubApi(
+        "/leaderboard/individual/pantheon/{version}/{category}",
+        {
+            version,
+            category
+        },
+        query
+    )
 }

@@ -7,7 +7,7 @@ import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
-import { RaidSplash } from "~/data/activity-images"
+import { getRaidSplash } from "~/data/activity-images"
 import { RaidActivity } from "./RaidActivity"
 
 export const RaidRotatorEntry = (props: {
@@ -17,9 +17,9 @@ export const RaidRotatorEntry = (props: {
     children?: ReactNode
 }) => {
     const { locale } = useLocale()
-    const { getRaidFromHash, getRaidString } = useRaidHubManifest()
-    const a = getRaidFromHash(props.milestone.activities[0].activityHash)
-    const raidName = a?.raid && getRaidString(a?.raid)
+    const { getDefinitionFromHash } = useRaidHubManifest()
+    const activity = getDefinitionFromHash(props.milestone.activities[0].activityHash)?.activity
+    const raidName = activity?.name
 
     if (!raidName) return null
 
@@ -38,7 +38,11 @@ export const RaidRotatorEntry = (props: {
                 </RotatorDates>
             </Flex>
             {props.children}
-            <BackgroundImage cloudflareId={RaidSplash[a.raid]} alt={raidName} opacity={0.65} />
+            <BackgroundImage
+                cloudflareId={getRaidSplash(activity.id) ?? "pantheonSplash"}
+                alt={raidName}
+                opacity={0.65}
+            />
         </Main>
     )
 }
@@ -55,18 +59,18 @@ export const FeaturedRaidRotatorEntry = (props: {
     startDate: Date
     endDate: Date
 }) => {
-    const { getRaidFromHash, getVersionString } = useRaidHubManifest()
+    const { getDefinitionFromHash } = useRaidHubManifest()
     return (
         <RaidRotatorEntry {...props}>
             <Container>
                 <Flex $direction="column" $gap={0.3}>
                     {props.milestone.activities.map(activity => {
-                        const definition = getRaidFromHash(activity.activityHash)
+                        const definition = getDefinitionFromHash(activity.activityHash)
                         return definition ? (
                             <RaidActivity
                                 key={activity.activityHash}
                                 activity={activity}
-                                version={getVersionString(definition.difficulty)}
+                                version={definition.version.name}
                             />
                         ) : null
                     })}

@@ -1,8 +1,6 @@
 import { useLocale } from "~/app/layout/managers/LocaleManager"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { usePGCRTags } from "~/app/pgcr/hooks/usePGCRTags"
-import { includedIn } from "~/util/helpers"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"
 import styles from "../pgcr.module.css"
 
@@ -11,10 +9,15 @@ const ActivityHeader = () => {
     const { data, isLoading } = usePGCRContext()
 
     const { locale } = useLocale()
-    const { getRaidString, getVersionString, listedRaids, pantheonModes } = useRaidHubManifest()
     const tags = usePGCRTags(data ?? null)
 
-    const activityId = data?.meta.activityId
+    const raidName = isLoading
+        ? "Loading..."
+        : data === undefined
+        ? "Unknown"
+        : data?.metadata.isRaid
+        ? data.metadata.activityName
+        : data.metadata.versionName
 
     return (
         <div className={styles["activity-tile-header-container"]}>
@@ -27,17 +30,7 @@ const ActivityHeader = () => {
                                 : "Loading..."}
                         </span>
                     </div>
-                    <div className={styles["raid-name"]}>
-                        {isLoading ? (
-                            <span>Loading...</span>
-                        ) : includedIn(listedRaids, activityId) ? (
-                            getRaidString(activityId)
-                        ) : includedIn(pantheonModes, data?.meta.versionId) ? (
-                            data.meta.activityName + ": " + getVersionString(data.meta.versionId)
-                        ) : (
-                            "Non-Raid"
-                        )}
-                    </div>
+                    <div className={styles["raid-name"]}>{raidName}</div>
                 </div>
                 <div className={styles["right-info"]}>
                     <div className={styles.duration}>

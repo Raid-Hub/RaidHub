@@ -1,27 +1,17 @@
-"use client"
-
 import Link from "next/link"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { useDialog } from "~/components/Dialog"
 import { usePortal } from "~/components/Portal"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
-import type { ListedRaid } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
-import ExpandedStatsTable from "./ExpandedStatsTable"
 import WeeklyProgress from "./WeeklyProgress"
 import styles from "./expanded-raid.module.css"
 
 /**@deprecated */
-export default function ExpandedRaidView({
-    raid,
-    dismiss
-}: {
-    raid: ListedRaid
-    dismiss: () => void
-}) {
+export default function ExpandedRaidView({ raid, dismiss }: { raid: number; dismiss: () => void }) {
     const { Dialog, ref } = useDialog()
     const portal = usePortal()
-    const { sunsetRaids, getRaidString } = useRaidHubManifest()
+    const { sunsetRaids, getActivityString } = useRaidHubManifest()
     // const { activities, isLoadingActivities } = useRaidCardContext()
 
     // const recents = useMemo(
@@ -49,7 +39,7 @@ export default function ExpandedRaidView({
                     discord.gg/raidhub
                 </Link>
             </p>
-            <h2>Expanded details for {getRaidString(raid)}</h2>
+            <h2>Expanded details for {getActivityString(raid)}</h2>
             <div className={styles.container}>
                 <div className={styles["bungie-stats"]}>
                     {!includedIn(sunsetRaids, raid) && (
@@ -58,8 +48,8 @@ export default function ExpandedRaidView({
                             <WeeklyProgress raid={raid} />
                         </div>
                     )}
-                    <h3>Stats</h3>
-                    <ExpandedStatsTable />
+                    {/* <h3>Stats</h3>
+                    <ExpandedStatsTable /> */}
                 </div>
                 {/* // todo */}
                 {/* <div className={styles.history}>

@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "~/app/(profile)/raids/constants"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import { getRelativeTime } from "~/util/presentation/pastDates"
 import { FULL_HEIGHT } from "./DotGraph"
@@ -14,7 +14,7 @@ export type DotTooltipProps = {
         y: number
     }
     isShowing: boolean
-    activity: RaidHubPlayerActivitiesActivity
+    activity: RaidHubInstanceForPlayer
 }
 
 /** @deprecated */
@@ -57,7 +57,7 @@ const DotTooltip = ({ offset, isShowing, activity }: DotTooltipProps) => {
             <div className={styles["dot-tooltip-tags"]}>
                 <span>{lowman}</span>
                 <span>{activity.flawless && Tag.FLAWLESS}</span>
-                <span>{getVersionString(activity.meta.versionId)}</span>
+                <span>{getVersionString(activity.versionId)}</span>
             </div>
         </div>
     )

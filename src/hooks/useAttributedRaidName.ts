@@ -1,18 +1,15 @@
 import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
-import { Difficulty, Raid } from "~/data/raid"
 import { Tag } from "~/models/tag"
-import type { ActivityId, RaidDifficulty } from "~/services/raidhub/types"
-import { includedIn } from "~/util/helpers"
 
 export const useAttributedRaidName = (
     tag: {
-        raid: ActivityId
+        activityId: number
         playerCount: number
         fresh: boolean | null
         flawless: boolean | null
-        difficulty: RaidDifficulty
-        contest: boolean
+        versionId: number
+        isContest: boolean
         completed: boolean
     },
     opts?: {
@@ -20,11 +17,14 @@ export const useAttributedRaidName = (
         excludeRaidName?: boolean
     }
 ): string | null => {
-    const { getCheckpointName, getRaidString, getVersionString, listedRaids } = useRaidHubManifest()
+    const { getActivityString, getVersionString, pantheonVersions } = useRaidHubManifest()
 
     return useMemo(() => {
         const wishWall =
-            tag.raid === Raid.LAST_WISH && tag.playerCount <= 2 && tag.fresh && tag.completed
+            getActivityString(tag.activityId) === "Last Wish" &&
+            tag.playerCount <= 2 &&
+            tag.fresh &&
+            tag.completed
         const descriptors: string[] = []
         if (tag.completed) {
             if (tag.fresh && !tag.flawless && opts?.includeFresh) descriptors.push(Tag.FRESH)
@@ -41,16 +41,13 @@ export const useAttributedRaidName = (
             }
             if (tag.flawless) descriptors.push(Tag.FLAWLESS)
         }
-        if (tag.difficulty === Difficulty.MASTER) descriptors.push(Tag.MASTER)
-        else if (tag.contest) descriptors.push(Tag.CONTEST)
-        if (!tag.fresh && !tag.flawless && tag.completed && tag.playerCount <= 3) {
-            descriptors.push(getCheckpointName(tag.raid))
-        }
+        if (getVersionString(tag.versionId) === "Master") descriptors.push(Tag.MASTER)
+        else if (tag.isContest) descriptors.push(Tag.CONTEST)
         if (!opts?.excludeRaidName) {
             descriptors.push(
-                includedIn(listedRaids, tag.raid)
-                    ? getRaidString(tag.raid)
-                    : getVersionString(tag.difficulty)
+                pantheonVersions.includes(tag.versionId)
+                    ? getVersionString(tag.versionId)
+                    : getActivityString(tag.activityId)
             )
         }
         // special cases
@@ -61,18 +58,17 @@ export const useAttributedRaidName = (
         }
         return descriptors.join(" ")
     }, [
-        tag.raid,
-        tag.playerCount,
-        tag.fresh,
-        tag.completed,
-        tag.difficulty,
-        tag.contest,
-        tag.flawless,
+        getActivityString,
+        getVersionString,
         opts?.excludeRaidName,
         opts?.includeFresh,
-        getCheckpointName,
-        listedRaids,
-        getRaidString,
-        getVersionString
+        pantheonVersions,
+        tag.activityId,
+        tag.completed,
+        tag.isContest,
+        tag.flawless,
+        tag.fresh,
+        tag.playerCount,
+        tag.versionId
     ])
 }

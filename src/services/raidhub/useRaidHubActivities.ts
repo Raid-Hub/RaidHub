@@ -1,8 +1,8 @@
 import { Collection } from "@discordjs/collection"
 import { useQueries, useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
-import type { RaidHubPlayerActivitiesResponse } from "~/services/raidhub/types"
 import { getRaidHubApi } from "./common"
+import { type RaidHubPlayerActivitiesResponse } from "./types"
 
 export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
     membershipId: string,
@@ -91,7 +91,7 @@ export const useRaidHubActivities = (
         () => ({
             activities: new Collection(
                 queries.flatMap(q => q.data?.activities ?? []).map(a => [a.instanceId, a])
-            ).sort((a, b) => (b.dateStarted < a.dateStarted ? -1 : 1)),
+            ).sort((a, b) => (new Date(b.dateCompleted) < new Date(a.dateCompleted) ? -1 : 1)),
             isLoading: queries.length === 0 || queries.some(q => q.isLoading)
         }),
         [queries]
@@ -111,7 +111,7 @@ export const generateQuery =
             getActivities({
                 membershipId,
                 cursor
-            }).then(res => res.response),
+            }),
         staleTime: 60_000,
         refetchInterval: 300_000,
         refetchIntervalInBackground: false,
@@ -125,5 +125,5 @@ async function getActivities({ membershipId, cursor }: { membershipId: string; c
         { membershipId },
         { cursor, count: cursor ? 2000 : 250 }
     )
-    return response
+    return response.response
 }

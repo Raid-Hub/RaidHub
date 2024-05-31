@@ -6,17 +6,14 @@ import { useMemo } from "react"
 import styled from "styled-components"
 import { Grid } from "~/components/layout/Grid"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { RaidMileStones } from "~/data/milestones"
 import { useSeasons } from "~/hooks/dexie"
 import { usePublicMilestones } from "~/services/bungie/hooks"
 import { modulo } from "~/util/math"
 import { useRaidHubManifest } from "../layout/managers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
 
-const raidMilestoneHashes = Object.values(RaidMileStones)
-
 export default function Page() {
-    const { getRaidFromHash, listedRaids } = useRaidHubManifest()
+    const { listedRaids, getDefinitionFromHash, milestoneHashes } = useRaidHubManifest()
     const {
         data: milestones,
         isLoading,
@@ -25,14 +22,10 @@ export default function Page() {
     } = usePublicMilestones({
         suspense: true,
         select: milestones =>
-            new Collection(Object.entries(milestones)).filter(
-                (m, hash) =>
-                    raidMilestoneHashes.includes(Number(hash)) &&
-                    !m.activities.some(
-                        // Eliminate the current active raid from the list
-                        a => getRaidFromHash(a.activityHash)?.raid === listedRaids[0]
-                    )
-            ),
+            new Collection(Object.entries(milestones)).filter((_, hash) => {
+                const definition = milestoneHashes.get(Number(hash))
+                return definition && definition.id !== listedRaids[0]
+            }),
         refetchInterval: milestones => {
             if (!milestones) return false
             const now = Date.now()
@@ -59,23 +52,22 @@ export default function Page() {
 
     const thisWeeksRaid = useMemo(() => {
         if (!thisWeek) return null
-        const a = getRaidFromHash(thisWeek.activities[0].activityHash)
-        return a?.raid ?? null
-    }, [thisWeek, getRaidFromHash])
+        return getDefinitionFromHash(thisWeek.activities[0].activityHash)?.activity.id ?? null
+    }, [thisWeek, getDefinitionFromHash])
 
     const orderedMilestones = useMemo(() => {
         if (!milestones || !thisWeeksRaid) return []
         return Array.from(
             milestones
                 .toSorted((a, b) => {
-                    const aHash = getRaidFromHash(a.activities[0].activityHash)?.raid
-                    const bHash = getRaidFromHash(b.activities[0].activityHash)?.raid
+                    const aHash = getDefinitionFromHash(a.activities[0].activityHash)?.activity.id
+                    const bHash = getDefinitionFromHash(b.activities[0].activityHash)?.activity.id
                     if (!aHash || !bHash) return +!!aHash ^ +!!bHash ? (aHash ? 1 : -1) : 0
                     return modulo(aHash - thisWeeksRaid, 64) - modulo(bHash - thisWeeksRaid, 64)
                 })
                 .values()
         )
-    }, [milestones, thisWeeksRaid, getRaidFromHash])
+    }, [milestones, thisWeeksRaid, getDefinitionFromHash])
 
     const seasonEnd = useMemo(
         () =>

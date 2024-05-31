@@ -1,8 +1,8 @@
-import type { RaidHubActivityResponse } from "~/services/raidhub/types"
+import type { RaidHubInstanceExtended } from "~/services/raidhub/types"
 
 export type PGCRPageProps = {
     instanceId: string
-    ssrActivity?: RaidHubActivityResponse
+    ssrActivity?: RaidHubInstanceExtended
     isReady: boolean
 }
 
@@ -10,8 +10,3 @@ export type PGCRPageParams = {
     player?: string
     character?: string
 }
-
-export type WeaponKey =
-    | "uniqueWeaponKills"
-    | "uniqueWeaponPrecisionKills"
-    | "uniqueWeaponKillsPrecisionKills"

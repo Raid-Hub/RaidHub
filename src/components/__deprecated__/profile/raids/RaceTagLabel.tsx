@@ -1,30 +1,37 @@
 import Link from "next/link"
-import { useCallback } from "react"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { useCallback, useMemo } from "react"
 import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
 import { Tag } from "~/models/tag"
-import type { ListedRaid } from "~/services/raidhub/types"
 import styles from "./raids.module.css"
 
 /** @deprecated */
 const RaceTagLabel = ({
+    rank,
+    isChallenge,
+    isDayOne,
+    isContest,
+    isWeekOne,
     instanceId,
-    setActiveId,
-    ...tagProps
+    setActiveId
 }: {
-    placement: number
+    rank: number | null
     instanceId: string
-    dayOne: boolean
-    contest: boolean
-    weekOne: boolean
-    challenge: boolean
-    raid: ListedRaid
+    isChallenge: boolean
+    isDayOne: boolean
+    isContest: boolean
+    isWeekOne: boolean
     setActiveId: (instanceId: string) => void
 }) => {
-    const label = useRaceLabel(tagProps)
+    const label = useRaceLabel({
+        rank,
+        isChallenge,
+        isDayOne,
+        isContest,
+        isWeekOne
+    })
 
     const hoverAction = useCallback(() => {
-        setActiveId(instanceId)
+        if (instanceId) setActiveId(instanceId)
     }, [instanceId, setActiveId])
 
     const { handleHover, handleLeave } = useDebouncedHover({ action: hoverAction, debounce: 750 })
@@ -41,48 +48,30 @@ const RaceTagLabel = ({
 }
 
 const useRaceLabel = (props: {
-    placement: number
-    dayOne: boolean
-    contest: boolean
-    weekOne: boolean
-    challenge: boolean
-    raid: ListedRaid
+    rank: number | null
+    isChallenge: boolean
+    isDayOne: boolean
+    isContest: boolean
+    isWeekOne: boolean
 }): string | null => {
-    const tag = useRaceMode(props)
+    const tag = useMemo(() => {
+        if (props.isChallenge) {
+            return Tag.CHALLENGE
+        } else if (props.isDayOne) {
+            return Tag.DAY_ONE
+        } else if (props.isContest) {
+            return Tag.CONTEST
+        } else if (props.isWeekOne) {
+            return Tag.WEEK_ONE
+        } else {
+            return null
+        }
+    }, [props.isChallenge, props.isDayOne, props.isContest, props.isWeekOne])
+
     if (tag) {
-        return `${tag}${props.placement && props.placement <= 500 ? ` #${props.placement}` : ""}`
+        return `${tag}${props.rank ? ` #${props.rank}` : ""}`
     } else {
         return null
     }
 }
-
-const useRaceMode = ({
-    challenge,
-    raid,
-    dayOne,
-    contest,
-    weekOne
-}: {
-    raid: ListedRaid
-    dayOne: boolean | undefined
-    challenge: boolean | undefined
-    contest: boolean | undefined
-    weekOne: boolean | undefined
-}) => {
-    const { reprisedRaids } = useRaidHubManifest()
-
-    const challengeName = reprisedRaids.find(r => r.raid === raid)?.triumphName
-    if (challenge && challengeName) {
-        return challengeName
-    } else if (dayOne) {
-        return Tag.DAY_ONE
-    } else if (contest) {
-        return Tag.CONTEST
-    } else if (weekOne) {
-        return Tag.WEEK_ONE
-    } else {
-        return null
-    }
-}
-
 export default RaceTagLabel

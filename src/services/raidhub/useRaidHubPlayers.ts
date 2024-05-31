@@ -1,6 +1,6 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { getRaidHubApi } from "~/services/raidhub/common"
-import { type RaidHubPlayerResponse } from "~/services/raidhub/types"
+import { type RaidHubPlayerProfileResponse } from "./types"
 
 export function useRaidHubPlayers(
     membershipIds: string[],
@@ -21,7 +21,9 @@ export function useRaidHubPlayers(
         ...opts
     })
 
-    const players = queries.map(q => q.data).filter((data): data is RaidHubPlayerResponse => !!data)
+    const players = queries
+        .map(q => q.data)
+        .filter((data): data is RaidHubPlayerProfileResponse => !!data)
     const isLoading = queries.some(q => q.isLoading)
 
     return {

@@ -1,10 +1,6 @@
-import type {
-    RaidHubAPIResponse,
-    RaidHubAPISuccessResponse,
-    RaidHubGetPath,
-    RaidHubPostPath
-} from "~/services/raidhub/types"
+import type { RaidHubAPIResponse, RaidHubGetPath, RaidHubPostPath } from "~/services/raidhub/types"
 import type { Prettify } from "~/types/generic"
+import { RaidHubError } from "./RaidHubError"
 import type { paths } from "./openapi"
 
 export async function getRaidHubApi<
@@ -16,7 +12,7 @@ export async function getRaidHubApi<
     pathParams: "path" extends keyof P ? P["path"] : null,
     queryParams: "query" extends keyof P ? P["query"] : null,
     config?: Omit<RequestInit, "method" | "body">
-): Promise<RaidHubAPISuccessResponse<Prettify<R>>> {
+): Promise<Prettify<R>> {
     const url = new URL(
         path.replace(/{([^}]+)}/g, (_, paramName) => {
             // @ts-expect-error types don't really work here
@@ -45,7 +41,7 @@ export async function postRaidHubApi<
     queryParams: "query" extends keyof P ? P["query"] : null,
     body?: NonNullable<paths[T]["post"]["requestBody"]>["content"]["application/json"],
     config?: Omit<RequestInit, "method" | "body">
-): Promise<RaidHubAPISuccessResponse<Prettify<R>>> {
+): Promise<Prettify<R>> {
     const url = new URL(path, process.env.RAIDHUB_API_URL)
     Object.entries(queryParams ?? {}).forEach(([key, value]) => {
         url.searchParams.set(key, String(value))
@@ -79,15 +75,15 @@ function createHeaders(init?: HeadersInit) {
     return headers
 }
 
-async function fetchRaidHub<R>(url: URL, init: RequestInit): Promise<RaidHubAPISuccessResponse<R>> {
+async function fetchRaidHub<R>(url: URL, init: RequestInit): Promise<R> {
     if (new Date() < new Date("2024-04-27T00:00:00Z")) {
         url.searchParams.set("cache", "4-27-24")
     }
     const res = await fetch(url, init)
 
-    let data: RaidHubAPIResponse<R>
+    let data: RaidHubAPIResponse<unknown>
     try {
-        data = (await res.json()) as RaidHubAPIResponse<R>
+        data = (await res.json()) as RaidHubAPIResponse<unknown>
     } catch (err) {
         if (!res.ok) {
             throw new Error("RaidHub API returned " + res.status)
@@ -97,10 +93,8 @@ async function fetchRaidHub<R>(url: URL, init: RequestInit): Promise<RaidHubAPIS
     }
 
     if (data.success) {
-        return data
+        return data as R
     } else {
-        const err = new Error(data.message)
-        Object.assign(err, data.error)
-        throw err
+        throw new RaidHubError(data.code, data.error)
     }
 }

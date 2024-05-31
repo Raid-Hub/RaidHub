@@ -12,11 +12,10 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
-import { RaidSplash } from "~/data/activity-images"
+import { getRaidSplash } from "~/data/activity-images"
 import { useRaidHubActivity, useRaidHubActivtiesFirstPage } from "~/services/raidhub/hooks"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
-import { isRaid } from "~/util/raidhub/util"
 import type { ProfileProps } from "../types"
 import { Latest } from "./Latest"
 
@@ -56,9 +55,7 @@ export const LatestRaid = () => {
                     <Container $minHeight={80}>
                         <CloudflareImage
                             cloudflareId={
-                                isRaid(latestActivity.meta.activityId)
-                                    ? RaidSplash[latestActivity.meta.activityId]
-                                    : "pantheonSplash"
+                                getRaidSplash(latestActivity.activityId) ?? "pantheonSplash"
                             }
                             fill
                             priority
@@ -78,30 +75,26 @@ export const LatestRaid = () => {
                         </H4>
                         <Flex $padding={0} $wrap $gap={0.4} $align="flex-start">
                             {latestActivity.players.find(
-                                p => p.player.membershipId === destinyMembershipId
-                            )?.data.completed ? (
+                                p => p.playerInfo.membershipId === destinyMembershipId
+                            )?.completed ? (
                                 <Checkmark sx={24} />
                             ) : (
                                 <Xmark sx={24} />
                             )}
                             <RaidName>
-                                {latestActivity.meta.activityName}
+                                {latestActivity.metadata.activityName}
                                 {": "}
-                                {latestActivity.meta.versionName}
+                                {latestActivity.metadata.versionName}
                             </RaidName>
 
                             <Duration>{secondsToHMS(latestActivity.duration, false)}</Duration>
                         </Flex>
                         <Flex $wrap $padding={0} $align="flex-start">
                             {playersToDisplay?.map(player => (
-                                <Flex key={player.player.membershipId} $padding={0} $gap={0.4}>
-                                    {player.data.completed ? (
-                                        <Checkmark sx={18} />
-                                    ) : (
-                                        <Xmark sx={18} />
-                                    )}
-                                    <Player $finished={player.data.completed}>
-                                        {getBungieDisplayName(player.player)}
+                                <Flex key={player.playerInfo.membershipId} $padding={0} $gap={0.4}>
+                                    {player.completed ? <Checkmark sx={18} /> : <Xmark sx={18} />}
+                                    <Player $finished={player.completed}>
+                                        {getBungieDisplayName(player.playerInfo)}
                                     </Player>
                                 </Flex>
                             ))}

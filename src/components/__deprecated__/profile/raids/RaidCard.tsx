@@ -9,13 +9,12 @@ import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
 import Expand from "~/components/icons/Expand"
-import { RaidSplash } from "~/data/activity-images"
+import { getRaidSplash } from "~/data/activity-images"
 import { useTimeout } from "~/hooks/util/useTimeout"
-import type {
-    RaidHubPlayerActivitiesActivity,
-    RaidHubPlayerProfileLeaderboardEntry
+import {
+    type RaidHubInstanceForPlayer,
+    type RaidHubWorldFirstEntry
 } from "~/services/raidhub/types"
-import { includedIn } from "~/util/helpers"
 import { medianElement } from "~/util/math"
 import { secondsToHMS } from "~/util/presentation/formatting"
 import BigNumberStatItem from "./BigNumberStatItem"
@@ -26,7 +25,7 @@ import ExpandedRaidView from "./expanded/ExpandedRaidView"
 import styles from "./raids.module.css"
 
 type RaidModalProps = {
-    leaderboardData: RaidHubPlayerProfileLeaderboardEntry[] | null
+    leaderboardEntry: RaidHubWorldFirstEntry | null
 } & (
     | {
           canExpand: true
@@ -40,14 +39,14 @@ type RaidModalProps = {
 )
 
 /** @deprecated */
-export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) {
-    const { activities, isLoadingActivities, raid } = useRaidCardContext()
-    const { getRaidString, getVersionString, leaderboards, listedRaids, pantheonId } =
+export default function RaidCard({ leaderboardEntry, ...props }: RaidModalProps) {
+    const { activities, isLoadingActivities, raidId } = useRaidCardContext()
+    const { getVersionString, reprisedRaids, isChallengeMode, getActivityDefinition } =
         useRaidHubManifest()
-    const wfBoardId = (
-        leaderboards.worldFirst[raid]?.find(b => b.category === "challenge") ??
-        leaderboards.worldFirst[raid]?.find(b => b.category === "normal")
-    )?.id
+
+    const activityDefinition = getActivityDefinition(raidId)
+
+    const isReprisedRaid = reprisedRaids.includes(raidId)
 
     const [hoveredTag, setHoveredTag] = useState<string | null>(null)
 
@@ -60,25 +59,36 @@ export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) 
 
     const tags = useTags(activities ?? new Collection())
 
-    const firstContestClear: RaidHubPlayerProfileLeaderboardEntry | undefined = useMemo(() => {
-        if (!wfBoardId) return undefined
-        const wfBoardClear = leaderboardData
-            ?.filter(e => e.boardId === wfBoardId)
-            ?.sort((a, b) => a.rank - b.rank)[0]
-        if (wfBoardClear) return wfBoardClear
+    const firstContestClear = useMemo(() => {
+        if (!activityDefinition) {
+            return null
+        }
 
-        const allLeaderboardClears = leaderboardData
-            ?.flat()
-            .sort(
-                (a, b) => new Date(a.dateCompleted).getTime() - new Date(b.dateCompleted).getTime()
-            )
-        return allLeaderboardClears?.[0]
-    }, [leaderboardData, wfBoardId])
+        if (leaderboardEntry) {
+            return leaderboardEntry
+        }
+
+        const instance =
+            (isReprisedRaid
+                ? activities?.find(a => a.player.completed && isChallengeMode(a.versionId))
+                : undefined) ??
+            activities?.find(a => a.player.completed && (a.isContest || a.isWeekOne))
+        if (!instance) return null
+
+        return {
+            instanceId: instance.instanceId,
+            isDayOne: instance.isDayOne,
+            isWeekOne: instance.isWeekOne,
+            isContest: instance.isContest,
+            isChallengeMode: isChallengeMode(instance.versionId),
+            rank: null
+        }
+    }, [activities, isReprisedRaid, isChallengeMode, leaderboardEntry, activityDefinition])
 
     const { fastestFullClear, averageClear } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
         const fastestFullClear = freshFulls?.size
-            ? freshFulls.reduce<RaidHubPlayerActivitiesActivity>((curr, nxt) =>
+            ? freshFulls?.reduce<RaidHubInstanceForPlayer>((curr, nxt) =>
                   nxt.duration < curr.duration ? nxt : curr
               )
             : undefined
@@ -92,8 +102,8 @@ export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) 
 
     return (
         <>
-            {props.canExpand && props.isExpanded && includedIn(listedRaids, raid) && (
-                <ExpandedRaidView raid={raid} dismiss={props.closeExpand} />
+            {props.canExpand && props.isExpanded && activityDefinition?.isRaid && (
+                <ExpandedRaidView raid={raidId} dismiss={props.closeExpand} />
             )}
             <m.div
                 initial={{
@@ -115,25 +125,22 @@ export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) 
                         priority
                         width={960}
                         height={540}
-                        cloudflareId={
-                            includedIn(listedRaids, raid) ? RaidSplash[raid] : "pantheonSplash"
-                        }
+                        cloudflareId={getRaidSplash(raidId) ?? "pantheonSplash"}
                         alt={
-                            includedIn(listedRaids, raid)
-                                ? getRaidString(raid)
-                                : getVersionString(raid)
+                            activityDefinition?.isRaid
+                                ? activityDefinition.name
+                                : getVersionString(raidId)
                         }
                     />
                     <div className={styles["card-top"]}>
-                        {includedIn(listedRaids, raid) && firstContestClear && (
+                        {activityDefinition?.isRaid && firstContestClear && (
                             <RaceTagLabel
-                                placement={firstContestClear.rank}
+                                rank={firstContestClear.rank}
                                 instanceId={firstContestClear.instanceId}
-                                dayOne={firstContestClear.dayOne}
-                                contest={firstContestClear.contest}
-                                weekOne={firstContestClear.weekOne}
-                                challenge={firstContestClear.type === "Challenge"}
-                                raid={raid}
+                                isChallenge={firstContestClear.isChallengeMode}
+                                isDayOne={firstContestClear.isDayOne}
+                                isContest={firstContestClear.isContest}
+                                isWeekOne={firstContestClear.isWeekOne}
                                 setActiveId={setHoveredTag}
                             />
                         )}
@@ -153,22 +160,22 @@ export default function RaidCard({ leaderboardData, ...props }: RaidModalProps) 
                                 <RaidTagLabel
                                     completed={tag.activity.completed}
                                     key={tag.activity.instanceId}
-                                    raid={includedIn(listedRaids, raid) ? raid : pantheonId}
+                                    activityId={tag.activity.activityId}
+                                    versionId={tag.activity.versionId}
                                     setActiveId={setHoveredTag}
                                     instanceId={tag.activity.instanceId}
                                     isBestPossible={tag.bestPossible}
                                     playerCount={tag.activity.playerCount}
                                     fresh={tag.activity.fresh}
                                     flawless={tag.activity.flawless}
-                                    difficulty={tag.activity.meta.versionId}
-                                    contest={tag.activity.contest}
+                                    isContest={tag.activity.isContest}
                                 />
                             ))}
                         </div>
                         <span className={styles["card-title"]}>
-                            {includedIn(listedRaids, raid)
-                                ? getRaidString(raid)
-                                : getVersionString(raid)}
+                            {activityDefinition?.isRaid
+                                ? activityDefinition.name
+                                : getVersionString(raidId)}
                         </span>
                     </div>
                 </div>

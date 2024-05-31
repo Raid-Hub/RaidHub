@@ -1,17 +1,16 @@
 "use client"
 
 import type { ProfileProps } from "~/app/(profile)/types"
+import { useRaidHubManifest } from "~/app/layout/managers"
 import { usePageProps } from "~/components/layout/PageWrapper"
-import { RaidMileStones } from "~/data/milestones"
 import { useProfile } from "~/services/bungie/hooks"
-import type { ListedRaid, SunsetRaid } from "~/services/raidhub/types"
 import CharacterWeeklyProgress from "./CharacterWeeklyProgress"
 import styles from "./expanded-raid.module.css"
 
 /**@deprecated */
-export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, SunsetRaid> }) {
+export default function WeeklyProgress({ raid }: { raid: number }) {
+    const { getActivityDefinition } = useRaidHubManifest()
     const { destinyMembershipId, destinyMembershipType } = usePageProps<ProfileProps>()
-
     const { data: profile } = useProfile(
         {
             destinyMembershipId,
@@ -20,13 +19,17 @@ export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, Sun
         { staleTime: 3 * 60000 }
     )
 
-    const milestone = RaidMileStones[raid]
+    const milestone = getActivityDefinition(raid)?.milestoneHash
     if (
         profile &&
         !profile.characterProgressions?.disabled &&
         profile.characterProgressions?.data == undefined
     ) {
         return <div className={styles["weekly-progress"]}>Private profile</div>
+    }
+
+    if (!milestone) {
+        return <div className={styles["weekly-progress"]}>No milestone</div>
     }
 
     return (
@@ -37,7 +40,7 @@ export default function WeeklyProgress({ raid }: { raid: Exclude<ListedRaid, Sun
                         <CharacterWeeklyProgress
                             key={characterId}
                             character={profile.characters.data[characterId]}
-                            milestone={milestones[milestone]}
+                            milestone={milestones[Number(milestone)]}
                         />
                     )
             )}

@@ -1,27 +1,20 @@
 import type { Collection } from "@discordjs/collection"
 import { useCallback, useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
-import { Raid } from "~/data/raid"
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import { type RaidHubInstance } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 
-export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesActivity>) => {
+export const useTags = (activities: Collection<string, RaidHubInstance>) => {
     const getWeight = useGetWeight()
 
     return useMemo(() => {
         const sorted = activities
-            .filter(a => a.player.completed)
+            .filter(a => a.completed)
             .map(activity => ({
                 activity,
                 weight: getWeight(activity)
             }))
-            .filter(
-                a =>
-                    !isIllegalTag({
-                        raid: a.activity.meta.activityId,
-                        weight: a.weight
-                    })
-            )
+            .filter(a => !isIllegalTag(a.activity, a.weight))
             .sort(
                 (a, b) =>
                     b.weight - a.weight ||
@@ -33,7 +26,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
         let bitfield = 0
         let bitfieldForElevatedDifficulty = 0
         const result = new Array<{
-            activity: RaidHubPlayerActivitiesActivity
+            activity: RaidHubInstance
             bestPossible: boolean
         }>()
         for (const { activity, weight } of sorted) {
@@ -50,7 +43,7 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
 
                 result.push({
                     activity,
-                    bestPossible: isBestTag({ raid: activity.meta.activityId, weight })
+                    bestPossible: isBestTag(activity, weight)
                 })
                 if (result.length >= 3) break
             }
@@ -61,20 +54,17 @@ export const useTags = (activities: Collection<string, RaidHubPlayerActivitiesAc
 }
 
 const useGetWeight = () => {
-    const { elevatedRaidDifficulties } = useRaidHubManifest()
+    const { elevatedDifficulties } = useRaidHubManifest()
 
     return useCallback(
-        (activity: RaidHubPlayerActivitiesActivity) => {
+        (activity: RaidHubInstance) => {
             // non lowman 2 => 1 => 0
             // trio => 2 => 1
             // duo => 4 => 3
             // solo => 8 => 7
             const adjustedPlayerCount =
                 (1 << Math.max(0, 4 - Math.min(activity.playerCount, 6))) - 1
-            const isElevatedDifficulty = includedIn(
-                elevatedRaidDifficulties,
-                activity.meta.versionId
-            )
+            const isElevatedDifficulty = includedIn(elevatedDifficulties, activity.versionId)
             /*
         This is a bitfield to measure the weight of an activity. If its not flawless or a lowman, it has 0 weight.
         From the right,
@@ -84,120 +74,105 @@ const useGetWeight = () => {
         - bit 3,4,5 for trio, duo, and solo respectively
         */
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            return activity.completed && (activity.flawless || activity.playerCount <= 3)
+            const fresh = activity.fresh || activity.flawless
+            const shouldConsider =
+                activity.completed && (activity.playerCount <= 3 || activity.flawless)
+            return shouldConsider
                 ? (adjustedPlayerCount << 3) +
                       ((activity.flawless ? 1 : 0) << 2) +
-                      ((activity.fresh ? 1 : 0) << 1) +
+                      ((fresh ? 1 : 0) << 1) +
                       +isElevatedDifficulty
                 : 0
         },
-        [elevatedRaidDifficulties]
+        [elevatedDifficulties]
     )
 }
 
-function isIllegalTag(activity: { raid: number; weight: number }): boolean {
-    switch (activity.raid) {
-        case Raid.CROTAS_END:
-            // solo
-            return bitfieldMatches(activity.weight, 0b111000)
-        case Raid.VOW_OF_THE_DISCIPLE:
-            // duo
-            return bitfieldMatches(activity.weight, 0b011000)
-        case Raid.DEEP_STONE_CRYPT:
-            // solo
-            return bitfieldMatches(activity.weight, 0b111000)
-        case Raid.GARDEN_OF_SALVATION:
-            // duo fresh
-            return bitfieldMatches(activity.weight, 0b011010)
-        case Raid.CROWN_OF_SORROW:
-            // solo
-            return bitfieldMatches(activity.weight, 0b111000)
-        case Raid.SCOURGE_OF_THE_PAST:
-            // duo flawless or solo
-            return (
-                bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b011100)
-            )
-        case Raid.LAST_WISH:
-            // duo flawless
-            return bitfieldMatches(activity.weight, 0b011100)
-        case Raid.SPIRE_OF_STARS:
-            // any lowman
-            return bitfieldMatches(activity.weight, 0b001000)
-        case Raid.EATER_OF_WORLDS:
-            // any fresh lowman
-            return bitfieldMatches(activity.weight, 0b001010)
-        case Raid.LEVIATHAN:
-            // any fresh lowman
-            return bitfieldMatches(activity.weight, 0b001010)
+function isIllegalTag(
+    { activityId }: { activityId: number; versionId: number },
+    weight: number
+): boolean {
+    switch (activityId) {
+        case 13:
+            // solo crota
+            return bitfieldMatches(weight, 0b111000)
+        case 10:
+            // duo rhulk
+            return bitfieldMatches(weight, 0b011000)
+        case 8:
+            // solo taniks
+            return bitfieldMatches(weight, 0b111000)
+        case 7:
+            // duo fresh gos
+            return bitfieldMatches(weight, 0b011010)
+        case 6:
+            // solo crown
+            return bitfieldMatches(weight, 0b111000)
+        case 5:
+            // duo flawless or solo scourge
+            return bitfieldMatches(weight, 0b111000) || bitfieldMatches(weight, 0b011100)
+        case 4:
+            // duo flawless wish
+            return bitfieldMatches(weight, 0b011100)
+        case 3:
+            // any spire lowman
+            return bitfieldMatches(weight, 0b001000)
+        case 2:
+            // any fresh eater lowman
+            return bitfieldMatches(weight, 0b001010)
+        case 1:
+            // any fresh levi lowman
+            return bitfieldMatches(weight, 0b001010)
         default:
             return false
     }
 }
 
-function isBestTag(activity: { raid: number; weight: number }): boolean {
-    switch (activity.raid) {
-        case Raid.CROTAS_END:
-            // duo flawless or trio flawless master
-            return (
-                bitfieldMatches(activity.weight, 0b011100) ||
-                bitfieldMatches(activity.weight, 0b001101)
-            )
+function isBestTag(
+    { activityId }: { activityId: number; versionId: number },
+    weight: number
+): boolean {
+    switch (activityId) {
+        case 13:
+            // duo flawless or trio flawless master crota
+            return bitfieldMatches(weight, 0b011100) || bitfieldMatches(weight, 0b001101)
 
-        case Raid.ROOT_OF_NIGHTMARES:
-            // solo flawless or duo flawless master
-            return (
-                bitfieldMatches(activity.weight, 0b111100) ||
-                bitfieldMatches(activity.weight, 0b011101)
-            )
-        case Raid.KINGS_FALL:
+        case 12:
+            // solo flawless or duo flawless master ron
+            return bitfieldMatches(weight, 0b111100) || bitfieldMatches(weight, 0b011101)
+        case 11:
             // duo master oryx or trio flawless master
-            return (
-                bitfieldMatches(activity.weight, 0b011001) ||
-                bitfieldMatches(activity.weight, 0b001101)
-            )
-        case Raid.VOW_OF_THE_DISCIPLE:
-            // trio flawless master
-            return bitfieldMatches(activity.weight, 0b001101)
-        case Raid.VAULT_OF_GLASS:
-            // solo atheon or duo flawless master
-            return (
-                bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b011101)
-            )
-        case Raid.DEEP_STONE_CRYPT:
-            // duo flawless
-            return bitfieldMatches(activity.weight, 0b011100)
-        case Raid.GARDEN_OF_SALVATION:
-            // solo sanc or trio flawless
-            return (
-                bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b001100)
-            )
-        case Raid.CROWN_OF_SORROW:
-            // duo flawless
-            return bitfieldMatches(activity.weight, 0b011100)
-        case Raid.SCOURGE_OF_THE_PAST:
-            // duo insurrection or trio flawless
-            return (
-                bitfieldMatches(activity.weight, 0b011000) ||
-                bitfieldMatches(activity.weight, 0b001100)
-            )
-        case Raid.LAST_WISH:
-            // solo queens or trio flawless
-            return (
-                bitfieldMatches(activity.weight, 0b111000) ||
-                bitfieldMatches(activity.weight, 0b001100)
-            )
-        case Raid.SPIRE_OF_STARS:
+            return bitfieldMatches(weight, 0b011001) || bitfieldMatches(weight, 0b001101)
+        case 10:
+            // trio flawless master vow
+            return bitfieldMatches(weight, 0b001101)
+        case 9:
+            // solo atheon or duo flawless master vog
+            return bitfieldMatches(weight, 0b111000) || bitfieldMatches(weight, 0b011101)
+        case 8:
+            // duo flawless dsc
+            return bitfieldMatches(weight, 0b011100)
+        case 7:
+            // solo sanc or trio flawless gos
+            return bitfieldMatches(weight, 0b111000) || bitfieldMatches(weight, 0b001100)
+        case 6:
+            // duo flawless crown
+            return bitfieldMatches(weight, 0b011100)
+        case 5:
+            // duo insurrection or trio flawless scourge
+            return bitfieldMatches(weight, 0b011000) || bitfieldMatches(weight, 0b001100)
+        case 4:
+            // solo queens or trio flawless wish
+            return bitfieldMatches(weight, 0b111000) || bitfieldMatches(weight, 0b001100)
+        case 3:
             // flawless prestige :(
-            return bitfieldMatches(activity.weight, 0b000101)
-        case Raid.EATER_OF_WORLDS:
+            return bitfieldMatches(weight, 0b000101)
+        case 2:
             // solo argos
-            return bitfieldMatches(activity.weight, 0b111000)
-        case Raid.LEVIATHAN:
+            return bitfieldMatches(weight, 0b111000)
+        case 1:
             // duo calus
-            return bitfieldMatches(activity.weight, 0b011000)
+            return bitfieldMatches(weight, 0b011000)
         default:
             return false
     }

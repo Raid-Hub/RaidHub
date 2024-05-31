@@ -12,7 +12,6 @@ export const AccountIconContent = () => {
     if (status === "loading") return <QuestionMark color="white" sx={ICON_SIZE} />
     else if (status === "unauthenticated") return <UserIcon color="white" sx={ICON_SIZE} />
     else if (status === "authenticated") {
-        console.log(session)
         const primaryProfile = session.user.profiles.find(
             p => p.destinyMembershipId === session.user.primaryDestinyMembershipId
         )

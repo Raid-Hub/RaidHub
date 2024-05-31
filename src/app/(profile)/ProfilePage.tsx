@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { Loading } from "~/components/Loading"
 import { Flex } from "~/components/layout/Flex"
+import { ProfileError } from "./ProfileError"
 import { UserCard } from "./UserCard"
 import { RaidsWrapper } from "./raids/RaidsWrapper"
 import { CurrentActivity } from "./transitory/CurrentActivity"
@@ -42,6 +43,9 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
                 </Flex>
             </Suspense>
         </Flex>
+        <Suspense>
+            <ProfileError />
+        </Suspense>
         <RaidsWrapper />
     </Flex>
 )

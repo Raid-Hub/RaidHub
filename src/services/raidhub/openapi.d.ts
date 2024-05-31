@@ -11,12 +11,21 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 
 export interface paths {
   "/manifest": {
+    /**
+     * /manifest
+     * @description The RaidHub manifest provides definitions for all activities and versions in the RaidHub database.
+     */
     get: {
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["ManifestResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["ManifestResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -29,18 +38,31 @@ export interface paths {
     };
   };
   "/player/search": {
+    /**
+     * /player/search
+     * @description Search for players in the RaidHub database by Bungie name or platform display name.
+     * Players who have not attempted a raid may not appear in the search results.
+     * Results are ordered by a combination of the number of raid completions and last played date.
+     */
     get: {
       parameters: {
         query: {
           count?: number;
           query: string;
+          membershipType?: components["schemas"]["DestinyMembershipType"];
+          global?: boolean;
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["PlayerSearchResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PlayerSearchResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -59,6 +81,13 @@ export interface paths {
     };
   };
   "/player/{membershipId}/activities": {
+    /**
+     * /player/{membershipId}/activities
+     * @description Get a player's activity history. This endpoint uses date cursors to paginate through a player's activity history.
+     * The first request should not include a cursor. Subsequent requests should include the `nextCursor`
+     * value from the previous response. Note that the first request may not return the full number of activities requested
+     * in order to optimize performance. Subsequent requests will return the full number of activities requested.
+     */
     get: {
       parameters: {
         query?: {
@@ -73,7 +102,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["PlayerActivitiesResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PlayerActivitiesResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -88,12 +122,18 @@ export interface paths {
             readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
+        /** @description PlayerPrivateProfileError */
+        403: {
+          content: {
+            readonly "application/json": {
+              readonly membershipId: string;
+            };
+          };
+        };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly notFound: true;
               readonly membershipId: string;
             } | components["schemas"]["PathValidationError"];
           };
@@ -102,6 +142,12 @@ export interface paths {
     };
   };
   "/player/{membershipId}/basic": {
+    /**
+     * /player/{membershipId}/basic
+     * @description An extremely low-cost API call. Get basic information Bungie information about a player. The information is not
+     * guaranteed to be fully up-to-date, however, it should be accurate enough for most use cases where
+     * you only have the membershipId available.
+     */
     get: {
       parameters: {
         path: {
@@ -112,7 +158,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["PlayerBasicResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PlayerBasicResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -125,8 +176,6 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly notFound: true;
               readonly membershipId: string;
             } | components["schemas"]["PathValidationError"];
           };
@@ -135,6 +184,11 @@ export interface paths {
     };
   };
   "/player/{membershipId}/profile": {
+    /**
+     * /player/{membershipId}/profile
+     * @description Get a player's profile information. This includes global stats, activity stats, and world first entries.
+     * This is used to hydrate the RaidHub profile page
+     */
     get: {
       parameters: {
         path: {
@@ -145,7 +199,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["PlayerProfileResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PlayerProfileResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -154,12 +213,18 @@ export interface paths {
             readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
+        /** @description PlayerPrivateProfileError */
+        403: {
+          content: {
+            readonly "application/json": {
+              readonly membershipId: string;
+            };
+          };
+        };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly notFound: true;
               readonly membershipId: string;
             } | components["schemas"]["PathValidationError"];
           };
@@ -167,24 +232,24 @@ export interface paths {
       };
     };
   };
-  "/activity/search": {
-    post: {
-      readonly requestBody?: {
-        readonly content: {
-          readonly "application/json": components["schemas"]["ActivitySearchBody"];
+  "/player/{membershipId}/teammates": {
+    /** /player/{membershipId}/teammates */
+    get: {
+      parameters: {
+        path: {
+          membershipId: string;
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["ActivitySearchResponse"];
-          };
-        };
-        /** @description Bad request */
-        400: {
-          content: {
-            readonly "application/json": components["schemas"]["BodyValidationError"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PlayerTeammatesResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -193,10 +258,30 @@ export interface paths {
             readonly "application/json": components["schemas"]["ApiKeyError"];
           };
         };
+        /** @description PlayerPrivateProfileError */
+        403: {
+          content: {
+            readonly "application/json": {
+              readonly membershipId: string;
+            };
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": {
+              readonly membershipId: string;
+            } | components["schemas"]["PathValidationError"];
+          };
+        };
       };
     };
   };
   "/activity/{instanceId}": {
+    /**
+     * /activity/{instanceId}
+     * @description This endpoint replaces the PGCR endpoint. It returns an object with a shape more aligned with how RaidHub displays PGCRs.
+     */
     get: {
       parameters: {
         path: {
@@ -207,7 +292,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["ActivityResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["ActivityResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -220,8 +310,6 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly notFound: true;
               readonly instanceId: string;
             } | components["schemas"]["PathValidationError"];
           };
@@ -229,166 +317,34 @@ export interface paths {
       };
     };
   };
-  "/leaderboard/search": {
+  "/leaderboard/individual/global/{category}": {
+    /**
+     * /leaderboard/individual/global/{category}
+     * @description Individual leaderboards across all raids
+     */
     get: {
       parameters: {
-        query: {
-          type: "worldfirst" | "individual" | "global";
-          membershipId: string;
+        query?: {
           count?: number;
-          category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "total" | "sherpas" | "trios" | "duos" | "solos") | ("total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun");
-          raid?: number;
+          search?: string;
+          page?: number;
+        };
+        path: {
+          category: "clears" | "freshClears" | "sherpas" | "speedrun";
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardSearchResponse"];
-          };
-        };
-        /** @description Bad request */
-        400: {
-          content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
-          };
-        };
-        /** @description Unauthorized */
-        401: {
-          content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
-          };
-        };
-        /** @description LeaderboardNotFoundError */
-        404: {
-          content: {
             readonly "application/json": {
+              readonly minted: string;
               /** @enum {boolean} */
-              readonly notFound: true;
-              readonly params: {
-                readonly membershipId: string;
-                /** @default 25 */
-                readonly count?: number;
-                readonly type: "individual" | "worldfirst" | "global";
-                readonly category: string;
-                readonly raid?: components["schemas"]["RaidEnum"];
-              };
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardIndividualGlobalResponse"];
             };
           };
         };
-      };
-    };
-  };
-  "/leaderboard/global/{category}": {
-    get: {
-      parameters: {
-        query?: {
-          count?: number;
-          page?: number;
-        };
-        path: {
-          category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            readonly "application/json": components["schemas"]["LeaderboardGlobalResponse"];
-          };
-        };
-        /** @description Bad request */
-        400: {
-          content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
-          };
-        };
-        /** @description Unauthorized */
-        401: {
-          content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
-          };
-        };
-        /** @description Not found */
-        404: {
-          content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
-          };
-        };
-      };
-    };
-  };
-  "/leaderboard/{raid}/worldfirst/{category}": {
-    get: {
-      parameters: {
-        query?: {
-          count?: number;
-          page?: number;
-        };
-        path: {
-          raid: components["schemas"]["RaidPath"];
-          category: "normal" | "prestige" | "challenge" | "master";
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            readonly "application/json": components["schemas"]["LeaderboardWorldfirstResponse"];
-          };
-        };
-        /** @description Bad request */
-        400: {
-          content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
-          };
-        };
-        /** @description Unauthorized */
-        401: {
-          content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
-          };
-        };
-        /** @description Not found */
-        404: {
-          content: {
-            readonly "application/json": ({
-              /** @enum {boolean} */
-              readonly notFound: true;
-              readonly params: {
-                readonly raid: components["schemas"]["RaidPath"];
-                /** @enum {string} */
-                readonly category: "normal" | "prestige" | "challenge" | "master";
-                /** @default 50 */
-                readonly count?: number;
-                /** @default 1 */
-                readonly page?: number;
-              };
-            }) | components["schemas"]["PathValidationError"];
-          };
-        };
-      };
-    };
-  };
-  "/leaderboard/{raid}/individual/{category}": {
-    get: {
-      parameters: {
-        query?: {
-          count?: number;
-          page?: number;
-        };
-        path: {
-          raid: components["schemas"]["RaidPath"];
-          category: "fresh" | "total" | "sherpas" | "trios" | "duos" | "solos";
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            readonly "application/json": components["schemas"]["LeaderboardIndividualResponse"];
-          };
-        };
         /** @description Bad request */
         400: {
           content: {
@@ -405,30 +361,40 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly unavailable: true;
+              readonly membershipId: string;
             } | components["schemas"]["PathValidationError"];
           };
         };
       };
     };
   };
-  "/leaderboard/pantheon/{version}/first": {
+  "/leaderboard/individual/raid/{raid}/{category}": {
+    /**
+     * /leaderboard/individual/raid/{raid}/{category}
+     * @description Individual leaderboards for a specific raid
+     */
     get: {
       parameters: {
         query?: {
           count?: number;
+          search?: string;
           page?: number;
         };
         path: {
-          version: components["schemas"]["PantheonPath"];
+          raid: string;
+          category: "clears" | "freshClears" | "sherpas";
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardPantheonFirstResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardIndividualRaidResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -446,28 +412,43 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
+            readonly "application/json": {
+              readonly membershipId: string;
+            } | {
+              readonly raid: string;
+            } | components["schemas"]["PathValidationError"];
           };
         };
       };
     };
   };
-  "/leaderboard/pantheon/{version}/score": {
+  "/leaderboard/individual/pantheon/{version}/{category}": {
+    /**
+     * /leaderboard/individual/pantheon/{version}/{category}
+     * @description Individual leaderboards for a specific pantheon version
+     */
     get: {
       parameters: {
         query?: {
           count?: number;
+          search?: string;
           page?: number;
         };
         path: {
-          version: components["schemas"]["PantheonPath"];
+          version: string;
+          category: "clears" | "freshClears" | "score";
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardPantheonScoreResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardIndividualPantheonResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -485,28 +466,44 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
+            readonly "application/json": {
+              readonly membershipId: string;
+            } | {
+              readonly path: string;
+            } | components["schemas"]["PathValidationError"];
           };
         };
       };
     };
   };
-  "/leaderboard/pantheon/{version}/speedrun": {
+  "/leaderboard/team/first/{activity}/{version}": {
+    /**
+     * /leaderboard/team/first/{activity}/{version}
+     * @description Ranking of the first 1000 completions of each activity version.
+     * Use the /contest endpoint instead to get the full rankings for the duration of the contest.
+     */
     get: {
       parameters: {
         query?: {
           count?: number;
+          search?: string;
           page?: number;
         };
         path: {
-          version: components["schemas"]["PantheonPath"];
+          activity: string;
+          version: string;
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardPantheonSpeedrunResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardTeamFirstResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -524,28 +521,43 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
+            readonly "application/json": {
+              readonly membershipId: string;
+            } | {
+              readonly activity: string;
+              readonly version: string;
+            } | components["schemas"]["PathValidationError"];
           };
         };
       };
     };
   };
-  "/leaderboard/pantheon/all/{category}": {
+  "/leaderboard/team/contest/{raid}": {
+    /**
+     * /leaderboard/team/contest/{raid}
+     * @description Ranking of all teams which completed the official contest version of the raid during the contest period.
+     */
     get: {
       parameters: {
         query?: {
           count?: number;
+          search?: string;
           page?: number;
         };
         path: {
-          category: "fresh" | "total" | "sherpas" | "trios" | "duos";
+          raid: string;
         };
       };
       responses: {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["LeaderboardPantheonAllResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardTeamContestResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -563,13 +575,24 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            readonly "application/json": components["schemas"]["PathValidationError"];
+            readonly "application/json": {
+              readonly membershipId: string;
+            } | {
+              readonly raid: string;
+            } | components["schemas"]["PathValidationError"];
           };
         };
       };
     };
   };
   "/pgcr/{instanceId}": {
+    /**
+     * /pgcr/{instanceId}
+     * @description Get a raw post game carnage report by instanceId.
+     * This is essentially the raw data from the Bungie API, with a few fields trimmed off.
+     * It should be a subset of the data returned by the Bungie API.
+     * Useful if you need to access PGCRs when Bungie's API is down.
+     */
     get: {
       parameters: {
         path: {
@@ -580,7 +603,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["PgcrResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["PgcrResponse"];
+            };
           };
         };
         /** @description Unauthorized */
@@ -593,8 +621,6 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              /** @enum {boolean} */
-              readonly notFound: true;
               readonly instanceId: string;
             } | components["schemas"]["PathValidationError"];
           };
@@ -603,6 +629,10 @@ export interface paths {
     };
   };
   "/admin/query": {
+    /**
+     * /admin/query
+     * @description Run a query against the database
+     */
     post: {
       readonly requestBody?: {
         readonly content: {
@@ -619,7 +649,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["AdminQueryResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["AdminQueryResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -643,17 +678,27 @@ export interface paths {
         /** @description AdminQuerySyntaxError */
         501: {
           content: {
-            readonly "application/json": components["schemas"]["AdminQuerySyntaxError"];
+            readonly "application/json": {
+              readonly name: string;
+              readonly code: string;
+              readonly line: string;
+              readonly position: number;
+            };
           };
         };
       };
     };
   };
-  "/authorize": {
+  "/authorize/admin": {
+    /**
+     * /authorize/admin
+     * @description Authorize an admin user. Requires the client secret.
+     */
     post: {
       readonly requestBody?: {
         readonly content: {
           readonly "application/json": {
+            readonly bungieMembershipId: string;
             readonly clientSecret: string;
           };
         };
@@ -662,7 +707,12 @@ export interface paths {
         /** @description Success */
         200: {
           content: {
-            readonly "application/json": components["schemas"]["AuthorizeResponse"];
+            readonly "application/json": {
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["AuthorizeAdminResponse"];
+            };
           };
         };
         /** @description Bad request */
@@ -695,68 +745,124 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /** @enum {integer} */
-    readonly BungieMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10 | 254 | -1;
-    /** @enum {integer} */
-    readonly ActivityEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1 | 101;
-    /** @enum {integer} */
-    readonly RaidEnum: 13 | 12 | 11 | 10 | 9 | 8 | 7 | 4 | 6 | 5 | 3 | 2 | 1;
-    /** @enum {integer} */
-    readonly ActivityVersionEnum: 1 | 2 | 3 | 4 | 64 | 65 | 66 | 128 | 129 | 130 | 131;
-    /**
-     * @example {
-     *   "bungieGlobalDisplayName": "Newo",
-     *   "bungieGlobalDisplayNameCode": "9010",
-     *   "membershipId": "4611686018488107374",
-     *   "displayName": "xx_newo_xx",
-     *   "iconPath": "/common/destiny2_content/icons/93844c8b76ea80683a880479e3506980.jpg",
-     *   "membershipType": 3,
-     *   "lastSeen": "2021-05-01T00:00:00.000Z"
-     * }
-     */
-    readonly PlayerInfo: {
-      readonly membershipId: string;
-      readonly membershipType: components["schemas"]["BungieMembershipType"];
-      readonly iconPath: string | null;
-      /** @description The platform-specific display name of the player. No longer shown in-game. */
-      readonly displayName: string | null;
-      readonly bungieGlobalDisplayName: string | null;
-      readonly bungieGlobalDisplayNameCode: string | null;
+    /** @enum {string} */
+    readonly ErrorCode: "Unknown" | "ApiKeyError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "PlayerNotFoundError" | "PlayerPrivateProfileError" | "InstanceNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "PlayerNotOnLeaderboardError" | "RaidNotFoundError" | "PantheonVersionNotFoundError" | "InvalidActivityVersionComboError" | "AdminQuerySyntaxError" | "InsufficientPermissionsError" | "InvalidClientSecretError" | "InternalServerError";
+    readonly RaidHubResponse: OneOf<[{
       /** Format: date-time */
-      readonly lastSeen: string;
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: true;
+      readonly response?: unknown;
+    }, {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      readonly errorCode: components["schemas"]["ErrorCode"];
+      readonly error?: unknown;
+    }]>;
+    readonly ApiKeyError: {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      /** @enum {string} */
+      readonly errorCode: "ApiKeyError";
+      readonly error: {
+        readonly message: "Invalid API Key" | "Missing API Key";
+        readonly apiKey: string | null;
+        readonly origin: string | null;
+      };
     };
-    readonly Activity: {
+    readonly ZodIssue: {
+      readonly fatal?: boolean;
+      readonly message: string;
+      readonly path: readonly (string | number)[];
+      /** @enum {string} */
+      readonly code: "invalid_type" | "invalid_literal" | "custom" | "invalid_union" | "invalid_union_discriminator" | "invalid_enum_value" | "unrecognized_keys" | "invalid_arguments" | "invalid_return_type" | "invalid_date" | "invalid_string" | "too_small" | "too_big" | "invalid_intersection_types" | "not_multiple_of" | "not_finite";
+    };
+    readonly BodyValidationError: {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      /** @enum {string} */
+      readonly errorCode: "BodyValidationError";
+      readonly error: {
+        readonly issues: readonly components["schemas"]["ZodIssue"][];
+      };
+    };
+    readonly InsufficientPermissionsError: {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      /** @enum {string} */
+      readonly errorCode: "InsufficientPermissionsError";
+      readonly error: {
+        /** @enum {string} */
+        readonly message: "Forbidden";
+      };
+    };
+    readonly PathValidationError: {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      /** @enum {string} */
+      readonly errorCode: "PathValidationError";
+      readonly error: {
+        readonly issues: readonly components["schemas"]["ZodIssue"][];
+      };
+    };
+    readonly QueryValidationError: {
+      /** Format: date-time */
+      readonly minted: string;
+      /** @enum {boolean} */
+      readonly success: false;
+      /** @enum {string} */
+      readonly errorCode: "QueryValidationError";
+      readonly error: {
+        readonly issues: readonly components["schemas"]["ZodIssue"][];
+      };
+    };
+    /** @enum {integer} */
+    readonly DestinyMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | -1;
+    readonly Instance: {
       readonly instanceId: string;
       readonly hash: string;
+      readonly activityId: number;
+      readonly versionId: number;
       readonly completed: boolean;
       readonly flawless: boolean | null;
       readonly fresh: boolean | null;
       readonly playerCount: number;
+      readonly score: number;
       /** Format: date-time */
       readonly dateStarted: string;
       /** Format: date-time */
       readonly dateCompleted: string;
+      /** @description Activity duration in seconds */
       readonly duration: number;
-      readonly platformType?: components["schemas"]["BungieMembershipType"];
-      readonly score: number;
+      readonly platformType: components["schemas"]["DestinyMembershipType"];
+      /** @description If the activity was completed before the day one end date */
+      readonly isDayOne: boolean;
+      /** @description If the activity was completed before the contest end date */
+      readonly isContest: boolean;
+      /** @description If the activity was completed before the week one end date */
+      readonly isWeekOne: boolean;
     };
-    readonly ActivityExtended: components["schemas"]["Activity"] & {
-      readonly dayOne: boolean;
-      readonly contest: boolean;
-      readonly weekOne: boolean;
+    readonly InstanceMetadata: {
+      readonly activityName: string;
+      readonly versionName: string;
+      readonly isRaid: boolean;
     };
-    readonly ActivityPlayerData: {
-      readonly completed: boolean;
-      readonly sherpas: number;
-      readonly isFirstClear: boolean;
-      readonly timePlayedSeconds: number;
-    };
-    readonly ActivityCharacterWeapon: {
+    readonly InstanceCharacterWeapon: {
       readonly weaponHash: string;
       readonly kills: number;
       readonly precisionKills: number;
     };
-    readonly ActivityCharacter: {
+    readonly InstanceCharacter: {
       readonly characterId: string;
       readonly classHash: string | null;
       readonly emblemHash: string | null;
@@ -771,160 +877,131 @@ export interface components {
       readonly superKills: number;
       readonly grenadeKills: number;
       readonly meleeKills: number;
-      readonly weapons: readonly components["schemas"]["ActivityCharacterWeapon"][];
+      readonly weapons: readonly components["schemas"]["InstanceCharacterWeapon"][];
     };
-    readonly PlayerWithExtendedActivityData: {
-      readonly player: components["schemas"]["PlayerInfo"];
-      readonly data: {
-        readonly completed: boolean;
-        readonly sherpas: number;
-        readonly isFirstClear: boolean;
-        readonly timePlayedSeconds: number;
-        readonly characters: readonly components["schemas"]["ActivityCharacter"][];
-      };
+    readonly InstancePlayer: {
+      readonly completed: boolean;
+      readonly isFirstClear: boolean;
+      readonly sherpas: number;
+      readonly timePlayedSeconds: number;
     };
-    readonly ActivityWithPlayerData: components["schemas"]["ActivityExtended"] & {
-      readonly player: components["schemas"]["ActivityPlayerData"];
-    };
-    /** @enum {string} */
-    readonly RaidHubErrorCode: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError" | "AdminQuerySyntaxError";
-    readonly RaidHubError: {
+    /**
+     * @example {
+     *   "bungieGlobalDisplayName": "Newo",
+     *   "bungieGlobalDisplayNameCode": "9010",
+     *   "membershipId": "4611686018488107374",
+     *   "displayName": "xx_newo_xx",
+     *   "iconPath": "/common/destiny2_content/icons/93844c8b76ea80683a880479e3506980.jpg",
+     *   "membershipType": 3,
+     *   "lastSeen": "2021-05-01T00:00:00.000Z",
+     *   "isPrivate": false
+     * }
+     */
+    readonly PlayerInfo: {
+      readonly membershipId: string;
+      readonly membershipType: components["schemas"]["DestinyMembershipType"];
+      readonly iconPath: string | null;
+      /** @description The platform-specific display name of the player. No longer shown in-game. */
+      readonly displayName: string | null;
+      readonly bungieGlobalDisplayName: string | null;
+      readonly bungieGlobalDisplayNameCode: string | null;
       /** Format: date-time */
-      readonly minted: string;
-      readonly message: string;
-      /** @enum {boolean} */
-      readonly success: false;
-      readonly error: {
-        /** @enum {string} */
-        readonly type: "Unknown" | "PlayerNotFoundError" | "ActivityNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "InvalidClientSecretError" | "InsufficientPermissionsError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "InternalServerError" | "ApiKeyError" | "AdminQuerySyntaxError";
-        [key: string]: unknown;
-      };
+      readonly lastSeen: string;
+      /** @description Whether or not the player has chosen to hide their on Bungie.net. */
+      readonly isPrivate: boolean;
     };
-    readonly ZodIssue: {
-      readonly fatal?: boolean;
-      readonly message: string;
-      readonly path: readonly (string | number)[];
-      /** @enum {string} */
-      readonly code: "invalid_type" | "invalid_literal" | "custom" | "invalid_union" | "invalid_union_discriminator" | "invalid_enum_value" | "unrecognized_keys" | "invalid_arguments" | "invalid_return_type" | "invalid_date" | "invalid_string" | "too_small" | "too_big" | "invalid_intersection_types" | "not_multiple_of" | "not_finite";
+    readonly InstancePlayerExtended: components["schemas"]["InstancePlayer"] & {
+      readonly playerInfo: components["schemas"]["PlayerInfo"];
+      readonly characters: readonly components["schemas"]["InstanceCharacter"][];
     };
-    readonly PathValidationError: components["schemas"]["RaidHubError"] & {
-      /** @enum {string} */
-      readonly message?: "Invalid path params";
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "PathValidationError";
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
-    };
-    readonly QueryValidationError: components["schemas"]["RaidHubError"] & {
-      /** @enum {string} */
-      readonly message?: "Invalid query params";
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "QueryValidationError";
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
-    };
-    readonly BodyValidationError: components["schemas"]["RaidHubError"] & {
-      /** @enum {string} */
-      readonly message?: "Invalid JSON body";
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "BodyValidationError";
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
-    };
-    readonly InternalServerError: components["schemas"]["RaidHubError"] & ({
-      /** @enum {string} */
-      readonly message?: "Something went wrong.";
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "InternalServerError";
-        readonly at: string | null;
-      };
+    readonly InstanceExtended: components["schemas"]["Instance"] & ({
+      readonly leaderboardRank: number | null;
+      readonly metadata: components["schemas"]["InstanceMetadata"];
+      readonly players: readonly components["schemas"]["InstancePlayerExtended"][];
     });
-    readonly InsufficientPermissionsError: components["schemas"]["RaidHubError"] & {
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "InsufficientPermissionsError";
-        /** @enum {string} */
-        readonly message: "Forbidden";
-      };
+    readonly TeamLeaderboardEntry: {
+      readonly position: number;
+      readonly rank: number;
+      readonly value: number;
+      readonly instanceId: string;
+      readonly players: readonly components["schemas"]["PlayerInfo"][];
     };
-    readonly ApiKeyError: components["schemas"]["RaidHubError"] & ({
-      readonly message?: "Invalid API Key" | "Missing API Key";
-      readonly error?: {
-        /** @enum {string} */
-        readonly type: "ApiKeyError";
-        readonly apiKey: string | null;
-        readonly origin: string | null;
-      };
-    });
-    readonly ActivitySearchBody: {
-      readonly membershipId: string | (readonly string[]);
-      readonly minPlayers?: number | null;
-      readonly maxPlayers?: number | null;
-      readonly minDate?: string | null;
-      readonly maxDate?: string | null;
-      readonly minSeason?: number | null;
-      readonly maxSeason?: number | null;
-      readonly fresh?: boolean;
-      readonly completed?: boolean;
-      readonly flawless?: boolean;
-      readonly raid?: components["schemas"]["RaidEnum"];
-      readonly platformType?: number;
-      /** @default false */
-      readonly reversed?: boolean | null;
-      /** @default 25 */
-      readonly count?: number;
-      /** @default 1 */
-      readonly page?: number;
-    };
-    readonly AdminQuerySyntaxError: {
-      readonly name: string;
-      readonly code: string;
-      readonly message: string;
-    };
-    /** @enum {string} */
-    readonly RaidPath: "leviathan" | "eaterofworlds" | "spireofstars" | "lastwish" | "scourgeofthepast" | "crownofsorrow" | "gardenofsalvation" | "deepstonecrypt" | "vaultofglass" | "vowofthedisciple" | "kingsfall" | "rootofnightmares" | "crotasend";
     readonly IndividualLeaderboardEntry: {
       readonly position: number;
       readonly rank: number;
       readonly value: number;
-      readonly player: components["schemas"]["PlayerInfo"];
+      readonly playerInfo: components["schemas"]["PlayerInfo"];
     };
-    readonly WorldFirstLeaderboardEntry: {
-      readonly position: number;
-      readonly rank: number;
-      readonly value: number;
-      readonly activity: components["schemas"]["Activity"];
-      readonly players: readonly {
-          readonly player: components["schemas"]["PlayerInfo"];
-          readonly data: components["schemas"]["ActivityPlayerData"];
-        }[];
-    };
-    /** @enum {string} */
-    readonly PantheonPath: "atraks" | "oryx" | "rhulk" | "nezarec";
-    readonly LeaderboardSearchQuery: {
-      readonly type: "worldfirst" | "individual" | "global";
-      readonly membershipId: string;
-      /** @default 25 */
+    readonly LeaderboardData: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
+    }]>;
+    /** @description Pagination parameters for leaderboard data */
+    readonly LeaderboardPagination: {
+      /** @default 50 */
       readonly count?: number;
-      readonly category: ("normal" | "prestige" | "challenge" | "master") | ("fresh" | "total" | "sherpas" | "trios" | "duos" | "solos") | ("total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun");
-      readonly raid?: number;
+      readonly search?: string;
+      /**
+       * @description Page number of leaderboard data. Ignored if `search` is provided. Defaults to 1
+       * @default 1
+       */
+      readonly page?: number;
     };
-    /** @enum {integer} */
-    readonly PantheonEnum: 128 | 129 | 130 | 131;
-    /** @enum {integer} */
-    readonly SunsetRaidEnum: 1 | 2 | 3 | 5 | 6;
-    /** @enum {integer} */
-    readonly MasterRaidEnum: 9 | 10 | 11 | 12 | 13;
-    /** @enum {integer} */
-    readonly PrestigeRaidEnum: 1 | 2 | 3;
-    /** @enum {integer} */
-    readonly ContestRaidEnum: 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+    /**
+     * @description The definition of an activity in the RaidHub database.
+     * @example {
+     *   "id": 9,
+     *   "name": "Vault of Glass",
+     *   "path": "vaultofglass",
+     *   "isSunset": false,
+     *   "isRaid": true,
+     *   "releaseDate": "2021-05-22T00:00:00.000Z",
+     *   "dayOneEnd": "2021-05-23T00:00:00.000Z",
+     *   "contestEnd": "2021-05-23T00:00:00.000Z",
+     *   "weekOneEnd": "2021-05-25T00:00:00.000Z",
+     *   "milestoneHash": "1888320892"
+     * }
+     */
+    readonly ActivityDefinition: {
+      readonly id: number;
+      readonly name: string;
+      readonly path: string;
+      readonly isSunset: boolean;
+      readonly isRaid: boolean;
+      /** Format: date-time */
+      readonly releaseDate: string;
+      /** Format: date-time */
+      readonly dayOneEnd: string;
+      /** Format: date-time */
+      readonly contestEnd: string;
+      /** Format: date-time */
+      readonly weekOneEnd: string;
+      readonly milestoneHash: string | null;
+    };
+    /** @description The definition of a version in the RaidHub database. */
+    readonly VersionDefinition: {
+      readonly id: number;
+      readonly name: string;
+      readonly path: string;
+      readonly associatedActivityId: number | null;
+      readonly isChallengeMode: boolean;
+    };
     /** @description A raw PGCR with a few redundant fields removed */
-    readonly DestinyPostGameCarnageReport: {
+    readonly RaidHubPostGameCarnageReport: {
+      /** Format: date-time */
       readonly period: string;
       readonly startingPhaseIndex?: number;
       readonly activityWasStartedFromBeginning?: boolean;
@@ -934,15 +1011,15 @@ export interface components {
         /** @enum {integer} */
         readonly mode: 0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91;
         readonly modes: readonly (0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91)[];
-        readonly membershipType: components["schemas"]["BungieMembershipType"];
+        readonly membershipType: components["schemas"]["DestinyMembershipType"];
       };
       readonly entries: readonly ({
           readonly player: {
             readonly destinyUserInfo: {
               readonly iconPath?: string | null;
-              readonly crossSaveOverride: components["schemas"]["BungieMembershipType"];
-              readonly applicableMembershipTypes?: (readonly components["schemas"]["BungieMembershipType"][]) | null;
-              readonly membershipType?: components["schemas"]["BungieMembershipType"];
+              readonly crossSaveOverride: components["schemas"]["DestinyMembershipType"];
+              readonly applicableMembershipTypes?: (readonly components["schemas"]["DestinyMembershipType"][]) | null;
+              readonly membershipType?: components["schemas"]["DestinyMembershipType"];
               readonly membershipId: string;
               readonly displayName?: string | null;
               readonly bungieGlobalDisplayName?: string | null;
@@ -988,101 +1065,92 @@ export interface components {
           };
         })[];
     };
-    readonly PlayerStatRanking: {
-      readonly value: number | null;
-      readonly rank: number | null;
+    readonly InstanceForPlayer: components["schemas"]["Instance"] & {
+      readonly player: components["schemas"]["InstancePlayer"];
     };
-    readonly PlayerProfileLeaderboardEntry: {
+    readonly PlayerProfileActivityStats: {
+      readonly activityId: string;
+      readonly freshClears: number;
+      readonly clears: number;
+      readonly sherpas: number;
+      readonly trios: number;
+      readonly duos: number;
+      readonly solos: number;
+      readonly fastestInstance: components["schemas"]["Instance"];
+    };
+    readonly GlobalStat: {
       readonly rank: number;
+      readonly value: number;
+    };
+    readonly PlayerProfileGlobalStats: {
+      readonly clears: components["schemas"]["GlobalStat"];
+      readonly freshClears: components["schemas"]["GlobalStat"];
+      readonly sherpas: components["schemas"]["GlobalStat"];
+      readonly sumOfBest: components["schemas"]["GlobalStat"];
+    };
+    readonly WorldFirstEntry: {
+      readonly activityId: number;
       readonly instanceId: string;
-      readonly boardId: string;
-      /** @enum {string} */
-      readonly type: "Normal" | "Challenge" | "Prestige" | "Master";
-      readonly activityHash: string;
-      /** Format: date-time */
-      readonly dateCompleted: string;
-      readonly dayOne: boolean;
-      readonly contest: boolean;
-      readonly weekOne: boolean;
+      readonly timeAfterLaunch: number;
+      readonly rank: number;
+      readonly isDayOne: boolean;
+      readonly isContest: boolean;
+      readonly isWeekOne: boolean;
+      readonly isChallengeMode: boolean;
+    };
+    readonly PlayerProfile: {
+      readonly playerInfo: components["schemas"]["PlayerInfo"];
+      readonly stats: {
+        readonly global: components["schemas"]["PlayerProfileGlobalStats"];
+        readonly activity: {
+          [key: string]: components["schemas"]["PlayerProfileActivityStats"];
+        };
+      };
+      readonly worldFirstEntries: {
+        [key: string]: components["schemas"]["WorldFirstEntry"];
+      };
+    };
+    readonly Teammate: {
+      readonly estimatedTimePlayedSeconds: number;
+      readonly clears: number;
+      readonly instanceCount: number;
+      readonly playerInfo: components["schemas"]["PlayerInfo"];
     };
     readonly ManifestResponse: {
+      /** @description The mapping of each Bungie.net hash to a RaidHub activityId and versionId */
       readonly hashes: {
         [key: string]: {
-          readonly activityId: components["schemas"]["ActivityEnum"];
-          readonly versionId: components["schemas"]["ActivityVersionEnum"];
+          readonly activityId: number;
+          readonly versionId: number;
         };
       };
-      readonly listed: readonly components["schemas"]["RaidEnum"][];
-      readonly pantheonId: components["schemas"]["ActivityEnum"];
-      readonly pantheonModes: readonly components["schemas"]["PantheonEnum"][];
-      readonly sunset: readonly components["schemas"]["SunsetRaidEnum"][];
-      readonly contest: readonly components["schemas"]["ContestRaidEnum"][];
-      readonly master: readonly components["schemas"]["MasterRaidEnum"][];
-      readonly prestige: readonly components["schemas"]["PrestigeRaidEnum"][];
-      readonly reprisedChallengePairings: readonly {
-          readonly raid: components["schemas"]["RaidEnum"];
-          readonly version: components["schemas"]["ActivityVersionEnum"];
-          readonly triumphName: string;
-        }[];
-      readonly leaderboards: {
-        readonly global: readonly ({
-            /** @enum {string} */
-            readonly category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
-            readonly displayName: string;
-            /** @enum {string} */
-            readonly format: "number" | "time";
-          })[];
-        readonly worldFirst: {
-          [key: string]: readonly ({
-              readonly id: string;
-              readonly displayName: string;
-              /** @enum {string} */
-              readonly category: "normal" | "prestige" | "challenge" | "master";
-              /** Format: date-time */
-              readonly date: string;
-            })[];
-        };
-        readonly individual: {
-          readonly clears: {
-            [key: string]: readonly ({
-                readonly displayName: string;
-                /** @enum {string} */
-                readonly category: "fresh" | "total" | "trios" | "duos" | "solos";
-              })[];
-          };
-        };
-        readonly pantheon: {
-          readonly individual: readonly ({
-              readonly displayName: string;
-              /** @enum {string} */
-              readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos";
-            })[];
-          readonly first: readonly {
-              readonly versionId: components["schemas"]["PantheonEnum"];
-              readonly path: string;
-              readonly displayName: string;
-            }[];
-          readonly speedrun: readonly {
-              readonly versionId: components["schemas"]["PantheonEnum"];
-              readonly path: string;
-              readonly displayName: string;
-            }[];
-        };
+      /** @description The mapping of each RaidHub activityId to its definition */
+      readonly activityDefinitions: {
+        [key: string]: components["schemas"]["ActivityDefinition"];
       };
-      readonly raidUrlPaths: {
-        [key: string]: components["schemas"]["RaidPath"];
+      /** @description The mapping of each RaidHub versionId to its definition */
+      readonly versionDefinitions: {
+        [key: string]: components["schemas"]["VersionDefinition"];
       };
-      readonly pantheonUrlPaths: {
-        [key: string]: components["schemas"]["PantheonPath"];
-      };
-      readonly activityStrings: {
-        [key: string]: string;
-      };
-      readonly versionStrings: {
-        [key: string]: string;
-      };
-      readonly checkpointNames: {
-        [key: string]: string;
+      /** @description The list of all activityId in order of newest to oldest */
+      readonly listedRaidIds: readonly number[];
+      /** @description The list of inactive raid activityId */
+      readonly sunsetRaidIds: readonly number[];
+      /** @description The list of raid activityId which had a prestige mode */
+      readonly prestigeRaidIds: readonly number[];
+      /** @description The list of raid activityId which have a master mode */
+      readonly masterRaidIds: readonly number[];
+      /** @description The list of raid activityId which had a contest mode */
+      readonly contestRaidIds: readonly number[];
+      /** @description The list of raid activityId which have been reprised from Destiny 1 */
+      readonly resprisedRaidIds: readonly number[];
+      /** @description The list of version versionId which are the challenge mode for reprised raids */
+      readonly resprisedChallengeVersionIds: readonly number[];
+      /** @description The list of activityId for Pantheon */
+      readonly pantheonIds: readonly number[];
+      /** @description The set of versionId for each activityId */
+      readonly versionsForActivity: {
+        [key: string]: readonly number[];
       };
     };
     readonly PlayerSearchResponse: {
@@ -1090,19 +1158,13 @@ export interface components {
         readonly count: number;
         readonly query: string;
       };
-      readonly results: readonly (components["schemas"]["PlayerInfo"] & {
-          readonly clears: number;
-        })[];
+      readonly results: readonly components["schemas"]["PlayerInfo"][];
     };
     readonly PlayerActivitiesResponse: {
       readonly membershipId: string;
-      readonly activities: readonly (components["schemas"]["ActivityWithPlayerData"] & {
-          readonly meta: {
-            readonly activityId: components["schemas"]["ActivityEnum"];
-            readonly versionId: components["schemas"]["ActivityVersionEnum"];
-          };
-        })[];
-      readonly nextCursor: string | null;
+      /** Format: date-time */
+      readonly nextCursor: string;
+      readonly activities: readonly components["schemas"]["InstanceForPlayer"][];
     };
     /**
      * @example {
@@ -1112,12 +1174,13 @@ export interface components {
      *   "displayName": "xx_newo_xx",
      *   "iconPath": "/common/destiny2_content/icons/93844c8b76ea80683a880479e3506980.jpg",
      *   "membershipType": 3,
-     *   "lastSeen": "2021-05-01T00:00:00.000Z"
+     *   "lastSeen": "2021-05-01T00:00:00.000Z",
+     *   "isPrivate": false
      * }
      */
     readonly PlayerBasicResponse: {
       readonly membershipId: string;
-      readonly membershipType: components["schemas"]["BungieMembershipType"];
+      readonly membershipType: components["schemas"]["DestinyMembershipType"];
       readonly iconPath: string | null;
       /** @description The platform-specific display name of the player. No longer shown in-game. */
       readonly displayName: string | null;
@@ -1125,142 +1188,115 @@ export interface components {
       readonly bungieGlobalDisplayNameCode: string | null;
       /** Format: date-time */
       readonly lastSeen: string;
+      /** @description Whether or not the player has chosen to hide their on Bungie.net. */
+      readonly isPrivate: boolean;
     };
     readonly PlayerProfileResponse: {
-      readonly player: components["schemas"]["PlayerInfo"];
+      readonly playerInfo: components["schemas"]["PlayerInfo"];
       readonly stats: {
-        readonly global: {
-          readonly clears: components["schemas"]["PlayerStatRanking"];
-          readonly fullClears: components["schemas"]["PlayerStatRanking"];
-          readonly sherpas: components["schemas"]["PlayerStatRanking"];
-          readonly speed: components["schemas"]["PlayerStatRanking"];
-        } | null;
-        readonly byRaid: {
-          [key: string]: {
-            readonly fastestClear: {
-              /** Format: int64 */
-              readonly instanceId: number;
-              readonly duration: number;
-            } | null;
-            readonly clears: number;
-            readonly fullClears: number;
-            readonly sherpas: number;
-            readonly trios: number;
-            readonly duos: number;
-            readonly solos: number;
-          };
+        readonly global: components["schemas"]["PlayerProfileGlobalStats"];
+        readonly activity: {
+          [key: string]: components["schemas"]["PlayerProfileActivityStats"];
         };
       };
-      readonly worldFirstEntries: readonly components["schemas"]["PlayerProfileLeaderboardEntry"][];
-    };
-    readonly ActivitySearchResponse: {
-      readonly query: components["schemas"]["ActivitySearchBody"];
-      readonly results: readonly components["schemas"]["ActivityExtended"][];
-    };
-    readonly ActivityResponse: components["schemas"]["ActivityExtended"] & {
-      readonly meta: {
-        readonly activityId: components["schemas"]["ActivityEnum"];
-        readonly activityName: string;
-        readonly versionId: components["schemas"]["ActivityVersionEnum"];
-        readonly versionName: string;
+      readonly worldFirstEntries: {
+        [key: string]: components["schemas"]["WorldFirstEntry"];
       };
-      readonly leaderboardEntries: {
-        [key: string]: number;
-      };
-      readonly players: readonly components["schemas"]["PlayerWithExtendedActivityData"][];
     };
-    readonly LeaderboardSearchResponse: {
-      readonly params: {
-        readonly type: "individual" | "worldfirst" | "global";
-        readonly category: string;
-        readonly raid?: components["schemas"]["RaidEnum"];
-        readonly membershipId: string;
-        /** @default 25 */
-        readonly count?: number;
-      };
+    readonly PlayerTeammatesResponse: readonly components["schemas"]["Teammate"][];
+    readonly ActivityResponse: components["schemas"]["Instance"] & ({
+      readonly leaderboardRank: number | null;
+      readonly metadata: components["schemas"]["InstanceMetadata"];
+      readonly players: readonly components["schemas"]["InstancePlayerExtended"][];
+    });
+    readonly LeaderboardIndividualGlobalResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
       readonly page: number;
-      readonly rank: number;
-      readonly position: number;
-      readonly entries: readonly (components["schemas"]["IndividualLeaderboardEntry"] | components["schemas"]["WorldFirstLeaderboardEntry"])[];
-    };
-    readonly LeaderboardGlobalResponse: {
-      readonly params: {
-        /** @enum {string} */
-        readonly category: "total-clears" | "sherpas" | "full-clears" | "cumulative-speedrun";
-        readonly count: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
-    };
-    readonly LeaderboardWorldfirstResponse: {
-      readonly params: {
-        readonly raid: components["schemas"]["RaidPath"];
-        /** @enum {string} */
-        readonly category: "normal" | "prestige" | "challenge" | "master";
-        /** @default 50 */
-        readonly count?: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
-      /** Format: date-time */
-      readonly date: string;
-      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
-    };
-    readonly LeaderboardIndividualResponse: {
-      readonly params: {
-        readonly raid: components["schemas"]["RaidPath"];
-        /** @enum {string} */
-        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos" | "solos";
-        readonly count: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
+    }]>;
+    readonly LeaderboardIndividualRaidResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
-    };
-    readonly LeaderboardPantheonFirstResponse: {
-      readonly params: {
-        readonly version: components["schemas"]["PantheonPath"];
-        /** @default 50 */
-        readonly count?: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
-      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
-    };
-    readonly LeaderboardPantheonScoreResponse: {
-      readonly params: {
-        readonly version: components["schemas"]["PantheonPath"];
-        /** @default 50 */
-        readonly count?: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
-      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
-    };
-    readonly LeaderboardPantheonSpeedrunResponse: {
-      readonly params: {
-        readonly version: components["schemas"]["PantheonPath"];
-        /** @default 50 */
-        readonly count?: number;
-        /** @default 1 */
-        readonly page?: number;
-      };
-      readonly entries: readonly components["schemas"]["WorldFirstLeaderboardEntry"][];
-    };
-    readonly LeaderboardPantheonAllResponse: {
-      readonly params: {
-        /** @default 50 */
-        readonly count?: number;
-        /** @default 1 */
-        readonly page?: number;
-        /** @enum {string} */
-        readonly category: "fresh" | "total" | "sherpas" | "trios" | "duos";
-      };
+    }]>;
+    readonly LeaderboardIndividualPantheonResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
-    };
+    }]>;
+    readonly LeaderboardTeamFirstResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
+    }]>;
+    readonly LeaderboardTeamContestResponse: OneOf<[{
+      /** @enum {string} */
+      readonly type: "team";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["TeamLeaderboardEntry"][];
+    }, {
+      /** @enum {string} */
+      readonly type: "individual";
+      /** @enum {string} */
+      readonly format: "duration" | "numerical";
+      readonly page: number;
+      readonly count: number;
+      readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
+    }]>;
     /** @description A raw PGCR with a few redundant fields removed */
     readonly PgcrResponse: {
+      /** Format: date-time */
       readonly period: string;
       readonly startingPhaseIndex?: number;
       readonly activityWasStartedFromBeginning?: boolean;
@@ -1270,15 +1306,15 @@ export interface components {
         /** @enum {integer} */
         readonly mode: 0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91;
         readonly modes: readonly (0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91)[];
-        readonly membershipType: components["schemas"]["BungieMembershipType"];
+        readonly membershipType: components["schemas"]["DestinyMembershipType"];
       };
       readonly entries: readonly ({
           readonly player: {
             readonly destinyUserInfo: {
               readonly iconPath?: string | null;
-              readonly crossSaveOverride: components["schemas"]["BungieMembershipType"];
-              readonly applicableMembershipTypes?: (readonly components["schemas"]["BungieMembershipType"][]) | null;
-              readonly membershipType?: components["schemas"]["BungieMembershipType"];
+              readonly crossSaveOverride: components["schemas"]["DestinyMembershipType"];
+              readonly applicableMembershipTypes?: (readonly components["schemas"]["DestinyMembershipType"][]) | null;
+              readonly membershipType?: components["schemas"]["DestinyMembershipType"];
               readonly membershipId: string;
               readonly displayName?: string | null;
               readonly bungieGlobalDisplayName?: string | null;
@@ -1341,7 +1377,7 @@ export interface components {
       readonly type: "EXPLAIN";
       readonly data: readonly string[];
     }]>;
-    readonly AuthorizeResponse: {
+    readonly AuthorizeAdminResponse: {
       readonly value: string;
       /** Format: date-time */
       readonly expires: string;

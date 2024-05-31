@@ -1,5 +1,3 @@
-"use client"
-
 import { useMemo } from "react"
 import styled, { css, keyframes } from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
@@ -14,7 +12,7 @@ import Sparkle from "~/components/icons/Sparkle"
 import Xmark from "~/components/icons/Xmark"
 import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
-import { type RaidHubPlayerWithExtendedActivityData } from "~/services/raidhub/types"
+import { type RaidHubInstancePlayerExtended } from "~/services/raidhub/types"
 import { bungieBannerEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber } from "~/util/presentation/formatting"
@@ -25,22 +23,21 @@ export const PlayerTab = ({
     activityPlayer,
     onClick
 }: {
-    activityPlayer: RaidHubPlayerWithExtendedActivityData
+    activityPlayer: RaidHubInstancePlayerExtended
     onClick: () => void
 }) => {
     const { data } = usePGCRContext()
 
-    const isFirstClear =
-        !!activityPlayer?.data?.isFirstClear && !!data?.players.some(p => p.data.sherpas > 0)
+    const isFirstClear = !!activityPlayer?.isFirstClear && !!data?.players.some(p => p.sherpas > 0)
 
-    const displayName = getBungieDisplayName(activityPlayer.player, {
+    const displayName = getBungieDisplayName(activityPlayer.playerInfo, {
         excludeCode: true
     })
-    const emblem = useItemDefinition(Number(activityPlayer.data.characters[0].emblemHash))
+    const emblem = useItemDefinition(Number(activityPlayer.characters[0].emblemHash))
 
     const stats = useMemo(
         () =>
-            activityPlayer.data.characters.reduce(
+            activityPlayer.characters.reduce(
                 (acc, curr) => ({
                     kills: acc.kills + curr.kills,
                     assists: acc.assists + curr.assists,
@@ -52,7 +49,7 @@ export const PlayerTab = ({
                     deaths: 0
                 }
             ),
-        [activityPlayer.data.characters]
+        [activityPlayer.characters]
     )
 
     return (
@@ -62,7 +59,7 @@ export const PlayerTab = ({
                 $align="space-between"
                 $crossAxis="stretch"
                 $padding={0.5}
-                $dnf={!activityPlayer.data.completed}
+                $dnf={!activityPlayer.completed}
                 $firstClear={isFirstClear}
                 onClick={onClick}>
                 <BackgroundImage
@@ -73,13 +70,13 @@ export const PlayerTab = ({
                 />
 
                 <CharacterLogoStack
-                    characters={activityPlayer.data.characters}
+                    characters={activityPlayer.characters}
                     style={{ flex: 1, justifyContent: "flex-start" }}
                 />
                 <Flex style={{ flex: 3, maxWidth: "50%" }}>
                     <DisplayName
-                        membershipId={activityPlayer.player.membershipId}
-                        membershipType={activityPlayer.player.membershipType || 0}
+                        membershipId={activityPlayer.playerInfo.membershipId}
+                        membershipType={activityPlayer.playerInfo.membershipType || 0}
                         displayName={displayName}
                     />
                 </Flex>

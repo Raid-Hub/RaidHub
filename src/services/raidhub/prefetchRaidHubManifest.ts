@@ -1,8 +1,8 @@
 import { reactDedupe } from "~/util/react-cache"
 import { getRaidHubApi } from "./common"
-import { type RaidHubManifest } from "./types"
+import { type RaidHubManifestResponse } from "./types"
 
-export const prefetchManifest = reactDedupe(async (): Promise<RaidHubManifest> => {
+export const prefetchManifest = reactDedupe(async (): Promise<RaidHubManifestResponse> => {
     try {
         return await getRaidHubApi("/manifest", null, null, {
             next: { revalidate: 300 }

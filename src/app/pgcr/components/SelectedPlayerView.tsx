@@ -15,9 +15,9 @@ import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import type {
-    RaidHubActivityCharacter,
-    RaidHubPlayerWithExtendedActivityData
+import {
+    type RaidHubInstanceCharacter,
+    type RaidHubInstancePlayerExtended
 } from "~/services/raidhub/types"
 import { bungieEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
@@ -28,7 +28,7 @@ import { DisplayName } from "./DisplayName"
 import { PlayerWeapon } from "./PlayerWeapon"
 
 export const SelectedPlayerView = (props: {
-    selectedPlayer: RaidHubPlayerWithExtendedActivityData
+    selectedPlayer: RaidHubInstancePlayerExtended
     deselect: () => void
 }) => {
     const { locale } = useLocale()
@@ -36,16 +36,16 @@ export const SelectedPlayerView = (props: {
     const selectedCharacterId = get("character")
 
     const selectedCharacter = selectedCharacterId
-        ? props.selectedPlayer.data.characters.find(c => c.characterId === selectedCharacterId)
+        ? props.selectedPlayer.characters.find(c => c.characterId === selectedCharacterId)
         : null
 
     const stats = useEntryStats(props.selectedPlayer, selectedCharacter)
 
     const { data: resolvedPlayer } = useRaidHubResolvePlayer(
-        props.selectedPlayer.player.membershipId,
+        props.selectedPlayer.playerInfo.membershipId,
         {
-            enabled: props.selectedPlayer.player.membershipType === 0,
-            placeholderData: props.selectedPlayer.player
+            enabled: props.selectedPlayer.playerInfo.membershipType === 0,
+            placeholderData: props.selectedPlayer.playerInfo
         }
     )
 
@@ -54,9 +54,7 @@ export const SelectedPlayerView = (props: {
     })
 
     const emblem = useItemDefinition(
-        Number(
-            selectedCharacter?.emblemHash ?? props.selectedPlayer.data.characters[0].emblemHash ?? 0
-        )
+        Number(selectedCharacter?.emblemHash ?? props.selectedPlayer.characters[0].emblemHash ?? 0)
     )
 
     return (
@@ -67,7 +65,7 @@ export const SelectedPlayerView = (props: {
                 $fullWidth>
                 <Flex $fullWidth>
                     <DisplayName
-                        membershipId={props.selectedPlayer.player.membershipId}
+                        membershipId={props.selectedPlayer.playerInfo.membershipId}
                         membershipType={resolvedPlayer?.membershipType ?? 0}
                         displayName={displayName}></DisplayName>
                 </Flex>
@@ -92,7 +90,7 @@ export const SelectedPlayerView = (props: {
                 $fullWidth
                 style={{ padding: "1em" }}
                 $borderRadius={5}>
-                {props.selectedPlayer.data.characters.length > 1 && (
+                {props.selectedPlayer.characters.length > 1 && (
                     <TabSelector $wrap>
                         <H4
                             $mBlock={0.2}
@@ -103,7 +101,7 @@ export const SelectedPlayerView = (props: {
                             }}>
                             All Classes
                         </H4>
-                        {props.selectedPlayer.data.characters.map(c => (
+                        {props.selectedPlayer.characters.map(c => (
                             <CharacterTab key={c.characterId} character={c} />
                         ))}
                     </TabSelector>
@@ -161,8 +159,8 @@ export const SelectedPlayerView = (props: {
 }
 
 const useEntryStats = (
-    selectedPlayer: RaidHubPlayerWithExtendedActivityData,
-    selectedCharacter?: RaidHubActivityCharacter | null
+    selectedPlayer: RaidHubInstancePlayerExtended,
+    selectedCharacter?: RaidHubInstanceCharacter | null
 ) =>
     useMemo((): {
         completed: boolean
@@ -178,7 +176,7 @@ const useEntryStats = (
         weapons: Collection<number, { kills: number; precisionKills: number }>
     } => {
         if (!selectedCharacter) {
-            return selectedPlayer.data.characters.reduce(
+            return selectedPlayer.characters.reduce(
                 (acc, c) => ({
                     completed: acc.completed || c.completed,
                     kills: acc.kills + c.kills,
@@ -224,7 +222,7 @@ const useEntryStats = (
                     superKills: 0,
                     meleeKills: 0,
                     grenadeKills: 0,
-                    timePlayedSeconds: selectedPlayer.data.timePlayedSeconds,
+                    timePlayedSeconds: selectedPlayer.timePlayedSeconds,
                     weapons: new Collection<number, { kills: number; precisionKills: number }>()
                 }
             )
@@ -253,7 +251,7 @@ const useEntryStats = (
         }
     }, [selectedCharacter, selectedPlayer])
 
-const CharacterTab = (props: { character: RaidHubActivityCharacter }) => {
+const CharacterTab = (props: { character: RaidHubInstanceCharacter }) => {
     const { set, get } = useQueryParams<PGCRPageParams>()
     const { data: classHash } = useResolveCharacter(props.character, {
         forceOnLargePGCR: true,

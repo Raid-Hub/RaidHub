@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getRaidHubApi } from "~/services/raidhub/common"
-import type { RaidHubPlayerBasic } from "~/services/raidhub/types"
+import { type RaidHubPlayerInfo } from "./types"
 
 export const useRaidHubPlayerSearch = (searchTerm: string) => {
     const queryClient = useQueryClient()
@@ -21,7 +21,7 @@ export const useRaidHubPlayerSearch = (searchTerm: string) => {
         onSuccess: data => {
             // This allows us to store this data in the cache for later use
             data.forEach(player => {
-                queryClient.setQueryData<RaidHubPlayerBasic>(
+                queryClient.setQueryData<RaidHubPlayerInfo>(
                     ["raidhub", "player", "basic", player.membershipId],
                     player
                 )

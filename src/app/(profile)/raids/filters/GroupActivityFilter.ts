@@ -1,5 +1,5 @@
 import { type ActivityFilter } from "~/app/(profile)/raids/filters/activityFilters"
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 
 type ActivityFilterCombinator = "|" | "&"
 
@@ -12,7 +12,7 @@ export default class GroupActivityFilter implements ActivityFilter {
         this.children = children
     }
 
-    predicate(a: RaidHubPlayerActivitiesActivity) {
+    predicate(a: RaidHubInstanceForPlayer) {
         switch (this.combinator) {
             case "&":
                 return !this.children.length
@@ -20,7 +20,7 @@ export default class GroupActivityFilter implements ActivityFilter {
                     : this.children.reduce(
                           (base, filter) => activity =>
                               base(activity) && filter.predicate(activity),
-                          (_: RaidHubPlayerActivitiesActivity) => true
+                          (_: RaidHubInstanceForPlayer) => true
                       )(a)
             case "|":
                 return !this.children.length
@@ -28,7 +28,7 @@ export default class GroupActivityFilter implements ActivityFilter {
                     : this.children.reduce(
                           (base, filter) => activity =>
                               base(activity) || filter.predicate(activity),
-                          (_: RaidHubPlayerActivitiesActivity) => false
+                          (_: RaidHubInstanceForPlayer) => false
                       )(a)
         }
     }
