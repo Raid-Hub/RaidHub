@@ -56,7 +56,7 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         refetchInterval: 3600_000,
         refetchIntervalInBackground: false,
         retry: (failureCount, error: BungieAPIError) => error.ErrorCode === 5 || failureCount < 3,
-        retryDelay: failureCount => Math.min(2 ** failureCount * 1000, 600_000),
+        retryDelay: failureCount => Math.min(2 ** failureCount * 10000, 600_000),
         onSuccess: data => {
             const newManifestVersion = [data.version, manifestLanguage, DB_VERSION].join("::")
 
@@ -80,7 +80,7 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
 
     return (
         <>
-            {queryState.isFetching ? (
+            {queryState.isFetching && queryState.failureCount < 1 ? (
                 <ManifestStatusOverlay status="bungie-loading" />
             ) : mutationState.isLoading ? (
                 <ManifestStatusOverlay status="dexie-loading" />
