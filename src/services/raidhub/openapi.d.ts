@@ -758,7 +758,7 @@ export interface components {
       readonly minted: string;
       /** @enum {boolean} */
       readonly success: false;
-      readonly errorCode: components["schemas"]["ErrorCode"];
+      readonly code: components["schemas"]["ErrorCode"];
       readonly error?: unknown;
     }]>;
     readonly ApiKeyError: {
@@ -767,7 +767,7 @@ export interface components {
       /** @enum {boolean} */
       readonly success: false;
       /** @enum {string} */
-      readonly errorCode: "ApiKeyError";
+      readonly code: "ApiKeyError";
       readonly error: {
         readonly message: "Invalid API Key" | "Missing API Key";
         readonly apiKey: string | null;
@@ -787,7 +787,7 @@ export interface components {
       /** @enum {boolean} */
       readonly success: false;
       /** @enum {string} */
-      readonly errorCode: "BodyValidationError";
+      readonly code: "BodyValidationError";
       readonly error: {
         readonly issues: readonly components["schemas"]["ZodIssue"][];
       };
@@ -798,7 +798,7 @@ export interface components {
       /** @enum {boolean} */
       readonly success: false;
       /** @enum {string} */
-      readonly errorCode: "InsufficientPermissionsError";
+      readonly code: "InsufficientPermissionsError";
       readonly error: {
         /** @enum {string} */
         readonly message: "Forbidden";
@@ -810,7 +810,7 @@ export interface components {
       /** @enum {boolean} */
       readonly success: false;
       /** @enum {string} */
-      readonly errorCode: "PathValidationError";
+      readonly code: "PathValidationError";
       readonly error: {
         readonly issues: readonly components["schemas"]["ZodIssue"][];
       };
@@ -821,7 +821,7 @@ export interface components {
       /** @enum {boolean} */
       readonly success: false;
       /** @enum {string} */
-      readonly errorCode: "QueryValidationError";
+      readonly code: "QueryValidationError";
       readonly error: {
         readonly issues: readonly components["schemas"]["ZodIssue"][];
       };
