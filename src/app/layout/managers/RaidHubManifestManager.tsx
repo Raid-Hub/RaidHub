@@ -3,7 +3,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { createContext, useContext, useMemo, type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub/common"
-import type { RaidHubActivityDefinition, RaidHubManifestResponse } from "~/services/raidhub/types"
+import type {
+    RaidHubActivityDefinition,
+    RaidHubManifestResponse,
+    RaidHubVersionDefinition
+} from "~/services/raidhub/types"
 
 type ManifestContextData = {
     listedRaids: readonly number[]
@@ -21,7 +25,7 @@ type ManifestContextData = {
         activity: RaidHubManifestResponse["activityDefinitions"][string]
         version: RaidHubManifestResponse["versionDefinitions"][string]
     } | null
-    getVersionsForActivity(activityId: number): readonly number[]
+    getVersionsForActivity(activityId: number): readonly RaidHubVersionDefinition[]
     getActivityDefinition(activityId: number): RaidHubActivityDefinition | null
     isChallengeMode(versionId: number): boolean
 }
@@ -76,7 +80,9 @@ export function RaidHubManifestManager(props: {
                 }
             },
             getVersionsForActivity(activityId) {
-                return data.versionsForActivity[activityId] ?? []
+                return (data.versionsForActivity[activityId] ?? []).map(
+                    v => data.versionDefinitions[v]
+                )
             },
             getActivityDefinition(activityId) {
                 return data.activityDefinitions[activityId] ?? null

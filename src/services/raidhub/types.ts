@@ -25,6 +25,7 @@ export type RaidHubLeaderboardPagination = Component<"LeaderboardPagination">
 export type RaidHubDestinyMembershipType = Component<"DestinyMembershipType">
 
 export type RaidHubActivityDefinition = Component<"ActivityDefinition">
+export type RaidHubVersionDefinition = Component<"VersionDefinition">
 
 export type RaidHubPlayerInfo = Component<"PlayerInfo">
 export type RaidHubInstance = Component<"Instance">

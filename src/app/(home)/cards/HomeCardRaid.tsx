@@ -15,21 +15,17 @@ const raidHubBoards = [
 ]
 
 export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
-    const {
-        reprisedRaids,
-        getVersionsForActivity,
-        getActivityString,
-        getVersionString,
-        getUrlPathForVersion,
-        getUrlPathForActivity
-    } = useRaidHubManifest()
+    const { reprisedRaids, getVersionsForActivity, getActivityString, getUrlPathForActivity } =
+        useRaidHubManifest()
 
     const raidUrlPath = getUrlPathForActivity(raidId)
 
     if (!raidUrlPath) return null
 
     const isReprised = reprisedRaids.includes(raidId)
-    const miscBoards = getVersionsForActivity(raidId)
+    const miscBoards = getVersionsForActivity(raidId).filter(
+        isReprised ? v => !v.isChallengeMode && v.id > 2 : v => v.id > 2
+    )
 
     return (
         <HomeCardGeneric
@@ -39,12 +35,12 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
             <HomeCardContentSection sectionTitle="World First Race">
                 <HomeCardContentSectionItem
                     title={isReprised ? "Challenge" : "Normal"}
-                    href={`/leaderboards/${raidUrlPath}/worldfirst`}
+                    href={`/leaderboards/team/${raidUrlPath}/worldfirst`}
                 />
                 {isReprised && (
                     <HomeCardContentSectionItem
                         title="Normal"
-                        href={`/leaderboards/${raidUrlPath}/first/normal`}
+                        href={`/leaderboards/team/${raidUrlPath}/first/normal`}
                     />
                 )}
             </HomeCardContentSection>
@@ -57,14 +53,14 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
                                 <HomeCardContentSectionItem
                                     key={data.id}
                                     title={data.displayName}
-                                    href={`/leaderboards/${raidUrlPath}/speedrun/${type}`}
+                                    href={`/leaderboards/team/${raidUrlPath}/speedrun/${type}`}
                                 />
                             )
                     )
                 ) : (
                     <HomeCardContentSectionItem
                         title="Any %"
-                        href={`/leaderboards/${raidUrlPath}/speedrun/all`}
+                        href={`/leaderboards/team/${raidUrlPath}/speedrun/all`}
                     />
                 )}
             </HomeCardContentSection>
@@ -73,19 +69,17 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
                     <HomeCardContentSectionItem
                         key={displayName}
                         title={displayName}
-                        href={`/leaderboards/${raidUrlPath}/individual/${path}`}
+                        href={`/leaderboards/individual/${raidUrlPath}/${path}`}
                     />
                 ))}
             </HomeCardContentSection>
             {!!miscBoards.length && (
-                <HomeCardContentSection sectionTitle="Miscellaneous">
-                    {miscBoards.map(versionId => (
+                <HomeCardContentSection sectionTitle="Version Firsts">
+                    {miscBoards.map(version => (
                         <HomeCardContentSectionItem
-                            key={versionId}
-                            title={getVersionString(versionId)}
-                            href={`/leaderboards/${raidUrlPath}/first/${getUrlPathForVersion(
-                                versionId
-                            )}`}
+                            key={version.id}
+                            title={version.name}
+                            href={`/leaderboards/team/${raidUrlPath}/first/${version.path}`}
                         />
                     ))}
                 </HomeCardContentSection>

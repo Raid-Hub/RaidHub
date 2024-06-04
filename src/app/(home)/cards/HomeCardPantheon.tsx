@@ -17,7 +17,9 @@ export function HomeCardPantheon() {
                     <HomeCardContentSectionItem
                         key={version}
                         title={getVersionString(version)}
-                        href={`/leaderboards/pantheon/${getUrlPathForVersion(version)}/first`}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/first`}
                     />
                 ))}
             </HomeCardContentSection>
@@ -26,7 +28,9 @@ export function HomeCardPantheon() {
                     <HomeCardContentSectionItem
                         key={version}
                         title={getVersionString(version)}
-                        href={`/leaderboards/pantheon/${getUrlPathForVersion(version)}/fullClears`}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/fullClears`}
                     />
                 ))}
             </HomeCardContentSection>
@@ -35,7 +39,9 @@ export function HomeCardPantheon() {
                     <HomeCardContentSectionItem
                         key={version}
                         title={getVersionString(version)}
-                        href={`/leaderboards/pantheon/${getUrlPathForVersion(version)}/score`}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/score`}
                     />
                 ))}
             </HomeCardContentSection>

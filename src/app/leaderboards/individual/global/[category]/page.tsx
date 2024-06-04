@@ -1,9 +1,9 @@
 import { type Metadata } from "next"
 import { metadata as rootMetadata } from "~/app/layout"
 import { type PathParamsForLeaderboardURL } from "~/services/raidhub/types"
-import { Leaderboard } from "../../Leaderboard"
-import { LeaderboardSSR } from "../../LeaderboardSSR"
-import { Splash } from "../../LeaderboardSplashComponents"
+import { Leaderboard } from "../../../Leaderboard"
+import { LeaderboardSSR } from "../../../LeaderboardSSR"
+import { Splash } from "../../../LeaderboardSplashComponents"
 
 export const dynamicParams = true
 export const revalidate = 900

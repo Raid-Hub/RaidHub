@@ -7,7 +7,7 @@ import { useLeaderboard } from "~/app/leaderboards/useLeaderboard"
 import { SpeedrunPlacementIcons, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { getSpeedrunComLeaderboard } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
 import { o } from "~/util/o"
-import { type LeaderboardEntry } from "../../../LeaderboardEntries"
+import { type LeaderboardEntry } from "../../../../LeaderboardEntries"
 
 export const SpeedrunEntries = (props: {
     raidPath: string

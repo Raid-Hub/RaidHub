@@ -7,8 +7,8 @@ import {
     type PathParamsForLeaderboardURL,
     type RaidHubManifestResponse
 } from "~/services/raidhub/types"
-import { Leaderboard } from "../../../Leaderboard"
-import { Splash } from "../../../LeaderboardSplashComponents"
+import { Leaderboard } from "../../../../Leaderboard"
+import { Splash } from "../../../../LeaderboardSplashComponents"
 
 export const dynamicParams = true
 export const revalidate = 900

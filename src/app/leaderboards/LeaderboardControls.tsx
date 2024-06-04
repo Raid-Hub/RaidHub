@@ -1,7 +1,7 @@
 "use client"
 
-import { QueryObserver, useQueryClient, type QueryKey } from "@tanstack/react-query"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useQueryClient, type QueryKey } from "@tanstack/react-query"
+import { useCallback, useMemo, useState } from "react"
 import { Panel } from "~/components/Panel"
 import NextArrow from "~/components/icons/NextArrow"
 import PreviousArrow from "~/components/icons/PreviousArrow"
@@ -28,7 +28,7 @@ export const LeaderboardControls = (props: { hasPages: boolean; hasSearch: boole
     const queryClient = useQueryClient()
     const canGoBack = currentPage > 1
     const isFirstPage = currentPage === 1
-    const [canGoForward, setCanGoForward] = useState(props.hasPages)
+    const [canGoForward] = useState(props.hasPages)
 
     const pagedQueryKey = useMemo<QueryKey>(
         () => [...queryKey, currentPage],
@@ -48,28 +48,6 @@ export const LeaderboardControls = (props: { hasPages: boolean; hasSearch: boole
         },
         [props.hasSearch, apiUrl, params, entriesPerPage]
     )
-
-    useEffect(() => {
-        // Subscribe to the query data to determine if we can go forward
-        const observer = new QueryObserver<{ entries: unknown[] }>(queryClient, {
-            queryKey: pagedQueryKey
-        })
-
-        if (props.hasPages) {
-            try {
-                const state = queryClient.getQueryState(pagedQueryKey)
-                if (state?.status === "success") {
-                    return observer.subscribe(result => {
-                        setCanGoForward(
-                            props.hasPages && result.data?.entries.length === entriesPerPage
-                        )
-                    })
-                } else {
-                    setCanGoForward(true)
-                }
-            } catch {}
-        }
-    }, [props.hasPages, queryClient, entriesPerPage, pagedQueryKey])
 
     const handleGoToFirstPage = () => {
         set("page", "1", {

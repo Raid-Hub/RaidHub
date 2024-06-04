@@ -12,7 +12,7 @@ import { Flex } from "~/components/layout/Flex"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { useSpeedrunComRules } from "~/services/speedrun-com/useSpeedrunComRules"
 import { includedIn } from "~/util/helpers"
-import { ExtLink, TooltipWrapper } from "../../../LeaderboardSplashComponents"
+import { ExtLink, TooltipWrapper } from "../../../../LeaderboardSplashComponents"
 
 export const SpeedrunComControls = (props: {
     raidId: number

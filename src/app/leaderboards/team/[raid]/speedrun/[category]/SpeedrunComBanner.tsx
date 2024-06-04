@@ -3,7 +3,7 @@
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { getRaidSplash } from "~/data/activity-images"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
-import { Splash } from "../../../LeaderboardSplashComponents"
+import { Splash } from "../../../../LeaderboardSplashComponents"
 
 export const SpeedrunComBanner = (props: {
     raidId: number

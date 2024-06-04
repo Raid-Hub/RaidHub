@@ -9,12 +9,18 @@ export function HomeCardGlobal() {
             backgroundImageCloudflareId="raidhubCitySplash"
             backgroundImageAltText="Splash for All Raids">
             <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                <HomeCardContentSectionItem title="Clears" href={`/leaderboards/global/clears`} />
+                <HomeCardContentSectionItem
+                    title="Clears"
+                    href="/leaderboards/individual/global/clears"
+                />
                 <HomeCardContentSectionItem
                     title="Full Clears"
-                    href={`/leaderboards/global/freshClears`}
+                    href="/leaderboards/individual/global/freshClears"
                 />
-                <HomeCardContentSectionItem title="Sherpas" href={`/leaderboards/global/sherpas`} />
+                <HomeCardContentSectionItem
+                    title="Sherpas"
+                    href="/leaderboards/individual/global/sherpas"
+                />
             </HomeCardContentSection>
         </HomeCardGeneric>
     )

@@ -5,8 +5,8 @@ import { LeaderboardSSR } from "~/app/leaderboards/LeaderboardSSR"
 import { getRaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { type RaidHubManifestResponse } from "~/services/raidhub/types"
-import { Leaderboard } from "../../../Leaderboard"
-import { Splash } from "../../../LeaderboardSplashComponents"
+import { Leaderboard } from "../../../../Leaderboard"
+import { Splash } from "../../../../LeaderboardSplashComponents"
 
 export const dynamicParams = true
 export const revalidate = 900
