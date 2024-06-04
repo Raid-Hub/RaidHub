@@ -47,9 +47,13 @@ export default function DotGraphWrapper({
     activities: unfilteredActivities,
     targetDot
 }: DotGraphWrapperProps) {
-    const { filterPredicate } = useFilterContext()
+    const { filter } = useFilterContext()
+    const filterPredicate = useMemo(
+        () => filter?.filter.predicate.bind(filter.filter) ?? (() => true),
+        [filter]
+    )
     const activities = useMemo(
-        () => unfilteredActivities.filter(filterPredicate ?? (() => true)),
+        () => unfilteredActivities.filter(filterPredicate),
         [filterPredicate, unfilteredActivities]
     )
     const getHeight = useMemo(() => {

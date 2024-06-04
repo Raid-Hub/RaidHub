@@ -13,9 +13,11 @@ export interface ActivityFilter {
 }
 
 export const SingleActivityFilterFunctions = {
+    All: () => true,
     Success: (activity: RaidHubInstanceForPlayer) => activity.player.completed,
     Flawless: (activity: RaidHubInstanceForPlayer) => !!activity.flawless,
     CheckpointBot: (activity: RaidHubInstanceForPlayer) => activity.playerCount > 50,
+    FullTeam: (activity: RaidHubInstanceForPlayer) => activity.playerCount >= 6,
     Lowman: (activity: RaidHubInstanceForPlayer) => activity.playerCount <= 3,
     Trio: (activity: RaidHubInstanceForPlayer) => activity.playerCount === 3,
     Duo: (activity: RaidHubInstanceForPlayer) => activity.playerCount === 2,
@@ -24,14 +26,46 @@ export const SingleActivityFilterFunctions = {
     Min15MinsPlayed: (activity: RaidHubInstanceForPlayer) => activity.duration >= 15 * 60
 } satisfies Record<string, FilterPredicate>
 
-export const getDefaultActivityFilters = () =>
-    new GroupActivityFilter("|", [
-        new SingleActivityFilter("Success"),
-        new GroupActivityFilter("&", [
-            new SingleActivityFilter("Min15MinsPlayed"),
-            new NotActivityFilter(new SingleActivityFilter("CheckpointBot"))
-        ])
-    ])
+export const FilterPresets = {
+    Default: {
+        displayName: "Default",
+        getFilter: () =>
+            new GroupActivityFilter("|", [
+                new SingleActivityFilter("Success"),
+                new GroupActivityFilter("&", [
+                    new SingleActivityFilter("Min15MinsPlayed"),
+                    new SingleActivityFilter("FullTeam"),
+                    new NotActivityFilter(new SingleActivityFilter("CheckpointBot"))
+                ])
+            ])
+    },
+    All: {
+        displayName: "All",
+        getFilter: () => new SingleActivityFilter("All")
+    },
+    Success: {
+        displayName: "Success Only",
+        getFilter: () => new SingleActivityFilter("Success")
+    },
+    Lowman: {
+        displayName: "Lowman Only",
+        getFilter: () =>
+            new GroupActivityFilter("&", [
+                new SingleActivityFilter("Success"),
+                new SingleActivityFilter("Lowman")
+            ])
+    },
+    Flawless: {
+        displayName: "Flawless Only",
+        getFilter: () => new SingleActivityFilter("Flawless")
+    }
+} satisfies Record<
+    string,
+    {
+        displayName: string
+        getFilter: () => ActivityFilter
+    }
+>
 
 export function decodeFilters(json: unknown): ActivityFilter | null {
     if (!json) return null

@@ -22,6 +22,7 @@ import {
 } from "~/services/raidhub/types"
 import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
+import { FilterSelect } from "./FilterSelect"
 import { PantheonLayout } from "./PantheonLayout"
 import { RaidCardContext } from "./RaidCardContext"
 import { Teammates } from "./Teammates"
@@ -195,20 +196,32 @@ export const RaidsWrapper = () => {
                     </Tab>
                 </TabSelector>
                 {(getTab() === "classic" || getTab() === "pantheon") && (
-                    <Flex $padding={0.2} $gap={0.4} $direction="column">
-                        <H4
-                            style={{
-                                margin: 0,
-                                fontSize: "0.75rem"
-                            }}>
-                            Expanded
-                        </H4>
-                        <ToggleSwitch
-                            id="expand-cards"
-                            value={isExpanded}
-                            onToggle={setIsExpanded}
-                            size={20}
-                        />
+                    <Flex>
+                        <Flex $padding={0.2} $gap={0.4} $direction="column">
+                            <H4
+                                style={{
+                                    margin: 0,
+                                    fontSize: "0.75rem"
+                                }}>
+                                Filter
+                            </H4>
+                            <FilterSelect />
+                        </Flex>
+                        <Flex $padding={0.2} $gap={0.4} $direction="column">
+                            <H4
+                                style={{
+                                    margin: 0,
+                                    fontSize: "0.75rem"
+                                }}>
+                                Expanded
+                            </H4>
+                            <ToggleSwitch
+                                id="expand-cards"
+                                value={isExpanded}
+                                onToggle={setIsExpanded}
+                                size={20}
+                            />
+                        </Flex>
                     </Flex>
                 )}
             </Flex>
