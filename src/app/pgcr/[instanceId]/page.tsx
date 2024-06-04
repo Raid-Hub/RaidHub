@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         robots: {
             follow: true,
             // Only index top 25 pgcrs for any leaderboard
-            index: Object.values(activity.leaderboardEntries).some(v => v <= 25)
+            index: activity.leaderboardRank ? activity.leaderboardRank <= 25 : false
         }
     }
 }

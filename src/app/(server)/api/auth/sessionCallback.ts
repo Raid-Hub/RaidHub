@@ -126,7 +126,8 @@ async function refreshRaidHubAdminAuth(
 
     const errors: AuthError[] = []
 
-    const token = await postRaidHubApi("/authorize", null, {
+    const token = await postRaidHubApi("/authorize/admin", null, {
+        bungieMembershipId: userId,
         clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
     })
         .then(res => res.response)

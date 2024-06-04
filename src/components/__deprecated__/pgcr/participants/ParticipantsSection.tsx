@@ -29,7 +29,7 @@ const ParticipantsSection = () => {
     const selectedMembershipId = get("player")
 
     const selectedPlayer = selectedMembershipId
-        ? data?.players.find(p => p.player.membershipId === selectedMembershipId) ?? null
+        ? data?.players.find(p => p.playerInfo.membershipId === selectedMembershipId) ?? null
         : null
 
     const pCount = data?.playerCount ?? 6
@@ -44,8 +44,8 @@ const ParticipantsSection = () => {
         () =>
             data?.players.toSorted(
                 (a, b) =>
-                    (sortScores.get(b.player.membershipId) ?? 0) -
-                    (sortScores.get(a.player.membershipId) ?? 0)
+                    (sortScores.get(b.playerInfo.membershipId) ?? 0) -
+                    (sortScores.get(a.playerInfo.membershipId) ?? 0)
             ) ?? [],
         [data?.players, sortScores]
     )
@@ -55,9 +55,9 @@ const ParticipantsSection = () => {
             <div className={[styles.grid, cardLayout].join(" ")}>
                 {playersSorted.map(player => (
                     <PlayerTab
-                        key={player.player.membershipId}
+                        key={player.playerInfo.membershipId}
                         activityPlayer={player}
-                        onClick={() => setPlayer(player.player.membershipId)}
+                        onClick={() => setPlayer(player.playerInfo.membershipId)}
                     />
                 )) ??
                     Array.from({ length: pCount }, (_, idx) => (

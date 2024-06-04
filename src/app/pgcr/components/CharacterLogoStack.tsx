@@ -1,7 +1,7 @@
 import { useMemo, type HTMLProps } from "react"
 import type { SVGWrapperProps } from "~/components/SVG"
 import { Flex } from "~/components/layout/Flex"
-import { type RaidHubActivityCharacter } from "~/services/raidhub/types"
+import { type RaidHubInstanceCharacter } from "~/services/raidhub/types"
 import { useCharacterClass } from "../hooks/useCharacterClass"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
 
@@ -40,7 +40,7 @@ export const CharacterLogoStack = ({
     characters,
     ...otherProps
 }: {
-    characters: readonly RaidHubActivityCharacter[]
+    characters: readonly RaidHubInstanceCharacter[]
 } & Omit<HTMLProps<HTMLDivElement>, "ref">) => {
     const content = useMemo(() => {
         switch (characters.length) {
@@ -87,7 +87,7 @@ export const CharacterLogoStack = ({
 const CharacterLogo = ({
     character,
     ...styleProps
-}: { character: RaidHubActivityCharacter } & SVGWrapperProps) => {
+}: { character: RaidHubInstanceCharacter } & SVGWrapperProps) => {
     const { data: classHash } = useResolveCharacter(character, {
         select: data => data.character.data?.classHash ?? null
     })

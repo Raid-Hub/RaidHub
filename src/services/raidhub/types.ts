@@ -1,96 +1,63 @@
-import type { Difficulty, Raid } from "data/raid"
 import type { KeysWhichValuesExtend, Prettify } from "../../types/generic"
 import type { components, paths } from "./openapi"
 
 type Component<T extends keyof components["schemas"]> = Prettify<components["schemas"][T]>
 
-export type RaidHubManifest = Component<"ManifestResponse">
-export type ListedRaid = (typeof Raid)[keyof typeof Raid]
-export type PantheonId = Component<"PantheonEnum">
-export type ActivityId = Component<"ActivityEnum">
-export type MasterRaid = Component<"MasterRaidEnum">
-export type PrestigeRaid = Component<"PrestigeRaidEnum">
-export type SunsetRaid = Component<"SunsetRaidEnum">
-export type RaidDifficulty = (typeof Difficulty)[keyof typeof Difficulty]
-
-export type RaidDifficultyTuple = readonly [name: ListedRaid, difficulty: RaidDifficulty]
-
+// Generic API
 export type RaidHubGetPath = KeysWhichValuesExtend<paths, GetSchema>
 export type RaidHubPostPath = KeysWhichValuesExtend<paths, PostSchema>
 
-export type RaidHubErrorResponseObject = Component<"RaidHubError">
+export type RaidHubAPIResponse<T, E = unknown, C extends RaidHubErrorCode = RaidHubErrorCode> =
+    | RaidHubAPISuccessResponse<T>
+    | RaidHubAPIErrorResponse<E, C>
+export type RaidHubAPISuccessResponse<T> = { minted: string; success: true; response: T }
+export type RaidHubAPIErrorResponse<E, C extends RaidHubErrorCode> = {
+    minted: string
+    success: false
+    error: E
+    code: C
+}
 
-export type RaidHubAPIResponse<T> = {
-    minted: string // ISO date string
-    message?: string
-} & ({ success: true; response: T } | RaidHubErrorResponseObject)
-export type RaidHubAPISuccessResponse<T> = RaidHubAPIResponse<T> & { success: true }
+// Components
+export type RaidHubErrorCode = Component<"ErrorCode">
+export type RaidHubLeaderboardPagination = Component<"LeaderboardPagination">
+
+export type RaidHubDestinyMembershipType = Component<"DestinyMembershipType">
+
+export type RaidHubActivityDefinition = Component<"ActivityDefinition">
+export type RaidHubVersionDefinition = Component<"VersionDefinition">
 
 export type RaidHubPlayerInfo = Component<"PlayerInfo">
+export type RaidHubInstance = Component<"Instance">
+export type RaidHubInstanceExtended = Component<"InstanceExtended">
+export type RaidHubInstancePlayerExtended = Component<"InstancePlayerExtended">
+export type RaidHubInstanceCharacter = Component<"InstanceCharacter">
+export type RaidHubInstanceForPlayer = Component<"InstanceForPlayer">
+export type RaidHubWorldFirstEntry = Component<"WorldFirstEntry">
 
-export type RaidHubActivityPlayer = Component<"ActivityPlayerData">
+export type RaidHubLeaderboardData = Component<"LeaderboardData">
+export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
 
-export type RaidHubActivityExtended = Component<"ActivityExtended">
-export type RaidHubBaseActivity = Component<"Activity">
+export type RaidHubLeaderboardURL =
+    | "/leaderboard/individual/global/{category}"
+    | "/leaderboard/individual/pantheon/{version}/{category}"
+    | "/leaderboard/individual/raid/{raid}/{category}"
+    | "/leaderboard/team/contest/{raid}"
+    | "/leaderboard/team/first/{activity}/{version}"
 
-export type RaidHubActivityWithPlayer = Component<"ActivityWithPlayerData">
-export type RaidHubPlayerWithExtendedActivityData = Component<"PlayerWithExtendedActivityData">
-export type RaidHubActivityCharacter = Component<"ActivityCharacter">
+export type PathParamsForLeaderboardURL<T extends RaidHubLeaderboardURL> =
+    paths[T]["get"]["parameters"]["path"]
 
-export type RaidHubPlayerActivitiesResponse = Component<"PlayerActivitiesResponse">
-export type RaidHubPlayerActivitiesActivity = Prettify<
-    Component<"PlayerActivitiesResponse">["activities"][number]
->
-
-export type RaidHubActivityResponse = Component<"ActivityResponse">
-
-export type RaidHubPlayerResponse = Component<"PlayerProfileResponse">
-export type RaidHubPlayerBasic = Component<"PlayerBasicResponse">
-
-export type RaidHubManifestResponse = Component<"ManifestResponse">
-
-export type RaidHubPlayerSearchResponse = Component<"PlayerSearchResponse">
-export type RaidHubPlayerSearchResult = RaidHubPlayerSearchResponse["results"][number]
-
-export type RaidHubAdminQueryResponse = Component<"AdminQueryResponse">
 export type RaidHubAdminQueryBody = Required<
     paths["/admin/query"]["post"]
 >["requestBody"]["content"]["application/json"]
-export type RaidHubAdminQueryError = Component<"AdminQuerySyntaxError">
 
-export type RaidHubActivitySearchQuery = Component<"ActivitySearchBody">
-
-export type RaidHubPlayerProfileLeaderboardEntry = Component<"PlayerProfileLeaderboardEntry">
-
-export type RaidHubRaidPath = Component<"RaidPath">
-
-export type RaidHubWorldfirstLeaderboardResponse = Component<"LeaderboardWorldfirstResponse">
-export type RaidHubWorldFirstLeaderboardCategory =
-    Component<"LeaderboardWorldfirstResponse">["params"]["category"]
-export type RaidHubIndividualLeaderboardResponse = Component<"LeaderboardIndividualResponse">
-export type RaidHubIndividualLeaderboardCategory =
-    Component<"LeaderboardIndividualResponse">["params"]["category"]
-
-export type RaidHubGlobalLeaderboardResponse = Component<"LeaderboardGlobalResponse">
-export type RaidHubGlobalLeaderboardCategory =
-    RaidHubGlobalLeaderboardResponse["params"]["category"]
-
-export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
-export type RaidHubWorldfirstLeaderboardEntry = Component<"WorldFirstLeaderboardEntry">
-
-export type RaidHubLeaderboardSearchQuery = Component<"LeaderboardSearchQuery">
-export type RaidHubLeaderboardSearchResponse = Component<"LeaderboardSearchResponse">
-
-export type RaidHubLeaderboardSearchQueryCategory = RaidHubLeaderboardSearchQuery["category"]
-export type RaidHubLeaderboardSearchQueryType = RaidHubLeaderboardSearchQuery["type"]
-
-export type RaidHubPantheonPath = Component<"PantheonPath">
-export type RaidHubPantheonFirstResponse = Component<"LeaderboardPantheonFirstResponse">
-export type LeaderboardPantheonTotalClearsResponse = Component<"LeaderboardPantheonAllResponse">
-export type RaidHubPantheonIndividualCategory =
-    LeaderboardPantheonTotalClearsResponse["params"]["category"]
-
-export type RaidHubTokenResponse = Component<"AuthorizeResponse">
+// Responses
+export type RaidHubManifestResponse = Component<"ManifestResponse">
+export type RaidHubPlayerActivitiesResponse = Component<"PlayerActivitiesResponse">
+export type RaidHubPlayerProfileResponse = Component<"PlayerProfileResponse">
+export type RaidHubPlayerSearchResponse = Component<"PlayerSearchResponse">
+export type RaidHubAdminQueryResponse = Component<"AdminQueryResponse">
 
 interface GetSchema {
     get: {

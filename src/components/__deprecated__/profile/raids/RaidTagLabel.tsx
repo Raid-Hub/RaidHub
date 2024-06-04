@@ -5,7 +5,6 @@ import { useCallback } from "react"
 import BasicDiamond from "~/components/icons/BasicDiamond"
 import { useAttributedRaidName } from "~/hooks/useAttributedRaidName"
 import { useDebouncedHover } from "~/hooks/util/useDebouncedHover"
-import type { ActivityId, RaidDifficulty } from "~/services/raidhub/types"
 import styles from "./raids.module.css"
 
 /** @deprecated */
@@ -18,12 +17,12 @@ const RaidTagLabel = ({
     setActiveId: (instanceId: string) => void
     instanceId: string
     isBestPossible: boolean
-    raid: ActivityId
+    activityId: number
     playerCount: number
     fresh: boolean | null
     flawless: boolean | null
-    difficulty: RaidDifficulty
-    contest: boolean
+    versionId: number
+    isContest: boolean
     completed: boolean
 }) => {
     const hoverAction = useCallback(() => {

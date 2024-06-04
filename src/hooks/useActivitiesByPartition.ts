@@ -1,32 +1,34 @@
 import { Collection } from "@discordjs/collection"
 import { useMemo } from "react"
-import { type RaidHubBaseActivity } from "~/services/raidhub/types"
+import { type RaidHubInstance } from "~/services/raidhub/types"
 
-export const useActivitiesByPartition = <T extends RaidHubBaseActivity>(
-    allResults: Collection<string, T>
+export const useActivitiesByPartition = <T extends RaidHubInstance>(
+    allResults: Collection<string, T>,
+    secondsBetweenPartitions: number
 ) => {
     return useMemo(() => {
+        const msBetweenPartitions = secondsBetweenPartitions * 1000
         const partioned = new Collection<string, Collection<string, T>>()
-        allResults.forEach(a => {
-            const key = `${new Date(a.dateCompleted).getMonth()}-${new Date(
-                a.dateCompleted
-            ).getFullYear()}`
-            if (partioned.has(key)) {
-                partioned.get(key)!.set(a.instanceId, a)
+
+        let previousDateCompleted: Date | null = null
+        let currentKey = ""
+        for (const activity of Array.from(allResults.values())) {
+            const dateCompleted = new Date(activity.dateCompleted)
+
+            if (
+                previousDateCompleted &&
+                previousDateCompleted.getTime() - dateCompleted.getTime() < msBetweenPartitions &&
+                previousDateCompleted.getDate() === dateCompleted.getDate()
+            ) {
+                // Add to the previous key
+                partioned.get(currentKey)!.set(activity.instanceId, activity)
             } else {
-                partioned.set(key, new Collection<string, T>([[a.instanceId, a]]))
+                // Create a new key
+                previousDateCompleted = dateCompleted
+                currentKey = dateCompleted.toISOString()
+                partioned.set(currentKey, new Collection([[activity.instanceId, activity]]))
             }
-        })
+        }
         return partioned
-            .sort(
-                (a, b) =>
-                    new Date(b.first()?.dateCompleted ?? 0).getTime() -
-                    new Date(a.first()?.dateCompleted ?? 0).getTime()
-            )
-            .each(part =>
-                part.sort(
-                    (a, b) => new Date(b.dateStarted).getTime() - new Date(a.dateStarted).getTime()
-                )
-            )
-    }, [allResults])
+    }, [allResults, secondsBetweenPartitions])
 }

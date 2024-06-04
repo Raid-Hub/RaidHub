@@ -5,12 +5,12 @@ type ToggleProps = {
     value: boolean
     onToggle: (state: boolean) => void
     size: number
-    label: string
+    id: string
 }
 /**
  * @deprecated
  */
-const ToggleSwitch = ({ onToggle, size, value, label }: ToggleProps) => {
+const ToggleSwitch = ({ onToggle, size, value, id }: ToggleProps) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         onToggle(event.target.checked)
     }
@@ -23,12 +23,12 @@ const ToggleSwitch = ({ onToggle, size, value, label }: ToggleProps) => {
             <input
                 type="checkbox"
                 checked={value}
-                name={label}
-                id={label}
+                name={id}
+                id={id}
                 className={styles.checkbox}
                 onChange={handleChange}
             />
-            <label htmlFor={label} style={{ width, height, borderRadius: height }} />
+            <label htmlFor={id} style={{ width, height, borderRadius: height }} />
         </div>
     )
 }

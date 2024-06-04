@@ -3,11 +3,11 @@
 import styled from "styled-components"
 import { SinglePlayerSearchResult } from "~/components/SinglePlayerSearchResult"
 import { Grid } from "~/components/layout/Grid"
-import { type RaidHubPlayerSearchResult } from "~/services/raidhub/types"
+import { type RaidHubPlayerInfo } from "~/services/raidhub/types"
 import { $media } from "./media"
 
 export const HeaderSearchResults = (props: {
-    results: RaidHubPlayerSearchResult[]
+    results: RaidHubPlayerInfo[]
     handleSelect?: () => void
 }) => (
     <Container>

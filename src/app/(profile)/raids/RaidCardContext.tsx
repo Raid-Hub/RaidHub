@@ -2,19 +2,15 @@
 
 import { Collection } from "@discordjs/collection"
 import { createContext, useContext, type ReactNode } from "react"
-import type {
-    ListedRaid,
-    PantheonId,
-    RaidHubPlayerActivitiesActivity
-} from "~/services/raidhub/types"
+import { type RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 
 const RaidContext = createContext<
     | {
-          raid: ListedRaid | PantheonId
+          raidId: number
           isLoadingActivities: false
-          activities: Collection<string, RaidHubPlayerActivitiesActivity>
+          activities: Collection<string, RaidHubInstanceForPlayer>
       }
-    | { raid: ListedRaid | PantheonId; isLoadingActivities: true; activities: null }
+    | { raidId: number; isLoadingActivities: true; activities: null }
     | null
 >(null)
 
@@ -28,23 +24,25 @@ export const RaidCardContext = ({
     children,
     activities = new Collection(),
     isLoadingActivities,
-    raid
+    raidId
 }: {
     children: ReactNode
-    activities: Collection<string, RaidHubPlayerActivitiesActivity> | undefined
+    activities: Collection<string, RaidHubInstanceForPlayer> | undefined
     isLoadingActivities: boolean
-    raid: ListedRaid | PantheonId
-}) => (
-    <RaidContext.Provider
-        value={{
-            raid,
-            ...(isLoadingActivities
-                ? { isLoadingActivities: true, activities: null }
-                : {
-                      isLoadingActivities: false,
-                      activities
-                  })
-        }}>
-        {children}
-    </RaidContext.Provider>
-)
+    raidId: number
+}) => {
+    return (
+        <RaidContext.Provider
+            value={{
+                raidId,
+                ...(isLoadingActivities
+                    ? { isLoadingActivities: true, activities: null }
+                    : {
+                          isLoadingActivities: false,
+                          activities
+                      })
+            }}>
+            {children}
+        </RaidContext.Provider>
+    )
+}

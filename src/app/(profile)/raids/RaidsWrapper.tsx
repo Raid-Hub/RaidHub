@@ -7,6 +7,8 @@ import { type ProfileProps } from "~/app/(profile)/types"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { TabSelector } from "~/components/TabSelector"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
+import ToggleSwitch from "~/components/__deprecated__/reusable/ToggleSwitch"
+import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
@@ -14,18 +16,18 @@ import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLinkedProfiles } from "~/services/bungie/hooks"
 import { useRaidHubActivities, useRaidHubPlayers } from "~/services/raidhub/hooks"
-import type {
-    ActivityId,
-    ListedRaid,
-    RaidHubPlayerActivitiesActivity,
-    RaidHubPlayerProfileLeaderboardEntry
+import {
+    type RaidHubInstanceForPlayer,
+    type RaidHubWorldFirstEntry
 } from "~/services/raidhub/types"
 import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
+import { FilterSelect } from "./FilterSelect"
 import { PantheonLayout } from "./PantheonLayout"
 import { RaidCardContext } from "./RaidCardContext"
+import { Teammates } from "./Teammates"
 
-type TabTitle = "classic" | "pantheon" | "history"
+type TabTitle = "classic" | "pantheon" | "history" | "teammates"
 
 export const RaidsWrapper = () => {
     const { destinyMembershipId, destinyMembershipType, ready } = usePageProps<ProfileProps>()
@@ -62,64 +64,46 @@ export const RaidsWrapper = () => {
 
     const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(membershipIds)
 
-    const { leaderboards, listedRaids, pantheonId } = useRaidHubManifest()
+    const { listedRaids, pantheonIds } = useRaidHubManifest()
 
     const leaderboardEntriesByRaid = useMemo(() => {
         if (isLoadingPlayers || !areMembershipsFetched) return null
 
-        // Map board IDs to raids for lookup
-        const boardIdToRaidLookup = new Map<string, ListedRaid>(
-            Object.entries(leaderboards.worldFirst)
-                .map(([raid, boards]) =>
-                    boards.map(({ id }) => [id, Number(raid) as ListedRaid] as const)
-                )
-                .flat()
-        )
-
-        const raidToData = new Collection<ListedRaid, RaidHubPlayerProfileLeaderboardEntry[]>(
-            listedRaids.map(raid => [raid, []])
+        const raidToData = new Collection<number, RaidHubWorldFirstEntry | null>(
+            listedRaids.map(raid => [raid, null])
         )
 
         players.forEach(p => {
-            p.worldFirstEntries.forEach(entry => {
-                if (boardIdToRaidLookup.has(entry.boardId)) {
-                    const arr = raidToData.get(boardIdToRaidLookup.get(entry.boardId)!)!
-                    arr.push(entry)
-                }
+            Object.entries(p.worldFirstEntries).forEach(([activityId, entry]) => {
+                if (!entry) return
+                const curr = raidToData.get(Number(activityId))
+                if (!curr || entry.timeAfterLaunch < curr.timeAfterLaunch)
+                    raidToData.set(Number(activityId), entry)
             })
         })
 
         return raidToData
-    }, [isLoadingPlayers, areMembershipsFetched, leaderboards.worldFirst, listedRaids, players])
+    }, [isLoadingPlayers, areMembershipsFetched, listedRaids, players])
 
     const activitiesByRaid = useMemo(() => {
         if (isLoadingActivities) return null
 
-        const coll = new Collection<
-            ActivityId,
-            Collection<string, RaidHubPlayerActivitiesActivity>
-        >()
+        const coll = new Collection<number, Collection<string, RaidHubInstanceForPlayer>>()
         activities.forEach(a => {
-            if (!coll.has(a.meta.activityId)) coll.set(a.meta.activityId, new Collection())
-            coll.get(a.meta.activityId)!.set(a.instanceId, a)
+            if (!coll.has(a.activityId)) coll.set(a.activityId, new Collection())
+            coll.get(a.activityId)!.set(a.instanceId, a)
         })
-        return coll.each(raidActivities => raidActivities.reverse())
+        return coll.each(group =>
+            group.sort((a, b) => (new Date(a.dateCompleted) < new Date(b.dateCompleted) ? -1 : -1))
+        )
     }, [activities, isLoadingActivities])
 
     const queryParams = useQueryParams<{
-        raid: string
         tab: TabTitle
     }>()
 
+    const [isExpanded, setIsExpanded] = useLocalStorage<boolean>("raid-cards-expanded", false)
     const [tabLocal, setTabLocal] = useLocalStorage<TabTitle>("player-profile-tab", "classic")
-
-    const [clearExpandedRaid, setExpandedRaid] = useMemo(
-        () => [
-            () => queryParams.remove("raid"),
-            (raid: ListedRaid) => queryParams.set("raid", String(raid))
-        ],
-        [queryParams]
-    )
 
     const [getTab, setTab] = useMemo(
         () => [
@@ -133,7 +117,6 @@ export const RaidsWrapper = () => {
     )
 
     const TabView = useMemo(() => {
-        const expandedRaid = Number(queryParams.get("raid"))
         const tab = getTab()
 
         switch (tab) {
@@ -145,18 +128,15 @@ export const RaidsWrapper = () => {
                         $minCardWidthMobile={300}
                         $fullWidth
                         $relative>
-                        {listedRaids.map(raid => (
+                        {listedRaids.map(raidId => (
                             <RaidCardContext
-                                key={raid}
-                                activities={activitiesByRaid?.get(raid)}
+                                key={raidId}
+                                activities={activitiesByRaid?.get(raidId)}
                                 isLoadingActivities={isLoadingActivities || !areMembershipsFetched}
-                                raid={raid}>
+                                raidId={raidId}>
                                 <RaidCard
-                                    leaderboardData={leaderboardEntriesByRaid?.get(raid) ?? null}
-                                    canExpand
-                                    expand={() => setExpandedRaid(raid)}
-                                    closeExpand={clearExpandedRaid}
-                                    isExpanded={raid === expandedRaid}
+                                    leaderboardEntry={leaderboardEntriesByRaid?.get(raidId) ?? null}
+                                    isExpanded={isExpanded}
                                 />
                             </RaidCardContext>
                         ))}
@@ -165,8 +145,11 @@ export const RaidsWrapper = () => {
             case "pantheon":
                 return (
                     <PantheonLayout
-                        instances={activitiesByRaid?.get(pantheonId)}
+                        instances={pantheonIds.map(
+                            id => activitiesByRaid?.get(id) ?? new Collection()
+                        )}
                         isLoading={isLoadingActivities || !areMembershipsFetched}
+                        isExpanded={isExpanded}
                     />
                 )
             case "history":
@@ -176,36 +159,72 @@ export const RaidsWrapper = () => {
                         isLoading={isLoadingActivities}
                     />
                 )
+            case "teammates":
+                return <Teammates />
             default:
                 return null
         }
     }, [
-        queryParams,
         getTab,
         listedRaids,
-        activities,
+        pantheonIds,
         isLoadingActivities,
-        activitiesByRaid,
         areMembershipsFetched,
+        activities,
+        activitiesByRaid,
         leaderboardEntriesByRaid,
-        clearExpandedRaid,
-        setExpandedRaid,
-        pantheonId
+        isExpanded
     ])
 
     return (
         <FilterContextProvider>
-            <TabSelector>
-                <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
-                    Classic
-                </Tab>
-                <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
-                    Pantheon
-                </Tab>
-                <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
-                    History
-                </Tab>
-            </TabSelector>
+            <Flex $direction="row" $padding={0} $align="space-between" $fullWidth>
+                <TabSelector>
+                    <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
+                        Classic
+                    </Tab>
+                    <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
+                        History
+                    </Tab>
+                    <Tab
+                        aria-selected={getTab() === "teammates"}
+                        onClick={() => setTab("teammates")}>
+                        Teammates
+                    </Tab>
+                    <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
+                        Pantheon
+                    </Tab>
+                </TabSelector>
+                {(getTab() === "classic" || getTab() === "pantheon") && (
+                    <Flex>
+                        <Flex $padding={0.2} $gap={0.4} $direction="column">
+                            <H4
+                                style={{
+                                    margin: 0,
+                                    fontSize: "0.75rem"
+                                }}>
+                                Filter
+                            </H4>
+                            <FilterSelect />
+                        </Flex>
+                        <Flex $padding={0.2} $gap={0.4} $direction="column">
+                            <H4
+                                style={{
+                                    margin: 0,
+                                    fontSize: "0.75rem"
+                                }}>
+                                Expanded
+                            </H4>
+                            <ToggleSwitch
+                                id="expand-cards"
+                                value={isExpanded}
+                                onToggle={setIsExpanded}
+                                size={20}
+                            />
+                        </Flex>
+                    </Flex>
+                )}
+            </Flex>
             {TabView}
         </FilterContextProvider>
     )

@@ -3,40 +3,46 @@ import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
 import { Grid } from "~/components/layout/Grid"
-import { type RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import { type RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { RaidCardContext } from "./RaidCardContext"
 
 export const PantheonLayout = ({
-    instances = new Collection(),
-    isLoading
+    instances,
+    isLoading,
+    isExpanded
 }: {
-    instances?: Collection<string, RaidHubPlayerActivitiesActivity>
+    instances: Collection<string, RaidHubInstanceForPlayer>[]
+    isExpanded: boolean
     isLoading: boolean
 }) => {
-    const { pantheonModes } = useRaidHubManifest()
+    const { pantheonVersions } = useRaidHubManifest()
 
     const instancesByMode = useMemo(() => {
         if (isLoading) return null
 
-        const coll = new Collection<number, Collection<string, RaidHubPlayerActivitiesActivity>>()
-        instances.forEach(a => {
-            if (!coll.has(a.meta.versionId)) coll.set(a.meta.versionId, new Collection())
-            coll.get(a.meta.versionId)!.set(a.instanceId, a)
+        const coll = new Collection<number, Collection<string, RaidHubInstanceForPlayer>>()
+        instances.forEach(group => {
+            group.forEach(instance => {
+                if (!coll.has(instance.versionId)) coll.set(instance.versionId, new Collection())
+                coll.get(instance.versionId)!.set(instance.instanceId, instance)
+            })
         })
         return coll
     }, [instances, isLoading])
 
     return (
         <Grid as="section" $minCardWidth={325} $minCardWidthMobile={300} $fullWidth $relative>
-            {pantheonModes.map(mode => (
-                <RaidCardContext
-                    key={mode}
-                    activities={instancesByMode?.get(mode)}
-                    isLoadingActivities={isLoading}
-                    raid={mode}>
-                    <RaidCard leaderboardData={null} canExpand={false} />
-                </RaidCardContext>
-            ))}
+            {pantheonVersions
+                .toSorted((a, b) => b - a)
+                .map(mode => (
+                    <RaidCardContext
+                        key={mode}
+                        activities={instancesByMode?.get(mode)}
+                        isLoadingActivities={isLoading}
+                        raidId={mode}>
+                        <RaidCard leaderboardEntry={null} isExpanded={isExpanded} />
+                    </RaidCardContext>
+                ))}
         </Grid>
     )
 }

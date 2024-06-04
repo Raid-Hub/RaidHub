@@ -1,11 +1,11 @@
 import type { DestinyCharacterResponse } from "bungie-net-core/models/Destiny/Responses/DestinyCharacterResponse"
 import { useCharacter } from "~/services/bungie/hooks"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
-import { type RaidHubActivityCharacter } from "~/services/raidhub/types"
+import { type RaidHubInstanceCharacter } from "~/services/raidhub/types"
 import { usePGCRContext } from "../PGCRStateManager"
 
 export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
-    character: RaidHubActivityCharacter,
+    character: RaidHubInstanceCharacter,
     opts?: {
         forceOnLargePGCR?: boolean
         select?: (data: DestinyCharacterResponse<[200]>) => T
@@ -14,8 +14,8 @@ export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
     const { data, isSuccess } = usePGCRContext()
 
     const player = data?.players.find(p =>
-        p.data.characters.find(c => c.characterId === character.characterId)
-    )?.player
+        p.characters.find(c => c.characterId === character.characterId)
+    )?.playerInfo
 
     const isEnabled = isSuccess && (!!opts?.forceOnLargePGCR || data.playerCount <= 50)
     const shouldFetch = character.classHash === "0" || character.classHash === null

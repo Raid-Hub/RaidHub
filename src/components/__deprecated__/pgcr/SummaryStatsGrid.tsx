@@ -29,7 +29,7 @@ const SummaryStatsGrid = () => {
     const mostUsedWeaponHash = useMemo(() => {
         const record =
             data?.players
-                .map(p => p.data.characters.map(c => c.weapons))
+                .map(p => p.characters.map(c => c.weapons))
                 .flat(2)
                 .reduce(
                     (acc, curr) => ({
@@ -47,7 +47,7 @@ const SummaryStatsGrid = () => {
     const stats = useMemo(
         () =>
             data?.players
-                .flatMap(p => p.data.characters)
+                .flatMap(p => p.characters)
                 .reduce(
                     (acc, curr) => ({
                         kills: acc.kills + curr.kills,
@@ -78,7 +78,7 @@ const SummaryStatsGrid = () => {
     const mvpId = sortScores.firstKey()
     const { data: resolvedPlayer } = useRaidHubResolvePlayer(mvpId ?? "0", {
         enabled: !!sortScores.size,
-        initialData: data?.players.find(p => p.player.membershipId === mvpId)?.player
+        initialData: data?.players.find(p => p.playerInfo.membershipId === mvpId)?.playerInfo
     })
 
     const statsData: {

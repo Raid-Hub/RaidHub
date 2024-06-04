@@ -4,33 +4,30 @@ import { useQuery } from "@tanstack/react-query"
 import { createContext, useContext, useMemo, type ReactNode } from "react"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import type {
-    ActivityId,
-    ListedRaid,
-    RaidDifficulty,
+    RaidHubActivityDefinition,
     RaidHubManifestResponse,
-    RaidHubRaidPath,
-    SunsetRaid
+    RaidHubVersionDefinition
 } from "~/services/raidhub/types"
-import { includedIn } from "~/util/helpers"
 
 type ManifestContextData = {
-    leaderboards: RaidHubManifestResponse["leaderboards"]
-    listedRaids: ListedRaid[]
-    elevatedRaidDifficulties: RaidDifficulty[]
-    sunsetRaids: SunsetRaid[]
-    reprisedRaids: RaidHubManifestResponse["reprisedChallengePairings"]
-    pantheonId: RaidHubManifestResponse["pantheonId"]
-    pantheonModes: RaidHubManifestResponse["pantheonModes"]
-    getUrlPathForRaid(raid: ListedRaid): RaidHubRaidPath
-    getVersionString(
-        version: RaidDifficulty
-    ): RaidHubManifestResponse["versionStrings"][RaidDifficulty]
-    getRaidString(raid: ListedRaid): RaidHubManifestResponse["activityStrings"][ListedRaid]
-    getRaidFromHash: (hash: string | number) => {
-        raid: ListedRaid
-        difficulty: RaidDifficulty
+    listedRaids: readonly number[]
+    sunsetRaids: readonly number[]
+    reprisedRaids: readonly number[]
+    pantheonIds: readonly number[]
+    pantheonVersions: readonly number[]
+    elevatedDifficulties: readonly number[]
+    milestoneHashes: Map<number, RaidHubActivityDefinition>
+    getVersionString(versionId: number): string
+    getActivityString(activityId: number): string
+    getUrlPathForActivity(activityId: number): string | null
+    getUrlPathForVersion(versionId: number): string | null
+    getDefinitionFromHash(hash: string | number): {
+        activity: RaidHubManifestResponse["activityDefinitions"][string]
+        version: RaidHubManifestResponse["versionDefinitions"][string]
     } | null
-    getCheckpointName(raid: ActivityId): RaidHubManifestResponse["checkpointNames"][ListedRaid]
+    getVersionsForActivity(activityId: number): readonly RaidHubVersionDefinition[]
+    getActivityDefinition(activityId: number): RaidHubActivityDefinition | null
+    isChallengeMode(versionId: number): boolean
 }
 
 const ManifestContext = createContext<ManifestContextData | undefined>(undefined)
@@ -46,35 +43,55 @@ export function RaidHubManifestManager(props: {
         staleTime: 1000 * 3600 // 1 hour
     })
 
-    const value = useMemo(
-        (): ManifestContextData => ({
-            getRaidString: raid => data.activityStrings[raid],
-            getVersionString: version => data.versionStrings[version],
-            getUrlPathForRaid: raid => data.raidUrlPaths[raid],
-            getCheckpointName: raid => data.checkpointNames[raid],
-            getRaidFromHash: hash => {
-                const raid = data.hashes[String(hash)]
-                if (!raid || !includedIn(data.listed, raid.activityId)) {
-                    return null
-                } else {
-                    return {
-                        raid: raid.activityId as ListedRaid,
-                        difficulty: raid.versionId as RaidDifficulty
-                    }
+    const value = useMemo((): ManifestContextData => {
+        return {
+            listedRaids: data.listedRaidIds,
+            sunsetRaids: data.sunsetRaidIds,
+            reprisedRaids: data.resprisedRaidIds,
+            pantheonIds: data.pantheonIds,
+            pantheonVersions: Array.from(
+                new Set(data.pantheonIds.map(id => data.versionsForActivity[id]).flat())
+            ),
+            elevatedDifficulties: [3, 4],
+            milestoneHashes: new Map(
+                Object.entries(data.activityDefinitions)
+                    .filter(([, value]) => !!value.milestoneHash)
+                    .map(([, value]) => [Number(value.milestoneHash!), value])
+            ),
+            getVersionString(versionId) {
+                return data.versionDefinitions[versionId]?.name ?? "Unknown"
+            },
+            getActivityString(activityId) {
+                return data.activityDefinitions[activityId]?.name ?? "Unknown"
+            },
+            getUrlPathForActivity(activityId) {
+                return data.activityDefinitions[activityId]?.path ?? null
+            },
+            getUrlPathForVersion(activityId) {
+                return data.versionDefinitions[activityId]?.path ?? null
+            },
+            getDefinitionFromHash(hash) {
+                const obj = data.hashes[hash]
+                if (!obj) return null
+
+                return {
+                    activity: data.activityDefinitions[obj.activityId],
+                    version: data.versionDefinitions[obj.versionId]
                 }
             },
-            elevatedRaidDifficulties: Object.entries(data.versionStrings)
-                .filter(([_, v]) => v === "Master" || v === "Prestige")
-                .map(([k, _]) => Number(k) as RaidDifficulty),
-            leaderboards: data.leaderboards,
-            listedRaids: [...data.listed],
-            sunsetRaids: [...data.sunset],
-            reprisedRaids: data.reprisedChallengePairings,
-            pantheonId: data.pantheonId,
-            pantheonModes: data.pantheonModes.toSorted((a, b) => b - a)
-        }),
-        [data]
-    )
+            getVersionsForActivity(activityId) {
+                return (data.versionsForActivity[activityId] ?? []).map(
+                    v => data.versionDefinitions[v]
+                )
+            },
+            getActivityDefinition(activityId) {
+                return data.activityDefinitions[activityId] ?? null
+            },
+            isChallengeMode(versionId) {
+                return data.versionDefinitions[versionId]?.isChallengeMode ?? false
+            }
+        }
+    }, [data])
 
     return <ManifestContext.Provider value={value}>{props.children}</ManifestContext.Provider>
 }

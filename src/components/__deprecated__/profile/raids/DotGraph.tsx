@@ -1,7 +1,7 @@
 import { type Collection } from "@discordjs/collection"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFilterContext } from "~/app/(profile)/raids/FilterContext"
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { median } from "~/util/math"
 import Dot from "./Dot"
 import DotTooltip, { type DotTooltipProps } from "./DotTooltip"
@@ -38,7 +38,7 @@ export const STAR_OFFSETS = [
 export const SKULL_FACTOR = 1.15
 
 type DotGraphWrapperProps = {
-    activities: Collection<string, RaidHubPlayerActivitiesActivity>
+    activities: Collection<string, RaidHubInstanceForPlayer>
     targetDot: string | null
 }
 
@@ -47,9 +47,13 @@ export default function DotGraphWrapper({
     activities: unfilteredActivities,
     targetDot
 }: DotGraphWrapperProps) {
-    const { filterPredicate } = useFilterContext()
+    const { filter } = useFilterContext()
+    const filterPredicate = useMemo(
+        () => filter?.filter.predicate.bind(filter.filter) ?? (() => true),
+        [filter]
+    )
     const activities = useMemo(
-        () => unfilteredActivities.filter(filterPredicate ?? (() => true)),
+        () => unfilteredActivities.filter(filterPredicate),
         [filterPredicate, unfilteredActivities]
     )
     const getHeight = useMemo(() => {
@@ -82,7 +86,7 @@ export default function DotGraphWrapper({
 
 type DotGraphProps = {
     getHeight: (duration: number) => number
-    dots: Collection<string, RaidHubPlayerActivitiesActivity>
+    dots: Collection<string, RaidHubInstanceForPlayer>
     targetDot: string | null
 }
 

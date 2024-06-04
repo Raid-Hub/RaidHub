@@ -1,11 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
-import { RaidSplash } from "~/data/activity-images"
-import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
+import { getRaidSplash } from "~/data/activity-images"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import { isRaid } from "~/util/raidhub/util"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 const size = {
@@ -25,7 +23,7 @@ export async function generateImageMetadata({ params }: PageProps) {
 
     if (!activity) return []
 
-    const raidName = activity.meta.activityName
+    const raidName = activity.metadata.activityName
 
     return [
         {
@@ -43,10 +41,7 @@ export async function generateImageMetadata({ params }: PageProps) {
 export default async function Image({ params: { instanceId } }: PageProps) {
     const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
 
-    const [activity, manifest] = await Promise.all([
-        prefetchActivity(instanceId),
-        prefetchManifest()
-    ])
+    const activity = await prefetchActivity(instanceId)
 
     if (!activity) return new Response(null, { status: 404 })
 
@@ -69,9 +64,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                 <div
                     style={{
                         backgroundImage: `url(${cloudflareImageLoader({
-                            src: isRaid(activity.meta.activityId)
-                                ? RaidSplash[activity.meta.activityId]
-                                : "pantheonSplash",
+                            src: getRaidSplash(activity.activityId) ?? "pantheonSplash",
                             width: size.width,
                             quality: 100
                         })})`,
@@ -104,9 +97,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         fontSize: 24,
                         padding: "10px"
                     }}>
-                    {activity.players.slice(0, 6).map(({ player, data }, idx) => (
+                    {activity.players.slice(0, 6).map(({ playerInfo, ...data }, idx) => (
                         <div
-                            key={player.membershipId}
+                            key={playerInfo.membershipId}
                             style={{
                                 flexBasis:
                                     activity.playerCount < 4
@@ -143,9 +136,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                                         width: 48,
                                         height: 48
                                     }}>
-                                    <img src={bungieIconUrl(player.iconPath)} alt="" />
+                                    <img src={bungieIconUrl(playerInfo.iconPath)} alt="" />
                                 </div>
-                                <div>{getBungieDisplayName(player)}</div>
+                                <div>{getBungieDisplayName(playerInfo)}</div>
                             </div>
                             {data.completed ? (
                                 <svg
@@ -245,22 +238,17 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         justifyContent: "center",
                         alignItems: "center"
                     }}>
-                    {Object.entries(activity.leaderboardEntries).map(([category, placement]) => (
+                    {activity.leaderboardRank && (
                         <div
-                            key={category}
                             style={{
                                 backgroundColor: "rgb(201, 125, 2)",
                                 color: "white",
                                 padding: 4,
                                 borderRadius: 4
                             }}>
-                            {manifest.leaderboards.worldFirst[activity.meta.activityId].find(
-                                b => b.category === category
-                            )?.displayName +
-                                " #" +
-                                placement}
+                            {activity.metadata.versionName + " #" + activity.leaderboardRank}
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         ),

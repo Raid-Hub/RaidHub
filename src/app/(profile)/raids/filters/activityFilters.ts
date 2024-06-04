@@ -1,14 +1,11 @@
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { includedIn } from "~/util/helpers"
 import { o } from "~/util/o"
 import GroupActivityFilter from "./GroupActivityFilter"
 import NotActivityFilter from "./NotActivityFilter"
 import SingleActivityFilter from "./SingleActivityFilter"
 
-export type FilterPredicate = (
-    this: ActivityFilter,
-    activity: RaidHubPlayerActivitiesActivity
-) => boolean
+export type FilterPredicate = (this: ActivityFilter, activity: RaidHubInstanceForPlayer) => boolean
 
 export interface ActivityFilter {
     predicate: FilterPredicate
@@ -16,25 +13,59 @@ export interface ActivityFilter {
 }
 
 export const SingleActivityFilterFunctions = {
-    Success: (activity: RaidHubPlayerActivitiesActivity) => activity.player.completed,
-    Flawless: (activity: RaidHubPlayerActivitiesActivity) => !!activity.flawless,
-    CheckpointBot: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount > 50,
-    Lowman: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount <= 3,
-    Trio: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount === 3,
-    Duo: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount === 2,
-    Solo: (activity: RaidHubPlayerActivitiesActivity) => activity.playerCount === 1,
-    Min5MinsPlayed: (activity: RaidHubPlayerActivitiesActivity) => activity.duration >= 5 * 60,
-    Min15MinsPlayed: (activity: RaidHubPlayerActivitiesActivity) => activity.duration >= 15 * 60
+    All: () => true,
+    Success: (activity: RaidHubInstanceForPlayer) => activity.player.completed,
+    Flawless: (activity: RaidHubInstanceForPlayer) => !!activity.flawless,
+    CheckpointBot: (activity: RaidHubInstanceForPlayer) => activity.playerCount > 50,
+    FullTeam: (activity: RaidHubInstanceForPlayer) => activity.playerCount >= 6,
+    Lowman: (activity: RaidHubInstanceForPlayer) => activity.playerCount <= 3,
+    Trio: (activity: RaidHubInstanceForPlayer) => activity.playerCount === 3,
+    Duo: (activity: RaidHubInstanceForPlayer) => activity.playerCount === 2,
+    Solo: (activity: RaidHubInstanceForPlayer) => activity.playerCount === 1,
+    Min5MinsPlayed: (activity: RaidHubInstanceForPlayer) => activity.duration >= 5 * 60,
+    Min15MinsPlayed: (activity: RaidHubInstanceForPlayer) => activity.duration >= 15 * 60
 } satisfies Record<string, FilterPredicate>
 
-export const getDefaultActivityFilters = () =>
-    new GroupActivityFilter("|", [
-        new SingleActivityFilter("Success"),
-        new GroupActivityFilter("&", [
-            new SingleActivityFilter("Min15MinsPlayed"),
-            new NotActivityFilter(new SingleActivityFilter("CheckpointBot"))
-        ])
-    ])
+export const FilterPresets = {
+    Default: {
+        displayName: "Default",
+        getFilter: () =>
+            new GroupActivityFilter("|", [
+                new SingleActivityFilter("Success"),
+                new GroupActivityFilter("&", [
+                    new SingleActivityFilter("Min15MinsPlayed"),
+                    new SingleActivityFilter("FullTeam"),
+                    new NotActivityFilter(new SingleActivityFilter("CheckpointBot"))
+                ])
+            ])
+    },
+    All: {
+        displayName: "All",
+        getFilter: () => new SingleActivityFilter("All")
+    },
+    Success: {
+        displayName: "Success Only",
+        getFilter: () => new SingleActivityFilter("Success")
+    },
+    Lowman: {
+        displayName: "Lowman Only",
+        getFilter: () =>
+            new GroupActivityFilter("&", [
+                new SingleActivityFilter("Success"),
+                new SingleActivityFilter("Lowman")
+            ])
+    },
+    Flawless: {
+        displayName: "Flawless Only",
+        getFilter: () => new SingleActivityFilter("Flawless")
+    }
+} satisfies Record<
+    string,
+    {
+        displayName: string
+        getFilter: () => ActivityFilter
+    }
+>
 
 export function decodeFilters(json: unknown): ActivityFilter | null {
     if (!json) return null

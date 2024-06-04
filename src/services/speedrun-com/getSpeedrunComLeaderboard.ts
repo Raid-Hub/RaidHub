@@ -3,18 +3,17 @@ import {
     destiny2GameId,
     type RTABoardCategory
 } from "~/data/speedrun-com-mappings"
-import type { ListedRaid } from "~/services/raidhub/types"
 import type { SpeedrunLeaderboardResponse } from "~/types/speedrun-com"
 import { baseUrl } from "./baseUrl"
 
 export async function getSpeedrunComLeaderboard(
     params: {
-        raid: ListedRaid
+        raid: string
         category?: RTABoardCategory
     },
     init: Omit<RequestInit, "method"> = {}
 ) {
-    const { categoryId, variable } = SpeedrunVariables[params.raid]
+    const { categoryId, variable } = SpeedrunVariables[params.raid] ?? {}
     if (!categoryId) {
         throw new Error("Category ID not found")
     }

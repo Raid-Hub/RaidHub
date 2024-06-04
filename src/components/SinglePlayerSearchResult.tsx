@@ -5,14 +5,14 @@ import Link from "next/link"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { Flex } from "~/components/layout/Flex"
-import type { RaidHubPlayerSearchResult } from "~/services/raidhub/types"
+import { type RaidHubPlayerInfo } from "~/services/raidhub/types"
 import { bungieProfileIconUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedTimeSince } from "~/util/presentation/formatting"
 
 export const SinglePlayerSearchResult = (props: {
     size: number
-    player: RaidHubPlayerSearchResult
+    player: RaidHubPlayerInfo
     noLink?: boolean
     handleSelect?: () => void
 }) => {

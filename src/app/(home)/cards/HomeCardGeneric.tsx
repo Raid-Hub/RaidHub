@@ -8,13 +8,12 @@ import { Flex } from "~/components/layout/Flex"
 import { CardSplash, CardSplashTitleAbsolute } from "./splash/HomeCardSplash"
 
 export const HomeCardGeneric = (props: {
-    id: string
     title: string
     backgroundImageCloudflareId: CloudflareImageId
     backgroundImageAltText: string
     children: ReactNode
 }) => (
-    <Card id={props.id}>
+    <Card>
         <CardSplash>
             <CloudflareImage
                 priority

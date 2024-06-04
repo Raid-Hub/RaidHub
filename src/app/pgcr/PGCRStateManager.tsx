@@ -4,16 +4,16 @@ import { Collection, type ReadonlyCollection } from "@discordjs/collection"
 import { useQueryClient, type UseQueryResult } from "@tanstack/react-query"
 import { createContext, useContext, useEffect, type ReactNode } from "react"
 import { useRaidHubActivity } from "~/services/raidhub/hooks"
-import type {
-    RaidHubActivityResponse,
-    RaidHubPlayerBasic,
-    RaidHubPlayerWithExtendedActivityData
+import {
+    type RaidHubInstanceExtended,
+    type RaidHubInstancePlayerExtended,
+    type RaidHubPlayerInfo
 } from "~/services/raidhub/types"
 import { round } from "~/util/math"
 import type { PGCRPageProps } from "./types"
 
 const PGCRContext = createContext<
-    | (UseQueryResult<RaidHubActivityResponse> & { sortScores: ReadonlyCollection<string, number> })
+    | (UseQueryResult<RaidHubInstanceExtended> & { sortScores: ReadonlyCollection<string, number> })
     | undefined
 >(undefined)
 
@@ -34,14 +34,14 @@ export const PGCRStateManager = ({
 
     useEffect(() => {
         if (ssrActivity) {
-            queryClient.setQueryData<RaidHubActivityResponse>(
+            queryClient.setQueryData<RaidHubInstanceExtended>(
                 ["raidhub", "activity", instanceId],
                 old => old ?? ssrActivity
             )
             ssrActivity.players.forEach(entry => {
-                queryClient.setQueryData<RaidHubPlayerBasic>(
-                    ["raidhub", "player", "basic", entry.player.membershipId],
-                    old => old ?? entry.player
+                queryClient.setQueryData<RaidHubPlayerInfo>(
+                    ["raidhub", "player", "basic", entry.playerInfo.membershipId],
+                    old => old ?? entry.playerInfo
                 )
             })
         }
@@ -53,7 +53,7 @@ export const PGCRStateManager = ({
     })
 
     const sortScores = new Collection(
-        activityQuery.data?.players.map(p => [p.player.membershipId, sortScore(p.data)])
+        activityQuery.data?.players.map(p => [p.playerInfo.membershipId, sortScore(p)])
     ).toSorted((a, b) => b - a)
 
     return (
@@ -63,7 +63,7 @@ export const PGCRStateManager = ({
     )
 }
 
-function sortScore(d: RaidHubPlayerWithExtendedActivityData["data"]) {
+function sortScore(d: RaidHubInstancePlayerExtended) {
     const stats = d.characters.reduce(
         (acc, c) => ({
             kills: acc.kills + c.kills,

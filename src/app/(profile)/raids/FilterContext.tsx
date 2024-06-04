@@ -8,16 +8,15 @@ import {
     type ReactNode
 } from "react"
 import {
+    FilterPresets,
     decodeFilters,
-    getDefaultActivityFilters,
-    type ActivityFilter,
-    type FilterPredicate
+    type ActivityFilter
 } from "~/app/(profile)/raids/filters/activityFilters"
 
 const FilterContext = createContext<
     | {
-          filterPredicate: FilterPredicate | null
-          setFilter: Dispatch<ActivityFilter | null>
+          filter: FilterData | null
+          setFilter: Dispatch<FilterData | null>
           isMounted: boolean
       }
     | undefined
@@ -29,6 +28,18 @@ export const useFilterContext = () => {
     return ctx
 }
 
+type FilterData = {
+    filter: ActivityFilter
+    displayName: string
+    id: string
+}
+
+type EncodedFilterData = {
+    encoded: string
+    displayName: string
+    id: string
+}
+
 /**
  * Saves the activity filter to local storage.
  *
@@ -36,9 +47,20 @@ export const useFilterContext = () => {
  * @param filter - The new activity filter to save.
  * @returns The saved activity filter.
  */
-const saveFilter = (_: ActivityFilter | null, filter: ActivityFilter | null) => {
-    localStorage.setItem(KEY_ACTIVITY_FILTER, JSON.stringify(filter ? filter.encode() : null))
-    return filter
+const saveFilter = (_: FilterData | null, data: FilterData | null) => {
+    localStorage.setItem(
+        KEY_ACTIVITY_FILTER,
+        JSON.stringify(
+            data
+                ? {
+                      encoded: data.filter.encode(),
+                      displayName: data.displayName,
+                      id: data.id
+                  }
+                : null
+        )
+    )
+    return data
 }
 
 /**
@@ -47,14 +69,31 @@ const saveFilter = (_: ActivityFilter | null, filter: ActivityFilter | null) => 
  * @returns The filtered activities context provider.
  */
 export const FilterContextProvider = ({ children }: { children: ReactNode }) => {
-    const [filter, setFilter] = useReducer(saveFilter, undefined, getDefaultActivityFilters)
+    const [data, setFilterData] = useReducer(saveFilter, undefined, () => ({
+        id: "Default",
+        displayName: FilterPresets.Default.displayName,
+        filter: FilterPresets.Default.getFilter()
+    }))
     const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
         const allFilters = localStorage.getItem(KEY_ACTIVITY_FILTER)
         if (allFilters !== null) {
-            const cached = decodeFilters(JSON.parse(allFilters))
-            setFilter(cached)
+            try {
+                const fromStore = JSON.parse(allFilters) as EncodedFilterData
+                const cached = decodeFilters(fromStore.encoded)
+                if (cached) {
+                    setFilterData({
+                        id: fromStore.id,
+                        displayName: fromStore.displayName,
+                        filter: cached
+                    })
+                } else {
+                    setFilterData(null)
+                }
+            } catch (e) {
+                console.error(e)
+            }
         }
         setIsMounted(true)
     }, [])
@@ -62,8 +101,8 @@ export const FilterContextProvider = ({ children }: { children: ReactNode }) => 
     return (
         <FilterContext.Provider
             value={{
-                setFilter: (newFilter: ActivityFilter | null) => setFilter(newFilter),
-                filterPredicate: filter?.predicate.bind(filter) ?? null,
+                setFilter: setFilterData,
+                filter: data,
                 isMounted
             }}>
             {children}
@@ -71,4 +110,4 @@ export const FilterContextProvider = ({ children }: { children: ReactNode }) => 
     )
 }
 
-export const KEY_ACTIVITY_FILTER = "profile_activity_filter_new"
+export const KEY_ACTIVITY_FILTER = "profile_activity_filter_v2"

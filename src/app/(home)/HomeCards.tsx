@@ -11,11 +11,11 @@ export const Cards = () => {
 
     return (
         <Grid $minCardWidth={320} $gap={1.5}>
-            <HomeCardPantheon />
             <HomeCardGlobal />
-            {listedRaids.map(raid => (
-                <HomeCardRaid key={raid} raid={raid} />
+            {listedRaids.map(raidId => (
+                <HomeCardRaid key={raidId} raidId={raidId} />
             ))}
+            <HomeCardPantheon />
         </Grid>
     )
 }

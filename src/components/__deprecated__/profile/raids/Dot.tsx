@@ -1,16 +1,17 @@
 import { animate } from "framer-motion"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, type MouseEvent } from "react"
+import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "~/app/(profile)/raids/constants"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import RaidSkull from "~/components/icons/RaidSkull"
-import type { RaidHubPlayerActivitiesActivity } from "~/services/raidhub/types"
+import { type RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { RADIUS, SKULL_FACTOR, SPACING, STAR_OFFSETS } from "./DotGraph"
 import { type DotTooltipProps } from "./DotTooltip"
 import styles from "./raids.module.css"
 
 type DotProps = {
-    activity: RaidHubPlayerActivitiesActivity
+    activity: RaidHubInstanceForPlayer
     centerX: number
     centerY: number
     isTargeted: boolean
@@ -20,6 +21,9 @@ type DotProps = {
 
 /** @deprecated */
 const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }: DotProps) => {
+    const { raidId } = useRaidCardContext()
+    const { getActivityDefinition } = useRaidHubManifest()
+    const isRaid = !!getActivityDefinition(raidId)?.isRaid
     const ref = useRef<HTMLAnchorElement | null>(null)
     const handleHover = useCallback(
         ({ clientX, currentTarget }: MouseEvent) => {
@@ -67,7 +71,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
         }
     }, [isTargeted])
 
-    const { elevatedRaidDifficulties } = useRaidHubManifest()
+    const { elevatedDifficulties } = useRaidHubManifest()
 
     return (
         <Link
@@ -95,7 +99,8 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
             {activity.completed && activity.playerCount <= 3 ? (
                 <Star x={centerX} y={centerY} spinning={activity.playerCount === 1} />
             ) : (
-                (activity.contest || activity.dayOne) && (
+                isRaid &&
+                (activity.isContest || activity.isDayOne) && (
                     <RaidSkull
                         color="white"
                         width={2 * SKULL_FACTOR * RADIUS}
@@ -105,7 +110,7 @@ const Dot = ({ centerX, activity, centerY, isTargeted, setTooltip, tooltipData }
                     />
                 )
             )}
-            {elevatedRaidDifficulties.includes(activity.meta.versionId) && (
+            {elevatedDifficulties.includes(activity.versionId) && (
                 <circle
                     fill="none"
                     stroke="white"

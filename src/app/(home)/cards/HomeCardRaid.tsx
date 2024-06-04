@@ -1,96 +1,85 @@
 "use client"
 
-import { useMemo } from "react"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
-import { RaidSplash } from "~/data/activity-images"
+import { getRaidSplash } from "~/data/activity-images"
 import { SpeedrunVariables } from "~/data/speedrun-com-mappings"
-import { type ListedRaid } from "~/services/raidhub/types"
 import { o } from "~/util/o"
 import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"
 
-const isWorldFirstBoard = (board: string) => board === "normal" || board === "challenge"
+const raidHubBoards = [
+    ["Clears", "clears"],
+    ["Full Clears", "freshClears"],
+    ["Sherpas", "sherpas"]
+]
 
-export const HomeCardRaid = ({ raid }: { raid: ListedRaid }) => {
-    const { getRaidString, getUrlPathForRaid, leaderboards } = useRaidHubManifest()
-    const raidUrlPath = getUrlPathForRaid(raid)
+export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
+    const { reprisedRaids, getVersionsForActivity, getActivityString, getUrlPathForActivity } =
+        useRaidHubManifest()
 
-    const worldFirstLeaderboards = leaderboards.worldFirst[raid]
+    const raidUrlPath = getUrlPathForActivity(raidId)
 
-    const { worldFirstBoards, miscBoards } = useMemo(() => {
-        const worldFirstBoards: [...typeof worldFirstLeaderboards] = []
-        const miscBoards: [...typeof worldFirstLeaderboards] = []
+    if (!raidUrlPath) return null
 
-        for (const board of worldFirstLeaderboards) {
-            if (isWorldFirstBoard(board.category)) {
-                worldFirstBoards.push(board)
-            } else {
-                miscBoards.push(board)
-            }
-        }
-
-        return {
-            worldFirstBoards: worldFirstBoards.sort(b => (b.category === "challenge" ? -1 : 1)),
-            miscBoards
-        }
-    }, [worldFirstLeaderboards])
+    const isReprised = reprisedRaids.includes(raidId)
+    const miscBoards = getVersionsForActivity(raidId).filter(
+        isReprised ? v => !v.isChallengeMode && v.id > 2 : v => v.id > 2
+    )
 
     return (
         <HomeCardGeneric
-            id={raidUrlPath}
-            title={getRaidString(raid)}
-            backgroundImageCloudflareId={RaidSplash[raid]}
-            backgroundImageAltText={`Splash for ${getRaidString(raid)}`}>
+            title={getActivityString(raidId)}
+            backgroundImageCloudflareId={getRaidSplash(raidId) ?? "pantheonSplash"}
+            backgroundImageAltText={`Splash for ${getActivityString(raidId)}`}>
             <HomeCardContentSection sectionTitle="World First Race">
-                {worldFirstBoards.map(b => (
+                <HomeCardContentSectionItem
+                    title={isReprised ? "Challenge" : "Normal"}
+                    href={`/leaderboards/team/${raidUrlPath}/worldfirst`}
+                />
+                {isReprised && (
                     <HomeCardContentSectionItem
-                        key={b.id}
-                        title={b.displayName}
-                        href={`/leaderboards/${raidUrlPath}/worldfirst/${b.category}`}
+                        title="Normal"
+                        href={`/leaderboards/team/${raidUrlPath}/first/normal`}
                     />
-                ))}
+                )}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Speedrun Leaderboards">
-                {SpeedrunVariables[raid].variable ? (
+                {SpeedrunVariables[raidId]?.variable ? (
                     o.map(
-                        SpeedrunVariables[raid].variable!.values,
+                        SpeedrunVariables[raidId].variable!.values,
                         (type, data) =>
                             data && (
                                 <HomeCardContentSectionItem
                                     key={data.id}
                                     title={data.displayName}
-                                    href={`/leaderboards/${raidUrlPath}/speedrun/${type}`}
+                                    href={`/leaderboards/team/${raidUrlPath}/speedrun/${type}`}
                                 />
                             )
                     )
                 ) : (
                     <HomeCardContentSectionItem
                         title="Any %"
-                        href={`/leaderboards/${raidUrlPath}/speedrun/all`}
+                        href={`/leaderboards/team/${raidUrlPath}/speedrun/all`}
                     />
                 )}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                <HomeCardContentSectionItem
-                    title="Sherpas"
-                    href={`/leaderboards/${raidUrlPath}/individual/sherpas`}
-                />
-                {leaderboards.individual.clears[raid].map(({ displayName, category }) => (
+                {raidHubBoards.map(([displayName, path]) => (
                     <HomeCardContentSectionItem
-                        key={category}
-                        title={`${displayName} Clears`}
-                        href={`/leaderboards/${raidUrlPath}/individual/clears/${category}`}
+                        key={displayName}
+                        title={displayName}
+                        href={`/leaderboards/individual/${raidUrlPath}/${path}`}
                     />
                 ))}
             </HomeCardContentSection>
             {!!miscBoards.length && (
-                <HomeCardContentSection sectionTitle="Miscellaneous">
-                    {miscBoards.map(b => (
+                <HomeCardContentSection sectionTitle="Version Firsts">
+                    {miscBoards.map(version => (
                         <HomeCardContentSectionItem
-                            key={b.id}
-                            title={b.displayName}
-                            href={`/leaderboards/${raidUrlPath}/worldfirst/${b.category}`}
+                            key={version.id}
+                            title={version.name}
+                            href={`/leaderboards/team/${raidUrlPath}/first/${version.path}`}
                         />
                     ))}
                 </HomeCardContentSection>

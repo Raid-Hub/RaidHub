@@ -1,22 +1,50 @@
-import { Raid } from "~/data/raid"
-import { type ListedRaid } from "~/services/raidhub/types"
-
-export const RaidSplash: {
-    [key in ListedRaid]: keyof typeof R2RaidSplash
-} = {
-    [Raid.LEVIATHAN]: "leviathanSplash",
-    [Raid.EATER_OF_WORLDS]: "eaterOfWorldsSplash",
-    [Raid.SPIRE_OF_STARS]: "spireOfStarsSplash",
-    [Raid.LAST_WISH]: "lastWishSplash",
-    [Raid.SCOURGE_OF_THE_PAST]: "scourgeOfThePastSplash",
-    [Raid.CROWN_OF_SORROW]: "crownOfSorrowSplash",
-    [Raid.GARDEN_OF_SALVATION]: "gardenOfSalvationSplash",
-    [Raid.DEEP_STONE_CRYPT]: "deepStoneCryptSplash",
-    [Raid.VAULT_OF_GLASS]: "vaultOfGlassSplash",
-    [Raid.VOW_OF_THE_DISCIPLE]: "vowOfTheDiscipleSplash",
-    [Raid.KINGS_FALL]: "kingsFallSplash",
-    [Raid.ROOT_OF_NIGHTMARES]: "rootOfNightmaresSplash",
-    [Raid.CROTAS_END]: "crotasEndSplash"
+export const getRaidSplash = (raid: string | number): keyof typeof R2RaidSplash | null => {
+    switch (raid) {
+        case "leviathan":
+        case 1:
+            return "leviathanSplash"
+        case "eaterofworlds":
+        case 2:
+            return "eaterOfWorldsSplash"
+        case "spireofstars":
+        case 3:
+            return "spireOfStarsSplash"
+        case "lastwish":
+        case 4:
+            return "lastWishSplash"
+        case "scourgeofthepast":
+        case 5:
+            return "scourgeOfThePastSplash"
+        case "crownofsorrow":
+        case 6:
+            return "crownOfSorrowSplash"
+        case "gardenofsalvation":
+        case 7:
+            return "gardenOfSalvationSplash"
+        case "deepstonecrypt":
+        case 8:
+            return "deepStoneCryptSplash"
+        case "vaultofglass":
+        case 9:
+            return "vaultOfGlassSplash"
+        case "vowofthedisciple":
+        case 10:
+            return "vowOfTheDiscipleSplash"
+        case "kingsfall":
+        case 11:
+            return "kingsFallSplash"
+        case "rootofnightmares":
+        case 12:
+            return "rootOfNightmaresSplash"
+        case "crotasend":
+        case 13:
+            return "crotasEndSplash"
+        case "salvationsedge":
+        case 14:
+            return "salvationsEdgeSplash"
+        default:
+            return null
+    }
 }
 
 export const R2RaidSplash = {
@@ -126,6 +154,14 @@ export const R2RaidSplash = {
     },
     crotasEndSplash: {
         path: "splash/crota",
+        variants: {
+            tiny: "tiny.jpg",
+            small: "small.jpg",
+            medium: "medium.jpg"
+        }
+    },
+    salvationsEdgeSplash: {
+        path: "splash/edge",
         variants: {
             tiny: "tiny.jpg",
             small: "small.jpg",

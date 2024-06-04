@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from "react"
 import { useDestinyPlayerByBungieName, useSearchByGlobalName } from "~/services/bungie/hooks"
 import { useRaidHubPlayerSearch } from "~/services/raidhub/hooks"
-import { type RaidHubPlayerSearchResult } from "~/services/raidhub/types"
+import { type RaidHubDestinyMembershipType, type RaidHubPlayerInfo } from "~/services/raidhub/types"
 import { isPrimaryCrossSave } from "~/util/destiny/crossSave"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { useDebounce } from "./util/useDebounce"
 
 export function useSearch(props?: {
-    onRedirect?: (result: RaidHubPlayerSearchResult) => void
+    onRedirect?: (result: RaidHubPlayerInfo) => void
     navigateOnEnter?: boolean
 }) {
     const router = useRouter()
@@ -56,7 +56,7 @@ export function useSearch(props?: {
     )
 
     const aggregatedResults = useMemo(() => {
-        const results = new Collection<string, RaidHubPlayerSearchResult>()
+        const results = new Collection<string, RaidHubPlayerInfo>()
         if (raidHubSearchQuery.isSuccess) {
             raidHubSearchQuery.data.forEach(p => results.set(p.membershipId, p))
         } else {
@@ -125,14 +125,13 @@ export function useSearch(props?: {
     }
 }
 
-function mapUserInfoCardToSearchResult(res: UserInfoCard): RaidHubPlayerSearchResult {
+function mapUserInfoCardToSearchResult(res: UserInfoCard): RaidHubPlayerInfo {
     return {
         membershipId: res.membershipId,
-        membershipType: res.membershipType,
+        membershipType: res.membershipType as RaidHubDestinyMembershipType,
         iconPath: res.iconPath,
         displayName: res.displayName,
         lastSeen: "",
-        clears: 0,
         ...(res.bungieGlobalDisplayNameCode
             ? {
                   bungieGlobalDisplayName: res.bungieGlobalDisplayName,
@@ -144,6 +143,7 @@ function mapUserInfoCardToSearchResult(res: UserInfoCard): RaidHubPlayerSearchRe
             : {
                   bungieGlobalDisplayName: null,
                   bungieGlobalDisplayNameCode: null
-              })
+              }),
+        isPrivate: false
     }
 }

@@ -1,6 +1,6 @@
 import { Tag } from "~/models/tag"
 import { getRaidHubApi } from "~/services/raidhub/common"
-import { type RaidHubActivityResponse } from "~/services/raidhub/types"
+import { type RaidHubInstanceExtended } from "~/services/raidhub/types"
 import { reactDedupe } from "~/util/react-cache"
 
 export type PageProps = {
@@ -14,7 +14,7 @@ export const prefetchActivity = reactDedupe((instanceId: string) =>
         .catch(() => null)
 )
 
-export const getMetaData = (activity: RaidHubActivityResponse) => {
+export const getMetaData = (activity: RaidHubInstanceExtended) => {
     const title = [
         activity.completed
             ? activity.playerCount === 1
@@ -26,8 +26,8 @@ export const getMetaData = (activity: RaidHubActivityResponse) => {
                 : null
             : null,
         activity.flawless ? "Flawless" : null,
-        activity.meta.activityName,
-        `(${activity.meta.versionName})`
+        activity.metadata.activityName,
+        `(${activity.metadata.versionName})`
     ]
         .filter(Boolean)
         .join(" ")

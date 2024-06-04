@@ -1,6 +1,3 @@
-.toggle {
-}
-
 .checkbox {
     height: 0;
     width: 0;
@@ -29,7 +26,7 @@
 }
 
 .checkbox:checked + label {
-    background: var(--brand-orange-light);
+    background: orange;
 }
 
 .checkbox:checked + label:after {

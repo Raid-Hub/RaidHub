@@ -20,7 +20,7 @@ export type UseLeaderboardResult<T extends "player" | "team" = "player" | "team"
 
 export const useLeaderboard = <R, K extends QueryKey, T extends "player" | "team">(params: {
     initialData?: R
-    initialDataUpdatedAt: number
+    initialDataUpdatedAt?: number
     queryKey: K
     queryFn: QueryFunction<R, K>
     select: (data: R) => Entries<T>

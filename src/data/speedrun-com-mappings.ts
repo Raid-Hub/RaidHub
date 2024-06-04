@@ -1,6 +1,3 @@
-import { type ListedRaid } from "../services/raidhub/types"
-import { Raid } from "./raid"
-
 export type RTABoardCategory =
     | "standard"
     | "any-percent"
@@ -20,7 +17,7 @@ export const SpeedrunPlacementIcons = {
 }
 
 export const SpeedrunVariables: Record<
-    ListedRaid,
+    string,
     {
         categoryId: string
         variable?: {
@@ -29,7 +26,7 @@ export const SpeedrunVariables: Record<
         }
     }
 > = {
-    [Raid.LEVIATHAN]: {
+    leviathan: {
         categoryId: "jdzvzqvk",
         variable: {
             variableId: "68kmerkl",
@@ -39,13 +36,13 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.EATER_OF_WORLDS]: {
+    eaterofworlds: {
         categoryId: "824r4ygd"
     },
-    [Raid.SPIRE_OF_STARS]: {
+    spireofstars: {
         categoryId: "9d8g973k"
     },
-    [Raid.LAST_WISH]: {
+    lastwish: {
         categoryId: "02qlzqpk",
         variable: {
             variableId: "j84km3wn",
@@ -56,7 +53,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.SCOURGE_OF_THE_PAST]: {
+    scourgeofthepast: {
         categoryId: "mkernrnd",
         variable: {
             variableId: "5ly7jpgl",
@@ -66,10 +63,10 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.CROWN_OF_SORROW]: {
+    crownofsorrow: {
         categoryId: "8241elw2"
     },
-    [Raid.GARDEN_OF_SALVATION]: {
+    gardenofsalvation: {
         categoryId: "7dgng872",
         variable: {
             variableId: "wl3d3gy8",
@@ -79,7 +76,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.DEEP_STONE_CRYPT]: {
+    deepstonecrypt: {
         categoryId: "zd3oymnd",
         variable: {
             variableId: "789dj59n",
@@ -89,7 +86,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.VAULT_OF_GLASS]: {
+    vaultofglass: {
         categoryId: "q25x58vk",
         variable: {
             variableId: "e8mqrmwn",
@@ -99,7 +96,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.VOW_OF_THE_DISCIPLE]: {
+    vowofthedisciple: {
         categoryId: "7kj909n2",
         variable: {
             variableId: "gnx2yo48",
@@ -109,7 +106,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.KINGS_FALL]: {
+    kingsfall: {
         categoryId: "9kvlp902",
         variable: {
             variableId: "9l75odz8",
@@ -119,7 +116,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-    [Raid.ROOT_OF_NIGHTMARES]: {
+    rootofnightmares: {
         categoryId: "9d88x6ld",
         variable: {
             variableId: "jlzxvz78",
@@ -129,8 +126,7 @@ export const SpeedrunVariables: Record<
             }
         }
     },
-
-    [Raid.CROTAS_END]: {
+    crotasend: {
         categoryId: "wdm1pm3d",
         variable: {
             variableId: "onv91378",

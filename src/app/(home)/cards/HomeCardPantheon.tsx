@@ -6,46 +6,42 @@ import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"
 
 export function HomeCardPantheon() {
-    const { leaderboards } = useRaidHubManifest()
+    const { pantheonVersions, getVersionString, getUrlPathForVersion } = useRaidHubManifest()
     return (
         <HomeCardGeneric
-            id="Pantheon"
             title="Pantheon"
             backgroundImageCloudflareId="pantheonSplash"
             backgroundImageAltText="The Pantheon">
             <HomeCardContentSection sectionTitle="First Completions">
-                {leaderboards.pantheon.first.map(board => (
+                {pantheonVersions.map(version => (
                     <HomeCardContentSectionItem
-                        key={board.versionId}
-                        title={board.displayName}
-                        href={`/leaderboards/pantheon/${board.path}/first`}
+                        key={version}
+                        title={getVersionString(version)}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/first`}
+                    />
+                ))}
+            </HomeCardContentSection>
+            <HomeCardContentSection sectionTitle="Clears">
+                {pantheonVersions.map(version => (
+                    <HomeCardContentSectionItem
+                        key={version}
+                        title={getVersionString(version)}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/fullClears`}
                     />
                 ))}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="High Score">
-                {leaderboards.pantheon.first.map(board => (
+                {pantheonVersions.map(version => (
                     <HomeCardContentSectionItem
-                        key={board.versionId}
-                        title={board.displayName}
-                        href={`/leaderboards/pantheon/${board.path}/score`}
-                    />
-                ))}
-            </HomeCardContentSection>
-            <HomeCardContentSection sectionTitle="Speedrun">
-                {leaderboards.pantheon.speedrun.map(board => (
-                    <HomeCardContentSectionItem
-                        key={board.versionId}
-                        title={board.displayName}
-                        href={`/leaderboards/pantheon/${board.path}/speedrun`}
-                    />
-                ))}
-            </HomeCardContentSection>
-            <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                {leaderboards.pantheon.individual.map(board => (
-                    <HomeCardContentSectionItem
-                        key={board.category}
-                        title={board.displayName}
-                        href={`/leaderboards/pantheon/all/${board.category}`}
+                        key={version}
+                        title={getVersionString(version)}
+                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
+                            version
+                        )}/score`}
                     />
                 ))}
             </HomeCardContentSection>
