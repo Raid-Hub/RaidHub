@@ -21,6 +21,15 @@ export function HomeCardPantheon() {
                     />
                 ))}
             </HomeCardContentSection>
+            <HomeCardContentSection sectionTitle="Clears">
+                {pantheonVersions.map(version => (
+                    <HomeCardContentSectionItem
+                        key={version}
+                        title={getVersionString(version)}
+                        href={`/leaderboards/pantheon/${getUrlPathForVersion(version)}/fullClears`}
+                    />
+                ))}
+            </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="High Score">
                 {pantheonVersions.map(version => (
                     <HomeCardContentSectionItem
@@ -29,16 +38,6 @@ export function HomeCardPantheon() {
                         href={`/leaderboards/pantheon/${getUrlPathForVersion(version)}/score`}
                     />
                 ))}
-            </HomeCardContentSection>
-            <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                <HomeCardContentSectionItem
-                    title="Full Clears"
-                    href={`/leaderboards/pantheon/all/clears`}
-                />
-                <HomeCardContentSectionItem
-                    title="Score"
-                    href={`/leaderboards/pantheon/all/score`}
-                />
             </HomeCardContentSection>
         </HomeCardGeneric>
     )

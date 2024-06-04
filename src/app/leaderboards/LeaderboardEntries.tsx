@@ -11,9 +11,11 @@ export type LeaderboardEntryPlayer = {
     url?: string
 }
 export type LeaderboardEntry = {
+    id: string
     rank: number
     position: number
     value: number
+    valueFormat: "duration" | "numerical"
     url?: string
 } & (
     | {
@@ -42,7 +44,7 @@ export const LeaderboardEntries = (props: {
             style={{ flexBasis: "max-content" }}>
             {props.entries.map(e => (
                 <LeaderboardEntryComponent
-                    key={e.position}
+                    key={e.id}
                     placementIcon={props.icons?.[e.rank]}
                     isTargetted={String(e.position) === params.get("position")}
                     {...e}

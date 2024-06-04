@@ -8,7 +8,11 @@ import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"
 
-const raidHubBoards = ["Clears", "Full Clears", "Sherpas"]
+const raidHubBoards = [
+    ["Clears", "clears"],
+    ["Full Clears", "freshClears"],
+    ["Sherpas", "sherpas"]
+]
 
 export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
     const {
@@ -65,11 +69,11 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
                 )}
             </HomeCardContentSection>
             <HomeCardContentSection sectionTitle="Individual Leaderboards">
-                {raidHubBoards.map(displayName => (
+                {raidHubBoards.map(([displayName, path]) => (
                     <HomeCardContentSectionItem
                         key={displayName}
                         title={displayName}
-                        href={`/leaderboards/${raidUrlPath}/individual/sherpas`}
+                        href={`/leaderboards/${raidUrlPath}/individual/${path}`}
                     />
                 ))}
             </HomeCardContentSection>

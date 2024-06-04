@@ -1,30 +1,26 @@
 "use client"
 
+import { type QueryKey } from "@tanstack/react-query"
 import Image from "next/image"
 import { LeaderboardEntriesLoadingWrapper } from "~/app/leaderboards/LeaderboardEntriesLoadingWrapper"
 import { useLeaderboard } from "~/app/leaderboards/useLeaderboard"
 import { SpeedrunPlacementIcons, type RTABoardCategory } from "~/data/speedrun-com-mappings"
-import type { ListedRaid } from "~/services/raidhub/types"
 import { getSpeedrunComLeaderboard } from "~/services/speedrun-com/getSpeedrunComLeaderboard"
-import { type SpeedrunLeaderboardResponse } from "~/types/speedrun-com"
 import { o } from "~/util/o"
 import { type LeaderboardEntry } from "../../../LeaderboardEntries"
 
 export const SpeedrunEntries = (props: {
-    lastRevalidated: number
-    ssrData: SpeedrunLeaderboardResponse["data"] | null
-    raid: ListedRaid
+    raidPath: string
     category?: RTABoardCategory
+    queryKey: QueryKey
 }) => {
     const query = useLeaderboard({
-        queryKey: ["speedrun-com", "leaderboard", props.raid, props.category] as const,
-        queryFn: ({ queryKey }) =>
+        queryKey: [...props.queryKey, 1],
+        queryFn: () =>
             getSpeedrunComLeaderboard({
-                raid: queryKey[2],
-                category: queryKey[3]
+                raid: props.raidPath,
+                category: props.category
             }),
-        initialDataUpdatedAt: props.lastRevalidated,
-        initialData: props.ssrData ?? undefined,
         select: (
             data
         ): Extract<
@@ -36,11 +32,13 @@ export const SpeedrunEntries = (props: {
             const playersDict = new Map(data?.players.data.map(p => [p.id, p]))
             return (
                 data?.runs.map(({ place, run }) => ({
+                    id: run.id,
                     type: "team",
                     rank: place,
                     value: run.times.primary_t,
                     position: place,
                     url: run.weblink,
+                    valueFormat: "duration",
                     team: run.players.map(player => {
                         if (player.rel === "guest") {
                             return {

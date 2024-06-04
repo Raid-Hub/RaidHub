@@ -1,22 +1,24 @@
 "use client"
 
 import { usePageProps } from "~/components/layout/PageWrapper"
+import { type RaidHubLeaderboardURL } from "~/services/raidhub/types"
 import { type PageProps } from "./Leaderboard"
 import { LeaderboardEntries } from "./LeaderboardEntries"
 import { usePage } from "./usePage"
 
 export const LeaderboardEntriesLoading = () => {
     const page = usePage()
-    const { count, type } = usePageProps<PageProps>()
+    const { entriesPerPage, layout } = usePageProps<PageProps<RaidHubLeaderboardURL>>()
 
     return (
         <LeaderboardEntries
-            entries={Array.from({ length: count }, (_, idx) => ({
-                position: (page - 1) * count + idx + 1,
-                rank: (page - 1) * count + idx + 1,
+            entries={Array.from({ length: entriesPerPage }, (_, idx) => ({
+                id: String(idx),
+                position: (page - 1) * entriesPerPage + idx + 1,
+                rank: (page - 1) * entriesPerPage + idx + 1,
                 value: 0,
-                id: idx,
-                ...(type === "player"
+                valueFormat: "numerical",
+                ...(layout === "individual"
                     ? {
                           type: "player",
                           player: {

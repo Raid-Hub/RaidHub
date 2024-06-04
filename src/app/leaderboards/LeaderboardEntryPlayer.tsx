@@ -11,7 +11,6 @@ import { bungieProfileIconUrl } from "~/util/destiny"
 
 export const LeaderboardEntryPlayerComponent = (player: LeaderboardEntryPlayer) => {
     const [icon, setIcon] = useState<string>(player.iconUrl ?? bungieProfileIconUrl(null))
-
     return (
         <OptionalWrapper
             condition={player.url}

@@ -1,7 +1,11 @@
 import { type RaidHubErrorCode } from "./types"
 
 export class RaidHubError<T> extends Error {
-    constructor(public code: RaidHubErrorCode, public body: T) {
-        super(code)
+    readonly errorCode: RaidHubErrorCode
+    readonly body: T
+    constructor(errorCode: RaidHubErrorCode, body: T) {
+        super(errorCode)
+        this.errorCode = errorCode
+        this.body = body
     }
 }

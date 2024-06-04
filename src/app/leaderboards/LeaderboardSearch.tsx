@@ -10,20 +10,18 @@ import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
-import type { RaidHubLeaderboardSearchQuery } from "~/services/raidhub/types"
-import type { AtLeast, Prettify } from "~/types/generic"
+import { type RaidHubLeaderboardData } from "~/services/raidhub/types"
 import { useLeaderboardPlayerSearch } from "./useLeaderboardPlayerSearch"
 
-export const LeaderboardSearch = (
-    query: Prettify<AtLeast<Omit<RaidHubLeaderboardSearchQuery, "membershipId">, "count">> & {
-        resultQueryKey: QueryKey
-    }
-) => {
+export const LeaderboardSearch = (args: {
+    queryKeyWithoutPage: QueryKey
+    mutationFn: (membershipId: string) => Promise<RaidHubLeaderboardData>
+}) => {
     const [isShowingResults, setIsShowingResults] = useState(false)
     const ref = useRef<HTMLFormElement>(null)
     const { enteredText, results, handleFormSubmit, handleInputChange, clearQuery } = useSearch()
 
-    const { mutate: search, reset } = useLeaderboardPlayerSearch(query)
+    const { mutate: search, reset } = useLeaderboardPlayerSearch(args)
 
     useClickOutside(ref, () => setIsShowingResults(false), {
         lockout: 100,

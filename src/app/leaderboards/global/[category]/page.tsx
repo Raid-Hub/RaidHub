@@ -1,34 +1,37 @@
 import { type Metadata } from "next"
 import { metadata as rootMetadata } from "~/app/layout"
-import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
-import type { PageStaticParams } from "~/types/generic"
+import { type PathParamsForLeaderboardURL } from "~/services/raidhub/types"
 import { Leaderboard } from "../../Leaderboard"
+import { LeaderboardSSR } from "../../LeaderboardSSR"
 import { Splash } from "../../LeaderboardSplashComponents"
-import { GlobalSSREntries } from "./GlobalSSREntries"
-import { ENTRIES_PER_PAGE, createQueryKey } from "./constants"
 
-export async function generateStaticParams() {
-    const manifest = await prefetchManifest()
+export const dynamicParams = true
+export const revalidate = 900
+export const dynamic = "force-static"
+export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
 
-    return manifest.leaderboards.global.map(board => ({
-        category: board.category
-    }))
-}
-
-type StaticParams = PageStaticParams<typeof generateStaticParams> & {
-    searchParams: {
-        page?: string
+const getCategoryName = (category: DynamicParams["params"]["category"]) => {
+    switch (category) {
+        case "clears":
+            return "Clears"
+        case "freshClears":
+            return "Full Clears"
+        case "sherpas":
+            return "Sherpas"
+        case "speedrun":
+            return "Speedrun"
+        default:
+            return "Unknown Category"
     }
 }
 
-export async function generateMetadata({ params }: StaticParams): Promise<Metadata> {
-    const manifest = await prefetchManifest()
+type DynamicParams = {
+    params: PathParamsForLeaderboardURL<"/leaderboard/individual/global/{category}">
+    searchParams: Record<string, string>
+}
 
-    const displayName = manifest.leaderboards.global.find(
-        board => board.category === params.category
-    )!.displayName
-
-    const title = displayName + " Leaderboards"
+export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
+    const title = getCategoryName(params.category) + " Leaderboards"
     return {
         title: title,
         openGraph: {
@@ -38,34 +41,37 @@ export async function generateMetadata({ params }: StaticParams): Promise<Metada
     }
 }
 
-export const revalidate = 900
-export const dynamic = "force-static"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+const ENTRIES_PER_PAGE = 50
 
-export default async function Page({ params, searchParams }: StaticParams) {
-    const globalLeaderboards = await prefetchManifest().then(
-        manifest => manifest.leaderboards.global
-    )
-
-    const { displayName, format } = globalLeaderboards.find(l => l.category === params.category)!
+export default async function Page({ params, searchParams }: DynamicParams) {
+    const categoryName = getCategoryName(params.category)
 
     return (
         <Leaderboard
-            pageProps={{ format, type: "player", count: ENTRIES_PER_PAGE }}
-            type="global"
-            category={params.category}
+            pageProps={{
+                entriesPerPage: ENTRIES_PER_PAGE,
+                layout: "individual",
+                queryKey: ["raidhub", "leaderboard", "global", params.category],
+                apiUrl: "/leaderboard/individual/global/{category}",
+                params
+            }}
             hasSearch
             hasPages
-            refreshQueryKey={createQueryKey({ page: 1, category: params.category })}
+            external={false}
             heading={
                 <Splash
-                    title={displayName}
+                    title={categoryName}
                     tertiaryTitle="Global Leaderboards"
                     cloudflareImageId="raidhubCitySplash"
                 />
             }
             entries={
-                <GlobalSSREntries category={params.category} page={searchParams.page ?? "1"} />
+                <LeaderboardSSR
+                    page={searchParams.page ?? "1"}
+                    entriesPerPage={ENTRIES_PER_PAGE}
+                    apiUrl="/leaderboard/individual/global/{category}"
+                    params={params}
+                />
             }
         />
     )

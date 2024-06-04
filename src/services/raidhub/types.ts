@@ -37,6 +37,16 @@ export type RaidHubWorldFirstEntry = Component<"WorldFirstEntry">
 export type RaidHubLeaderboardData = Component<"LeaderboardData">
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
 
+export type RaidHubLeaderboardURL =
+    | "/leaderboard/individual/global/{category}"
+    | "/leaderboard/individual/pantheon/{version}/{category}"
+    | "/leaderboard/individual/raid/{raid}/{category}"
+    | "/leaderboard/team/contest/{raid}"
+    | "/leaderboard/team/first/{activity}/{version}"
+
+export type PathParamsForLeaderboardURL<T extends RaidHubLeaderboardURL> =
+    paths[T]["get"]["parameters"]["path"]
+
 export type RaidHubAdminQueryBody = Required<
     paths["/admin/query"]["post"]
 >["requestBody"]["content"]["application/json"]

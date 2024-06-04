@@ -1,7 +1,7 @@
 "use client"
 
 import { QueryObserver, useQueryClient, type QueryKey } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Panel } from "~/components/Panel"
 import NextArrow from "~/components/icons/NextArrow"
 import PreviousArrow from "~/components/icons/PreviousArrow"
@@ -10,52 +10,66 @@ import ReloadArrow from "~/components/icons/ReloadArrow"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
-import type {
-    ListedRaid,
-    RaidHubLeaderboardSearchQueryCategory,
-    RaidHubLeaderboardSearchQueryType
-} from "~/services/raidhub/types"
+import { getRaidHubApi } from "~/services/raidhub/common"
+import { type RaidHubLeaderboardURL } from "~/services/raidhub/types"
 import { type PageProps } from "./Leaderboard"
 import { LeaderboardSearch } from "./LeaderboardSearch"
 import { usePage } from "./usePage"
 
-export const LeaderboardControls = (
-    props: {
-        refreshQueryKey: QueryKey
-        hasPages: boolean
-    } & (
-        | {
-              hasSearch: true
-              type: RaidHubLeaderboardSearchQueryType
-              category: RaidHubLeaderboardSearchQueryCategory
-              raid?: ListedRaid
-          }
-        | { hasSearch: false }
-    )
-) => {
+export const LeaderboardControls = (props: { hasPages: boolean; hasSearch: boolean }) => {
     const { set, remove } = useQueryParams<{
         page: string
         position: string
     }>()
     const currentPage = usePage()
-    const { count } = usePageProps<PageProps>()
-    const queryKey = Array.from(props.refreshQueryKey)
-    if (props.hasPages) queryKey[props.refreshQueryKey.length - 1] = currentPage
+    const { entriesPerPage, apiUrl, params, queryKey } =
+        usePageProps<PageProps<RaidHubLeaderboardURL>>()
 
     const queryClient = useQueryClient()
     const canGoBack = currentPage > 1
     const isFirstPage = currentPage === 1
     const [canGoForward, setCanGoForward] = useState(props.hasPages)
 
+    const pagedQueryKey = useMemo<QueryKey>(
+        () => [...queryKey, currentPage],
+        [currentPage, queryKey]
+    )
+
+    const mutationFn = useCallback(
+        async (membershipId: string) => {
+            if (!props.hasSearch) {
+                throw new Error("This function should not be called when search is enabled")
+            }
+
+            return await getRaidHubApi(apiUrl, params, {
+                search: membershipId,
+                count: entriesPerPage
+            }).then(res => res.response)
+        },
+        [props.hasSearch, apiUrl, params, entriesPerPage]
+    )
+
     useEffect(() => {
+        // Subscribe to the query data to determine if we can go forward
         const observer = new QueryObserver<{ entries: unknown[] }>(queryClient, {
-            queryKey: queryKey
+            queryKey: pagedQueryKey
         })
 
-        return observer.subscribe(result => {
-            setCanGoForward(props.hasPages && result.data?.entries.length === count)
-        })
-    }, [props.hasPages, queryKey, queryClient, count])
+        if (props.hasPages) {
+            try {
+                const state = queryClient.getQueryState(pagedQueryKey)
+                if (state?.status === "success") {
+                    return observer.subscribe(result => {
+                        setCanGoForward(
+                            props.hasPages && result.data?.entries.length === entriesPerPage
+                        )
+                    })
+                } else {
+                    setCanGoForward(true)
+                }
+            } catch {}
+        }
+    }, [props.hasPages, queryClient, entriesPerPage, pagedQueryKey])
 
     const handleGoToFirstPage = () => {
         set("page", "1", {
@@ -87,13 +101,7 @@ export const LeaderboardControls = (
     return (
         <>
             {props.hasSearch && (
-                <LeaderboardSearch
-                    type={props.type}
-                    category={props.category}
-                    raid={props.raid}
-                    count={count}
-                    resultQueryKey={queryKey}
-                />
+                <LeaderboardSearch queryKeyWithoutPage={queryKey} mutationFn={mutationFn} />
             )}
             <Panel>
                 <Flex $padding={0}>
@@ -102,7 +110,7 @@ export const LeaderboardControls = (
                         color="white"
                         hoverColor="orange"
                         pointer
-                        onClick={() => queryClient.refetchQueries(queryKey)}
+                        onClick={() => queryClient.refetchQueries(pagedQueryKey)}
                     />
                     {props.hasPages && (
                         <>

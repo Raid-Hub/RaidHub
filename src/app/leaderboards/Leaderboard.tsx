@@ -1,43 +1,31 @@
+import { type QueryKey } from "@tanstack/react-query"
 import { Suspense, type ReactNode } from "react"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import type {
-    ListedRaid,
-    RaidHubLeaderboardSearchQueryCategory,
-    RaidHubLeaderboardSearchQueryType
+import {
+    type PathParamsForLeaderboardURL,
+    type RaidHubLeaderboardURL
 } from "~/services/raidhub/types"
 import { LeaderboardControls } from "./LeaderboardControls"
 import { LeaderboardEntriesSuspense } from "./LeaderboardEntriesSuspense"
 
-export type PageProps = {
-    format?: "number" | "time"
-    type: "player" | "team"
-    count: number
-}
+export type PageProps<T extends RaidHubLeaderboardURL, X extends boolean = false> = {
+    entriesPerPage: number
+    layout: "team" | "individual"
+    queryKey: QueryKey
+} & (X extends false ? { apiUrl: T; params: PathParamsForLeaderboardURL<T> } : unknown)
 
-export const Leaderboard = (
-    props: {
-        heading: ReactNode
-        entries: ReactNode
-        extraControls?: ReactNode
-        pageProps: PageProps
-        hasPages: boolean
-    } & (
-        | {
-              hasSearch: true
-              refreshQueryKey: readonly [...unknown[], page: number]
-              category: RaidHubLeaderboardSearchQueryCategory
-              type: RaidHubLeaderboardSearchQueryType
-              raid?: ListedRaid
-          }
-        | {
-              hasSearch: false
-              refreshQueryKey: readonly unknown[]
-          }
-    )
-) => {
+export const Leaderboard = <T extends RaidHubLeaderboardURL, X extends boolean>(props: {
+    heading: ReactNode
+    entries: ReactNode
+    extraControls?: ReactNode
+    hasPages: boolean
+    hasSearch: boolean
+    external: X
+    pageProps: PageProps<T, X>
+}) => {
     return (
-        <PageWrapper pageProps={props.pageProps} $maxWidth={2000}>
+        <PageWrapper $maxWidth={2000} pageProps={props.pageProps}>
             <Flex $padding={0}>
                 <Flex $direction="column" $padding={0} $gap={1.5}>
                     <div style={{ minWidth: "calc(min(95%, 500px))" }}>
@@ -47,18 +35,8 @@ export const Leaderboard = (
                             <Suspense>
                                 {props.extraControls}
                                 <LeaderboardControls
-                                    refreshQueryKey={props.refreshQueryKey}
                                     hasPages={props.hasPages}
-                                    {...(props.hasSearch
-                                        ? {
-                                              hasSearch: true,
-                                              category: props.category,
-                                              type: props.type,
-                                              raid: props.raid
-                                          }
-                                        : {
-                                              hasSearch: false
-                                          })}
+                                    hasSearch={props.hasSearch}
                                 />
                             </Suspense>
                         </Flex>

@@ -10,20 +10,23 @@ import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
 import UploadIcon from "~/components/icons/Upload"
 import { Flex } from "~/components/layout/Flex"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
-import { type ListedRaid } from "~/services/raidhub/types"
 import { useSpeedrunComRules } from "~/services/speedrun-com/useSpeedrunComRules"
 import { includedIn } from "~/util/helpers"
 import { ExtLink, TooltipWrapper } from "../../../LeaderboardSplashComponents"
 
-export const SpeedrunComControls = (props: { raid: ListedRaid; category?: RTABoardCategory }) => {
-    const { sunsetRaids, getRaidString } = useRaidHubManifest()
+export const SpeedrunComControls = (props: {
+    raidId: number
+    raidPath: string
+    category?: RTABoardCategory
+}) => {
+    const { sunsetRaids, getActivityString } = useRaidHubManifest()
     const { Dialog: RulesDialog, open: openRules } = useDialog()
 
     const getURL = () => {
         const url = new URL("https://www.speedrun.com/destiny2")
 
-        const categoryId = SpeedrunVariables[props.raid].categoryId
-        const variable = SpeedrunVariables[props.raid].variable
+        const categoryId = SpeedrunVariables[props.raidPath].categoryId
+        const variable = SpeedrunVariables[props.raidPath].variable
         const id = props.category ? variable?.values[props.category]?.id ?? null : null
         url.searchParams.set(
             "x",
@@ -41,7 +44,7 @@ export const SpeedrunComControls = (props: { raid: ListedRaid; category?: RTABoa
     }
 
     const { data: rules } = useSpeedrunComRules({
-        categoryId: SpeedrunVariables[props.raid].categoryId
+        categoryId: SpeedrunVariables[props.raidPath].categoryId
     })
     return (
         <Flex $padding={0}>
@@ -55,7 +58,7 @@ export const SpeedrunComControls = (props: { raid: ListedRaid; category?: RTABoa
                     <TooltipWrapper id="src-rules" title="Category Rules">
                         <RulesIcon sx={25} onClick={openRules} pointer />
                     </TooltipWrapper>
-                    {!includedIn(sunsetRaids, props.raid) && (
+                    {!includedIn(sunsetRaids, props.raidId) && (
                         <TooltipWrapper id="src-submit" title="Submit Run">
                             <ExtLink href={getSubmitRunURL()}>
                                 <UploadIcon sx={25} />
@@ -70,7 +73,7 @@ export const SpeedrunComControls = (props: { raid: ListedRaid; category?: RTABoa
                 </Flex>
             </Panel>
             <RulesDialog style={{ maxWidth: "800px" }}>
-                <h1> Submission Rules - {getRaidString(props.raid)}</h1>
+                <h1> Submission Rules - {getActivityString(props.raidId)}</h1>
                 <Markdown
                     components={{
                         h1: "h2",

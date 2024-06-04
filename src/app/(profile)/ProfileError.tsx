@@ -25,9 +25,9 @@ export const ProfileError = () => {
         return (
             <StyledCard>
                 <p>
-                    Error loading Profile: <code>{error.code}</code>
+                    Error loading Profile: <code>{error.errorCode}</code>
                 </p>
-                <p>{getMessage(error.code)}</p>
+                <p>{getMessage(error.errorCode)}</p>
             </StyledCard>
         )
     } else {

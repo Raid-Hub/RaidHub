@@ -10,7 +10,6 @@ import { Panel } from "~/components/Panel"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
-import { usePageProps } from "~/components/layout/PageWrapper"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { formattedNumber, secondsToHMS, truncatedNumber } from "../../util/presentation/formatting"
@@ -20,18 +19,20 @@ import { LeaderboardEntryPlayerComponent } from "./LeaderboardEntryPlayer"
 export const LeaderboardEntryComponent = ({
     placementIcon,
     isTargetted,
+    valueFormat,
     ...entry
 }: LeaderboardEntry & {
     isTargetted: boolean
     placementIcon?: JSX.Element
 }) => {
-    const { format } = usePageProps<{ format: "time" | "number" }>()
     const { remove } = useQueryParams<{
         position: string
     }>()
     const { locale } = useLocale()
     const value =
-        format === "time" ? secondsToHMS(entry.value, true) : formattedNumber(entry.value, locale)
+        valueFormat === "duration"
+            ? secondsToHMS(entry.value, true)
+            : formattedNumber(entry.value, locale)
 
     const lg = useRef<HTMLDivElement>(null)
     const sm = useRef<HTMLDivElement>(null)

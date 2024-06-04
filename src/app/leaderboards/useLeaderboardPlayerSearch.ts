@@ -6,7 +6,7 @@ export const useLeaderboardPlayerSearch = ({
     queryKeyWithoutPage,
     mutationFn
 }: {
-    mutationFn: (args: { search: string; count?: number }) => Promise<RaidHubLeaderboardData>
+    mutationFn: (membershipId: string) => Promise<RaidHubLeaderboardData>
     queryKeyWithoutPage: QueryKey
 }) => {
     const { set, update, remove } = useQueryParams<{ page: string; position: string }>()
@@ -24,21 +24,23 @@ export const useLeaderboardPlayerSearch = ({
 
             queryClient.setQueryData<RaidHubLeaderboardData>(qk, data)
 
-            set(
-                "position",
-                String(
-                    data.entries.find(e => {
-                        if ("playerInfo" in e) {
-                            return e.playerInfo.membershipId === q.search
-                        } else {
-                            return e.players.some(e => e.membershipId === q.search)
-                        }
-                    })
-                ),
-                {
-                    commit: false
+            const position = data.entries.find(e => {
+                if ("playerInfo" in e) {
+                    return e.playerInfo.membershipId === q
+                } else {
+                    return e.players.some(e => e.membershipId === q)
                 }
-            )
+            })?.position
+
+            if (position) {
+                set("position", String(position), {
+                    commit: false
+                })
+            } else {
+                alert(
+                    "Player does not exist on the page they were found on. This is a bug. Please report it in our discord."
+                )
+            }
             update("page", old => ({
                 value: String(data.page),
                 args: {

@@ -12,7 +12,7 @@ export function HomeCardGlobal() {
                 <HomeCardContentSectionItem title="Clears" href={`/leaderboards/global/clears`} />
                 <HomeCardContentSectionItem
                     title="Full Clears"
-                    href={`/leaderboards/global/full-clears`}
+                    href={`/leaderboards/global/freshClears`}
                 />
                 <HomeCardContentSectionItem title="Sherpas" href={`/leaderboards/global/sherpas`} />
             </HomeCardContentSection>

@@ -1,52 +1,58 @@
 import { type Metadata } from "next"
+import { Leaderboard } from "~/app/leaderboards/Leaderboard"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
-import type { PageStaticParams } from "~/types/generic"
-import { Leaderboard } from "../../../Leaderboard"
-import { getRaidEnum } from "../../helpers"
-import { metadata as leaderboardMetadata, type RaidLeaderboardStaticParams } from "../../layout"
+import { metadata as rootMetadata } from "../../../../layout"
+import { getRaidDefinition } from "../../util"
 import { SpeedrunComBanner } from "./SpeedrunComBanner"
 import { SpeedrunComControls } from "./SpeedrunComControls"
-import { SpeedrunSSREntries } from "./SpeedrunSSREntries"
+import { SpeedrunEntries } from "./SpeedrunEntries"
 
-export async function generateStaticParams({ params: { raid } }: RaidLeaderboardStaticParams) {
-    const manifest = await prefetchManifest()
-    const raidEnum = getRaidEnum(manifest, raid)
-
-    const data = SpeedrunVariables[raidEnum]
-    if (!data.variable) {
-        return [
-            {
-                category: "all" as const
-            }
-        ]
-    } else {
-        return Object.keys(data.variable.values).map(key => ({
-            category: key as RTABoardCategory
-        }))
+type DynamicParams = {
+    params: {
+        raid: string
+        category: RTABoardCategory | "all"
     }
+    searchParams: Record<string, string>
 }
 
-type StaticSpeedrunLeaderboardParams = RaidLeaderboardStaticParams &
-    PageStaticParams<typeof generateStaticParams>
-
-export async function generateMetadata({
-    params
-}: StaticSpeedrunLeaderboardParams): Promise<Metadata> {
+export async function generateStaticParams() {
     const manifest = await prefetchManifest()
 
-    const raidEnum = getRaidEnum(manifest, params.raid)
-    const raidName = manifest.activityStrings[raidEnum]
+    return Object.values(manifest.activityDefinitions)
+        .filter(d => d.isRaid)
+        .map(def => {
+            const data = SpeedrunVariables[def.path]
+            if (!data?.variable) {
+                return [
+                    {
+                        raid: def.path,
+                        category: "all" as const
+                    }
+                ]
+            } else {
+                return Object.keys(data.variable.values).map(key => ({
+                    raid: def.path,
+                    category: key as RTABoardCategory
+                }))
+            }
+        })
+}
+
+export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
+    const manifest = await prefetchManifest()
+    const definition = getRaidDefinition(params.raid, manifest)
     const displayName =
         params.category !== "all"
-            ? SpeedrunVariables[raidEnum]?.variable?.values[params.category]?.displayName ?? null
+            ? SpeedrunVariables[definition.path]?.variable?.values[params.category]?.displayName ??
+              null
             : null
 
-    const title = [raidName, displayName, "Speedrun Leaderboards"].filter(Boolean).join(" ")
+    const title = [definition.name, displayName, "Speedrun Leaderboards"].filter(Boolean).join(" ")
     return {
         title: title,
         openGraph: {
-            ...leaderboardMetadata.openGraph,
+            ...rootMetadata.openGraph,
             title: title
         }
     }
@@ -55,21 +61,35 @@ export async function generateMetadata({
 export const revalidate = 1800
 export const dynamic = "force-static"
 
-export default async function Page({ params }: StaticSpeedrunLeaderboardParams) {
+export default async function Page({ params }: DynamicParams) {
     const manifest = await prefetchManifest()
 
-    const raid = getRaidEnum(manifest, params.raid)
+    const raid = getRaidDefinition(params.raid, manifest)
     const category = params.category === "all" ? undefined : params.category
 
     return (
         <Leaderboard
-            pageProps={{ format: "time", type: "team", count: 50 }}
+            pageProps={{
+                entriesPerPage: 50,
+                layout: "team",
+                queryKey: ["speedrun.com", "leaderboard", params.raid, params.category]
+            }}
+            external
             hasPages={false}
             hasSearch={false}
-            refreshQueryKey={["speedrun-com", "leaderboard", raid, category]}
-            heading={<SpeedrunComBanner raid={raid} category={category} />}
-            extraControls={<SpeedrunComControls raid={raid} category={category} />}
-            entries={<SpeedrunSSREntries raid={raid} category={category} />}
+            heading={
+                <SpeedrunComBanner raidPath={raid.path} raidId={raid.id} category={category} />
+            }
+            extraControls={
+                <SpeedrunComControls raidPath={raid.path} raidId={raid.id} category={category} />
+            }
+            entries={
+                <SpeedrunEntries
+                    raidPath={raid.path}
+                    category={category}
+                    queryKey={["speedrun.com", "leaderboard", params.raid, params.category]}
+                />
+            }
         />
     )
 }
