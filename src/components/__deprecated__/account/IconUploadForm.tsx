@@ -25,7 +25,7 @@ const IconUploadForm = () => {
         }
     })
 
-    const { handleSubmit, control, setValue, resetField } = useForm<FormValues>({
+    const { handleSubmit, setValue, resetField } = useForm<FormValues>({
         defaultValues: {}
     })
 
