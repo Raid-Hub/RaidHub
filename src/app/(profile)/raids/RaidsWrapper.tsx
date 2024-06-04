@@ -7,6 +7,8 @@ import { type ProfileProps } from "~/app/(profile)/types"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { TabSelector } from "~/components/TabSelector"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
+import ToggleSwitch from "~/components/__deprecated__/reusable/ToggleSwitch"
+import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
@@ -96,19 +98,11 @@ export const RaidsWrapper = () => {
     }, [activities, isLoadingActivities])
 
     const queryParams = useQueryParams<{
-        raid: string
         tab: TabTitle
     }>()
 
+    const [isExpanded, setIsExpanded] = useLocalStorage<boolean>("raid-cards-expanded", false)
     const [tabLocal, setTabLocal] = useLocalStorage<TabTitle>("player-profile-tab", "classic")
-
-    const [clearExpandedRaid, setExpandedRaid] = useMemo(
-        () => [
-            () => queryParams.remove("raid"),
-            (raidId: number) => queryParams.set("raid", String(raidId))
-        ],
-        [queryParams]
-    )
 
     const [getTab, setTab] = useMemo(
         () => [
@@ -122,7 +116,6 @@ export const RaidsWrapper = () => {
     )
 
     const TabView = useMemo(() => {
-        const expandedRaid = Number(queryParams.get("raid"))
         const tab = getTab()
 
         switch (tab) {
@@ -142,10 +135,7 @@ export const RaidsWrapper = () => {
                                 raidId={raidId}>
                                 <RaidCard
                                     leaderboardEntry={leaderboardEntriesByRaid?.get(raidId) ?? null}
-                                    canExpand
-                                    expand={() => setExpandedRaid(raidId)}
-                                    closeExpand={clearExpandedRaid}
-                                    isExpanded={raidId === expandedRaid}
+                                    isExpanded={isExpanded}
                                 />
                             </RaidCardContext>
                         ))}
@@ -158,6 +148,7 @@ export const RaidsWrapper = () => {
                             id => activitiesByRaid?.get(id) ?? new Collection()
                         )}
                         isLoading={isLoadingActivities || !areMembershipsFetched}
+                        isExpanded={isExpanded}
                     />
                 )
             case "history":
@@ -173,7 +164,6 @@ export const RaidsWrapper = () => {
                 return null
         }
     }, [
-        queryParams,
         getTab,
         listedRaids,
         pantheonIds,
@@ -182,26 +172,46 @@ export const RaidsWrapper = () => {
         activities,
         activitiesByRaid,
         leaderboardEntriesByRaid,
-        clearExpandedRaid,
-        setExpandedRaid
+        isExpanded
     ])
 
     return (
         <FilterContextProvider>
-            <TabSelector>
-                <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
-                    Classic
-                </Tab>
-                <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
-                    History
-                </Tab>
-                <Tab aria-selected={getTab() === "teammates"} onClick={() => setTab("teammates")}>
-                    Teammates
-                </Tab>
-                <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
-                    Pantheon
-                </Tab>
-            </TabSelector>
+            <Flex $direction="row" $padding={0} $align="space-between" $fullWidth>
+                <TabSelector>
+                    <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
+                        Classic
+                    </Tab>
+                    <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
+                        History
+                    </Tab>
+                    <Tab
+                        aria-selected={getTab() === "teammates"}
+                        onClick={() => setTab("teammates")}>
+                        Teammates
+                    </Tab>
+                    <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
+                        Pantheon
+                    </Tab>
+                </TabSelector>
+                {(getTab() === "classic" || getTab() === "pantheon") && (
+                    <Flex $padding={0.2} $gap={0.4} $direction="column">
+                        <H4
+                            style={{
+                                margin: 0,
+                                fontSize: "0.75rem"
+                            }}>
+                            Expanded
+                        </H4>
+                        <ToggleSwitch
+                            id="expand-cards"
+                            value={isExpanded}
+                            onToggle={setIsExpanded}
+                            size={20}
+                        />
+                    </Flex>
+                )}
+            </Flex>
             {TabView}
         </FilterContextProvider>
     )

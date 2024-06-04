@@ -8,9 +8,11 @@ import { RaidCardContext } from "./RaidCardContext"
 
 export const PantheonLayout = ({
     instances,
-    isLoading
+    isLoading,
+    isExpanded
 }: {
     instances: Collection<string, RaidHubInstanceForPlayer>[]
+    isExpanded: boolean
     isLoading: boolean
 }) => {
     const { pantheonVersions } = useRaidHubManifest()
@@ -38,7 +40,7 @@ export const PantheonLayout = ({
                         activities={instancesByMode?.get(mode)}
                         isLoadingActivities={isLoading}
                         raidId={mode}>
-                        <RaidCard leaderboardEntry={null} canExpand={false} />
+                        <RaidCard leaderboardEntry={null} isExpanded={isExpanded} />
                     </RaidCardContext>
                 ))}
         </Grid>

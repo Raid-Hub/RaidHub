@@ -56,7 +56,7 @@ export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean): st
     }`
 }
 
-export function secondsToYDHMS(totalSeconds: number): string {
+export function secondsToYDHMS(totalSeconds: number, count = 5): string {
     let time = Math.round(totalSeconds)
     const seconds = time % 60
     time -= seconds
@@ -83,6 +83,7 @@ export function secondsToYDHMS(totalSeconds: number): string {
         seconds ? seconds + "s" : ""
     ]
         .filter(Boolean)
+        .slice(0, count)
         .join(" ")
 }
 

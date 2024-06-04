@@ -5,10 +5,10 @@ import { m } from "framer-motion"
 import { useMemo, useState } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { useTags } from "~/app/(profile)/raids/useTags"
+import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import { Loading } from "~/components/Loading"
-import Expand from "~/components/icons/Expand"
 import { getRaidSplash } from "~/data/activity-images"
 import { useTimeout } from "~/hooks/util/useTimeout"
 import {
@@ -16,33 +16,26 @@ import {
     type RaidHubWorldFirstEntry
 } from "~/services/raidhub/types"
 import { medianElement } from "~/util/math"
-import { secondsToHMS } from "~/util/presentation/formatting"
+import { formattedNumber, secondsToHMS, secondsToYDHMS } from "~/util/presentation/formatting"
 import BigNumberStatItem from "./BigNumberStatItem"
 import DotGraphWrapper, { FULL_HEIGHT } from "./DotGraph"
 import RaceTagLabel from "./RaceTagLabel"
 import RaidTagLabel from "./RaidTagLabel"
-import ExpandedRaidView from "./expanded/ExpandedRaidView"
+import WeeklyProgress from "./expanded/WeeklyProgress"
 import styles from "./raids.module.css"
 
-type RaidModalProps = {
-    leaderboardEntry: RaidHubWorldFirstEntry | null
-} & (
-    | {
-          canExpand: true
-          expand: () => void
-          closeExpand: () => void
-          isExpanded: boolean
-      }
-    | {
-          canExpand: false
-      }
-)
-
 /** @deprecated */
-export default function RaidCard({ leaderboardEntry, ...props }: RaidModalProps) {
+export default function RaidCard({
+    leaderboardEntry,
+    isExpanded
+}: {
+    leaderboardEntry: RaidHubWorldFirstEntry | null
+    isExpanded?: boolean
+}) {
     const { activities, isLoadingActivities, raidId } = useRaidCardContext()
     const { getVersionString, reprisedRaids, isChallengeMode, getActivityDefinition } =
         useRaidHubManifest()
+    const { locale } = useLocale()
 
     const activityDefinition = getActivityDefinition(raidId)
 
@@ -85,7 +78,7 @@ export default function RaidCard({ leaderboardEntry, ...props }: RaidModalProps)
         }
     }, [activities, isReprisedRaid, isChallengeMode, leaderboardEntry, activityDefinition])
 
-    const { fastestFullClear, averageClear } = useMemo(() => {
+    const { fastestFullClear, averageClear, stats } = useMemo(() => {
         const freshFulls = activities?.filter(a => a.completed && a.fresh)
         const fastestFullClear = freshFulls?.size
             ? freshFulls?.reduce<RaidHubInstanceForPlayer>((curr, nxt) =>
@@ -97,143 +90,167 @@ export default function RaidCard({ leaderboardEntry, ...props }: RaidModalProps)
             ? medianElement(freshFulls.toSorted((a, b) => a.duration - b.duration))
             : undefined
 
-        return { fastestFullClear, averageClear }
+        const stats = activities?.reduce(
+            (acc, curr) => {
+                acc.timePlayedSeconds += curr.player.timePlayedSeconds
+                if (curr.player.completed) {
+                    acc.sherpas += curr.player.sherpas
+                    if (curr.playerCount <= 3) {
+                        acc.lowmans++
+                    }
+                }
+                return acc
+            },
+            {
+                timePlayedSeconds: 0,
+                sherpas: 0,
+                lowmans: 0
+            }
+        )
+
+        return { fastestFullClear, averageClear, stats }
     }, [activities])
 
     return (
-        <>
-            {props.canExpand && props.isExpanded && activityDefinition?.isRaid && (
-                <ExpandedRaidView raid={raidId} dismiss={props.closeExpand} />
-            )}
-            <m.div
-                initial={{
-                    y: 20,
-                    opacity: 0
-                }}
-                whileInView={{
-                    y: 0,
-                    opacity: 1
-                }}
-                viewport={{ once: true }}
-                transition={{
-                    duration: 0.3
-                }}
-                className={styles.card}>
-                <div className={styles["card-img-container"]}>
-                    <CloudflareImage
-                        className={styles["card-background"]}
-                        priority
-                        width={960}
-                        height={540}
-                        cloudflareId={getRaidSplash(raidId) ?? "pantheonSplash"}
-                        alt={
-                            activityDefinition?.isRaid
-                                ? activityDefinition.name
-                                : getVersionString(raidId)
-                        }
-                    />
-                    <div className={styles["card-top"]}>
-                        {activityDefinition?.isRaid && firstContestClear && (
-                            <RaceTagLabel
-                                rank={firstContestClear.rank}
-                                instanceId={firstContestClear.instanceId}
-                                isChallenge={firstContestClear.isChallengeMode}
-                                isDayOne={firstContestClear.isDayOne}
-                                isContest={firstContestClear.isContest}
-                                isWeekOne={firstContestClear.isWeekOne}
+        <m.div
+            initial={{
+                y: 20,
+                opacity: 0
+            }}
+            whileInView={{
+                y: 0,
+                opacity: 1
+            }}
+            viewport={{ once: true }}
+            transition={{
+                duration: 0.3
+            }}
+            className={styles.card}>
+            <div className={styles["card-img-container"]}>
+                <CloudflareImage
+                    className={styles["card-background"]}
+                    priority
+                    width={960}
+                    height={540}
+                    cloudflareId={getRaidSplash(raidId) ?? "pantheonSplash"}
+                    alt={
+                        activityDefinition?.isRaid
+                            ? activityDefinition.name
+                            : getVersionString(raidId)
+                    }
+                />
+                <div className={styles["card-top"]}>
+                    {activityDefinition?.isRaid && firstContestClear && (
+                        <RaceTagLabel
+                            rank={firstContestClear.rank}
+                            instanceId={firstContestClear.instanceId}
+                            isChallenge={firstContestClear.isChallengeMode}
+                            isDayOne={firstContestClear.isDayOne}
+                            isContest={firstContestClear.isContest}
+                            isWeekOne={firstContestClear.isWeekOne}
+                            setActiveId={setHoveredTag}
+                        />
+                    )}
+                </div>
+                <div className={styles["img-overlay-bottom"]}>
+                    <div className={styles["card-challenge-tags"]}>
+                        {tags?.map(tag => (
+                            <RaidTagLabel
+                                completed={tag.activity.completed}
+                                key={tag.activity.instanceId}
+                                activityId={tag.activity.activityId}
+                                versionId={tag.activity.versionId}
                                 setActiveId={setHoveredTag}
+                                instanceId={tag.activity.instanceId}
+                                isBestPossible={tag.bestPossible}
+                                playerCount={tag.activity.playerCount}
+                                fresh={tag.activity.fresh}
+                                flawless={tag.activity.flawless}
+                                isContest={tag.activity.isContest}
                             />
-                        )}
-                        {props.canExpand && (
-                            <div
-                                className={[
-                                    styles["card-top-right"],
-                                    styles["visible-on-card-hover"]
-                                ].join(" ")}>
-                                <Expand color="white" sx={25} onClick={props.expand} />
-                            </div>
-                        )}
+                        ))}
                     </div>
-                    <div className={styles["img-overlay-bottom"]}>
-                        <div className={styles["card-challenge-tags"]}>
-                            {tags?.map(tag => (
-                                <RaidTagLabel
-                                    completed={tag.activity.completed}
-                                    key={tag.activity.instanceId}
-                                    activityId={tag.activity.activityId}
-                                    versionId={tag.activity.versionId}
-                                    setActiveId={setHoveredTag}
-                                    instanceId={tag.activity.instanceId}
-                                    isBestPossible={tag.bestPossible}
-                                    playerCount={tag.activity.playerCount}
-                                    fresh={tag.activity.fresh}
-                                    flawless={tag.activity.flawless}
-                                    isContest={tag.activity.isContest}
-                                />
-                            ))}
+                    <span className={styles["card-title"]}>
+                        {activityDefinition?.isRaid
+                            ? activityDefinition.name
+                            : getVersionString(raidId)}
+                    </span>
+                </div>
+            </div>
+            <div className={styles["card-content"]}>
+                <div className={styles["graph-content"]}>
+                    {isLoadingActivities ? (
+                        <div className={styles["dots-container"]} style={{ height: FULL_HEIGHT }}>
+                            <Loading $alpha={0.75} />
                         </div>
-                        <span className={styles["card-title"]}>
-                            {activityDefinition?.isRaid
-                                ? activityDefinition.name
-                                : getVersionString(raidId)}
-                        </span>
+                    ) : (
+                        <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
+                    )}
+                    <div className={styles["graph-right"]}>
+                        <BigNumberStatItem
+                            displayValue={activities?.filter(a => a.player.completed).size ?? 0}
+                            isLoading={isLoadingActivities}
+                            name={"Total\nClears"}
+                            extraLarge={true}
+                        />
                     </div>
                 </div>
-                <div className={styles["card-content"]}>
-                    <div className={styles["graph-content"]}>
-                        {isLoadingActivities ? (
-                            <div
-                                className={styles["dots-container"]}
-                                style={{ height: FULL_HEIGHT }}>
-                                <Loading $alpha={0.75} />
-                            </div>
-                        ) : (
-                            <DotGraphWrapper activities={activities} targetDot={hoveredTag} />
-                        )}
-                        <div className={styles["graph-right"]}>
-                            <BigNumberStatItem
-                                displayValue={activities?.filter(a => a.player.completed).size ?? 0}
-                                isLoading={isLoadingActivities}
-                                name={"Total\nClears"}
-                                extraLarge={true}
-                            />
-                        </div>
-                    </div>
 
-                    <div className={styles.timings}>
-                        <BigNumberStatItem
-                            displayValue={
-                                recentClear ? secondsToHMS(recentClear.duration, false) : "N/A"
-                            }
-                            isLoading={isLoadingActivities}
-                            name="Recent"
-                            href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
-                        />
-                        <BigNumberStatItem
-                            displayValue={
-                                fastestFullClear
-                                    ? secondsToHMS(fastestFullClear.duration, false)
-                                    : "N/A"
-                            }
-                            isLoading={isLoadingActivities}
-                            name="Fastest"
-                            href={
-                                fastestFullClear
-                                    ? `/pgcr/${fastestFullClear.instanceId}`
-                                    : undefined
-                            }
-                        />
-                        <BigNumberStatItem
-                            displayValue={
-                                averageClear ? secondsToHMS(averageClear.duration, false) : "N/A"
-                            }
-                            isLoading={isLoadingActivities}
-                            name="Average"
-                            href={averageClear ? `/pgcr/${averageClear.instanceId}` : undefined}
-                        />
-                    </div>
+                <div className={styles.timings}>
+                    <BigNumberStatItem
+                        displayValue={
+                            recentClear ? secondsToHMS(recentClear.duration, false) : "N/A"
+                        }
+                        isLoading={isLoadingActivities}
+                        name="Recent"
+                        href={recentClear ? `/pgcr/${recentClear.instanceId}` : undefined}
+                    />
+                    <BigNumberStatItem
+                        displayValue={
+                            fastestFullClear
+                                ? secondsToHMS(fastestFullClear.duration, false)
+                                : "N/A"
+                        }
+                        isLoading={isLoadingActivities}
+                        name="Fastest"
+                        href={fastestFullClear ? `/pgcr/${fastestFullClear.instanceId}` : undefined}
+                    />
+                    <BigNumberStatItem
+                        displayValue={
+                            averageClear ? secondsToHMS(averageClear.duration, false) : "N/A"
+                        }
+                        isLoading={isLoadingActivities}
+                        name="Average"
+                        href={averageClear ? `/pgcr/${averageClear.instanceId}` : undefined}
+                    />
                 </div>
-            </m.div>
-        </>
+                {isExpanded && (
+                    <>
+                        <div className={styles.timings}>
+                            <BigNumberStatItem
+                                displayValue={
+                                    stats ? secondsToYDHMS(stats.timePlayedSeconds, 2) : 0
+                                }
+                                isLoading={isLoadingActivities}
+                                name="Time Played"
+                            />
+                            <BigNumberStatItem
+                                displayValue={stats ? formattedNumber(stats.sherpas, locale) : 0}
+                                isLoading={isLoadingActivities}
+                                name="Sherpas"
+                            />
+                            <BigNumberStatItem
+                                displayValue={stats ? formattedNumber(stats.lowmans, locale) : 0}
+                                isLoading={isLoadingActivities}
+                                name="Lowmans"
+                            />
+                        </div>
+                        {activityDefinition?.isRaid && !activityDefinition.isSunset && (
+                            <WeeklyProgress raid={activityDefinition.id} />
+                        )}
+                    </>
+                )}
+            </div>
+        </m.div>
     )
 }

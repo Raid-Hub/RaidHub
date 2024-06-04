@@ -30,17 +30,19 @@ export const RaidCardContext = ({
     activities: Collection<string, RaidHubInstanceForPlayer> | undefined
     isLoadingActivities: boolean
     raidId: number
-}) => (
-    <RaidContext.Provider
-        value={{
-            raidId,
-            ...(isLoadingActivities
-                ? { isLoadingActivities: true, activities: null }
-                : {
-                      isLoadingActivities: false,
-                      activities
-                  })
-        }}>
-        {children}
-    </RaidContext.Provider>
-)
+}) => {
+    return (
+        <RaidContext.Provider
+            value={{
+                raidId,
+                ...(isLoadingActivities
+                    ? { isLoadingActivities: true, activities: null }
+                    : {
+                          isLoadingActivities: false,
+                          activities
+                      })
+            }}>
+            {children}
+        </RaidContext.Provider>
+    )
+}

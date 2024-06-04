@@ -32,18 +32,26 @@ export default function WeeklyProgress({ raid }: { raid: number }) {
         return <div className={styles["weekly-progress"]}>No milestone</div>
     }
 
+    const entries = Object.entries(profile?.characterProgressions?.data ?? {})
+
     return (
-        <div className={styles["weekly-progress"]}>
-            {Object.entries(profile?.characterProgressions?.data ?? {}).map(
-                ([characterId, { milestones }]) =>
-                    profile?.characters.data?.[characterId] && (
-                        <CharacterWeeklyProgress
-                            key={characterId}
-                            character={profile.characters.data[characterId]}
-                            milestone={milestones[Number(milestone)]}
-                        />
-                    )
-            )}
-        </div>
+        !!entries.length &&
+        !!Object.keys(profile?.characters.data ?? {}).length && (
+            <div>
+                <h3>Weekly Progress</h3>
+                <div className={styles["weekly-progress"]}>
+                    {entries.map(
+                        ([characterId, { milestones }]) =>
+                            profile?.characters.data?.[characterId] && (
+                                <CharacterWeeklyProgress
+                                    key={characterId}
+                                    character={profile.characters.data[characterId]}
+                                    milestone={milestones[Number(milestone)]}
+                                />
+                            )
+                    )}
+                </div>
+            </div>
+        )
     )
 }
