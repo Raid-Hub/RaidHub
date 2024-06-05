@@ -6,27 +6,32 @@ import type {
 } from "bungie-net-core/models"
 import Image from "next/image"
 import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { Container } from "~/components/layout/Container"
+import { Flex } from "~/components/layout/Flex"
 import { useClassDefinition } from "~/hooks/dexie"
 import { bungieIconUrl } from "~/util/destiny"
-import styles from "./expanded-raid.module.css"
 
-/**@deprecated */
-export default function CharacterWeeklyProgress({
+export const CharacterWeeklyProgress = ({
     character,
     milestone
 }: {
     character: DestinyCharacterComponent
     milestone: DestinyMilestone
-}) {
+}) => {
     const classDefinition = useClassDefinition(character.classHash)
     return (
-        <div style={{ border: "1px solid var(--border)", padding: "1em" }}>
-            <div className={styles["character-progress-header"]}>
-                <h4>{classDefinition?.displayProperties.name}</h4>
-                <div className={styles["image-container"]}>
+        <div style={{ border: "1px solid var(--border)", padding: "0.5em" }}>
+            <Flex $padding={0.25} $align="flex-start">
+                <h5 style={{ marginBlock: "1em" }}>{classDefinition?.displayProperties.name}</h5>
+                <Container
+                    $minHeight={30}
+                    $aspectRatio={{
+                        width: 1,
+                        height: 1
+                    }}>
                     <Image src={bungieIconUrl(character.emblemPath)} alt="" fill unoptimized />
-                </div>
-            </div>
+                </Container>
+            </Flex>
             <div>
                 {milestone.activities.map(a => (
                     <MilestoneActivity key={a.activityHash} activity={a} />
@@ -41,10 +46,9 @@ function MilestoneActivity({ activity }: { activity: DestinyMilestoneChallengeAc
     const definition = getDefinitionFromHash(activity.activityHash)
     if (!definition) return null
     return (
-        <div>
-            <h5>{definition.version.name}</h5>
+        <Flex $padding={0} $wrap>
+            <h6 style={{ marginBlock: 0 }}>{definition.version.name}</h6>
             <div
-                className={styles["progress-boxes"]}
                 style={{
                     gridTemplateColumns: `repeat(${activity.phases?.length ?? 0}, 30px)`
                 }}>
@@ -52,7 +56,7 @@ function MilestoneActivity({ activity }: { activity: DestinyMilestoneChallengeAc
                     <EncounterProgress key={phase.phaseHash} phase={phase} />
                 ))}
             </div>
-        </div>
+        </Flex>
     )
 }
 

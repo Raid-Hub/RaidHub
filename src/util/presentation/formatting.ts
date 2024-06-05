@@ -75,16 +75,19 @@ export function secondsToYDHMS(totalSeconds: number, count = 5): string {
     time /= 365
 
     const years = time
-    return [
+    const result = [
         years ? years + "y" : "",
         days ? days + "d" : "",
         hours ? hours + "h" : "",
         minutes ? minutes + "m" : "",
         seconds ? seconds + "s" : ""
-    ]
-        .filter(Boolean)
-        .slice(0, count)
-        .join(" ")
+    ].filter(Boolean)
+
+    if (!result.length) {
+        result.push("0s")
+    }
+
+    return result.slice(0, count).join(" ")
 }
 
 const domParser = typeof window !== "undefined" ? new DOMParser() : null

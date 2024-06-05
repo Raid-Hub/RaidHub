@@ -67,7 +67,7 @@ const Activity = (activity: RaidHubInstanceForPlayer) => {
                 <div>
                     <i>{secondsToHMS(activity.duration, false)}</i>
                 </div>
-                {activity.player.completed ? <Xmark sx={20} /> : <Checkmark sx={20} />}
+                {activity.player.completed ? <Checkmark sx={20} /> : <Xmark sx={20} />}
             </Flex>
         </Link>
     )
