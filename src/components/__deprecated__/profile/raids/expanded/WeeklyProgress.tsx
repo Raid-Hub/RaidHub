@@ -42,7 +42,8 @@ export default function WeeklyProgress({ raid }: { raid: number }) {
                 <div className={styles["weekly-progress"]}>
                     {entries.map(
                         ([characterId, { milestones }]) =>
-                            profile?.characters.data?.[characterId] && (
+                            profile?.characters.data?.[characterId] &&
+                            milestones[Number(milestone)] && (
                                 <CharacterWeeklyProgress
                                     key={characterId}
                                     character={profile.characters.data[characterId]}
