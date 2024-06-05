@@ -30,8 +30,9 @@ export const LeaderboardSSR = async <T extends RaidHubLeaderboardURL>(props: {
                       e.errorCode === "PathValidationError")
               ) {
                   notFound()
+              } else {
+                  console.error(e)
               }
-
               return null
           })
         : null

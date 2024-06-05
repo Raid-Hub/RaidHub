@@ -14,14 +14,8 @@ type PageProps = {
     }
 }
 
-const bungieClient = new ServerBungieClient({
-    revalidate: 3600 // 1 hour
-})
-
 export default async function Page({ params }: PageProps) {
-    const clan = await getGroup(bungieClient, params)
-        .then(res => res.Response)
-        .catch(() => null)
+    const clan = await getClan(params)
 
     return (
         <PageWrapper>
@@ -31,15 +25,9 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const clan = await getGroup(bungieClient, params)
-        .then(res => res.Response)
-        .catch((e: BungieAPIError) => {
-            if (e.ErrorCode === 622) {
-                notFound()
-            } else {
-                throw e
-            }
-        })
+    const clan = await getClan(params)
+
+    if (!clan) return {}
 
     const clanName = fixClanName(clan.detail.name)
     return {
@@ -52,3 +40,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 }
+
+const bungieClient = new ServerBungieClient({
+    revalidate: 3600 // 1 hour
+})
+
+const getClan = async (params: { groupId: string }) =>
+    getGroup(bungieClient, params)
+        .then(res => res.Response)
+        .catch((e: BungieAPIError) => {
+            if (e.ErrorCode === 622) {
+                notFound()
+            } else {
+                return null
+            }
+        })

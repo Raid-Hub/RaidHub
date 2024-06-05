@@ -22,7 +22,7 @@ switch (process.env.APP_ENV) {
         version = `staging-${process.env.APP_VERSION}`
         break
     case "production":
-        version = `alpha-${process.env.APP_VERSION}`
+        version = `${process.env.APP_VERSION}`
         break
     default:
         version = "unknown"

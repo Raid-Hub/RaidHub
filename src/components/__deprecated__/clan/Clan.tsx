@@ -54,7 +54,7 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
             </div>
             <section className={styles.overview}>
                 <div className={styles["overview-left"]}>
-                    <ClanBannerComponent data={clan.detail.clanInfo.clanBannerData} sx={30} />
+                    <ClanBannerComponent data={clan.detail.clanInfo.clanBannerData} sx={20} />
                 </div>
                 <div className={styles.about}>
                     <p>{urlHighlight(clan.detail.about)}</p>

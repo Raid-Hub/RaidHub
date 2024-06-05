@@ -17,9 +17,7 @@ export function HomeCardPantheon() {
                     <HomeCardContentSectionItem
                         key={version}
                         title={getVersionString(version)}
-                        href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
-                            version
-                        )}/first`}
+                        href={`/leaderboards/team/pantheon/first/${getUrlPathForVersion(version)}`}
                     />
                 ))}
             </HomeCardContentSection>
@@ -30,7 +28,7 @@ export function HomeCardPantheon() {
                         title={getVersionString(version)}
                         href={`/leaderboards/individual/pantheon/${getUrlPathForVersion(
                             version
-                        )}/fullClears`}
+                        )}/freshClears`}
                     />
                 ))}
             </HomeCardContentSection>
