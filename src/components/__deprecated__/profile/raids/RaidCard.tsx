@@ -45,7 +45,7 @@ export default function RaidCard({
     useTimeout(() => setHoveredTag(null), 2500, [hoveredTag])
 
     const recentClear = useMemo(
-        () => activities?.find(a => a.player.completed && a.fresh) ?? null,
+        () => activities?.findLast(a => a.player.completed && a.fresh) ?? null,
         [activities]
     )
 
