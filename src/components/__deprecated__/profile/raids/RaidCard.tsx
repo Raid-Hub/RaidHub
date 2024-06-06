@@ -45,7 +45,7 @@ export default function RaidCard({
     useTimeout(() => setHoveredTag(null), 2500, [hoveredTag])
 
     const recentClear = useMemo(
-        () => activities?.find(a => a.player.completed && a.fresh) ?? null,
+        () => activities?.findLast(a => a.player.completed && a.fresh) ?? null,
         [activities]
     )
 
@@ -62,9 +62,9 @@ export default function RaidCard({
 
         const instance =
             (isReprisedRaid
-                ? activities?.find(a => a.player.completed && isChallengeMode(a.versionId))
+                ? activities?.findLast(a => a.player.completed && isChallengeMode(a.versionId))
                 : undefined) ??
-            activities?.find(a => a.player.completed && (a.isContest || a.isWeekOne))
+            activities?.findLast(a => a.player.completed && (a.isContest || a.isWeekOne))
         if (!instance) return null
 
         return {
