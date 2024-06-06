@@ -48,7 +48,7 @@ export const Teammates = () => {
                             <Link
                                 href={`/profile/${teammate.playerInfo.membershipId}?tab=classic`}
                                 style={{ color: "unset" }}>
-                                <Flex $direction="row" $align="flex-start" $gap={1.5}>
+                                <Flex $direction="row" $align="flex-start" $gap={1}>
                                     <Image
                                         src={bungieProfileIconUrl(teammate.playerInfo.iconPath)}
                                         alt={getBungieDisplayName(teammate.playerInfo)}
@@ -83,7 +83,9 @@ export const Teammates = () => {
                                     <div>
                                         <b>Duration</b>
                                     </div>
-                                    <div>{secondsToYDHMS(teammate.estimatedTimePlayedSeconds)}</div>
+                                    <div>
+                                        {secondsToYDHMS(teammate.estimatedTimePlayedSeconds, 3)}
+                                    </div>
                                 </div>
                             </Flex>
                         </Flex>

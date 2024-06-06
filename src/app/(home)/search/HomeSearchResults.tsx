@@ -11,7 +11,7 @@ export const HomeSearchResults = (props: {
         <Container>
             <Grid $gap={0} $minCardWidth={240}>
                 {props.results.map((result, idx) => (
-                    <SinglePlayerSearchResult key={idx} player={result} size={2} />
+                    <SinglePlayerSearchResult key={idx} player={result} size={1.25} />
                 ))}
             </Grid>
         </Container>
@@ -30,7 +30,7 @@ const Container = styled.div`
     overflow-x: hidden;
 
     margin: 1em;
-    padding: 1em;
+    padding: 0em;
 
     background-color: color-mix(in srgb, ${props => props.theme.colors.background.dark}, #0000 5%);
     border-radius: 2px;

@@ -1,7 +1,6 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
-import { m } from "framer-motion"
 import { useMemo, useState } from "react"
 import { useRaidCardContext } from "~/app/(profile)/raids/RaidCardContext"
 import { WeeklyProgress } from "~/app/(profile)/raids/expanded/WeeklyProgress"
@@ -112,20 +111,7 @@ export default function RaidCard({
     }, [activities])
 
     return (
-        <m.div
-            initial={{
-                y: 20,
-                opacity: 0
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1
-            }}
-            viewport={{ once: true }}
-            transition={{
-                duration: 0.3
-            }}
-            className={styles.card}>
+        <div className={styles.card}>
             <div className={styles["card-img-container"]}>
                 <CloudflareImage
                     className={styles["card-background"]}
@@ -251,6 +237,6 @@ export default function RaidCard({
                     </>
                 )}
             </div>
-        </m.div>
+        </div>
     )
 }

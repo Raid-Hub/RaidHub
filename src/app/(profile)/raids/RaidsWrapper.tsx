@@ -178,7 +178,7 @@ export const RaidsWrapper = () => {
 
     return (
         <FilterContextProvider>
-            <Flex $direction="row" $padding={0} $align="space-between" $fullWidth>
+            <Flex $direction="row" $padding={0} $align="space-between" $fullWidth $wrap>
                 <TabSelector>
                     <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
                         Classic
@@ -196,7 +196,7 @@ export const RaidsWrapper = () => {
                     </Tab>
                 </TabSelector>
                 {(getTab() === "classic" || getTab() === "pantheon") && (
-                    <Flex>
+                    <Flex $padding={0}>
                         <Flex $padding={0.2} $gap={0.4} $direction="column">
                             <H4
                                 style={{

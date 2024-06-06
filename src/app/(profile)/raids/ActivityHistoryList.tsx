@@ -55,7 +55,7 @@ const Activity = (activity: RaidHubInstanceForPlayer) => {
     const date = new Date(activity.dateCompleted)
     return (
         <Link href={`/pgcr/${activity.instanceId}`} style={{ color: "unset" }}>
-            <Flex $direction="row" $padding={0.3} $align="flex-start" $fullWidth>
+            <Flex $direction="row" $padding={0.3} $align="flex-start" $fullWidth $wrap>
                 <div style={{ minWidth: "15%" }}>{date.toLocaleTimeString(locale)}</div>
                 <CloudflareImage
                     alt=""
