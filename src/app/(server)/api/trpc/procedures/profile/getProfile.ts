@@ -26,7 +26,7 @@ export const getProfile = publicProcedure
                             },
                             where: {
                                 provider: {
-                                    in: ["discord", "twitch", "twitter", "google", "speedrun"]
+                                    in: ["discord", "twitch", "twitter", "youtube", "speedrun"]
                                 },
                                 displayName: {
                                     not: null

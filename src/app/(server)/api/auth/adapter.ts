@@ -213,7 +213,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     }
                 })
                 break
-            case "google":
+            case "youtube":
                 const youtubeProfile = await getYoutubeProfile(account.accessToken!)
                 await prisma.account.create({
                     data: {

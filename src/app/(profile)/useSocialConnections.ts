@@ -58,13 +58,13 @@ export const useSocialConnections = () => {
             })
         }
 
-        const google = connections.find(c => c.provider === "google")
-        if (google?.displayName) {
+        const youtube = connections.find(c => c.provider === "youtube")
+        if (youtube?.displayName) {
             socials.push({
                 id: Socials.YouTube,
                 Icon: YoutubeIcon,
-                url: google.url,
-                displayName: google.displayName
+                url: youtube.url,
+                displayName: youtube.displayName
             })
         }
 

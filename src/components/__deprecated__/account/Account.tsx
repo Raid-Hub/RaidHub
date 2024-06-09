@@ -57,12 +57,12 @@ const Account = ({ session, providers }: AccountProps) => {
         void signOut({ callbackUrl: "/" })
     }
 
-    const { discordProvider, twitchProvider, twitterProvider, googleProvider } = useMemo(
+    const { discordProvider, twitchProvider, twitterProvider, youtubeProvider } = useMemo(
         () => ({
             discordProvider: providers?.get("discord"),
             twitchProvider: providers?.get("twitch"),
             twitterProvider: providers?.get("twitter"),
-            googleProvider: providers?.get("google")
+            youtubeProvider: providers?.get("youtube")
         }),
         [providers]
     )
@@ -130,12 +130,12 @@ const Account = ({ session, providers }: AccountProps) => {
                             Icon={TwitchIcon}
                         />
                     )}
-                    {googleProvider && (
+                    {youtubeProvider && (
                         <Connection
-                            unlink={() => unlinkAccountFromUser({ providerId: "google" })}
-                            link={() => signIn("google", {}, { prompt: "select_account" })}
-                            serviceName={googleProvider.name}
-                            username={socialNames?.get("google") ?? null}
+                            unlink={() => unlinkAccountFromUser({ providerId: "youtube" })}
+                            link={() => signIn("youtube", {}, { prompt: "select_account" })}
+                            serviceName={youtubeProvider.name}
+                            username={socialNames?.get("youtube") ?? null}
                             Icon={YoutubeIcon}
                         />
                     )}

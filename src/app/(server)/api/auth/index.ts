@@ -2,7 +2,6 @@ import "server-only"
 
 import NextAuth from "next-auth"
 import DiscordProvider from "next-auth/providers/discord"
-import GoogleProvider from "next-auth/providers/google"
 import TwitchProvider from "next-auth/providers/twitch"
 import TwitterProvider from "next-auth/providers/twitter"
 import { prisma } from "~/server/prisma"
@@ -11,6 +10,22 @@ import { PrismaAdapter } from "./adapter"
 import BungieProvider from "./providers/BungieProvider"
 import { sessionCallback } from "./sessionCallback"
 import { signInCallback } from "./signInCallback"
+
+const youtubeProvider = {
+    id: "youtube",
+    name: "YouTube",
+    type: "oidc" as const,
+    issuer: "https://accounts.google.com",
+    options: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization: {
+            params: {
+                scope: "openid https://www.googleapis.com/auth/youtube.readonly"
+            }
+        }
+    }
+}
 
 export const {
     auth,
@@ -57,7 +72,7 @@ type ProviderType =
     | ReturnType<typeof DiscordProvider>
     | ReturnType<typeof TwitchProvider>
     | ReturnType<typeof TwitterProvider>
-    | ReturnType<typeof GoogleProvider>
+    | typeof youtubeProvider
 
 export function getProviders(): ProviderType[] {
     const providers = new Array<ProviderType>(
@@ -99,18 +114,7 @@ export function getProviders(): ProviderType[] {
     }
 
     if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-        providers.push(
-            GoogleProvider({
-                name: "YouTube",
-                clientId: process.env.GOOGLE_CLIENT_ID,
-                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-                authorization: {
-                    params: {
-                        scope: "openid profile https://www.googleapis.com/auth/youtube.readonly"
-                    }
-                }
-            }) as ProviderType
-        )
+        providers.push(youtubeProvider)
     }
 
     return providers

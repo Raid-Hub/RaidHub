@@ -16,7 +16,7 @@ export const getConnections = protectedProcedure.query(async ({ ctx }) => {
                 },
                 where: {
                     provider: {
-                        in: ["discord", "twitch", "twitter", "google", "speedrun"]
+                        in: ["discord", "twitch", "twitter", "youtube", "speedrun"]
                     }
                 }
             }

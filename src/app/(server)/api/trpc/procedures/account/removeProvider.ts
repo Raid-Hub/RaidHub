@@ -7,7 +7,7 @@ import { protectedProcedure } from "../.."
 export const removeProvider = protectedProcedure
     .input(
         z.object({
-            providerId: z.enum(["discord", "twitch", "twitter", "google", "speedrun"])
+            providerId: z.enum(["discord", "twitch", "twitter", "youtube", "speedrun"])
         })
     )
     .mutation(async ({ input, ctx }) => {
