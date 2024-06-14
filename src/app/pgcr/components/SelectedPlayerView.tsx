@@ -110,7 +110,10 @@ export const SelectedPlayerView = (props: {
                 <Flex $wrap $align="flex-start" $padding={0} $gap={0.5}>
                     <Stat>
                         <div>Time Played</div>
-                        <div>{secondsToHMS(stats.timePlayedSeconds, true)}</div>
+                        <div>
+                            {secondsToHMS(stats.timePlayedSeconds, true)}
+                            {stats.timePlayedSeconds === 32767 ? "*" : ""}
+                        </div>
                     </Stat>
                     {!!stats.score && (
                         <Stat>

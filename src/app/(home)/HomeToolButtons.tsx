@@ -2,22 +2,25 @@
 
 import Link from "next/link"
 import styled from "styled-components"
-import Search from "~/components/icons/Search"
+import { type SVGComponent } from "~/components/SVG"
+import Calendar from "~/components/icons/Calendar"
+import D2CP from "~/components/icons/D2CP"
 import { Flex } from "~/components/layout/Flex"
 
 export const HomeToolButtons = () => {
     return (
         <Flex>
-            <HomeButton href="/calendar" title="Rotator Calendar" />
+            <HomeButton href="/checkpoints" title="Checkpoints" icon={D2CP} />
+            <HomeButton href="/calendar" title="Rotator Calendar" icon={Calendar} />
         </Flex>
     )
 }
 
-const HomeButton = (props: { title: string; href: string }) => {
+const HomeButton = (props: { title: string; href: string; icon: SVGComponent }) => {
     return (
         <LinkWrapper href={props.href}>
             <Flex $padding={0.5} $gap={0.5} $direction="column">
-                <Search color="white" sx={30} />
+                <props.icon color="white" sx={30} />
                 {props.title}
             </Flex>
         </LinkWrapper>

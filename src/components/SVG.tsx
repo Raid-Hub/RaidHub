@@ -10,7 +10,7 @@ import { o } from "~/util/o"
 export type SVGWrapperProps = Omit<
     {
         sx?: number | Partial<Record<keyof typeof deviceSizes, number>>
-        color?: keyof DefaultTheme["colors"]["icon"]
+        color?: "none" | keyof DefaultTheme["colors"]["icon"]
         hoverColor?: keyof DefaultTheme["colors"]["icon"]
         absolute?: boolean
         pointer?: boolean
@@ -22,7 +22,7 @@ export type SVGComponent = (props: SVGWrapperProps) => JSX.Element
 
 interface StyledSvgProps {
     $sx?: number | Partial<Record<keyof typeof deviceSizes, number>>
-    $color?: keyof DefaultTheme["colors"]["icon"]
+    $color?: "none" | keyof DefaultTheme["colors"]["icon"]
     $hoverColor?: keyof DefaultTheme["colors"]["icon"]
     $absolute?: boolean
     $pointer?: boolean
@@ -46,7 +46,7 @@ const StyledSvg = styled.svg<StyledSvgProps>`
               )
             : ""}
 
-    fill: ${({ theme, $color }) => theme.colors.icon[$color ?? "white"]};
+    ${({ theme, $color }) => $color !== "none" && `fill: ${theme.colors.icon[$color ?? "white"]}`};
 
     ${({ theme, $hoverColor }) =>
         $hoverColor && theme.colors.icon[$hoverColor]

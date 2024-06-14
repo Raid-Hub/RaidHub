@@ -70,7 +70,9 @@ export const PlayerTab = ({
                 />
 
                 <CharacterLogoStack
-                    characters={activityPlayer.characters}
+                    characters={activityPlayer.characters.toSorted(
+                        (a, b) => +b.completed - +a.completed
+                    )}
                     style={{ flex: 1, justifyContent: "flex-start" }}
                 />
                 <Flex style={{ flex: 3, maxWidth: "50%" }}>

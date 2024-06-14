@@ -1,8 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import styled from "styled-components"
-import { Card } from "~/components/Card"
+import { ErrorCard } from "~/components/ErrorCard"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import { getRaidHubApi } from "~/services/raidhub/common"
@@ -23,12 +22,12 @@ export const ProfileError = () => {
     })
     if (isError && error instanceof RaidHubError) {
         return (
-            <StyledCard>
+            <ErrorCard>
                 <p>
                     Error loading Profile: <code>{error.errorCode}</code>
                 </p>
                 <p>{getMessage(error.errorCode)}</p>
-            </StyledCard>
+            </ErrorCard>
         )
     } else {
         return null
@@ -45,10 +44,3 @@ const getMessage = (errorCode: RaidHubErrorCode) => {
             return "An error occurred"
     }
 }
-
-const StyledCard = styled(Card).attrs({
-    $fullWidth: true
-})`
-    padding: 1rem;
-    background-color: rgb(184, 66, 66);
-`

@@ -16,7 +16,12 @@ export const UserCardSocials = (props: { size: "sm" | "lg"; bottom?: boolean }) 
             $color="dark"
             style={props.size == "sm" ? { width: "min-content" } : {}}>
             {!!socials?.length && (
-                <Flex $paddingY={0.5} $paddingX={1.2} $align="space-between" $gap={4}>
+                <Flex
+                    $paddingY={0.5}
+                    $paddingX={1.2}
+                    $align="space-between"
+                    $gap={4}
+                    $wrap={props.size === "lg"}>
                     {socials.map(({ Icon, id, displayName, url }) => (
                         <TooltipContainer
                             key={id}
