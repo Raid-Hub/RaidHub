@@ -22,7 +22,7 @@ export const UserCardSocials = (props: { size: "sm" | "lg"; bottom?: boolean }) 
                     $align="space-between"
                     $gap={4}
                     $wrap={props.size === "lg"}>
-                    {socials.map(({ Icon, id, displayName, url }, idx) => (
+                    {socials.map(({ Icon, id, displayName, url }) => (
                         <TooltipContainer
                             key={id}
                             tooltipId={`tooltip-${id}-username`}
