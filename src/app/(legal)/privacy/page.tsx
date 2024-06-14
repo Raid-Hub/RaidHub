@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import Link from "next/link"
 import { metadata as rootMetaData } from "~/app/layout"
 import { LegalPage } from "../LegalPage"
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
     }
 }
 
-const effectiveDate = new Date("February 6, 2024 9:56 PM EST")
+const effectiveDate = new Date("June 14, 2024 2:19 PM EST")
 
 export default function Page() {
     return (
@@ -108,6 +109,14 @@ export default function Page() {
             <p>
                 Users who create an account consent to the collection of data for the purpose of
                 statistics and online advertising.
+            </p>
+            <p>
+                RaidHub&apos;s use and transfer to any other app of information received from Google
+                APIs will adhere to{" "}
+                <Link href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes">
+                    Google API Services User Data Policy
+                </Link>
+                , including the Limited Use requirements.
             </p>
             <p>
                 If you do not agree to this policy, please do not use our Site. Your continued use
