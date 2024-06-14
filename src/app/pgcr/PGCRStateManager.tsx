@@ -83,16 +83,17 @@ function sortScore(d: RaidHubInstancePlayerExtended) {
         }
     )
 
-    const adjustedTimePlayedSeconds = d.timePlayedSeconds || 1
+    const adjustedTimePlayedSeconds = Math.min(d.timePlayedSeconds || 1, 32767)
     // kills weighted 2x assists, slight diminishing returns
     const killScore =
-        (stats.kills + 0.5 * stats.assists) ** 0.95 /
-        Math.sqrt(round(adjustedTimePlayedSeconds, -1) || 1)
+        (100 * (stats.kills + 0.5 * stats.assists) ** 0.95) /
+            (round(adjustedTimePlayedSeconds, -1) || 1) +
+        stats.kills / 400
 
     // a multiplier based on your time per deaths squared, normalized a bit by using deaths + 7
-    const deathScore = (2 * adjustedTimePlayedSeconds) / (stats.deaths + 7) ** 2
+    const deathScore = ((1 / 6) * adjustedTimePlayedSeconds) / (stats.deaths + 7) ** 0.95
 
-    const timeScore = adjustedTimePlayedSeconds / 360 // 10 points per hour
+    const timeScore = 50 * (adjustedTimePlayedSeconds / 3600) // 50 points per hour
 
     const precisionScore = (stats.precisionKills / (stats.kills || 1)) * 10 // 1 point per 10% of kills
 
