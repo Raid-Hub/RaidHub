@@ -32,7 +32,7 @@ export const AccountDropdown = (props: { isDropdownOpen: boolean }) => {
     const animate: keyof typeof variants = props.isDropdownOpen ? "open" : "closed"
 
     const primaryProfile = sessionData?.user?.profiles?.find(
-        p => p.destinyMembershipId === sessionData.user.primaryDestinyMembershipId
+        p => p.destinyMembershipId === sessionData.primaryDestinyMembershipId
     )
 
     return (

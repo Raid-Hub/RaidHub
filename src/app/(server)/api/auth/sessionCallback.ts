@@ -21,6 +21,7 @@ export const sessionCallback = async ({
 
     return {
         user,
+        primaryDestinyMembershipId: user.profiles.find(p => p.isPrimary)?.destinyMembershipId,
         bungieAccessToken: bungieToken.token,
         raidHubAccessToken: raidhubToken?.token ?? undefined,
         errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors])),

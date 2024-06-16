@@ -44,8 +44,9 @@ export const SpeedrunComControls = (props: {
     }
 
     const { data: rules } = useSpeedrunComRules({
-        categoryId: SpeedrunVariables[props.raidPath].categoryId
+        categoryId: SpeedrunVariables[props.raidPath]?.categoryId
     })
+
     return (
         <Flex $padding={0}>
             <Panel $static>

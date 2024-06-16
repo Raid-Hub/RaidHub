@@ -29,25 +29,16 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     create: {
                         destinyMembershipId: membership.membershipId,
                         destinyMembershipType: membership.membershipType,
+                        isPrimary: membership.membershipId === primaryDestinyMembershipId,
                         bungieMembershipId: data.bungieNetUser.membershipId,
-                        name: membership.bungieGlobalDisplayName ?? membership.displayName,
+                        name: membership.bungieGlobalDisplayName || membership.displayName,
                         image: `https://www.bungie.net${
                             data.bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
-                        }${data.bungieNetUser.profilePicturePath}`,
-                        bungieUser:
-                            membership.membershipId === primaryDestinyMembershipId
-                                ? {
-                                      connect: {
-                                          id: data.bungieNetUser.membershipId
-                                      }
-                                  }
-                                : undefined
+                        }${data.bungieNetUser.profilePicturePath}`
                     },
                     update: {
                         bungieMembershipId: data.bungieNetUser.membershipId,
-                        bungieUser: {
-                            disconnect: true
-                        }
+                        isPrimary: membership.membershipId === primaryDestinyMembershipId
                     },
                     where: {
                         destinyMembershipId: membership.membershipId
@@ -55,6 +46,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     select: {
                         name: true,
                         image: true,
+                        isPrimary: true,
                         destinyMembershipId: true,
                         destinyMembershipType: true,
                         vanity: true
@@ -67,7 +59,6 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             name: undefined,
             image: undefined,
             ...user,
-            primaryDestinyMembershipId,
             profiles,
             email: user.email ?? ""
         }
@@ -83,6 +74,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     select: {
                         name: true,
                         image: true,
+                        isPrimary: true,
                         destinyMembershipId: true,
                         destinyMembershipType: true,
                         vanity: true
@@ -108,6 +100,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     select: {
                         name: true,
                         image: true,
+                        isPrimary: true,
                         destinyMembershipId: true,
                         destinyMembershipType: true,
                         vanity: true
@@ -134,6 +127,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                             select: {
                                 name: true,
                                 image: true,
+                                isPrimary: true,
                                 destinyMembershipId: true,
                                 destinyMembershipType: true,
                                 vanity: true
@@ -249,6 +243,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                             select: {
                                 name: true,
                                 image: true,
+                                isPrimary: true,
                                 destinyMembershipId: true,
                                 destinyMembershipType: true,
                                 vanity: true

@@ -6,6 +6,7 @@ declare module "next-auth" {
     interface Session {
         errors: AuthError[]
         user: AdapterUser
+        primaryDestinyMembershipId?: string
         bungieAccessToken?: {
             value: string
             expires: string
@@ -24,6 +25,7 @@ declare module "next-auth/adapters" {
         image: undefined
         profiles: {
             image: string
+            isPrimary: boolean
             name: string
             vanity: string | null
             destinyMembershipId: string
