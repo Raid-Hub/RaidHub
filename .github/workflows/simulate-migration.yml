@@ -1,0 +1,62 @@
+name: Simulate Migration
+on:
+    push:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+    deploy:
+        name: Simulate migration
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Download dependencies
+              run: |
+                  yarn install
+                  yarn prisma generate
+
+            - name: Install Turso CLI
+              env:
+                  TURSO_INSTALL_SKIP_SIGNUP: true
+              run: |
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+
+            - name: Dry Run Database Migrations
+              env:
+                  TURSO_DATABASE_NAME: "staging"
+                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+              run: ./.github/scripts/turso-migrate.sh --dry-run
+
+            - name: Count Pending Migrations
+              run: echo $TURSO_PENDING_MIGRATIONS
+
+            - name: Wait for approval
+              uses: trstringer/manual-approval@v1
+              with:
+                  secret: ${{ github.TOKEN }}
+                  approvers: org-raid-hub
+                  minimum-approvals: 1
+                  issue-title: "Test migrations from staging"
+                  issue-body: "Please approve or deny simulated migrations"
+                  exclude-workflow-initiator-as-approver: false
+
+            # - name: Apply Database Migrations
+            #   env:
+            #       TURSO_DATABASE_NAME: "staging"
+            #       TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+            #   run: ./.github/scripts/turso-migrate.sh

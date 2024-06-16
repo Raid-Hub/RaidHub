@@ -22,9 +22,14 @@ if [ $? -ne 0 ]; then
 fi
 
 # apply the migrations
+pending_migrations_count= 0
 for dir in ./prisma/migrations/*/; do
     migration=$(basename "$dir")
     if ! grep -q "$migration" <<< "$applied_migrations_list"; then
+        pending_migrations_count=$((pending_migrations_count+1))
+        if [ "$1" == "--dry" ] || [ "$1" == "-d" ]; then
+            continue
+        fi
         turso db shell $TURSO_DATABASE_NAME < $dir/migration.sql
         if [ $? -ne 0 ]; then
           echo "Failed to apply migration $migration"
@@ -39,4 +44,5 @@ for dir in ./prisma/migrations/*/; do
         fi
     fi
 done
-echo "All migrations applied successfully"
+echo "TURSO_PENDING_MIGRATIONS=$pending_migrations_count" >> $GITHUB_ENV
+echo "All $pending_migrations_count migrations applied successfully"
