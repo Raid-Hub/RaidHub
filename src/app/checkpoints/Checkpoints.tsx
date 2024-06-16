@@ -125,14 +125,14 @@ export const Checkpoints = async () => {
                                                 {checkpoint.currentPlayers}/{checkpoint.maxPlayers}
                                                 {checkpoint.currentPlayers <= 2 &&
                                                     checkpoint.maxPlayers >= 1 && (
-                                                        <PulseAnimation backgroundColor="#61DC75" />
+                                                        <PulseAnimation color="#61DC75" />
                                                     )}
                                                 {checkpoint.currentPlayers >= 3 &&
                                                     checkpoint.currentPlayers <= 5 && (
-                                                        <PulseAnimation backgroundColor="#E5A830" />
+                                                        <PulseAnimation color="#E5A830" />
                                                     )}
                                                 {checkpoint.currentPlayers >= 6 && (
-                                                    <PulseAnimation backgroundColor="#E53030" />
+                                                    <PulseAnimation color="#E53030" />
                                                 )}
                                             </Flex>
                                         </Flex>

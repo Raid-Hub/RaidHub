@@ -16,10 +16,10 @@ export const pulse = keyframes`
     }
 `
 
-export const PulseAnimation = styled.div<{ backgroundColor: string }>`
+export const PulseAnimation = styled.div<{ color: string }>`
     width: 20px;
     height: 20px;
-    background-color: ${props => props.backgroundColor};
+    background-color: ${props => props.color};
     border-radius: 100%;
     animation: ${pulse} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     border: 2px solid rgba(0, 0, 0, 0.2);
