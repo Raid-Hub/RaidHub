@@ -75,7 +75,7 @@ jobs:
 
             - name: Dry Run Database Migrations
               env:
-                  TURSO_DATABASE_NAME: $TURSO_NEW_DATABASE_NAME
+                  TURSO_DATABASE_NAME: ${{ env.TURSO_NEW_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh
 
