@@ -1,6 +1,6 @@
 name: Simulate Migration
 on:
-    push:
+    pull_request:
     workflow_dispatch:
 
 concurrency:
@@ -42,29 +42,20 @@ jobs:
                   TURSO_DATABASE_NAME: ${{ env.TURSO_PARENT_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh --dry
-                  if [[ "$TURSO_PENDING_MIGRATIONS" != 0 ]]; then
-                      echo "HAS_MIGRATIONS=true" >> $GITHUB_ENV
-                  else
-                      echo "HAS_MIGRATIONS=false" >> $GITHUB_ENV
-                  fi
 
             - name: Create Temp Database
-              if: env.HAS_MIGRATIONS == 'true'
               run: |
                   turso --version
-                  echo $TURSO_PENDING_MIGRATIONS
                   echo "Creating temp database $TURSO_NEW_DATABASE_NAME from $TURSO_PARENT_DATABASE_NAME"
                   turso db create $TURSO_NEW_DATABASE_NAME --from-db $TURSO_PARENT_DATABASE_NAME --wait
 
             - name: Simulate Database Migrations
-              if: env.HAS_MIGRATIONS == 'true'
               env:
                   TURSO_DATABASE_NAME: ${{ env.TURSO_NEW_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh
 
             - name: Cleanup Temp Database
-              if: env.HAS_MIGRATIONS == 'true'
               run: |
                   turso --version
                   echo "Destroying temp database $TURSO_NEW_DATABASE_NAME"
