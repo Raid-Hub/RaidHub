@@ -55,7 +55,7 @@ const IconUploadForm = () => {
                     data: {
                         image: newIconUrl
                     },
-                    destinyMembershipId: primaryProfile?.destinyMembershipId
+                    destinyMembershipId: primaryProfile.destinyMembershipId
                 })
             } else {
                 setErr(new Error("Please try again"))
