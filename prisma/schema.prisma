@@ -18,7 +18,7 @@ model Profile {
   image                 String
   pinnedActivityId      String? @map("pinned_activity_id")
   vanity                String? @unique
-  user                  User?    @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
+  user                  User?   @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
   pinnedPGCR            PGCR?   @relation("PGCRToProfile", fields: [pinnedActivityId], references: [id])
 
   @@index([pinnedActivityId])
