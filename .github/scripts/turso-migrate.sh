@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # apply the migrations
-pending_migrations_count=0
+pending_migrations_count=$(0)
 for dir in ./prisma/migrations/*/; do
     migration=$(basename "$dir")
     if ! grep -q "$migration" <<< "$applied_migrations_list"; then
@@ -45,6 +45,7 @@ for dir in ./prisma/migrations/*/; do
     fi
 done
 echo "TURSO_PENDING_MIGRATIONS=$pending_migrations_count" >> $GITHUB_ENV
+echo "Found $pending_migrations_count pending migration(s)"
 if [ "$1" != "--dry" ] && [ "$1" != "-d" ]; then
     echo "All $pending_migrations_count migration(s) applied successfully"
 fi
