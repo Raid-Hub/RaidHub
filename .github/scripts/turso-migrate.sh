@@ -45,4 +45,6 @@ for dir in ./prisma/migrations/*/; do
     fi
 done
 echo "TURSO_PENDING_MIGRATIONS=$pending_migrations_count" >> $GITHUB_ENV
-echo "All $pending_migrations_count migration(s) applied successfully"
+if [ "$1" != "--dry" ] && [ "$1" != "-d" ]; then
+    echo "All $pending_migrations_count migration(s) applied successfully"
+fi

@@ -1,18 +1,19 @@
 name: Simulate Migration
 on:
     push:
+    workflow_dispatch:
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+    group: ${{ github.sha }}
+    cancel-in-progress: false
 
 env:
-    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    TURSO_INSTALL_SKIP_SIGNUP: true
+    TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
 
 jobs:
-    deploy:
-        name: Simulate migration
+    check-migrations:
+        name: Check migrations
         runs-on: ubuntu-latest
 
         steps:
@@ -26,12 +27,10 @@ jobs:
 
             - name: Download dependencies
               run: |
-                  yarn install
+                  yarn install --frozen-lockfile
                   yarn prisma generate
 
             - name: Install Turso CLI
-              env:
-                  TURSO_INSTALL_SKIP_SIGNUP: true
               run: |
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
@@ -39,24 +38,48 @@ jobs:
             - name: Dry Run Database Migrations
               env:
                   TURSO_DATABASE_NAME: "staging"
-                  TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh --dry
 
-            - name: Count Pending Migrations
-              run: echo $TURSO_PENDING_MIGRATIONS
+    simulate-migrations:
+        needs: check-migrations
+        if: github.env.TURSO_PENDING_MIGRATIONS == 0
+        name: Simulate migrations
+        runs-on: ubuntu-latest
+        env:
+            TURSO_NEW_DATABASE_NAME: ${{ github.sha }}
+            TURSO_PARENT_DATABASE_NAME: "staging"
 
-            - name: Wait for approval
-              uses: trstringer/manual-approval@v1
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
               with:
-                  secret: ${{ github.TOKEN }}
-                  approvers: ${{ github.triggering_actor }}
-                  minimum-approvals: 1
-                  issue-title: "Test migrations from staging"
-                  issue-body: "Please approve or deny simulated migrations"
-                  exclude-workflow-initiator-as-approver: false
+                  node-version: 20
 
-            # - name: Apply Database Migrations
-            #   env:
-            #       TURSO_DATABASE_NAME: "staging"
-            #       TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
-            #   run: ./.github/scripts/turso-migrate.sh
+            - name: Download dependencies
+              run: |
+                  yarn install --frozen-lockfile
+                  yarn prisma generate
+
+            - name: Install Turso CLI
+              run: |
+                  curl -sSfL https://get.tur.so/install.sh | bash
+                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+
+            - name: Create Temp Database
+              run: |
+                  turso --version
+                  turso db create $TURSO_NEW_DATABASE_NAME --from-db $TURSO_PARENT_DATABASE_NAME --wait
+
+            - name: Dry Run Database Migrations
+              env:
+                  TURSO_DATABASE_NAME: $TURSO_NEW_DATABASE_NAME
+              run: |
+                  ./.github/scripts/turso-migrate.sh
+
+            - name: Cleanup Temp Database
+              run: |
+                  turso --version
+                  turso db destroy $TURSO_NEW_DATABASE_NAME --yes
