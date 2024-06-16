@@ -42,7 +42,7 @@ jobs:
                   TURSO_DATABASE_NAME: ${{ env.TURSO_PARENT_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh --dry
-                  if [ "$TURSO_PENDING_MIGRATIONS" -gt 0 ]; then
+                  if [[ "$TURSO_PENDING_MIGRATIONS" -gt 0 ]]; then
                       echo "HAS_MIGRATIONS=true" >> $GITHUB_ENV
                   else
                       echo "HAS_MIGRATIONS=false" >> $GITHUB_ENV
