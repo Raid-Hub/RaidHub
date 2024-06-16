@@ -1,4 +1,3 @@
-import { type Prisma } from "@prisma/client"
 import { type BungieMembershipType } from "bungie-net-core/models"
 import { z } from "zod"
 
@@ -15,31 +14,6 @@ const BungieMembershipEnum = z.nativeEnum({
     BungieNext: 254,
     All: -1
 })
-
-export const zProfile = z.object({
-    name: z.string(),
-    image: z.string(),
-    vanity: z.string().nullable().optional(),
-    destinyMembershipId: z.string(),
-    destinyMembershipType: BungieMembershipEnum,
-    bungieMembershipId: z.string(),
-    pinnedActivityId: z.string().regex(/^\d+$/).nullable().optional(),
-    profileDecoration: z
-        .string()
-        .max(500, "CSS String too long, maximum length: 500")
-        .nullable()
-        .optional()
-}) satisfies {
-    _output: Omit<Prisma.ProfileCreateInput, "user">
-}
-
-export const zModifiableProfile = z
-    .object({
-        pinnedActivityId: z.nullable(z.string().regex(/^\d+$/))
-    })
-    .partial() satisfies {
-    _output: Partial<z.infer<typeof zProfile>>
-}
 
 export const zUniqueDestinyProfile = z.object({
     destinyMembershipType: z.union([

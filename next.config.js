@@ -29,17 +29,24 @@ module.exports = withBundleAnalyzer({
     },
     redirects: async () => {
         return [
+            // Old profile URL with membershipType
             {
                 source: "/profile/:membershipType/:destinyMembershipId",
                 destination: "/profile/:destinyMembershipId",
+                permanent: true
+            },
+            // Next Auth does not let us remove /api from the URL
+            {
+                source: "/api/auth/error",
+                destination: "/auth/error",
                 permanent: true
             }
         ]
     },
     rewrites: () => [
         {
-            source: "/:vanity([a-zA-Z0-9]+)",
-            destination: "/user/:vanity"
+            destination: "/user/:vanity",
+            source: "/:vanity([a-zA-Z0-9]+)"
         }
     ]
 })

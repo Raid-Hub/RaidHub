@@ -13,12 +13,12 @@ model Profile {
   destinyMembershipId   String  @id @map("destiny_membership_id")
   destinyMembershipType Int     @map("destiny_membership_type")
   bungieMembershipId    String  @map("bungie_membership_id")
+  isPrimary             Boolean @map("is_primary")
   name                  String
   image                 String
   pinnedActivityId      String? @map("pinned_activity_id")
   vanity                String? @unique
-  bungieUser            User?   @relation("UserToProfilePrimary")
-  user                  User    @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
+  user                  User?   @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
   pinnedPGCR            PGCR?   @relation("PGCRToProfile", fields: [pinnedActivityId], references: [id])
 
   @@index([pinnedActivityId])
@@ -27,17 +27,15 @@ model Profile {
 }
 
 model User {
-  id                         String              @id @map("bungie_membership_id")
-  primaryDestinyMembershipId String?             @unique(map: "user_primary_destiny_membership_id") @map("primary_destiny_membership_id")
-  email                      String?             @unique(map: "user_email_key")
-  emailVerified              DateTime?           @map("email_verified")
-  createdAt                  DateTime            @default(now()) @map("created_at")
-  role                       String              @default("USER")
-  accounts                   Account[]           @relation("UserToAccount")
-  primaryProfile             Profile?            @relation("UserToProfilePrimary", fields: [primaryDestinyMembershipId], references: [destinyMembershipId])
-  profiles                   Profile[]           @relation("UserToProfile")
-  raidHubAccessToken         RaidHubAccessToken? @relation("UserToRaidHubAccessToken")
-  sessions                   Session[]           @relation("UserToSession")
+  id                 String              @id @map("bungie_membership_id")
+  email              String?             @unique(map: "user_email_key")
+  emailVerified      DateTime?           @map("email_verified")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  role               String              @default("USER")
+  accounts           Account[]           @relation("UserToAccount")
+  profiles           Profile[]           @relation("UserToProfile")
+  raidHubAccessToken RaidHubAccessToken? @relation("UserToRaidHubAccessToken")
+  sessions           Session[]           @relation("UserToSession")
 
   @@map("bungie_user")
 }

@@ -35,7 +35,7 @@ export const {
     providers: getProviders(),
     adapter: PrismaAdapter(prisma),
     pages: {
-        error: "/auth/error",
+        error: "/error",
         signIn: "/auth/login",
         signOut: "/auth/logout",
         newUser: "/account" // New users will be directed here on first sign in
@@ -59,7 +59,7 @@ export const {
             console.warn(code, message)
         },
         debug(code, ...message) {
-            console.debug(code, message)
+            if (process.env.NODE_ENV !== "production") console.debug(code, message)
         }
     }
 })

@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { notFound } from "next/navigation"
 import { Leaderboard } from "~/app/leaderboards/Leaderboard"
 import { SpeedrunVariables, type RTABoardCategory } from "~/data/speedrun-com-mappings"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -42,6 +43,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
     const manifest = await prefetchManifest()
     const definition = getRaidDefinition(params.raid, manifest)
+    const variable = SpeedrunVariables[definition.path]?.variable
+    if (!variable) return notFound()
+
     const displayName =
         params.category !== "all"
             ? SpeedrunVariables[definition.path]?.variable?.values[params.category]?.displayName ??
@@ -66,6 +70,8 @@ export default async function Page({ params }: DynamicParams) {
 
     const raid = getRaidDefinition(params.raid, manifest)
     const category = params.category === "all" ? undefined : params.category
+    const variable = SpeedrunVariables[raid.path]?.variable
+    if (!variable) return notFound()
 
     return (
         <Leaderboard

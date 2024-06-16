@@ -31,7 +31,10 @@ const IconUploadForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         try {
-            if (data && session?.user.primaryDestinyMembershipId) {
+            const primaryProfile = session?.user.profiles.find(
+                p => p.destinyMembershipId === session.primaryDestinyMembershipId
+            )
+            if (data && primaryProfile) {
                 const fileType = data.image.type
                 if (!fileType) {
                     setErr(new Error("Please try again"))
@@ -52,7 +55,7 @@ const IconUploadForm = () => {
                     data: {
                         image: newIconUrl
                     },
-                    destinyMembershipId: session.user.primaryDestinyMembershipId
+                    destinyMembershipId: primaryProfile.destinyMembershipId
                 })
             } else {
                 setErr(new Error("Please try again"))

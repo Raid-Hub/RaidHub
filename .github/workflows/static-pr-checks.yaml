@@ -11,7 +11,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --frozen-lockfile
 
             - name: "tsc"
               run: yarn tsc
@@ -23,7 +23,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --frozen-lockfile
 
             - name: "format:check"
               run: yarn format:check
@@ -35,7 +35,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --frozen-lockfile
 
             - name: "eslint"
               run: yarn lint --max-warnings=0
@@ -47,7 +47,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install
+              run: yarn install --frozen-lockfile
 
             - name: "migrate:drift"
               run: yarn migrate:drift

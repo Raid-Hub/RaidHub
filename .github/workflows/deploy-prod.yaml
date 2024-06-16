@@ -18,7 +18,7 @@ jobs:
 
             - name: Download dependencies
               run: |
-                  yarn install
+                  yarn install --frozen-lockfile
                   yarn prisma generate
 
             - name: Install Turso CLI
