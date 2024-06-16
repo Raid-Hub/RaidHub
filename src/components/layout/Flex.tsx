@@ -28,7 +28,7 @@ export const Flex = styled.div<{
         $paddingX && `padding-left: ${$paddingX}rem; padding-right: ${$paddingX}rem;`}
     ${({ $paddingY }) =>
         $paddingY && `padding-top: ${$paddingY}rem; padding-bottom: ${$paddingY}rem;`}
-    ${({ $fullWidth }) => $fullWidth && "min-width: 100%;"}
+    ${({ $fullWidth }) => $fullWidth && "min-width: 100%; "}
 `
 
 Flex.defaultProps = {
