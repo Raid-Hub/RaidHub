@@ -42,7 +42,7 @@ jobs:
 
     simulate-migrations:
         needs: check-migrations
-        if: github.env.TURSO_PENDING_MIGRATIONS > 0
+        if: github.env.TURSO_PENDING_MIGRATIONS != 0
         name: Simulate migrations
         runs-on: ubuntu-latest
         env:
