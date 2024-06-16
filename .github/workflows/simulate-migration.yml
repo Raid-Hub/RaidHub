@@ -15,6 +15,8 @@ jobs:
     check-migrations:
         name: Check migrations
         runs-on: ubuntu-latest
+        outputs:
+            simulation-needed: ${{ steps.set-output.outputs.simulation-needed }}
 
         steps:
             - name: Checkout
@@ -38,11 +40,17 @@ jobs:
             - name: Dry Run Database Migrations
               env:
                   TURSO_DATABASE_NAME: "staging"
-              run: ./.github/scripts/turso-migrate.sh --dry
+              run: |
+                  ./.github/scripts/turso-migrate.sh --dry
+                  if [ $TURSO_PENDING_MIGRATIONS -gt 0 ]; then
+                      echo "simulation-needed=true" >> $GITHUB_OUTPUT
+                  else
+                      echo "simulation-needed=false" >> $GITHUB_OUTPUT
+                  fi
 
     simulate-migrations:
         needs: check-migrations
-        if: github.env.TURSO_PENDING_MIGRATIONS != 0
+        if: needs.check-migrations.outputs.migration-needed == 'true'
         name: Simulate migrations
         runs-on: ubuntu-latest
         env:
