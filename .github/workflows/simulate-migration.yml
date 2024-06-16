@@ -43,7 +43,7 @@ jobs:
 
     simulate-migrations:
         needs: check-migrations
-        if: github.env.TURSO_PENDING_MIGRATIONS != 0
+        # if: github.env.TURSO_PENDING_MIGRATIONS != 0
         name: Simulate migrations
         runs-on: ubuntu-latest
         env:
@@ -72,6 +72,8 @@ jobs:
             - name: Create Temp Database
               run: |
                   turso --version
+                  echo $TURSO_PENDING_MIGRATIONS
+                  echo "Creating temp database $TURSO_NEW_DATABASE_NAME from $TURSO_PARENT_DATABASE_NAME"
                   turso db create $TURSO_NEW_DATABASE_NAME --from-db $TURSO_PARENT_DATABASE_NAME --wait
 
             - name: Dry Run Database Migrations
@@ -83,4 +85,5 @@ jobs:
             - name: Cleanup Temp Database
               run: |
                   turso --version
+                  echo "Destroying temp database $TURSO_NEW_DATABASE_NAME"
                   turso db destroy $TURSO_NEW_DATABASE_NAME --yes
