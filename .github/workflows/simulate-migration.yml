@@ -10,10 +10,12 @@ concurrency:
 env:
     TURSO_INSTALL_SKIP_SIGNUP: true
     TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
+    TURSO_NEW_DATABASE_NAME: ${{ github.sha }}
+    TURSO_PARENT_DATABASE_NAME: "staging"
 
 jobs:
-    check-migrations:
-        name: Check migrations
+    simulate-migrations:
+        name: Simulate migrations
         runs-on: ubuntu-latest
 
         steps:
@@ -37,52 +39,32 @@ jobs:
 
             - name: Dry Run Database Migrations
               env:
-                  TURSO_DATABASE_NAME: "staging"
+                  TURSO_DATABASE_NAME: ${{ env.TURSO_PARENT_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh --dry
-
-    simulate-migrations:
-        needs: check-migrations
-        # if: github.env.TURSO_PENDING_MIGRATIONS != 0
-        name: Simulate migrations
-        runs-on: ubuntu-latest
-        env:
-            TURSO_NEW_DATABASE_NAME: ${{ github.sha }}
-            TURSO_PARENT_DATABASE_NAME: "staging"
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-
-            - name: Download dependencies
-              run: |
-                  yarn install --frozen-lockfile
-                  yarn prisma generate
-
-            - name: Install Turso CLI
-              run: |
-                  curl -sSfL https://get.tur.so/install.sh | bash
-                  echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
+                  if [ "$TURSO_PENDING_MIGRATIONS" -gt 0 ]; then
+                      echo "HAS_MIGRATIONS=true" >> $GITHUB_ENV
+                  else
+                      echo "HAS_MIGRATIONS=false" >> $GITHUB_ENV
+                  fi
 
             - name: Create Temp Database
+              if: env.HAS_MIGRATIONS == 'true'
               run: |
                   turso --version
                   echo $TURSO_PENDING_MIGRATIONS
                   echo "Creating temp database $TURSO_NEW_DATABASE_NAME from $TURSO_PARENT_DATABASE_NAME"
                   turso db create $TURSO_NEW_DATABASE_NAME --from-db $TURSO_PARENT_DATABASE_NAME --wait
 
-            - name: Dry Run Database Migrations
+            - name: Simulate Database Migrations
+              if: env.HAS_MIGRATIONS == 'true'
               env:
                   TURSO_DATABASE_NAME: ${{ env.TURSO_NEW_DATABASE_NAME }}
               run: |
                   ./.github/scripts/turso-migrate.sh
 
             - name: Cleanup Temp Database
+              if: env.HAS_MIGRATIONS == 'true'
               run: |
                   turso --version
                   echo "Destroying temp database $TURSO_NEW_DATABASE_NAME"
