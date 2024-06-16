@@ -10,7 +10,6 @@ import { createPortal } from "react-dom"
 
 const PortalContext = createContext<(node: ReactNode) => ReactPortal | null>((node: ReactNode) => {
     if (document?.body) {
-        // @ts-expect-error I don't know why create portal wont accept ReactNode
         return createPortal(node, document.body)
     } else {
         return null
@@ -30,7 +29,6 @@ export const PortalProvider = ({
         value={useCallback(
             (node: ReactNode) => {
                 if (target?.current) {
-                    // @ts-expect-error I don't know why create portal wont accept ReactNode
                     return createPortal(node, target.current)
                 } else {
                     return null
