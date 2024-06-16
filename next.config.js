@@ -5,7 +5,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer({
     experimental: {
-        ppr: false
+        ppr: true
     },
     reactStrictMode: false,
     compiler: {

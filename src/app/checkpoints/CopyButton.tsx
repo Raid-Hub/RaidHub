@@ -26,11 +26,7 @@ export const CopyButton = ({ text }: { text: string }) => {
     )
 }
 
-export const CopyDiv = styled.div.attrs<{
-    onClick: () => void
-}>(attrs => ({
-    ...attrs
-}))`
+export const CopyDiv = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
