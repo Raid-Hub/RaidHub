@@ -40,7 +40,7 @@ jobs:
               env:
                   TURSO_DATABASE_NAME: "staging"
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
-              run: ./.github/scripts/turso-migrate.sh --dry-run
+              run: ./.github/scripts/turso-migrate.sh --dry
 
             - name: Count Pending Migrations
               run: echo $TURSO_PENDING_MIGRATIONS
@@ -49,7 +49,7 @@ jobs:
               uses: trstringer/manual-approval@v1
               with:
                   secret: ${{ github.TOKEN }}
-                  approvers: org-raid-hub
+                  approvers: ${{ github.triggering_actor }}
                   minimum-approvals: 1
                   issue-title: "Test migrations from staging"
                   issue-body: "Please approve or deny simulated migrations"
