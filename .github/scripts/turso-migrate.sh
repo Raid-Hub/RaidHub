@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # apply the migrations
-pending_migrations_count=$(0)
+pending_migrations_count=0
 for dir in ./prisma/migrations/*/; do
     migration=$(basename "$dir")
     if ! grep -q "$migration" <<< "$applied_migrations_list"; then
