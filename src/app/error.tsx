@@ -1,12 +1,33 @@
 "use client" // Error components must be Client Components
 
+import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { type ErrorBoundaryProps } from "~/types/generic"
+import { trpc } from "./trpc"
 
 export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+    const pathname = usePathname()
+    const params = useParams()
+    const searchParams = useSearchParams()
+
+    const { mutate: postError } = trpc.monitoring.unhandledClientError.useMutation()
+
     useEffect(() => {
-        console.error(error)
-    }, [error])
+        const err = {
+            next: {
+                pathname,
+                params,
+                searchParams: searchParams.toString()
+            },
+            error: {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            }
+        }
+        postError(err)
+        console.error(err)
+    }, [error, postError, params, pathname, searchParams])
 
     return (
         <div>
