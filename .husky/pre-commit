@@ -1,2 +1,2 @@
-yarn lint --fix
-yarn prisma format
+bun lint --fix
+bun prisma format

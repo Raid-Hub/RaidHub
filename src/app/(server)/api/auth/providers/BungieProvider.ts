@@ -1,13 +1,15 @@
+import { type Adapter } from "@auth/core/adapters"
 import { type TokenSet } from "@auth/core/types"
 import type { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
 import { type OAuth2Config } from "next-auth/providers"
 import { BungieAPIError } from "~/models/BungieAPIError"
+import { type BungieProfile } from "../types"
 
 export default function BungieProvider(creds: {
     apiKey: string
     clientId: string
     clientSecret: string
-}): OAuth2Config<UserMembershipData> {
+}): OAuth2Config<BungieProfile> {
     const userInfoUrl = "https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/"
     return {
         id: "bungie",
@@ -38,10 +40,17 @@ export default function BungieProvider(creds: {
                 }
             }
         },
-        profile(data) {
+        profile(data): Parameters<Required<Adapter>["createUser"]>[0] & {
+            userMembershipData: UserMembershipData
+        } {
             return {
                 id: data.bungieNetUser.membershipId,
-                ...data
+                role: "USER",
+                name: data.bungieNetUser.displayName,
+                image: `https://www.bungie.net${
+                    data.bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
+                }${data.bungieNetUser.profilePicturePath}`,
+                userMembershipData: data
             }
         }
     }

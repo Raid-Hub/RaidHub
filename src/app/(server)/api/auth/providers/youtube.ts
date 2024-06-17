@@ -1,4 +1,28 @@
+import { type OIDCConfig } from "next-auth/providers"
 import "server-only"
+
+export function YouTubeProvider({
+    clientId,
+    clientSecret
+}: {
+    clientId: string
+    clientSecret: string
+}): OIDCConfig<unknown> {
+    return {
+        id: "youtube",
+        name: "YouTube",
+        type: "oidc" as const,
+        issuer: "https://accounts.google.com",
+        clientId,
+        clientSecret,
+        authorization: {
+            params: {
+                scope: "openid https://www.googleapis.com/auth/youtube.readonly"
+            }
+        }
+    }
+}
+
 export async function getYoutubeProfile(access_token: string) {
     const url = new URL("https://www.googleapis.com/youtube/v3/channels")
     url.searchParams.set("part", "snippet")

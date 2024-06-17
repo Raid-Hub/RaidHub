@@ -18,6 +18,8 @@ export const getProfile = publicProcedure
             include: {
                 user: {
                     select: {
+                        name: true,
+                        image: true,
                         accounts: {
                             select: {
                                 provider: true,
@@ -41,12 +43,13 @@ export const getProfile = publicProcedure
         if (!data?.user) return null
 
         const {
-            user: { accounts },
+            user: { accounts: connections, ...user },
             ...profile
         } = data
 
         return {
             ...profile,
-            connections: accounts
+            user,
+            connections
         }
     })

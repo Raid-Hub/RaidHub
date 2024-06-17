@@ -1,8 +1,9 @@
-import { type Session, type User } from "@prisma/client"
-import { type BungieMembershipType } from "bungie-net-core/models"
-import { type AdapterUser } from "next-auth/adapters"
+import { type AdapterUser } from "@auth/core/adapters"
+import { type Awaitable, type User } from "@auth/core/types"
+import { type Session as PrismaSession } from "@prisma/client"
+import { type BungieMembershipType, type UserMembershipData } from "bungie-net-core/models"
 
-declare module "next-auth" {
+declare module "@auth/core/types" {
     interface Session {
         errors: AuthError[]
         user: AdapterUser
@@ -17,31 +18,47 @@ declare module "next-auth" {
         }
         expires: Date
     }
-}
 
-declare module "next-auth/adapters" {
-    interface AdapterUser extends User {
-        name: undefined
-        image: undefined
-        profiles: {
-            image: string
-            isPrimary: boolean
-            name: string
-            vanity: string | null
-            destinyMembershipId: string
-            destinyMembershipType: BungieMembershipType
-        }[]
+    interface Account {
+        refresh_expires_in?: number
+    }
+
+    interface User {
+        role: "USER" | "ADMIN"
     }
 }
 
-export type SessionAndUserData = {
-    session: Session
-    user: AdapterUser & {
+export type BungieProfile = UserMembershipData
+
+declare module "@auth/core/adapters" {
+    interface AdapterUser {
+        id: string
+        name: string | null
+        image: string | null
+        createdAt: Date
+        role: "USER" | "ADMIN"
         bungieAccount: BungieAccount
         raidHubAccessToken: {
             value: string
             expiresAt: Date
         } | null
+        profiles: {
+            isPrimary: boolean
+            vanity: string | null
+            destinyMembershipId: string
+            destinyMembershipType: BungieMembershipType
+        }[]
+    }
+    interface AdapterSession extends PrismaSession {
+        expires: Date
+    }
+
+    interface Adapter {
+        createUser?(
+            user: User & {
+                userMembershipData: UserMembershipData
+            }
+        ): Awaitable<AdapterUser>
     }
 }
 

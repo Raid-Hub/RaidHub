@@ -10,11 +10,16 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "tsc"
-              run: yarn tsc
+              run: bun tsc
 
     format:
         name: Formatting
@@ -22,11 +27,16 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "format:check"
-              run: yarn format:check
+              run: bun format:check
 
     lint:
         runs-on: ubuntu-latest
@@ -34,11 +44,16 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "eslint"
-              run: yarn lint --max-warnings=0
+              run: bun lint --max-warnings=0
 
     migrate-drift:
         name: Migrate Drift
@@ -46,8 +61,13 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "migrate:drift"
-              run: yarn migrate:drift
+              run: bun migrate:drift

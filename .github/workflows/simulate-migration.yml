@@ -26,10 +26,15 @@ jobs:
               with:
                   node-version: 20
 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
             - name: Download dependencies
               run: |
-                  yarn install --frozen-lockfile
-                  yarn prisma generate
+                  bun install --frozen-lockfile
+                  bun prisma generate
 
             - name: Install Turso CLI
               run: |

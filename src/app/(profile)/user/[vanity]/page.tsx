@@ -77,7 +77,8 @@ const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const profile = await getUniqueProfileByVanity(params.vanity)
 
-    if (profile?.name === undefined) {
+    const profileUsername = profile?.user.name
+    if (!profileUsername) {
         return {
             robots: {
                 follow: false,
@@ -88,10 +89,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const raidhub = await prefetchRaidHubPlayerBasic(profile.destinyMembershipId)
 
-    const image = profile?.image ?? bungieProfileIconUrl(raidhub?.iconPath)
+    const image = profile.user.image ?? bungieProfileIconUrl(raidhub?.iconPath)
 
     return generatePlayerMetadata({
-        username: profile.name,
+        username: profileUsername,
         image
     })
 }
