@@ -1,15 +1,15 @@
 import "server-only"
 
-import { type CallbacksOptions, type Profile } from "@auth/core/types"
+import { type AuthConfig } from "@auth/core/types"
 import { type BungieProfile } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 import { updateDestinyProfiles } from "./updateDestinyProfiles"
 
-export const signInCallback: CallbacksOptions<BungieProfile | Profile>["signIn"] = async params => {
-    console.log("signInCallback", params)
+export const signInCallback: Required<AuthConfig>["callbacks"]["signIn"] = async params => {
     // Only bungie users re-signing in will need to refresh their tokens
     if (
         params.account?.provider === "bungie" &&
+        params.profile &&
         "createdAt" in params.user &&
         params.user.createdAt.getTime() > 0
     ) {
@@ -25,7 +25,7 @@ export const signInCallback: CallbacksOptions<BungieProfile | Profile>["signIn"]
                     expires: new Date(Date.now() + params.account.refresh_expires_in! * 1000)
                 }
             }),
-            updateDestinyProfiles(params.profile as BungieProfile)
+            updateDestinyProfiles(params.profile as unknown as BungieProfile)
         ])
     }
     return true
