@@ -21,8 +21,7 @@ export const RemoveVanityForm = () => {
                 vanity: null
             },
             select: {
-                destinyMembershipId: true,
-                name: true
+                destinyMembershipId: true
             }
         })
         revalidatePath(`/profile/${removed.destinyMembershipId}`)

@@ -4,12 +4,13 @@ import { createClient } from "@libsql/client"
 import { PrismaLibSQL } from "@prisma/adapter-libsql"
 import { PrismaClient } from "@prisma/client"
 
+export type PrismaClientWithExtensions = ReturnType<typeof createPrismaWithExtension>
+
 const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined
+    prisma: PrismaClientWithExtensions | undefined
 }
 
-export const prisma =
-    globalForPrisma.prisma ??
+const createPrismaWithExtension = () =>
     new PrismaClient({
         log: process.env.APP_ENV === "local" ? ["query", "error", "warn"] : ["error"],
         adapter: new PrismaLibSQL(
@@ -22,6 +23,20 @@ export const prisma =
                       }
             )
         )
+    }).$extends({
+        name: "roleEnum",
+        result: {
+            user: {
+                role: {
+                    needs: {
+                        role_: true
+                    },
+                    compute: data => data.role_ as "USER" | "ADMIN"
+                }
+            }
+        }
     })
+
+export const prisma = globalForPrisma.prisma ?? createPrismaWithExtension()
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma

@@ -12,20 +12,10 @@ export const AccountIconContent = () => {
     if (status === "loading") return <QuestionMark color="white" sx={ICON_SIZE} />
     else if (status === "unauthenticated") return <UserIcon color="white" sx={ICON_SIZE} />
     else if (status === "authenticated") {
-        const primaryProfile = session.user.profiles.find(
-            p => p.destinyMembershipId === session.primaryDestinyMembershipId
-        )
-        if (!primaryProfile) return <QuestionMark color="white" sx={ICON_SIZE} />
+        const icon = session.user.image
+        if (!icon) return <QuestionMark color="white" sx={ICON_SIZE} />
 
-        return (
-            <Image
-                src={primaryProfile.image}
-                alt="profile"
-                unoptimized
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-            />
-        )
+        return <Image src={icon} alt="profile" unoptimized width={ICON_SIZE} height={ICON_SIZE} />
     } else {
         throw new Error("Invalid status")
     }

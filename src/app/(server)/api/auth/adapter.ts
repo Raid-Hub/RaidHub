@@ -1,69 +1,46 @@
 import "server-only"
 
-import type { Prisma, PrismaClient } from "@prisma/client"
+import { type Adapter } from "@auth/core/adapters"
+import type { Prisma } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { type UserMembershipData } from "bungie-net-core/models"
-import { type Adapter } from "next-auth/adapters"
+import { type PrismaClientWithExtensions } from "~/server/prisma"
 import { getDiscordProfile } from "./providers/discord"
 import { getTwitchProfile } from "./providers/twitch"
 import { getTwitterProfile } from "./providers/twitter"
 import { getYoutubeProfile } from "./providers/youtube"
-import { type SessionAndUserData } from "./types"
+import { updateDestinyProfiles } from "./updateDestinyProfiles"
 
-export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
+export const PrismaAdapter = (prisma: PrismaClientWithExtensions): Adapter => ({
     async createUser(input) {
-        const data = input as unknown as UserMembershipData
+        if (!("userMembershipData" in input)) {
+            throw new Error("Bungie profile is required")
+        }
 
         const user = await prisma.user.create({
             data: {
-                id: data.bungieNetUser.membershipId,
-                role: "USER"
+                id: input.id!,
+                name: input.name,
+                image: input.image,
+                role_: input.role
             }
         })
 
-        const primaryDestinyMembershipId =
-            data.primaryMembershipId ?? data.destinyMemberships[0].membershipId
-        const profiles = await Promise.all(
-            data.destinyMemberships.map(membership =>
-                prisma.profile.upsert({
-                    create: {
-                        destinyMembershipId: membership.membershipId,
-                        destinyMembershipType: membership.membershipType,
-                        isPrimary: membership.membershipId === primaryDestinyMembershipId,
-                        bungieMembershipId: data.bungieNetUser.membershipId,
-                        name: membership.bungieGlobalDisplayName || membership.displayName,
-                        image: `https://www.bungie.net${
-                            data.bungieNetUser.profilePicturePath.startsWith("/") ? "" : "/"
-                        }${data.bungieNetUser.profilePicturePath}`
-                    },
-                    update: {
-                        bungieMembershipId: data.bungieNetUser.membershipId,
-                        isPrimary: membership.membershipId === primaryDestinyMembershipId
-                    },
-                    where: {
-                        destinyMembershipId: membership.membershipId
-                    },
-                    select: {
-                        name: true,
-                        image: true,
-                        isPrimary: true,
-                        destinyMembershipId: true,
-                        destinyMembershipType: true,
-                        vanity: true
-                    }
-                })
-            )
-        )
+        await updateDestinyProfiles(input.userMembershipData)
 
         return {
-            name: undefined,
-            image: undefined,
             ...user,
-            profiles,
-            email: user.email ?? ""
+            email: user.email ?? "",
+            profiles: [],
+            bungieAccount: {
+                refreshToken: null,
+                accessToken: null,
+                expiresAt: null,
+                refreshExpiresAt: null
+            },
+            raidHubAccessToken: null
         }
     },
-    async updateUser({ profiles: _, ...data }) {
+    async updateUser({ profiles: _, raidHubAccessToken: __, bungieAccount: ___, ...data }) {
         const updated = await prisma.user.update({
             where: {
                 id: data.id
@@ -72,22 +49,40 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             include: {
                 profiles: {
                     select: {
-                        name: true,
-                        image: true,
                         isPrimary: true,
                         destinyMembershipId: true,
                         destinyMembershipType: true,
                         vanity: true
                     }
+                },
+                raidHubAccessToken: {
+                    select: {
+                        expiresAt: true,
+                        value: true
+                    }
+                },
+                accounts: {
+                    where: {
+                        provider: "bungie"
+                    },
+                    select: {
+                        accessToken: true,
+                        refreshToken: true,
+                        expiresAt: true,
+                        refreshExpiresAt: true
+                    }
                 }
             }
         })
 
+        const bungieAccount = updated.accounts[0]
+        if (!bungieAccount) throw new Error("Bungie account not found")
+
         return {
-            name: undefined,
-            image: undefined,
             ...updated,
-            email: updated.email ?? ""
+            email: updated.email ?? "",
+            raidHubAccessToken: updated.raidHubAccessToken,
+            bungieAccount
         }
     },
     async getUser(id) {
@@ -98,23 +93,41 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             include: {
                 profiles: {
                     select: {
-                        name: true,
-                        image: true,
                         isPrimary: true,
                         destinyMembershipId: true,
                         destinyMembershipType: true,
                         vanity: true
+                    }
+                },
+                raidHubAccessToken: {
+                    select: {
+                        expiresAt: true,
+                        value: true
+                    }
+                },
+                accounts: {
+                    where: {
+                        provider: "bungie"
+                    },
+                    select: {
+                        accessToken: true,
+                        refreshToken: true,
+                        expiresAt: true,
+                        refreshExpiresAt: true
                     }
                 }
             }
         })
         if (!user) return null
 
+        const bungieAccount = user.accounts[0]
+        if (!bungieAccount) throw new Error("Bungie account not found")
+
         return {
-            name: undefined,
-            image: undefined,
             ...user,
-            email: user.email ?? ""
+            email: user.email ?? "",
+            raidHubAccessToken: user.raidHubAccessToken,
+            bungieAccount
         }
     },
     async getUserByAccount(uniqueProviderAccountId) {
@@ -125,12 +138,27 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                     include: {
                         profiles: {
                             select: {
-                                name: true,
-                                image: true,
                                 isPrimary: true,
                                 destinyMembershipId: true,
                                 destinyMembershipType: true,
                                 vanity: true
+                            }
+                        },
+                        raidHubAccessToken: {
+                            select: {
+                                expiresAt: true,
+                                value: true
+                            }
+                        },
+                        accounts: {
+                            where: {
+                                provider: "bungie"
+                            },
+                            select: {
+                                accessToken: true,
+                                refreshToken: true,
+                                expiresAt: true,
+                                refreshExpiresAt: true
                             }
                         }
                     }
@@ -140,10 +168,10 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
         if (!account) return null
 
         return {
-            name: undefined,
-            image: undefined,
             ...account.user,
-            email: account.user.email ?? ""
+            email: account.user.email ?? "",
+            raidHubAccessToken: account.user.raidHubAccessToken,
+            bungieAccount: account.user.accounts[0]
         }
     },
     async getUserByEmail() {
@@ -233,20 +261,18 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
                 sessionToken: true,
                 user: {
                     include: {
-                        raidHubAccessToken: {
-                            select: {
-                                expiresAt: true,
-                                value: true
-                            }
-                        },
                         profiles: {
                             select: {
-                                name: true,
-                                image: true,
                                 isPrimary: true,
                                 destinyMembershipId: true,
                                 destinyMembershipType: true,
                                 vanity: true
+                            }
+                        },
+                        raidHubAccessToken: {
+                            select: {
+                                expiresAt: true,
+                                value: true
                             }
                         },
                         accounts: {
@@ -265,6 +291,7 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
             }
         })
         if (!userAndSession) return null
+
         const {
             user: { accounts, raidHubAccessToken, ...restOfUser },
             ...session
@@ -276,18 +303,16 @@ export const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
 
         return {
             user: {
-                name: undefined,
-                image: undefined,
                 ...restOfUser,
                 email: restOfUser.email ?? "",
-                bungieAccount: bungieAccount,
-                raidHubAccessToken: raidHubAccessToken
+                bungieAccount,
+                raidHubAccessToken
             },
             session
-        } satisfies SessionAndUserData
+        }
     },
     async updateSession(session) {
-        return prisma.session.update({
+        return await prisma.session.update({
             where: { sessionToken: session.sessionToken },
             data: session
         })

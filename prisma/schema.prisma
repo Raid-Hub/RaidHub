@@ -14,8 +14,6 @@ model Profile {
   destinyMembershipType Int     @map("destiny_membership_type")
   bungieMembershipId    String  @map("bungie_membership_id")
   isPrimary             Boolean @map("is_primary")
-  name                  String
-  image                 String
   pinnedActivityId      String? @map("pinned_activity_id")
   vanity                String? @unique
   user                  User?   @relation("UserToProfile", fields: [bungieMembershipId], references: [id], onDelete: Cascade)
@@ -30,8 +28,10 @@ model User {
   id                 String              @id @map("bungie_membership_id")
   email              String?             @unique(map: "user_email_key")
   emailVerified      DateTime?           @map("email_verified")
+  name               String?
+  image              String?
   createdAt          DateTime            @default(now()) @map("created_at")
-  role               String              @default("USER")
+  role_              String              @default("USER") @map("role")
   accounts           Account[]           @relation("UserToAccount")
   profiles           Profile[]           @relation("UserToProfile")
   raidHubAccessToken RaidHubAccessToken? @relation("UserToRaidHubAccessToken")

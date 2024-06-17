@@ -11,10 +11,10 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "tsc"
-              run: yarn tsc
+              run: bun tsc
 
     format:
         name: Formatting
@@ -23,10 +23,10 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "format:check"
-              run: yarn format:check
+              run: bun format:check
 
     lint:
         runs-on: ubuntu-latest
@@ -35,10 +35,10 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "eslint"
-              run: yarn lint --max-warnings=0
+              run: bun lint --max-warnings=0
 
     migrate-drift:
         name: Migrate Drift
@@ -47,7 +47,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Install dependencies
-              run: yarn install --frozen-lockfile
+              run: bun install --frozen-lockfile
 
             - name: "migrate:drift"
-              run: yarn migrate:drift
+              run: bun migrate:drift

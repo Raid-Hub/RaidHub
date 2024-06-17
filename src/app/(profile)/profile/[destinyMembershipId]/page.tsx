@@ -54,7 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const username = profile?.name ?? basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
+    const username =
+        profile?.user.name ?? basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
 
     if (!username) {
         return {
@@ -65,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const image = profile?.image ?? bungieProfileIconUrl(basic?.iconPath)
+    const image = profile?.user.image ?? bungieProfileIconUrl(basic?.iconPath)
 
     return generatePlayerMetadata({
         username,

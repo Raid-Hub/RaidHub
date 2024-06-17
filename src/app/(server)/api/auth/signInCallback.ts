@@ -1,33 +1,32 @@
 import "server-only"
 
-import type { Profile } from "@prisma/client"
-import { type Account } from "next-auth"
+import { type CallbacksOptions, type Profile } from "@auth/core/types"
+import { type BungieProfile } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
+import { updateDestinyProfiles } from "./updateDestinyProfiles"
 
-export const signInCallback = async ({
-    account,
-    user
-}: {
-    account: Account
-    user: Profile & { fresh?: true }
-}) => {
-    // Users from the bungie callback will not need to refresh their tokens
+export const signInCallback: CallbacksOptions<BungieProfile | Profile>["signIn"] = async params => {
+    console.log("signInCallback", params)
+    // Only bungie users re-signing in will need to refresh their tokens
     if (
-        account?.provider === "bungie" &&
-        // @ts-expect-error Types are wrong
-        user.createdAt
+        params.account?.provider === "bungie" &&
+        "createdAt" in params.user &&
+        params.user.createdAt.getTime() > 0
     ) {
-        await updateBungieAccessTokens({
-            userId: account.providerAccountId,
-            access: {
-                value: account.access_token!,
-                expires: new Date(account.expires_at! * 1000)
-            },
-            refresh: {
-                value: account.refresh_token!,
-                expires: new Date(Date.now() + (account.refresh_expires_in as number) * 1000)
-            }
-        })
+        await Promise.all([
+            updateBungieAccessTokens({
+                userId: params.account.providerAccountId,
+                access: {
+                    value: params.account.access_token!,
+                    expires: new Date(params.account.expires_at! * 1000)
+                },
+                refresh: {
+                    value: params.account.refresh_token!,
+                    expires: new Date(Date.now() + params.account.refresh_expires_in! * 1000)
+                }
+            }),
+            updateDestinyProfiles(params.profile as BungieProfile)
+        ])
     }
     return true
 }

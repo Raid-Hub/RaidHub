@@ -1,21 +1,22 @@
 import "server-only"
 
+import { type Adapter } from "@auth/core/adapters"
+import { type CallbacksOptions } from "@auth/core/types"
 import { refreshAuthorization } from "bungie-net-core/auth"
-import { type Session } from "next-auth"
 import { prisma } from "~/server/prisma"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { postRaidHubApi } from "~/services/raidhub/common"
-import { type AuthError, type BungieAccount, type SessionAndUserData } from "./types"
+import { type AuthError, type BungieAccount } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
-export const sessionCallback = async ({
+export const sessionCallback = (async ({
     session,
-    user: { bungieAccount, raidHubAccessToken, ...user }
-}: SessionAndUserData): Promise<Session> => {
+    user
+}: NonNullable<Awaited<ReturnType<Required<Adapter>["getSessionAndUser"]>>>) => {
     const [bungieToken, raidhubToken] = await Promise.all([
-        refreshBungieAuth(bungieAccount, user.id),
+        refreshBungieAuth(user.bungieAccount, user.id),
         user.role === "ADMIN"
-            ? refreshRaidHubAdminAuth(raidHubAccessToken, user.id)
+            ? refreshRaidHubAdminAuth(user.raidHubAccessToken, user.id)
             : Promise.resolve(undefined)
     ])
 
@@ -27,7 +28,7 @@ export const sessionCallback = async ({
         errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors])),
         expires: session.expires
     }
-}
+}) as unknown as CallbacksOptions["session"]
 
 async function refreshBungieAuth(bungie: BungieAccount, userId: string) {
     if (
