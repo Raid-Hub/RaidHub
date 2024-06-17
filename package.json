@@ -25,6 +25,7 @@
     "@formatjs/intl-localematcher": "0.5.4",
     "@hookform/resolvers": "3.3.4",
     "@libsql/client": "0.6.2",
+    "@libsql/linux-x64-gnu": "^0.4.0-pre.6",
     "@prisma/adapter-libsql": "5.15.0",
     "@prisma/client": "5.15.0",
     "@tanstack/react-query": "4.36.1",
