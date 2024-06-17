@@ -9,7 +9,7 @@ import { $media } from "../layout/media"
 export const CheckpointLogo = () => {
     return (
         <Flex $direction="column" $padding={0} $paddingY={2} $crossAxis="flex-start" $fullWidth>
-            <BackgroundLogo src="/ORANGE.png" alt="d2checkpoint" width={70} height={70} />
+            <BackgroundLogo src="/d2checkpoint.png" alt="d2checkpoint" width={70} height={70} />
             <h1>Checkpoints</h1>
             <span style={{ marginTop: "-2em" }}>
                 All checkpoints provided by{" "}

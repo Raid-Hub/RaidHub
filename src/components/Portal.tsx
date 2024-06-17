@@ -1,14 +1,9 @@
-import {
-    createContext,
-    useCallback,
-    useContext,
-    type ReactNode,
-    type ReactPortal,
-    type RefObject
-} from "react"
+import { createContext, useCallback, useContext, type RefObject } from "react"
 import { createPortal } from "react-dom"
 
-const PortalContext = createContext<(node: ReactNode) => ReactPortal | null>((node: ReactNode) => {
+type ReactDOMReactNode = Parameters<typeof createPortal>[0]
+
+const PortalContext = createContext((node: ReactDOMReactNode) => {
     if (document?.body) {
         return createPortal(node, document.body)
     } else {
@@ -22,12 +17,12 @@ export const PortalProvider = ({
     children,
     target
 }: {
-    children: ReactNode
+    children: React.ReactNode
     target: RefObject<HTMLElement>
 }) => (
     <PortalContext.Provider
         value={useCallback(
-            (node: ReactNode) => {
+            (node: ReactDOMReactNode) => {
                 if (target?.current) {
                     return createPortal(node, target.current)
                 } else {

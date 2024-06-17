@@ -7,8 +7,6 @@ import { bungieClanBannerBannerLayerUrl } from "~/util/destiny"
 const mast =
     "https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"
 
-export type { ClanBanner as default } from "bungie-net-core/models"
-
 export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number }) => {
     const bannerData = useClanBanner(data)
 
