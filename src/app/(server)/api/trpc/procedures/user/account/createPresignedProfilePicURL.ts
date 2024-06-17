@@ -3,7 +3,7 @@ import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { TRPCError } from "@trpc/server"
 import { v4 } from "uuid"
 import { z } from "zod"
-import { protectedProcedure } from "../.."
+import { protectedProcedure } from "../../.."
 
 const s3 = new S3Client({
     region: process.env.AWS_S3_REGION!,

@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
-import { protectedProcedure } from "../.."
+import { protectedProcedure } from "../../.."
 
 // delete account from user
 export const removeProvider = protectedProcedure

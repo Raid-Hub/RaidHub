@@ -1,8 +1,9 @@
 import { createTRPCRouter } from "."
-import { createPresignedProfilePicURL } from "./procedures/account/createPresignedProfilePicURL"
-import { removeProvider } from "./procedures/account/removeProvider"
-import { addByAPIKey } from "./procedures/account/speedrun-com/addByAPIKey"
+import { unhandledClientError } from "./procedures/monitoring/unhandledError"
 import { getProfile } from "./procedures/profile/getProfile"
+import { createPresignedProfilePicURL } from "./procedures/user/account/createPresignedProfilePicURL"
+import { removeProvider } from "./procedures/user/account/removeProvider"
+import { addByAPIKey } from "./procedures/user/account/speedrun-com/addByAPIKey"
 import { deleteUser } from "./procedures/user/delete"
 import { getAuthenticatedProfile } from "./procedures/user/getAuthenticatedProfile"
 import { getConnections } from "./procedures/user/getConnections"
@@ -28,5 +29,9 @@ export const appRouter = createTRPCRouter({
     // public router for finding and loading profiles
     profile: createTRPCRouter({
         getUnique: getProfile
+    }),
+    // public router for monitoring and debugging
+    monitoring: createTRPCRouter({
+        unhandledClientError: unhandledClientError
     })
 })
