@@ -14,7 +14,7 @@
         "lint": "next lint",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\" && prisma format",
         "format:check": "prettier --check \"src/**/*.{ts,tsx,json}\"",
-        "build": "bun prisma generate && next build --debug",
+        "build": "bun prisma generate && next build",
         "deploy": "./vercel/dev-deploy.sh"
     },
     "dependencies": {
