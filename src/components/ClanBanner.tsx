@@ -99,5 +99,3 @@ export const ClanBannerComponent = ({ data, sx }: { data: ClanBanner; sx: number
         </svg>
     ) : null
 }
-
-export default ClanBanner

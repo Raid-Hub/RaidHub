@@ -39,7 +39,8 @@ export const theme: DefaultTheme = {
             light: "rgb(107, 107, 107)",
             medium: "rgb(51, 51, 51)",
             dark: "rgb(8, 8, 8)",
-            error: "rgb(245, 103, 98)"
+            error: "rgb(245, 103, 98)",
+            brandDim: "#FF832940"
         },
         brand: {
             light: "rgb(255, 140, 57, 0.8)",
@@ -88,6 +89,7 @@ declare module "styled-components" {
                 medium: string
                 dark: string
                 error: string
+                brandDim: string
             }
             brand: {
                 light: string
