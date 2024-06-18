@@ -11,12 +11,12 @@ import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
 export const sessionCallback = (async ({
     session,
-    user
+    user: { raidHubAccessToken, bungieAccount, ...user }
 }: NonNullable<Awaited<ReturnType<Required<Adapter>["getSessionAndUser"]>>>) => {
     const [bungieToken, raidhubToken] = await Promise.all([
-        refreshBungieAuth(user.bungieAccount, user.id),
+        refreshBungieAuth(bungieAccount, user.id),
         user.role === "ADMIN"
-            ? refreshRaidHubAdminAuth(user.raidHubAccessToken, user.id)
+            ? refreshRaidHubAdminAuth(raidHubAccessToken, user.id)
             : Promise.resolve(undefined)
     ])
 
