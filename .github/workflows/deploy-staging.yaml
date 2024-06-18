@@ -17,8 +17,6 @@ jobs:
     deploy:
         name: Deploy staging
         runs-on: ubuntu-latest
-        env:
-            APP_ENV: "staging"
 
         steps:
             - name: Checkout
@@ -53,7 +51,7 @@ jobs:
               run: ./.github/scripts/turso-migrate.sh
 
             - name: Deploy Project Artifacts to Vercel
-              run: echo "VERCEL_DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+              run: echo "VERCEL_DEPLOYMENT_URL=$(vercel deploy -e APP_ENV=staging --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $VERCEL_DEPLOYMENT_URL staging.raidhub.io --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}
