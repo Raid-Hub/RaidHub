@@ -135,7 +135,14 @@ export const PrismaAdapter = (prisma: PrismaClientWithExtensions): Adapter => ({
             where: { uniqueProviderAccountId },
             select: {
                 user: {
-                    include: {
+                    select: {
+                        id: true,
+                        emailVerified: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                        role: true,
+                        createdAt: true,
                         profiles: {
                             select: {
                                 isPrimary: true,
@@ -260,7 +267,14 @@ export const PrismaAdapter = (prisma: PrismaClientWithExtensions): Adapter => ({
                 expires: true,
                 sessionToken: true,
                 user: {
-                    include: {
+                    select: {
+                        id: true,
+                        emailVerified: true,
+                        name: true,
+                        image: true,
+                        email: true,
+                        role: true,
+                        createdAt: true,
                         profiles: {
                             select: {
                                 isPrimary: true,

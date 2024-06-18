@@ -164,8 +164,14 @@ export const useDexieGetQuery = <
                 liveQuery
             )
         }
-        return (
-            (dexieDB.cache[table].get(hash) as ReturnType<CustomDexie["cache"][K]["get"]>) ?? null
-        )
+        try {
+            return (
+                (dexieDB.cache[table].get(hash) as ReturnType<CustomDexie["cache"][K]["get"]>) ??
+                null
+            )
+        } catch (e) {
+            console.error(e)
+            return null
+        }
     }, [table, liveQuery, hash])
 }
