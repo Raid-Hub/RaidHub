@@ -3,6 +3,7 @@ on:
     push:
         branches:
             - main
+
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
@@ -10,14 +11,12 @@ concurrency:
 env:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
     deploy:
         name: Deploy staging
         runs-on: ubuntu-latest
-        env:
-            APP_ENV: "staging"
-            DEPLOY_URL: "https://staging.raidhub.io"
 
         steps:
             - name: Checkout
@@ -45,23 +44,14 @@ jobs:
                   curl -sSfL https://get.tur.so/install.sh | bash
                   echo "PATH=$PATH:/home/runner/.turso" >> $GITHUB_ENV
 
-            - name: Pull Vercel Environment Information
-              run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-            - name: Set APP_VERSION
-              run: echo "APP_VERSION=$(date '+%Y%m%d')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
             - name: Apply Database Migrations
               env:
                   TURSO_DATABASE_NAME: "staging"
                   TURSO_API_TOKEN: ${{ secrets.TURSO_API_TOKEN }}
               run: ./.github/scripts/turso-migrate.sh
 
-            - name: Build Project Artifacts
-              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
             - name: Deploy Project Artifacts to Vercel
-              run: echo "VERCEL_DEPLOYMENT_URL=$(vercel deploy --prebuilt -e DEPLOY_URL=$DEPLOY_URL --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
+              run: echo "VERCEL_DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_ENV
 
             - name: Set Alias
               run: vercel alias set $VERCEL_DEPLOYMENT_URL staging.raidhub.io --scope "raidhub" --token=${{ secrets.VERCEL_TOKEN }}

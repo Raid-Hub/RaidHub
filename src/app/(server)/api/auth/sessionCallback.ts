@@ -1,7 +1,7 @@
 import "server-only"
 
 import { type Adapter } from "@auth/core/adapters"
-import { type CallbacksOptions } from "@auth/core/types"
+import { type AuthConfig } from "@auth/core/types"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { prisma } from "~/server/prisma"
 import ServerBungieClient from "~/server/serverBungieClient"
@@ -28,7 +28,7 @@ export const sessionCallback = (async ({
         errors: Array.from(new Set([...(raidhubToken?.errors ?? []), ...bungieToken.errors])),
         expires: session.expires
     }
-}) as unknown as CallbacksOptions["session"]
+}) as unknown as Required<AuthConfig>["callbacks"]["session"]
 
 async function refreshBungieAuth(bungie: BungieAccount, userId: string) {
     if (

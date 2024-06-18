@@ -77,10 +77,7 @@ jobs:
             - name: Deploy Project to Vercel
               shell: bash
               run: |
-                  # Deployments are triggered when DEPLOY_HOOK_TRIGGER environment variable is set
-                  echo $APP_VERSION | vercel env add DEPLOY_HOOK_TRIGGER production --token=${{ secrets.VERCEL_TOKEN }}
                   res=$(curl -X POST ${{ secrets.VERCEL_PROD_DEPLOYMENT_HOOK }})
-                  vercel env rm DEPLOY_HOOK_TRIGGER production --yes --token=${{ secrets.VERCEL_TOKEN }}
 
                   if [[ $(echo "$res" | jq '.job.state == "PENDING"') == true ]]; then
                     echo "Deployment is pending"

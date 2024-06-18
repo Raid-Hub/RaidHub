@@ -42,6 +42,7 @@ export default function BungieProvider(creds: {
         },
         profile(data): Parameters<Required<Adapter>["createUser"]>[0] & {
             userMembershipData: UserMembershipData
+            id: string
         } {
             return {
                 id: data.bungieNetUser.membershipId,
