@@ -32,10 +32,12 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         onSuccess: newManifestVersion => {
             setManifestVersion(newManifestVersion)
             // Free up some memory
-            dexieDB.clearCache()
+            try {
+                dexieDB.clearCache()
+            } catch {}
             localStorage.setItem(KEY_MANIFEST_VERSION, newManifestVersion)
         },
-        onError: (e: Error | Error[]) => {
+        onError: async (e: Error | Error[]) => {
             console.warn(
                 `Failed to store the Destiny 2 manifest definitions with error(s): ${
                     Array.isArray(e)
@@ -43,7 +45,12 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
                         : e.message
                 }.`
             )
-            dexieDB.delete().catch(console.error)
+
+            try {
+                await dexieDB.delete()
+            } catch (err) {
+                console.error("Failed to reset the Dexie database", err)
+            }
         }
     })
 
