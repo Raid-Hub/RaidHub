@@ -1,4 +1,4 @@
-if [ "$VERCEL_GIT_COMMIT_REF" = "test" ] && [ "$VERCEL_ENV" = "preview" ]; then
+if [ "$VERCEL_GIT_COMMIT_REF" = "main" ] && [ "$VERCEL_ENV" = "preview" ]; then
     # Staging
     export APP_ENV="staging"
     export APP_VERSION=$(date '+%Y%m%d')-$VERCEL_GIT_COMMIT_SHA
@@ -16,4 +16,7 @@ elif [ "$VERCEL_ENV" = "preview" ]; then
 
 elif [ "$VERCEL_ENV" = "production" ]; then
     # Prod
+    
+    bun prisma generate
+    bun next build
 fi
