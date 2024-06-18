@@ -16,7 +16,7 @@ switch (process.env.APP_ENV) {
         version = "local"
         break
     case "preview":
-        version = `preview-${process.env.VERCEL_GIT_COMMIT_SHA}`
+        version = `preview-${process.env.APP_VERSION}`
         break
     case "staging":
         version = `staging-${process.env.APP_VERSION}`
