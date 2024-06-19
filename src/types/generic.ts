@@ -15,3 +15,10 @@ export type Truthy<T> = T extends null | undefined | false | "" | 0 ? never : T
 export type KeysWhichValuesExtend<Keys, Schema> = keyof {
     [key in keyof Keys as Keys[key] extends Schema ? key : never]: Keys[key]
 }
+
+export interface RGBA {
+    blue: number
+    green: number
+    red: number
+    alpha: number
+}

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react"
 
 export const useLocalStorage = <V>(
     key: string,
     defaultValue: V
-): [V, (value: V | ((old: V) => V)) => void] => {
+): [V, Dispatch<SetStateAction<V>>] => {
     const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {

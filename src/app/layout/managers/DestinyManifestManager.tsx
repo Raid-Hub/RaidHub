@@ -1,55 +1,87 @@
 "use client"
 
+import { Collection } from "@discordjs/collection"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { getClanBannerSource, getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
-import { getDestinyManifestComponent, type DestinyManifestLanguage } from "bungie-net-core/manifest"
-import { type ClanBannerSource, type DestinyManifest } from "bungie-net-core/models"
+import { getDestinyManifest } from "bungie-net-core/endpoints/Destiny2"
 import Dexie from "dexie"
-import { useEffect, useState, type ReactNode } from "react"
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react"
+import { useInterval } from "~/hooks/util/useInterval"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { type BungieAPIError } from "~/models/BungieAPIError"
-import type { Prettify } from "~/types/generic"
-import { DB_VERSION, dexieDB } from "~/util/dexie"
-import { o } from "~/util/o"
-import type ClientBungieClient from "../../../services/bungie/ClientBungieClient"
+import {
+    DB_VERSION,
+    useDexie,
+    type CustomDexieTable,
+    type CustomDexieTableDefinition
+} from "~/util/dexie/dexie"
 import { ManifestStatusOverlay } from "../ManifestStatusOverlay"
 import { useLocale } from "./LocaleManager"
 import { useBungieClient } from "./session/BungieClientProvider"
 
 const KEY_MANIFEST_VERSION = "d2_manifest_version"
 
-const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
-    const [manifestVersion, setManifestVersion] = useState<string | null | undefined>(undefined)
-    const client = useBungieClient()
-    const { manifestLanguage } = useLocale()
+/**
+ * The in-memory cache object that stores collections of data from each table.
+ */
 
-    useEffect(() => {
-        const oldVersion = localStorage.getItem(KEY_MANIFEST_VERSION)
-        setManifestVersion(oldVersion ?? null)
-    }, [])
+type DefinitionsCache = {
+    [K in CustomDexieTable]: Collection<number, CustomDexieTableDefinition<K>>
+}
+const DefinitionsCacheContext = createContext<DefinitionsCache | undefined>(undefined)
+
+const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
+    const [manifestVersion, setManifestVersion] = useLocalStorage<string | null>(
+        KEY_MANIFEST_VERSION,
+        null
+    )
+    const { manifestLanguage } = useLocale()
+    const client = useBungieClient()
+    const dexieDB = useDexie()
+    const [cache, updateCache] = useState(
+        () =>
+            Object.fromEntries(
+                dexieDB.allTables.map(table => [table, new Collection()])
+            ) as DefinitionsCache
+    )
+
+    const seedCache = useCallback(
+        <K extends CustomDexieTable>([table, values]: [
+            table: K,
+            values: CustomDexieTableDefinition<K>[]
+        ]) => {
+            updateCache(prevState => ({
+                ...prevState,
+                [table]: new Collection(values.map(v => [v.hash, v]))
+            }))
+        },
+        []
+    )
 
     const { mutate: storeManifest, ...mutationState } = useMutation({
-        mutationFn: updateCachedManifest,
-        onSuccess: newManifestVersion => {
-            setManifestVersion(newManifestVersion)
-            // Free up some memory
-            try {
-                dexieDB.clearCache()
-            } catch {}
-            localStorage.setItem(KEY_MANIFEST_VERSION, newManifestVersion)
-        },
-        onError: async (e: Error | Error[]) => {
+        mutationFn: (args: Parameters<typeof dexieDB.updateDefinitions>[1]) =>
+            dexieDB.updateDefinitions(seedCache, args),
+        onSuccess: setManifestVersion,
+        onError: async (err: Error | Error[]) => {
+            setManifestVersion(null)
             console.warn(
                 `Failed to store the Destiny 2 manifest definitions with error(s): ${
-                    Array.isArray(e)
-                        ? "\n" + e.map((e, idx) => `${idx + 1}. ${e.message}`).join(",\n")
-                        : e.message
+                    Array.isArray(err)
+                        ? "\n" + err.map((e, idx) => `${idx + 1}. ${e.message}`).join(",\n")
+                        : err.message
                 }.`
             )
 
-            try {
-                await dexieDB.delete()
-            } catch (err) {
-                console.error("Failed to reset the Dexie database", err)
+            if (
+                (Array.isArray(err) ? err : [err]).some(
+                    e => e instanceof Dexie.DexieError || e.message.includes("Dexie")
+                )
+            ) {
+                // Force a reset if there was a dexie related error
+                try {
+                    await dexieDB.delete()
+                } catch (err) {
+                    console.error("Failed to reset the Dexie database", err)
+                }
             }
         }
     })
@@ -62,16 +94,28 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         staleTime: 3600_000, // 1 hour
         refetchInterval: 3600_000,
         refetchIntervalInBackground: false,
-        retry: (failureCount, error: BungieAPIError) => error.ErrorCode === 5 || failureCount < 3,
-        retryDelay: failureCount => Math.min(2 ** failureCount * 10000, 600_000),
-        onSuccess: data => {
-            const newManifestVersion = [data.version, manifestLanguage, DB_VERSION].join("::")
+        retry: (failureCount, error: BungieAPIError) => error.ErrorCode === 5 || failureCount < 2,
+        retryDelay: failureCount => Math.min(2 ** failureCount * 5000, 600_000),
+        onSuccess: async manifest => {
+            const newManifestVersion = [manifest.version, manifestLanguage, DB_VERSION].join("::")
 
-            if (manifestVersion !== newManifestVersion) {
+            if (
+                manifestVersion !== newManifestVersion ||
+                // Check if any of the tables are empty
+                (
+                    await Promise.all(
+                        dexieDB.allTables.map(tableName => dexieDB[tableName].limit(1).first())
+                    ).catch(err => {
+                        console.error("Failed to check if tables are empty", err)
+                        return []
+                    })
+                ).reduce((acc, val) => (acc += +(val !== undefined)), 0) !==
+                    dexieDB.allTables.length
+            ) {
                 storeManifest({
                     newManifestVersion,
                     client,
-                    manifest: data,
+                    manifest,
                     language: manifestLanguage
                 })
             }
@@ -85,8 +129,23 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         }
     })
 
+    const purgeCache = useCallback(() => {
+        // Silently clear the cache without affecting the state
+        if (!mutationState.isError && !queryState.isError) {
+            Object.values(cache).forEach(collection => {
+                collection.clear()
+            })
+        }
+    }, [cache, mutationState.isError, queryState.isError])
+
+    useInterval(600 * 1000, purgeCache)
+
+    useEffect(() => {
+        dexieDB.on("close", () => setManifestVersion(null))
+    }, [dexieDB, setManifestVersion])
+
     return (
-        <>
+        <DefinitionsCacheContext.Provider value={cache}>
             {queryState.isFetching && queryState.failureCount < 1 ? (
                 <ManifestStatusOverlay status="bungie-loading" />
             ) : mutationState.isLoading ? (
@@ -97,195 +156,15 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
                 <ManifestStatusOverlay status="dexie-error" error={mutationState.error} />
             ) : null}
             {children}
-        </>
+        </DefinitionsCacheContext.Provider>
     )
+}
+
+export const useDefinitionsCache = <K extends CustomDexieTable>(table: K) => {
+    const cache = useContext(DefinitionsCacheContext)
+    if (!cache) throw new Error("useDefinitionsCache must be used within a DestinyManifestManager")
+
+    return cache[table]
 }
 
 export default DestinyManifestManager
-
-const updateCachedManifest = async ({
-    newManifestVersion,
-    client,
-    manifest,
-    language
-}: {
-    newManifestVersion: string
-    client: ClientBungieClient
-    manifest: DestinyManifest
-    language: DestinyManifestLanguage
-}) => {
-    const allSettled = await Promise.allSettled([
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyInventoryItemLiteDefinition",
-            language: language
-        }).then(items =>
-            dexieDB.transaction("rw", dexieDB.items, async () => {
-                const itemsWithHashes = Object.entries(items)
-                    // Weapon & Emblems
-                    .filter(([, item]) => item.itemType === 3 || item.itemType == 14)
-                    .map(([hash, item]) => ({
-                        ...item,
-                        hash: Number(hash)
-                    }))
-                dexieDB.seedCache("items", itemsWithHashes)
-                await dexieDB.items.clear()
-                return dexieDB.items.bulkPut(itemsWithHashes)
-            })
-        ),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyActivityDefinition",
-            language: language
-        }).then(activities => {
-            const values = Object.values(activities)
-            dexieDB.seedCache("activities", values)
-
-            return dexieDB.transaction("rw", dexieDB.activities, () =>
-                dexieDB.activities.bulkPut(values)
-            )
-        }),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyActivityModeDefinition",
-            language: language
-        }).then(modes => {
-            const values = Object.values(modes)
-            dexieDB.seedCache("activityModes", values)
-            return dexieDB.transaction("rw", dexieDB.activityModes, () =>
-                dexieDB.activityModes.bulkPut(values)
-            )
-        }),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinySeasonDefinition",
-            language: language
-        }).then(seasons => {
-            const values = Object.values(seasons)
-            dexieDB.seedCache("seasons", values)
-            return dexieDB.transaction("rw", dexieDB.seasons, () => dexieDB.seasons.bulkPut(values))
-        }),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyActivityModifierDefinition",
-            language: language
-        }).then(modifiers => {
-            const values = Object.values(modifiers)
-            dexieDB.seedCache("activityModifiers", values)
-            return dexieDB.transaction("rw", dexieDB.activityModifiers, () =>
-                dexieDB.activityModifiers.bulkPut(values)
-            )
-        }),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyClassDefinition",
-            language: language
-        }).then(classes => {
-            const values = Object.values(classes)
-            dexieDB.seedCache("characterClasses", values)
-            return dexieDB.transaction("rw", dexieDB.characterClasses, () =>
-                dexieDB.characterClasses.bulkPut(values)
-            )
-        }),
-
-        getDestinyManifestComponent(client, {
-            destinyManifest: manifest,
-            tableName: "DestinyMilestoneDefinition",
-            language: language
-        }).then(milestones => {
-            const values = Object.values(milestones)
-            dexieDB.seedCache("milestones", values)
-            return dexieDB.transaction("rw", dexieDB.milestones, () =>
-                dexieDB.milestones.bulkPut(values)
-            )
-        }),
-
-        getClanBannerSource(client).then(res =>
-            updateClanBannerData(res.Response as RawClanBannerData)
-        )
-    ] as const)
-
-    const errors = allSettled.filter((r): r is PromiseRejectedResult => r.status === "rejected")
-
-    if (!errors.length) return newManifestVersion
-
-    if (
-        errors.some(
-            e =>
-                e.reason instanceof Dexie.DexieError ||
-                (typeof e.reason === "string" && e.reason.includes("Dexie"))
-        )
-    ) {
-        // Force a reset if there was a dexie related error
-        await dexieDB.delete()
-    }
-
-    throw errors.map(e => (e instanceof Error ? e : new Error(String(e.reason))))
-}
-
-async function updateClanBannerData(banners: RawClanBannerData) {
-    const hash = <K extends keyof RawClanBannerData>(key: K) =>
-        o.entries(banners[key]).map(([hash, def]) =>
-            typeof def === "string"
-                ? { hash: Number(hash), value: def }
-                : {
-                      hash: Number(hash),
-                      ...(def as Prettify<RawClanBannerData[K][keyof RawClanBannerData[K]]>)
-                  }
-        )
-
-    const clanBannerTableKeys = Object.keys(banners) as (keyof RawClanBannerData)[]
-
-    return dexieDB.transaction(
-        "rw",
-        clanBannerTableKeys.map(key => dexieDB[key]),
-        () =>
-            Promise.all(
-                clanBannerTableKeys.map(key => {
-                    const data = hash(key)
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                    return (
-                        dexieDB[key]
-                            // @ts-expect-error Can't type this
-                            .bulkPut(data)
-                    )
-                })
-            )
-    )
-}
-
-export interface RGBA {
-    blue: number
-    green: number
-    red: number
-    alpha: number
-}
-
-export interface RawClanBannerData extends ClanBannerSource {
-    clanBannerDecals: Record<
-        string,
-        {
-            foregroundPath: string
-            backgroundPath: string
-        }
-    >
-    clanBannerDecalPrimaryColors: Record<string, RGBA>
-    clanBannerDecalSecondaryColors: Record<string, RGBA>
-    clanBannerGonfalons: Record<string, string>
-    clanBannerGonfalonColors: Record<string, RGBA>
-    clanBannerGonfalonDetails: Record<string, string>
-    clanBannerGonfalonDetailColors: Record<string, RGBA>
-    clanBannerDecalsSquare: Record<
-        string,
-        {
-            foregroundPath: string
-            backgroundPath: string
-        }
-    >
-    clanBannerGonfalonDetailsSquare: Record<string, string>
-}

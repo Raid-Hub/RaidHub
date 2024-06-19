@@ -2,6 +2,9 @@ import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { publicProcedure } from "../.."
 
+const staticChunkRegex =
+    /https:\/\/[a-zA-Z0-9.-]+\/_next\/static\/chunks\/([a-zA-Z0-9_-]+)\.js\?dpl=[a-zA-Z0-9_]+:(\d+):(\d+)/
+
 export const unhandledClientError = publicProcedure
     .input(
         z.object({
@@ -23,8 +26,10 @@ export const unhandledClientError = publicProcedure
                 const stackTraceLines =
                     input.error.stack
                         ?.split("\n")
+                        .slice(1)
                         .map(line => line.trim())
                         .map(line => (line.startsWith("at ") ? line.substring(3) : line))
+                        .map(line => line.replace(staticChunkRegex, "chunks/$1.js:$2:$3"))
                         .map(line => `- \`${line}\``) ?? []
 
                 const body = (countLines: number) => ({
@@ -34,59 +39,51 @@ export const unhandledClientError = publicProcedure
                             fields: [
                                 {
                                     name: "Error",
-                                    value: `**${input.error.name}**: ${input.error.message}`,
+                                    value: `__${input.error.name}__: ${input.error.message}`,
                                     inline: false
                                 },
                                 {
                                     name: "Stack Trace",
-                                    value: stackTraceLines.slice(1, countLines + 1).join("\n"),
+                                    value: stackTraceLines.slice(0, countLines).join("\n"),
                                     inline: false
                                 },
                                 {
-                                    name: "Host",
-                                    value: headers.get("host") ?? "",
-                                    inline: true
-                                },
-                                {
-                                    name: "Origin",
-                                    value: headers.get("origin"),
-                                    inline: true
-                                },
-                                {
-                                    name: "Referer",
+                                    name: "URL",
                                     value: headers.get("referer"),
-                                    inline: true
-                                },
-                                {
-                                    name: "Pathname",
-                                    value: input.next.pathname,
-                                    inline: true
+                                    inline: false
                                 },
                                 {
                                     name: "Params",
                                     value: Object.entries(input.next.params)
                                         .map(
                                             ([key, value]) =>
-                                                `- \`${key}\`: \`${
+                                                `- \`${key}: ${
                                                     Array.isArray(value) ? value.join(",") : value
                                                 }\``
                                         )
                                         .join("\n"),
-                                    inline: true
+                                    inline: false
                                 },
                                 {
                                     name: "Search Params",
-                                    value: Object.entries(input.next.searchParams).toString(),
-                                    inline: true
+                                    value: Array.from(input.next.searchParams.entries())
+                                        .map(([key, value]) => `- \`${key}: ${value}\``)
+                                        .sort()
+                                        .join("\n"),
+                                    inline: false
+                                },
+                                {
+                                    name: "App Version",
+                                    value: process.env.APP_VERSION ?? "N/A"
                                 },
                                 {
                                     name: "Country",
-                                    value: headers.get("cf-ipcountry") ?? "",
-                                    inline: true
+                                    value: headers.get("cf-ipcountry") ?? "N/A",
+                                    inline: false
                                 },
                                 {
                                     name: "User Agent",
-                                    value: `\`${headers.get("user-agent") ?? ""}\``,
+                                    value: `\`${headers.get("user-agent") ?? "N/A"}\``,
                                     inline: false
                                 }
                             ]
@@ -94,7 +91,7 @@ export const unhandledClientError = publicProcedure
                     ]
                 })
 
-                let i = 0
+                let i = 2
                 while (JSON.stringify(body(i)).length < 1600) {
                     i++
                 }
