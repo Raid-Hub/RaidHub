@@ -32,7 +32,7 @@ export const unhandledClientError = publicProcedure
                         .map(line => line.replace(staticChunkRegex, "chunks/$1.js:$2:$3"))
                         .map(line => `- \`${line}\``) ?? []
 
-                const body = (countLines: number) => ({
+                const getBody = (end?: number) => ({
                     embeds: [
                         {
                             color: 0xef0c09,
@@ -44,7 +44,7 @@ export const unhandledClientError = publicProcedure
                                 },
                                 {
                                     name: "Stack Trace",
-                                    value: stackTraceLines.slice(0, countLines).join("\n"),
+                                    value: stackTraceLines.slice(0, end).join("\n"),
                                     inline: false
                                 },
                                 {
@@ -91,18 +91,19 @@ export const unhandledClientError = publicProcedure
                     ]
                 })
 
-                let i = 2
-                while (JSON.stringify(body(i)).length < 1600) {
+                let i = 1
+                let body = JSON.stringify(getBody())
+                while (body.length > 1600 && i < stackTraceLines.length) {
+                    body = JSON.stringify(getBody(-i))
                     i++
                 }
-                i--
 
                 const webhookResponse = await fetch(process.env.CLIENT_ALERTS_WEBHOOK_URL, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(body(i))
+                    body
                 })
                 if (!webhookResponse.ok) {
                     throw new Error(`[${webhookResponse.status}] ${await webhookResponse.text()}`)
