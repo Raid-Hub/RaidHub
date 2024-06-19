@@ -84,9 +84,9 @@ jobs:
 
                   if [[ $(echo "$res" | jq '.job.state == "PENDING"') == true ]]; then
                     echo "Deployment is pending"
-                    sleep 5
+                    sleep 10
                     list=$(vercel list --environment production --token=${{ secrets.VERCEL_TOKEN }} 2>&1 1>/dev/null)
-                    url=$(echo $list | awk '{for(i=1;i<=NF;i++) if($i == "●" && $(i+1) == "Building") print $(i-1)}')
+                    url=$(echo $list | awk '{for(i=1;i<=NF;i++) if($i == "●") print $(i-1)}')
                     echo "Deployment URL: $url"
                     deployment=$(vercel inspect $url --wait --timeout 5m --scope raidhub --token=${{ secrets.VERCEL_TOKEN }} 2>&1)
 
