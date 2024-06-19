@@ -1,6 +1,6 @@
 import type { ClanBanner } from "bungie-net-core/models"
-import type { RGBA } from "~/app/layout/managers/DestinyManifestManager"
-import { useDexieGetQuery } from "~/util/dexie"
+import { type RGBA } from "~/types/generic"
+import { useDexieGetQuery } from "~/util/dexie/useDexieGetQuery"
 import { o } from "~/util/o"
 
 export function useClanBanner(banner: ClanBanner) {
