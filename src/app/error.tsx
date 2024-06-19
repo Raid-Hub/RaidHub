@@ -40,6 +40,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
                 Try again
             </button>
             <button onClick={() => window.location.reload()}>Hard reload</button>
+            <pre>{JSON.stringify(error, null, 2)}</pre>
         </div>
     )
 }

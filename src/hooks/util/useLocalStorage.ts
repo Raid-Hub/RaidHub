@@ -8,7 +8,14 @@ export const useLocalStorage = <V>(
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
-        setValue(fromStore ? (JSON.parse(fromStore) as V) : defaultValue)
+        const parse = (value: string) => {
+            try {
+                return JSON.parse(value) as V
+            } catch {
+                return defaultValue
+            }
+        }
+        setValue(fromStore ? parse(fromStore) : defaultValue)
     }, [key, defaultValue])
 
     const save = useCallback(
