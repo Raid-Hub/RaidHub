@@ -178,7 +178,6 @@ export const PrismaAdapter = (prisma: PrismaClientWithExtensions): Adapter => ({
                 }
             }
         })
-        console.log({ uniqueProviderAccountId, account })
         if (!account) return null
 
         return {
