@@ -45,6 +45,10 @@ export default function BungieProvider(creds: {
             id: string
         } {
             return {
+                /**
+                 * The `id` returned here is overriden prior to the `createUser` function in the adapter.
+                 * However, it is used as the `providerAccountId` to create an account.
+                 */
                 id: data.bungieNetUser.membershipId,
                 role: "USER",
                 name: data.bungieNetUser.displayName,
