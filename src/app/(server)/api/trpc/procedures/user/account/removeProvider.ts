@@ -1,5 +1,4 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { protectedProcedure } from "../../.."
 
@@ -27,9 +26,7 @@ export const removeProvider = protectedProcedure
             if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
                 return
             }
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: e instanceof Error ? e.message : "Unknown error"
-            })
+
+            throw e
         }
     })

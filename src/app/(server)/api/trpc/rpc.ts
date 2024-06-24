@@ -7,15 +7,14 @@ import { type TRPCErrorResponse } from "@trpc/server/rpc"
 import { headers } from "next/headers"
 import superjson from "superjson"
 import { reactDedupe } from "~/util/react-cache"
-import { type AppRouter } from "."
-import { createTRPCContext } from "./context"
+import { createTRPCContext, type AppRouter } from "."
 import { appRouter } from "./router"
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a tRPC call from a React Server Component.
  */
-const createContext = reactDedupe(() => {
+const createServerContext = reactDedupe(() => {
     const headrs = new Headers(headers())
     headrs.set("x-trpc-source", "rsc")
 
@@ -39,7 +38,7 @@ export const trpcServer = createTRPCProxyClient<AppRouter>({
         () =>
             ({ op }) =>
                 observable(observer => {
-                    createContext()
+                    createServerContext()
                         .then(ctx => {
                             return callProcedure({
                                 procedures: appRouter._def.procedures,

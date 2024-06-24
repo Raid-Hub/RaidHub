@@ -15,67 +15,63 @@ export const addByAPIKey = protectedProcedure
             "X-API-Key": input.apiKey
         }
 
-        try {
-            const data = await fetch(url, {
-                method: "GET",
-                headers: headers
-            }).then(async res => {
-                const json = (await res.json()) as {
-                    data: {
-                        id: string
-                        weblink: string
-                        names: { international: string }
-                    }
-                }
-                if (res.ok) {
-                    return json
-                } else if (res.status === 403) {
-                    throw new Error("Invalid API Key")
-                } else {
-                    throw new Error("Something went wrong.")
-                }
-            })
-
-            const {
+        const data = await fetch(url, {
+            method: "GET",
+            headers: headers
+        }).then(async res => {
+            const json = (await res.json()) as {
                 data: {
-                    id,
-                    weblink,
-                    names: { international: username }
+                    id: string
+                    weblink: string
+                    names: { international: string }
                 }
-            } = z
-                .object({
-                    data: z.object({
-                        id: z.string(),
-                        weblink: z.string().url(),
-                        names: z.object({
-                            international: z.string()
-                        })
+            }
+            if (res.ok) {
+                return json
+            } else if (res.status === 403) {
+                throw new TRPCError({
+                    message: "Invalid API key.",
+                    code: "BAD_REQUEST"
+                })
+            } else {
+                throw new Error(`[${res.status}] Something went wrong.`)
+            }
+        })
+
+        const {
+            data: {
+                id,
+                weblink,
+                names: { international: username }
+            }
+        } = z
+            .object({
+                data: z.object({
+                    id: z.string(),
+                    weblink: z.string().url(),
+                    names: z.object({
+                        international: z.string()
                     })
                 })
-                .parse(data)
+            })
+            .parse(data)
 
-            await ctx.prisma.account.create({
-                data: {
-                    displayName: username,
-                    provider: "speedrun",
-                    providerAccountId: id,
-                    type: "api-key",
-                    url: weblink,
-                    user: {
-                        connect: {
-                            id: ctx.session.user.id
-                        }
+        await ctx.prisma.account.create({
+            data: {
+                displayName: username,
+                provider: "speedrun",
+                providerAccountId: id,
+                type: "api-key",
+                url: weblink,
+                user: {
+                    connect: {
+                        id: ctx.session.user.id
                     }
                 }
-            })
-
-            return {
-                username: username
             }
-        } catch (e) {
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: e instanceof Error ? e.message : "Unknown error"
-            })
+        })
+
+        return {
+            username: username
         }
     })

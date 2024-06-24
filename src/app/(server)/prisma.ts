@@ -6,9 +6,10 @@ import { PrismaClient } from "@prisma/client"
 
 export type PrismaClientWithExtensions = ReturnType<typeof createPrismaWithExtension>
 
-const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClientWithExtensions | undefined
+interface GlobalThisWithPrisma {
+    prisma?: PrismaClientWithExtensions
 }
+const globalForPrisma = globalThis as unknown as GlobalThisWithPrisma
 
 const createPrismaWithExtension = () =>
     new PrismaClient({

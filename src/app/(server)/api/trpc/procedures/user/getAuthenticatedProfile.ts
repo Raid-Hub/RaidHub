@@ -3,6 +3,7 @@ import { protectedProcedure } from "../.."
 
 export const getAuthenticatedProfile = protectedProcedure.query(async ({ ctx }) => {
     const primaryDestinyMembershipId = ctx.session.primaryDestinyMembershipId
+
     if (!primaryDestinyMembershipId) {
         throw new TRPCError({
             code: "BAD_REQUEST",

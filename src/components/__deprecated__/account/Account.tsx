@@ -4,7 +4,7 @@ import { type Collection } from "@discordjs/collection"
 import { type Session } from "next-auth"
 import { signIn, signOut } from "next-auth/react"
 import Link from "next/link"
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef } from "react"
 import { trpc } from "~/app/trpc"
 import DiscordIcon from "~/components/icons/DiscordIcon"
 import SpeedrunIcon from "~/components/icons/SpeedrunIcon"
@@ -48,14 +48,16 @@ const Account = ({ session, providers }: AccountProps) => {
             void refetchSocials()
         }
     })
-    const { mutate: deleteUserMutation } = trpc.user.delete.useMutation()
+    const { mutate: deleteUserMutation } = trpc.user.delete.useMutation({
+        onSuccess() {
+            window.location.href = "/"
+        },
+        onError(error) {
+            console.error(error)
+            alert("An error occurred while deleting your account")
+        }
+    })
     const speedrunAPIKeyModalRef = useRef<HTMLDialogElement | null>(null)
-
-    const [deleteOnClick, setDeleteOnClick] = useState(false)
-    const deleteUser = () => {
-        deleteUserMutation()
-        void signOut({ callbackUrl: "/" })
-    }
 
     const { discordProvider, twitchProvider, twitterProvider, youtubeProvider } = useMemo(
         () => ({
@@ -86,13 +88,18 @@ const Account = ({ session, providers }: AccountProps) => {
                         Sign in with a different bungie account
                     </button>
                     <button onClick={() => signOut({ callbackUrl: "/" })}>Log Out</button>
-                    {deleteOnClick && (
-                        <button onClick={() => setDeleteOnClick(false)}>Cancel</button>
-                    )}
                     <button
-                        onClick={deleteOnClick ? deleteUser : () => setDeleteOnClick(true)}
+                        onClick={() => {
+                            if (
+                                window.confirm(
+                                    "Are you sure you want to delete your RaidHub account?"
+                                )
+                            ) {
+                                deleteUserMutation()
+                            }
+                        }}
                         className={styles.destructive}>
-                        {deleteOnClick ? "Confirm Deletion" : "Delete Account"}
+                        {"Delete Account"}
                     </button>
                 </div>
             </section>

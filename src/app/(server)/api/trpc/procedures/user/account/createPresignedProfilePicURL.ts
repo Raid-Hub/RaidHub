@@ -22,20 +22,21 @@ export const createPresignedProfilePicURL = protectedProcedure
     .mutation(async ({ input, ctx }) => {
         const userId = ctx.session.user.id
 
-        const ext = input.fileType.includes("svg+xml") ? "svg" : input.fileType.split("/")[1]
-
+        let ext = ""
         try {
-            const uuid = v4()
-            return createPresignedPost(s3, {
-                Bucket: process.env.AWS_S3_BUCKET_NAME!,
-                Key: `profile/${userId}/${uuid}.${ext}`,
-                Expires: 30,
-                Conditions: [["content-length-range", 0, 102400]]
-            })
+            ext = input.fileType.includes("svg+xml") ? "svg" : input.fileType.split("/")[1]
         } catch (e) {
             throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: e instanceof Error ? e.message : "Unknown error"
+                code: "BAD_REQUEST",
+                message: "Invalid file type."
             })
         }
+
+        const uuid = v4()
+        return createPresignedPost(s3, {
+            Bucket: process.env.AWS_S3_BUCKET_NAME!,
+            Key: `profile/${userId}/${uuid}.${ext}`,
+            Expires: 30,
+            Conditions: [["content-length-range", 0, 102400]]
+        })
     })

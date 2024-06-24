@@ -9,5 +9,10 @@ export const deleteUser = protectedProcedure.mutation(async ({ ctx }) => {
             profiles: true
         }
     })
+
+    await ctx.signOut({
+        redirect: false
+    })
+
     return deleted
 })
