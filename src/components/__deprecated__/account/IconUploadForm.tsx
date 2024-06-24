@@ -68,7 +68,7 @@ const IconUploadForm = () => {
         const file = event.target.files?.[0]
         if (file) {
             if (file.size > 256_000 /** 250 KB */) {
-                setErr(new Error("File too large. Max: 100kb"))
+                setErr(new Error("File too large. Max: 256kb"))
                 resetField("image")
                 setImageSrc(null)
                 return
