@@ -126,7 +126,7 @@ export default function RaidCard({
                     }
                 />
                 <div className={styles["card-top"]}>
-                    {activityDefinition?.isRaid && firstContestClear && (
+                    {firstContestClear && (
                         <RaceTagLabel
                             rank={firstContestClear.rank}
                             instanceId={firstContestClear.instanceId}

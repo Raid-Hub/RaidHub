@@ -1,123 +1,14 @@
 import { Collection } from "@discordjs/collection"
-import { useQueries, useQuery, type UseQueryOptions } from "@tanstack/react-query"
-import { useCallback, useMemo, useState } from "react"
+import {
+    useQueries,
+    useQuery,
+    useQueryClient,
+    type Query,
+    type UseQueryOptions
+} from "@tanstack/react-query"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { getRaidHubApi } from "./common"
-import { type RaidHubPlayerActivitiesResponse } from "./types"
-
-export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
-    membershipId: string,
-    opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
-) => {
-    const query = useMemo(() => generateQuery(opts)(membershipId), [membershipId, opts])
-    return useQuery(query)
-}
-
-export const useRaidHubActivities = (
-    membershipIds: string[],
-    opts?: {
-        enabled?: boolean
-    }
-) => {
-    // Collection of membership IDs and their cursors
-    const [cursors, setCursors] = useState(() => new Collection<string, Set<string>>())
-
-    const _generateQuery = useCallback(
-        <T = RaidHubPlayerActivitiesResponse>(
-            membershipId: string,
-            cursor?: string,
-            overrides?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
-        ) =>
-            generateQuery({
-                ...opts,
-                ...overrides
-            })(membershipId, cursor),
-        [opts]
-    )
-
-    const queriesOptions = useMemo(
-        () =>
-            [
-                [
-                    membershipIds.map(membershipId =>
-                        _generateQuery(membershipId, undefined, {
-                            onSuccess: data => {
-                                setCursors(oldCursors => {
-                                    // Clear the old cursors when we get the first set again
-                                    oldCursors.get(membershipId)?.clear()
-                                    return oldCursors
-                                        .clone()
-                                        .set(
-                                            membershipId,
-                                            new Set(data.nextCursor ? [data.nextCursor] : [])
-                                        )
-                                })
-                            }
-                        })
-                    )
-                ],
-                cursors.map((cursors, membershipId) =>
-                    Array.from(cursors).map(cursor => _generateQuery(membershipId, cursor))
-                )
-            ].flat(2),
-        [membershipIds, cursors, _generateQuery]
-    )
-
-    const queries = useQueries({
-        queries: queriesOptions
-    })
-
-    // This updates the cursors collection with the next cursors from the queries
-    queries.forEach(query => {
-        if (query.data) {
-            const { membershipId, nextCursor } = query.data
-            if (!nextCursor) return
-
-            const membershipCursors = cursors.get(membershipId)
-            if (membershipCursors?.has(nextCursor)) return
-
-            setCursors(oldCursors => {
-                const newCursors = oldCursors.clone()
-                if (!membershipCursors) {
-                    newCursors.set(membershipId, new Set([nextCursor]))
-                } else {
-                    newCursors.get(membershipId)!.add(nextCursor)
-                }
-                return newCursors
-            })
-        }
-    })
-
-    return useMemo(
-        () => ({
-            activities: new Collection(
-                queries.flatMap(q => q.data?.activities ?? []).map(a => [a.instanceId, a])
-            ).sort((a, b) => (new Date(b.dateCompleted) < new Date(a.dateCompleted) ? -1 : 1)),
-            isLoading: queries.length === 0 || queries.some(q => q.isLoading)
-        }),
-        [queries]
-    )
-}
-
-export const generateQuery =
-    <T = RaidHubPlayerActivitiesResponse>(
-        opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
-    ) =>
-    (
-        membershipId: string,
-        cursor?: string
-    ): UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T> => ({
-        queryKey: ["raidhub", "player", "activities", membershipId, cursor] as const,
-        queryFn: () =>
-            getActivities({
-                membershipId,
-                cursor
-            }),
-        staleTime: 60_000,
-        refetchInterval: 300_000,
-        refetchIntervalInBackground: false,
-        retry: false,
-        ...opts
-    })
+import { type RaidHubInstanceForPlayer, type RaidHubPlayerActivitiesResponse } from "./types"
 
 async function getActivities({ membershipId, cursor }: { membershipId: string; cursor?: string }) {
     const response = await getRaidHubApi(
@@ -126,4 +17,156 @@ async function getActivities({ membershipId, cursor }: { membershipId: string; c
         { cursor, count: cursor ? 2000 : 250 }
     )
     return response.response
+}
+
+const useCreateQuery = <T = RaidHubPlayerActivitiesResponse>(
+    opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
+) =>
+    useCallback(
+        (
+            membershipId: string,
+            cursor?: string,
+            overrides: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T> = {}
+        ): UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T> => ({
+            queryKey: ["raidhub", "player", "activities", membershipId, cursor ?? ""] as const,
+            queryFn: () =>
+                getActivities({
+                    membershipId,
+                    cursor
+                }),
+            refetchIntervalInBackground: false,
+            retry: false,
+            ...opts,
+            ...overrides
+        }),
+        [opts]
+    )
+
+export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
+    membershipId: string,
+    opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
+) => {
+    const createQuery = useCreateQuery(opts)
+
+    return useQuery(createQuery(membershipId))
+}
+/**
+ * @returns The activities of all memberships in reverse chronological order
+ */
+export const useRaidHubActivities = (
+    membershipIds: string[],
+    opts?: {
+        enabled?: boolean
+    }
+): {
+    refresh: () => void
+    activities: Collection<string, RaidHubInstanceForPlayer>
+    isLoading: boolean
+} => {
+    const queryClient = useQueryClient()
+    // Collection of membership IDs and their cursors
+    const [cursors, setCursors] = useState(() => new Collection<string, Set<string>>())
+
+    const createQuery = useCreateQuery(opts)
+
+    const handleSuccessfulFirstPage = useCallback((data: RaidHubPlayerActivitiesResponse) => {
+        setCursors(oldCursors => {
+            // TODO: clear query cache for all cursors
+            // Clear the old cursors
+            oldCursors.get(data.membershipId)?.clear()
+            return oldCursors
+                .clone()
+                .set(data.membershipId, new Set(data.nextCursor ? [data.nextCursor] : []))
+        })
+    }, [])
+
+    const updateCursors = useCallback((data: RaidHubPlayerActivitiesResponse) => {
+        const { membershipId, nextCursor } = data
+        if (!nextCursor) return
+
+        setCursors(oldCursors => {
+            const membershipCursors = oldCursors.get(membershipId)
+            if (membershipCursors?.has(nextCursor)) return oldCursors
+
+            const newCursors = oldCursors.clone()
+            if (!membershipCursors) {
+                newCursors.set(membershipId, new Set([nextCursor]))
+            } else {
+                newCursors.get(membershipId)!.add(nextCursor)
+            }
+            return newCursors
+        })
+    }, [])
+
+    const allQueryOptions = useMemo(() => {
+        const primaryQueries = membershipIds.map(membershipId =>
+            createQuery(membershipId, undefined, {
+                keepPreviousData: false,
+                staleTime: 30_000,
+                refetchInterval: 180_000,
+                refetchOnWindowFocus: true,
+                refetchOnReconnect: true,
+                onSuccess: handleSuccessfulFirstPage
+            })
+        )
+        const additionalQueries = cursors.map((cursors, membershipId) =>
+            Array.from(cursors).map(c =>
+                createQuery(membershipId, c, {
+                    staleTime: Infinity,
+                    refetchOnWindowFocus: false,
+                    refetchOnReconnect: false,
+                    onSuccess: updateCursors
+                })
+            )
+        )
+        return [...primaryQueries, ...additionalQueries.flat()]
+    }, [membershipIds, cursors, createQuery, handleSuccessfulFirstPage, updateCursors])
+
+    const queries = useQueries({
+        queries: allQueryOptions
+    })
+
+    useEffect(() => {
+        // Update the cursors collection with the next cursors
+        queries.forEach(query => {
+            if (query.data) {
+                updateCursors(query.data)
+            }
+        })
+    }, [queries, updateCursors])
+
+    return useMemo(
+        () => ({
+            refresh: () => {
+                const predicate = (query: Query) => {
+                    return (
+                        query.queryKey[0] === "raidhub" &&
+                        query.queryKey[1] === "player" &&
+                        query.queryKey[2] === "activities" &&
+                        membershipIds.includes(query.queryKey[3] as string) &&
+                        query.queryKey[4] === ""
+                    )
+                }
+
+                void Promise.all([
+                    // Resetting will set the status to loading
+                    queryClient.resetQueries({
+                        predicate
+                    }),
+                    queryClient.refetchQueries({
+                        predicate
+                    })
+                ])
+            },
+            activities: queries.some(q => q.isLoading)
+                ? new Collection()
+                : new Collection(
+                      queries.flatMap(q => q.data?.activities ?? []).map(a => [a.instanceId, a])
+                  ).sort((a, b) =>
+                      new Date(b.dateCompleted) < new Date(a.dateCompleted) ? -1 : 1
+                  ),
+            isLoading: queries.length === 0 || queries.some(q => q.isLoading)
+        }),
+        [membershipIds, queries, queryClient]
+    )
 }

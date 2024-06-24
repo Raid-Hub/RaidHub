@@ -61,7 +61,7 @@ export async function getYoutubeProfile(access_token: string) {
         if (items?.length) {
             return items[0]
         } else {
-            throw new Error("Not found")
+            throw new Error("No YouTube Channel Linked")
         }
     }
 }

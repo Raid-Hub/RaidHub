@@ -27,6 +27,7 @@ export function useRaidHubPlayers(
     const isLoading = queries.some(q => q.isLoading)
 
     return {
+        refetch: () => queries.forEach(q => q.refetch()),
         players,
         isLoading
     }
