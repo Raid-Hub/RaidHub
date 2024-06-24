@@ -17,7 +17,11 @@ const IconUploadForm = () => {
     const [imageSrc, setImageSrc] = useState<string | null>(null)
     const [err, setErr] = useState<Error | null>(null)
     const { mutateAsync: createPresignedURL } = trpc.user.generatePresignedIconURL.useMutation()
-    const { mutate: optimisticProfileUpdate, isLoading } = trpc.user.update.useMutation({
+    const {
+        mutate: optimisticProfileUpdate,
+        isLoading,
+        error
+    } = trpc.user.update.useMutation({
         onSuccess: () => {
             void updateSession()
             alert("Icon updated")
@@ -90,6 +94,7 @@ const IconUploadForm = () => {
                 </div>
             </div>
             {err && <div style={{ color: "red" }}>{err.message}</div>}
+            {error && <div style={{ color: "red" }}>{error.message}</div>}
             <button type="submit" disabled={isLoading}>
                 Save
             </button>
