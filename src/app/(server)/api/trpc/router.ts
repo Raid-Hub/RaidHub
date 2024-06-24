@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "."
-import { unhandledClientError } from "./procedures/monitoring/unhandledError"
+import { unhandledClientError } from "./procedures/monitoring/unhandledClientError"
 import { getProfile } from "./procedures/profile/getProfile"
 import { createPresignedProfilePicURL } from "./procedures/user/account/createPresignedProfilePicURL"
 import { removeProvider } from "./procedures/user/account/removeProvider"

@@ -34,13 +34,12 @@ const {
         session: sessionCallback,
         signIn: signInCallback
     },
-    // todo improve the logging
     logger: {
-        error(code, ...message) {
-            console.error(code, message)
+        error(err) {
+            console.error(err)
         },
-        warn(code, ...message) {
-            console.warn(code, message)
+        warn(code) {
+            console.warn(code)
         },
         debug(code, ...message) {
             if (process.env.NODE_ENV !== "production") console.debug(code, message)
