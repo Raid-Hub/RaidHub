@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { protectedProcedure } from "../.."
 
@@ -12,13 +13,30 @@ export const updateUser = protectedProcedure
         })
     )
     .mutation(async ({ input, ctx }) => {
-        return await ctx.prisma.user.update({
+        const updated = await ctx.prisma.user.update({
             where: {
                 id: ctx.session.user.id
             },
             data: {
                 name: input.data.name,
                 image: input.data.image
+            },
+            include: {
+                profiles: {
+                    select: {
+                        destinyMembershipId: true,
+                        vanity: true
+                    }
+                }
             }
         })
+
+        updated.profiles.forEach(p => {
+            if (p.vanity) {
+                revalidatePath(`/user/${p.vanity}`)
+            }
+            revalidatePath(`/profile/${p.destinyMembershipId}`)
+        })
+
+        return updated
     })

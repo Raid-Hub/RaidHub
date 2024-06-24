@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { protectedProcedure } from "../.."
 
@@ -23,7 +24,7 @@ export const updateProfile = protectedProcedure
             })
         }
 
-        return await ctx.prisma.profile.update({
+        const updated = await ctx.prisma.profile.update({
             where: {
                 destinyMembershipId: input.destinyMembershipId
             },
@@ -31,4 +32,11 @@ export const updateProfile = protectedProcedure
                 pinnedActivityId: input.data.pinnedActivityId
             }
         })
+
+        if (updated.vanity) {
+            revalidatePath(`/user/${updated.vanity}`)
+        }
+        revalidatePath(`/profile/${updated.destinyMembershipId}`)
+
+        return updated
     })
