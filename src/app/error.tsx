@@ -20,7 +20,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
                 searchParams: searchParams.toString()
             },
             error: {
-                name: error.name,
+                className: error.constructor.name,
                 message: error.message,
                 stack: error.stack
             }

@@ -1,8 +1,6 @@
 import { z } from "zod"
+import { DiscordColors, sendDiscordWebhook } from "~/services/discord/webhook"
 import { publicProcedure } from "../.."
-
-const staticChunkRegex =
-    /https:\/\/[a-zA-Z0-9.-]+\/_next\/static\/chunks\/([a-zA-Z0-9_-]+)\.js\?dpl=[a-zA-Z0-9_]+:(\d+):(\d+)/
 
 export const unhandledClientError = publicProcedure
     .input(
@@ -13,7 +11,7 @@ export const unhandledClientError = publicProcedure
                 searchParams: z.string().transform(s => new URLSearchParams(s))
             }),
             error: z.object({
-                name: z.string(),
+                className: z.string(),
                 message: z.string(),
                 stack: z.string().optional()
             })
@@ -26,28 +24,40 @@ export const unhandledClientError = publicProcedure
                     ?.split("\n")
                     .slice(1)
                     .map(line => line.trim())
-                    .map(line => (line.startsWith("at ") ? line.substring(3) : line))
-                    .map(line => line.replace(staticChunkRegex, "chunks/$1.js:$2:$3"))
-                    .map(line => `- \`${line}\``) ?? []
+                    .map(line => `\`\`\`${line}\`\`\``) ?? []
 
-            const getBody = (end?: number) => ({
+            const stackTraces = stackTraceLines.reduce((acc, line) => {
+                if (acc.length === 0) {
+                    acc.push([line])
+                } else {
+                    const lastLines = acc[acc.length - 1]
+                    if (lastLines.reduce((curr, l) => curr + l.length, 0) + line.length <= 1024) {
+                        lastLines.push(line)
+                    } else {
+                        acc.push([line])
+                    }
+                }
+                return acc
+            }, new Array<string[]>())
+
+            await sendDiscordWebhook(process.env.CLIENT_ALERTS_WEBHOOK_URL, {
                 embeds: [
                     {
-                        color: 0xef0c09,
+                        color: DiscordColors.RED,
                         fields: [
                             {
-                                name: "Error",
-                                value: `__${input.error.name}__: ${input.error.message}`,
+                                name: input.error.className,
+                                value: input.error.message,
                                 inline: false
                             },
-                            {
-                                name: "Stack Trace",
-                                value: stackTraceLines.slice(0, end).join("\n"),
+                            ...stackTraces.map((lines, i) => ({
+                                name: `Stack Trace (${i + 1}/${stackTraces.length})`,
+                                value: lines.join(""),
                                 inline: false
-                            },
+                            })),
                             {
                                 name: "URL",
-                                value: headers.get("referer"),
+                                value: headers.get("referer") ?? "",
                                 inline: false
                             },
                             {
@@ -55,7 +65,7 @@ export const unhandledClientError = publicProcedure
                                 value: Object.entries(input.next.params)
                                     .map(
                                         ([key, value]) =>
-                                            `- \`${key}: ${
+                                            `\`${key}: ${
                                                 Array.isArray(value) ? value.join(",") : value
                                             }\``
                                     )
@@ -72,7 +82,8 @@ export const unhandledClientError = publicProcedure
                             },
                             {
                                 name: "App Version",
-                                value: process.env.APP_VERSION ?? "N/A"
+                                value: process.env.APP_VERSION ?? "N/A",
+                                inline: false
                             },
                             {
                                 name: "Country",
@@ -88,23 +99,5 @@ export const unhandledClientError = publicProcedure
                     }
                 ]
             })
-
-            let i = 1
-            let body = JSON.stringify(getBody())
-            while (body.length > 1600 && i < stackTraceLines.length) {
-                body = JSON.stringify(getBody(-i))
-                i++
-            }
-
-            const webhookResponse = await fetch(process.env.CLIENT_ALERTS_WEBHOOK_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body
-            })
-            if (!webhookResponse.ok) {
-                throw new Error(`[${webhookResponse.status}] ${await webhookResponse.text()}`)
-            }
         }
     })

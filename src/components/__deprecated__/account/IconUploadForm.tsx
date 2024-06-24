@@ -4,7 +4,6 @@ import Image from "next/image"
 import { useState, type ChangeEventHandler } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { trpc } from "~/app/trpc"
-import { useOptimisticProfileUpdate } from "~/hooks/app/useOptimisticProfileUpdate"
 import { useSession } from "~/hooks/app/useSession"
 import { uploadProfileIcon } from "~/services/s3/uploadProfileIcon"
 import styles from "./account.module.css"
@@ -17,8 +16,12 @@ const IconUploadForm = () => {
     const { data: session, update: updateSession } = useSession()
     const [imageSrc, setImageSrc] = useState<string | null>(null)
     const [err, setErr] = useState<Error | null>(null)
-    const { mutateAsync: createPresignedURL } = trpc.user.account.presignedIconURL.useMutation()
-    const { mutate: optimisticProfileUpdate, isLoading } = useOptimisticProfileUpdate({
+    const { mutateAsync: createPresignedURL } = trpc.user.generatePresignedIconURL.useMutation()
+    const {
+        mutate: optimisticProfileUpdate,
+        isLoading,
+        error
+    } = trpc.user.update.useMutation({
         onSuccess: () => {
             void updateSession()
             alert("Icon updated")
@@ -68,8 +71,8 @@ const IconUploadForm = () => {
     const handleFileChange: ChangeEventHandler<HTMLInputElement> = event => {
         const file = event.target.files?.[0]
         if (file) {
-            if (file.size > 102400 /** 100 KB */) {
-                setErr(new Error("File too large. Max: 100kb"))
+            if (file.size > 256_000 /** 250 KB */) {
+                setErr(new Error("File too large. Max: 256kb"))
                 resetField("image")
                 setImageSrc(null)
                 return
@@ -91,6 +94,7 @@ const IconUploadForm = () => {
                 </div>
             </div>
             {err && <div style={{ color: "red" }}>{err.message}</div>}
+            {error && <div style={{ color: "red" }}>{error.message}</div>}
             <button type="submit" disabled={isLoading}>
                 Save
             </button>

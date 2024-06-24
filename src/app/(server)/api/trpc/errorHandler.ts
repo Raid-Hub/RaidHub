@@ -1,5 +1,5 @@
 import { type OnErrorFunction } from "@trpc/server/dist/internals/types"
-import { type Session } from "next-auth"
+import { DiscordColors, sendDiscordWebhook } from "~/services/discord/webhook"
 import { type AppRouter } from "."
 
 export const trpcErrorHandler: OnErrorFunction<AppRouter, Request> = async ({
@@ -11,14 +11,14 @@ export const trpcErrorHandler: OnErrorFunction<AppRouter, Request> = async ({
     console.error(`❌ tRPC failed on ${path ?? "<no-path>"}:`, error)
 
     if (process.env.NODE_ENV === "production" && process.env.TRPC_ALERTS_WEBHOOK_URL) {
-        const body = JSON.stringify({
+        await sendDiscordWebhook(process.env.TRPC_ALERTS_WEBHOOK_URL, {
             embeds: [
                 {
-                    color: 0xef0c09,
+                    color: DiscordColors.RED,
                     fields: [
                         {
-                            name: "Error",
-                            value: error.cause?.constructor.name ?? error.name,
+                            name: error.cause?.constructor.name ?? error.name,
+                            value: error.cause?.message ?? error.message,
                             inline: false
                         },
                         {
@@ -28,14 +28,10 @@ export const trpcErrorHandler: OnErrorFunction<AppRouter, Request> = async ({
                         },
                         {
                             name: "Input",
-                            value: input ?? "",
-                            inline: false
-                        },
-                        {
-                            name: "User",
-                            value:
-                                (ctx as unknown as { session?: Session } | undefined)?.session?.user
-                                    .id ?? "",
+                            value: `\`\`\`json\n${JSON.stringify(input ?? {}, null, 2).slice(
+                                0,
+                                1006
+                            )}\`\`\``,
                             inline: false
                         },
                         {
@@ -67,15 +63,5 @@ export const trpcErrorHandler: OnErrorFunction<AppRouter, Request> = async ({
                 }
             ]
         })
-        const webhookResponse = await fetch(process.env.TRPC_ALERTS_WEBHOOK_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: body
-        })
-        if (!webhookResponse.ok) {
-            console.error(new Error(`[${webhookResponse.status}] ${await webhookResponse.text()}`))
-        }
     }
 }

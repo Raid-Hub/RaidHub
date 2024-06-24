@@ -30,7 +30,7 @@ export default React.forwardRef<HTMLDialogElement, { refetchSocials: () => void 
             isError,
             error,
             isLoading
-        } = trpc.user.account.speedrunCom.addByAPIKey.useMutation({
+        } = trpc.user.createSpeedrunComAccount.useMutation({
             onSuccess() {
                 closeModal()
                 refetchSocials()

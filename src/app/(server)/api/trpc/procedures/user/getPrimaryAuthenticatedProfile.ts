@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server"
 import { protectedProcedure } from "../.."
 
-export const getAuthenticatedProfile = protectedProcedure.query(async ({ ctx }) => {
+export const getPrimaryAuthenticatedProfile = protectedProcedure.query(async ({ ctx }) => {
     const primaryDestinyMembershipId = ctx.session.primaryDestinyMembershipId
 
     if (!primaryDestinyMembershipId) {

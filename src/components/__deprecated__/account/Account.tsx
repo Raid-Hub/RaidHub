@@ -42,8 +42,8 @@ const bungieMembershipTypeMap = {
 }
 
 const Account = ({ session, providers }: AccountProps) => {
-    const { data: socialNames, refetch: refetchSocials } = trpc.user.connections.useQuery()
-    const { mutate: unlinkAccountFromUser } = trpc.user.account.removeById.useMutation({
+    const { data: socialNames, refetch: refetchSocials } = trpc.user.getConnections.useQuery()
+    const { mutate: unlinkAccountFromUser } = trpc.user.removeByAccount.useMutation({
         onSuccess() {
             void refetchSocials()
         }
