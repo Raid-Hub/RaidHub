@@ -7,10 +7,7 @@ export const updateProfile = protectedProcedure
         z.object({
             destinyMembershipId: z.string(),
             data: z.object({
-                name: z.string().optional(),
-                image: z.string().url().optional(),
-                pinnedActivityId: z.string().nullable().optional(),
-                profileDecoration: z.string().nullable().optional()
+                pinnedActivityId: z.string().nullable().optional()
             })
         })
     )
@@ -30,6 +27,8 @@ export const updateProfile = protectedProcedure
             where: {
                 destinyMembershipId: input.destinyMembershipId
             },
-            data: input.data
+            data: {
+                pinnedActivityId: input.data.pinnedActivityId
+            }
         })
     })

@@ -37,6 +37,6 @@ export const createPresignedProfilePicURL = protectedProcedure
             Bucket: process.env.AWS_S3_BUCKET_NAME!,
             Key: `profile/${userId}/${uuid}.${ext}`,
             Expires: 30,
-            Conditions: [["content-length-range", 0, 102400]]
+            Conditions: [["content-length-range", 0, 256000]]
         })
     })
