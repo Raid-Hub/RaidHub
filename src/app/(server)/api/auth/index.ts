@@ -12,9 +12,10 @@ import { YouTubeProvider } from "./providers/youtube"
 import { sessionCallback } from "./sessionCallback"
 import { signInCallback } from "./signInCallback"
 
-export const {
+const {
     auth,
-    handlers: { GET, POST }
+    handlers: { GET, POST },
+    signOut
 } = NextAuth({
     trustHost: true,
     providers: getProviders(),
@@ -46,6 +47,8 @@ export const {
         }
     }
 })
+
+export { GET, POST, signOut }
 
 // We cache the session for each request to avoid unnecessary database calls
 export const getServerSession = reactDedupe(auth)

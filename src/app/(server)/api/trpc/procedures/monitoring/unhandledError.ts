@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 import { publicProcedure } from "../.."
 
@@ -21,98 +20,91 @@ export const unhandledClientError = publicProcedure
         })
     )
     .mutation(async ({ ctx: { headers }, input }) => {
-        try {
-            if (process.env.CLIENT_ALERTS_WEBHOOK_URL) {
-                const stackTraceLines =
-                    input.error.stack
-                        ?.split("\n")
-                        .slice(1)
-                        .map(line => line.trim())
-                        .map(line => (line.startsWith("at ") ? line.substring(3) : line))
-                        .map(line => line.replace(staticChunkRegex, "chunks/$1.js:$2:$3"))
-                        .map(line => `- \`${line}\``) ?? []
+        if (process.env.CLIENT_ALERTS_WEBHOOK_URL) {
+            const stackTraceLines =
+                input.error.stack
+                    ?.split("\n")
+                    .slice(1)
+                    .map(line => line.trim())
+                    .map(line => (line.startsWith("at ") ? line.substring(3) : line))
+                    .map(line => line.replace(staticChunkRegex, "chunks/$1.js:$2:$3"))
+                    .map(line => `- \`${line}\``) ?? []
 
-                const getBody = (end?: number) => ({
-                    embeds: [
-                        {
-                            color: 0xef0c09,
-                            fields: [
-                                {
-                                    name: "Error",
-                                    value: `__${input.error.name}__: ${input.error.message}`,
-                                    inline: false
-                                },
-                                {
-                                    name: "Stack Trace",
-                                    value: stackTraceLines.slice(0, end).join("\n"),
-                                    inline: false
-                                },
-                                {
-                                    name: "URL",
-                                    value: headers.get("referer"),
-                                    inline: false
-                                },
-                                {
-                                    name: "Params",
-                                    value: Object.entries(input.next.params)
-                                        .map(
-                                            ([key, value]) =>
-                                                `- \`${key}: ${
-                                                    Array.isArray(value) ? value.join(",") : value
-                                                }\``
-                                        )
-                                        .join("\n"),
-                                    inline: false
-                                },
-                                {
-                                    name: "Search Params",
-                                    value: Array.from(input.next.searchParams.entries())
-                                        .map(([key, value]) => `- \`${key}: ${value}\``)
-                                        .sort()
-                                        .join("\n"),
-                                    inline: false
-                                },
-                                {
-                                    name: "App Version",
-                                    value: process.env.APP_VERSION ?? "N/A"
-                                },
-                                {
-                                    name: "Country",
-                                    value: headers.get("cf-ipcountry") ?? "N/A",
-                                    inline: false
-                                },
-                                {
-                                    name: "User Agent",
-                                    value: `\`${headers.get("user-agent") ?? "N/A"}\``,
-                                    inline: false
-                                }
-                            ]
-                        }
-                    ]
-                })
-
-                let i = 1
-                let body = JSON.stringify(getBody())
-                while (body.length > 1600 && i < stackTraceLines.length) {
-                    body = JSON.stringify(getBody(-i))
-                    i++
-                }
-
-                const webhookResponse = await fetch(process.env.CLIENT_ALERTS_WEBHOOK_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body
-                })
-                if (!webhookResponse.ok) {
-                    throw new Error(`[${webhookResponse.status}] ${await webhookResponse.text()}`)
-                }
-            }
-        } catch (err) {
-            console.error(err)
-            throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR"
+            const getBody = (end?: number) => ({
+                embeds: [
+                    {
+                        color: 0xef0c09,
+                        fields: [
+                            {
+                                name: "Error",
+                                value: `__${input.error.name}__: ${input.error.message}`,
+                                inline: false
+                            },
+                            {
+                                name: "Stack Trace",
+                                value: stackTraceLines.slice(0, end).join("\n"),
+                                inline: false
+                            },
+                            {
+                                name: "URL",
+                                value: headers.get("referer"),
+                                inline: false
+                            },
+                            {
+                                name: "Params",
+                                value: Object.entries(input.next.params)
+                                    .map(
+                                        ([key, value]) =>
+                                            `- \`${key}: ${
+                                                Array.isArray(value) ? value.join(",") : value
+                                            }\``
+                                    )
+                                    .join("\n"),
+                                inline: false
+                            },
+                            {
+                                name: "Search Params",
+                                value: Array.from(input.next.searchParams.entries())
+                                    .map(([key, value]) => `- \`${key}: ${value}\``)
+                                    .sort()
+                                    .join("\n"),
+                                inline: false
+                            },
+                            {
+                                name: "App Version",
+                                value: process.env.APP_VERSION ?? "N/A"
+                            },
+                            {
+                                name: "Country",
+                                value: headers.get("cf-ipcountry") ?? "N/A",
+                                inline: false
+                            },
+                            {
+                                name: "User Agent",
+                                value: `\`${headers.get("user-agent") ?? "N/A"}\``,
+                                inline: false
+                            }
+                        ]
+                    }
+                ]
             })
+
+            let i = 1
+            let body = JSON.stringify(getBody())
+            while (body.length > 1600 && i < stackTraceLines.length) {
+                body = JSON.stringify(getBody(-i))
+                i++
+            }
+
+            const webhookResponse = await fetch(process.env.CLIENT_ALERTS_WEBHOOK_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body
+            })
+            if (!webhookResponse.ok) {
+                throw new Error(`[${webhookResponse.status}] ${await webhookResponse.text()}`)
+            }
         }
     })
