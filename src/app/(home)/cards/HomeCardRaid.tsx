@@ -24,7 +24,7 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
 
     const isReprised = reprisedRaids.includes(raidId)
     const miscBoards = getVersionsForActivity(raidId).filter(
-        isReprised ? v => !v.isChallengeMode && v.id > 2 : v => v.id > 2
+        v => v.id !== 32 && (isReprised ? !v.isChallengeMode && v.id > 2 : v.id > 2)
     )
 
     return (

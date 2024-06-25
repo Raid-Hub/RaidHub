@@ -330,7 +330,7 @@ export interface paths {
           page?: number;
         };
         path: {
-          category: "clears" | "freshClears" | "sherpas" | "speedrun";
+          category: "clears" | "freshClears" | "sherpas" | "speedrun" | "powerRankings";
         };
       };
       responses: {
