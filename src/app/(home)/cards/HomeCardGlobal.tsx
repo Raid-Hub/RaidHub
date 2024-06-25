@@ -21,6 +21,10 @@ export function HomeCardGlobal() {
                     title="Sherpas"
                     href="/leaderboards/individual/global/sherpas"
                 />
+                <HomeCardContentSectionItem
+                    title="Contest Mode Power Rankings"
+                    href="/leaderboards/individual/global/powerRankings"
+                />
             </HomeCardContentSection>
         </HomeCardGeneric>
     )

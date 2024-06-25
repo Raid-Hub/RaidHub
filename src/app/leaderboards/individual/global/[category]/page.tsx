@@ -20,6 +20,8 @@ const getCategoryName = (category: DynamicParams["params"]["category"]) => {
             return "Sherpas"
         case "speedrun":
             return "Speedrun"
+        case "powerRankings":
+            return "Contest Mode Power Rankings"
         default:
             return "Unknown Category"
     }
