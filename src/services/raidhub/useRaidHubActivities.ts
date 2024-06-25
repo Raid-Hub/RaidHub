@@ -127,7 +127,6 @@ export const useRaidHubActivities = (
     })
 
     useEffect(() => {
-        // Update the cursors collection with the next cursors
         queries.forEach(query => {
             if (query.data) {
                 updateCursors(query.data)
