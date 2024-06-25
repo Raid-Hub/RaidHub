@@ -15,6 +15,7 @@ import {
 } from "~/app/layout/managers"
 import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
+import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
 import "./layout/global.css"
 
 // Dynamic import for the dexie DB
@@ -62,6 +63,7 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                                 />
                                                 <HeaderContent />
                                             </Header>
+                                            <ServiceStatusBanner />
                                             <SearchModal />
                                             {params.children}
                                             <Footer />

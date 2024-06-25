@@ -89,6 +89,32 @@ export default function RaidCard({
             ? medianElement(freshFulls.toSorted((a, b) => a.duration - b.duration))
             : undefined
 
+        // TODO: Implement this
+        // const now = new Date()
+        // const nextReset = new Date(now)
+
+        // let daysToAdd = 2 - now.getUTCDay()
+        // if (daysToAdd < 0) daysToAdd += 7 // If it's past Tuesday, add a week
+        // if (daysToAdd === 0 && now.getUTCHours() >= 17) {
+        //     // If it's Tuesday but past 17:00, wait for next Tuesday
+        //     daysToAdd = 7
+        // }
+
+        // nextReset.setUTCHours(17, 0, 0, 0)
+        // nextReset.setUTCDate(now.getUTCDate() + daysToAdd)
+
+        // const millisecondsInWeek = 604800000
+        // const uniqueLootedCharacterWeeks = new Set<string>()
+        // activities
+        //     ?.filter(a => a.player.completed)
+        //     .forEach(a => {
+        //         const reverseWeekNum = Math.ceil(
+        //             (nextReset.getTime() - new Date(a.dateCompleted).getTime()) / millisecondsInWeek
+        //         )
+        //         // +
+        //         uniqueLootedCharacterWeeks.add(a.player.characterId + reverseWeekNum)
+        //     })
+
         const stats = activities?.reduce(
             (acc, curr) => {
                 acc.timePlayedSeconds += curr.player.timePlayedSeconds
@@ -126,7 +152,7 @@ export default function RaidCard({
                     }
                 />
                 <div className={styles["card-top"]}>
-                    {activityDefinition?.isRaid && firstContestClear && (
+                    {firstContestClear && (
                         <RaceTagLabel
                             rank={firstContestClear.rank}
                             instanceId={firstContestClear.instanceId}
@@ -230,6 +256,11 @@ export default function RaidCard({
                                 isLoading={isLoadingActivities}
                                 name="Lowmans"
                             />
+                            {/* <BigNumberStatItem
+                                displayValue={formattedNumber(looted, locale)}
+                                isLoading={isLoadingActivities}
+                                name="Looted"
+                            /> */}
                         </div>
                         {activityDefinition?.isRaid && !activityDefinition.isSunset && (
                             <WeeklyProgress raid={activityDefinition.id} />

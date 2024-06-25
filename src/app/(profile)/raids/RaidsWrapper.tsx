@@ -8,6 +8,7 @@ import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager
 import { TabSelector } from "~/components/TabSelector"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
 import ToggleSwitch from "~/components/__deprecated__/reusable/ToggleSwitch"
+import ReloadArrow from "~/components/icons/ReloadArrow"
 import { Flex } from "~/components/layout/Flex"
 import { Grid } from "~/components/layout/Grid"
 import { usePageProps } from "~/components/layout/PageWrapper"
@@ -58,17 +59,23 @@ export const RaidsWrapper = () => {
         [destinyMemberships]
     )
 
-    const { players, isLoading: isLoadingPlayers } = useRaidHubPlayers(membershipIds, {
+    const {
+        players,
+        refetch: refetchPlayers,
+        isLoading: isLoadingPlayers
+    } = useRaidHubPlayers(membershipIds, {
         enabled: ready
     })
 
-    const { activities, isLoading: isLoadingActivities } = useRaidHubActivities(membershipIds)
+    const {
+        activities,
+        isLoading: isLoadingActivities,
+        refresh: refreshActivities
+    } = useRaidHubActivities(membershipIds)
 
     const { listedRaids, pantheonIds } = useRaidHubManifest()
 
     const leaderboardEntriesByRaid = useMemo(() => {
-        if (isLoadingPlayers || !areMembershipsFetched) return null
-
         const raidToData = new Collection<number, RaidHubWorldFirstEntry | null>(
             listedRaids.map(raid => [raid, null])
         )
@@ -83,7 +90,7 @@ export const RaidsWrapper = () => {
         })
 
         return raidToData
-    }, [isLoadingPlayers, areMembershipsFetched, listedRaids, players])
+    }, [listedRaids, players])
 
     const activitiesByRaid = useMemo(() => {
         if (isLoadingActivities) return null
@@ -176,6 +183,8 @@ export const RaidsWrapper = () => {
         isExpanded
     ])
 
+    const isLoadingMainData = !ready || isLoadingPlayers || isLoadingActivities
+
     return (
         <FilterContextProvider>
             <Flex $direction="row" $padding={0} $align="space-between" $fullWidth $wrap>
@@ -195,35 +204,60 @@ export const RaidsWrapper = () => {
                         Pantheon
                     </Tab>
                 </TabSelector>
-                {(getTab() === "classic" || getTab() === "pantheon") && (
-                    <Flex $padding={0}>
+                <Flex $padding={0}>
+                    {getTab() !== "teammates" && (
                         <Flex $padding={0.2} $gap={0.4} $direction="column">
                             <H4
                                 style={{
                                     margin: 0,
                                     fontSize: "0.75rem"
                                 }}>
-                                Filter
+                                Refresh
                             </H4>
-                            <FilterSelect />
-                        </Flex>
-                        <Flex $padding={0.2} $gap={0.4} $direction="column">
-                            <H4
-                                style={{
-                                    margin: 0,
-                                    fontSize: "0.75rem"
-                                }}>
-                                Expanded
-                            </H4>
-                            <ToggleSwitch
-                                id="expand-cards"
-                                value={isExpanded}
-                                onToggle={setIsExpanded}
-                                size={20}
+                            <ReloadArrow
+                                onClick={() => {
+                                    if (!isLoadingMainData) {
+                                        refetchPlayers()
+                                        refreshActivities()
+                                    }
+                                }}
+                                sx={20}
+                                color={isLoadingMainData ? "lightGray" : "white"}
+                                hoverColor={isLoadingMainData ? undefined : "orange"}
+                                cursor={isLoadingMainData ? "not-allowed" : "pointer"}
                             />
                         </Flex>
-                    </Flex>
-                )}
+                    )}
+                    {(getTab() === "classic" || getTab() === "pantheon") && (
+                        <>
+                            <Flex $padding={0.2} $gap={0.4} $direction="column">
+                                <H4
+                                    style={{
+                                        margin: 0,
+                                        fontSize: "0.75rem"
+                                    }}>
+                                    Filter
+                                </H4>
+                                <FilterSelect />
+                            </Flex>
+                            <Flex $padding={0.2} $gap={0.4} $direction="column">
+                                <H4
+                                    style={{
+                                        margin: 0,
+                                        fontSize: "0.75rem"
+                                    }}>
+                                    Expanded
+                                </H4>
+                                <ToggleSwitch
+                                    id="expand-cards"
+                                    value={isExpanded}
+                                    onToggle={setIsExpanded}
+                                    size={20}
+                                />
+                            </Flex>
+                        </>
+                    )}
+                </Flex>
             </Flex>
             {TabView}
         </FilterContextProvider>
