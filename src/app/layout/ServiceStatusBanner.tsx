@@ -9,7 +9,9 @@ import { useCommonSettings, useGlobalAlerts } from "~/services/bungie/hooks"
 
 const commonQueryOptions = {
     staleTime: 1000 * 60 * 15,
-    refetchInterval: 1000 * 60 * 60
+    refetchInterval: 1000 * 60 * 60,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true
 }
 
 export const ServiceStatusBanner = () => {
