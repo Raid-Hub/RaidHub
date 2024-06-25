@@ -101,9 +101,10 @@ export const useRaidHubActivities = (
     const allQueryOptions = useMemo(() => {
         const primaryQueries = membershipIds.map(membershipId =>
             createQuery(membershipId, undefined, {
-                keepPreviousData: false,
-                staleTime: 30_000,
-                refetchInterval: 180_000,
+                keepPreviousData: true,
+                staleTime: 150_000,
+                refetchInterval: 300_000,
+                refetchIntervalInBackground: false,
                 refetchOnWindowFocus: true,
                 refetchOnReconnect: true,
                 onSuccess: handleSuccessfulFirstPage
