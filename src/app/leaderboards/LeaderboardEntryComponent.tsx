@@ -102,7 +102,7 @@ export const LeaderboardEntryComponent = ({
             lg={
                 <Panel
                     ref={lg}
-                    $maxWidth={entry.type === "team" ? 900 : 450}
+                    $maxWidth={entry.type === "player" ? 450 : undefined}
                     $fullWidth
                     $growOnHover
                     style={targettedStyle}>
@@ -110,10 +110,6 @@ export const LeaderboardEntryComponent = ({
                         <Flex style={{ flex: 1 }} $padding={0} $align="flex-start">
                             <Container
                                 $flex
-                                $aspectRatio={{
-                                    width: 1,
-                                    height: 1
-                                }}
                                 style={{
                                     fontSize: "1.375rem",
                                     minWidth: "10%"
