@@ -44,6 +44,17 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
                     />
                 )}
             </HomeCardContentSection>
+            {!!miscBoards.length && (
+                <HomeCardContentSection sectionTitle="Version Firsts">
+                    {miscBoards.map(version => (
+                        <HomeCardContentSectionItem
+                            key={version.id}
+                            title={version.name}
+                            href={`/leaderboards/team/${raidUrlPath}/first/${version.path}`}
+                        />
+                    ))}
+                </HomeCardContentSection>
+            )}
             <HomeCardContentSection sectionTitle="Speedrun Leaderboards">
                 {SpeedrunVariables[raidId]?.variable ? (
                     o.map(
@@ -73,17 +84,6 @@ export const HomeCardRaid = ({ raidId }: { raidId: number }) => {
                     />
                 ))}
             </HomeCardContentSection>
-            {!!miscBoards.length && (
-                <HomeCardContentSection sectionTitle="Version Firsts">
-                    {miscBoards.map(version => (
-                        <HomeCardContentSectionItem
-                            key={version.id}
-                            title={version.name}
-                            href={`/leaderboards/team/${raidUrlPath}/first/${version.path}`}
-                        />
-                    ))}
-                </HomeCardContentSection>
-            )}
         </HomeCardGeneric>
     )
 }

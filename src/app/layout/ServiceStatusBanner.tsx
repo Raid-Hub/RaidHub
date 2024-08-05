@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { Panel } from "~/components/Panel"
 import { Container } from "~/components/layout/Container"
 import { useCommonSettings, useGlobalAlerts } from "~/services/bungie/hooks"
+import { formattedTimeSince } from "~/util/presentation/formatting"
 
 const commonQueryOptions = {
     staleTime: 1000 * 60 * 15,
@@ -54,9 +55,10 @@ const Destiny2AlertBanner = (props: { alert: GlobalAlert }) => {
                 <div>{props.alert.AlertHtml}</div>
                 <div
                     style={{
-                        fontSize: "0.875rem"
+                        fontSize: "0.875rem",
+                        marginTop: "0.25rem"
                     }}>
-                    Posted at: {timestamp.toLocaleTimeString()}
+                    Posted {formattedTimeSince(timestamp)}
                 </div>
             </Link>
         </StyledDestiny2AlertBanner>

@@ -15,6 +15,7 @@ import {
 } from "~/app/layout/managers"
 import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
+import { DonationBanner } from "./layout/DonationBanner"
 import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
 import "./layout/global.css"
 
@@ -63,6 +64,7 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                                 />
                                                 <HeaderContent />
                                             </Header>
+                                            <DonationBanner />
                                             <ServiceStatusBanner />
                                             <SearchModal />
                                             {params.children}

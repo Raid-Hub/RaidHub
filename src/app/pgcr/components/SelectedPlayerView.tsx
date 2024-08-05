@@ -10,7 +10,6 @@ import { Card } from "~/components/Card"
 import { TabSelector } from "~/components/TabSelector"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
-import { Grid } from "~/components/layout/Grid"
 import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
@@ -25,7 +24,7 @@ import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
 import type { PGCRPageParams } from "../types"
 import { DisplayName } from "./DisplayName"
-import { PlayerWeapon } from "./PlayerWeapon"
+import { WeaponsGrid } from "./WeaponsGrid"
 
 export const SelectedPlayerView = (props: {
     selectedPlayer: RaidHubInstancePlayerExtended
@@ -151,11 +150,7 @@ export const SelectedPlayerView = (props: {
                     </Stat>
                 </Flex>
                 <H4>Weapon Kills</H4>
-                <Grid $minCardWidth={125} $gap={1}>
-                    {stats.weapons.map((weapon, hash) => (
-                        <PlayerWeapon key={hash} hash={hash} kills={weapon.kills} />
-                    ))}
-                </Grid>
+                <WeaponsGrid weapons={stats.weapons} />
             </Card>
         </Flex>
     )

@@ -23,7 +23,8 @@ export const LatestRaid = () => {
     const { destinyMembershipId } = usePageProps<ProfileProps>()
     const { locale } = useLocale()
     const { data: rawRecentActivity } = useRaidHubActivtiesFirstPage(destinyMembershipId, {
-        select: res => res.activities[0],
+        select: res =>
+            res.activities.find(a => a.playerCount < 50) ?? res.activities.find(() => true),
         suspense: true
     })
 
