@@ -1,13 +1,14 @@
 import "server-only"
 
 import { createTRPCProxyClient, loggerLink, TRPCClientError } from "@trpc/client"
-import { callProcedure } from "@trpc/server"
+import { callProcedure, getTRPCErrorFromUnknown } from "@trpc/server"
 import { observable } from "@trpc/server/observable"
 import { type TRPCErrorResponse } from "@trpc/server/rpc"
 import { headers } from "next/headers"
 import superjson from "superjson"
 import { reactDedupe } from "~/util/react-cache"
 import { createTRPCContext, type AppRouter } from "."
+import { trpcErrorHandler } from "./errorHandler"
 import { appRouter } from "./router"
 
 /**
@@ -46,6 +47,16 @@ export const trpcServer = createTRPCProxyClient<AppRouter>({
                                 rawInput: op.input,
                                 ctx,
                                 type: op.type
+                            }).catch(cause => {
+                                void trpcErrorHandler({
+                                    error: getTRPCErrorFromUnknown(cause),
+                                    ctx,
+                                    type: op.type,
+                                    path: op.path,
+                                    input: op.input,
+                                    source: "rpc"
+                                })
+                                throw cause
                             })
                         })
                         .then(data => {

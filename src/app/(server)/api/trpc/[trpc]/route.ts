@@ -13,7 +13,7 @@ const handler = (req: NextRequest) =>
             createTRPCContext({
                 headers: req.headers
             }),
-        onError: trpcErrorHandler
+        onError: opts => trpcErrorHandler({ ...opts, source: "http" })
     })
 
 export { handler as GET, handler as POST }
