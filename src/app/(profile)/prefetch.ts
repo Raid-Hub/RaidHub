@@ -11,11 +11,13 @@ const serverBungieClient = new ServerBungieClient({
     revalidate: 15 * 60
 })
 
-export const getUniqueProfileByVanity = (vanity: string) =>
+export const getUniqueProfileByVanity = reactDedupe((vanity: string) =>
     trpcServer.profile.getUnique.query({ vanity }).catch(() => null)
+)
 
-export const getUniqueProfileByDestinyMembershipId = (destinyMembershipId: string) =>
+export const getUniqueProfileByDestinyMembershipId = reactDedupe((destinyMembershipId: string) =>
     trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(() => null)
+)
 
 // Get a player's profile from the RaidHub API
 export const prefetchRaidHubPlayerProfile = reactDedupe((membershipId: string) =>
