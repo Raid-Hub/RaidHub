@@ -699,7 +699,7 @@ export interface paths {
         readonly content: {
           readonly "application/json": {
             readonly bungieMembershipId: string;
-            readonly clientSecret: string;
+            readonly adminClientSecret: string;
           };
         };
       };
@@ -730,10 +730,55 @@ export interface paths {
         /** @description InvalidClientSecretError */
         403: {
           content: {
+            readonly "application/json": Record<string, never>;
+          };
+        };
+      };
+    };
+  };
+  "/authorize/user": {
+    /**
+     * /authorize/user
+     * @description Authenticate a user. Grants permission to access restricted resources.
+     */
+    post: {
+      readonly requestBody?: {
+        readonly content: {
+          readonly "application/json": {
+            readonly bungieMembershipId: string;
+            readonly destinyMembershipIds: readonly string[];
+            readonly clientSecret: string;
+          };
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
             readonly "application/json": {
+              readonly minted: string;
               /** @enum {boolean} */
-              readonly unauthorized: true;
+              readonly success: true;
+              readonly response: components["schemas"]["AuthorizeUserResponse"];
             };
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": components["schemas"]["BodyValidationError"];
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": components["schemas"]["ApiKeyError"];
+          };
+        };
+        /** @description InvalidClientSecretError */
+        403: {
+          content: {
+            readonly "application/json": Record<string, never>;
           };
         };
       };
@@ -1073,9 +1118,6 @@ export interface components {
       readonly freshClears: number;
       readonly clears: number;
       readonly sherpas: number;
-      readonly trios: number;
-      readonly duos: number;
-      readonly solos: number;
       readonly fastestInstance: components["schemas"]["Instance"];
     };
     readonly GlobalStat: {
@@ -1378,6 +1420,11 @@ export interface components {
       readonly data: readonly string[];
     }]>;
     readonly AuthorizeAdminResponse: {
+      readonly value: string;
+      /** Format: date-time */
+      readonly expires: string;
+    };
+    readonly AuthorizeUserResponse: {
       readonly value: string;
       /** Format: date-time */
       readonly expires: string;
