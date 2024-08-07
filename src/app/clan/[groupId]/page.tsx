@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { metadata as rootMetaData } from "~/app/layout"
 import { ClanComponent } from "~/components/__deprecated__/clan/Clan"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { type BungieAPIError } from "~/models/BungieAPIError"
+import { BungieAPIError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { fixClanName } from "~/util/destiny/fixClanName"
 
@@ -45,11 +45,16 @@ const bungieClient = new ServerBungieClient({
     revalidate: 3600 // 1 hour
 })
 
+const notFoundErrCodes = [
+    686, // ClanNotFound
+    622 // GroupNotFound
+]
+
 const getClan = async (params: { groupId: string }) =>
     getGroup(bungieClient, params)
         .then(res => res.Response)
-        .catch((e: BungieAPIError) => {
-            if (e.ErrorCode === 622) {
+        .catch((e: Error) => {
+            if (e instanceof BungieAPIError && notFoundErrCodes.includes(e.ErrorCode)) {
                 notFound()
             } else {
                 return null
