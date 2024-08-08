@@ -2,6 +2,7 @@
 
 import type { GroupResponse } from "bungie-net-core/models"
 import { useMemo } from "react"
+import { ErrorCard } from "~/components/ErrorCard"
 import { useClan, useMembersOfGroup } from "~/services/bungie/hooks"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities } from "~/util/presentation/formatting"
@@ -14,18 +15,18 @@ import styles from "./clan.module.css"
  * @deprecated
  */
 export function ClanComponent(props: { groupId: string; clan: GroupResponse | null }) {
-    const { data: clan } = useClan(
+    const {
+        data: clan,
+        isLoading,
+        isError,
+        error
+    } = useClan(
         { groupId: props.groupId },
         {
             staleTime: 5 * 60000,
-            initialData: props.clan ?? undefined,
-            suspense: true
+            initialData: props.clan ?? undefined
         }
     )
-
-    if (!clan) {
-        throw new Error("Suspense fallback not implemented for ClanComponent.")
-    }
 
     const clanMembersQueries = useMembersOfGroup(
         { groupId: props.groupId, pages: 2 },
@@ -37,7 +38,13 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
     const allClanMembers = clanMembersQueries.flatMap(q => q.data ?? [])
     const isLoadingClanMembers = clanMembersQueries.some(q => q.isLoading)
 
-    const clanName = useMemo(() => decodeHtmlEntities(fixClanName(clan.detail.name)), [clan])
+    const clanName = useMemo(() => decodeHtmlEntities(fixClanName(clan?.detail.name ?? "")), [clan])
+
+    if (isLoading) return null
+
+    if (isError) {
+        return <ErrorCard>{String(error)}</ErrorCard>
+    }
 
     return (
         <div>
