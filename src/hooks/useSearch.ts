@@ -19,7 +19,12 @@ export function useSearch(props?: {
 
     const [enteredText, setEnteredText] = useState("")
     const [enterPressed, setEnterPressed] = useState(false)
-    const [debouncedQuery, forceUpdateQuery] = useDebounce(enteredText, 250)
+    console.log(Math.max(200, 500 - enteredText.length * 50))
+    const [debouncedQuery, forceUpdateQuery] = useDebounce(
+        enteredText,
+        200,
+        enteredText.length >= 3 || enteredText.includes("#")
+    )
 
     const raidHubSearchQuery = useRaidHubPlayerSearch(debouncedQuery)
     /**
