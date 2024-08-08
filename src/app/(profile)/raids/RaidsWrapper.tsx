@@ -16,11 +16,13 @@ import { H4 } from "~/components/typography/H4"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useLinkedProfiles } from "~/services/bungie/hooks"
+import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import { useRaidHubActivities, useRaidHubPlayers } from "~/services/raidhub/hooks"
 import {
     type RaidHubInstanceForPlayer,
     type RaidHubWorldFirstEntry
 } from "~/services/raidhub/types"
+import { ProfileError } from "../ProfileError"
 import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
 import { FilterSelect } from "./FilterSelect"
@@ -62,7 +64,8 @@ export const RaidsWrapper = () => {
     const {
         players,
         refetch: refetchPlayers,
-        isLoading: isLoadingPlayers
+        isLoading: isLoadingPlayers,
+        errors: playerErrors
     } = useRaidHubPlayers(membershipIds, {
         enabled: ready
     })
@@ -187,6 +190,7 @@ export const RaidsWrapper = () => {
 
     return (
         <FilterContextProvider>
+            <ProfileError error={playerErrors.find(e => e instanceof RaidHubError)} />
             <Flex $direction="row" $padding={0} $align="space-between" $fullWidth $wrap>
                 <TabSelector>
                     <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>

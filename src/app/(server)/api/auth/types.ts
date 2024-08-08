@@ -78,5 +78,5 @@ export type AuthError =
     | "BungieAPIOffline"
     | "AccessTokenError"
     | "ExpiredRefreshTokenError"
-    | "RaidHubAPIError"
+    | "RaidHubAuthorizationError"
     | "PrismaError"
