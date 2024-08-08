@@ -1,4 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
+import { useSession } from "~/hooks/app/useSession"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubPlayerProfileResponse } from "./types"
 
@@ -8,17 +9,29 @@ export function useRaidHubPlayers(
         enabled?: boolean
     }
 ) {
+    const session = useSession()
+
+    const authHeaders: HeadersInit = session.data?.raidHubAccessToken?.value
+        ? {
+              Authorization: `Bearer ${session.data.raidHubAccessToken.value}`
+          }
+        : {}
+
     const queries = useQueries({
         queries: membershipIds.map(membershipId => ({
             queryFn: () =>
                 getRaidHubApi(
                     "/player/{membershipId}/profile",
                     { membershipId: membershipId },
-                    null
+                    null,
+                    {
+                        headers: authHeaders
+                    }
                 ).then(res => res.response),
             queryKey: ["raidhub", "player", membershipId] as const
         })),
-        ...opts
+        ...opts,
+        ...(session.status === "loading" ? { enabled: false } : {})
     })
 
     const players = queries
@@ -29,7 +42,8 @@ export function useRaidHubPlayers(
     return {
         refetch: () => queries.forEach(q => q.refetch()),
         players,
-        isLoading
+        isLoading,
+        errors: queries.map(q => q.error)
     }
 }
 

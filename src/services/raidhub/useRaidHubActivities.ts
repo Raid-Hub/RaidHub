@@ -7,22 +7,42 @@ import {
     type UseQueryOptions
 } from "@tanstack/react-query"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useSession } from "~/hooks/app/useSession"
 import { getRaidHubApi } from "./common"
 import { type RaidHubInstanceForPlayer, type RaidHubPlayerActivitiesResponse } from "./types"
 
-async function getActivities({ membershipId, cursor }: { membershipId: string; cursor?: string }) {
+async function getActivities({
+    membershipId,
+    cursor,
+    bearerToken
+}: {
+    membershipId: string
+    cursor?: string
+    bearerToken?: string
+}) {
+    const authHeaders: HeadersInit = bearerToken
+        ? {
+              Authorization: `Bearer ${bearerToken}`
+          }
+        : {}
+
     const response = await getRaidHubApi(
         "/player/{membershipId}/activities",
         { membershipId },
-        { cursor, count: cursor ? 2000 : 250 }
+        { cursor, count: cursor ? 2000 : 250 },
+        {
+            headers: authHeaders
+        }
     )
     return response.response
 }
 
 const useCreateQuery = <T = RaidHubPlayerActivitiesResponse>(
     opts?: UseQueryOptions<RaidHubPlayerActivitiesResponse, Error, T>
-) =>
-    useCallback(
+) => {
+    const session = useSession()
+
+    return useCallback(
         (
             membershipId: string,
             cursor?: string,
@@ -32,15 +52,18 @@ const useCreateQuery = <T = RaidHubPlayerActivitiesResponse>(
             queryFn: () =>
                 getActivities({
                     membershipId,
-                    cursor
+                    cursor,
+                    bearerToken: session.data?.raidHubAccessToken?.value
                 }),
             refetchIntervalInBackground: false,
             retry: false,
             ...opts,
-            ...overrides
+            ...overrides,
+            ...(session.status === "loading" ? { enabled: false } : {})
         }),
-        [opts]
+        [opts, session.data?.raidHubAccessToken?.value, session.status]
     )
+}
 
 export const useRaidHubActivtiesFirstPage = <T = RaidHubPlayerActivitiesResponse>(
     membershipId: string,

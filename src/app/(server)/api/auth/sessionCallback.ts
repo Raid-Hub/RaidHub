@@ -1,6 +1,6 @@
 import "server-only"
 
-import { type Adapter } from "@auth/core/adapters"
+import { type Adapter, type AdapterUser } from "@auth/core/adapters"
 import { type AuthConfig } from "@auth/core/types"
 import { refreshAuthorization } from "bungie-net-core/auth"
 import { prisma } from "~/server/prisma"
@@ -15,9 +15,12 @@ export const sessionCallback = (async ({
 }: NonNullable<Awaited<ReturnType<Required<Adapter>["getSessionAndUser"]>>>) => {
     const [bungieToken, raidhubToken] = await Promise.all([
         refreshBungieAuth(bungieAccount, user.id),
-        user.role === "ADMIN"
-            ? refreshRaidHubAdminAuth(raidHubAccessToken, user.id)
-            : Promise.resolve(undefined)
+        refreshRaidHubBearer({
+            userId: user.id,
+            token: raidHubAccessToken,
+            role: user.role,
+            profiles: user.profiles
+        })
     ])
 
     return {
@@ -109,18 +112,25 @@ async function refreshBungieAuth(bungie: BungieAccount, userId: string) {
     }
 }
 
-async function refreshRaidHubAdminAuth(
-    databaseToken: {
+async function refreshRaidHubBearer({
+    userId,
+    token,
+    role,
+    profiles
+}: {
+    userId: string
+    token: {
         value: string
         expiresAt: Date
-    } | null,
-    userId: string
-) {
-    if (databaseToken && databaseToken.expiresAt.getTime() - 120_000 > Date.now()) {
+    } | null
+    role: AdapterUser["role"]
+    profiles: AdapterUser["profiles"]
+}) {
+    if (token && token.expiresAt.getTime() - 120_000 > Date.now()) {
         return {
             token: {
-                value: databaseToken.value,
-                expires: databaseToken.expiresAt.toISOString()
+                value: token.value,
+                expires: token.expiresAt.toISOString()
             },
             errors: []
         }
@@ -128,18 +138,25 @@ async function refreshRaidHubAdminAuth(
 
     const errors: AuthError[] = []
 
-    const token = await postRaidHubApi("/authorize/admin", null, {
-        bungieMembershipId: userId,
-        adminClientSecret: process.env.RAIDHUB_CLIENT_SECRET!
-    })
+    const newToken = await (role === "ADMIN"
+        ? postRaidHubApi("/authorize/admin", null, {
+              bungieMembershipId: userId,
+              adminClientSecret: process.env.RAIDHUB_ADMIN_CLIENT_SECRET!
+          })
+        : postRaidHubApi("/authorize/user", null, {
+              bungieMembershipId: userId,
+              destinyMembershipIds: profiles.map(p => p.destinyMembershipId),
+              clientSecret: process.env.RAIDHUB_CLIENT_SECRET!
+          })
+    )
         .then(res => res.response)
         .catch(e => {
-            errors.push("RaidHubAPIError")
-            console.error("Failed to refresh RaidHub admin token", e)
+            errors.push("RaidHubAuthorizationError")
+            console.error("Failed to refresh RaidHub auth token", e)
             return null
         })
 
-    if (token) {
+    if (newToken) {
         await prisma.raidHubAccessToken
             .upsert({
                 where: {
@@ -147,12 +164,12 @@ async function refreshRaidHubAdminAuth(
                 },
                 create: {
                     userId,
-                    value: token.value,
-                    expiresAt: token.expires
+                    value: newToken.value,
+                    expiresAt: newToken.expires
                 },
                 update: {
-                    value: token.value,
-                    expiresAt: token.expires
+                    value: newToken.value,
+                    expiresAt: newToken.expires
                 }
             })
             .catch(e => {

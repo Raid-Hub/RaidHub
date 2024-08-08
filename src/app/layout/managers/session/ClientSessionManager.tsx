@@ -54,7 +54,6 @@ const TokenManager = ({ setNextRefetch }: { setNextRefetch: (milliseconds: numbe
         } else if (session.data.errors.includes("BungieAPIOffline")) {
             setNextRefetch(120_000)
         } else if (session.data.errors.includes("AccessTokenError")) {
-            console.error(new Error("Access Token Error"))
             setNextRefetch(10_000)
             setFailedTokenRequests(prev => prev + 1)
         } else if (session.data.errors.includes("ExpiredRefreshTokenError")) {
