@@ -19,7 +19,6 @@ export function useSearch(props?: {
 
     const [enteredText, setEnteredText] = useState("")
     const [enterPressed, setEnterPressed] = useState(false)
-    console.log(Math.max(200, 500 - enteredText.length * 50))
     const [debouncedQuery, forceUpdateQuery] = useDebounce(
         enteredText,
         200,
