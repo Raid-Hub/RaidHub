@@ -30,9 +30,7 @@ export function UserCard() {
             membershipType: props.destinyMembershipType
         },
         {
-            staleTime: 1000 * 60 * 2,
-            // Do not use initialData here, as it will cause hydration issues with RSC
-            placeholderData: props.ssrDestinyProfile ?? undefined
+            staleTime: 1000 * 60 * 2
         }
     )
 
