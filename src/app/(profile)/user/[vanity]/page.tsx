@@ -6,12 +6,7 @@ import { bungieProfileIconUrl } from "~/util/destiny"
 import { ProfileClientWrapper } from "../../ProfileClientWrapper"
 import { ProfilePage } from "../../ProfilePage"
 import { generatePlayerMetadata } from "../../metadata"
-import {
-    getUniqueProfileByVanity,
-    prefetchDestinyProfile,
-    prefetchRaidHubPlayerBasic,
-    prefetchRaidHubPlayerProfile
-} from "../../prefetch"
+import { getUniqueProfileByVanity, prefetchRaidHubPlayerProfile } from "../../prefetch"
 import { type ProfileProps } from "../../types"
 
 type PageProps = {
@@ -21,7 +16,6 @@ type PageProps = {
 }
 
 export const dynamicParams = true
-export const dynamic = "force-static"
 export const revalidate = 900
 
 /**
@@ -33,7 +27,6 @@ export default async function Page({ params }: PageProps) {
 
     return (
         <Suspense
-            key={params.vanity}
             fallback={
                 <ProfileClientWrapper
                     pageProps={{
@@ -50,21 +43,15 @@ export default async function Page({ params }: PageProps) {
     )
 }
 
+// todo: maybe not prefer the d2 profile, slowww
 const HydratedVanityPage = async (appProfile: NonNullable<AppProfile>) => {
-    const [raidHubProfile, destinyProfile] = await Promise.all([
-        prefetchRaidHubPlayerProfile(appProfile.destinyMembershipId),
-        prefetchDestinyProfile({
-            destinyMembershipId: appProfile.destinyMembershipId,
-            membershipType: appProfile.destinyMembershipType
-        })
-    ])
+    const raidHubProfile = await prefetchRaidHubPlayerProfile(appProfile.destinyMembershipId)
 
     const pageProps: ProfileProps = {
         destinyMembershipId: appProfile.destinyMembershipId,
         destinyMembershipType: appProfile.destinyMembershipType,
         ssrAppProfile: appProfile,
         ssrRaidHubProfile: raidHubProfile,
-        ssrDestinyProfile: destinyProfile,
         ready: true
     }
     return (
@@ -87,9 +74,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const raidhub = await prefetchRaidHubPlayerBasic(profile.destinyMembershipId)
+    const raidhub = await prefetchRaidHubPlayerProfile(profile.destinyMembershipId)
 
-    const image = profile.user.image ?? bungieProfileIconUrl(raidhub?.iconPath)
+    const image = profile.user.image ?? bungieProfileIconUrl(raidhub?.playerInfo.iconPath)
 
     return generatePlayerMetadata({
         username: profileUsername,

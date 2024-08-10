@@ -7,6 +7,7 @@ import { PageWrapper } from "~/components/layout/PageWrapper"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { fixClanName } from "~/util/destiny/fixClanName"
+import { reactDedupe } from "~/util/react-cache"
 
 type PageProps = {
     params: {
@@ -15,7 +16,7 @@ type PageProps = {
 }
 
 export default async function Page({ params }: PageProps) {
-    const clan = await getClan(params)
+    const clan = await getClan(params.groupId)
 
     return (
         <PageWrapper>
@@ -25,7 +26,7 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const clan = await getClan(params)
+    const clan = await getClan(params.groupId)
 
     if (!clan) return {}
 
@@ -42,7 +43,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const bungieClient = new ServerBungieClient({
-    revalidate: 3600 // 1 hour
+    next: { revalidate: 3600 }, // 1 hour
+    timeout: 2500
 })
 
 const notFoundErrCodes = [
@@ -50,13 +52,14 @@ const notFoundErrCodes = [
     622 // GroupNotFound
 ]
 
-const getClan = async (params: { groupId: string }) =>
-    getGroup(bungieClient, params)
+const getClan = reactDedupe(async (groupId: string) =>
+    getGroup(bungieClient, { groupId })
         .then(res => res.Response)
-        .catch((e: Error) => {
+        .catch(e => {
             if (e instanceof BungieAPIError && notFoundErrCodes.includes(e.ErrorCode)) {
                 notFound()
             } else {
                 return null
             }
         })
+)

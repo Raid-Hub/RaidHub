@@ -33,9 +33,9 @@ There is a ton of emphasis on how routing is done in this project, hence the cho
 -   FCP (First contentful paint) is incredibly important. We can reduce time to FCP by using client-side navigation wherever possible.
 -   LCP (Largest contentful paint) is also incredibly important. We can reduce time to LCP by implementing agressive caching.
 -   Server side rendering is important for some but not all pages. If metadata is needed for the SEO of a page, then that page should he server-rendered with data.
--
+    -å
 
-Note that there are always trade-offs to be made. Because we are using partial pre-rendering (see `next.config.js`), there are no truly static routes. In order to force some common routes such as `leaderboards`, `pgcr`, and `profile` we use `export const dynamic = "force-static"`, Static pages cannot have dynamic elements such as a `session` attached. (See the docs on this [here](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic).) This means all static pages will be served faster, however, once loaded, the user will have to fetch their session client side, adding an extra rount trip.
+Note that there are always trade-offs to be made. Because we are using partial pre-rendering (see `next.config.js`), there are no truly static routes. In order to force some common routes such as `leaderboards`, we use `export const dynamic = "force-static"`, Static pages cannot have dynamic elements such as a `session` attached. (See the docs on this [here](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic).) This means all static pages will be served faster, however, once loaded, the user will have to fetch their session client side, adding an extra rount trip.
 
 ## Rotuing Examples
 

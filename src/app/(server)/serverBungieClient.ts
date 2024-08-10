@@ -4,7 +4,6 @@ import type { BungieFetchConfig } from "bungie-net-core"
 import type { PlatformErrorCodes } from "bungie-net-core/models"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
-import { reactDedupe } from "~/util/react-cache"
 
 const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
     5, // SystemDisabled
@@ -13,10 +12,12 @@ const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
 
 export default class ServerBungieClient extends BaseBungieClient {
     private next: NextFetchRequestConfig
+    private timeout: number
 
-    constructor(next: NextFetchRequestConfig = {}) {
+    constructor({ next, timeout }: { next?: NextFetchRequestConfig; timeout?: number } = {}) {
         super()
-        this.next = next
+        this.next = next ?? {}
+        this.timeout = timeout ?? 5000
     }
 
     generatePayload(config: BungieFetchConfig): RequestInit {
@@ -48,19 +49,22 @@ export default class ServerBungieClient extends BaseBungieClient {
 
         const controller = new AbortController()
         payload.signal = controller.signal
-        setTimeout(() => controller.abort(), 5000)
+        setTimeout(() => controller.abort(), this.timeout)
 
         return payload
     }
 
     async handle<T>(url: URL, payload: RequestInit): Promise<T> {
         try {
-            return (await reactDedupe(this.request).call(this, url, payload)) as T
-        } catch (e) {
-            if (!(e instanceof BungieAPIError && ExpectedErrorCodes.has(e.ErrorCode))) {
-                console.error(e)
+            return (await this.request(url, payload)) as T
+        } catch (err) {
+            if (
+                !(err instanceof DOMException) &&
+                !(err instanceof BungieAPIError && ExpectedErrorCodes.has(err.ErrorCode))
+            ) {
+                console.error(err)
             }
-            throw e
+            throw err
         }
     }
 }
