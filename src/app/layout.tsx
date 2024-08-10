@@ -20,12 +20,7 @@ import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
 import "./layout/global.css"
 
 // Dynamic import for the dexie DB
-const DestinyManifestManager = dynamic(
-    () => import("~/app/layout/managers/DestinyManifestManager"),
-    {
-        ssr: false
-    }
-)
+const DestinyManifestManager = dynamic(() => import("~/app/layout/managers/DestinyManifestManager"))
 
 export const preferredRegion = ["iad1"] // us-east-1
 export const runtime = "nodejs"
