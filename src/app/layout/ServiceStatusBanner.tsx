@@ -10,24 +10,39 @@ import { formattedTimeSince } from "~/util/presentation/formatting"
 
 const commonQueryOptions = {
     staleTime: 1000 * 60 * 15,
-    refetchInterval: 1000 * 60 * 60,
     refetchOnReconnect: true,
     refetchOnWindowFocus: true
 }
 
 export const ServiceStatusBanner = () => {
-    const { data: d2ServersOnline } = useCommonSettings({
+    const { data: d2ServersOnline } = useCommonSettings<boolean | null>({
         ...commonQueryOptions,
+        refetchInterval: isEnabled => {
+            const utcHour = new Date().getUTCHours()
+            const hoursFromReset = Math.abs(utcHour - 17)
+            return 3 * (hoursFromReset + 1) * (isEnabled ? 3 : 1) * 60000
+        },
         select: settings => settings.systems.Destiny2?.enabled ?? null
     })
     const { data: alerts } = useGlobalAlerts(
         { includestreaming: true },
         {
             ...commonQueryOptions,
-            select: alerts =>
-                d2ServersOnline == false
+            refetchInterval: () => {
+                const utcHour = new Date().getUTCHours()
+                // Refetch every 5 minutes if near reset
+                return (utcHour >= 17 && d2ServersOnline == false ? 5 : 60) * 60000
+            },
+            select: alerts => {
+                const utcHour = new Date().getUTCHours()
+                // Remove D2-OfflineSoonToday if:
+                // - Servers are offline
+                // - Past reset today
+                // - More than 12 hours until next reset
+                return d2ServersOnline == false || utcHour >= 17 || utcHour < 5
                     ? alerts.filter(alert => alert.AlertKey !== "D2-OfflineSoonToday")
                     : alerts
+            }
         }
     )
 
