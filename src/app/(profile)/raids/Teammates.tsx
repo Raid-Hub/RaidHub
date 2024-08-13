@@ -1,6 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
@@ -15,6 +16,7 @@ import { secondsToYDHMS } from "~/util/presentation/formatting"
 import { type ProfileProps } from "../types"
 
 export const Teammates = () => {
+    const session = useSession()
     const { destinyMembershipId } = usePageProps<ProfileProps>()
 
     const teammates = useQuery({
@@ -25,7 +27,14 @@ export const Teammates = () => {
                 {
                     membershipId: queryKey[2]
                 },
-                null
+                null,
+                {
+                    headers: session.data?.raidHubAccessToken?.value
+                        ? {
+                              Authorization: `Bearer ${session.data?.raidHubAccessToken?.value}`
+                          }
+                        : {}
+                }
             ).then(res => res.response),
         staleTime: Infinity
     })
