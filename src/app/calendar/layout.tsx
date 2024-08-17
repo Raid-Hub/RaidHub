@@ -6,8 +6,6 @@ export default function Layout(params: { children: ReactNode }) {
     return params.children
 }
 
-export const revalidate = false
-
 export const metadata: Metadata = {
     title: "Raid Rotator Calendar",
     openGraph: {

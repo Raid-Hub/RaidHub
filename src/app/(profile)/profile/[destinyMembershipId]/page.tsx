@@ -6,6 +6,8 @@ import { generatePlayerMetadata } from "../../metadata"
 import { getUniqueProfileByDestinyMembershipId, prefetchRaidHubPlayerBasic } from "../../prefetch"
 import { type ProfileProps } from "../../types"
 
+export const revalidate = 0
+
 type PageProps = {
     params: {
         destinyMembershipId: string

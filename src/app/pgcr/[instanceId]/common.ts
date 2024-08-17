@@ -1,4 +1,6 @@
+import { notFound } from "next/navigation"
 import { Tag } from "~/models/tag"
+import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubInstanceExtended } from "~/services/raidhub/types"
 import { reactRequestDedupe } from "~/util/react-cache"
@@ -8,29 +10,43 @@ export type PageProps = {
         instanceId: string
     }
 }
+
 export const prefetchActivity = reactRequestDedupe((instanceId: string) =>
     getRaidHubApi("/activity/{instanceId}", { instanceId }, null)
         .then(res => res.response)
-        .catch(() => null)
+        .catch(err => {
+            if (err instanceof RaidHubError && err.errorCode === "RaidNotFoundError") {
+                notFound()
+            } else {
+                throw err
+            }
+        })
 )
 
 export const getMetaData = (activity: RaidHubInstanceExtended) => {
-    const title = [
-        activity.completed
-            ? activity.playerCount === 1
-                ? Tag.SOLO
-                : activity.playerCount === 2
-                ? Tag.DUO
-                : activity.playerCount === 3
-                ? Tag.TRIO
-                : null
-            : null,
-        activity.flawless ? "Flawless" : null,
-        activity.metadata.activityName,
-        `(${activity.metadata.versionName})`
-    ]
-        .filter(Boolean)
-        .join(" ")
+    const lowmanPrefix = activity.completed
+        ? activity.playerCount === 1
+            ? Tag.SOLO
+            : activity.playerCount === 2
+            ? Tag.DUO
+            : activity.playerCount === 3
+            ? Tag.TRIO
+            : null
+        : null
+    const flawlessPrefix = activity.flawless ? "Flawless" : null
+
+    const versionPrefix =
+        activity.metadata.versionName === "Normal" ? null : activity.metadata.versionName
+
+    const activityName = activity.metadata.activityName
+
+    const resultSuffix = activity.completed
+        ? activity.fresh == false
+            ? "checkpoint cleared on"
+            : "completed on"
+        : "attempted on"
+
+    const placementSuffix = activity.leaderboardRank ? `#${activity.leaderboardRank}` : null
 
     const dateCompleted = new Date(activity.dateCompleted)
 
@@ -45,13 +61,33 @@ export const getMetaData = (activity: RaidHubInstanceExtended) => {
         timeZoneName: "short"
     })
 
-    const description = `${title} ${
-        activity.completed
-            ? activity.fresh == false
-                ? "checkpoint cleared on"
-                : "completed on"
-            : "attempted on"
-    } ${dateString}`
+    const idTitle = [activity.metadata.activityName, activity.instanceId].filter(Boolean).join(" ")
 
-    return { title, description, dateString }
+    const ogTitle = [
+        lowmanPrefix,
+        flawlessPrefix,
+        activityName,
+        `(${activity.metadata.versionName})`
+    ]
+        .filter(Boolean)
+        .join(" ")
+
+    const description = [
+        lowmanPrefix,
+        flawlessPrefix,
+        versionPrefix,
+        activityName,
+        placementSuffix,
+        resultSuffix,
+        dateString
+    ]
+        .filter(Boolean)
+        .join(" ")
+
+    return {
+        ogTitle,
+        idTitle,
+        description,
+        dateString
+    }
 }

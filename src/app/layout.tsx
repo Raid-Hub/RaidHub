@@ -25,7 +25,7 @@ const DestinyManifestManager = dynamic(() => import("~/app/layout/managers/Desti
 export const preferredRegion = ["iad1"] // us-east-1
 export const runtime = "nodejs"
 export const fetchCache = "default-no-store"
-export const revalidate = 0
+export const revalidate = false
 export const maxDuration = 5 // max lambda duration in seconds
 
 export default async function RootLayout(params: { children: ReactNode }) {
