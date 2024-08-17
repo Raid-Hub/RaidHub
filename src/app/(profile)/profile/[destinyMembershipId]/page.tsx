@@ -12,9 +12,6 @@ type PageProps = {
     }
 }
 
-export const dynamic = "force-dynamic"
-export const dynamicParams = true
-
 export default async function Page({ params }: PageProps) {
     // Find the app profile by id if it exists
     const [appProfile, basicProfile] = await Promise.all([
@@ -45,22 +42,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         prefetchRaidHubPlayerBasic(params.destinyMembershipId)
     ])
 
-    if (!profile && !basic) {
+    const username = basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
+    const displayName = username?.split("#")[0] ?? null
+
+    if (!username || !displayName) {
         return {
             robots: {
-                follow: false,
-                index: false
-            }
-        }
-    }
-
-    const username =
-        profile?.user.name ?? basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
-
-    if (!username) {
-        return {
-            robots: {
-                follow: false,
+                follow: true,
                 index: false
             }
         }
@@ -69,6 +57,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const image = profile?.user.image ?? bungieProfileIconUrl(basic?.iconPath)
 
     return generatePlayerMetadata({
+        displayName,
         username,
         image
     })

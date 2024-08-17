@@ -3,6 +3,8 @@ import Link from "next/link"
 import { metadata as rootMetaData } from "~/app/layout"
 import { LegalPage } from "../LegalPage"
 
+export const revalidate = false
+
 export const metadata: Metadata = {
     title: "Privacy Policy",
     openGraph: {

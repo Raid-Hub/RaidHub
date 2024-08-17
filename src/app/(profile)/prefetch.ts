@@ -1,45 +1,73 @@
+import { unstable_cache } from "next/cache"
 import "server-only"
-import { getServerSession } from "~/server/api/auth"
 
 import { trpcServer } from "~/server/api/trpc/rpc"
 import { getRaidHubApi } from "~/services/raidhub/common"
-import { reactDedupe } from "~/util/react-cache"
+import { reactRequestDedupe } from "~/util/react-cache"
 
-export const getUniqueProfileByVanity = reactDedupe(async (vanity: string) =>
-    trpcServer.profile.getUnique.query({ vanity }).catch(() => null)
+export const getUniqueProfileByVanity = unstable_cache(
+    reactRequestDedupe((vanity: string) =>
+        trpcServer.profile.getUnique.query({ vanity }).catch(err => {
+            console.error(err)
+            return null
+        })
+    ),
+    ["profile-by-vanity"],
+    {
+        revalidate: 600
+    }
 )
 
-export const getUniqueProfileByDestinyMembershipId = reactDedupe(
-    async (destinyMembershipId: string) =>
-        trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(() => null)
+export const getUniqueProfileByDestinyMembershipId = unstable_cache(
+    reactRequestDedupe((destinyMembershipId: string) =>
+        trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(err => {
+            console.error(err)
+            return null
+        })
+    ),
+    ["profile-by-destinymembershipid"],
+    {
+        revalidate: 600
+    }
 )
 
 // Get a player's profile from the RaidHub API
-export const prefetchRaidHubPlayerProfile = reactDedupe(async (membershipId: string) => {
-    const session = await getServerSession()
-    return await getRaidHubApi(
+export const prefetchRaidHubPlayerProfileAuthenticated = reactRequestDedupe(
+    (membershipId: string, bearerToken: string) =>
+        getRaidHubApi(
+            "/player/{membershipId}/profile",
+            {
+                membershipId: membershipId
+            },
+            null,
+            {
+                headers: {
+                    Authorization: `Bearer ${bearerToken}`
+                },
+                cache: "no-store"
+            }
+        )
+            .then(res => res.response)
+            .catch(() => null)
+)
+
+export const prefetchRaidHubPlayerProfile = reactRequestDedupe((membershipId: string) =>
+    getRaidHubApi(
         "/player/{membershipId}/profile",
         {
             membershipId: membershipId
         },
         null,
         {
-            next: {
-                revalidate: 60
-            },
-            headers: session?.raidHubAccessToken?.value
-                ? {
-                      Authorization: `Bearer ${session.raidHubAccessToken.value}`
-                  }
-                : {}
+            cache: "no-store"
         }
     )
         .then(res => res.response)
         .catch(() => null)
-})
+)
 
 // Get a player's basic info from the RaidHub API (fast)
-export const prefetchRaidHubPlayerBasic = reactDedupe(async (membershipId: string) =>
+export const prefetchRaidHubPlayerBasic = reactRequestDedupe(async (membershipId: string) =>
     getRaidHubApi(
         "/player/{membershipId}/basic",
         {
@@ -48,7 +76,7 @@ export const prefetchRaidHubPlayerBasic = reactDedupe(async (membershipId: strin
         null,
         {
             next: {
-                revalidate: 24 * 3600
+                revalidate: 6 * 3600
             }
         }
     )

@@ -1,2 +1,2 @@
 import "server-only"
-export { cache as reactDedupe } from "react"
+export { cache as reactRequestDedupe } from "react"

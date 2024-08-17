@@ -14,9 +14,11 @@ export const ClientManager = (props: { children: ReactNode }) => {
     router.prefetch = () => {}
 
     return (
-        <StyledComponentsManager>
-            <FramerMotionManager>{props.children}</FramerMotionManager>
-        </StyledComponentsManager>
+        <ThemeProvider theme={theme}>
+            <StyledComponentsManager>
+                <FramerMotionManager>{props.children}</FramerMotionManager>
+            </StyledComponentsManager>
+        </ThemeProvider>
     )
 }
 
@@ -40,7 +42,7 @@ const StyledComponentsManager = ({ children }: { children: ReactNode }) => {
     })
 
     return (
-        <ThemeProvider theme={theme}>
+        <>
             {typeof window === "undefined" ? (
                 <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
                     {children}
@@ -48,6 +50,6 @@ const StyledComponentsManager = ({ children }: { children: ReactNode }) => {
             ) : (
                 <>{children}</>
             )}
-        </ThemeProvider>
+        </>
     )
 }

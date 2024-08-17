@@ -31,7 +31,7 @@
         "@trpc/client": "10.44.1",
         "@trpc/react-query": "10.44.1",
         "@trpc/server": "10.44.1",
-        "bungie-net-core": "2.1.2",
+        "bungie-net-core": "2.1.3",
         "core-js": "3.37.1",
         "dexie": "3.2.4",
         "dexie-react-hooks": "1.1.7",

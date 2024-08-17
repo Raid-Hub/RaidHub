@@ -8,7 +8,7 @@ import { Splash } from "../../../LeaderboardSplashComponents"
 export const dynamicParams = true
 export const revalidate = 900
 export const dynamic = "force-static"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+export const fetchCache = "default-no-store"
 
 const getCategoryName = (category: DynamicParams["params"]["category"]) => {
     switch (category) {
@@ -33,12 +33,18 @@ type DynamicParams = {
 }
 
 export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
-    const title = getCategoryName(params.category) + " Leaderboards"
+    const categoryName = getCategoryName(params.category)
+    const title = `${categoryName} Leaderboards`
+    const description = `View the ${categoryName.toLowerCase()} global leaderboard`
+
     return {
         title: title,
+        description: description,
+        keywords: [...rootMetadata.keywords, categoryName, "top", "rankings"],
         openGraph: {
             ...rootMetadata.openGraph,
-            title: title
+            title: title,
+            description: description
         }
     }
 }

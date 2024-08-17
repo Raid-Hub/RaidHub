@@ -1,14 +1,14 @@
 import { Tag } from "~/models/tag"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubInstanceExtended } from "~/services/raidhub/types"
-import { reactDedupe } from "~/util/react-cache"
+import { reactRequestDedupe } from "~/util/react-cache"
 
 export type PageProps = {
     params: {
         instanceId: string
     }
 }
-export const prefetchActivity = reactDedupe((instanceId: string) =>
+export const prefetchActivity = reactRequestDedupe((instanceId: string) =>
     getRaidHubApi("/activity/{instanceId}", { instanceId }, null)
         .then(res => res.response)
         .catch(() => null)
@@ -45,12 +45,12 @@ export const getMetaData = (activity: RaidHubInstanceExtended) => {
         timeZoneName: "short"
     })
 
-    const description = `${
+    const description = `${title} ${
         activity.completed
             ? activity.fresh == false
-                ? "Checkpoint cleared on"
-                : "Completed on"
-            : "Attempted on"
+                ? "checkpoint cleared on"
+                : "completed on"
+            : "attempted on"
     } ${dateString}`
 
     return { title, description, dateString }

@@ -25,7 +25,7 @@ const DestinyManifestManager = dynamic(() => import("~/app/layout/managers/Desti
 export const preferredRegion = ["iad1"] // us-east-1
 export const runtime = "nodejs"
 export const fetchCache = "default-no-store"
-export const revalidate = 86400 // static revalidation (1 day in seconds)
+export const revalidate = 0
 export const maxDuration = 5 // max lambda duration in seconds
 
 export default async function RootLayout(params: { children: ReactNode }) {
@@ -44,11 +44,11 @@ export default async function RootLayout(params: { children: ReactNode }) {
             </head>
             <body>
                 <QueryManager>
-                    <BungieClientProvider>
-                        <SessionManager>
-                            <LocaleManager>
-                                <ClientManager>
-                                    <RaidHubManifestManager serverManifest={manifest}>
+                    <RaidHubManifestManager serverManifest={manifest}>
+                        <BungieClientProvider>
+                            <SessionManager>
+                                <LocaleManager>
+                                    <ClientManager>
                                         <DestinyManifestManager>
                                             <Header>
                                                 <NextTopLoader
@@ -65,11 +65,11 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                             {params.children}
                                             <Footer />
                                         </DestinyManifestManager>
-                                    </RaidHubManifestManager>
-                                </ClientManager>
-                            </LocaleManager>
-                        </SessionManager>
-                    </BungieClientProvider>
+                                    </ClientManager>
+                                </LocaleManager>
+                            </SessionManager>
+                        </BungieClientProvider>
+                    </RaidHubManifestManager>
                 </QueryManager>
             </body>
         </html>
@@ -83,7 +83,7 @@ const title: Metadata["title"] = {
 const description: Metadata["description"] =
     "RaidHub is the fastest Destiny 2 raid analytics site. View dozens of leaderboards, millions of profiles, and millions of raid completions."
 
-export const metadata: Metadata = {
+export const metadata = {
     title: title,
     description: description,
     icons: {
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
         follow: true,
         index: true
     },
-    keywords: "destiny 2, raid, leaderboards, stats, statistics, worldsfirst, raidhub, report",
+    keywords: ["destiny 2", "raidhub", "raid hub", "raid", "leaderboards", "statistics"],
     metadataBase: new URL(
         process.env.DEPLOY_URL ??
             (process.env.VERCEL_URL
@@ -103,7 +103,8 @@ export const metadata: Metadata = {
     openGraph: {
         title: title,
         description: description,
-        images: ["/logo.png"],
+        siteName: "RaidHub",
+        images: ["/logo.png"] as string[] | undefined,
         type: "website"
     },
     twitter: {

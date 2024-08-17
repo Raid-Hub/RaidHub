@@ -3,6 +3,7 @@ import "server-only"
 import { initTRPC, TRPCError } from "@trpc/server"
 import superjson from "superjson"
 import { ZodError } from "zod"
+import { prisma } from "../../prisma"
 import { getServerSession, signOut } from "../auth"
 import { type appRouter } from "./router"
 
@@ -24,14 +25,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 export const createTRPCRouter = t.router
 
-import { prisma } from "../../prisma"
-
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-    return {
-        prisma: prisma,
-        ...opts
-    }
-}
+export const createTRPCContext = () => ({ prisma: prisma })
 
 // Procedures
 export const publicProcedure = t.procedure

@@ -1,6 +1,6 @@
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
-import { metadata as leaderboardMetadata } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
 import { LeaderboardSSR } from "~/app/leaderboards/LeaderboardSSR"
 import { getRaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -11,7 +11,7 @@ import { Splash } from "../../../../LeaderboardSplashComponents"
 export const dynamicParams = true
 export const revalidate = 900
 export const dynamic = "force-static"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+export const fetchCache = "default-no-store"
 
 type DynamicParams = {
     params: {
@@ -37,11 +37,22 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
     const { version, activity } = getDefinitions(params, manifest)
 
     const title = `${version.name} ${activity.name} First Completions Leaderboard`
+    const description = `View the first completions for ${version.name} ${activity.name}`
+
     return {
         title: title,
+        description: description,
+        keywords: [
+            activity.name,
+            version.name,
+            "world first",
+            "rankings",
+            ...rootMetadata.keywords
+        ],
         openGraph: {
-            ...leaderboardMetadata.openGraph,
-            title: title
+            ...rootMetadata.openGraph,
+            title: title,
+            description: description
         }
     }
 }
