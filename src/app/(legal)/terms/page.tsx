@@ -2,6 +2,8 @@ import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { LegalPage } from "../LegalPage"
 
+export const revalidate = false
+
 export const metadata: Metadata = {
     title: "Terms and Conditions",
     openGraph: {
