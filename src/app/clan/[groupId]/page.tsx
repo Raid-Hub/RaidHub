@@ -9,6 +9,8 @@ import ServerBungieClient from "~/server/serverBungieClient"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { reactRequestDedupe } from "~/util/react-cache"
 
+export const revalidate = 0
+
 type PageProps = {
     params: {
         groupId: string
@@ -34,6 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
         title: clanName,
         description: clan.detail.motto,
+        keywords: [...rootMetaData.keywords, "clan", clanName],
         openGraph: {
             ...rootMetaData.openGraph,
             title: clanName,

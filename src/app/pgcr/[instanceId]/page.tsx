@@ -3,28 +3,18 @@ import { metadata as rootMetaData } from "~/app/layout"
 import { PGCRPage } from "../PGCRPage"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
-export const dynamic = "force-dynamic"
-
-export const revalidate = false
+export const revalidate = 0
 
 export default async function Page({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
 
-    return <PGCRPage instanceId={params.instanceId} ssrActivity={activity ?? undefined} isReady />
+    return <PGCRPage instanceId={params.instanceId} ssrActivity={activity} isReady={true} />
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const activity = await prefetchActivity(params.instanceId)
 
-    if (!activity)
-        return {
-            robots: {
-                follow: false,
-                index: false
-            }
-        }
-
-    const { title, description } = getMetaData(activity)
+    const { idTitle, ogTitle, description } = getMetaData(activity)
 
     const inheritedOpengraph = structuredClone(rootMetaData.openGraph)
     // Remove images from inherited metadata, otherwise it overrides the image generated
@@ -32,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     delete inheritedOpengraph.images
 
     return {
-        title: title,
+        title: idTitle,
         description: description,
         keywords: [
             ...rootMetaData.keywords,
@@ -50,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ].filter(Boolean) as string[],
         openGraph: {
             ...inheritedOpengraph,
-            title: title,
+            title: ogTitle,
             description: description
         },
         twitter: {
@@ -59,8 +49,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         robots: {
             follow: true,
-            // Only index top 25 pgcrs for any leaderboard
-            index: activity.leaderboardRank ? activity.leaderboardRank <= 25 : false
+            // Only index lowmans, flawlesses, and placements
+            index:
+                !!activity.leaderboardRank ||
+                !!activity.flawless ||
+                (activity.completed && activity.playerCount <= 3)
         }
     }
 }

@@ -21,14 +21,13 @@ export const runtime = "edge"
 export async function generateImageMetadata({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
 
-    if (!activity) return []
-
+    const { idTitle } = getMetaData(activity)
     const raidName = activity.metadata.activityName
 
     return [
         {
             id: 0,
-            alt: raidName,
+            alt: idTitle,
             contentType: "image/png",
             size,
             activity,
@@ -43,9 +42,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
 
     const activity = await prefetchActivity(instanceId)
 
-    if (!activity) return new Response(null, { status: 404 })
-
-    const { title, dateString } = getMetaData(activity)
+    const { ogTitle, dateString } = getMetaData(activity)
 
     return new ImageResponse(
         (
@@ -84,7 +81,7 @@ export default async function Image({ params: { instanceId } }: PageProps) {
                         fontSize: 48,
                         textShadow: "2px 2px 3px black"
                     }}>
-                    {title}
+                    {ogTitle}
                 </h1>
                 <div
                     style={{

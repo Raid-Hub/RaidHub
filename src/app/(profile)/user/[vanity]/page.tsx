@@ -14,6 +14,8 @@ import {
 } from "../../prefetch"
 import { type ProfileProps } from "../../types"
 
+export const revalidate = 0
+
 type PageProps = {
     params: {
         vanity: string
