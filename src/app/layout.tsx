@@ -93,16 +93,7 @@ export const metadata = {
         follow: true,
         index: true
     },
-    keywords: [
-        "destiny 2",
-        "raidhub",
-        "raid hub",
-        "raid",
-        "leaderboards",
-        "stats",
-        "statistics",
-        "worlds first"
-    ],
+    keywords: ["destiny 2", "raidhub", "raid hub", "raid", "leaderboards", "statistics"],
     metadataBase: new URL(
         process.env.DEPLOY_URL ??
             (process.env.VERCEL_URL

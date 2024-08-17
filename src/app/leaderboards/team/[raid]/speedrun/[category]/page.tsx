@@ -43,8 +43,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
     const manifest = await prefetchManifest()
     const definition = getRaidDefinition(params.raid, manifest)
-    const variable = SpeedrunVariables[definition.path]?.variable
-    if (!variable) return notFound()
+    const categoryId = SpeedrunVariables[definition.path]?.categoryId
+
+    console.log(categoryId)
+    if (!categoryId) return notFound()
 
     const displayName =
         params.category !== "all"
@@ -53,11 +55,25 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
             : null
 
     const title = [definition.name, displayName, "Speedrun Leaderboards"].filter(Boolean).join(" ")
+    const description = `View the fastest ${[displayName, definition.name]
+        .filter(Boolean)
+        .join(" ")} speedruns`
+
     return {
         title: title,
+        description: description,
+        keywords: [
+            definition.name,
+            displayName,
+            "speedrun",
+            "world record",
+            "rankings",
+            ...rootMetadata.keywords
+        ].filter(Boolean) as string[],
         openGraph: {
             ...rootMetadata.openGraph,
-            title: title
+            title: title,
+            description: description
         }
     }
 }
@@ -70,8 +86,9 @@ export default async function Page({ params }: DynamicParams) {
 
     const raid = getRaidDefinition(params.raid, manifest)
     const category = params.category === "all" ? undefined : params.category
-    const variable = SpeedrunVariables[raid.path]?.variable
-    if (!variable) return notFound()
+
+    const categoryId = SpeedrunVariables[raid.path]?.categoryId
+    if (!categoryId) return notFound()
 
     return (
         <Leaderboard

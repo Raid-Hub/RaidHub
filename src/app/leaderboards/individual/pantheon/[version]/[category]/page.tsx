@@ -1,6 +1,6 @@
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
-import { metadata as leaderboardMetadata } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
 import { LeaderboardSSR } from "~/app/leaderboards/LeaderboardSSR"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import {
@@ -44,11 +44,25 @@ export async function generateMetadata({
     const { definition, categoryName } = getDefinitions(params, manifest)
 
     const title = `The Pantheon: ${definition.name} ${categoryName} Completion Leaderboard`
+    const description = `View the Pantheon: ${
+        definition.name
+    } ${categoryName.toLowerCase()} leaderboards`
+
     return {
         title: title,
+        description: description,
+        keywords: [
+            ...rootMetadata.keywords,
+            categoryName,
+            "pantheon",
+            definition.name,
+            "top",
+            "rankings"
+        ],
         openGraph: {
-            ...leaderboardMetadata.openGraph,
-            title: title
+            ...rootMetadata.openGraph,
+            title: title,
+            description: description
         }
     }
 }

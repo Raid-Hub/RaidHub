@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { metadata as leaderboardMetadata } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
 import { LeaderboardSSR } from "~/app/leaderboards/LeaderboardSSR"
 import { getRaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -22,11 +22,22 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
     const definition = getRaidDefinition(params.raid, manifest)
 
     const title = `${definition.name} World First Leaderboard`
+    const description = `View the World First completions for ${definition.name}`
     return {
         title: title,
+        description: description,
+        keywords: [
+            definition.name,
+            "world first",
+            "race",
+            "placements",
+            "rankings",
+            ...rootMetadata.keywords
+        ],
         openGraph: {
-            ...leaderboardMetadata.openGraph,
-            title: title
+            ...rootMetadata.openGraph,
+            title: title,
+            description: description
         }
     }
 }

@@ -135,5 +135,8 @@ export const SpeedrunVariables: Record<
                 trio: { id: "qke98znq", displayName: "Trio" }
             }
         }
+    },
+    salvationsedge: {
+        categoryId: "9kvzop8d"
     }
 }

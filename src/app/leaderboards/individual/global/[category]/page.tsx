@@ -32,12 +32,18 @@ type DynamicParams = {
 }
 
 export async function generateMetadata({ params }: DynamicParams): Promise<Metadata> {
-    const title = getCategoryName(params.category) + " Leaderboards"
+    const categoryName = getCategoryName(params.category)
+    const title = `${categoryName} Leaderboards`
+    const description = `View the ${categoryName.toLowerCase()} global leaderboard`
+
     return {
         title: title,
+        description: description,
+        keywords: [...rootMetadata.keywords, categoryName, "top", "rankings"],
         openGraph: {
             ...rootMetadata.openGraph,
-            title: title
+            title: title,
+            description: description
         }
     }
 }

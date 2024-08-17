@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { metadata as leaderboardMetadata } from "~/app/layout"
+import { metadata as rootMetadata } from "~/app/layout"
 import { LeaderboardSSR } from "~/app/leaderboards/LeaderboardSSR"
 import { getRaidSplash } from "~/data/activity-images"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
@@ -37,11 +37,16 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
     const categoryName = getCategoryName(params.category)
 
     const title = `${definition.name} ${categoryName} Leaderboard`
+    const description = `View the ${categoryName.toLowerCase()} leaderboard for ${definition.name}.`
+
     return {
         title: title,
+        description: description,
+        keywords: [...rootMetadata.keywords, definition.name, categoryName, "top", "rankings"],
         openGraph: {
-            ...leaderboardMetadata.openGraph,
-            title: title
+            ...rootMetadata.openGraph,
+            title: title,
+            description: description
         }
     }
 }
