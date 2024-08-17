@@ -13,7 +13,6 @@ import { Splash } from "../../../../LeaderboardSplashComponents"
 export const dynamicParams = true
 export const revalidate = 900
 export const dynamic = "force-static"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
 
 type PantheonVersionLeaderboardDynamicParams = {
     params: PathParamsForLeaderboardURL<"/leaderboard/individual/pantheon/{version}/{category}">

@@ -4,7 +4,7 @@ import { PGCRPage } from "../PGCRPage"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 export const dynamic = "force-dynamic"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+
 export const revalidate = false
 
 export default async function Page({ params }: PageProps) {

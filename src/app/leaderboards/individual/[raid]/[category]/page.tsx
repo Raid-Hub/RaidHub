@@ -9,9 +9,9 @@ import { Splash } from "../../../LeaderboardSplashComponents"
 import { getRaidDefinition } from "../../../util"
 
 export const dynamicParams = true
+
 export const revalidate = 900
 export const dynamic = "force-static"
-export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
 
 type DynamicParams = {
     params: PathParamsForLeaderboardURL<"/leaderboard/individual/raid/{raid}/{category}">
@@ -66,7 +66,7 @@ export default async function Page({ params, searchParams }: DynamicParams) {
             external={false}
             pageProps={{
                 layout: "individual",
-                queryKey: ["raidhub", "leaderboard", "individual", params.raid],
+                queryKey: ["raidhub", "leaderboard", "individual", params.raid, params.category],
                 entriesPerPage: 50,
                 apiUrl: "/leaderboard/individual/raid/{raid}/{category}",
                 params
