@@ -13,6 +13,7 @@ import { useRaidHubManifest } from "../layout/managers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
 
 export default function Page() {
+    const seasons = useSeasons()
     const { listedRaids, getDefinitionFromHash, milestoneHashes } = useRaidHubManifest()
     const {
         data: milestones,
@@ -20,7 +21,6 @@ export default function Page() {
         isError,
         error
     } = usePublicMilestones({
-        suspense: true,
         select: milestones =>
             new Collection(Object.entries(milestones)).filter((_, hash) => {
                 const definition = milestoneHashes.get(Number(hash))
@@ -35,8 +35,6 @@ export default function Page() {
             return new Date(nextReset).getTime() - now + 2 * 60 * 1000
         }
     })
-
-    const seasons = useSeasons()
 
     const thisWeek = useMemo(
         () =>

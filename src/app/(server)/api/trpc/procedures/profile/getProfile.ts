@@ -40,7 +40,13 @@ export const getProfile = publicProcedure
             }
         })
 
-        if (!data?.user) return null
+        if (!data) return null
+
+        if (!data.user)
+            return {
+                ...data,
+                connections: null
+            }
 
         const {
             user: { accounts: connections, ...user },

@@ -12,7 +12,7 @@ datasource db {
 model Profile {
   destinyMembershipId   String  @id @map("destiny_membership_id")
   destinyMembershipType Int     @map("destiny_membership_type")
-  bungieMembershipId    String  @map("bungie_membership_id")
+  bungieMembershipId    String? @map("bungie_membership_id")
   isPrimary             Boolean @map("is_primary")
   pinnedActivityId      String? @map("pinned_activity_id")
   vanity                String? @unique

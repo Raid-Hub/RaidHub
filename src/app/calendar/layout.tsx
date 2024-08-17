@@ -3,7 +3,7 @@ import { type ReactNode } from "react"
 import { metadata as rootMetaData } from "~/app/layout"
 
 export default function Layout(params: { children: ReactNode }) {
-    return params.children
+    return <>{params.children}</>
 }
 
 export const metadata: Metadata = {

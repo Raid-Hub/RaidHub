@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         (raidhub?.playerInfo.bungieGlobalDisplayName
             ? `${raidhub.playerInfo.bungieGlobalDisplayName}#${raidhub.playerInfo.bungieGlobalDisplayNameCode}`
             : raidhub?.playerInfo.displayName) ?? null
-    const displayName = (profile.user.name ?? username ?? null)?.split("#")[0] ?? null
+    const displayName = (profile.user?.name ?? username ?? null)?.split("#")[0] ?? null
 
     if (!username || !displayName) {
         return {
@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const image = profile.user.image ?? bungieProfileIconUrl(raidhub?.playerInfo.iconPath)
+    const image = profile.user?.image ?? bungieProfileIconUrl(raidhub?.playerInfo.iconPath)
 
     return generatePlayerMetadata({
         username,

@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
     }
 
-    const image = profile?.user.image ?? bungieProfileIconUrl(basic?.iconPath)
+    const image = profile?.user?.image ?? bungieProfileIconUrl(basic?.iconPath)
 
     return generatePlayerMetadata({
         displayName,
