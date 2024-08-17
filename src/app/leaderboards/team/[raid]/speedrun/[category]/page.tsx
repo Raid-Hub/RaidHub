@@ -9,6 +9,11 @@ import { SpeedrunComBanner } from "./SpeedrunComBanner"
 import { SpeedrunComControls } from "./SpeedrunComControls"
 import { SpeedrunEntries } from "./SpeedrunEntries"
 
+export const dynamicParams = true
+export const revalidate = 900
+export const dynamic = "force-static"
+export const fetchCache = "default-no-store"
+
 type DynamicParams = {
     params: {
         raid: string
@@ -45,7 +50,6 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
     const definition = getRaidDefinition(params.raid, manifest)
     const categoryId = SpeedrunVariables[definition.path]?.categoryId
 
-    console.log(categoryId)
     if (!categoryId) return notFound()
 
     const displayName =
@@ -77,9 +81,6 @@ export async function generateMetadata({ params }: DynamicParams): Promise<Metad
         }
     }
 }
-
-export const revalidate = 1800
-export const dynamic = "force-static"
 
 export default async function Page({ params }: DynamicParams) {
     const manifest = await prefetchManifest()

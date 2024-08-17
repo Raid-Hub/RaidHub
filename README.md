@@ -36,9 +36,9 @@ There is a ton of emphasis on how routing is done in this project, hence the cho
 
 Note that there are always trade-offs to be made. Because we are using partial pre-rendering (see `next.config.js`), there are no truly static routes. In order to force some common routes such as `leaderboards`, we use `export const dynamic = "force-static"`, Static pages cannot have dynamic elements such as a `session` attached. (See the docs on this [here](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic).) This means all static pages will be served faster, however, once loaded, the user will have to fetch their session client side, adding an extra rount trip.
 
-## Rotuing Examples
+## Routing Examples
 
-`/leaderboards` - These pages are created with incremental static regeneration (ISR) with client side revalidation. We use `export const dynamic = "force-static"` on the common `layout.ts` to ensure this page is statically cached. `searchParams` are also not rendered on static content which means no matter which page the user fetches, we will always statically serve page 1. This means we need to handle this logic appropriately. Because the page is static, that means that we are often serving stale data. That's where `useQuery` comes into play. We can serve the static data initially, revalidated every 15 minutes, and then refetch client side. This improves SEO.
+`/leaderboards` - These pages are created with incremental static regeneration (ISR) with client side revalidation. We use `export const dynamic = "force-static"` to ensure these pages are statically cached. `searchParams` are also not rendered on static content which means no matter which page the user fetches, we will always statically serve page 1. This means we need to handle this logic appropriately. Because the page is static, that means that we are often serving stale data. That's where `useQuery` comes into play. We can serve the static data initially, revalidated every 15 minutes, and then refetch client side. This improves SEO.
 
 ## Notable files
 

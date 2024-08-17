@@ -9,9 +9,9 @@ import { Splash } from "../../../LeaderboardSplashComponents"
 import { getRaidDefinition } from "../../../util"
 
 export const dynamicParams = true
-
 export const revalidate = 900
 export const dynamic = "force-static"
+export const fetchCache = "default-no-store"
 
 type DynamicParams = {
     params: PathParamsForLeaderboardURL<"/leaderboard/individual/raid/{raid}/{category}">
