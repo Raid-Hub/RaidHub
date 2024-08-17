@@ -7,6 +7,7 @@ export const usePublicMilestones = <T = Record<number, DestinyPublicMilestone>>(
     suspense?: boolean
     select?: (data: Record<number, DestinyPublicMilestone>) => T
     refetchInterval?: (data?: T) => number | false
+    enabled?: boolean
 }) => {
     const bungieClient = useBungieClient()
 
