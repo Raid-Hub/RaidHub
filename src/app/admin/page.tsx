@@ -3,7 +3,7 @@ import { revalidateTag } from "next/cache"
 import { Flex } from "~/components/layout/Flex"
 import { PageWrapper } from "~/components/layout/PageWrapper"
 import { AddVanityForm } from "./AddVanityForm"
-import { RemoveVanityForm } from "./DeleteVanityForm"
+import { RemoveVanityForm } from "./RemoveVanityForm"
 
 export default async function Page() {
     const purgeManifest = async () => {
@@ -18,7 +18,8 @@ export default async function Page() {
                 <AddVanityForm />
                 <RemoveVanityForm />
                 <form action={purgeManifest}>
-                    <button type="submit">Refresh Manifest (Purge cache)</button>
+                    <h2>Reset Cache</h2>
+                    <button type="submit">Refresh Manifest</button>
                 </form>
             </Flex>
         </PageWrapper>

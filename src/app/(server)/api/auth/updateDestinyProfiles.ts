@@ -1,6 +1,8 @@
 import { type UserMembershipData } from "bungie-net-core/models"
 import { prisma } from "~/server/prisma"
 
+// TODO: we should add this as a trpc procedure to make it easier to use
+// in other parts of the app
 export const updateDestinyProfiles = async (data: UserMembershipData) => {
     const applicableMemberships = data.destinyMemberships.filter(
         m => m.applicableMembershipTypes.length > 0

@@ -5,30 +5,33 @@ import { trpcServer } from "~/server/api/trpc/rpc"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { reactRequestDedupe } from "~/util/react-cache"
 
-export const getUniqueProfileByVanity = unstable_cache(
-    reactRequestDedupe((vanity: string) =>
-        trpcServer.profile.getUnique.query({ vanity }).catch(err => {
-            console.error(err)
-            return null
-        })
-    ),
-    ["profile-by-vanity"],
-    {
-        revalidate: 600
-    }
+export const getUniqueProfileByVanity = reactRequestDedupe(
+    unstable_cache(
+        (vanity: string) =>
+            trpcServer.profile.getUnique.query({ vanity }).catch(err => {
+                console.error(err)
+                return null
+            }),
+        ["profile-by-vanity"],
+        {
+            revalidate: 600,
+            tags: ["vanity"]
+        }
+    )
 )
 
-export const getUniqueProfileByDestinyMembershipId = unstable_cache(
-    reactRequestDedupe((destinyMembershipId: string) =>
-        trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(err => {
-            console.error(err)
-            return null
-        })
-    ),
-    ["profile-by-destinymembershipid"],
-    {
-        revalidate: 600
-    }
+export const getUniqueProfileByDestinyMembershipId = reactRequestDedupe(
+    unstable_cache(
+        (destinyMembershipId: string) =>
+            trpcServer.profile.getUnique.query({ destinyMembershipId }).catch(err => {
+                console.error(err)
+                return null
+            }),
+        ["profile-by-destinymembershipid"],
+        {
+            revalidate: 600
+        }
+    )
 )
 
 // Get a player's profile from the RaidHub API

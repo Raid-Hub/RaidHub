@@ -38,8 +38,8 @@ export const useSocialConnections = () => {
             displayName: string
             url: string | null
         }>()
-        const { connections } = appProfileQuery.data
-        const discord = connections.find(c => c.provider === "discord")
+        const connections = appProfileQuery.data.connections
+        const discord = connections?.find(c => c.provider === "discord")
         if (discord?.displayName) {
             socials.push({
                 id: Socials.Discord,
@@ -48,7 +48,7 @@ export const useSocialConnections = () => {
                 displayName: discord.displayName
             })
         }
-        const twitter = connections.find(c => c.provider === "twitter")
+        const twitter = connections?.find(c => c.provider === "twitter")
         if (twitter?.displayName) {
             socials.push({
                 id: Socials.Twitter,
@@ -58,7 +58,7 @@ export const useSocialConnections = () => {
             })
         }
 
-        const youtube = connections.find(c => c.provider === "youtube")
+        const youtube = connections?.find(c => c.provider === "youtube")
         if (youtube?.displayName) {
             socials.push({
                 id: Socials.YouTube,
@@ -68,7 +68,7 @@ export const useSocialConnections = () => {
             })
         }
 
-        const twitch = connections.find(c => c.provider === "twitch")
+        const twitch = connections?.find(c => c.provider === "twitch")
         if (twitch?.displayName) {
             socials.push({
                 id: Socials.Twitch,
@@ -78,7 +78,7 @@ export const useSocialConnections = () => {
             })
         }
 
-        const speedrun = connections.find(c => c.provider === "speedrun")
+        const speedrun = connections?.find(c => c.provider === "speedrun")
         if (speedrun?.displayName) {
             socials.push({
                 id: Socials.Speedrun,

@@ -48,7 +48,7 @@ export function UserCard() {
             destinyMembershipId: props.destinyMembershipId
         },
         {
-            select: data => data?.user.image ?? null,
+            select: data => data?.user?.image ?? null,
             // Required to prevent the query from running before the page is ready
             enabled: props.ready
         }
