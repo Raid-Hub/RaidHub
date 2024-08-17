@@ -1,20 +1,17 @@
-import type { inferRouterContext, ProcedureType, TRPCError } from "@trpc/server"
+import type { ProcedureType, TRPCError } from "@trpc/server"
 import { DiscordColors, sendDiscordWebhook } from "~/services/discord/webhook"
-import { type AppRouter } from "."
 
-export const trpcErrorHandler = async <TRouter extends AppRouter>({
+export const trpcErrorHandler = async ({
     error,
     path,
     input,
-    source,
-    ctx
+    source
 }: {
     error: TRPCError
     type: ProcedureType | "unknown"
     path?: string
     input: unknown
     source: "rpc" | "http"
-    ctx?: inferRouterContext<TRouter>
 }) => {
     console.error(`❌ tRPC failed on ${path ?? "<no-path>"}:`, error)
 
@@ -60,16 +57,6 @@ export const trpcErrorHandler = async <TRouter extends AppRouter>({
                         {
                             name: "App Version",
                             value: `\`${process.env.APP_VERSION ?? "N/A"}\``,
-                            inline: false
-                        },
-                        {
-                            name: "Country",
-                            value: `\`${ctx?.headers.get("cf-ipcountry") ?? "N/A"}\``,
-                            inline: false
-                        },
-                        {
-                            name: "User Agent",
-                            value: `\`${ctx?.headers.get("user-agent") ?? "N/A"}\``,
                             inline: false
                         }
                     ]

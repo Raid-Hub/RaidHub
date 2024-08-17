@@ -2,26 +2,42 @@ import { type Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 
 export const generatePlayerMetadata = ({
+    displayName,
     username,
     image
 }: {
+    displayName: string
     username: string
     image: string
 }): Metadata => {
     const description = `View ${username}'s raid stats, achievements, tags, and more`
     return {
-        title: username,
+        title: displayName,
         description,
+        keywords: [
+            ...rootMetaData.keywords,
+            "raid report",
+            "profile",
+            "raid history",
+            displayName,
+            username
+        ],
         openGraph: {
             ...rootMetaData.openGraph,
-            images: image,
-            title: username,
-            description
+            type: "profile",
+            username,
+            title: displayName,
+            description,
+            images: image
         },
         twitter: {
             ...rootMetaData.twitter,
             card: "summary_large_image",
             images: image
+        },
+        robots: {
+            follow: true,
+            index: true
         }
     }
 }

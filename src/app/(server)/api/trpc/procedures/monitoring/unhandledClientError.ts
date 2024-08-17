@@ -1,3 +1,4 @@
+import { headers } from "next/headers"
 import { z } from "zod"
 import { DiscordColors, sendDiscordWebhook } from "~/services/discord/webhook"
 import { publicProcedure } from "../.."
@@ -17,7 +18,8 @@ export const unhandledClientError = publicProcedure
             })
         })
     )
-    .mutation(async ({ ctx: { headers }, input }) => {
+    .mutation(async ({ input }) => {
+        const headrs = headers()
         if (process.env.CLIENT_ALERTS_WEBHOOK_URL) {
             const stackTraceLines =
                 input.error.stack
@@ -57,7 +59,7 @@ export const unhandledClientError = publicProcedure
                             })),
                             {
                                 name: "URL",
-                                value: headers.get("referer") ?? "",
+                                value: headrs.get("referer") ?? "",
                                 inline: false
                             },
                             {
@@ -87,12 +89,12 @@ export const unhandledClientError = publicProcedure
                             },
                             {
                                 name: "Country",
-                                value: headers.get("cf-ipcountry") ?? "N/A",
+                                value: headrs.get("cf-ipcountry") ?? "N/A",
                                 inline: false
                             },
                             {
                                 name: "User Agent",
-                                value: `\`${headers.get("user-agent") ?? "N/A"}\``,
+                                value: `\`${headrs.get("user-agent") ?? "N/A"}\``,
                                 inline: false
                             }
                         ]

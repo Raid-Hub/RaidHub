@@ -7,7 +7,7 @@ import { PageWrapper } from "~/components/layout/PageWrapper"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { fixClanName } from "~/util/destiny/fixClanName"
-import { reactDedupe } from "~/util/react-cache"
+import { reactRequestDedupe } from "~/util/react-cache"
 
 type PageProps = {
     params: {
@@ -52,7 +52,7 @@ const notFoundErrCodes = [
     622 // GroupNotFound
 ]
 
-const getClan = reactDedupe(async (groupId: string) =>
+const getClan = reactRequestDedupe(async (groupId: string) =>
     getGroup(bungieClient, { groupId })
         .then(res => res.Response)
         .catch(e => {

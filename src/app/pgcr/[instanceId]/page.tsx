@@ -4,8 +4,8 @@ import { PGCRPage } from "../PGCRPage"
 import { getMetaData, prefetchActivity, type PageProps } from "./common"
 
 export const dynamic = "force-dynamic"
-export const dynamicParams = true
 export const preferredRegion = ["fra1"] // eu-central-1, Frankfurt, Germany
+export const revalidate = false
 
 export default async function Page({ params }: PageProps) {
     const activity = await prefetchActivity(params.instanceId)
@@ -26,13 +26,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const { title, description } = getMetaData(activity)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { images, ...rootOG } = rootMetaData.openGraph!
+    const inheritedOpengraph = structuredClone(rootMetaData.openGraph)
+    // Remove images from inherited metadata, otherwise it overrides the image generated
+    // by the dynamic image generator
+    delete inheritedOpengraph.images
+
     return {
         title: title,
         description: description,
+        keywords: [
+            ...rootMetaData.keywords,
+            "pgcr",
+            "activity",
+            activity.completed ? "clear" : "attempt",
+            activity.leaderboardRank ? `#${activity.leaderboardRank}` : null,
+            activity.metadata.activityName,
+            activity.metadata.versionName,
+            ...activity.players
+                .slice(0, 6)
+                .map(p => p.playerInfo.bungieGlobalDisplayName ?? p.playerInfo.displayName),
+            "dot",
+            "placement"
+        ].filter(Boolean) as string[],
         openGraph: {
-            ...rootOG,
+            ...inheritedOpengraph,
             title: title,
             description: description
         },
