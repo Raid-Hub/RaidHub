@@ -3,7 +3,8 @@ import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import {
     type PathParamsForLeaderboardURL,
-    type RaidHubLeaderboardURL
+    type RaidHubLeaderboardURL,
+    type ResponseForLeaderboardURL
 } from "~/services/raidhub/types"
 import { LeaderboardProvider } from "./LeaderboardProvider"
 
@@ -15,20 +16,18 @@ export const LeaderboardSSR = async <T extends RaidHubLeaderboardURL>(props: {
 }) => {
     const isFirstpage = props.page === "1"
     const ssrData = isFirstpage
-        ? await getRaidHubApi(
-              props.apiUrl,
-              // @ts-expect-error generic hell
-              props.params,
-              {
-                  page: 1,
-                  count: props.entriesPerPage
-              }
+        ? await (
+              getRaidHubApi<T>(
+                  props.apiUrl,
+                  // @ts-expect-error generic hell
+                  props.params,
+                  {
+                      page: 1,
+                      count: props.entriesPerPage
+                  }
+              ) as Promise<ResponseForLeaderboardURL<T>>
           ).catch(e => {
-              if (
-                  e instanceof RaidHubError &&
-                  (e.errorCode === "LeaderboardNotFoundError" ||
-                      e.errorCode === "PathValidationError")
-              ) {
+              if (e instanceof RaidHubError && e.errorCode === "PathValidationError") {
                   notFound()
               } else {
                   console.error(e)

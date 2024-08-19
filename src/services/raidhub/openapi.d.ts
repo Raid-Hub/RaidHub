@@ -21,6 +21,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -31,7 +32,29 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -58,6 +81,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -68,13 +92,43 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -103,6 +157,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -113,20 +168,42 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description PlayerPrivateProfileError */
         403: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerPrivateProfileError";
+              readonly error: components["schemas"]["PlayerPrivateProfileError"];
             };
           };
         };
@@ -134,8 +211,36 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotFoundError";
+              readonly error: components["schemas"]["PlayerNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -159,6 +264,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -169,15 +275,51 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotFoundError";
+              readonly error: components["schemas"]["PlayerNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -200,6 +342,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -210,14 +353,28 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description PlayerPrivateProfileError */
         403: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerPrivateProfileError";
+              readonly error: components["schemas"]["PlayerPrivateProfileError"];
             };
           };
         };
@@ -225,15 +382,46 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotFoundError";
+              readonly error: components["schemas"]["PlayerNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
     };
   };
   "/player/{membershipId}/teammates": {
-    /** /player/{membershipId}/teammates */
+    /**
+     * /player/{membershipId}/teammates
+     * @description Get a list of a player's top 100 teammates.
+     */
     get: {
       parameters: {
         path: {
@@ -245,6 +433,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -255,14 +444,28 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description PlayerPrivateProfileError */
         403: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerPrivateProfileError";
+              readonly error: components["schemas"]["PlayerPrivateProfileError"];
             };
           };
         };
@@ -270,8 +473,36 @@ export interface paths {
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotFoundError";
+              readonly error: components["schemas"]["PlayerNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -293,6 +524,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -303,15 +535,51 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly instanceId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InstanceNotFoundError";
+              readonly error: components["schemas"]["InstanceNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -338,6 +606,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -348,21 +617,65 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotOnLeaderboardError";
+              readonly error: components["schemas"]["PlayerNotOnLeaderboardError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -390,6 +703,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -400,23 +714,73 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotOnLeaderboardError";
+              readonly error: components["schemas"]["PlayerNotOnLeaderboardError"];
             } | {
-              readonly raid: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "RaidNotFoundError";
+              readonly error: components["schemas"]["RaidNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -444,6 +808,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -454,23 +819,73 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotOnLeaderboardError";
+              readonly error: components["schemas"]["PlayerNotOnLeaderboardError"];
             } | {
-              readonly path: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PantheonVersionNotFoundError";
+              readonly error: components["schemas"]["PantheonVersionNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -499,6 +914,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -509,24 +925,73 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotOnLeaderboardError";
+              readonly error: components["schemas"]["PlayerNotOnLeaderboardError"];
             } | {
-              readonly activity: string;
-              readonly version: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InvalidActivityVersionComboError";
+              readonly error: components["schemas"]["InvalidActivityVersionComboError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -553,6 +1018,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -563,23 +1029,144 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["QueryValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly membershipId: string;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PlayerNotOnLeaderboardError";
+              readonly error: components["schemas"]["PlayerNotOnLeaderboardError"];
             } | {
-              readonly raid: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "RaidNotFoundError";
+              readonly error: components["schemas"]["RaidNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
+          };
+        };
+      };
+    };
+  };
+  "/leaderboard/clan": {
+    /**
+     * /leaderboard/clan
+     * @description Get a page of the clan leaderboard based on query parameters
+     */
+    get: {
+      parameters: {
+        query?: {
+          count?: number;
+          page?: number;
+          column?: "clears" | "average_clears" | "fresh_clears" | "average_fresh_clears" | "sherpas" | "average_sherpas" | "time_played_seconds" | "average_time_played_seconds" | "total_contest_score" | "weighted_contest_score";
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["LeaderboardClanResponse"];
+            };
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -604,6 +1191,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -614,15 +1202,128 @@ export interface paths {
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Not found */
         404: {
           content: {
             readonly "application/json": {
-              readonly instanceId: string;
-            } | components["schemas"]["PathValidationError"];
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PGCRNotFoundError";
+              readonly error: components["schemas"]["PGCRNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
+          };
+        };
+      };
+    };
+  };
+  "/clan/{groupId}": {
+    /**
+     * /clan/{groupId}
+     * @description Get the stats for a clan. Data updates weekly.
+     */
+    get: {
+      parameters: {
+        path: {
+          groupId: string;
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["ClanResponse"];
+            };
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Not found */
+        404: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ClanNotFoundError";
+              readonly error: components["schemas"]["ClanNotFoundError"];
+            } | {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "PathValidationError";
+              readonly error: components["schemas"]["PathValidationError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -650,6 +1351,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -660,29 +1362,70 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["BodyValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "BodyValidationError";
+              readonly error: components["schemas"]["BodyValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description Forbidden */
         403: {
           content: {
-            readonly "application/json": components["schemas"]["InsufficientPermissionsError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InsufficientPermissionsError";
+              readonly error: components["schemas"]["InsufficientPermissionsError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
         /** @description AdminQuerySyntaxError */
         501: {
           content: {
             readonly "application/json": {
-              readonly name: string;
-              readonly code: string;
-              readonly line: string;
-              readonly position: number;
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "AdminQuerySyntaxError";
+              readonly error: components["schemas"]["AdminQuerySyntaxError"];
             };
           };
         };
@@ -708,6 +1451,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -718,19 +1462,57 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["BodyValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "BodyValidationError";
+              readonly error: components["schemas"]["BodyValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description InvalidClientSecretError */
         403: {
           content: {
-            readonly "application/json": Record<string, never>;
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InvalidClientSecretError";
+              readonly error: components["schemas"]["InvalidClientSecretError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -756,6 +1538,7 @@ export interface paths {
         200: {
           content: {
             readonly "application/json": {
+              /** Format: date-time */
               readonly minted: string;
               /** @enum {boolean} */
               readonly success: true;
@@ -766,19 +1549,57 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            readonly "application/json": components["schemas"]["BodyValidationError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "BodyValidationError";
+              readonly error: components["schemas"]["BodyValidationError"];
+            };
           };
         };
         /** @description Unauthorized */
         401: {
           content: {
-            readonly "application/json": components["schemas"]["ApiKeyError"];
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
           };
         };
         /** @description InvalidClientSecretError */
         403: {
           content: {
-            readonly "application/json": Record<string, never>;
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InvalidClientSecretError";
+              readonly error: components["schemas"]["InvalidClientSecretError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
           };
         };
       };
@@ -791,7 +1612,7 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     /** @enum {string} */
-    readonly ErrorCode: "Unknown" | "ApiKeyError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "PlayerNotFoundError" | "PlayerPrivateProfileError" | "InstanceNotFoundError" | "PGCRNotFoundError" | "LeaderboardNotFoundError" | "PlayerNotOnLeaderboardError" | "RaidNotFoundError" | "PantheonVersionNotFoundError" | "InvalidActivityVersionComboError" | "AdminQuerySyntaxError" | "InsufficientPermissionsError" | "InvalidClientSecretError" | "InternalServerError";
+    readonly ErrorCode: "ApiKeyError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "PlayerNotFoundError" | "PlayerPrivateProfileError" | "InstanceNotFoundError" | "PGCRNotFoundError" | "PlayerNotOnLeaderboardError" | "RaidNotFoundError" | "PantheonVersionNotFoundError" | "InvalidActivityVersionComboError" | "ClanNotFoundError" | "AdminQuerySyntaxError" | "InsufficientPermissionsError" | "InvalidClientSecretError" | "InternalServerError";
     readonly RaidHubResponse: OneOf<[{
       /** Format: date-time */
       readonly minted: string;
@@ -807,17 +1628,9 @@ export interface components {
       readonly error?: unknown;
     }]>;
     readonly ApiKeyError: {
-      /** Format: date-time */
-      readonly minted: string;
-      /** @enum {boolean} */
-      readonly success: false;
-      /** @enum {string} */
-      readonly code: "ApiKeyError";
-      readonly error: {
-        readonly message: "Invalid API Key" | "Missing API Key";
-        readonly apiKey: string | null;
-        readonly origin: string | null;
-      };
+      readonly message: "Invalid API Key" | "Missing API Key";
+      readonly apiKey: string | null;
+      readonly origin: string | null;
     };
     readonly ZodIssue: {
       readonly fatal?: boolean;
@@ -827,49 +1640,21 @@ export interface components {
       readonly code: "invalid_type" | "invalid_literal" | "custom" | "invalid_union" | "invalid_union_discriminator" | "invalid_enum_value" | "unrecognized_keys" | "invalid_arguments" | "invalid_return_type" | "invalid_date" | "invalid_string" | "too_small" | "too_big" | "invalid_intersection_types" | "not_multiple_of" | "not_finite";
     };
     readonly BodyValidationError: {
-      /** Format: date-time */
-      readonly minted: string;
-      /** @enum {boolean} */
-      readonly success: false;
-      /** @enum {string} */
-      readonly code: "BodyValidationError";
-      readonly error: {
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
+      readonly issues: readonly components["schemas"]["ZodIssue"][];
     };
     readonly InsufficientPermissionsError: {
-      /** Format: date-time */
-      readonly minted: string;
-      /** @enum {boolean} */
-      readonly success: false;
       /** @enum {string} */
-      readonly code: "InsufficientPermissionsError";
-      readonly error: {
-        /** @enum {string} */
-        readonly message: "Forbidden";
-      };
+      readonly message: "Forbidden";
+    };
+    readonly InternalServerError: {
+      /** @enum {string} */
+      readonly message: "Internal Server Error";
     };
     readonly PathValidationError: {
-      /** Format: date-time */
-      readonly minted: string;
-      /** @enum {boolean} */
-      readonly success: false;
-      /** @enum {string} */
-      readonly code: "PathValidationError";
-      readonly error: {
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
+      readonly issues: readonly components["schemas"]["ZodIssue"][];
     };
     readonly QueryValidationError: {
-      /** Format: date-time */
-      readonly minted: string;
-      /** @enum {boolean} */
-      readonly success: false;
-      /** @enum {string} */
-      readonly code: "QueryValidationError";
-      readonly error: {
-        readonly issues: readonly components["schemas"]["ZodIssue"][];
-      };
+      readonly issues: readonly components["schemas"]["ZodIssue"][];
     };
     /** @enum {integer} */
     readonly DestinyMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | -1;
@@ -964,6 +1749,38 @@ export interface components {
       readonly metadata: components["schemas"]["InstanceMetadata"];
       readonly players: readonly components["schemas"]["InstancePlayerExtended"][];
     });
+    readonly ClanBannerData: {
+      readonly decalId: number;
+      readonly decalColorId: number;
+      readonly decalBackgroundColorId: number;
+      readonly gonfalonId: number;
+      readonly gonfalonColorId: number;
+      readonly gonfalonDetailId: number;
+      readonly gonfalonDetailColorId: number;
+    };
+    readonly Clan: {
+      readonly groupId: string;
+      readonly name: string;
+      readonly callSign: string;
+      readonly motto: string;
+      readonly clanBannerData: components["schemas"]["ClanBannerData"];
+      /** Format: date-time */
+      readonly lastUpdated: string;
+    };
+    readonly ClanLeaderboardEntry: {
+      readonly clan: components["schemas"]["Clan"];
+      readonly knownMemberCount: number;
+      readonly clears: number;
+      readonly averageClears: number;
+      readonly freshClears: number;
+      readonly averageFreshClears: number;
+      readonly sherpas: number;
+      readonly averageSherpas: number;
+      readonly timePlayedSeconds: number;
+      readonly averageTimePlayedSeconds: number;
+      readonly totalContestScore: number;
+      readonly weightedContestScore: number;
+    };
     readonly TeamLeaderboardEntry: {
       readonly position: number;
       readonly rank: number;
@@ -1208,6 +2025,12 @@ export interface components {
       readonly nextCursor: string;
       readonly activities: readonly components["schemas"]["InstanceForPlayer"][];
     };
+    readonly PlayerNotFoundError: {
+      readonly membershipId: string;
+    };
+    readonly PlayerPrivateProfileError: {
+      readonly membershipId: string;
+    };
     /**
      * @example {
      *   "bungieGlobalDisplayName": "Newo",
@@ -1251,6 +2074,9 @@ export interface components {
       readonly metadata: components["schemas"]["InstanceMetadata"];
       readonly players: readonly components["schemas"]["InstancePlayerExtended"][];
     });
+    readonly InstanceNotFoundError: {
+      readonly instanceId: string;
+    };
     readonly LeaderboardIndividualGlobalResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "team";
@@ -1268,6 +2094,9 @@ export interface components {
       readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     }]>;
+    readonly PlayerNotOnLeaderboardError: {
+      readonly membershipId: string;
+    };
     readonly LeaderboardIndividualRaidResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "team";
@@ -1285,6 +2114,9 @@ export interface components {
       readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     }]>;
+    readonly RaidNotFoundError: {
+      readonly raid: string;
+    };
     readonly LeaderboardIndividualPantheonResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "team";
@@ -1302,6 +2134,9 @@ export interface components {
       readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     }]>;
+    readonly PantheonVersionNotFoundError: {
+      readonly path: string;
+    };
     readonly LeaderboardTeamFirstResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "team";
@@ -1319,6 +2154,10 @@ export interface components {
       readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     }]>;
+    readonly InvalidActivityVersionComboError: {
+      readonly activity: string;
+      readonly version: string;
+    };
     readonly LeaderboardTeamContestResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "team";
@@ -1336,6 +2175,7 @@ export interface components {
       readonly count: number;
       readonly entries: readonly components["schemas"]["IndividualLeaderboardEntry"][];
     }]>;
+    readonly LeaderboardClanResponse: readonly components["schemas"]["ClanLeaderboardEntry"][];
     /** @description A raw PGCR with a few redundant fields removed */
     readonly PgcrResponse: {
       /** Format: date-time */
@@ -1402,6 +2242,26 @@ export interface components {
           };
         })[];
     };
+    readonly PGCRNotFoundError: {
+      readonly instanceId: string;
+    };
+    readonly ClanResponse: {
+      readonly clan: components["schemas"]["Clan"];
+      readonly knownMemberCount: number;
+      readonly clears: number;
+      readonly averageClears: number;
+      readonly freshClears: number;
+      readonly averageFreshClears: number;
+      readonly sherpas: number;
+      readonly averageSherpas: number;
+      readonly timePlayedSeconds: number;
+      readonly averageTimePlayedSeconds: number;
+      readonly totalContestScore: number;
+      readonly weightedContestScore: number;
+    };
+    readonly ClanNotFoundError: {
+      readonly groupId: string;
+    };
     readonly AdminQueryResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "SELECT";
@@ -1419,11 +2279,18 @@ export interface components {
       readonly type: "EXPLAIN";
       readonly data: readonly string[];
     }]>;
+    readonly AdminQuerySyntaxError: {
+      readonly name: string;
+      readonly code: string;
+      readonly line: string;
+      readonly position: number;
+    };
     readonly AuthorizeAdminResponse: {
       readonly value: string;
       /** Format: date-time */
       readonly expires: string;
     };
+    readonly InvalidClientSecretError: Record<string, never>;
     readonly AuthorizeUserResponse: {
       readonly value: string;
       /** Format: date-time */

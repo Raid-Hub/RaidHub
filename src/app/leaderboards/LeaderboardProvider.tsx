@@ -26,6 +26,7 @@ export const LeaderboardProvider = <T extends RaidHubLeaderboardURL>(props: {
         initialDataUpdatedAt: props.ssrUpdatedAt ?? undefined,
         queryKey: queryKeyWithPage,
         queryFn: () =>
+            // @ts-expect-error generic hell
             getRaidHubApi(
                 apiUrl,
                 // @ts-expect-error generic hell
