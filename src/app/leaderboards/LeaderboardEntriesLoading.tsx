@@ -2,9 +2,9 @@
 
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { type RaidHubLeaderboardURL } from "~/services/raidhub/types"
+import { usePage } from "../../hooks/util/usePage"
 import { type PageProps } from "./Leaderboard"
 import { LeaderboardEntries } from "./LeaderboardEntries"
-import { usePage } from "./usePage"
 
 export const LeaderboardEntriesLoading = () => {
     const page = usePage()

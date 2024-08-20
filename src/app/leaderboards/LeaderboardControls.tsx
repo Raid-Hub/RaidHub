@@ -12,9 +12,9 @@ import { usePageProps } from "~/components/layout/PageWrapper"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubLeaderboardURL } from "~/services/raidhub/types"
+import { usePage } from "../../hooks/util/usePage"
 import { type PageProps } from "./Leaderboard"
 import { LeaderboardSearch } from "./LeaderboardSearch"
-import { usePage } from "./usePage"
 
 export const LeaderboardControls = (props: { hasPages: boolean; hasSearch: boolean }) => {
     const { set, remove } = useQueryParams<{

@@ -58,12 +58,17 @@ export type RaidHubAdminQueryBody = Required<
     paths["/admin/query"]["post"]
 >["requestBody"]["content"]["application/json"]
 
+export type ClanStatsColumns = NonNullable<
+    NonNullable<paths["/leaderboard/clan"]["get"]["parameters"]["query"]>["column"]
+>
+
 // Responses
 export type RaidHubManifestResponse = Component<"ManifestResponse">
 export type RaidHubPlayerActivitiesResponse = Component<"PlayerActivitiesResponse">
 export type RaidHubPlayerProfileResponse = Component<"PlayerProfileResponse">
 export type RaidHubPlayerSearchResponse = Component<"PlayerSearchResponse">
 export type RaidHubAdminQueryResponse = Component<"AdminQueryResponse">
+export type RaidHubLeaderboardClanResponse = Component<"LeaderboardClanResponse">
 
 interface GetSchema {
     get: {

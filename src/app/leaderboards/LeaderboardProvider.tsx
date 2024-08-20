@@ -5,10 +5,10 @@ import { usePageProps } from "~/components/layout/PageWrapper"
 import { getRaidHubApi } from "~/services/raidhub/common"
 import { type RaidHubLeaderboardData, type RaidHubLeaderboardURL } from "~/services/raidhub/types"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
+import { usePage } from "../../hooks/util/usePage"
 import { type PageProps } from "./Leaderboard"
 import { LeaderboardEntriesLoadingWrapper } from "./LeaderboardEntriesLoadingWrapper"
 import { useLeaderboard } from "./useLeaderboard"
-import { usePage } from "./usePage"
 
 export const LeaderboardProvider = <T extends RaidHubLeaderboardURL>(props: {
     ssrPage: string
