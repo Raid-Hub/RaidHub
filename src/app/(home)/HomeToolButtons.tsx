@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { type SVGComponent } from "~/components/SVG"
 import Calendar from "~/components/icons/Calendar"
 import D2CP from "~/components/icons/D2CP"
+import Users from "~/components/icons/Users"
 import { Flex } from "~/components/layout/Flex"
 
 export const HomeToolButtons = () => {
@@ -12,6 +13,7 @@ export const HomeToolButtons = () => {
         <Flex>
             <HomeButton href="/checkpoints" title="Checkpoints" icon={D2CP} />
             <HomeButton href="/calendar" title="Rotator Calendar" icon={Calendar} />
+            <HomeButton href="/clans" title="Clans" icon={Users} />
         </Flex>
     )
 }

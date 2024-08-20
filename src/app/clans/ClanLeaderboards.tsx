@@ -37,12 +37,14 @@ export const ClanLeaderboards = () => {
     const queryClient = useQueryClient()
 
     const registerHeading = useCallback(
-        (columnName: ClanStatsColumns): THParams => ({
+        (columnName: ClanStatsColumns, title?: string): THParams => ({
             isActive: sortColumn === columnName,
-            title: columnName
-                .split("_")
-                .map(s => s.charAt(0).toUpperCase() + s.substring(1))
-                .join(" "),
+            title:
+                title ??
+                columnName
+                    .split("_")
+                    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+                    .join(" "),
             setSortColumn: () => setSortColumn(old => (columnName !== old ? columnName : undefined))
         }),
         [sortColumn]
@@ -129,14 +131,19 @@ export const ClanLeaderboards = () => {
                             </th>
                             <TH {...registerHeading("weighted_contest_score")} />
                             <TH {...registerHeading("total_contest_score")} />
-                            <TH {...registerHeading("fresh_clears")} />
-                            <TH {...registerHeading("average_fresh_clears")} />
+                            <TH {...registerHeading("fresh_clears", "Full Clears")} />
+                            <TH {...registerHeading("average_fresh_clears", "Avg Full Clears")} />
                             <TH {...registerHeading("clears")} />
-                            <TH {...registerHeading("average_clears")} />
+                            <TH {...registerHeading("average_clears", "Avg Clears")} />
                             <TH {...registerHeading("sherpas")} />
-                            <TH {...registerHeading("average_sherpas")} />
-                            <TH {...registerHeading("time_played_seconds")} />
-                            <TH {...registerHeading("average_time_played_seconds")} />
+                            <TH {...registerHeading("average_sherpas", "Avg Sherpas")} />
+                            <TH {...registerHeading("time_played_seconds", "In Raid Time")} />
+                            <TH
+                                {...registerHeading(
+                                    "average_time_played_seconds",
+                                    "Avg In Raid Time"
+                                )}
+                            />
                         </tr>
                     </thead>
                     <tbody>
@@ -268,7 +275,7 @@ const ClanTR = styled.tr`
 
 const TH = ({ isActive, title, setSortColumn }: THParams) => {
     return (
-        <ClanHeaderTH onClick={setSortColumn}>
+        <ClanHeaderTH onClick={setSortColumn} $isActive={isActive}>
             <div>
                 {title} {isActive ? "▼" : ""}
             </div>
@@ -276,18 +283,25 @@ const TH = ({ isActive, title, setSortColumn }: THParams) => {
     )
 }
 
-const ClanHeaderTH = styled.th`
-    min-width: 14ch;
-    max-width: 14ch;
+const ClanHeaderTH = styled.th<{
+    $isActive?: boolean
+}>`
+    height: 3rem;
+    min-width: 16ch;
+    max-width: 16ch;
     cursor: pointer;
     padding: 0.25rem 0.75rem;
 
-    background-color: #000000;
+    background-color: ${({ $isActive }) => ($isActive ? "#202020" : "#000000")};
 
     transition: background-color 0.1s;
 
     &:hover {
         background-color: #fa8b14;
-        border-radius: 0.4rem;
+    }
+
+    position: relative;
+    & div {
+        height: 100%;
     }
 `
