@@ -13,9 +13,9 @@ export default function Page() {
         <PageWrapper>
             <h1>Clan Leaderboards</h1>
             <p>
-                Clan leaderboards refresh once per week prior to reset on Monday. Clans with atleast
-                one player in the top 1000 of an individual leaderboard are included in the clan
-                leaderboard.
+                Clan leaderboards refresh once per week prior to reset on Monday. Clans with at
+                least one player in the top 1000 of an individual leaderboard are included in the
+                clan leaderboard.
             </p>
             <ClanLeaderboards />
         </PageWrapper>
