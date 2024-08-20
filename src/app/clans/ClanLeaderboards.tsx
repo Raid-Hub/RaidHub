@@ -129,8 +129,18 @@ export const ClanLeaderboards = () => {
                                 }}>
                                 Clan
                             </th>
-                            <TH {...registerHeading("weighted_contest_score")} />
-                            <TH {...registerHeading("total_contest_score")} />
+                            <TH
+                                {...registerHeading(
+                                    "weighted_contest_score",
+                                    "Weighted World First Score"
+                                )}
+                            />
+                            <TH
+                                {...registerHeading(
+                                    "total_contest_score",
+                                    "Total World First Score"
+                                )}
+                            />
                             <TH {...registerHeading("fresh_clears", "Full Clears")} />
                             <TH {...registerHeading("average_fresh_clears", "Avg Full Clears")} />
                             <TH {...registerHeading("clears")} />

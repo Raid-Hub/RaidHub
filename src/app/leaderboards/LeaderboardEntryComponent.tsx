@@ -32,7 +32,7 @@ export const LeaderboardEntryComponent = ({
     const value =
         valueFormat === "duration"
             ? secondsToHMS(entry.value, true)
-            : formattedNumber(entry.value, locale)
+            : formattedNumber(entry.value, locale, 3)
 
     const lg = useRef<HTMLDivElement>(null)
     const sm = useRef<HTMLDivElement>(null)

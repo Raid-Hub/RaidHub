@@ -22,7 +22,7 @@ export function HomeCardGlobal() {
                     href="/leaderboards/individual/global/sherpas"
                 />
                 <HomeCardContentSectionItem
-                    title="Contest Mode Power Rankings"
+                    title="World First Race Power Rankings"
                     href="/leaderboards/individual/global/powerRankings"
                 />
             </HomeCardContentSection>
