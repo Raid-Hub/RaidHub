@@ -1,11 +1,16 @@
-import { type RaidHubErrorCode } from "./types"
+import {
+    type RaidHubAPIErrorResponse,
+    type RaidHubErrorCode,
+    type RaidHubErrorSchema
+} from "./types"
 
-export class RaidHubError<T> extends Error {
+export class RaidHubError<T extends RaidHubErrorCode> extends Error {
     readonly errorCode: RaidHubErrorCode
-    readonly body: T
-    constructor(errorCode: RaidHubErrorCode, body: T) {
-        super(errorCode)
-        this.errorCode = errorCode
-        this.body = body
+    readonly cause: RaidHubErrorSchema<T>
+
+    constructor(res: RaidHubAPIErrorResponse<T>) {
+        super(res.code)
+        this.errorCode = res.code
+        this.cause = res.error
     }
 }

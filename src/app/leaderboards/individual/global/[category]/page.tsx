@@ -21,7 +21,7 @@ const getCategoryName = (category: DynamicParams["params"]["category"]) => {
         case "speedrun":
             return "Speedrun"
         case "powerRankings":
-            return "Contest Mode Power Rankings"
+            return "World First Race Power Rankings"
         default:
             return "Unknown Category"
     }

@@ -1,7 +1,7 @@
 import { round } from "../math"
 
-export function formattedNumber(num: number, locale: string): string {
-    return round(num, 2).toLocaleString(locale)
+export function formattedNumber(num: number, locale: string, places = 2): string {
+    return round(num, places).toLocaleString(locale)
 }
 
 export function truncatedNumber(num: number, locale: string): string {
