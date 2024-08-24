@@ -31,7 +31,8 @@ export const LegalPage = (props: { title: string; effectiveDate: Date; children:
                         {props.effectiveDate.toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
-                            day: "numeric"
+                            day: "numeric",
+                            timeZone: "America/New_York"
                         })}
                     </span>
                 </h4>
