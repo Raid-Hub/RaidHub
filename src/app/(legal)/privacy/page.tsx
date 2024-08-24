@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     }
 }
 
-const effectiveDate = new Date("June 14, 2024 2:19 PM EST")
+const effectiveDate = new Date("August 23, 2024 10:35 PM EDT")
 
 export default function Page() {
     return (
@@ -22,46 +22,49 @@ export default function Page() {
                 raidhub.io website (&quot;Site&quot;). This privacy policy applies to the Site and
                 all products and services offered by RaidHub.
             </p>
-            <h2>Third party websites</h2>
+            <h2>Third Party Websites</h2>
             <p>
-                Users may find advertising or other content on our Site that link to the sites and
-                services of our partners, suppliers, advertisers, sponsors, licensors and other
-                third parties. We do not control the content or links that appear on these sites and
-                are not responsible for the practices employed by websites linked to or from our
-                Site. In addition, these sites or services, including their content and links, may
-                be constantly changing. These sites and services may have their own privacy policies
-                and customer service policies. Browsing and interaction on any other website,
-                including websites which have a link to our Site, is subject to that website&apos;s
-                own terms and policies.
+                Users may find content on our Site that link to the sites and services of our
+                partners, suppliers, advertisers, sponsors, licensors and other third parties. We do
+                not control the content or links that appear on these sites and are not responsible
+                for the practices employed by websites linked to or from our Site. In addition,
+                these sites or services, including their content and links, may be constantly
+                changing. These sites and services may have their own privacy policies and customer
+                service policies. Browsing and interaction on any other website, including websites
+                which have a link to our Site, is subject to that website&apos;s own terms and
+                policies.
             </p>
-            {/* <h2>Advertising</h2>
+            <h2>Access, Use, and Storage of Google User Data</h2>
             <p>
-                Ads appearing on our site may be delivered to Users by advertising partners, who may
-                set cookies. These cookies allow the ad server to recognize your computer each time
-                they send you an online advertisement to compile non personal identification
-                information about you or others who use your computer. This information allows ad
-                networks to, among other things, deliver targeted advertisements that they believe
-                will be of most interest to you. This privacy policy does not cover the use of
-                cookies by any advertisers. In addition, NAI member companies serve cookies via this
-                website as part of the opt-out process. To enable a consumer to opt out of IBA by a
-                member company, the member company must set an &quot;opt-out cookie&quot; on the
-                consumer&apos;s browser. Please note that if you delete any opt-out cookies obtained
-                using the NAI opt-out page, such as by clearing all cookies in your browser, you
-                will need to return to the opt-out page to renew your choices. However, the DAA
-                offers a tool that helps to preserve your opt-out cookies and prevent them from
-                being deleted. To learn more about how our opt-out process works, click here.
-            </p> */}
-            {/* <h2>Google Adsense</h2>
+                RaidHub accesses, uses, and stores Google user data in compliance with the Google
+                API Services User Data Policy. We only access, use, and store data that is necessary
+                to provide and improve our services. The data is stored securely and is not shared
+                with third parties except as required by law or as necessary to provide our
+                services.
+            </p>
+            <h3>How Google User Data is Shared</h3>
             <p>
-                Some of the ads may be served by Google. Google may use cookies to serve ads based
-                on a User&apos;s prior visits to the Site or other websites. Google&apos;s use of
-                advertising cookies enables it and its partners to serve ads to a User based on
-                their visit to your sites and/or other sites on the Internet. Users may opt out of
-                personalized advertising by visiting adssettings.google.com. Some of the ads may be
-                served by third-party vendors and ad networks. A User can opt out of a third-party
-                vendor&apos;s use of cookies for personalized advertising by visiting{" "}
-                <Link href={"https://www.aboutads.info"}>aboutads.info.</Link>
-            </p> */}
+                We do not share Google user data with third parties except in the following
+                circumstances:
+            </p>
+            <ul>
+                <li>With your consent</li>
+                <li>
+                    For legal reasons: We will share user data with companies, organizations, or
+                    individuals outside of RaidHub if we have a good-faith belief that access, use,
+                    preservation, or disclosure of the information is reasonably necessary to meet
+                    any applicable law, regulation, legal process, or enforceable governmental
+                    request.
+                </li>
+                <p>
+                    RaidHub&apos;s use and transfer to any other app of information received from
+                    Google APIs will adhere to{" "}
+                    <Link href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes">
+                        Google API Services User Data Policy
+                    </Link>
+                    , including the Limited Use requirements.
+                </p>
+            </ul>
             <h2>Cookie Policy</h2>
             <p>
                 A cookie is a small file, stored on a user&apos;s hard drive by a website. Its
@@ -109,14 +112,6 @@ export default function Page() {
             <p>
                 Users who create an account consent to the collection of data for the purpose of
                 statistics and online advertising.
-            </p>
-            <p>
-                RaidHub&apos;s use and transfer to any other app of information received from Google
-                APIs will adhere to{" "}
-                <Link href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes">
-                    Google API Services User Data Policy
-                </Link>
-                , including the Limited Use requirements.
             </p>
             <p>
                 If you do not agree to this policy, please do not use our Site. Your continued use
