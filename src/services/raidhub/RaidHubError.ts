@@ -4,8 +4,8 @@ import {
     type RaidHubErrorSchema
 } from "./types"
 
-export class RaidHubError<T extends RaidHubErrorCode> extends Error {
-    readonly errorCode: RaidHubErrorCode
+export class RaidHubError<T extends RaidHubErrorCode = RaidHubErrorCode> extends Error {
+    readonly errorCode: T
     readonly cause: RaidHubErrorSchema<T>
 
     constructor(res: RaidHubAPIErrorResponse<T>) {

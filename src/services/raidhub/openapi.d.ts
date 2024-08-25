@@ -1326,6 +1326,20 @@ export interface paths {
             };
           };
         };
+        /** @description BungieServiceOffline */
+        503: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "BungieServiceOffline";
+              readonly error: components["schemas"]["BungieServiceOffline"];
+            };
+          };
+        };
       };
     };
   };
@@ -1612,7 +1626,7 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     /** @enum {string} */
-    readonly ErrorCode: "ApiKeyError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "PlayerNotFoundError" | "PlayerPrivateProfileError" | "InstanceNotFoundError" | "PGCRNotFoundError" | "PlayerNotOnLeaderboardError" | "RaidNotFoundError" | "PantheonVersionNotFoundError" | "InvalidActivityVersionComboError" | "ClanNotFoundError" | "AdminQuerySyntaxError" | "InsufficientPermissionsError" | "InvalidClientSecretError" | "InternalServerError";
+    readonly ErrorCode: "ApiKeyError" | "PathValidationError" | "QueryValidationError" | "BodyValidationError" | "PlayerNotFoundError" | "PlayerPrivateProfileError" | "InstanceNotFoundError" | "PGCRNotFoundError" | "PlayerNotOnLeaderboardError" | "RaidNotFoundError" | "PantheonVersionNotFoundError" | "InvalidActivityVersionComboError" | "ClanNotFoundError" | "AdminQuerySyntaxError" | "InsufficientPermissionsError" | "InvalidClientSecretError" | "InternalServerError" | "BungieServiceOffline";
     readonly RaidHubResponse: OneOf<[{
       /** Format: date-time */
       readonly minted: string;
@@ -1647,8 +1661,7 @@ export interface components {
       readonly message: "Forbidden";
     };
     readonly InternalServerError: {
-      /** @enum {string} */
-      readonly message: "Internal Server Error";
+      readonly message: string;
     };
     readonly PathValidationError: {
       readonly issues: readonly components["schemas"]["ZodIssue"][];
@@ -1766,10 +1779,9 @@ export interface components {
       readonly clanBannerData: components["schemas"]["ClanBannerData"];
       /** Format: date-time */
       readonly lastUpdated: string;
-    };
-    readonly ClanLeaderboardEntry: {
-      readonly clan: components["schemas"]["Clan"];
       readonly knownMemberCount: number;
+    };
+    readonly ClanAggregateStats: {
       readonly clears: number;
       readonly averageClears: number;
       readonly freshClears: number;
@@ -1780,6 +1792,33 @@ export interface components {
       readonly averageTimePlayedSeconds: number;
       readonly totalContestScore: number;
       readonly weightedContestScore: number;
+    };
+    readonly ClanLeaderboardEntry: {
+      readonly clan: components["schemas"]["Clan"];
+      readonly clears: number;
+      readonly averageClears: number;
+      readonly freshClears: number;
+      readonly averageFreshClears: number;
+      readonly sherpas: number;
+      readonly averageSherpas: number;
+      readonly timePlayedSeconds: number;
+      readonly averageTimePlayedSeconds: number;
+      readonly totalContestScore: number;
+      readonly weightedContestScore: number;
+    };
+    readonly ClanMemberStats: {
+      readonly clears: number;
+      readonly freshClears: number;
+      readonly sherpas: number;
+      readonly totalTimePlayedSeconds: number;
+      readonly contestScore: number;
+    };
+    readonly ClanStats: {
+      readonly aggregateStats: components["schemas"]["ClanAggregateStats"];
+      readonly members: readonly {
+          readonly playerInfo: components["schemas"]["PlayerInfo"];
+          readonly stats: components["schemas"]["ClanMemberStats"];
+        }[];
     };
     readonly TeamLeaderboardEntry: {
       readonly position: number;
@@ -2246,21 +2285,18 @@ export interface components {
       readonly instanceId: string;
     };
     readonly ClanResponse: {
-      readonly clan: components["schemas"]["Clan"];
-      readonly knownMemberCount: number;
-      readonly clears: number;
-      readonly averageClears: number;
-      readonly freshClears: number;
-      readonly averageFreshClears: number;
-      readonly sherpas: number;
-      readonly averageSherpas: number;
-      readonly timePlayedSeconds: number;
-      readonly averageTimePlayedSeconds: number;
-      readonly totalContestScore: number;
-      readonly weightedContestScore: number;
+      readonly aggregateStats: components["schemas"]["ClanAggregateStats"];
+      readonly members: readonly {
+          readonly playerInfo: components["schemas"]["PlayerInfo"];
+          readonly stats: components["schemas"]["ClanMemberStats"];
+        }[];
     };
     readonly ClanNotFoundError: {
       readonly groupId: string;
+    };
+    readonly BungieServiceOffline: {
+      readonly message: string;
+      readonly route: string;
     };
     readonly AdminQueryResponse: OneOf<[{
       /** @enum {string} */
@@ -2281,9 +2317,9 @@ export interface components {
     }]>;
     readonly AdminQuerySyntaxError: {
       readonly name: string;
-      readonly code: string;
-      readonly line: string;
-      readonly position: number;
+      readonly code?: string;
+      readonly line?: string;
+      readonly position?: number;
     };
     readonly AuthorizeAdminResponse: {
       readonly value: string;
