@@ -42,13 +42,6 @@ export default class ClientBungieClient extends BaseBungieClient {
             }
         }
 
-        const controller = new AbortController()
-        payload.signal = controller.signal
-
-        if (config.url.pathname.match(/\/PostGameCarnageReport\//)) {
-            setTimeout(() => controller.abort(), 3000)
-        }
-
         return payload
     }
 

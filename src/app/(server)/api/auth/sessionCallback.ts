@@ -128,7 +128,7 @@ async function refreshRaidHubBearer({
     role: AdapterUser["role"]
     profiles: AdapterUser["profiles"]
 }) {
-    if (token && token.expiresAt.getTime() - 120_000 > Date.now()) {
+    if (token && token.expiresAt.getTime() - 900_000 > Date.now()) {
         return {
             token: {
                 value: token.value,

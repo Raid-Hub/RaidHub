@@ -68,8 +68,16 @@ const TokenManager = ({ setNextRefetch }: { setNextRefetch: (milliseconds: numbe
                 expires: expires
             })
 
-            const timeRemaining = expires.getTime() - Date.now()
-            setNextRefetch(Math.max(timeRemaining, 1000))
+            const timeRemainingOnBungie = expires.getTime() - Date.now()
+            if (session.data.raidHubAccessToken?.expires) {
+                const timeRemainingOnRaidHubToken =
+                    new Date(session.data.raidHubAccessToken.expires).getTime() - Date.now()
+                setNextRefetch(
+                    Math.max(Math.min(timeRemainingOnBungie, timeRemainingOnRaidHubToken), 1000)
+                )
+            } else {
+                setNextRefetch(Math.max(timeRemainingOnBungie, 1000))
+            }
 
             return bungieClient.onUnauthorized(session.update)
         }

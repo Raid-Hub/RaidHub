@@ -1,9 +1,14 @@
+"use client"
+
 import { type UseMutationResult } from "@tanstack/react-query"
+import Link from "next/link"
 import styled from "styled-components"
 import { Panel } from "~/components/Panel"
+import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import {
     type RaidHubAdminQueryBody,
-    type RaidHubAdminQueryResponse
+    type RaidHubAdminQueryResponse,
+    type RaidHubErrorSchema
 } from "~/services/raidhub/types"
 import { o } from "~/util/o"
 import { secondsToHMS } from "~/util/presentation/formatting"
@@ -20,8 +25,52 @@ export const DataView = ({
         return <div>Loading...</div>
     }
     if (mutation.isError) {
-        const err = mutation.error as Error
-        return <ErrorMessage>{err.message}</ErrorMessage>
+        if (mutation.error instanceof RaidHubError) {
+            if (mutation.error.errorCode === "AdminQuerySyntaxError") {
+                const cause = mutation.error.cause as RaidHubErrorSchema<"AdminQuerySyntaxError">
+                return (
+                    <ErrorMessage>
+                        <h3>SQL Error</h3>
+                        <p>
+                            <strong>Name:</strong> {cause.name}
+                        </p>
+                        {cause.code && (
+                            <p>
+                                <strong>Code: </strong>
+                                <Link
+                                    href={`https://www.postgresql.org/docs/current/errcodes-appendix.html#:~:text=${cause.code}`}
+                                    target="_blank"
+                                    style={{
+                                        color: "unset"
+                                    }}>
+                                    <u>{cause.code}</u>
+                                </Link>
+                            </p>
+                        )}
+                        {cause.line && cause.position && (
+                            <p>
+                                <strong>Line:</strong> {cause.line.slice(0, cause.position - 1)}
+                                <span
+                                    style={{
+                                        fontWeight: "bold",
+                                        backgroundColor: "yellow"
+                                    }}>
+                                    {cause.line[cause.position - 1]}
+                                </span>
+                                {cause.line.slice(cause.position)}
+                            </p>
+                        )}
+                    </ErrorMessage>
+                )
+            } else {
+                return <ErrorMessage>{mutation.error.errorCode}</ErrorMessage>
+            }
+        }
+        return (
+            <ErrorMessage>
+                {"An error occurred"} {(mutation.error as Error).message}
+            </ErrorMessage>
+        )
     }
     if (mutation.isSuccess) {
         if (mutation.data.type === "HIGH COST") {
@@ -54,7 +103,9 @@ export const DataView = ({
 }
 
 const ErrorMessage = styled.div`
-    color: red;
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 0.75rem 1.25rem;
 `
 
 const WarningMessage = styled.div`
