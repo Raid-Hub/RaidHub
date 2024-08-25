@@ -15,7 +15,13 @@ export const useClan = (
 
     return useQuery({
         queryKey: ["bungie", "clan", params] as const,
-        queryFn: ({ queryKey }) => getGroup(bungieClient, queryKey[2]).then(res => res.Response),
+        queryFn: ({ queryKey }) =>
+            getGroup(bungieClient, queryKey[2]).then(res => {
+                if (res.Response.detail.groupType != 1) {
+                    throw new Error("Not a clan")
+                }
+                return res.Response
+            }),
         ...opts
     })
 }

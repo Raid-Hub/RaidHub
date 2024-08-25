@@ -35,16 +35,18 @@
 }
 
 .overview-left {
-    flex: 1;
+    flex-basis: min(max(20%, 200px), 300px);
+    display: flex;
 
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     position: relative;
 }
 
 .about {
     flex: 2;
     white-space: pre-line;
+    min-width: min(100%, 350px);
 }
 
 .about a {
@@ -57,31 +59,4 @@
 
     grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
     gap: 2em;
-}
-
-.member {
-    position: relative;
-    min-width: var(--min);
-    background-color: rgba(32, 32, 32, 0.281);
-
-    display: grid;
-    grid-template-columns: max-content 2fr;
-
-    gap: 1em;
-    align-items: center;
-    text-align: start;
-
-    color: white;
-}
-
-.member-icon-container {
-    position: relative;
-    width: 50px;
-    aspect-ratio: 1/1;
-}
-
-.founder-star {
-    position: absolute;
-    top: 10px;
-    right: 10px;
 }

@@ -47,12 +47,12 @@ a {
 
 @media (max-width: 768px) {
     .switch-lg {
-        display: none;
+        display: none !important;
     }
 }
 
 @media (min-width: 769px) {
     .switch-sm {
-        display: none;
+        display: none !important;
     }
 }

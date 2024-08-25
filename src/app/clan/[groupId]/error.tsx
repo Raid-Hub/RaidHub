@@ -13,7 +13,7 @@ export default function ClanErrorBoundary({ error, reset }: ErrorBoundaryProps) 
     return (
         <PageWrapper>
             {error instanceof BungieAPIError ? (
-                <h1>{error.Message}</h1>
+                <h1>{error.message}</h1>
             ) : (
                 <h1>Something went wrong!</h1>
             )}
