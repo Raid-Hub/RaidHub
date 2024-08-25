@@ -1,28 +1,15 @@
-import type { BungieNetResponse, PlatformErrorCodes } from "bungie-net-core/models"
+import type { BungieNetResponse } from "bungie-net-core/models"
 
-export class BungieAPIError extends Error implements BungieNetResponse<unknown> {
-    readonly DetailedErrorTrace: string
-    readonly ErrorCode: PlatformErrorCodes
-    readonly ErrorStatus: string
-    readonly Message: string
-    readonly MessageData: Record<string, string>
-    readonly Response: unknown
-    readonly ThrottleSeconds: number
+export class BungieAPIError extends Error {
+    public readonly cause: Omit<BungieNetResponse<unknown>, "Response">
 
     constructor(response: BungieNetResponse<unknown>) {
-        super()
+        super(response.Message)
         this.name = "BungieAPIError"
-        this.DetailedErrorTrace = response.DetailedErrorTrace
-        this.ErrorCode = response.ErrorCode
-        this.ErrorStatus = response.ErrorStatus
-        this.MessageData = response.MessageData
-        this.Message = response.Message
-        this.MessageData = response.MessageData
-        this.Response = response.Response
-        this.ThrottleSeconds = response.ThrottleSeconds
+        this.cause = response
     }
 
-    get message(): string {
-        return this.Message
+    get ErrorCode() {
+        return this.cause.ErrorCode
     }
 }

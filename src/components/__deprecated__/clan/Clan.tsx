@@ -2,19 +2,27 @@
 
 import type { GroupResponse } from "bungie-net-core/models"
 import { useMemo } from "react"
+import ClanMember from "~/app/clan/[groupId]/ClanMember"
+import { StatBox } from "~/app/clan/[groupId]/StatBox"
+import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { ErrorCard } from "~/components/ErrorCard"
+import { Flex } from "~/components/layout/Flex"
+import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
+import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useClan, useMembersOfGroup } from "~/services/bungie/hooks"
+import { type RaidHubClanMemberStats } from "~/services/raidhub/types"
+import { useClanStats } from "~/services/raidhub/useClanStats"
 import { fixClanName } from "~/util/destiny/fixClanName"
-import { decodeHtmlEntities } from "~/util/presentation/formatting"
+import { decodeHtmlEntities, formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
 import { ClanBannerComponent } from "../../ClanBanner"
-import ClanMember from "./ClanMember"
 import styles from "./clan.module.css"
 
 /**
  * @deprecated
  */
 export function ClanComponent(props: { groupId: string; clan: GroupResponse | null }) {
+    const { locale } = useLocale()
     const {
         data: clan,
         isLoading,
@@ -27,18 +35,53 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
             initialData: props.clan ?? undefined
         }
     )
-
+    const clanStatsQuery = useClanStats({ groupId: props.groupId })
     const clanMembersQueries = useMembersOfGroup(
         { groupId: props.groupId, pages: 2 },
         {
             select: result => result.results
         }
     )
-
     const allClanMembers = clanMembersQueries.flatMap(q => q.data ?? [])
     const isLoadingClanMembers = clanMembersQueries.some(q => q.isLoading)
 
+    const [sortKey, setSortKey] = useLocalStorage<keyof RaidHubClanMemberStats | "joinDate">(
+        "clan-page-sort-key",
+        "joinDate"
+    )
+
+    const clanMembersWithStats = useMemo(
+        () =>
+            allClanMembers
+                .map(member => {
+                    const raidhubInfo = clanStatsQuery.data?.members.find(
+                        mem => mem.playerInfo.membershipId === member.destinyUserInfo.membershipId
+                    )
+                    return {
+                        bungie: member,
+                        raidhub: raidhubInfo?.playerInfo ?? null,
+                        stats: raidhubInfo?.stats ?? null
+                    }
+                })
+                .sort(
+                    sortKey === "joinDate"
+                        ? (m1, m2) =>
+                              new Date(m1.bungie.joinDate).getTime() -
+                              new Date(m2.bungie.joinDate).getTime()
+                        : (m1, m2) => (m2.stats?.[sortKey] ?? 0) - (m1.stats?.[sortKey] ?? 0)
+                ),
+        [allClanMembers, clanStatsQuery.data?.members, sortKey]
+    )
+
     const clanName = useMemo(() => decodeHtmlEntities(fixClanName(clan?.detail.name ?? "")), [clan])
+    const clanCallsign = useMemo(
+        () => decodeHtmlEntities(fixClanName(clan?.detail.clanInfo.clanCallsign ?? "")),
+        [clan]
+    )
+    const clanMotto = useMemo(
+        () => decodeHtmlEntities(fixClanName(clan?.detail.motto ?? "")),
+        [clan]
+    )
 
     if (isLoading) return null
 
@@ -46,49 +89,121 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
         return <ErrorCard>{String(error)}</ErrorCard>
     }
 
+    const aggStats = clanStatsQuery.data?.aggregateStats
+
     return (
         <div>
             <div className={styles["name-and-motto"]}>
                 <h1 className={styles.name}>
-                    {clanName}{" "}
-                    <span className={styles["call-sign"]}>
-                        {decodeHtmlEntities(`[${clan.detail.clanInfo.clanCallsign}]`)}
-                    </span>
+                    {clanName} <span className={styles["call-sign"]}>{`[${clanCallsign}]`}</span>
                 </h1>
                 <h3 className={styles.motto}>
-                    <i>{decodeHtmlEntities(clan.detail.motto)}</i>
+                    <i>{clanMotto}</i>
                 </h3>
             </div>
             <section className={styles.overview}>
-                <div className={styles["overview-left"]}>
-                    <ClanBannerComponent
-                        id={clan.detail.groupId}
-                        data={clan.detail.clanInfo.clanBannerData}
-                        sx={20}
-                    />
-                </div>
+                <MobileDesktopSwitch
+                    lg={
+                        <div className={styles["overview-left"]}>
+                            <ClanBannerComponent
+                                id={"lg" + clan.detail.groupId}
+                                data={clan.detail.clanInfo.clanBannerData}
+                                sx={20}
+                            />
+                        </div>
+                    }
+                    sm={<></>}
+                />
                 <div className={styles.about}>
+                    {aggStats && (
+                        <Flex $align="flex-start" $crossAxis="stretch" $padding={0} $wrap>
+                            <StatBox
+                                label="WFR Score"
+                                primaryValue={formattedNumber(
+                                    aggStats.weightedContestScore,
+                                    locale,
+                                    3
+                                )}
+                                secondaryValue={formattedNumber(
+                                    aggStats.totalContestScore,
+                                    locale,
+                                    3
+                                )}
+                                aggLabel="Total"
+                            />
+                            <StatBox
+                                label="Full Clears"
+                                primaryValue={formattedNumber(aggStats.freshClears, locale, 0)}
+                                secondaryValue={formattedNumber(
+                                    aggStats.averageFreshClears,
+                                    locale,
+                                    0
+                                )}
+                                aggLabel="Avg"
+                            />
+                            <StatBox
+                                label="Clears"
+                                primaryValue={formattedNumber(aggStats.clears, locale, 0)}
+                                secondaryValue={formattedNumber(aggStats.averageClears, locale, 0)}
+                                aggLabel="Avg"
+                            />
+                            <StatBox
+                                label="Sherpas"
+                                primaryValue={formattedNumber(aggStats.sherpas, locale, 0)}
+                                secondaryValue={formattedNumber(aggStats.averageSherpas, locale, 0)}
+                                aggLabel="Avg"
+                            />
+                            <StatBox
+                                label="Time in Raids"
+                                primaryValue={secondsToYDHMS(aggStats.timePlayedSeconds, 3)}
+                                secondaryValue={secondsToYDHMS(
+                                    aggStats.averageTimePlayedSeconds,
+                                    2
+                                )}
+                                aggLabel="Avg"
+                            />
+                        </Flex>
+                    )}
                     <p>{urlHighlight(clan.detail.about)}</p>
                 </div>
             </section>
 
             {!isLoadingClanMembers && (
                 <section>
-                    <h2 key={"title"}>Members ({allClanMembers.length} / 100)</h2>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "1rem"
+                        }}>
+                        <h2 key={"title"}>Members ({allClanMembers.length} / 100)</h2>
+                        <Flex $padding={0} $gap={0.75}>
+                            {"Sort by"}
+                            <select
+                                value={sortKey}
+                                onChange={e => {
+                                    setSortKey(e.target.value as keyof RaidHubClanMemberStats)
+                                }}>
+                                <option value="joinDate">Join Date</option>
+                                <option value="contestScore">WFR Score</option>
+                                <option value="freshClears">Full Clears</option>
+                                <option value="clears">Clears</option>
+                                <option value="sherpas">Sherpas</option>
+                                <option value="totalTimePlayedSeconds">In Raid Time</option>
+                            </select>
+                        </Flex>
+                    </div>
                     <div key={"members"} className={styles.members}>
-                        {allClanMembers
-                            .sort(
-                                (m1, m2) =>
-                                    new Date(m1.joinDate).getTime() -
-                                    new Date(m2.joinDate).getTime()
-                            )
-                            .map(member => (
-                                <ClanMember
-                                    member={member}
-                                    isFounder={member.memberType == 5}
-                                    key={member.destinyUserInfo.membershipId}
-                                />
-                            ))}
+                        {clanMembersWithStats.map(member => (
+                            <ClanMember
+                                key={member.bungie.destinyUserInfo.membershipId}
+                                statKey={sortKey}
+                                {...member}
+                            />
+                        ))}
                     </div>
                 </section>
             )}

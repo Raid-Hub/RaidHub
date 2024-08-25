@@ -50,16 +50,16 @@ const bungieClient = new ServerBungieClient({
     timeout: 2500
 })
 
-const notFoundErrCodes = [
-    686, // ClanNotFound
-    622 // GroupNotFound
-]
-
 const getClan = reactRequestDedupe(async (groupId: string) =>
     getGroup(bungieClient, { groupId })
-        .then(res => res.Response)
-        .catch(e => {
-            if (e instanceof BungieAPIError && notFoundErrCodes.includes(e.ErrorCode)) {
+        .then(res => {
+            if (res.Response.detail.groupType != 1) {
+                notFound()
+            }
+            return res.Response
+        })
+        .catch(err => {
+            if (err instanceof BungieAPIError && err.ErrorCode === 686) {
                 notFound()
             } else {
                 return null
