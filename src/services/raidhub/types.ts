@@ -36,6 +36,7 @@ export type RaidHubInstancePlayerExtended = Component<"InstancePlayerExtended">
 export type RaidHubInstanceCharacter = Component<"InstanceCharacter">
 export type RaidHubInstanceForPlayer = Component<"InstanceForPlayer">
 export type RaidHubWorldFirstEntry = Component<"WorldFirstEntry">
+export type RaidHubClanMemberStats = Component<"ClanMemberStats">
 
 export type RaidHubLeaderboardData = Component<"LeaderboardData">
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">

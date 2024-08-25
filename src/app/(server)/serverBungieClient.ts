@@ -7,7 +7,8 @@ import BaseBungieClient from "~/services/bungie/BungieClient"
 
 const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
     5, // SystemDisabled
-    622 // GroupNotFound
+    686, // ClanNotFound
+    1653 // PGCRNotFound
 ])
 
 export default class ServerBungieClient extends BaseBungieClient {

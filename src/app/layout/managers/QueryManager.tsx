@@ -21,6 +21,7 @@ export function QueryManager(props: { children: React.ReactNode }) {
                     queries: {
                         staleTime: 60000,
                         refetchOnWindowFocus: false,
+                        refetchOnReconnect: true,
                         retry: false,
                         refetchIntervalInBackground: false,
                         suspense: false,

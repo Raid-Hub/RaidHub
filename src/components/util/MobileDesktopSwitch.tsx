@@ -15,7 +15,7 @@ export const MobileDesktopSwitch = (props: {
                     isValidElement(child) &&
                     cloneElement(child, {
                         //  @ts-expect-error - manual injection here
-                        className: [child.props.className, "switch-sm"].filter(Boolean).join(" ")
+                        className: ["switch-sm", child.props.className].filter(Boolean).join(" ")
                     })
             )}
             {Children.map(
@@ -24,7 +24,7 @@ export const MobileDesktopSwitch = (props: {
                     isValidElement(child) &&
                     cloneElement(child, {
                         //  @ts-expect-error - manual injection here
-                        className: [child.props.className, "switch-lg"].filter(Boolean).join(" ")
+                        className: ["switch-lg", child.props.className].filter(Boolean).join(" ")
                     })
             )}
             {props.children}
