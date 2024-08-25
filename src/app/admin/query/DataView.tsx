@@ -7,7 +7,8 @@ import { Panel } from "~/components/Panel"
 import { RaidHubError } from "~/services/raidhub/RaidHubError"
 import {
     type RaidHubAdminQueryBody,
-    type RaidHubAdminQueryResponse
+    type RaidHubAdminQueryResponse,
+    type RaidHubErrorSchema
 } from "~/services/raidhub/types"
 import { o } from "~/util/o"
 import { secondsToHMS } from "~/util/presentation/formatting"
@@ -26,38 +27,37 @@ export const DataView = ({
     if (mutation.isError) {
         if (mutation.error instanceof RaidHubError) {
             if (mutation.error.errorCode === "AdminQuerySyntaxError") {
-                const err = mutation.error as RaidHubError<"AdminQuerySyntaxError">
+                const cause = mutation.error.cause as RaidHubErrorSchema<"AdminQuerySyntaxError">
                 return (
                     <ErrorMessage>
                         <h3>SQL Error</h3>
                         <p>
-                            <strong>Name:</strong> {err.cause.name}
+                            <strong>Name:</strong> {cause.name}
                         </p>
-                        {err.cause.code && (
+                        {cause.code && (
                             <p>
                                 <strong>Code: </strong>
                                 <Link
-                                    href={`https://www.postgresql.org/docs/current/errcodes-appendix.html#:~:text=${err.cause.code}`}
+                                    href={`https://www.postgresql.org/docs/current/errcodes-appendix.html#:~:text=${cause.code}`}
                                     target="_blank"
                                     style={{
                                         color: "unset"
                                     }}>
-                                    <u>{err.cause.code}</u>
+                                    <u>{cause.code}</u>
                                 </Link>
                             </p>
                         )}
-                        {err.cause.line && err.cause.position && (
+                        {cause.line && cause.position && (
                             <p>
-                                <strong>Line:</strong>{" "}
-                                {err.cause.line.slice(0, err.cause.position - 1)}
+                                <strong>Line:</strong> {cause.line.slice(0, cause.position - 1)}
                                 <span
                                     style={{
                                         fontWeight: "bold",
                                         backgroundColor: "yellow"
                                     }}>
-                                    {err.cause.line[err.cause.position - 1]}
+                                    {cause.line[cause.position - 1]}
                                 </span>
-                                {err.cause.line.slice(err.cause.position)}
+                                {cause.line.slice(cause.position)}
                             </p>
                         )}
                     </ErrorMessage>
