@@ -12,12 +12,12 @@ export const useMembersOfGroup = <T = SearchResultOfGroupMember>(
     const bungieClient = useBungieClient()
 
     return useQueries({
-        queries: Array.from<unknown, QueryOptions<T>>({ length: params.pages }, (_, page) => ({
-            queryKey: ["bungie", "clan members", params.groupId, page] as const,
+        queries: Array.from<unknown, QueryOptions<T>>({ length: params.pages }, (_, idx) => ({
+            queryKey: ["bungie", "clan members", params.groupId, idx + 1] as const,
             queryFn: () =>
                 getMembersOfGroup(bungieClient, {
                     groupId: params.groupId,
-                    currentpage: page + 1
+                    currentpage: idx + 1
                 }).then(res => res.Response),
             ...opts
         }))

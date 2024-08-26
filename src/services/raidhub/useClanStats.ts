@@ -1,7 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { getRaidHubApi } from "./common"
 
-export const useClanStats = ({ groupId }: { groupId: string }) => {
+export const useClanStats = (
+    groupId: string,
+    opts?: {
+        staleTime: number
+        refetchOnWindowFocus: boolean
+    }
+) => {
     return useQuery({
         queryKey: ["raidhub", "clan", groupId],
         queryFn: ({ queryKey }) =>
@@ -12,6 +18,6 @@ export const useClanStats = ({ groupId }: { groupId: string }) => {
                 },
                 null
             ).then(res => res.response),
-        staleTime: 300_000
+        ...opts
     })
 }
