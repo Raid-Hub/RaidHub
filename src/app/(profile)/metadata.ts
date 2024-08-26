@@ -28,12 +28,9 @@ export const generatePlayerMetadata = ({
             username,
             title: displayName,
             description,
-            images: image
-        },
-        twitter: {
-            ...rootMetaData.twitter,
-            card: "summary_large_image",
-            images: image
+            images: {
+                url: image
+            }
         },
         robots: {
             follow: true,

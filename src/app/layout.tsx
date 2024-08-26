@@ -104,7 +104,7 @@ export const metadata = {
         type: "website"
     },
     twitter: {
-        creator: "@raidhubio"
+        site: "@raidhubio"
     }
 }
 
