@@ -25,20 +25,7 @@ export const PulseAnimation = styled.div<{ color: string }>`
     border: 2px solid rgba(0, 0, 0, 0.2);
 `
 
-export const CheckpointDificulty = styled.p`
-    color: ${({ theme }) => theme.colors.text.tertiary};
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-
-    font-size: 1em;
-    font-weight: 500;
-    text-transform: uppercase;
-
-    letter-spacing: 0.2em;
-
-    white-space: nowrap;
-`
-
-export const CheckpointTitle = styled.h3`
+export const CheckpointVersion = styled.h3`
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 
     font-size: 1em;
@@ -46,6 +33,4 @@ export const CheckpointTitle = styled.h3`
     text-transform: uppercase;
 
     white-space: nowrap;
-
-    margin-bottom: -1em;
 `
