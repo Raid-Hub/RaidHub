@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/alt-text, @next/next/no-img-element */
 import { ImageResponse } from "next/og"
 import { bungieClanBannerBannerLayerUrl } from "~/util/destiny"
 import { RGBAToHex } from "~/util/destiny/rgba"
