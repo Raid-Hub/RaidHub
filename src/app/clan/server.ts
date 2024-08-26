@@ -1,6 +1,6 @@
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
 import { getGroup } from "bungie-net-core/endpoints/GroupV2"
-import { ClanBannerSource } from "bungie-net-core/models"
+import { type ClanBannerSource } from "bungie-net-core/models"
 import { notFound } from "next/navigation"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
@@ -40,5 +40,5 @@ const bannerClient = new ServerBungieClient({
 })
 
 export const getClanBannerDefinitions = reactRequestDedupe(() =>
-    getClanBannerSource(bannerClient).then(res => res.Response as ClanBannerSource)
+    getClanBannerSource(bannerClient).then(res => res.Response)
 )

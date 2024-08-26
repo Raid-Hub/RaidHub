@@ -1,4 +1,4 @@
-import { RGBA } from "~/types/generic"
+import { type RGBA } from "~/types/generic"
 import { o } from "../o"
 
 /**

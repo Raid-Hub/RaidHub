@@ -10,7 +10,6 @@ const mast =
     "https://cdn.raidhub.io/cdn-cgi/imagedelivery/85AvSk7Z9-QdHfmk4t5dsw/3be0c292-1e86-4206-189a-ab6cd337d900/medium"
 const sizeFactor = 50
 
-// Image generation
 export default async function Image({ params: { groupId } }: PageProps) {
     const clan = await getClan(groupId)
     if (!clan) return null
@@ -63,7 +62,6 @@ export default async function Image({ params: { groupId } }: PageProps) {
         )
     ).map(base64 => `data:image/png;base64,${base64}`)
 
-    // Get the size query param from req
     const svgText = `
         <svg
             viewBox="0 0 ${mastWidthRaw} ${viewBoxHeight}"
@@ -149,8 +147,6 @@ export default async function Image({ params: { groupId } }: PageProps) {
         .replace(/\s+/g, " ")
         .trim()
 
-    const svgDataUrl = `data:image/svg+xml,${svgText}`
-
     return new ImageResponse(
         (
             <div
@@ -164,7 +160,7 @@ export default async function Image({ params: { groupId } }: PageProps) {
                         height: viewBoxHeight,
                         position: "absolute"
                     }}
-                    src={svgDataUrl}
+                    src={`data:image/svg+xml,${svgText}`}
                 />
                 <img
                     style={{

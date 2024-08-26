@@ -235,7 +235,7 @@ class CustomDexie extends Dexie implements Tables {
             }),
 
             getClanBannerSource(client).then(response => {
-                const banners = response.Response as ClanBannerSource
+                const banners = response.Response
                 const hash = <K extends keyof ClanBannerSource>(key: K) =>
                     o.entries(banners[key]).map(([hash, def]) =>
                         typeof def === "string"
