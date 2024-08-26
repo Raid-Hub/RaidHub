@@ -14,6 +14,7 @@ import {
     RaidHubManifestManager
 } from "~/app/layout/managers"
 import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
+import { baseUrl } from "~/server/util"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { DonationBanner } from "./layout/DonationBanner"
 import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
@@ -94,12 +95,7 @@ export const metadata = {
         index: true
     },
     keywords: ["destiny 2", "raidhub", "raid hub", "raid", "leaderboards", "statistics"],
-    metadataBase: new URL(
-        process.env.DEPLOY_URL ??
-            (process.env.VERCEL_URL
-                ? `https://${process.env.VERCEL_URL}`
-                : `https://localhost:${process.env.PORT ?? 3000}`)
-    ),
+    metadataBase: new URL(baseUrl),
     openGraph: {
         title: title,
         description: description,
@@ -117,5 +113,6 @@ export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
-    userScalable: false
+    userScalable: false,
+    themeColor: "#ffffff"
 }

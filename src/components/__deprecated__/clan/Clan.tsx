@@ -2,9 +2,10 @@
 
 import type { GroupResponse } from "bungie-net-core/models"
 import { useMemo } from "react"
-import ClanMember from "~/app/clan/[groupId]/ClanMember"
-import { StatBox } from "~/app/clan/[groupId]/StatBox"
+import ClanMember from "~/app/clan/ClanMember"
+import { StatBox } from "~/app/clan/StatBox"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { ClanBannerComponent } from "~/components/ClanBanner"
 import { ErrorCard } from "~/components/ErrorCard"
 import { Flex } from "~/components/layout/Flex"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
@@ -15,7 +16,6 @@ import { useClanStats } from "~/services/raidhub/useClanStats"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities, formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
 import { urlHighlight } from "~/util/presentation/urlHighlight"
-import { ClanBannerComponent } from "../../ClanBanner"
 import styles from "./clan.module.css"
 
 /**
@@ -55,7 +55,9 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
             allClanMembers
                 .map(member => {
                     const raidhubInfo = clanStatsQuery.data?.members.find(
-                        mem => mem.playerInfo.membershipId === member.destinyUserInfo.membershipId
+                        mem =>
+                            mem.playerInfo &&
+                            mem.playerInfo.membershipId === member.destinyUserInfo.membershipId
                     )
                     return {
                         bungie: member,

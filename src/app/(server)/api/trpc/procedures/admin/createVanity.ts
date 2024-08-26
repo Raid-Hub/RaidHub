@@ -44,10 +44,15 @@ export const createVanity = adminProcedure
                 })
             } else {
                 // Ensure the profile exists according to Bungie
-                const d2Profile = await getLinkedProfiles(new ServerBungieClient(), {
-                    membershipId: input.destinyMembershipId,
-                    membershipType: -1
-                }).then(res =>
+                const d2Profile = await getLinkedProfiles(
+                    new ServerBungieClient({
+                        timeout: 10000
+                    }),
+                    {
+                        membershipId: input.destinyMembershipId,
+                        membershipType: -1
+                    }
+                ).then(res =>
                     res.Response.profiles.find(
                         p =>
                             p.membershipType > 0 &&

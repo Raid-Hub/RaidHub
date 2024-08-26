@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { metadata as rootMetaData } from "~/app/layout"
 import { PGCRPage } from "../PGCRPage"
-import { getMetaData, prefetchActivity, type PageProps } from "./common"
+import { getMetaData, prefetchActivity, type PageProps } from "../server"
 
 export const revalidate = 0
 
