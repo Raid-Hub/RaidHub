@@ -6,15 +6,16 @@ import { useEffect, useState } from "react"
 import { Card } from "~/components/Card"
 import { Flex } from "~/components/layout/Flex"
 import { useTimer } from "~/hooks/util/useTimer"
-import { secondsToHMS } from "~/util/presentation/formatting"
+import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
 import { useLocale } from "../layout/managers/LocaleManager"
 
 export const ClientControls = ({ date }: { date: Date }) => {
+    const { locale } = useLocale()
     const [isRefreshDisabled, setIsRefreshDisabled] = useState(true)
     const router = useRouter()
 
     useEffect(() => {
-        setTimeout(() => setIsRefreshDisabled(false), 3000)
+        setTimeout(() => setIsRefreshDisabled(false), 2000)
     }, [])
 
     // This "query" is used to trigger a refresh of the data
@@ -42,9 +43,12 @@ export const ClientControls = ({ date }: { date: Date }) => {
     })
 
     return (
-        <Card>
-            <Flex $align="flex-start" $padding={0.5}>
-                <Timestamp title="Last Refresh" time={lastRefresh} />
+        <Card style={{ minWidth: "min(50%, 350px)" }}>
+            <Flex $align="space-between" $padding={0.5}>
+                <Flex $direction="column" $align="flex-start" $padding={0} $gap={0.5}>
+                    <div>Last Refresh</div>
+                    <div>{formattedTimeSince(lastRefresh, locale)}</div>
+                </Flex>
                 <Flex $direction="column" $align="flex-start" $padding={0} $gap={0.5}>
                     <div>Stale Time</div>
                     <div>{secondsToHMS(elapsed / 1000, false)}</div>
@@ -54,20 +58,5 @@ export const ClientControls = ({ date }: { date: Date }) => {
                 </button>
             </Flex>
         </Card>
-    )
-}
-
-const Timestamp = ({ title, time }: { title: string; time: Date }) => {
-    const { locale } = useLocale()
-
-    return (
-        <Flex $direction="column" $align="flex-start" $padding={0} $gap={0.5}>
-            <div>{title}</div>
-            <time dateTime={time.toISOString()}>
-                {time.toLocaleTimeString(locale, {
-                    timeStyle: "medium"
-                })}
-            </time>
-        </Flex>
     )
 }

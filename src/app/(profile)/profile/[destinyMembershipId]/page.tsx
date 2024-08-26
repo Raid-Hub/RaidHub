@@ -44,7 +44,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         prefetchRaidHubPlayerBasic(params.destinyMembershipId)
     ])
 
-    const username = basic?.bungieGlobalDisplayName ?? basic?.displayName ?? null
+    const username = basic?.bungieGlobalDisplayName
+        ? `${basic.bungieGlobalDisplayName}#${basic.bungieGlobalDisplayNameCode}`
+        : basic?.displayName ?? null
     const displayName = username?.split("#")[0] ?? null
 
     if (!username || !displayName) {

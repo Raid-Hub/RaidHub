@@ -1,14 +1,23 @@
-import { unstable_noStore } from "next/cache"
 import { type CheckpointResponse } from "./types"
+
+export type Checkpoint = {
+    encounterImageURL: string
+    maxPlayers: number
+    currentPlayers: number
+    encounterName: string
+    difficultyTier: string
+    botBungieName: string
+    activityHash: string
+    activityName: string
+}
 
 const checkpointsURL = "https://d2cp.io/platform/checkpoints"
 
 export const getCheckpoints = async () => {
-    // Required because the page is cached but not the fetch
-    unstable_noStore()
-
     try {
-        const response = await fetch(checkpointsURL).then(res => {
+        const response = await fetch(checkpointsURL, {
+            next: { revalidate: 30 }
+        }).then(res => {
             if (!res.ok) {
                 throw new Error("Failed to fetch checkpoints")
             } else {

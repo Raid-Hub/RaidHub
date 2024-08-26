@@ -1,8 +1,9 @@
 "use client"
 
 import type { GroupResponse } from "bungie-net-core/models"
+import { type GroupMember } from "bungie-net-core/models"
 import { useMemo } from "react"
-import ClanMember from "~/app/clan/ClanMember"
+import { ClanMember, type ClanMemberProps } from "~/app/clan/ClanMember"
 import { StatBox } from "~/app/clan/StatBox"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { ClanBannerComponent } from "~/components/ClanBanner"
@@ -11,7 +12,7 @@ import { Flex } from "~/components/layout/Flex"
 import { MobileDesktopSwitch } from "~/components/util/MobileDesktopSwitch"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useClan, useMembersOfGroup } from "~/services/bungie/hooks"
-import { type RaidHubClanMemberStats } from "~/services/raidhub/types"
+import { type RaidHubClanMemberStats, type RaidHubPlayerInfo } from "~/services/raidhub/types"
 import { useClanStats } from "~/services/raidhub/useClanStats"
 import { fixClanName } from "~/util/destiny/fixClanName"
 import { decodeHtmlEntities, formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
@@ -43,37 +44,55 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
         }
     )
     const allClanMembers = clanMembersQueries.flatMap(q => q.data ?? [])
-    const isLoadingClanMembers = clanMembersQueries.some(q => q.isLoading)
+    const isLoadingClanMembers =
+        clanMembersQueries.some(q => q.isLoading) || clanStatsQuery.isLoading
 
-    const [sortKey, setSortKey] = useLocalStorage<keyof RaidHubClanMemberStats | "joinDate">(
+    const [sortKey, setSortKey] = useLocalStorage<ClanMemberProps["statKey"]>(
         "clan-page-sort-key",
-        "joinDate"
+        "lastSeen"
     )
 
-    const clanMembersWithStats = useMemo(
-        () =>
-            allClanMembers
-                .map(member => {
-                    const raidhubInfo = clanStatsQuery.data?.members.find(
-                        mem =>
-                            mem.playerInfo &&
-                            mem.playerInfo.membershipId === member.destinyUserInfo.membershipId
-                    )
-                    return {
-                        bungie: member,
-                        raidhub: raidhubInfo?.playerInfo ?? null,
-                        stats: raidhubInfo?.stats ?? null
-                    }
-                })
-                .sort(
-                    sortKey === "joinDate"
-                        ? (m1, m2) =>
-                              new Date(m1.bungie.joinDate).getTime() -
-                              new Date(m2.bungie.joinDate).getTime()
-                        : (m1, m2) => (m2.stats?.[sortKey] ?? 0) - (m1.stats?.[sortKey] ?? 0)
-                ),
-        [allClanMembers, clanStatsQuery.data?.members, sortKey]
-    )
+    const sortFn = useMemo<
+        <
+            T extends {
+                bungie: GroupMember
+                raidhub: RaidHubPlayerInfo | null
+                stats: RaidHubClanMemberStats | null
+            }
+        >(
+            a: T,
+            b: T
+        ) => number
+    >(() => {
+        switch (sortKey) {
+            case "joinDate":
+                return (m1, m2) =>
+                    new Date(m1.bungie.joinDate).getTime() - new Date(m2.bungie.joinDate).getTime()
+            case "lastSeen":
+                return (m1, m2) =>
+                    new Date(m2.raidhub?.lastSeen ?? 0).getTime() -
+                    new Date(m1.raidhub?.lastSeen ?? 0).getTime()
+            default:
+                return (m1, m2) => (m2.stats?.[sortKey] ?? 0) - (m1.stats?.[sortKey] ?? 0)
+        }
+    }, [sortKey])
+
+    const clanMembersWithStats = useMemo(() => {
+        return allClanMembers
+            .map(member => {
+                const raidhubInfo = clanStatsQuery.data?.members.find(
+                    mem =>
+                        mem.playerInfo &&
+                        mem.playerInfo.membershipId === member.destinyUserInfo.membershipId
+                )
+                return {
+                    bungie: member,
+                    raidhub: raidhubInfo?.playerInfo ?? null,
+                    stats: raidhubInfo?.stats ?? null
+                }
+            })
+            .sort(sortFn)
+    }, [allClanMembers, clanStatsQuery.data?.members, sortFn])
 
     const clanName = useMemo(() => decodeHtmlEntities(fixClanName(clan?.detail.name ?? "")), [clan])
     const clanCallsign = useMemo(
@@ -189,6 +208,7 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                                 onChange={e => {
                                     setSortKey(e.target.value as keyof RaidHubClanMemberStats)
                                 }}>
+                                <option value="lastSeen">Last Seen</option>
                                 <option value="joinDate">Join Date</option>
                                 <option value="contestScore">WFR Score</option>
                                 <option value="freshClears">Full Clears</option>

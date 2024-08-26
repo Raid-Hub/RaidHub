@@ -3,7 +3,7 @@ import { PageWrapper } from "~/components/layout/PageWrapper"
 import { CheckpointLogo } from "./CheckpointLogo"
 import { Checkpoints } from "./Checkpoints"
 
-export const revalidate = 60
+export const revalidate = false
 
 export default function Page() {
     return (

@@ -3,26 +3,54 @@
 import { type GroupMember, type RuntimeGroupMemberType } from "bungie-net-core/models"
 import Image from "next/image"
 import Link from "next/link"
+import { useMemo } from "react"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { Container } from "~/components/layout/Container"
 import { type RaidHubClanMemberStats, type RaidHubPlayerInfo } from "~/services/raidhub/types"
 import { bungieProfileIconUrl, getBungieDisplayName } from "~/util/destiny"
-import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
+import { formattedNumber, formattedTimeSince, secondsToYDHMS } from "~/util/presentation/formatting"
 
 export interface ClanMemberProps {
     bungie: GroupMember
     raidhub: RaidHubPlayerInfo | null
     stats: RaidHubClanMemberStats | null
-    statKey: keyof RaidHubClanMemberStats | "joinDate"
+    statKey: keyof RaidHubClanMemberStats | "joinDate" | "lastSeen"
 }
 
-/** @deprecated */
-export default function ClanMember({ bungie, raidhub, stats, statKey }: ClanMemberProps) {
+export const ClanMember = ({ bungie, raidhub, stats, statKey }: ClanMemberProps) => {
     const { locale } = useLocale()
-
+    const displayName = getBungieDisplayName(raidhub ?? bungie.destinyUserInfo)
+    const statValue = useMemo(() => {
+        switch (statKey) {
+            case "joinDate":
+                return new Date(bungie.joinDate).toLocaleDateString(locale, {
+                    year: "2-digit",
+                    month: "2-digit",
+                    day: "2-digit"
+                })
+            case "lastSeen":
+                return bungie.isOnline
+                    ? "Now"
+                    : raidhub?.lastSeen
+                    ? formattedTimeSince(new Date(raidhub.lastSeen), locale)
+                    : "Never"
+            case "totalTimePlayedSeconds":
+                return secondsToYDHMS(stats?.totalTimePlayedSeconds ?? 0, 3)
+            default:
+                return formattedNumber(stats?.[statKey] ?? 0, locale, 3)
+        }
+    }, [bungie.joinDate, bungie.isOnline, locale, raidhub?.lastSeen, statKey, stats])
     return (
-        <Member href={`/profile/${bungie.destinyUserInfo.membershipId}`}>
+        <Member
+            href={`/profile/${bungie.destinyUserInfo.membershipId}`}
+            style={
+                displayName.length > 25
+                    ? {
+                          gridColumn: "span 2"
+                      }
+                    : {}
+            }>
             <MemberIconContainer
                 $aspectRatio={{
                     width: 1,
@@ -40,18 +68,8 @@ export default function ClanMember({ bungie, raidhub, stats, statKey }: ClanMemb
                 />
             </MemberIconContainer>
             <div>
-                <div>{getBungieDisplayName(raidhub ?? bungie.destinyUserInfo)}</div>
-                <StatValue>
-                    {statKey === "joinDate"
-                        ? new Date(bungie.joinDate).toLocaleDateString(locale, {
-                              year: "2-digit",
-                              month: "2-digit",
-                              day: "2-digit"
-                          })
-                        : statKey === "totalTimePlayedSeconds"
-                        ? secondsToYDHMS(stats?.[statKey] ?? 0, 3)
-                        : formattedNumber(stats?.[statKey] ?? 0, locale, 3)}
-                </StatValue>
+                <div>{displayName}</div>
+                <StatValue>{statValue}</StatValue>
             </div>
             {bungie.memberType > 2 && (
                 <StarContainer $groupMemberType={bungie.memberType}>

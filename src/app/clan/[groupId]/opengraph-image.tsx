@@ -41,7 +41,7 @@ export default async function Image({ params: { groupId } }: PageProps) {
     const mastWidth = `${mastWidthRaw}px`
     const mastHeight = `${mastHeightRaw}px`
 
-    const bannerWidthRaw = 9 * sizeFactor
+    const bannerWidthRaw = Math.round(9 * sizeFactor)
     const bannerHeightRaw = Math.round(bannerWidthRaw * (16 / 9))
     const bannerWidth = `${bannerWidthRaw}px`
     const bannerHeight = `${bannerHeightRaw}px`
@@ -181,7 +181,9 @@ export default async function Image({ params: { groupId } }: PageProps) {
 }
 
 async function imageToBase64(imageUrl: string) {
-    const response = await fetch(imageUrl)
+    const response = await fetch(imageUrl, {
+        cache: "force-cache"
+    })
     const buffer = await response.arrayBuffer()
     return Buffer.from(buffer).toString("base64")
 }
