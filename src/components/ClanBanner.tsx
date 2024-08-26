@@ -29,7 +29,7 @@ export const ClanBannerComponent = ({
     const bannerOffset = `${-0.41 * sx}px`
     const bannerCentering = `translate(${(mastWidthRaw - bannerWidthRaw) / 2})`
 
-    return bannerData ? (
+    return (
         <svg
             key={"banner"}
             style={{ width: mastWidth, height: mastHeight }}
@@ -105,5 +105,5 @@ export const ClanBannerComponent = ({
             </g>
             <image xlinkHref={mast} width="100%" height="100%" />
         </svg>
-    ) : null
+    )
 }

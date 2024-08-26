@@ -2,39 +2,17 @@
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import { getRaidSplash } from "~/data/activity-images"
+import { baseUrl } from "~/server/util"
 import { bungieIconUrl, getBungieDisplayName } from "~/util/destiny"
 import { secondsToHMS } from "~/util/presentation/formatting"
-import { getMetaData, prefetchActivity, type PageProps } from "./common"
+import { getMetaData, prefetchActivity, type PageProps } from "../server"
 
 const size = {
     width: 800,
     height: 450
 }
 
-const baseUrl =
-    process.env.DEPLOY_URL ??
-    (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : `https://localhost:${process.env.PORT ?? 3000}`)
-
 export const runtime = "edge"
-export async function generateImageMetadata({ params }: PageProps) {
-    const activity = await prefetchActivity(params.instanceId)
-
-    const { idTitle } = getMetaData(activity)
-    const raidName = activity.metadata.activityName
-
-    return [
-        {
-            id: 0,
-            alt: idTitle,
-            contentType: "image/png",
-            size,
-            activity,
-            raidName
-        }
-    ]
-}
 
 // Image generation
 export default async function Image({ params: { instanceId } }: PageProps) {

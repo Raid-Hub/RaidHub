@@ -64,16 +64,18 @@ type ForegroundBackground = {
     backgroundPath: string
 }
 
-interface RawClanBannerData extends ClanBannerSource {
-    clanBannerDecals: Record<string, ForegroundBackground>
-    clanBannerDecalPrimaryColors: Record<string, RGBA>
-    clanBannerDecalSecondaryColors: Record<string, RGBA>
-    clanBannerGonfalons: Record<string, string>
-    clanBannerGonfalonColors: Record<string, RGBA>
-    clanBannerGonfalonDetails: Record<string, string>
-    clanBannerGonfalonDetailColors: Record<string, RGBA>
-    clanBannerDecalsSquare: Record<string, ForegroundBackground>
-    clanBannerGonfalonDetailsSquare: Record<string, string>
+declare module "bungie-net-core/models" {
+    interface ClanBannerSource {
+        clanBannerDecals: Record<string, ForegroundBackground>
+        clanBannerDecalPrimaryColors: Record<string, RGBA>
+        clanBannerDecalSecondaryColors: Record<string, RGBA>
+        clanBannerGonfalons: Record<string, string>
+        clanBannerGonfalonColors: Record<string, RGBA>
+        clanBannerGonfalonDetails: Record<string, string>
+        clanBannerGonfalonDetailColors: Record<string, RGBA>
+        clanBannerDecalsSquare: Record<string, ForegroundBackground>
+        clanBannerGonfalonDetailsSquare: Record<string, string>
+    }
 }
 
 export type CustomDexieTable =
@@ -233,20 +235,20 @@ class CustomDexie extends Dexie implements Tables {
             }),
 
             getClanBannerSource(client).then(response => {
-                const banners = response.Response as RawClanBannerData
-                const hash = <K extends keyof RawClanBannerData>(key: K) =>
+                const banners = response.Response as ClanBannerSource
+                const hash = <K extends keyof ClanBannerSource>(key: K) =>
                     o.entries(banners[key]).map(([hash, def]) =>
                         typeof def === "string"
                             ? { hash: Number(hash), value: def }
                             : {
                                   hash: Number(hash),
                                   ...(def as Prettify<
-                                      RawClanBannerData[K][keyof RawClanBannerData[K]]
+                                      ClanBannerSource[K][keyof ClanBannerSource[K]]
                                   >)
                               }
                     )
 
-                const clanBannerTableKeys = Object.keys(banners) as (keyof RawClanBannerData)[]
+                const clanBannerTableKeys = Object.keys(banners) as (keyof ClanBannerSource)[]
 
                 return this.transaction(
                     "rw",

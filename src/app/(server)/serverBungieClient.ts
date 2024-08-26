@@ -4,6 +4,7 @@ import type { BungieFetchConfig } from "bungie-net-core"
 import type { PlatformErrorCodes } from "bungie-net-core/models"
 import { BungieAPIError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
+import { baseUrl } from "./util"
 
 const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
     5, // SystemDisabled
@@ -14,11 +15,17 @@ const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
 export default class ServerBungieClient extends BaseBungieClient {
     private next: NextFetchRequestConfig
     private timeout: number
+    private cache?: RequestCache
 
-    constructor({ next, timeout }: { next?: NextFetchRequestConfig; timeout?: number } = {}) {
+    constructor({
+        next,
+        timeout,
+        cache
+    }: { next?: NextFetchRequestConfig; timeout?: number; cache?: RequestCache } = {}) {
         super()
         this.next = next ?? {}
         this.timeout = timeout ?? 5000
+        this.cache = cache
     }
 
     generatePayload(config: BungieFetchConfig): RequestInit {
@@ -36,17 +43,12 @@ export default class ServerBungieClient extends BaseBungieClient {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             body: config.body,
             headers: new Headers(config.headers),
-            next: this.next
+            next: this.next,
+            cache: this.cache
         }
 
         payload.headers.set("X-API-KEY", apiKey)
-        payload.headers.set(
-            "Origin",
-            process.env.DEPLOY_URL ??
-                (process.env.VERCEL_URL
-                    ? `https://${process.env.VERCEL_URL}`
-                    : `https://localhost:${process.env.PORT ?? 3000}`)
-        )
+        payload.headers.set("Origin", baseUrl)
 
         const controller = new AbortController()
         payload.signal = controller.signal

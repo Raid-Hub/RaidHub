@@ -1,7 +1,6 @@
 import type { ClanBanner } from "bungie-net-core/models"
-import { type RGBA } from "~/types/generic"
+import { RGBAToHex } from "~/util/destiny/rgba"
 import { useDexieGetQuery } from "~/util/dexie/useDexieGetQuery"
-import { o } from "~/util/o"
 
 export function useClanBanner(banner: ClanBanner) {
     const decalPath = useDexieGetQuery("clanBannerDecals", banner.decalId)
@@ -39,19 +38,4 @@ export function useClanBanner(banner: ClanBanner) {
             color: RGBAToHex(gonfalconsColor)
         }
     }
-}
-
-/**
- * Useful for clan banners since bungie gives us the RGBA values as their own properties
- * @param rgba a list of the rgba values
- * @returns a hex string with #
- */
-function RGBAToHex(rgba: RGBA | null): string {
-    if (!rgba) return "#00000000"
-
-    const hex = o.fromEntries(
-        o.map(rgba, (channel, value) => [channel, value.toString(16).padStart(2, "0")])
-    )
-
-    return `#${hex.red}${hex.green}${hex.blue}${hex.alpha}`
 }

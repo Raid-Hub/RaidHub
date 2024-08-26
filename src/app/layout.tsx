@@ -14,6 +14,7 @@ import {
     RaidHubManifestManager
 } from "~/app/layout/managers"
 import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
+import { baseUrl } from "~/server/util"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { DonationBanner } from "./layout/DonationBanner"
 import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
@@ -34,6 +35,15 @@ export default async function RootLayout(params: { children: ReactNode }) {
     return (
         <html>
             <head>
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+                <link rel="manifest" href="/site.webmanifest" />
+                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ff6437" />
+                <meta name="apple-mobile-web-app-title" content="RaidHub" />
+                <meta name="application-name" content="RaidHub" />
+                <meta name="msapplication-TileColor" content="#da532c" />
+                <meta name="theme-color" content="#ffffff"></meta>
                 <meta name="discord:site" content="https://discord.gg/raidhub" />
 
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -94,12 +104,7 @@ export const metadata = {
         index: true
     },
     keywords: ["destiny 2", "raidhub", "raid hub", "raid", "leaderboards", "statistics"],
-    metadataBase: new URL(
-        process.env.DEPLOY_URL ??
-            (process.env.VERCEL_URL
-                ? `https://${process.env.VERCEL_URL}`
-                : `https://localhost:${process.env.PORT ?? 3000}`)
-    ),
+    metadataBase: new URL(baseUrl),
     openGraph: {
         title: title,
         description: description,
@@ -117,5 +122,6 @@ export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
-    userScalable: false
+    userScalable: false,
+    themeColor: "#ffffff"
 }
