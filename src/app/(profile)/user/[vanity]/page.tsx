@@ -96,6 +96,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return generatePlayerMetadata({
         username,
         displayName,
-        image
+        image,
+        destinyMembershipId: profile.destinyMembershipId,
+        vanity: profile.vanity
     })
 }
