@@ -35,8 +35,7 @@ export const getMetaData = (activity: RaidHubInstanceExtended) => {
         : null
     const flawlessPrefix = activity.flawless ? "Flawless" : null
 
-    const versionPrefix =
-        activity.metadata.versionName === "Normal" ? null : activity.metadata.versionName
+    const versionPrefix = activity.versionId === 1 ? null : activity.metadata.versionName
 
     const activityName = activity.metadata.activityName
 

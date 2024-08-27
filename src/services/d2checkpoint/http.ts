@@ -35,9 +35,7 @@ export const getCheckpoints = async () => {
                 response.official?.map(checkpoint => ({
                     key: checkpoint.displayOrder,
                     botBungieName: checkpoint.name,
-                    activityName: checkpoint.activity,
                     activityHash: String(checkpoint.activityHash),
-                    difficultyTier: checkpoint.difficultyTier < 3 ? "Normal" : "Master",
                     openCapacity: checkpoint.maxPlayers - checkpoint.players,
                     currentPlayers: checkpoint.players,
                     maxPlayers: checkpoint.maxPlayers,
