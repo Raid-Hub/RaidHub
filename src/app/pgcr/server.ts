@@ -15,7 +15,7 @@ export const prefetchActivity = reactRequestDedupe((instanceId: string) =>
     getRaidHubApi("/activity/{instanceId}", { instanceId }, null)
         .then(res => res.response)
         .catch(err => {
-            if (err instanceof RaidHubError && err.errorCode === "RaidNotFoundError") {
+            if (err instanceof RaidHubError && err.errorCode === "InstanceNotFoundError") {
                 notFound()
             } else {
                 throw err

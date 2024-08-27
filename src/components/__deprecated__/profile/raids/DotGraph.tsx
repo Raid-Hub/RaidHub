@@ -1,5 +1,5 @@
 import { type Collection } from "@discordjs/collection"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFilterContext } from "~/app/(profile)/raids/FilterContext"
 import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { median } from "~/util/math"
@@ -43,7 +43,7 @@ type DotGraphWrapperProps = {
 }
 
 /** @deprecated */
-export default function DotGraphWrapper({
+export default memo(function DotGraphWrapper({
     activities: unfilteredActivities,
     targetDot
 }: DotGraphWrapperProps) {
@@ -82,7 +82,7 @@ export default function DotGraphWrapper({
     }, [activities])
 
     return <DotGraph getHeight={getHeight} dots={activities} targetDot={targetDot} />
-}
+})
 
 type DotGraphProps = {
     getHeight: (duration: number) => number
@@ -90,7 +90,7 @@ type DotGraphProps = {
     targetDot: string | null
 }
 
-function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
+const DotGraph = memo(function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
     const [dotTooltipData, setDotTooltipData] = useState<DotTooltipProps | null>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const svgRef = useRef<SVGSVGElement>(null)
@@ -187,7 +187,7 @@ function DotGraph({ dots, getHeight, targetDot }: DotGraphProps) {
             </svg>
         </div>
     )
-}
+})
 
 type Point = [number, number]
 

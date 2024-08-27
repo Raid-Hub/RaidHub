@@ -31,8 +31,8 @@ export const SelectedPlayerView = (props: {
     deselect: () => void
 }) => {
     const { locale } = useLocale()
-    const { get, remove } = useQueryParams<PGCRPageParams>()
-    const selectedCharacterId = get("character")
+    const { searchParams, remove } = useQueryParams<PGCRPageParams>()
+    const selectedCharacterId = searchParams.character
 
     const selectedCharacter = selectedCharacterId
         ? props.selectedPlayer.characters.find(c => c.characterId === selectedCharacterId)
@@ -250,7 +250,7 @@ const useEntryStats = (
     }, [selectedCharacter, selectedPlayer])
 
 const CharacterTab = (props: { character: RaidHubInstanceCharacter }) => {
-    const { set, get } = useQueryParams<PGCRPageParams>()
+    const { searchParams, set } = useQueryParams<PGCRPageParams>()
     const { data: classHash } = useResolveCharacter(props.character, {
         forceOnLargePGCR: true,
         select: data => data.character.data?.classHash ?? null
@@ -260,7 +260,7 @@ const CharacterTab = (props: { character: RaidHubInstanceCharacter }) => {
     return (
         <H4
             $mBlock={0.2}
-            aria-selected={get("character") === props.character.characterId}
+            aria-selected={searchParams.character === props.character.characterId}
             onClick={() => set("character", props.character.characterId)}
             style={{
                 padding: "0.5rem"

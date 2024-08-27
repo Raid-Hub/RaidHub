@@ -1,7 +1,7 @@
 "use client"
 
 import { Collection } from "@discordjs/collection"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import styled from "styled-components"
 import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { TabSelector } from "~/components/TabSelector"
@@ -108,27 +108,24 @@ export const RaidsWrapper = () => {
         )
     }, [activities, isLoadingActivities])
 
-    const queryParams = useQueryParams<{
+    const { searchParams, set } = useQueryParams<{
         tab: TabTitle
     }>()
 
     const [isExpanded, setIsExpanded] = useLocalStorage<boolean>("raid-cards-expanded", false)
     const [tabLocal, setTabLocal] = useLocalStorage<TabTitle>("player-profile-tab", "classic")
 
-    const [getTab, setTab] = useMemo(
-        () => [
-            () => queryParams.get("tab") ?? tabLocal,
-            (tab: TabTitle) => {
-                setTabLocal(tab)
-                queryParams.set("tab", tab)
-            }
-        ],
-        [tabLocal, setTabLocal, queryParams]
+    const setTab = useCallback(
+        (tab: TabTitle) => {
+            setTabLocal(tab)
+            set("tab", tab)
+        },
+        [setTabLocal, set]
     )
 
-    const TabView = useMemo(() => {
-        const tab = getTab()
+    const tab = searchParams.tab ?? tabLocal
 
+    const TabView = useMemo(() => {
         switch (tab) {
             case "classic":
                 return (
@@ -175,7 +172,7 @@ export const RaidsWrapper = () => {
                 return null
         }
     }, [
-        getTab,
+        tab,
         listedRaids,
         pantheonIds,
         isLoadingActivities,
@@ -193,23 +190,21 @@ export const RaidsWrapper = () => {
             <ProfileError error={playerErrors.find(e => e instanceof RaidHubError)} />
             <Flex $direction="row" $padding={0} $align="space-between" $fullWidth $wrap>
                 <TabSelector>
-                    <Tab aria-selected={getTab() === "classic"} onClick={() => setTab("classic")}>
+                    <Tab aria-selected={tab === "classic"} onClick={() => setTab("classic")}>
                         Classic
                     </Tab>
-                    <Tab aria-selected={getTab() === "history"} onClick={() => setTab("history")}>
+                    <Tab aria-selected={tab === "history"} onClick={() => setTab("history")}>
                         History
                     </Tab>
-                    <Tab
-                        aria-selected={getTab() === "teammates"}
-                        onClick={() => setTab("teammates")}>
+                    <Tab aria-selected={tab === "teammates"} onClick={() => setTab("teammates")}>
                         Teammates
                     </Tab>
-                    <Tab aria-selected={getTab() === "pantheon"} onClick={() => setTab("pantheon")}>
+                    <Tab aria-selected={tab === "pantheon"} onClick={() => setTab("pantheon")}>
                         Pantheon
                     </Tab>
                 </TabSelector>
                 <Flex $padding={0}>
-                    {getTab() !== "teammates" && (
+                    {tab !== "teammates" && (
                         <Flex $padding={0.2} $gap={0.4} $direction="column">
                             <H4
                                 style={{
@@ -232,7 +227,7 @@ export const RaidsWrapper = () => {
                             />
                         </Flex>
                     )}
-                    {(getTab() === "classic" || getTab() === "pantheon") && (
+                    {(tab === "classic" || tab === "pantheon") && (
                         <>
                             <Flex $padding={0.2} $gap={0.4} $direction="column">
                                 <H4

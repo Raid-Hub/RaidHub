@@ -12,7 +12,7 @@ import styles from "../pgcr.module.css"
 /** @deprecated */
 const ParticipantsSection = () => {
     const { data, sortScores, isLoading } = usePGCRContext()
-    const { set, get, remove } = useQueryParams<PGCRPageParams>()
+    const { searchParams, set, remove } = useQueryParams<PGCRPageParams>()
 
     const setPlayer = useCallback(
         (membershipId: string | null) => {
@@ -26,7 +26,7 @@ const ParticipantsSection = () => {
         [remove, set]
     )
 
-    const selectedMembershipId = get("player")
+    const selectedMembershipId = searchParams.player
 
     const selectedPlayer = selectedMembershipId
         ? data?.players.find(p => p.playerInfo.membershipId === selectedMembershipId) ?? null

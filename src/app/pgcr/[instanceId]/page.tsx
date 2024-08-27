@@ -1,17 +1,26 @@
 import type { Metadata } from "next"
+import { notFound } from "next/navigation"
 import { metadata as rootMetaData } from "~/app/layout"
 import { PGCRPage } from "../PGCRPage"
 import { getMetaData, prefetchActivity, type PageProps } from "../server"
 
 export const revalidate = 0
 
+const assertValidPath = (instanceId: string) => {
+    if (!/^\d+$/.test(instanceId)) {
+        notFound()
+    }
+}
+
 export default async function Page({ params }: PageProps) {
+    assertValidPath(params.instanceId)
     const activity = await prefetchActivity(params.instanceId)
 
     return <PGCRPage instanceId={params.instanceId} ssrActivity={activity} isReady={true} />
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    assertValidPath(params.instanceId)
     const activity = await prefetchActivity(params.instanceId)
 
     const { idTitle, ogTitle, description } = getMetaData(activity)
