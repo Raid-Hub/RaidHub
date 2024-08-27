@@ -72,16 +72,14 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                 return (m1, m2) =>
                     new Date(m1.bungie.joinDate).getTime() - new Date(m2.bungie.joinDate).getTime()
             case "lastSeen":
-                return (m1, m2) => {
-                    console.log(+m1.bungie.isOnline, +m2.bungie.isOnline)
-
-                    return +m1.bungie.isOnline ^ +m2.bungie.isOnline
+                return (m1, m2) =>
+                    +m1.bungie.isOnline ^ +m2.bungie.isOnline
                         ? m1.bungie.isOnline
                             ? -1
                             : 1
                         : new Date(m2.raidhub?.lastSeen ?? 0).getTime() -
-                              new Date(m1.raidhub?.lastSeen ?? 0).getTime()
-                }
+                          new Date(m1.raidhub?.lastSeen ?? 0).getTime()
+
             default:
                 return (m1, m2) => (m2.stats?.[sortKey] ?? 0) - (m1.stats?.[sortKey] ?? 0)
         }
