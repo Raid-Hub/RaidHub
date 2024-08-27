@@ -4,11 +4,15 @@ import { metadata as rootMetaData } from "~/app/layout"
 export const generatePlayerMetadata = ({
     displayName,
     username,
-    image
+    image,
+    vanity,
+    destinyMembershipId
 }: {
     displayName: string
     username: string
     image: string
+    vanity: string | null
+    destinyMembershipId: string
 }): Metadata => {
     const description = `View ${username}'s raid stats, achievements, tags, and more`
     return {
@@ -35,6 +39,9 @@ export const generatePlayerMetadata = ({
         robots: {
             follow: true,
             index: true
+        },
+        alternates: {
+            canonical: vanity ? `/${vanity.toLowerCase()}` : `/profile/${destinyMembershipId}`
         }
     }
 }

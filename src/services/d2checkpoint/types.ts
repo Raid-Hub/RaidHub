@@ -23,8 +23,8 @@ export type CheckpointResponse = {
     }
 }
 
-export enum CheckpointDifficultyTier {
+enum CheckpointDifficultyTier {
     Unknown = 1,
-    Normal = 2,
+    Standard = 2,
     Master = 3
 }
