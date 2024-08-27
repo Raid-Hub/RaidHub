@@ -1,16 +1,11 @@
-import { useCallback, useState } from "react"
+import { useMemo, useState } from "react"
 import { useInterval } from "./useInterval"
 
-export const useTimer = ({ startTimeMS, interval }: { startTimeMS: number; interval: number }) => {
-    const [time, setTime] = useState(() => Date.now() - startTimeMS)
+export const useTimer = ({ since, interval = 1000 }: { since: Date; interval?: number }) => {
+    const origin = useMemo(() => since.getTime(), [since])
+    const [time, setTime] = useState(() => Date.now() - origin)
 
-    const updateTime = useCallback(() => {
-        setTime(Date.now() - startTimeMS)
-    }, [startTimeMS])
-
-    useInterval(interval, updateTime, {
-        immediate: true
-    })
+    useInterval(interval, () => setTime(Date.now() - origin))
 
     return time
 }

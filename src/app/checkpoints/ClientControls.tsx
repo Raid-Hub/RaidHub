@@ -38,8 +38,7 @@ export const ClientControls = ({ date }: { date: Date }) => {
     })
 
     const elapsed = useTimer({
-        startTimeMS: date.getTime(),
-        interval: 1000
+        since: date
     })
 
     return (

@@ -18,7 +18,7 @@ import { baseUrl } from "~/server/util"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
 import { DonationBanner } from "./layout/DonationBanner"
 import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
-import "./layout/global.css"
+import "./global.css"
 
 // Dynamic import for the dexie DB
 const DestinyManifestManager = dynamic(() => import("~/app/layout/managers/DestinyManifestManager"))

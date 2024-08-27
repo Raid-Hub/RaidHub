@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react"
 
-export const useLocalStorage = <V extends string | boolean | number | object>(
+export const useLocalStorage = <V extends string | boolean | number | object | null>(
     key: string,
     defaultValue: V
 ): [V, Dispatch<SetStateAction<V>>] => {
@@ -21,8 +21,7 @@ export const useLocalStorage = <V extends string | boolean | number | object>(
     const save = useCallback(
         (value: SetStateAction<V>) => {
             setValue(old => {
-                const toSave =
-                    typeof value !== "function" ? value : (value as (prevState: V) => V)(old)
+                const toSave = value instanceof Function ? value(old) : value
                 localStorage.setItem(key, JSON.stringify(toSave))
                 return toSave
             })

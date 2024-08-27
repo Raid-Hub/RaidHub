@@ -208,9 +208,16 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                             flexWrap: "wrap",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            gap: "1rem"
+                            gap: "1rem",
+                            margin: "1rem 0"
                         }}>
-                        <h2 key={"title"}>Members ({allClanMembers.length} / 100)</h2>
+                        <h2
+                            key={"title"}
+                            style={{
+                                margin: 0
+                            }}>
+                            Members ({allClanMembers.length} / 100)
+                        </h2>
                         <Flex $padding={0} $gap={0.75}>
                             {"Sort by"}
                             <select

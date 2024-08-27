@@ -1,30 +1,33 @@
 "use client"
 
 import { useEffect } from "react"
+import { useMutableReference } from "./useMutableReference"
 
 /**
  * Attaches an event listener to the window object.
  *
  * @template K - The event type.
- * @template R - The return type of the listener function.
  * @param {K} type - The event type to listen for.
- * @param {(this: Window, ev: WindowEventMap[K]) => R} listener - The listener function to be called when the event occurs. **Must be memoized.**
+ * @param {(ev: WindowEventMap[K]) => R} listener - The listener function to be called when the event occurs
  * @returns {void}
  */
-export const useEventListener = <K extends keyof WindowEventMap, R>(
+export const useEventListener = <K extends keyof WindowEventMap>(
     type: K,
-    listener: (this: Window, ev: WindowEventMap[K]) => R,
+    listener: (ev: WindowEventMap[K]) => void,
     options?: {
         disabled?: boolean
     }
 ): void => {
+    const mutableListener = useMutableReference(listener)
+
     useEffect(() => {
         if (!options?.disabled) {
-            window.addEventListener(type, listener)
-        }
+            const handler = (ev: WindowEventMap[K]) => mutableListener.current(ev)
 
-        return () => {
-            window.removeEventListener(type, listener)
+            window.addEventListener(type, handler)
+            return () => {
+                window.removeEventListener(type, handler)
+            }
         }
-    }, [type, listener, options])
+    }, [type, options?.disabled, mutableListener])
 }

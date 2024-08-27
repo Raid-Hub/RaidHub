@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import { useEventListener } from "./useEventListener"
 
 type AvailableKeys = "k" | "Escape" // can expand if needed
@@ -16,17 +15,16 @@ export const useKeyPress = ({
     pressedKey: AvailableKeys
     handleEvent: () => void
 }) => {
-    const handleKeyDown = useCallback(
+    useEventListener(
+        "keydown",
         (event: KeyboardEvent) => {
             if ((!ctrlOrMeta || event.metaKey || event.ctrlKey) && event.key === pressedKey) {
                 if (preventDefault) event.preventDefault()
                 handleEvent()
             }
         },
-        [ctrlOrMeta, preventDefault, pressedKey, handleEvent]
+        {
+            disabled
+        }
     )
-
-    useEventListener("keydown", handleKeyDown, {
-        disabled
-    })
 }

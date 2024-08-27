@@ -1,4 +1,5 @@
-import { useCallback, useEffect, type MutableRefObject } from "react"
+import { useEffect, type MutableRefObject } from "react"
+import { useMutableReference } from "./useMutableReference"
 
 export function useClickOutside<T extends HTMLElement>(
     ref: MutableRefObject<T | null>,
@@ -8,26 +9,24 @@ export function useClickOutside<T extends HTMLElement>(
         lockout?: number
     }
 ) {
-    const handleClick = useCallback(
-        (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                callback(event)
-            }
-        },
-        [ref, callback]
-    )
+    const mutableCallback = useMutableReference(callback)
 
     useEffect(() => {
         if (config.enabled) {
-            const timer = setTimeout(
+            const handleClick = (event: MouseEvent) => {
+                if (ref.current && !ref.current.contains(event.target as Node)) {
+                    mutableCallback.current(event)
+                }
+            }
+            const timeoutId = setTimeout(
                 () => window.addEventListener("click", handleClick),
                 config.lockout
             )
 
             return () => {
-                clearTimeout(timer)
+                clearTimeout(timeoutId)
                 window.removeEventListener("click", handleClick)
             }
         }
-    }, [handleClick, config.enabled, config.lockout])
+    }, [config.enabled, config.lockout, ref, mutableCallback])
 }

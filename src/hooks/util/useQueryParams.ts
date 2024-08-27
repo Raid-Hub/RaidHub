@@ -1,5 +1,6 @@
 import { useSearchParams } from "next/navigation"
-import { useMemo, useRef } from "react"
+import { useMemo } from "react"
+import { useMutableReference } from "./useMutableReference"
 
 type CommitArgs =
     | {
@@ -25,12 +26,7 @@ const defaultArgs: CommitArgs = {
  * @returns An object with methods for manipulating query parameters.
  */
 export function useQueryParams<T extends Record<string, string>>() {
-    const searchParams = useSearchParams()
-
-    // This allows us to create a mutable URLSearchParams object
-    const mutable = new URLSearchParams(searchParams)
-    const mutableParams = useRef(mutable)
-    mutableParams.current = mutable
+    const mutableParams = useMutableReference(new URLSearchParams(useSearchParams()))
 
     return useMemo(() => {
         const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)

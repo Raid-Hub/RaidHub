@@ -81,8 +81,7 @@ const CurrentActivityCard = (props: {
     partyMembers: DestinyProfileTransitoryPartyMember[]
 }) => {
     const elapsedTime = useTimer({
-        startTimeMS: props.startTime.getTime(),
-        interval: 1000
+        since: props.startTime
     })
     const activity = useActivityDefinition(props.characterActivity.currentActivityHash)
     const activityMode = useActivityModeDefinition(props.characterActivity.currentActivityModeHash)

@@ -100,13 +100,7 @@ export const ClanLeaderboards = () => {
                     />
                 </Flex>
             </Panel>
-            <Container
-                style={{
-                    overflowX: "scroll",
-                    overflowY: "auto",
-                    maxHeight: "max(400px, 100vh)",
-                    border: "1px solid #8f8f8f"
-                }}>
+            <ClanTableContainer>
                 <ClanTable>
                     <thead>
                         <tr>
@@ -231,10 +225,18 @@ export const ClanLeaderboards = () => {
                               ))}
                     </tbody>
                 </ClanTable>
-            </Container>
+            </ClanTableContainer>
         </>
     )
 }
+
+const ClanTableContainer = styled(Container)`
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: auto;
+    max-height: max(400px, 100vh);
+    border: 1px solid #8f8f8f;
+`
 
 const ClanTable = styled.table`
     border-collapse: collapse;
@@ -249,7 +251,8 @@ const ClanTable = styled.table`
         top: 0;
     }
 
-    font-size: 0.75rem;
+    font-size: min(max(0.75rem, 1vw), 1rem);
+    width: 100%;
 `
 
 const ClanRank = styled.td`

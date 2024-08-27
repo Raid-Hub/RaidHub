@@ -23,7 +23,6 @@ const KEY_MANIFEST_VERSION = "d2_manifest_version"
 /**
  * The in-memory cache object that stores collections of data from each table.
  */
-
 type DefinitionsCache = {
     [K in CustomDexieTable]: Collection<number, CustomDexieTableDefinition<K>>
 }
@@ -129,16 +128,14 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         }
     })
 
-    const purgeCache = useCallback(() => {
+    useInterval(600_000, () => {
         // Silently clear the cache without affecting the state
         if (!mutationState.isError && !queryState.isError) {
             Object.values(cache).forEach(collection => {
                 collection.clear()
             })
         }
-    }, [cache, mutationState.isError, queryState.isError])
-
-    useInterval(600 * 1000, purgeCache)
+    })
 
     useEffect(() => {
         dexieDB.on("close", () => setManifestVersion(null))
