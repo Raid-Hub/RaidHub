@@ -2,32 +2,30 @@ import type { Metadata, Viewport } from "next"
 import dynamic from "next/dynamic"
 import NextTopLoader from "nextjs-toploader"
 import { type ReactNode } from "react"
-import { Footer } from "~/app/layout/Footer"
-import { Header } from "~/app/layout/Header"
-import { HeaderContent } from "~/app/layout/HeaderContent"
-import { SearchModal } from "~/app/layout/SearchModal"
-import {
-    BungieClientProvider,
-    ClientManager,
-    LocaleManager,
-    QueryManager,
-    RaidHubManifestManager
-} from "~/app/layout/managers"
-import { SessionManager } from "~/app/layout/managers/session/ServerSessionManager"
 import { baseUrl } from "~/server/util"
 import { prefetchManifest } from "~/services/raidhub/prefetchRaidHubManifest"
-import { DonationBanner } from "./layout/DonationBanner"
-import { ServiceStatusBanner } from "./layout/ServiceStatusBanner"
-import "./layout/global.css"
+import "./global.css"
+import { Footer } from "./layout/footer/Footer"
+import { Header } from "./layout/header/Header"
+import { HeaderContent } from "./layout/header/HeaderContent"
+import { DonationBanner } from "./layout/overlays/DonationBanner"
+import { SearchModal } from "./layout/overlays/SearchModal"
+import { ServiceStatusBanner } from "./layout/overlays/ServiceStatusBanner"
+import { ClientComponentManager } from "./layout/wrappers/ClientComponentManager"
+import { LocaleManager } from "./layout/wrappers/LocaleManager"
+import { QueryManager } from "./layout/wrappers/QueryManager"
+import { RaidHubManifestManager } from "./layout/wrappers/RaidHubManifestManager"
+import { BungieClientProvider } from "./layout/wrappers/session/BungieClientProvider"
+import { SessionManager } from "./layout/wrappers/session/ServerSessionManager"
 
 // Dynamic import for the dexie DB
-const DestinyManifestManager = dynamic(() => import("~/app/layout/managers/DestinyManifestManager"))
+const DestinyManifestManager = dynamic(() => import("./layout/wrappers/DestinyManifestManager"))
 
 export const preferredRegion = ["iad1"] // us-east-1
 export const runtime = "nodejs"
 export const fetchCache = "default-no-store"
 export const revalidate = false
-export const maxDuration = 5 // max lambda duration in seconds
+export const maxDuration = 10 // max lambda duration in seconds
 
 export default async function RootLayout(params: { children: ReactNode }) {
     const manifest = await prefetchManifest()
@@ -49,7 +47,7 @@ export default async function RootLayout(params: { children: ReactNode }) {
                         <BungieClientProvider>
                             <SessionManager>
                                 <LocaleManager>
-                                    <ClientManager>
+                                    <ClientComponentManager>
                                         <DestinyManifestManager>
                                             <Header>
                                                 <NextTopLoader
@@ -66,7 +64,7 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                             {params.children}
                                             <Footer />
                                         </DestinyManifestManager>
-                                    </ClientManager>
+                                    </ClientComponentManager>
                                 </LocaleManager>
                             </SessionManager>
                         </BungieClientProvider>
@@ -114,5 +112,5 @@ export const viewport: Viewport = {
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
-    themeColor: "#ffffff"
+    themeColor: "#000000"
 }

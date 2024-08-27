@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
 import { getGlobalAlerts } from "bungie-net-core/endpoints/Core"
 import { type GlobalAlert } from "bungie-net-core/models"
-import { useBungieClient } from "~/app/layout/managers"
+import { useBungieClient } from "~/app/layout/wrappers/session/BungieClientProvider"
 
 type GetGlobalAlertsParams = { includestreaming?: boolean }
 

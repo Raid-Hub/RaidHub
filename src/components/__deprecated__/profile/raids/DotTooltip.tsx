@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { DotFail, DotFlawless, DotSuccess, DotTaxi } from "~/app/(profile)/raids/constants"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { Tag } from "~/models/tag"
 import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
 import { secondsToHMS } from "~/util/presentation/formatting"

@@ -1,7 +1,7 @@
 "use client"
 
 import Markdown from "react-markdown"
-import { useRaidHubManifest } from "~/app/layout/managers"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { useDialog } from "~/components/Dialog"
 import { Panel } from "~/components/Panel"
 import DiscordIcon from "~/components/icons/DiscordIcon"

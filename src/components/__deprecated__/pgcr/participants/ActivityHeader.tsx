@@ -1,4 +1,4 @@
-import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { usePGCRTags } from "~/app/pgcr/hooks/usePGCRTags"
 import { secondsToHMS, toCustomDateString } from "~/util/presentation/formatting"

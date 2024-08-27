@@ -7,7 +7,7 @@ import { Card } from "~/components/Card"
 import { Flex } from "~/components/layout/Flex"
 import { useTimer } from "~/hooks/util/useTimer"
 import { formattedTimeSince, secondsToHMS } from "~/util/presentation/formatting"
-import { useLocale } from "../layout/managers/LocaleManager"
+import { useLocale } from "../layout/wrappers/LocaleManager"
 
 export const ClientControls = ({ date }: { date: Date }) => {
     const { locale } = useLocale()
@@ -38,8 +38,7 @@ export const ClientControls = ({ date }: { date: Date }) => {
     })
 
     const elapsed = useTimer({
-        startTimeMS: date.getTime(),
-        interval: 1000
+        since: date
     })
 
     return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRaidHubManifest } from "~/app/layout/managers"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { HomeCardGeneric } from "./HomeCardGeneric"
 import { HomeCardContentSection } from "./content/HomeCardContentSection"
 import { HomeCardContentSectionItem } from "./content/HomeCardContentSectionItem"

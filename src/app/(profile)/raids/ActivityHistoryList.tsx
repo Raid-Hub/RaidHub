@@ -1,7 +1,7 @@
 import { type Collection } from "@discordjs/collection"
 import Link from "next/link"
 import { memo, useMemo } from "react"
-import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { Card } from "~/components/Card"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import Checkmark from "~/components/icons/Checkmark"

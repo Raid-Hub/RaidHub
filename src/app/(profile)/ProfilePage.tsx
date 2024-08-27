@@ -14,7 +14,7 @@ export const ProfilePage = ({ destinyMembershipId }: { destinyMembershipId: stri
             $align="flex-start"
             $crossAxis="stretch"
             $fullWidth
-            style={{ columnGap: "4rem" }}>
+            style={{ columnGap: "4rem", maxWidth: "100%" }}>
             <UserCard />
             <Suspense
                 key={destinyMembershipId}

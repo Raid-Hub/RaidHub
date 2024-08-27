@@ -10,8 +10,8 @@ import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { usePageChange } from "~/hooks/util/usePageChange"
 import { useUserAgent } from "~/hooks/util/useUserAgent"
+import { $media } from "../media"
 import { HeaderSearchResults } from "./HeaderSearchResults"
-import { $media } from "./media"
 
 const HIDE_AFTER_CLICK = 100
 

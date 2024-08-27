@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import styled, { css, keyframes } from "styled-components"
-import { useLocale } from "~/app/layout/managers/LocaleManager"
 import { $media } from "~/app/layout/media"
+import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import type { SVGComponent } from "~/components/SVG"

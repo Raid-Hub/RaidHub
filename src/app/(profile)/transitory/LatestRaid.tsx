@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useMemo } from "react"
 import styled from "styled-components"
-import { useLocale } from "~/app/layout/managers/LocaleManager"
+import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { Card } from "~/components/Card"
 import { CloudflareImage } from "~/components/CloudflareImage"
 import Checkmark from "~/components/icons/Checkmark"

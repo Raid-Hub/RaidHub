@@ -1,5 +1,5 @@
-import { type ActivityFilter } from "~/app/(profile)/raids/filters/activityFilters"
 import type { RaidHubInstanceForPlayer } from "~/services/raidhub/types"
+import { type ActivityFilter } from "./activityFilters"
 
 type ActivityFilterCombinator = "|" | "&"
 

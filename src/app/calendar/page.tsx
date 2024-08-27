@@ -9,7 +9,7 @@ import { PageWrapper } from "~/components/layout/PageWrapper"
 import { useSeasons } from "~/hooks/dexie"
 import { usePublicMilestones } from "~/services/bungie/hooks"
 import { modulo } from "~/util/math"
-import { useRaidHubManifest } from "../layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "../layout/wrappers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
 
 export default function Page() {

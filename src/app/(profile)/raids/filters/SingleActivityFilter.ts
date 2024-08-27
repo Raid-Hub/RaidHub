@@ -2,7 +2,7 @@ import {
     SingleActivityFilterFunctions,
     type ActivityFilter,
     type FilterPredicate
-} from "~/app/(profile)/raids/filters/activityFilters"
+} from "./activityFilters"
 
 export default class SingleActivityFilter implements ActivityFilter {
     key: keyof typeof SingleActivityFilterFunctions
