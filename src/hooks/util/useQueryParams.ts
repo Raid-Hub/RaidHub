@@ -26,11 +26,10 @@ const defaultArgs: CommitArgs = {
  * @returns An object with methods for manipulating query parameters.
  */
 export function useQueryParams<T extends Record<string, string>>() {
-    const mutableParams = useMutableReference(new URLSearchParams(useSearchParams()))
+    const readonlyParams = useSearchParams()
+    const mutableParams = useMutableReference(new URLSearchParams(readonlyParams))
 
-    return useMemo(() => {
-        const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)
-
+    const immutableActions = useMemo(() => {
         const clear = () =>
             mutableParams.current.forEach((_, key) => mutableParams.current.delete(key))
 
@@ -40,6 +39,8 @@ export function useQueryParams<T extends Record<string, string>>() {
                 "",
                 params ? `?${params.toString()}` : undefined
             )
+
+        const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)
 
         const get = <K extends keyof T & string>(key: K) => mutableParams.current.get(key) as T[K]
 
@@ -100,4 +101,6 @@ export function useQueryParams<T extends Record<string, string>>() {
             clear
         }
     }, [mutableParams])
+
+    return { searchParams: Object.fromEntries(readonlyParams) as T, ...immutableActions }
 }
