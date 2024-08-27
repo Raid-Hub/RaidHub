@@ -8,7 +8,7 @@ export const StatBox = ({
 }: {
     label: string
     primaryValue: string
-    secondaryValue: string
+    secondaryValue?: string
     aggLabel: string
 }) => {
     return (
@@ -19,7 +19,13 @@ export const StatBox = ({
                     <span>{primaryValue}</span>
                 </div>
                 <div className="stat-box-agg-value">
-                    <span>{aggLabel}</span>: <span>{secondaryValue}</span>
+                    {secondaryValue ? (
+                        <>
+                            <span>{aggLabel}</span>: <span>{secondaryValue}</span>
+                        </>
+                    ) : (
+                        <span>{aggLabel}</span>
+                    )}
                 </div>
             </div>
         </StyledStatBox>

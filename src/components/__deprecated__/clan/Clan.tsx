@@ -121,6 +121,7 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
     }
 
     const aggStats = clanStatsQuery.data?.aggregateStats
+    const clanLevelProgression = clan?.detail.clanInfo.d2ClanProgressions[584850370]
 
     return (
         <div>
@@ -146,55 +147,101 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                     sm={<></>}
                 />
                 <div className={styles.about}>
-                    {aggStats && (
-                        <Flex $align="flex-start" $crossAxis="stretch" $padding={0} $wrap>
+                    <Flex $align="flex-start" $crossAxis="stretch" $padding={0} $wrap>
+                        {aggStats && (
+                            <>
+                                <StatBox
+                                    label="WFR Score"
+                                    primaryValue={formattedNumber(
+                                        aggStats.weightedContestScore,
+                                        locale,
+                                        3
+                                    )}
+                                    secondaryValue={formattedNumber(
+                                        aggStats.totalContestScore,
+                                        locale,
+                                        3
+                                    )}
+                                    aggLabel="Total"
+                                />
+                                <StatBox
+                                    label="Full Clears"
+                                    primaryValue={formattedNumber(aggStats.freshClears, locale, 0)}
+                                    secondaryValue={formattedNumber(
+                                        aggStats.averageFreshClears,
+                                        locale,
+                                        0
+                                    )}
+                                    aggLabel="Avg"
+                                />
+                                <StatBox
+                                    label="Clears"
+                                    primaryValue={formattedNumber(aggStats.clears, locale, 0)}
+                                    secondaryValue={formattedNumber(
+                                        aggStats.averageClears,
+                                        locale,
+                                        0
+                                    )}
+                                    aggLabel="Avg"
+                                />
+                                <StatBox
+                                    label="Sherpas"
+                                    primaryValue={formattedNumber(aggStats.sherpas, locale, 0)}
+                                    secondaryValue={formattedNumber(
+                                        aggStats.averageSherpas,
+                                        locale,
+                                        0
+                                    )}
+                                    aggLabel="Avg"
+                                />
+                                <StatBox
+                                    label="Time in Raids"
+                                    primaryValue={secondsToYDHMS(aggStats.timePlayedSeconds, 3)}
+                                    secondaryValue={secondsToYDHMS(
+                                        aggStats.averageTimePlayedSeconds,
+                                        2
+                                    )}
+                                    aggLabel="Avg"
+                                />
+                            </>
+                        )}
+                        <StatBox
+                            label="Founded"
+                            primaryValue={new Date(clan.detail.creationDate).toLocaleDateString(
+                                locale
+                            )}
+                            secondaryValue={`${Math.floor(
+                                (Date.now() - new Date(clan.detail.creationDate).getTime()) /
+                                    86400000
+                            )} days`}
+                            aggLabel="Age"
+                        />
+                        {clanLevelProgression && (
                             <StatBox
-                                label="WFR Score"
+                                label="Clan Level"
                                 primaryValue={formattedNumber(
-                                    aggStats.weightedContestScore,
-                                    locale,
-                                    3
-                                )}
-                                secondaryValue={formattedNumber(
-                                    aggStats.totalContestScore,
-                                    locale,
-                                    3
-                                )}
-                                aggLabel="Total"
-                            />
-                            <StatBox
-                                label="Full Clears"
-                                primaryValue={formattedNumber(aggStats.freshClears, locale, 0)}
-                                secondaryValue={formattedNumber(
-                                    aggStats.averageFreshClears,
+                                    clanLevelProgression.level,
                                     locale,
                                     0
                                 )}
-                                aggLabel="Avg"
+                                secondaryValue={
+                                    clanLevelProgression.level !== clanLevelProgression.levelCap
+                                        ? formattedNumber(
+                                              (100 * clanLevelProgression.progressToNextLevel) /
+                                                  clanLevelProgression.nextLevelAt,
+                                              locale,
+                                              2
+                                          ) + "%"
+                                        : undefined
+                                }
+                                aggLabel={
+                                    clanLevelProgression.level === clanLevelProgression.levelCap
+                                        ? "Max"
+                                        : "To next"
+                                }
                             />
-                            <StatBox
-                                label="Clears"
-                                primaryValue={formattedNumber(aggStats.clears, locale, 0)}
-                                secondaryValue={formattedNumber(aggStats.averageClears, locale, 0)}
-                                aggLabel="Avg"
-                            />
-                            <StatBox
-                                label="Sherpas"
-                                primaryValue={formattedNumber(aggStats.sherpas, locale, 0)}
-                                secondaryValue={formattedNumber(aggStats.averageSherpas, locale, 0)}
-                                aggLabel="Avg"
-                            />
-                            <StatBox
-                                label="Time in Raids"
-                                primaryValue={secondsToYDHMS(aggStats.timePlayedSeconds, 3)}
-                                secondaryValue={secondsToYDHMS(
-                                    aggStats.averageTimePlayedSeconds,
-                                    2
-                                )}
-                                aggLabel="Avg"
-                            />
-                        </Flex>
-                    )}
+                        )}
+                    </Flex>
                     <p>{urlHighlight(clan.detail.about)}</p>
                 </div>
             </section>
@@ -246,18 +293,6 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                     </div>
                 </section>
             )}
-
-            {/* <section>
-                            <h2>Progressions</h2>
-                            {Object.values(clan.detail.clanInfo.d2ClanProgressions).map(
-                                progression => (
-                                    <div key={progression.progressionHash}>
-                                        <h4>{progression.progressionHash}</h4>
-                                        {progression.progressToNextLevel}
-                                    </div>
-                                )
-                            )}
-                        </section> */}
         </div>
     )
 }
