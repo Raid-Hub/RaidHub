@@ -1,6 +1,6 @@
 "use client"
 
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { getRaidSplash } from "~/data/activity-images"
 import { SpeedrunVariables } from "~/data/speedrun-com-mappings"
 import { o } from "~/util/o"

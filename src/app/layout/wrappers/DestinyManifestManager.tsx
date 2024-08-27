@@ -14,7 +14,7 @@ import {
     type CustomDexieTable,
     type CustomDexieTableDefinition
 } from "~/util/dexie/dexie"
-import { ManifestStatusOverlay } from "../ManifestStatusOverlay"
+import { ManifestStatusOverlay } from "../overlays/ManifestStatusOverlay"
 import { useLocale } from "./LocaleManager"
 import { useBungieClient } from "./session/BungieClientProvider"
 

@@ -7,11 +7,7 @@ import {
     type Dispatch,
     type ReactNode
 } from "react"
-import {
-    FilterPresets,
-    decodeFilters,
-    type ActivityFilter
-} from "~/app/(profile)/raids/filters/activityFilters"
+import { FilterPresets, decodeFilters, type ActivityFilter } from "./filters/activityFilters"
 
 const FilterContext = createContext<
     | {

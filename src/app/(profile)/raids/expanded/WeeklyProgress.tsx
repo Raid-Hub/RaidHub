@@ -1,13 +1,13 @@
 "use client"
 
 import { useMemo } from "react"
-import type { ProfileProps } from "~/app/(profile)/types"
-import { useRaidHubManifest } from "~/app/layout/managers"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { usePageProps } from "~/components/layout/PageWrapper"
 import { H4 } from "~/components/typography/H4"
 import { useProfile } from "~/services/bungie/hooks"
+import type { ProfileProps } from "../../types"
 import { CharacterWeeklyProgress } from "./CharacterWeeklyProgress"
 export const WeeklyProgress = ({ raid }: { raid: number }) => {
     const { getActivityDefinition } = useRaidHubManifest()

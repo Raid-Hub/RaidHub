@@ -3,8 +3,7 @@
 import { Collection } from "@discordjs/collection"
 import { useMemo } from "react"
 import styled from "styled-components"
-import { type ProfileProps } from "~/app/(profile)/types"
-import { useRaidHubManifest } from "~/app/layout/managers/RaidHubManifestManager"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { TabSelector } from "~/components/TabSelector"
 import RaidCard from "~/components/__deprecated__/profile/raids/RaidCard"
 import ToggleSwitch from "~/components/__deprecated__/reusable/ToggleSwitch"
@@ -23,6 +22,7 @@ import {
     type RaidHubWorldFirstEntry
 } from "~/services/raidhub/types"
 import { ProfileError } from "../ProfileError"
+import { type ProfileProps } from "../types"
 import { ActivityHistoryLayout } from "./ActivityHistoryLayout"
 import { FilterContextProvider } from "./FilterContext"
 import { FilterSelect } from "./FilterSelect"

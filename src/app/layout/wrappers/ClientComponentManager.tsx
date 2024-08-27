@@ -2,16 +2,18 @@
 
 import { LazyMotion } from "framer-motion"
 import { useRouter, useServerInsertedHTML } from "next/navigation"
-import { useState, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { ServerStyleSheet, StyleSheetManager, ThemeProvider } from "styled-components"
 import "../polyfills"
 import { theme } from "../theme"
 
 // General manager for client-side tools
-export const ClientManager = (props: { children: ReactNode }) => {
+export const ClientComponentManager = (props: { children: ReactNode }) => {
     const router = useRouter()
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    router.prefetch = () => {}
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        router.prefetch = () => {}
+    }, [router])
 
     return (
         <ThemeProvider theme={theme}>

@@ -15,7 +15,7 @@ import { Flex } from "~/components/layout/Flex"
 import { type ClanStatsColumns } from "~/services/raidhub/types"
 import { useClanStatsLeaderboard } from "~/services/raidhub/useClanStatsLeaderboard"
 import { formattedNumber, secondsToYDHMS } from "~/util/presentation/formatting"
-import { useLocale } from "../layout/managers/LocaleManager"
+import { useLocale } from "../layout/wrappers/LocaleManager"
 
 type THParams = { title: string; setSortColumn: () => void; isActive: boolean }
 

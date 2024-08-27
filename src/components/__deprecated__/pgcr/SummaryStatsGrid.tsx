@@ -17,7 +17,7 @@ import Users from "~/components/icons/Users"
 import { useItemDefinition } from "~/hooks/dexie"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/useRaidHubResolvePlayers"
 import { getBungieDisplayName } from "~/util/destiny"
-import { useLocale } from "../../../app/layout/managers/LocaleManager"
+import { useLocale } from "../../../app/layout/wrappers/LocaleManager"
 import { formattedNumber } from "../../../util/presentation/formatting"
 import styles from ".//pgcr.module.css"
 

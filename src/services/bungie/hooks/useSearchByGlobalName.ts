@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { searchByGlobalNamePost } from "bungie-net-core/endpoints/User"
 import { type UserSearchResponse } from "bungie-net-core/models"
-import { useBungieClient } from "~/app/layout/managers"
+import { useBungieClient } from "~/app/layout/wrappers/session/BungieClientProvider"
 import { type BungieAPIError } from "~/models/BungieAPIError"
 
 export const useSearchByGlobalName = <T>(
