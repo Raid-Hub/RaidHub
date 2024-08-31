@@ -45,6 +45,17 @@ export function formattedTimeSince(date: Date, locale: string | undefined = unde
     return rtf.format(-Math.floor(secondsPast / 31536000), "year")
 }
 
+export function secondsToString(seconds: number): string {
+    const time = Math.round(seconds)
+    if (time < 60) {
+        return `${time} seconds`
+    } else if (time < 3600) {
+        return `${Math.floor(time / 60)} minutes`
+    } else {
+        return `${Math.floor(time / 3600)} hours`
+    }
+}
+
 export function secondsToHMS(seconds: number, alwaysIncludeSeconds: boolean): string {
     let time = Math.round(seconds)
     const hours = Math.floor(time / 3600)

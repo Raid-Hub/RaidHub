@@ -40,7 +40,7 @@ export const theme: DefaultTheme = {
             medium: "rgb(51, 51, 51)",
             dark: "rgb(8, 8, 8)",
             brandDim: "#FF832940",
-            error: "rgb(245, 103, 98)",
+            error: "#f3453f",
             info: "rgb(37, 150, 190)",
             warning: "rgb(253, 211, 52)"
         },

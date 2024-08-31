@@ -18,7 +18,7 @@ export const useResolveCharacter = <T = DestinyCharacterResponse<[200]>>(
     )?.playerInfo
 
     const isEnabled = isSuccess && (!!opts?.forceOnLargePGCR || data.playerCount <= 50)
-    const shouldFetch = character.classHash === "0" || character.classHash === null
+    const shouldFetch = !character.classHash
 
     const resolveQuery = useRaidHubResolvePlayer(player?.membershipId ?? "0", {
         enabled: isEnabled
