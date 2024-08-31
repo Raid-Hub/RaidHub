@@ -14,7 +14,7 @@ const commonQueryOptions = {
     refetchOnWindowFocus: true
 }
 
-export const ServiceStatusBanner = () => {
+export const DestinyServiceStatusBanner = () => {
     const { data: d2ServersOnline } = useCommonSettings<boolean | null>({
         ...commonQueryOptions,
         refetchInterval: isEnabled => {

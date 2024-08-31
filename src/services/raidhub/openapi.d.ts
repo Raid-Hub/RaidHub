@@ -60,6 +60,56 @@ export interface paths {
       };
     };
   };
+  "/status": {
+    /**
+     * /status
+     * @description Get the status of the RaidHub Services.
+     */
+    get: {
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["StatusResponse"];
+            };
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
+          };
+        };
+      };
+    };
+  };
   "/player/search": {
     /**
      * /player/search
@@ -1343,6 +1393,126 @@ export interface paths {
       };
     };
   };
+  "/metrics/weapons/rolling-week": {
+    /**
+     * /metrics/weapons/rolling-week
+     * @description Wet the top weapons in each slot over the past 168 hours (7 days)
+     */
+    get: {
+      parameters: {
+        query?: {
+          sort?: "usage" | "kills";
+          count?: number | null;
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["MetricsWeaponsRollingWeekResponse"];
+            };
+          };
+        };
+        /** @description Bad request */
+        400: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "QueryValidationError";
+              readonly error: components["schemas"]["QueryValidationError"];
+            };
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
+          };
+        };
+      };
+    };
+  };
+  "/metrics/population/rolling-day": {
+    /**
+     * /metrics/population/rolling-day
+     * @description Get the daily player population by raid
+     */
+    get: {
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: true;
+              readonly response: components["schemas"]["MetricsPopulationRollingDayResponse"];
+            };
+          };
+        };
+        /** @description Unauthorized */
+        401: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "ApiKeyError";
+              readonly error: components["schemas"]["ApiKeyError"];
+            };
+          };
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: {
+            readonly "application/json": {
+              /** Format: date-time */
+              readonly minted: string;
+              /** @enum {boolean} */
+              readonly success: false;
+              /** @enum {string} */
+              readonly code: "InternalServerError";
+              readonly error: components["schemas"]["InternalServerError"];
+            };
+          };
+        };
+      };
+    };
+  };
   "/admin/query": {
     /**
      * /admin/query
@@ -1672,8 +1842,10 @@ export interface components {
     /** @enum {integer} */
     readonly DestinyMembershipType: 0 | 1 | 2 | 3 | 4 | 5 | 6 | -1;
     readonly Instance: {
+      /** Format: int64 */
       readonly instanceId: string;
-      readonly hash: string;
+      /** Format: uint32 */
+      readonly hash: number;
       readonly activityId: number;
       readonly versionId: number;
       readonly completed: boolean;
@@ -1701,14 +1873,18 @@ export interface components {
       readonly isRaid: boolean;
     };
     readonly InstanceCharacterWeapon: {
-      readonly weaponHash: string;
+      /** Format: uint32 */
+      readonly weaponHash: number;
       readonly kills: number;
       readonly precisionKills: number;
     };
     readonly InstanceCharacter: {
+      /** Format: int64 */
       readonly characterId: string;
-      readonly classHash: string | null;
-      readonly emblemHash: string | null;
+      /** Format: uint32 */
+      readonly classHash: number | null;
+      /** Format: uint32 */
+      readonly emblemHash: number | null;
       readonly completed: boolean;
       readonly timePlayedSeconds: number;
       readonly startSeconds: number;
@@ -1741,6 +1917,7 @@ export interface components {
      * }
      */
     readonly PlayerInfo: {
+      /** Format: int64 */
       readonly membershipId: string;
       readonly membershipType: components["schemas"]["DestinyMembershipType"];
       readonly iconPath: string | null;
@@ -1772,6 +1949,7 @@ export interface components {
       readonly gonfalonDetailColorId: number;
     };
     readonly Clan: {
+      /** Format: int64 */
       readonly groupId: string;
       readonly name: string;
       readonly callSign: string;
@@ -1824,6 +2002,7 @@ export interface components {
       readonly position: number;
       readonly rank: number;
       readonly value: number;
+      /** Format: int64 */
       readonly instanceId: string;
       readonly players: readonly components["schemas"]["PlayerInfo"][];
     };
@@ -1873,7 +2052,7 @@ export interface components {
      *   "dayOneEnd": "2021-05-23T00:00:00.000Z",
      *   "contestEnd": "2021-05-23T00:00:00.000Z",
      *   "weekOneEnd": "2021-05-25T00:00:00.000Z",
-     *   "milestoneHash": "1888320892"
+     *   "milestoneHash": 1888320892
      * }
      */
     readonly ActivityDefinition: {
@@ -1890,7 +2069,8 @@ export interface components {
       readonly contestEnd: string;
       /** Format: date-time */
       readonly weekOneEnd: string;
-      readonly milestoneHash: string | null;
+      /** Format: uint32 */
+      readonly milestoneHash: number | null;
     };
     /** @description The definition of a version in the RaidHub database. */
     readonly VersionDefinition: {
@@ -1900,6 +2080,17 @@ export interface components {
       readonly associatedActivityId: number | null;
       readonly isChallengeMode: boolean;
     };
+    readonly WeaponMetric: {
+      /** Format: uint32 */
+      readonly hash: number;
+      readonly totalUsage: number;
+      readonly totalKills: number;
+      readonly totalPrecisionKills: number;
+    };
+    /** @description A map of each activity Id to its player count */
+    readonly PopulationByRaidMetric: {
+      [key: string]: number;
+    };
     /** @description A raw PGCR with a few redundant fields removed */
     readonly RaidHubPostGameCarnageReport: {
       /** Format: date-time */
@@ -1907,7 +2098,9 @@ export interface components {
       readonly startingPhaseIndex?: number;
       readonly activityWasStartedFromBeginning?: boolean;
       readonly activityDetails: {
-        readonly directorActivityHash: string;
+        /** Format: uint32 */
+        readonly directorActivityHash: number;
+        /** Format: int64 */
         readonly instanceId: string;
         /** @enum {integer} */
         readonly mode: 0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91;
@@ -1927,11 +2120,15 @@ export interface components {
               readonly bungieGlobalDisplayNameCode?: number | null;
             };
             readonly characterClass?: string | null;
+            /** Format: uint32 */
             readonly classHash: number;
+            /** Format: uint32 */
             readonly raceHash: number;
+            /** Format: uint32 */
             readonly genderHash: number;
             readonly characterLevel: number;
             readonly lightLevel: number;
+            /** Format: uint32 */
             readonly emblemHash: number;
           };
           readonly characterId: string;
@@ -1970,7 +2167,7 @@ export interface components {
       readonly player: components["schemas"]["InstancePlayer"];
     };
     readonly PlayerProfileActivityStats: {
-      readonly activityId: string;
+      readonly activityId: number;
       readonly freshClears: number;
       readonly clears: number;
       readonly sherpas: number;
@@ -1988,6 +2185,7 @@ export interface components {
     };
     readonly WorldFirstEntry: {
       readonly activityId: number;
+      /** Format: int64 */
       readonly instanceId: string;
       readonly timeAfterLaunch: number;
       readonly rank: number;
@@ -2051,6 +2249,18 @@ export interface components {
         [key: string]: readonly number[];
       };
     };
+    readonly StatusResponse: {
+      readonly AtlasPGCR: {
+        /** @enum {string} */
+        readonly status: "Crawling" | "Idle" | "Offline";
+        readonly medianSecondsBehindNow: number | null;
+        readonly latestActivity: {
+          /** Format: date-time */
+          readonly dateCompleted: string;
+          readonly instanceId: string;
+        };
+      };
+    };
     readonly PlayerSearchResponse: {
       readonly params: {
         readonly count: number;
@@ -2083,6 +2293,7 @@ export interface components {
      * }
      */
     readonly PlayerBasicResponse: {
+      /** Format: int64 */
       readonly membershipId: string;
       readonly membershipType: components["schemas"]["DestinyMembershipType"];
       readonly iconPath: string | null;
@@ -2222,7 +2433,9 @@ export interface components {
       readonly startingPhaseIndex?: number;
       readonly activityWasStartedFromBeginning?: boolean;
       readonly activityDetails: {
-        readonly directorActivityHash: string;
+        /** Format: uint32 */
+        readonly directorActivityHash: number;
+        /** Format: int64 */
         readonly instanceId: string;
         /** @enum {integer} */
         readonly mode: 0 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 10 | 11 | 12 | 13 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91;
@@ -2242,11 +2455,15 @@ export interface components {
               readonly bungieGlobalDisplayNameCode?: number | null;
             };
             readonly characterClass?: string | null;
+            /** Format: uint32 */
             readonly classHash: number;
+            /** Format: uint32 */
             readonly raceHash: number;
+            /** Format: uint32 */
             readonly genderHash: number;
             readonly characterLevel: number;
             readonly lightLevel: number;
+            /** Format: uint32 */
             readonly emblemHash: number;
           };
           readonly characterId: string;
@@ -2298,6 +2515,16 @@ export interface components {
       readonly message: string;
       readonly route: string;
     };
+    readonly MetricsWeaponsRollingWeekResponse: {
+      readonly energy: readonly components["schemas"]["WeaponMetric"][];
+      readonly kinetic: readonly components["schemas"]["WeaponMetric"][];
+      readonly power: readonly components["schemas"]["WeaponMetric"][];
+    };
+    readonly MetricsPopulationRollingDayResponse: readonly {
+        /** Format: date-time */
+        readonly hour: string;
+        readonly population: components["schemas"]["PopulationByRaidMetric"];
+      }[];
     readonly AdminQueryResponse: OneOf<[{
       /** @enum {string} */
       readonly type: "SELECT";

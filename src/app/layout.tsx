@@ -8,9 +8,10 @@ import "./global.css"
 import { Footer } from "./layout/footer/Footer"
 import { Header } from "./layout/header/Header"
 import { HeaderContent } from "./layout/header/HeaderContent"
+import { DestinyServiceStatusBanner } from "./layout/overlays/DestinyServiceStatusBanner"
 import { DonationBanner } from "./layout/overlays/DonationBanner"
+import { RaidHubStatusBanner } from "./layout/overlays/RaidHubStatusBanner"
 import { SearchModal } from "./layout/overlays/SearchModal"
-import { ServiceStatusBanner } from "./layout/overlays/ServiceStatusBanner"
 import { ClientComponentManager } from "./layout/wrappers/ClientComponentManager"
 import { LocaleManager } from "./layout/wrappers/LocaleManager"
 import { QueryManager } from "./layout/wrappers/QueryManager"
@@ -59,7 +60,8 @@ export default async function RootLayout(params: { children: ReactNode }) {
                                                 <HeaderContent />
                                             </Header>
                                             <DonationBanner />
-                                            <ServiceStatusBanner />
+                                            <DestinyServiceStatusBanner />
+                                            <RaidHubStatusBanner />
                                             <SearchModal />
                                             {params.children}
                                             <Footer />

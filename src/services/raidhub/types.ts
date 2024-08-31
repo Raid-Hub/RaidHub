@@ -70,6 +70,7 @@ export type RaidHubPlayerProfileResponse = Component<"PlayerProfileResponse">
 export type RaidHubPlayerSearchResponse = Component<"PlayerSearchResponse">
 export type RaidHubAdminQueryResponse = Component<"AdminQueryResponse">
 export type RaidHubLeaderboardClanResponse = Component<"LeaderboardClanResponse">
+export type RaidHubStatusResponse = Component<"StatusResponse">
 
 interface GetSchema {
     get: {
