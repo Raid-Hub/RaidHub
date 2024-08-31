@@ -23,6 +23,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     assertValidPath(params.instanceId)
     const activity = await prefetchActivity(params.instanceId)
 
+    if (!activity) {
+        return {
+            robots: {
+                follow: true,
+                index: false
+            }
+        }
+    }
+
     const { idTitle, ogTitle, description } = getMetaData(activity)
 
     const inheritedOpengraph = structuredClone(rootMetaData.openGraph)

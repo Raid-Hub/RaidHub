@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { notFound } from "next/navigation"
 import { ImageResponse } from "next/og"
 import { cloudflareImageLoader } from "~/components/CloudflareImage"
 import { getRaidSplash } from "~/data/activity-images"
@@ -19,6 +20,9 @@ export default async function Image({ params: { instanceId } }: PageProps) {
     const interSemiBold = fetch(baseUrl + "/Inter-SemiBold.ttf").then(res => res.arrayBuffer())
 
     const activity = await prefetchActivity(instanceId)
+    if (!activity) {
+        notFound()
+    }
 
     const { ogTitle, dateString } = getMetaData(activity)
 

@@ -16,7 +16,7 @@ const checkpointsURL = "https://d2cp.io/platform/checkpoints"
 export const getCheckpoints = async () => {
     try {
         const response = await fetch(checkpointsURL, {
-            next: { revalidate: 30 }
+            cache: "no-cache"
         }).then(res => {
             if (!res.ok) {
                 throw new Error("Failed to fetch checkpoints")

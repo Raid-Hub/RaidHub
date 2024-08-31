@@ -2,7 +2,7 @@ import type { RaidHubInstanceExtended } from "~/services/raidhub/types"
 
 export type PGCRPageProps = {
     instanceId: string
-    ssrActivity?: RaidHubInstanceExtended
+    ssrActivity: RaidHubInstanceExtended | null
     isReady: boolean
 }
 

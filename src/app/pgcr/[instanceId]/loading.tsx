@@ -8,5 +8,5 @@ export default function Loading() {
         instanceId: string
     }>()
 
-    return <PGCRPage instanceId={instanceId} isReady={false} />
+    return <PGCRPage instanceId={instanceId} isReady={false} ssrActivity={null} />
 }
