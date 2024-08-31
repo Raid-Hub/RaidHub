@@ -1,4 +1,5 @@
 import { Collection } from "@discordjs/collection"
+import { unstable_noStore } from "next/cache"
 import Image from "next/image"
 import { Card } from "~/components/Card"
 import { ErrorCard } from "~/components/ErrorCard"
@@ -14,7 +15,9 @@ import { CardContent, CheckpointVersion, PulseAnimation } from "./card/Checkpoin
 import { CardSplash, CardSplashTitleAbsolute } from "./splash/CheckpointCardSplash"
 
 export const Checkpoints = async () => {
+    unstable_noStore()
     const [checkpoints, manifest] = await Promise.all([getCheckpoints(), prefetchManifest()])
+    const refreshedAt = new Date()
 
     const groupedCheckpoints = new Collection<
         string,
@@ -66,7 +69,7 @@ export const Checkpoints = async () => {
                 $fullWidth
                 style={{ paddingBottom: 20 }}>
                 {checkpoints.alert.active && <ErrorCard>{checkpoints.alert.message}</ErrorCard>}
-                <ClientControls date={checkpoints.updatedAt} />
+                <ClientControls refreshedAt={refreshedAt} />
             </Flex>
             <Grid $minCardWidth={315} $gap={1.5}>
                 {groupedCheckpoints.map(group => (

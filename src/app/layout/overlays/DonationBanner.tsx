@@ -18,6 +18,10 @@ export const DonationBanner = () => {
         "kofiBannerDismissDate",
         null
     )
+    const [kofiBannerNotShown, setKofiBannerNotShown] = useLocalStorage<number>(
+        "kofiBannerNotShown",
+        0
+    )
 
     // Show the banner every month
     const oneMonthAgo = useMemo(() => {
@@ -28,7 +32,12 @@ export const DonationBanner = () => {
 
     const shouldShowBanner =
         isMounted &&
+        kofiBannerNotShown > 15 &&
         (kofiBannerDismissDate === null || new Date(kofiBannerDismissDate) < oneMonthAgo)
+
+    useEffect(() => {
+        setKofiBannerNotShown(old => old + 1)
+    }, [setKofiBannerNotShown, shouldShowBanner])
 
     useClickOutside(iframeRef, () => setIsWidgetOpen(false), {
         enabled: isWidgetOpen
@@ -37,14 +46,17 @@ export const DonationBanner = () => {
     return (
         shouldShowBanner && (
             <DonationBannerStyled>
-                <div>
+                <p>
                     RaidHub is committed to operating <u>ad-free</u> and remaining free to use. If
                     you enjoy using RaidHub and would like to use the site in the future, please
                     consider supporting us by becoming a member or tipping us on Ko-fi.
-                </div>
+                </p>
                 <Flex $padding={0}>
                     <button
-                        onClick={() => setIsWidgetOpen(old => !old)}
+                        onClick={() => {
+                            setIsWidgetOpen(old => !old)
+                            setKofiBannerNotShown(0)
+                        }}
                         style={{
                             padding: "0.5rem 1rem",
                             borderRadius: "0.25rem",
@@ -56,7 +68,10 @@ export const DonationBanner = () => {
                         Support RaidHub
                     </button>
                     <button
-                        onClick={() => setKofiBannerDismissDate(new Date().toISOString())}
+                        onClick={() => {
+                            setKofiBannerDismissDate(new Date().toISOString())
+                            setKofiBannerNotShown(0)
+                        }}
                         style={{
                             padding: "0.5rem 1rem",
                             borderRadius: "0.25rem",
@@ -102,7 +117,7 @@ export const DonationBanner = () => {
 
 const DonationBannerStyled = styled(Container).attrs({ $fullWidth: true })`
     color: #050505;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9bb;
     padding: 0.5rem 1rem;
     letter-spacing: 0.05rem;
     font-weight: 600;
