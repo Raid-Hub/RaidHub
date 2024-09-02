@@ -5,7 +5,7 @@ import { useMemo } from "react"
 import styled from "styled-components"
 import { Container } from "~/components/layout/Container"
 import { useRaidHubStatus } from "~/services/raidhub/useRaidHubStatus"
-import { secondsToString } from "~/util/presentation/formatting"
+import { formattedTimeSince, secondsToString } from "~/util/presentation/formatting"
 import { useLocale } from "../wrappers/LocaleManager"
 
 type AtlasState =
@@ -24,6 +24,7 @@ type AtlasState =
           status: "warn"
           lagSeconds: number
           lastCrawledDate: Date
+          estimatedCatchupDate: Date | null
       }
     | {
           status: "alert"
@@ -60,7 +61,10 @@ export const RaidHubStatusBanner = () => {
                     return {
                         status: "warn",
                         lagSeconds: atlas.medianSecondsBehindNow,
-                        lastCrawledDate: new Date(atlas.latestActivity.dateCompleted)
+                        lastCrawledDate: new Date(atlas.latestActivity.dateCompleted),
+                        estimatedCatchupDate: atlas.estimatedCatchUpTimestamp
+                            ? new Date(atlas.estimatedCatchUpTimestamp)
+                            : null
                     }
                 }
             case "Idle":
@@ -109,9 +113,25 @@ const RaidHubStatsBannerInner = ({ state }: { state: AtlasState }) => {
         case "warn":
             return (
                 <StyledRaidHubStatsBanner $alertLevel="warn">
-                    {`Warning: RaidHub activity crawling has fallen behind. Please expect to wait at least `}
+                    {`Warning: RaidHub activity crawling has fallen behind. Activites are currently delayed by `}
                     <b>{secondsToString(state.lagSeconds)}</b>
-                    {` for new data activities available. We apologize for the inconvenience.`}
+                    {`. `}
+                    {state.estimatedCatchupDate &&
+                        state.estimatedCatchupDate.getTime() > Date.now() && (
+                            <>
+                                {`We expect this issue to be resolved at `}
+                                <b>
+                                    {state.estimatedCatchupDate.toLocaleTimeString(locale, {
+                                        timeZoneName: "short",
+                                        hour: "numeric",
+                                        minute: "numeric"
+                                    })}
+                                </b>
+                                {` (${formattedTimeSince(state.estimatedCatchupDate)}).`}
+                            </>
+                        )}
+
+                    {`We apologize for the inconvenience.`}
                 </StyledRaidHubStatsBanner>
             )
         case "alert":
