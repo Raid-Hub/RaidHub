@@ -24,22 +24,23 @@ export function toCustomDateString(date: Date, locale: string): string {
 export function formattedTimeSince(date: Date, locale: string | undefined = undefined): string {
     const now = new Date()
     const secondsPast = Math.floor((now.getTime() - date.getTime()) / 1000)
+    const absSecondsPast = Math.abs(secondsPast)
 
     const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
 
-    if (secondsPast < 60) {
+    if (absSecondsPast < 60) {
         return rtf.format(-secondsPast, "second")
     }
-    if (secondsPast < 3600) {
+    if (absSecondsPast < 3600) {
         return rtf.format(-Math.floor(secondsPast / 60), "minute")
     }
-    if (secondsPast < 86400) {
+    if (absSecondsPast < 86400) {
         return rtf.format(-Math.floor(secondsPast / 3600), "hour")
     }
-    if (secondsPast < 2592000) {
+    if (absSecondsPast < 2592000) {
         return rtf.format(-Math.floor(secondsPast / 86400), "day")
     }
-    if (secondsPast < 31536000) {
+    if (absSecondsPast < 31536000) {
         return rtf.format(-Math.floor(secondsPast / 2592000), "month")
     }
     return rtf.format(-Math.floor(secondsPast / 31536000), "year")
@@ -48,11 +49,11 @@ export function formattedTimeSince(date: Date, locale: string | undefined = unde
 export function secondsToString(seconds: number): string {
     const time = Math.round(seconds)
     if (time < 60) {
-        return `${time} seconds`
+        return `${time} second${time >= 2 ? "s" : ""}`
     } else if (time < 3600) {
-        return `${Math.floor(time / 60)} minutes`
+        return `${Math.floor(time / 60)} minute${time >= 120 ? "s" : ""}`
     } else {
-        return `${Math.floor(time / 3600)} hours`
+        return `${Math.floor(time / 3600)} hour${time >= 7200 ? "s" : ""}`
     }
 }
 

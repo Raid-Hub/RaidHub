@@ -16,6 +16,12 @@ export const useRaidHubStatus = () =>
 
             switch (data.AtlasPGCR.status) {
                 case "Crawling":
+                    if (
+                        data.AtlasPGCR.medianSecondsBehindNow &&
+                        data.AtlasPGCR.medianSecondsBehindNow > 60
+                    ) {
+                        return 30_000
+                    }
                     return 120_000
                 case "Idle":
                     return 300_000

@@ -2254,6 +2254,8 @@ export interface components {
         /** @enum {string} */
         readonly status: "Crawling" | "Idle" | "Offline";
         readonly medianSecondsBehindNow: number | null;
+        /** Format: date-time */
+        readonly estimatedCatchUpTimestamp: string;
         readonly latestActivity: {
           /** Format: date-time */
           readonly dateCompleted: string;
