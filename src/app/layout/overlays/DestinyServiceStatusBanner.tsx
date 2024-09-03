@@ -2,6 +2,7 @@
 
 import type { GlobalAlert, GlobalAlertLevel } from "bungie-net-core/models"
 import Link from "next/link"
+import { useMemo } from "react"
 import styled from "styled-components"
 import { Panel } from "~/components/Panel"
 import { Container } from "~/components/layout/Container"
@@ -13,6 +14,8 @@ const commonQueryOptions = {
     refetchOnReconnect: true,
     refetchOnWindowFocus: true
 }
+
+const offlineAlertKeys = ["D2-OfflineSoonToday", "All-OfflineSoonToday"]
 
 export const DestinyServiceStatusBanner = () => {
     const { data: d2ServersOnline } = useCommonSettings<boolean | null>({
@@ -32,24 +35,25 @@ export const DestinyServiceStatusBanner = () => {
                 const utcHour = new Date().getUTCHours()
                 // Refetch every 5 minutes if near reset
                 return (utcHour >= 17 && d2ServersOnline == false ? 5 : 60) * 60000
-            },
-            select: alerts => {
-                const utcHour = new Date().getUTCHours()
-                // Remove D2-OfflineSoonToday if:
-                // - Servers are offline
-                // - Past reset today
-                // - More than 12 hours until next reset
-                return d2ServersOnline == false || utcHour >= 17 || utcHour < 5
-                    ? alerts.filter(alert => alert.AlertKey !== "D2-OfflineSoonToday")
-                    : alerts
             }
         }
     )
 
+    const filteredAlerts = useMemo(() => {
+        const utcHour = new Date().getUTCHours()
+        // Remove D2-OfflineSoonToday if:
+        // - Servers are offline
+        // - Past reset today
+        // - More than 12 hours until next reset
+        return d2ServersOnline == false || utcHour >= 17 || utcHour < 5
+            ? alerts?.filter(alert => !offlineAlertKeys.includes(alert.AlertKey))
+            : alerts
+    }, [alerts])
+
     return (
         <Container $fullWidth>
             {d2ServersOnline === false && <Destiny2OfflineBanner />}
-            {alerts?.map(alert => (
+            {filteredAlerts?.map(alert => (
                 <Destiny2AlertBanner key={alert.AlertKey} alert={alert} />
             ))}
         </Container>
@@ -67,7 +71,7 @@ const Destiny2AlertBanner = (props: { alert: GlobalAlert }) => {
     return (
         <StyledDestiny2AlertBanner $alertLevel={props.alert.AlertLevel}>
             <Link target="_blank" href={props.alert.AlertLink} style={{ color: "unset" }}>
-                <div>{props.alert.AlertHtml}</div>
+                <div dangerouslySetInnerHTML={{ __html: props.alert.AlertHtml }} />
                 <div
                     style={{
                         fontSize: "0.875rem",

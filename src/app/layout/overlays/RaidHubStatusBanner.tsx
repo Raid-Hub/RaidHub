@@ -102,7 +102,7 @@ const RaidHubStatsBannerInner = ({ state }: { state: AtlasState }) => {
         case "paused":
             return (
                 <StyledRaidHubStatsBanner $alertLevel="warn">
-                    {`RaidHub activity crawling is paused. Last activity crawled at: `}
+                    {`RaidHub activity crawling is currently paused. Latest activity crawled at: `}
                     <b>
                         {state.lastCrawledDate.toLocaleString(locale, {
                             timeZoneName: "short"
@@ -119,7 +119,7 @@ const RaidHubStatsBannerInner = ({ state }: { state: AtlasState }) => {
                     {state.estimatedCatchupDate &&
                         state.estimatedCatchupDate.getTime() > Date.now() && (
                             <>
-                                {`We expect this issue to be resolved at `}
+                                {`We expect this issue to be resolved by `}
                                 <b>
                                     {state.estimatedCatchupDate.toLocaleTimeString(locale, {
                                         timeZoneName: "short",
@@ -137,7 +137,7 @@ const RaidHubStatsBannerInner = ({ state }: { state: AtlasState }) => {
         case "alert":
             return (
                 <StyledRaidHubStatsBanner $alertLevel="alert">
-                    {`Alert: No new activities are currently being added (${state.reason}). Last activity crawled at: `}
+                    {`Alert: No new activities are currently being added (${state.reason}). Latest activity crawled at: `}
                     <b>
                         {state.lastCrawledDate.toLocaleString(locale, {
                             timeZoneName: "short"
