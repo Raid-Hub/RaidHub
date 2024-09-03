@@ -2,7 +2,7 @@ import "server-only"
 
 import type { BungieFetchConfig } from "bungie-net-core"
 import type { PlatformErrorCodes } from "bungie-net-core/models"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import { BungiePlatformError } from "~/models/BungieAPIError"
 import BaseBungieClient from "~/services/bungie/BungieClient"
 import { baseUrl } from "./util"
 
@@ -14,7 +14,7 @@ const ExpectedErrorCodes = new Set<PlatformErrorCodes>([
 
 export default class ServerBungieClient extends BaseBungieClient {
     private next: NextFetchRequestConfig
-    private timeout: number
+    private timeout?: number
     private cache?: RequestCache
 
     constructor({
@@ -24,11 +24,11 @@ export default class ServerBungieClient extends BaseBungieClient {
     }: { next?: NextFetchRequestConfig; timeout?: number; cache?: RequestCache } = {}) {
         super()
         this.next = next ?? {}
-        this.timeout = timeout ?? 5000
+        this.timeout = timeout
         this.cache = cache
     }
 
-    generatePayload(config: BungieFetchConfig): RequestInit {
+    generatePayload(config: BungieFetchConfig): { headers: Headers } {
         if (config.url.pathname.match(/\/common\/destiny2_content\/json\//)) {
             throw new Error("Manifest definitions are not available on the server")
         }
@@ -50,9 +50,11 @@ export default class ServerBungieClient extends BaseBungieClient {
         payload.headers.set("X-API-KEY", apiKey)
         payload.headers.set("Origin", baseUrl)
 
-        const controller = new AbortController()
-        payload.signal = controller.signal
-        setTimeout(() => controller.abort(), this.timeout)
+        if (this.timeout) {
+            const controller = new AbortController()
+            payload.signal = controller.signal
+            setTimeout(() => controller.abort(), this.timeout)
+        }
 
         return payload
     }
@@ -63,7 +65,7 @@ export default class ServerBungieClient extends BaseBungieClient {
         } catch (err) {
             if (
                 !(err instanceof DOMException) &&
-                !(err instanceof BungieAPIError && ExpectedErrorCodes.has(err.ErrorCode))
+                !(err instanceof BungiePlatformError && ExpectedErrorCodes.has(err.ErrorCode))
             ) {
                 console.error(err)
             }

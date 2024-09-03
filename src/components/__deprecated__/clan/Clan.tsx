@@ -47,6 +47,7 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
         }
     )
     const allClanMembers = clanMembersQueries.flatMap(q => q.data ?? [])
+    const clanBannerMembersError = clanMembersQueries.find(q => q.isError)?.error ?? null
     const isLoadingClanMembers =
         clanMembersQueries.some(q => q.isLoading) || clanStatsQuery.isLoading
 
@@ -261,7 +262,11 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                             style={{
                                 margin: 0
                             }}>
-                            Members ({allClanMembers.length} / 100)
+                            Members (
+                            {isLoadingClanMembers || clanBannerMembersError
+                                ? "?"
+                                : allClanMembers.length}{" "}
+                            / 100)
                         </h2>
                         <Flex $padding={0} $gap={0.75}>
                             {"Sort by"}
@@ -280,7 +285,10 @@ export function ClanComponent(props: { groupId: string; clan: GroupResponse | nu
                             </select>
                         </Flex>
                     </div>
-                    <div key={"members"} className={styles.members}>
+                    {clanBannerMembersError && (
+                        <ErrorCard>{clanBannerMembersError.message}</ErrorCard>
+                    )}
+                    <div className={styles.members}>
                         {clanMembersWithStats.map(member => (
                             <ClanMember
                                 key={member.bungie.destinyUserInfo.membershipId}

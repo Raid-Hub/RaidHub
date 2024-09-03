@@ -1,7 +1,7 @@
 import type { BungieFetchConfig } from "bungie-net-core"
 import type { PlatformErrorCodes } from "bungie-net-core/models"
 import EventEmitter from "events"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import { BungiePlatformError } from "~/models/BungieAPIError"
 import BaseBungieClient from "./BungieClient"
 
 const AuthErrorCodes = new Set<PlatformErrorCodes>([
@@ -20,7 +20,7 @@ export default class ClientBungieClient extends BaseBungieClient {
 
     private readonly emitter = new EventEmitter()
 
-    protected generatePayload(config: BungieFetchConfig): RequestInit {
+    protected generatePayload(config: BungieFetchConfig): { headers: Headers } {
         const apiKey = process.env.BUNGIE_API_KEY
         if (!apiKey) {
             throw new Error("Missing BUNGIE_API_KEY")
@@ -54,7 +54,7 @@ export default class ClientBungieClient extends BaseBungieClient {
                 return this.request(url, payload)
             } else if (
                 (err instanceof Response && err.status === 401) ||
-                (err instanceof BungieAPIError && AuthErrorCodes.has(err.ErrorCode))
+                (err instanceof BungiePlatformError && AuthErrorCodes.has(err.ErrorCode))
             ) {
                 this.clearToken()
                 this.emitter.emit("unauthorized")
@@ -70,7 +70,7 @@ export default class ClientBungieClient extends BaseBungieClient {
                     }
                     this.emitter.once("authorized", listener)
                 })
-            } else if (err instanceof BungieAPIError && err.ErrorCode === 1688) {
+            } else if (err instanceof BungiePlatformError && err.ErrorCode === 1688) {
                 url.searchParams.set("retry", "DestinyDirectBabelClientTimeout")
                 return this.request(url, payload)
             } else {

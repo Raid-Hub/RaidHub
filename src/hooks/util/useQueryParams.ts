@@ -28,17 +28,17 @@ const defaultArgs: CommitArgs = {
  */
 export function useQueryParams<
     T extends Record<string, string>,
-    S extends { [K in keyof T]: z.ZodType<T[K]> }
+    S extends { [K in keyof T]: z.ZodType<T[K]> } = { [K in keyof T]: z.ZodType<T[K]> }
 >(validator?: z.ZodObject<S, z.UnknownKeysParam, z.ZodTypeAny, T, T>) {
     const _readonlyParams = useSearchParams()
     const validatedSearchParams = new URLSearchParams(
-        Array.from(_readonlyParams).filter(([k, v]) => {
-            if (!validator) return true
-            return (
-                validator.shape[k]?.safeParse(v).success ??
-                validator._def.unknownKeys === "passthrough"
-            )
-        })
+        validator
+            ? Array.from(_readonlyParams).filter(
+                  ([k, v]) =>
+                      validator.shape[k]?.safeParse(v).success ??
+                      validator._def.unknownKeys === "passthrough"
+              )
+            : _readonlyParams
     )
     const mutableParams = useMutableReference(validatedSearchParams)
 
@@ -55,12 +55,12 @@ export function useQueryParams<
 
         const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)
 
-        const get = <K extends keyof T & string, D extends T[K] | undefined>(
+        const get = <K extends keyof T & string, D extends T[K] | undefined = undefined>(
             key: K,
-            def?: D
+            defaultValue?: D
         ): D extends T[K] ? T[K] : T[K] | undefined => {
             const value = mutableParams.current.get(key) as T[K] | undefined
-            return value ?? (def as D extends T[K] ? T[K] : T[K] | undefined)
+            return value ?? (defaultValue as D extends T[K] ? T[K] : T[K] | undefined)
         }
 
         const getAll = <K extends keyof T & string>(key: K) => {

@@ -1,7 +1,7 @@
 import { getClanBannerSource } from "bungie-net-core/endpoints/Destiny2"
 import { getGroup } from "bungie-net-core/endpoints/GroupV2"
 import { notFound } from "next/navigation"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import { BungiePlatformError } from "~/models/BungieAPIError"
 import ServerBungieClient from "~/server/serverBungieClient"
 import { reactRequestDedupe } from "~/util/react-cache"
 
@@ -22,12 +22,12 @@ export const getClan = reactRequestDedupe(async (groupId: string) =>
     getGroup(clanClient, { groupId })
         .then(res => {
             if (res.Response.detail.groupType != 1 || res.Response.detail.groupId === "4982805") {
-                throw new BungieAPIError(res)
+                throw new BungiePlatformError(res, 200, `/GroupV2/GetGroup/${groupId}`)
             }
             return res.Response
         })
         .catch(err => {
-            if (err instanceof BungieAPIError && expectedErrorCodes.includes(err.ErrorCode)) {
+            if (err instanceof BungiePlatformError && expectedErrorCodes.includes(err.ErrorCode)) {
                 notFound()
             } else {
                 return null

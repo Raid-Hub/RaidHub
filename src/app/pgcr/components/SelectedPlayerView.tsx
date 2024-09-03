@@ -12,7 +12,6 @@ import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { H4 } from "~/components/typography/H4"
 import { useClassDefinition, useItemDefinition } from "~/hooks/dexie"
-import { useQueryParams } from "~/hooks/util/useQueryParams"
 import { useRaidHubResolvePlayer } from "~/services/raidhub/hooks"
 import {
     type RaidHubInstanceCharacter,
@@ -21,8 +20,8 @@ import {
 import { bungieEmblemUrl } from "~/util/destiny"
 import { getBungieDisplayName } from "~/util/destiny/getBungieDisplayName"
 import { formattedNumber, secondsToHMS } from "~/util/presentation/formatting"
+import { usePgcrQueryParams } from "../hooks/usePgcrQueryParams"
 import { useResolveCharacter } from "../hooks/useResolveCharacter"
-import type { PGCRPageParams } from "../types"
 import { DisplayName } from "./DisplayName"
 import { WeaponsGrid } from "./WeaponsGrid"
 
@@ -31,8 +30,8 @@ export const SelectedPlayerView = (props: {
     deselect: () => void
 }) => {
     const { locale } = useLocale()
-    const { searchParams, remove } = useQueryParams<PGCRPageParams>()
-    const selectedCharacterId = searchParams.character
+    const { validatedSearchParams, remove } = usePgcrQueryParams()
+    const selectedCharacterId = validatedSearchParams.get("character")
 
     const selectedCharacter = selectedCharacterId
         ? props.selectedPlayer.characters.find(c => c.characterId === selectedCharacterId)
@@ -250,7 +249,7 @@ const useEntryStats = (
     }, [selectedCharacter, selectedPlayer])
 
 const CharacterTab = (props: { character: RaidHubInstanceCharacter }) => {
-    const { searchParams, set } = useQueryParams<PGCRPageParams>()
+    const { validatedSearchParams, set } = usePgcrQueryParams()
     const { data: classHash } = useResolveCharacter(props.character, {
         forceOnLargePGCR: true,
         select: data => data.character.data?.classHash ?? null
@@ -260,7 +259,7 @@ const CharacterTab = (props: { character: RaidHubInstanceCharacter }) => {
     return (
         <H4
             $mBlock={0.2}
-            aria-selected={searchParams.character === props.character.characterId}
+            aria-selected={validatedSearchParams.get("character") === props.character.characterId}
             onClick={() => set("character", props.character.characterId)}
             style={{
                 padding: "0.5rem"

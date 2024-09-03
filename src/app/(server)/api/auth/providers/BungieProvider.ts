@@ -1,8 +1,10 @@
 import { type Adapter } from "@auth/core/adapters"
 import { type TokenSet } from "@auth/core/types"
-import type { BungieNetResponse, UserMembershipData } from "bungie-net-core/models"
+import { type BungieFetchConfig } from "bungie-net-core"
+import { getMembershipDataForCurrentUser } from "bungie-net-core/endpoints/User"
+import type { UserMembershipData } from "bungie-net-core/models"
 import { type OAuth2Config } from "next-auth/providers"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import ServerBungieClient from "~/server/serverBungieClient"
 import { type BungieProfile } from "../types"
 
 export default function BungieProvider(creds: {
@@ -26,18 +28,10 @@ export default function BungieProvider(creds: {
         userinfo: {
             url: userInfoUrl,
             async request({ tokens }: { tokens: TokenSet }) {
-                const res = await fetch(userInfoUrl, {
-                    headers: {
-                        "X-API-KEY": creds.apiKey,
-                        Authorization: `Bearer ${tokens.access_token}`
-                    }
-                })
-                const data = (await res.json()) as BungieNetResponse<UserMembershipData>
-                if (!res.ok) {
-                    throw new BungieAPIError(data)
-                } else {
-                    return data.Response
-                }
+                const res = await getMembershipDataForCurrentUser(
+                    new AuthBungieClient(tokens.access_token!)
+                )
+                return res.Response
             }
         },
         profile(data): Parameters<Required<Adapter>["createUser"]>[0] & {
@@ -58,5 +52,19 @@ export default function BungieProvider(creds: {
                 userMembershipData: data
             }
         }
+    }
+}
+
+class AuthBungieClient extends ServerBungieClient {
+    private authToken: string
+    constructor(authToken: string) {
+        super()
+        this.authToken = authToken
+    }
+
+    generatePayload(config: BungieFetchConfig): RequestInit & { headers: Headers } {
+        const payload = super.generatePayload(config)
+        payload.headers.set("Authorization", `Bearer ${this.authToken}`)
+        return payload
     }
 }

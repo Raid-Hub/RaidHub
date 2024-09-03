@@ -108,7 +108,7 @@ export const RaidsWrapper = () => {
         )
     }, [activities, isLoadingActivities])
 
-    const { searchParams, set } = useQueryParams<{
+    const { validatedSearchParams, set } = useQueryParams<{
         tab: TabTitle
     }>()
 
@@ -123,7 +123,7 @@ export const RaidsWrapper = () => {
         [setTabLocal, set]
     )
 
-    const tab = searchParams.tab ?? tabLocal
+    const tab = validatedSearchParams.get("tab") ?? tabLocal
 
     const TabView = useMemo(() => {
         switch (tab) {
