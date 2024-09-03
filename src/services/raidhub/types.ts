@@ -38,6 +38,8 @@ export type RaidHubInstanceForPlayer = Component<"InstanceForPlayer">
 export type RaidHubWorldFirstEntry = Component<"WorldFirstEntry">
 export type RaidHubClanMemberStats = Component<"ClanMemberStats">
 
+export type RaidHubWeaponMetric = Component<"WeaponMetric">
+
 export type RaidHubLeaderboardData = Component<"LeaderboardData">
 export type RaidHubIndividualLeaderboardEntry = Component<"IndividualLeaderboardEntry">
 
@@ -71,6 +73,8 @@ export type RaidHubPlayerSearchResponse = Component<"PlayerSearchResponse">
 export type RaidHubAdminQueryResponse = Component<"AdminQueryResponse">
 export type RaidHubLeaderboardClanResponse = Component<"LeaderboardClanResponse">
 export type RaidHubStatusResponse = Component<"StatusResponse">
+export type RaidHubMetricsWeaponsRollingWeekResponse =
+    Component<"MetricsWeaponsRollingWeekResponse">
 
 interface GetSchema {
     get: {

@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useMemo, useRef, useState } from "react"
 import styled from "styled-components"
 import { Panel } from "~/components/Panel"
+import { Table } from "~/components/Table"
 import { Cell } from "./Cell"
 import { ColumnLabel } from "./ColumnLabel"
 import { ColumnFormats } from "./formats"
@@ -52,7 +53,7 @@ export function SQLTable<T extends string[]>({
                 />
                 <h2 style={{ textAlign: "center", marginTop: 0 }}>{title}</h2>
                 <div>
-                    <Table>
+                    <Table $align>
                         <thead>
                             <tr>
                                 {columnLabels.map((label, idx) => (
@@ -101,46 +102,6 @@ const TableArea = styled(Panel)`
         rgba(1, 0, 17, 1) 91%,
         rgba(19, 3, 1, 1) 100%
     );
-`
-
-const Table = styled.table`
-    border-collapse: collapse;
-    background-color: color-mix(in srgb, ${({ theme }) => theme.colors.background.dark}, #0000 60%);
-
-    & tr:nth-child(even) {
-        background-color: color-mix(
-            in srgb,
-            ${({ theme }) => theme.colors.background.medium},
-            #0000 80%
-        );
-    }
-
-    & th,
-    td {
-        border-top: 1px solid
-            color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 40%);
-        border-bottom: 1px solid
-            color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 40%);
-
-        padding: 0.8em 1.2em;
-        text-align: center;
-        letter-spacing: 0.04em;
-
-        font-weight: 500;
-        font-size: 14px;
-    }
-
-    & td:first-child,
-    th:first-child {
-        border-left: 1px solid
-            color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 40%);
-    }
-
-    & td:last-child,
-    th:last-child {
-        border-right: 1px solid
-            color-mix(in srgb, ${({ theme }) => theme.colors.border.dark}, #0000 40%);
-    }
 `
 
 const Attribution = styled.div`

@@ -9,13 +9,15 @@ export const Container = styled.div<{
         height: number
     }
     $fullWidth?: boolean
+    $fullHeight?: boolean
     $flex?: boolean
 }>`
     position: relative;
-    ${({ $aspectRatio, $minHeight, $fullWidth, $flex }) => css`
+    ${({ $aspectRatio, $minHeight, $fullWidth, $flex, $fullHeight }) => css`
         ${$aspectRatio ? `aspect-ratio: ${$aspectRatio.width}/${$aspectRatio.height};` : ""}
         ${$minHeight ? `min-height: ${$minHeight}px;` : ""}
         ${$fullWidth ? `width: 100%;` : ""}
+        ${$fullHeight ? `height: 100%;` : ""}
         ${$flex ? `display: flex; justify-content: center; align-items: center` : ""}
     `}
 `
