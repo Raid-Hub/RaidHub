@@ -48,7 +48,7 @@ export const DestinyServiceStatusBanner = () => {
         return d2ServersOnline == false || utcHour >= 17 || utcHour < 5
             ? alerts?.filter(alert => !offlineAlertKeys.includes(alert.AlertKey))
             : alerts
-    }, [alerts])
+    }, [d2ServersOnline, alerts])
 
     return (
         <Container $fullWidth>
