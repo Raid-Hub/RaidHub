@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import { BungiePlatformError } from "~/models/BungieAPIError"
 import { type ErrorBoundaryProps } from "~/types/generic"
 
 export default function ClanErrorBoundary({ error, reset }: ErrorBoundaryProps) {
@@ -12,7 +12,7 @@ export default function ClanErrorBoundary({ error, reset }: ErrorBoundaryProps) 
 
     return (
         <PageWrapper>
-            {error instanceof BungieAPIError ? (
+            {error instanceof BungiePlatformError ? (
                 <h1>{error.message}</h1>
             ) : (
                 <h1>Something went wrong!</h1>

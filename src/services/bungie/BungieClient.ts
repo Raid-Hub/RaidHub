@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import type { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
-import { BungieAPIError } from "~/models/BungieAPIError"
+import {
+    BungieHTMLError,
+    BungiePlatformError,
+    BungieServiceError,
+    BungieUnkownHTTPError
+} from "~/models/BungieAPIError"
 
 /**
  * Represents a client for interacting with the Bungie API.
@@ -24,22 +30,24 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
     protected readonly request = async <T>(url: URL, payload: RequestInit): Promise<T> => {
         const res = await fetch(url, payload)
 
-        if (!res.headers.get("Content-Type")?.includes("application/json")) {
-            throw res
+        const text = await res.text()
+        const contentType = res.headers.get("Content-Type")
+
+        if (!res.ok) {
+            if (contentType?.includes("application/json")) {
+                const data = JSON.parse(text)
+                if ("ErrorCode" in data && data.ErrorCode !== 1) {
+                    throw new BungiePlatformError(data, res.status, url.pathname)
+                } else if ("error_description" in data) {
+                    throw new BungieServiceError(data, res.status, url.pathname)
+                }
+            } else if (contentType?.includes("text/html")) {
+                throw new BungieHTMLError(text, res.status, url.pathname)
+            }
+            throw new BungieUnkownHTTPError(res.clone())
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data = await res.json()
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (data.ErrorCode && data.ErrorCode !== 1) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            throw new BungieAPIError(data)
-        } else if (!res.ok) {
-            throw new SyntaxError("Unable to parse the JSON response")
-        }
-
-        return data as T
+        return JSON.parse(text) as T
     }
 
     /**
@@ -48,7 +56,7 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
      * @returns The generated payload.
      * @protected This method can be overridden in derived classes.
      */
-    protected abstract generatePayload(config: BungieFetchConfig): RequestInit
+    protected abstract generatePayload(config: BungieFetchConfig): { headers: Headers }
 
     /**
      * Handles the fetch request by making the request and handling errors.

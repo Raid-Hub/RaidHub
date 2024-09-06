@@ -26,11 +26,6 @@ export const PGCRContentPanel = () => {
                     style={{ opacity: 0.85 }}
                 />
             )}
-            {/* <div className={styles["settings-menu-container"]}>
-                <KebabMenu size={20} alignmentSide="right">
-                    <PGCRSettingsMenu />
-                </KebabMenu>
-            </div> */}
             <ActivityHeader />
             <ParticipantsSection />
         </section>

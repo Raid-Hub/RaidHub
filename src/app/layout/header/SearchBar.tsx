@@ -9,15 +9,15 @@ import { Flex } from "~/components/layout/Flex"
 import { useSearch } from "~/hooks/useSearch"
 import { useClickOutside } from "~/hooks/util/useClickOutside"
 import { usePageChange } from "~/hooks/util/usePageChange"
-import { useUserAgent } from "~/hooks/util/useUserAgent"
 import { $media } from "../media"
+import { useLocale } from "../wrappers/LocaleManager"
 import { HeaderSearchResults } from "./HeaderSearchResults"
 
 const HIDE_AFTER_CLICK = 100
 
 export const SearchBar = () => {
-    const userAgent = useUserAgent()
-    const OSKey = userAgent?.toLowerCase().includes("mac") ? "⌘" : "ctrl"
+    const { userAgent } = useLocale()
+    const OSKey = userAgent.device.vendor?.toLowerCase().includes("Apple") ? "⌘" : "ctrl"
 
     const hideResults = useCallback(() => setIsShowingResults(false), [])
 

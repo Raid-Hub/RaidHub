@@ -2,20 +2,21 @@ import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } 
 
 export const useLocalStorage = <V extends string | boolean | number | object | null>(
     key: string,
-    defaultValue: V
+    defaultValue: V | (() => V)
 ): [V, Dispatch<SetStateAction<V>>] => {
     const [_value, setValue] = useState<V>(defaultValue)
 
     useEffect(() => {
         const fromStore = localStorage.getItem(key)
+        const getDefault = () => (defaultValue instanceof Function ? defaultValue() : defaultValue)
         const parse = (value: string) => {
             try {
                 return JSON.parse(value) as V
             } catch {
-                return defaultValue
+                return getDefault()
             }
         }
-        setValue(fromStore ? parse(fromStore) : defaultValue)
+        setValue(fromStore ? parse(fromStore) : getDefault())
     }, [key, defaultValue])
 
     const save = useCallback(

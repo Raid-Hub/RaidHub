@@ -4,15 +4,14 @@ import { useCallback, useMemo } from "react"
 import { usePGCRContext } from "~/app/pgcr/PGCRStateManager"
 import { PlayerTab } from "~/app/pgcr/components/PlayerTab"
 import { SelectedPlayerView } from "~/app/pgcr/components/SelectedPlayerView"
-import type { PGCRPageParams } from "~/app/pgcr/types"
+import { usePgcrQueryParams } from "~/app/pgcr/hooks/usePgcrQueryParams"
 import { Loading } from "~/components/Loading"
-import { useQueryParams } from "~/hooks/util/useQueryParams"
 import styles from "../pgcr.module.css"
 
 /** @deprecated */
 const ParticipantsSection = () => {
     const { data, sortScores, isLoading } = usePGCRContext()
-    const { searchParams, set, remove } = useQueryParams<PGCRPageParams>()
+    const { validatedSearchParams, set, remove } = usePgcrQueryParams()
 
     const setPlayer = useCallback(
         (membershipId: string | null) => {
@@ -26,7 +25,7 @@ const ParticipantsSection = () => {
         [remove, set]
     )
 
-    const selectedMembershipId = searchParams.player
+    const selectedMembershipId = validatedSearchParams.get("player")
 
     const selectedPlayer = selectedMembershipId
         ? data?.players.find(p => p.playerInfo.membershipId === selectedMembershipId) ?? null

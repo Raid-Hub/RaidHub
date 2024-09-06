@@ -2,6 +2,7 @@
 
 import { match } from "@formatjs/intl-localematcher"
 import { type DestinyManifestLanguage } from "bungie-net-core/manifest"
+import { userAgentFromString } from "next/server"
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
 const d2ManifestLocales = [
@@ -24,12 +25,14 @@ const LanguageContext = createContext<
     | {
           locale: string
           manifestLanguage: DestinyManifestLanguage
+          userAgent: ReturnType<typeof userAgentFromString>
       }
     | undefined
 >(undefined)
 
 export function LocaleManager({ children }: { children: ReactNode }) {
     const [locale, setLocale] = useState<string>("en-US")
+    const [userAgent, setUserAgent] = useState(userAgentFromString(""))
     const [manifestLanguage, setManifestLanguage] = useState<DestinyManifestLanguage>("en")
 
     useEffect(() => {
@@ -51,6 +54,9 @@ export function LocaleManager({ children }: { children: ReactNode }) {
                 .replace(/-hans$/i, "-chs")
                 .replace(/-hant$/i, "-cht") as DestinyManifestLanguage
         )
+
+        setUserAgent(userAgentFromString(navigator.userAgent ?? ""))
+
         document.documentElement.setAttribute("lang", matchedLanguage)
     }, [])
 
@@ -58,7 +64,8 @@ export function LocaleManager({ children }: { children: ReactNode }) {
         <LanguageContext.Provider
             value={{
                 locale,
-                manifestLanguage
+                manifestLanguage,
+                userAgent
             }}>
             {children}
         </LanguageContext.Provider>

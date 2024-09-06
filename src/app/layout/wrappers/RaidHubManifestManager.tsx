@@ -11,6 +11,7 @@ import type {
 
 type ManifestContextData = {
     listedRaids: readonly number[]
+    activeRaids: readonly number[]
     sunsetRaids: readonly number[]
     reprisedRaids: readonly number[]
     pantheonIds: readonly number[]
@@ -46,6 +47,7 @@ export function RaidHubManifestManager(props: {
     const value = useMemo((): ManifestContextData => {
         return {
             listedRaids: data.listedRaidIds,
+            activeRaids: data.listedRaidIds.filter(id => !data.sunsetRaidIds.includes(id)),
             sunsetRaids: data.sunsetRaidIds,
             reprisedRaids: data.resprisedRaidIds,
             pantheonIds: data.pantheonIds,

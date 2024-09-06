@@ -7,7 +7,7 @@ import Dexie from "dexie"
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react"
 import { useInterval } from "~/hooks/util/useInterval"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
-import { type BungieAPIError } from "~/models/BungieAPIError"
+import { type BungiePlatformError } from "~/models/BungieAPIError"
 import {
     DB_VERSION,
     useDexie,
@@ -93,7 +93,8 @@ const DestinyManifestManager = ({ children }: { children: ReactNode }) => {
         staleTime: 3600_000, // 1 hour
         refetchInterval: 3600_000,
         refetchIntervalInBackground: false,
-        retry: (failureCount, error: BungieAPIError) => error.ErrorCode === 5 || failureCount < 2,
+        retry: (failureCount, error: BungiePlatformError) =>
+            error.ErrorCode === 5 || failureCount < 2,
         retryDelay: failureCount => Math.min(2 ** failureCount * 5000, 600_000),
         onSuccess: async manifest => {
             const newManifestVersion = [manifest.version, manifestLanguage, DB_VERSION].join("::")

@@ -1,5 +1,6 @@
 import { useSearchParams } from "next/navigation"
 import { useMemo } from "react"
+import { type z } from "zod"
 import { useMutableReference } from "./useMutableReference"
 
 type CommitArgs =
@@ -25,9 +26,21 @@ const defaultArgs: CommitArgs = {
  * @template T - The type of the query parameters object.
  * @returns An object with methods for manipulating query parameters.
  */
-export function useQueryParams<T extends Record<string, string>>() {
-    const readonlyParams = useSearchParams()
-    const mutableParams = useMutableReference(new URLSearchParams(readonlyParams))
+export function useQueryParams<
+    T extends Record<string, string>,
+    S extends { [K in keyof T]: z.ZodType<T[K]> } = { [K in keyof T]: z.ZodType<T[K]> }
+>(validator?: z.ZodObject<S, z.UnknownKeysParam, z.ZodTypeAny, T, T>) {
+    const _readonlyParams = useSearchParams()
+    const validatedSearchParams = new URLSearchParams(
+        validator
+            ? Array.from(_readonlyParams).filter(
+                  ([k, v]) =>
+                      validator.shape[k]?.safeParse(v).success ??
+                      validator._def.unknownKeys === "passthrough"
+              )
+            : _readonlyParams
+    )
+    const mutableParams = useMutableReference(validatedSearchParams)
 
     const immutableActions = useMemo(() => {
         const clear = () =>
@@ -42,10 +55,17 @@ export function useQueryParams<T extends Record<string, string>>() {
 
         const commit = (shallow?: boolean) => replace(mutableParams.current, shallow)
 
-        const get = <K extends keyof T & string>(key: K) => mutableParams.current.get(key) as T[K]
+        const get = <K extends keyof T & string, D extends T[K] | undefined = undefined>(
+            key: K,
+            defaultValue?: D
+        ): D extends T[K] ? T[K] : T[K] | undefined => {
+            const value = mutableParams.current.get(key) as T[K] | undefined
+            return value ?? (defaultValue as D extends T[K] ? T[K] : T[K] | undefined)
+        }
 
-        const getAll = <K extends keyof T & string>(key: K) =>
-            mutableParams.current.getAll(key) as T[K][]
+        const getAll = <K extends keyof T & string>(key: K) => {
+            return mutableParams.current.getAll(key) as T[K][]
+        }
 
         const append = <K extends keyof T & string>(
             key: K,
@@ -102,5 +122,8 @@ export function useQueryParams<T extends Record<string, string>>() {
         }
     }, [mutableParams])
 
-    return { searchParams: Object.fromEntries(readonlyParams) as T, ...immutableActions }
+    return {
+        validatedSearchParams,
+        ...immutableActions
+    }
 }

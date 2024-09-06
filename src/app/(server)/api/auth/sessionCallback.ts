@@ -9,7 +9,7 @@ import { postRaidHubApi } from "~/services/raidhub/common"
 import { type AuthError, type BungieAccount } from "./types"
 import { updateBungieAccessTokens } from "./updateBungieAccessTokens"
 
-const authBungieClient = new ServerBungieClient()
+const bungieClient = new ServerBungieClient()
 
 export const sessionCallback = (async ({
     session,
@@ -63,7 +63,7 @@ async function refreshBungieAuth(bungie: BungieAccount, userId: string) {
                 client_id: process.env.BUNGIE_CLIENT_ID!,
                 client_secret: process.env.BUNGIE_CLIENT_SECRET!
             },
-            authBungieClient
+            bungieClient
         ).catch(e => {
             if (
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
