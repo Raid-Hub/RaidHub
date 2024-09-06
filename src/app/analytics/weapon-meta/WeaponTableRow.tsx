@@ -31,7 +31,6 @@ export const WeaponTableRow = ({ weapon, rank }: { weapon: RaidHubWeaponMetric; 
 }
 
 const Td = styled.td`
-    font-size: 0.875rem;
     height: 4rem;
 `
 

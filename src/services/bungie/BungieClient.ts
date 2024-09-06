@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import type { BungieClientProtocol, BungieFetchConfig } from "bungie-net-core"
 import {
     BungieHTMLError,
@@ -29,7 +30,6 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
     protected readonly request = async <T>(url: URL, payload: RequestInit): Promise<T> => {
         const res = await fetch(url, payload)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const text = await res.text()
         const contentType = res.headers.get("Content-Type")
 
@@ -37,14 +37,12 @@ export default abstract class BaseBungieClient implements BungieClientProtocol {
             if (contentType?.includes("application/json")) {
                 const data = JSON.parse(text)
                 if ("ErrorCode" in data && data.ErrorCode !== 1) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                     throw new BungiePlatformError(data, res.status, url.pathname)
                 } else if ("error_description" in data) {
                     throw new BungieServiceError(data, res.status, url.pathname)
                 }
             } else if (contentType?.includes("text/html")) {
                 throw new BungieHTMLError(text, res.status, url.pathname)
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             }
             throw new BungieUnkownHTTPError(res.clone())
         }

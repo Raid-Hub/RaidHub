@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { $media } from "~/app/layout/media"
 
 export const Table = styled.table<{
     $padding?: number
@@ -27,7 +28,10 @@ export const Table = styled.table<{
         letter-spacing: 0.04em;
 
         font-weight: 500;
-        font-size: 14px;
+        font-size: 0.875rem;
+        ${$media.max.mobile`
+            font-size: 0.75rem;
+        `}
     }
 
     & td:first-child,

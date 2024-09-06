@@ -1,194 +1,211 @@
-import { Collection } from "@discordjs/collection"
-import { memo, useCallback, useMemo } from "react"
+import { memo, useMemo, useState } from "react"
+import {
+    CartesianGrid,
+    Legend,
+    Line,
+    LineChart,
+    Tooltip,
+    XAxis,
+    YAxis,
+    type TooltipProps
+} from "recharts"
 import styled from "styled-components"
 import { useLocale } from "~/app/layout/wrappers/LocaleManager"
+import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
+import { Container } from "~/components/layout/Container"
 import { type RaidHubMetricsPopulationRollingDayResponse } from "~/services/raidhub/types"
+import { formattedNumber } from "~/util/presentation/formatting"
 
 const colors: Record<number, string> = {
-    4: "yellow",
-    7: "green",
-    8: "blue",
-    9: "teal",
-    10: "red",
-    11: "orange",
-    12: "pink",
-    13: "darkgreen",
-    14: "darkred"
+    4: "#fffcd1",
+    7: "#97fcbb",
+    8: "#979efc",
+    9: "#a7d9fc",
+    10: "#fa947a",
+    11: "#facb7a",
+    12: "#fcbdff",
+    13: "#80e083",
+    14: "#ff5773"
 }
-const width = 800
-const height = 400
-const margin = { top: 20, right: 30, bottom: 30, left: 40 }
 
 export const PopulationGraph = memo(function PopulationGraph({
-    data,
-    now
+    data
 }: {
     data: RaidHubMetricsPopulationRollingDayResponse
-    now: Date
 }) {
-    const { locale } = useLocale()
-    const valuesByRaid = useMemo(() => {
-        const valuesByRaid = new Collection<number, [timestamp: Date, value: number][]>()
-        data.forEach(({ population, hour }) => {
-            const timestamp = new Date(hour)
-            Object.entries(population).forEach(([raid, population]) => {
-                const raidId = Number(raid)
-                if (!valuesByRaid.has(raidId)) {
-                    valuesByRaid.set(raidId, [[timestamp, population]])
-                } else {
-                    valuesByRaid.get(raidId)!.push([timestamp, population])
-                }
-            })
-        })
-        return valuesByRaid
-    }, [data])
+    const [selectedLine, setSelectedLine] = useState<number | null>(null)
+    const { locale, userAgent } = useLocale()
+    const { activeRaids, getActivityDefinition } = useRaidHubManifest()
 
-    // Calculate scales
-    const getX = useCallback(
-        (timestamp: Date) => {
-            const idx = (timestamp.getTime() - now.getTime()) / 3600_000 + 23
-            return margin.left + (idx / 23) * (width - margin.left - margin.right)
-        },
-        [now]
-    )
+    const isMobile = userAgent.device.type === "mobile"
+    const width = isMobile ? 350 : 1150
+    const height = isMobile ? 350 : 500
 
-    const maxPopulation = useMemo(
-        () => 1.25 * Math.max(...data.flatMap(d => Object.values(d.population))),
-        [data]
-    )
+    const values = useMemo(
+        () =>
+            data
+                .toReversed()
+                .slice(isMobile ? -12 : 0)
+                .map(({ population, hour }) => {
+                    const ts = new Date(hour).getTime()
+                    const now = Date.now()
+                    return {
+                        timestamp: ts,
+                        population: Object.fromEntries(
+                            Object.entries(population).map(([k, val]) => {
+                                const hoursBehindNow = Math.min((now - ts) / 3600_000, 4)
+                                const estimateRatioReported =
+                                    (hoursBehindNow / 4) **
+                                    (0.6 + (hoursBehindNow <= 1 ? (1 - hoursBehindNow) * 0.3 : 0))
 
-    const getY = useCallback(
-        (population: number) =>
-            height -
-            margin.bottom -
-            (population / maxPopulation) * (height - margin.top - margin.bottom),
-        [maxPopulation]
-    )
-
-    const pathData = useMemo(
-        () => (
-            <g>
-                {valuesByRaid.map((values, raidId) =>
-                    values.length ? (
-                        <g key={raidId}>
-                            <path
-                                fill="none"
-                                stroke={colors[raidId] ?? "white"}
-                                strokeWidth={1}
-                                d={`M${getX(values[0][0])},${getY(
-                                    values[0][1] /
-                                        Math.min(
-                                            (Date.now() - values[0][0].getTime()) / 3600_000,
-                                            1
-                                        ) **
-                                            1.32
-                                )} ${values
-                                    .slice(1)
-                                    .map(
-                                        ([timestamp, population]) =>
-                                            `L${getX(timestamp)},${getY(population)}`
-                                    )
-                                    .join(" ")}`}
-                            />
-                            {values
-                                .filter(([t]) => Date.now() - t.getTime() >= 3600_000)
-                                .map(([timestamp, value], index) => (
-                                    <circle
-                                        key={index}
-                                        cx={getX(timestamp)}
-                                        cy={getY(value)}
-                                        r={3}
-                                        fill={colors[raidId] ?? "white"}
-                                    />
-                                ))}
-                        </g>
-                    ) : null
-                )}
-            </g>
-        ),
-        [valuesByRaid, getX, getY]
-    )
-
-    const timestampLines = useMemo(
-        () => (
-            <g>
-                {Array.from({ length: 24 }, (_, i) => i).map(i => {
-                    const timestamp = new Date(now.getTime() + (i - 23) * 3600_000)
-                    const x = getX(timestamp)
-                    return (
-                        <g key={i}>
-                            <line
-                                x1={x}
-                                y1={margin.top}
-                                x2={x}
-                                y2={height - margin.bottom}
-                                stroke="#d1d1d145"
-                                strokeWidth={0.5}
-                            />{" "}
-                            {i % 2 === 1 && (
-                                <text
-                                    key={i}
-                                    x={x}
-                                    y={height - margin.bottom + 15}
-                                    textAnchor="middle"
-                                    fontSize="10"
-                                    fill="white">
-                                    {timestamp.toLocaleTimeString(locale, {
-                                        hour: "2-digit",
-                                        minute: "2-digit"
-                                    })}
-                                </text>
-                            )}
-                        </g>
-                    )
-                })}
-            </g>
-        ),
-        [getX, now, locale]
-    )
-
-    const horizontalLines = useMemo(
-        () => (
-            <g>
-                {Array.from({ length: Math.floor(maxPopulation / 100) + 1 }, (_, i) => i).map(i => {
-                    const y = getY(i * 100)
-                    return (
-                        <g key={i}>
-                            <line
-                                x1={margin.left}
-                                y1={y}
-                                x2={width - margin.right}
-                                y2={y}
-                                stroke="#d1d1d125"
-                                strokeWidth={0.5}
-                            />
-                            {i % 2 === 0 && (
-                                <text
-                                    x={margin.left - 5}
-                                    y={y}
-                                    textAnchor="end"
-                                    fontSize="10"
-                                    fill="white">
-                                    {i * 100}
-                                </text>
-                            )}
-                        </g>
-                    )
-                })}
-            </g>
-        ),
-        [getY, maxPopulation]
+                                return [k, Math.round(val / estimateRatioReported)]
+                            })
+                        )
+                    }
+                }),
+        [isMobile, data]
     )
 
     return (
-        <GraphContainer width={width} height={height}>
-            {timestampLines}
-            {horizontalLines}
-            {pathData}
-        </GraphContainer>
+        <Container
+            style={{
+                overflowX: "auto",
+                overflowY: "hidden"
+            }}>
+            <LineChart
+                width={width}
+                height={height}
+                data={values}
+                margin={
+                    isMobile
+                        ? { top: 20, right: 0, left: 0, bottom: 20 }
+                        : { top: 20, right: 20, left: 20, bottom: 20 }
+                }
+                style={{
+                    width: width,
+                    height: height,
+                    marginBottom: isMobile ? "100px" : "40px"
+                }}>
+                <CartesianGrid
+                    stroke="#d4d4d474"
+                    strokeDasharray="2 2"
+                    onMouseEnter={(...args) => console.log(args)}
+                />
+                <XAxis
+                    allowDecimals
+                    hide={false}
+                    orientation="bottom"
+                    height={50}
+                    mirror={false}
+                    xAxisId={0}
+                    type="category"
+                    padding={{ left: 0, right: 0 }}
+                    allowDataOverflow={false}
+                    scale="auto"
+                    reversed={false}
+                    allowDuplicatedCategory
+                    dataKey="timestamp"
+                    tickFormatter={(value: number) =>
+                        new Date(value).toLocaleTimeString(locale, {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        })
+                    }
+                    label={isMobile ? undefined : { value: "Hour", position: "insideBottom" }}
+                />
+                <YAxis
+                    allowDuplicatedCategory
+                    allowDecimals
+                    hide={false}
+                    orientation="left"
+                    width={80}
+                    mirror={false}
+                    yAxisId={0}
+                    type="number"
+                    padding={{ top: 0, bottom: 0 }}
+                    allowDataOverflow={false}
+                    scale="auto"
+                    reversed={false}
+                    label={
+                        isMobile
+                            ? undefined
+                            : {
+                                  value: "Players per Hour",
+                                  angle: -90,
+                                  position: "insideLeft"
+                              }
+                    }
+                />
+                <Tooltip content={<CustomTooltip />} offset={80} />
+                <Legend
+                    wrapperStyle={{ width: "100%", bottom: -10 }}
+                    height={60}
+                    onClick={data => {
+                        const raidId = Number((data.dataKey as string).split(".")[1])
+                        setSelectedLine(old => (old === raidId ? null : raidId))
+                    }}
+                />
+                {activeRaids.map(raidId => (
+                    <Line
+                        key={raidId}
+                        dataKey={`population.${raidId}`}
+                        name={getActivityDefinition(raidId)?.name ?? "Unknown"}
+                        type="natural"
+                        stroke={colors[raidId] ?? "white"}
+                        strokeWidth={raidId === selectedLine ? 5 : 1}
+                        dot={false}
+                        activeDot={{ r: 6, strokeWidth: 0 }}
+                    />
+                ))}
+            </LineChart>
+            <p>
+                Note: Values for recent hours are adjusted in order to compensate for incomplete
+                data. Expect some skew at the beginning of the hour.
+            </p>
+        </Container>
     )
 })
 
-const GraphContainer = styled.svg`
-    border: 1px solid ${({ theme }) => theme.colors.border.medium};
+// This is a workaround for a limitation in the recharts library
+XAxis.defaultProps = undefined
+YAxis.defaultProps = undefined
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+    const { locale } = useLocale()
+    if (active && payload?.length) {
+        return (
+            <StyledTooltip>
+                <p>{new Date(label as number).toLocaleString(locale)}</p>
+                {payload
+                    .toSorted((a, b) => b.value! - a.value!)
+                    .map(p => (
+                        <p key={p.dataKey} style={{ color: p.stroke }}>
+                            {p.name}: {formattedNumber(p.value ?? 0, locale)}
+                        </p>
+                    ))}
+                <hr />
+                <p>
+                    <strong>
+                        Total:{" "}
+                        {formattedNumber(
+                            payload.reduce((acc, p) => acc + (p.value ?? 0), 0),
+                            locale
+                        )}
+                    </strong>
+                </p>
+            </StyledTooltip>
+        )
+    }
+
+    return null
+}
+
+const StyledTooltip = styled.div`
+    background-color: black;
+    padding: 8px 15px;
+    border: 1px solid white;
+    font-size: 0.875rem;
+    p {
+        color: white;
+    }
 `

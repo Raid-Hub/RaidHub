@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRef } from "react"
 import { z } from "zod"
 import { useLocale } from "~/app/layout/wrappers/LocaleManager"
+import { Container } from "~/components/layout/Container"
 import { Flex } from "~/components/layout/Flex"
 import { useLocalStorage } from "~/hooks/util/useLocalStorage"
 import { useQueryParams } from "~/hooks/util/useQueryParams"
@@ -37,7 +38,7 @@ export default function Page() {
                 style={{
                     marginBottom: "0.2rem"
                 }}>
-                Weapon Meta
+                Weekly Weapon Meta
             </h1>
             <div style={{ marginBottom: "1.25rem" }}>
                 <i>
@@ -50,42 +51,45 @@ export default function Page() {
                     })}
                 </i>
             </div>
-            <Flex
-                $padding={0}
-                $wrap
-                style={{
-                    marginBottom: "1rem"
-                }}>
-                <div>
-                    <Flex as="nav" $align="flex-start" $padding={0} id="slot-nav">
-                        <label htmlFor="slot-nav">{"Jump: "}</label>
-                        <Link href="#kinetic">Kinetic</Link>
-                        <Link href="#energy">Energy</Link>
-                        <Link href="#power">Power</Link>
-                    </Flex>
-                </div>
-                <div>
-                    <label
-                        htmlFor="sort-selector"
-                        style={{
-                            marginRight: "0.25rem"
-                        }}>
-                        {"Sort by:"}
-                    </label>
-                    <select
-                        id="sort-selector"
-                        value={sort}
-                        onChange={e => {
-                            const value = e.target.value as SortKey
-                            setSort(value)
-                            setParam("sort", value)
-                        }}>
-                        <option value="kills">Kills</option>
-                        <option value="usage">Usage</option>
-                    </select>
-                </div>
-            </Flex>
-            <WeaponTables sort={sort} count={count} />
+            <Container>
+                <Flex
+                    $padding={0}
+                    $wrap
+                    $align="flex-start"
+                    style={{
+                        marginBottom: "1rem"
+                    }}>
+                    <div>
+                        <Flex as="nav" $align="flex-start" $padding={0} id="slot-nav">
+                            <label htmlFor="slot-nav">{"Jump: "}</label>
+                            <Link href="#kinetic">Kinetic</Link>
+                            <Link href="#energy">Energy</Link>
+                            <Link href="#power">Power</Link>
+                        </Flex>
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="sort-selector"
+                            style={{
+                                marginRight: "0.25rem"
+                            }}>
+                            {"Sort by:"}
+                        </label>
+                        <select
+                            id="sort-selector"
+                            value={sort}
+                            onChange={e => {
+                                const value = e.target.value as SortKey
+                                setSort(value)
+                                setParam("sort", value)
+                            }}>
+                            <option value="kills">Kills</option>
+                            <option value="usage">Usage</option>
+                        </select>
+                    </div>
+                </Flex>
+                <WeaponTables sort={sort} count={count} />
+            </Container>
         </div>
     )
 }

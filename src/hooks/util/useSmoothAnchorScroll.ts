@@ -17,8 +17,9 @@ export const useSmoothAnchorScroll = <E extends HTMLElement>(ref: RefObject<E>) 
                 if (targetElement) {
                     const offsetPosition =
                         targetElement.getBoundingClientRect().top +
-                        window.screenY -
+                        window.scrollY -
                         window.innerHeight / 12
+
                     window.scrollTo({
                         top: offsetPosition,
                         behavior: "smooth"
