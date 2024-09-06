@@ -75,6 +75,8 @@ export type RaidHubLeaderboardClanResponse = Component<"LeaderboardClanResponse"
 export type RaidHubStatusResponse = Component<"StatusResponse">
 export type RaidHubMetricsWeaponsRollingWeekResponse =
     Component<"MetricsWeaponsRollingWeekResponse">
+export type RaidHubMetricsPopulationRollingDayResponse =
+    Component<"MetricsPopulationRollingDayResponse">
 
 interface GetSchema {
     get: {

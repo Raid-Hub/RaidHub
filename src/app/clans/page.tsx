@@ -5,6 +5,11 @@ import { ClanLeaderboards } from "./ClanLeaderboards"
 export const metadata = {
     title: "Clan Leaderboards",
     description: "View the top clans in Destiny 2 by a variety of metrics.",
+    openGraph: {
+        ...rootMetadata.openGraph,
+        title: "Clan Leaderboards",
+        description: "View the top clans in Destiny 2 by a variety of metrics."
+    },
     keywords: [...rootMetadata.keywords, "clan", "rankings"]
 }
 

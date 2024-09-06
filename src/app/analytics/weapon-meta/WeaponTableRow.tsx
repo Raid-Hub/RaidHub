@@ -1,11 +1,10 @@
-import Image from "next/image"
 import styled from "styled-components"
+import { WeaponIcon } from "~/components/WeaponIcon"
 import { Flex } from "~/components/layout/Flex"
 import { useItemDefinition } from "~/hooks/dexie"
 import { type RaidHubWeaponMetric } from "~/services/raidhub/types"
-import { bungieIconUrl } from "~/util/destiny"
 import { formattedNumber } from "~/util/presentation/formatting"
-import { useLocale } from "../layout/wrappers/LocaleManager"
+import { useLocale } from "../../layout/wrappers/LocaleManager"
 
 export const WeaponTableRow = ({ weapon, rank }: { weapon: RaidHubWeaponMetric; rank: number }) => {
     const { locale } = useLocale()
@@ -16,12 +15,11 @@ export const WeaponTableRow = ({ weapon, rank }: { weapon: RaidHubWeaponMetric; 
             <Td>{rank}</Td>
             <Td>
                 <WeaponIdentifiers>
-                    <Image
-                        src={bungieIconUrl(definition?.displayProperties.icon)}
-                        width={32}
-                        height={32}
+                    <WeaponIcon
+                        size={40}
                         alt={displayName}
-                        unoptimized
+                        icon={definition?.displayProperties.icon}
+                        iconWatermark={definition?.iconWatermark}
                     />
                     <span>{displayName}</span>
                 </WeaponIdentifiers>

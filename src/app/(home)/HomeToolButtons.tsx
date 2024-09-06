@@ -14,6 +14,7 @@ export const HomeToolButtons = () => {
             <HomeButton href="/checkpoints" title="Checkpoints" icon={D2CP} />
             <HomeButton href="/calendar" title="Rotator Calendar" icon={Calendar} />
             <HomeButton href="/clans" title="Clans" icon={Users} />
+            <HomeButton href="/analytics/weapon-meta" title="Weapon Meta" icon={Users} />
         </Flex>
     )
 }

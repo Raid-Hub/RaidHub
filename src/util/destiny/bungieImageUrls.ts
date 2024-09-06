@@ -13,6 +13,10 @@ export function bungieIconUrl(path: string | undefined | null) {
     return baseBungieUrl + (path || defaultIcon)
 }
 
+export function bungieItemWatermarkUrl(path: string | undefined | null) {
+    return baseBungieUrl + (path || defaultIcon)
+}
+
 export function bungieProfileIconUrl(path: string | undefined | null) {
     return baseBungieUrl + (path || defaultProfileIcon)
 }

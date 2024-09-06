@@ -1,12 +1,11 @@
 import { type DestinyInventoryItemDefinition } from "bungie-net-core/models"
-import Image from "next/image"
 import Link from "next/link"
 import styled from "styled-components"
 import { $media } from "~/app/layout/media"
 import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { TooltipContainer, TooltipData } from "~/components/Tooltip"
+import { WeaponIcon } from "~/components/WeaponIcon"
 import { Flex } from "~/components/layout/Flex"
-import { bungieIconUrl } from "~/util/destiny"
 import { formattedNumber } from "~/util/presentation/formatting"
 
 export const PlayerWeapon = (props: {
@@ -14,7 +13,6 @@ export const PlayerWeapon = (props: {
     kills: number
     definition: DestinyInventoryItemDefinition
 }) => {
-    const icon = bungieIconUrl(props.definition?.displayProperties.icon)
     const { locale } = useLocale()
     return (
         <TooltipContainer
@@ -23,16 +21,15 @@ export const PlayerWeapon = (props: {
                 <TooltipData>{props.definition?.displayProperties.name ?? "Unknown"}</TooltipData>
             }>
             <WeaponItem data-weapon-hash={props.hash}>
-                <WeaponIcon
-                    href={`https://d2foundry.gg/w/${props.hash}?referrer=raidhub`}
-                    target="_blank">
-                    <Image
-                        src={icon}
-                        unoptimized
-                        fill
+                <Link href={`https://d2foundry.gg/w/${props.hash}`}>
+                    <WeaponIcon
+                        size={64}
+                        sizeMobile={48}
+                        icon={props.definition?.displayProperties.icon}
+                        iconWatermark={props.definition.iconWatermark}
                         alt={props.definition?.displayProperties.name ?? "Unknown"}
                     />
-                </WeaponIcon>
+                </Link>
                 <div style={{ flex: 1, textAlign: "center" }}>
                     {formattedNumber(props.kills, locale)}
                 </div>
@@ -58,15 +55,3 @@ WeaponItem.defaultProps = {
     $fullWidth: true,
     $align: "center"
 }
-
-const WeaponIcon = styled(Link)`
-    display: block;
-    width: 64px;
-    ${$media.max.mobile`
-        width: 48px;
-    `}
-
-    aspect-ratio: 1/1;
-    position: relative;
-    overflow: hidden;
-`
