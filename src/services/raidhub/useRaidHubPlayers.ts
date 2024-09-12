@@ -34,15 +34,12 @@ export function useRaidHubPlayers(
         ...(session.status === "loading" ? { enabled: false } : {})
     })
 
-    const players = queries
-        .map(q => q.data)
-        .filter((data): data is RaidHubPlayerProfileResponse => !!data)
-    const isLoading = queries.some(q => q.isLoading)
-
     return {
         refetch: () => queries.forEach(q => q.refetch()),
-        players,
-        isLoading,
+        players: queries
+            .map(q => q.data)
+            .filter((data): data is RaidHubPlayerProfileResponse => !!data),
+        isLoading: queries.some(q => q.isLoading),
         errors: queries.map(q => q.error)
     }
 }
