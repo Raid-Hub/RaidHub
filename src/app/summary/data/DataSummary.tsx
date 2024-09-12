@@ -59,7 +59,7 @@ export const DataSummary = ({ generateEncodedCode }: { generateEncodedCode: () =
         statsByActivity.forEach(v => v.worldFirstEntries.sort((a, b) => a.rank - b.rank))
 
         return statsByActivity
-    }, [playersQueries.players])
+    }, [playersQueries.players, listedRaids])
 
     const generateURL = async () => {
         const code = generateEncodedCode()
