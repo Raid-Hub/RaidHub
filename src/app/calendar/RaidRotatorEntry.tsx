@@ -7,17 +7,49 @@ import { useLocale } from "~/app/layout/wrappers/LocaleManager"
 import { useRaidHubManifest } from "~/app/layout/wrappers/RaidHubManifestManager"
 import { BackgroundImage } from "~/components/BackgroundImage"
 import { Flex } from "~/components/layout/Flex"
+import { H4 } from "~/components/typography/H4"
 import { getRaidSplash } from "~/data/activity-images"
+import { type RaidHubActivityDefinition } from "~/services/raidhub/types"
 import { RaidActivity } from "./RaidActivity"
 
 export const RaidRotatorEntry = (props: {
-    milestone: DestinyPublicMilestone
+    defs: {
+        milestone: DestinyPublicMilestone
+        activity: RaidHubActivityDefinition
+        children?: ReactNode
+    }[]
     startDate: Date
     endDate: Date
-    children?: ReactNode
 }) => {
     const { locale } = useLocale()
+
+    return (
+        <div>
+            <H4>
+                {props.startDate.toLocaleDateString(locale, { month: "long", day: "numeric" })}
+                {props.startDate.getMonth() === props.endDate.getMonth()
+                    ? ` - ${props.endDate.toLocaleDateString(locale, { day: "numeric" })}`
+                    : ` - ${props.endDate.toLocaleDateString(locale, {
+                          month: "long",
+                          day: "numeric"
+                      })}`}
+            </H4>
+            <Flex $wrap $direction="row" $crossAxis="stretch" $padding={0.25}>
+                {props.defs.map(def => (
+                    <RaidRotatorEntryRaid key={def.activity.id} {...def}></RaidRotatorEntryRaid>
+                ))}
+            </Flex>
+        </div>
+    )
+}
+
+const RaidRotatorEntryRaid = (props: {
+    milestone: DestinyPublicMilestone
+    activity: RaidHubActivityDefinition
+    children?: ReactNode
+}) => {
     const { getDefinitionFromHash } = useRaidHubManifest()
+
     const activity = getDefinitionFromHash(props.milestone.activities[0].activityHash)?.activity
     const raidName = activity?.name
 
@@ -27,15 +59,6 @@ export const RaidRotatorEntry = (props: {
         <Main>
             <Flex $direction="column" $gap={0.2}>
                 <RaidTitle>{raidName}</RaidTitle>
-                <RotatorDates>
-                    {props.startDate.toLocaleDateString(locale, { month: "long", day: "numeric" })}
-                    {props.startDate.getMonth() === props.endDate.getMonth()
-                        ? ` - ${props.endDate.toLocaleDateString(locale, { day: "numeric" })}`
-                        : ` - ${props.endDate.toLocaleDateString(locale, {
-                              month: "long",
-                              day: "numeric"
-                          })}`}
-                </RotatorDates>
             </Flex>
             {props.children}
             <BackgroundImage
@@ -47,45 +70,49 @@ export const RaidRotatorEntry = (props: {
     )
 }
 
-const RotatorDates = styled.div`
-    font-size: 1rem;
-    font-weight: 500;
-    font-style: italic;
-    text-shadow: 0 0 2px #000;
-`
-
 export const FeaturedRaidRotatorEntry = (props: {
-    milestone: DestinyPublicMilestone
+    defs: {
+        milestone: DestinyPublicMilestone
+        activity: RaidHubActivityDefinition
+    }[]
     startDate: Date
     endDate: Date
 }) => {
     const { getDefinitionFromHash } = useRaidHubManifest()
     return (
-        <RaidRotatorEntry {...props}>
-            <Container>
-                <Flex $direction="column" $gap={0.3}>
-                    {props.milestone.activities.map(activity => {
-                        const definition = getDefinitionFromHash(activity.activityHash)
-                        return definition ? (
-                            <RaidActivity
-                                key={activity.activityHash}
-                                activity={activity}
-                                version={definition.version.name}
-                            />
-                        ) : null
-                    })}
-                </Flex>
-            </Container>
-        </RaidRotatorEntry>
+        <RaidRotatorEntry
+            startDate={props.startDate}
+            endDate={props.endDate}
+            defs={props.defs.map(def => ({
+                ...def,
+                children: (
+                    <Container>
+                        <Flex $direction="column" $gap={0.3}>
+                            {def.milestone.activities.map(activity => {
+                                const definition = getDefinitionFromHash(activity.activityHash)
+                                return definition ? (
+                                    <RaidActivity
+                                        key={activity.activityHash}
+                                        activity={activity}
+                                        version={definition.version.name}
+                                    />
+                                ) : null
+                            })}
+                        </Flex>
+                    </Container>
+                )
+            }))}
+        />
     )
 }
 
 const Main = styled.div`
+    flex: 1;
+    flex-basis: 500px;
     position: relative;
     width: 100%;
     background-color: color-mix(in srgb, ${p => p.theme.colors.background.dark}, #0000 50%);
 
-    border-radius: 0.5rem;
     border: 1px solid color-mix(in srgb, ${p => p.theme.colors.border.dark}, #0000 60%);
 `
 

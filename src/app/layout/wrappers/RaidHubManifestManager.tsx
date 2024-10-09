@@ -23,8 +23,8 @@ type ManifestContextData = {
     getUrlPathForActivity(activityId: number): string | null
     getUrlPathForVersion(versionId: number): string | null
     getDefinitionFromHash(hash: string | number): {
-        activity: RaidHubManifestResponse["activityDefinitions"][string]
-        version: RaidHubManifestResponse["versionDefinitions"][string]
+        activity: RaidHubActivityDefinition
+        version: RaidHubVersionDefinition
     } | null
     getVersionsForActivity(activityId: number): readonly RaidHubVersionDefinition[]
     getActivityDefinition(activityId: number): RaidHubActivityDefinition | null

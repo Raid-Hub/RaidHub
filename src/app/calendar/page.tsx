@@ -2,19 +2,16 @@
 
 import { Collection } from "@discordjs/collection"
 import Link from "next/link"
-import { useMemo } from "react"
 import styled from "styled-components"
 import { Grid } from "~/components/layout/Grid"
 import { PageWrapper } from "~/components/layout/PageWrapper"
-import { useSeasons } from "~/hooks/dexie"
 import { usePublicMilestones } from "~/services/bungie/hooks"
-import { modulo } from "~/util/math"
-import { useRaidHubManifest } from "../layout/wrappers/RaidHubManifestManager"
 import { FeaturedRaidRotatorEntry, RaidRotatorEntry } from "./RaidRotatorEntry"
+import { useIsFeatureableRaidMilestone } from "./hooks/useIsFeatureableRaidMilestone"
+import { useRaidRotation } from "./hooks/useRaidRotation"
 
 export default function Page() {
-    const seasons = useSeasons()
-    const { listedRaids, getDefinitionFromHash, milestoneHashes } = useRaidHubManifest()
+    const isFeatureableRaidMilestone = useIsFeatureableRaidMilestone()
     const {
         data: milestones,
         isLoading,
@@ -22,10 +19,9 @@ export default function Page() {
         error
     } = usePublicMilestones({
         select: milestones =>
-            new Collection(Object.entries(milestones)).filter((_, hash) => {
-                const definition = milestoneHashes.get(Number(hash))
-                return definition && definition.id !== listedRaids[0]
-            }),
+            new Collection(
+                Object.entries(milestones).filter(([hash]) => isFeatureableRaidMilestone(hash))
+            ),
         refetchInterval: milestones => {
             if (!milestones) return false
             const now = Date.now()
@@ -36,45 +32,7 @@ export default function Page() {
         }
     })
 
-    const thisWeek = useMemo(
-        () =>
-            milestones?.find(milestone =>
-                milestone.activities.some(
-                    a =>
-                        // Apparently the raid milestone is the only one with challengeObjectiveHashes
-                        a.challengeObjectiveHashes.length
-                )
-            ) ?? null,
-        [milestones]
-    )
-
-    const thisWeeksRaid = useMemo(() => {
-        if (!thisWeek) return null
-        return getDefinitionFromHash(thisWeek.activities[0].activityHash)?.activity.id ?? null
-    }, [thisWeek, getDefinitionFromHash])
-
-    const orderedMilestones = useMemo(() => {
-        if (!milestones || !thisWeeksRaid) return []
-        return Array.from(
-            milestones
-                .toSorted((a, b) => {
-                    const aHash = getDefinitionFromHash(a.activities[0].activityHash)?.activity.id
-                    const bHash = getDefinitionFromHash(b.activities[0].activityHash)?.activity.id
-                    if (!aHash || !bHash) return +!!aHash ^ +!!bHash ? (aHash ? 1 : -1) : 0
-                    return modulo(aHash - thisWeeksRaid, 64) - modulo(bHash - thisWeeksRaid, 64)
-                })
-                .values()
-        )
-    }, [milestones, thisWeeksRaid, getDefinitionFromHash])
-
-    const seasonEnd = useMemo(
-        () =>
-            seasons?.length
-                ? seasons.findLast(season => new Date(season.startDate!) < new Date())?.endDate ??
-                  null
-                : null,
-        [seasons]
-    )
+    const raidRotation = useRaidRotation(milestones ?? null)
 
     if (isError) {
         return (
@@ -90,52 +48,31 @@ export default function Page() {
             </PageWrapper>
         )
     }
-    if (!seasonEnd) {
-        return (
-            <PageWrapper>
-                <MessageComponent>Loading Seasons...</MessageComponent>
-            </PageWrapper>
-        )
-    }
 
-    const seasonEndDate = new Date(seasonEnd)
-
-    if (!thisWeek || seasonEndDate.getTime() <= Date.now()) {
+    if (!raidRotation) {
         return (
             <PageWrapper>
                 <MessageComponent>
-                    No featured raid this week. If this doesn&apos;t seem right, please file a bug
+                    No featured raids this week. If this doesn&apos;t seem right, please file a bug
                     report in <Link href="https://discord.gg/raidhub">discord.gg/raidhub</Link>
                 </MessageComponent>
             </PageWrapper>
         )
     }
-
-    const weeks = Array.from(
-        { length: Math.ceil((seasonEndDate.getTime() - Date.now()) / 604800000) },
-        (_, idx) => {
-            const milestoneStartDate = new Date(thisWeek.startDate!)
-            milestoneStartDate.setDate(milestoneStartDate.getDate() + idx * 7)
-
-            const milestoneEndDate = new Date(thisWeek.endDate!)
-            milestoneEndDate.setDate(milestoneEndDate.getDate() + idx * 7)
-
-            return {
-                milestone: orderedMilestones[idx % orderedMilestones.length],
-                startDate: milestoneStartDate,
-                endDate: milestoneEndDate
-            }
-        }
-    )
+    const [currentWeek, ...restOfWeeks] = raidRotation
 
     return (
         <PageWrapper>
-            <Grid $minCardWidth={999}>
-                <FeaturedRaidRotatorEntry {...weeks[0]} />
-                {weeks.splice(1).map(({ milestone, startDate, endDate }, idx) => (
+            <Grid $minCardWidth={9999}>
+                <FeaturedRaidRotatorEntry
+                    defs={currentWeek.grouped}
+                    startDate={currentWeek.startDate}
+                    endDate={currentWeek.endDate}
+                />
+                {restOfWeeks.map(({ grouped, startDate, endDate }) => (
                     <RaidRotatorEntry
-                        key={idx}
-                        milestone={milestone}
+                        key={startDate.getTime()}
+                        defs={grouped}
                         startDate={startDate}
                         endDate={endDate}
                     />

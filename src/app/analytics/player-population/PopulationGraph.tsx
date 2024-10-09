@@ -86,11 +86,7 @@ export const PopulationGraph = memo(function PopulationGraph({
                     height: height,
                     marginBottom: isMobile ? "100px" : "40px"
                 }}>
-                <CartesianGrid
-                    stroke="#d4d4d474"
-                    strokeDasharray="2 2"
-                    onMouseEnter={(...args) => console.log(args)}
-                />
+                <CartesianGrid stroke="#d4d4d474" strokeDasharray="2 2" />
                 <XAxis
                     allowDecimals
                     hide={false}
